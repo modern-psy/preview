@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ВВЕДЕНИЕ В КЛИНИЧЕСКУЮ ПСИХОЛОГИЮ»  →  адрес /vvedenie
+  ============================================================================
+
+  Свёрстан по гайду AGENTS.md: классы Client-first v2, размеры текста и цвета —
+  из дизайн-системы (папка /design-system). Макет: Фигма «Воронки Верга»,
+  фрейм 241-2329.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" — сюда подставляют настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…, <style>, <script>) — «шестерёнки»,
+       их трогать не надо: на них держится вёрстка и анимация.
+
+  ЧТО ТУТ ЕСТЬ ЖИВОГО:
+    · блоки «преимущества» и «программа» наслаиваются друг на друга по скроллу
+      (как на лендинге Clay) — это чистый CSS, см. page.css, раздел 9;
+    · модуль преподавателя наслаивается целиком, фото стоит в карточке урока;
+    · аккордеон вопросов — на теге <details>, без единой строчки JS.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём от вас):
+    · настоящие вопросы и ответы в блоке FAQ — сейчас там заглушки «Вопрос №N»;
+    · настоящие адреса кнопок регистрации и ссылок подвала (помечены 🟡).
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Введение в клиническую психологию — бесплатный мини-курс Академии</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный мини-курс из 6 уроков: чем занимается клинический психолог, какие есть направления и как войти в профессию. Преподаватели-практики Академии современной психологии." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер.
+       ⚠️ og:image не задан — картинки 1200×630 для соцсетей ещё не нарисованы.
+       ⚠️ canonical появится, когда страница переедет на боевой домен. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Введение в клиническую психологию — бесплатный мини-курс" />
+  <meta property="og:description" content="6 уроков, чтобы понять, подходит ли вам профессия клинического психолога." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 ДИЗАЙН-СИСТЕМА. Порядок подключения менять нельзя.
+       Файлы — копии из design-system/ в корне репозитория, правятся ТОЛЬКО там. -->
+  <link rel="stylesheet" href="/design-system/tokens.css" />
+  <link rel="stylesheet" href="/design-system/base.css" />
+  <link rel="stylesheet" href="/design-system/typography.css" />
+  <link rel="stylesheet" href="/design-system/components.css" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Подгоняет высоты карточек в стопках. Без него страница тоже работает. -->
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+
+  <!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+  <a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+
+  <!-- ==========================================================================
+       ШАПКА
+       ==========================================================================
+       Белая полоса поверх фоновой картинки героя, со скруглёнными нижними углами.
+       Не липкая — как в макете.
+       ========================================================================== -->
+  <header class="site-header_component">
+    <div class="site-header_bar">
+
+      <!-- 🟢 Логотип. Пока текстом: файла логотипа в репозитории ещё нет. -->
+      <a class="site-header_logo text-size-logo" href="/">АСП</a>
+
+      <!-- 🟢 Жёлтая плашка про грант -->
+      <span class="chip is-grant site-header_promo">Дарим грант на&nbsp;обучение 20 000&nbsp;₽</span>
+
+      <!-- 🟡 Кнопка ведёт на форму регистрации — подставьте настоящий адрес -->
+      <a class="button is-md site-header_cta" href="#programma">Получить грант</a>
+
+    </div>
+  </header>
+
+
+  <main class="main-wrapper" id="soderzhimoe">
+
+    <!-- ======================================================================
+         1. ПЕРВЫЙ ЭКРАН
+         ======================================================================
+         Фоновая картинка — декоративная, поэтому она в CSS (background-image),
+         а не тегом <img>. Так правильно по гайду, раздел 11.
+         ====================================================================== -->
+    <section class="section_hero" id="hero">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="hero_inner">
+
+            <div class="hero_left">
+              <span class="chip is-brand margin-bottom margin-small">Бесплатный мини-курс</span>
+              <!-- 🟢 Главный заголовок страницы. На странице он один — это важно для поиска. -->
+              <h1 class="text-size-hero text-style-balance">Введение<br>в&nbsp;клиническую психологию</h1>
+            </div>
+
+            <div class="hero_right">
+              <!-- 🟢 Текст-подводка. Первое предложение жирным — так в макете. -->
+              <p class="text-size-lead text-color-secondary margin-bottom margin-medium">
+                <strong class="text-color-primary text-weight-medium">6&nbsp;уроков, чтобы понять, подходит&nbsp;ли вам профессия клинического психолога.</strong>
+                Преподаватели-практики объяснят, чем занимается специалист и&nbsp;как войти в&nbsp;профессию.
+              </p>
+              <!-- 🟡 Подставьте настоящий адрес регистрации -->
+              <a class="button is-md" href="#programma">Пройти курс</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         2. ТЁМНАЯ ВРЕЗКА С ВОПРОСОМ
+         ====================================================================== -->
+    <section class="section_quote">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="quote_component background-color-inverse">
+            <!-- 🟢 -->
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Хотите понимать человека глубже,<br>чем на&nbsp;уровне обычных запросов?
+            </h2>
+            <p class="text-size-lead text-color-on-inverse text-align-center text-style-balance margin-top margin-small">
+              Клиническая психология изучает связь мышления, эмоций, поведения, тела и&nbsp;работы мозга
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         3. ТРИ КАРТОЧКИ, КОТОРЫЕ НАСЛАИВАЮТСЯ ПО СКРОЛЛУ
+         ======================================================================
+         🔴 class="stack_component" и "stack_item" — это и есть анимация.
+            Карточки по очереди прилипают к верху экрана, следующая наезжает
+            на предыдущую. Работает на всех экранах, включая телефон
+            (см. page.css, раздел 9, и page.js).
+
+         🟢 Чтобы добавить четвёртую карточку — скопируйте <article> целиком
+            и поменяйте тексты и картинку. Ничего больше настраивать не нужно.
+         ====================================================================== -->
+    <section class="section_benefits">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="stack_component">
+
+            <!-- карточка 1 -->
+            <article class="benefit_card stack_item card">
+              <div class="benefit_text">
+                <span class="pill-stack_component margin-bottom margin-small" style="--before: 0; --after: 2">
+                  <span class="chip is-brand pill-stack_main">Основа</span>
+                  <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                  <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                </span>
+                <!-- 🟢 Последние слова заголовка выделены цветом -->
+                <h2 class="text-size-card-title text-style-balance">
+                  Увидите психологию <span class="text-color-accent">глубже</span>
+                </h2>
+                <p class="text-size-lead text-color-secondary margin-top margin-small">
+                  Узнаете, как взаимосвязаны мозг, психика, тело и&nbsp;поведение,
+                  и&nbsp;почему клинический подход даёт более <strong class="text-color-primary text-weight-medium">полную картину.</strong>
+                </p>
+                <div class="benefit_actions">
+                  <!-- 🟡 -->
+                  <a class="button is-sm" href="#programma">Зарегистрироваться</a>
+                  <a class="button is-sm is-link" href="#programma">Посмотреть программу</a>
+                </div>
+              </div>
+              <div class="benefit_media">
+                <img src="/vvedenie/img/card-osnova.webp"
+                     alt="Три прозрачные пластины с изображением мозга, сердца и фигуры человека"
+                     width="1100" height="1011" loading="lazy" class="image-contain">
+              </div>
+            </article>
+
+            <!-- карточка 2 -->
+            <article class="benefit_card stack_item card is-alt">
+              <div class="benefit_text">
+                <span class="pill-stack_component margin-bottom margin-small" style="--before: 1; --after: 1">
+                  <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                  <span class="chip is-brand pill-stack_main">Профессия</span>
+                  <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                </span>
+                <h2 class="text-size-card-title text-style-balance">
+                  Разберёте реальные <span class="text-color-accent">направления работы</span>
+                </h2>
+                <p class="text-size-lead text-color-secondary margin-top margin-small">
+                  Познакомитесь с&nbsp;ключевыми направлениями клинической психологии
+                  и&nbsp;поймёте, чем занимается специалист <strong class="text-color-primary text-weight-medium">на&nbsp;практике.</strong>
+                </p>
+                <div class="benefit_actions">
+                  <!-- 🟡 -->
+                  <a class="button is-sm" href="#programma">Зарегистрироваться</a>
+                  <a class="button is-sm is-ghost" href="#programma">Посмотреть программу</a>
+                </div>
+              </div>
+              <div class="benefit_media">
+                <img src="/vvedenie/img/card-professiya.webp"
+                     alt="Схема из соединённых элементов: мозг, сердце, профиль головы и деталь пазла"
+                     width="1100" height="1011" loading="lazy" class="image-contain">
+              </div>
+            </article>
+
+            <!-- карточка 3 -->
+            <article class="benefit_card stack_item card">
+              <div class="benefit_text">
+                <span class="pill-stack_component margin-bottom margin-small" style="--before: 2; --after: 0">
+                  <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                  <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                  <span class="chip is-brand pill-stack_main">Следующий шаг</span>
+                </span>
+                <h2 class="text-size-card-title text-style-balance">
+                  Поймёте, куда <span class="text-color-accent">двигаться дальше</span>
+                </h2>
+                <p class="text-size-lead text-color-secondary margin-top margin-small">
+                  Получите понятный маршрут развития в&nbsp;профессии и&nbsp;возможность
+                  продолжить <strong class="text-color-primary text-weight-medium">обучение по&nbsp;гранту.</strong>
+                </p>
+                <div class="benefit_actions">
+                  <!-- 🟡 -->
+                  <a class="button is-sm" href="#programma">Зарегистрироваться</a>
+                  <a class="button is-sm is-link" href="#programma">Посмотреть программу</a>
+                </div>
+              </div>
+              <div class="benefit_media">
+                <img src="/vvedenie/img/card-shag.webp"
+                     alt="Три ступени из кубиков, на верхней светится фонарик"
+                     width="1076" height="1028" loading="lazy" class="image-contain">
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         4. КАК УСТРОЕНА ПРОГРАММА (тёмный блок)
+         ======================================================================
+         🔴 Иконки подключаются по ссылке на svg-файл и красятся маской.
+            Путь всегда начинается со слеша — см. AGENTS.md, раздел 10.
+         ====================================================================== -->
+    <section class="section_how">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="how_component background-color-inverse">
+
+            <h2 class="text-size-section-title text-align-center">Как устроена программа</h2>
+
+            <ul class="how_list">
+              <li class="how_item">
+                <span class="icon is-lg how_icon" style="--icon-url: url('/icons/video.svg')"></span>
+                <h3 class="text-size-block-title">Откройте курс</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Зарегистрируйтесь и&nbsp;получите доступ к&nbsp;платформе за&nbsp;пару минут.
+                </p>
+              </li>
+              <li class="how_item">
+                <span class="icon is-lg how_icon" style="--icon-url: url('/icons/clock.svg')"></span>
+                <h3 class="text-size-block-title">Смотрите, когда удобно</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Все уроки доступны онлайн&nbsp;— дома, в&nbsp;дороге или на&nbsp;работе.
+                </p>
+              </li>
+              <li class="how_item">
+                <span class="icon is-lg how_icon" style="--icon-url: url('/icons/send.svg')"></span>
+                <h3 class="text-size-block-title">Получайте поддержку</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Оставляйте вопросы под уроками или пишите в&nbsp;бот. Мы&nbsp;обязательно ответим.
+                </p>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         5. КОМУ ПОДОЙДЁТ МИНИ-КУРС
+         ====================================================================== -->
+    <section class="section_audience">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title margin-bottom margin-medium">Кому подойдёт мини-курс</h2>
+
+            <div class="audience_grid">
+
+              <!-- крупная карточка слева -->
+              <article class="audience_card card is-featured">
+                <h3 class="text-size-block-title text-style-balance">
+                  Практикующим психологам и&nbsp;психотерапевтам
+                </h3>
+                <p class="text-size-body text-color-secondary margin-top margin-xsmall">
+                  Узнаете, чем клиническая психология отличается от&nbsp;других направлений
+                  и&nbsp;какие возможности открывает
+                  <strong class="text-color-primary text-weight-medium">профессиональная переподготовка.</strong>
+                </p>
+                <div class="audience_media">
+                  <img src="/vvedenie/img/diplom.webp"
+                       alt="Удостоверение о повышении квалификации Академии современной психологии"
+                       width="1176" height="398" loading="lazy" class="image-cover">
+                </div>
+              </article>
+
+              <!-- три карточки справа -->
+              <article class="audience_card card">
+                <h3 class="text-size-block-title text-style-balance">Студентам психологических факультетов</h3>
+                <p class="text-size-body text-color-secondary margin-top margin-xsmall">
+                  Поймёте, подходит&nbsp;ли вам клиническая психология и&nbsp;в&nbsp;каком направлении развивать карьеру.
+                </p>
+              </article>
+
+              <article class="audience_card card">
+                <h3 class="text-size-block-title text-style-balance">Психологам, которые хотят работать со&nbsp;сложными случаями</h3>
+                <p class="text-size-body text-color-secondary margin-top margin-xsmall">
+                      Узнаете, как клинический подход помогает в работе с&nbsp;тревожными расстройствами, РПП, кризисными состояниями и&nbsp;другими сложными запросами.
+                </p>
+              </article>
+
+              <article class="audience_card card">
+                <h3 class="text-size-block-title text-style-balance">Тем, кто планирует переподготовку</h3>
+                <p class="text-size-body text-color-secondary margin-top margin-xsmall">
+                  Разберётесь, какие знания и&nbsp;навыки даёт обучение и&nbsp;как они помогают в&nbsp;практике.
+                </p>
+              </article>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         6. ПРОГРАММА МИНИ-КУРСА
+         ======================================================================
+         🔴 КАК УСТРОЕН ЭТОТ БЛОК — прочитайте, если будете его править.
+
+         Уроки сгруппированы ПО ПРЕПОДАВАТЕЛЮ: один <div class="lessons_group">
+         = один преподаватель = один или два урока подряд. Модуль выглядит
+         одной карточкой, уроки внутри разделены тонкой чертой.
+
+         Фотография преподавателя лежит ВНУТРИ карточки первого его урока.
+         Поэтому она никогда не вылезает за края карточки и не «ездит»
+         по вертикали: она просто часть карточки и двигается вместе с ней.
+
+         ЧТО ПРИЛИПАЕТ ПРИ ПРОКРУТКЕ:
+           · на планшете и десктопе — ВЕСЬ МОДУЛЬ преподавателя. Он выглядит
+             одной карточкой, как в макете, следующий преподаватель наезжает
+             на него сверху;
+           · на телефоне — КАЖДЫЙ УРОК по отдельности: модуль из двух уроков
+             в экран не помещается, а один урок помещается. Анимация та же,
+             просто ступенька мельче.
+
+         На телефоне фотография встаёт НАД текстом урока. Разметка при этом
+         ОДНА (требование гайда) — всё перестраивается стилями.
+
+         🟢 Менять можно: номер урока, длительность, название, пункты списка,
+            имя преподавателя и alt у фотографии.
+         🟢 Если преподаватель ведёт два урока — фотография ставится внутрь
+            карточки ПЕРВОГО из них, у второго её просто нет.
+         ====================================================================== -->
+    <section class="section_program" id="programma">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title margin-bottom margin-medium">Программа мини-курса</h2>
+
+            <div class="lessons_stack">
+
+              <!-- ---------- Модуль 1 · Дарья Зюзина · уроки 1–2 ---------- -->
+              <div class="lessons_group is-alt" style="--group-index: 1">
+                <!-- 🔴 Слой с фотографией. Он лежит ВЫШЕ карточек «своего» преподавателя
+                     и НИЖЕ карточки следующего — поэтому уроки этого преподавателя
+                     подъезжают под фото, а следующий преподаватель закрывает его.
+                     Номер слоя задан ниже в --photo-z. -->
+                <div class="lessons_photo" style="--photo-z: 25">
+                  <div class="lessons_photo_inner">
+                    <figure class="lessons_photo_frame ratio-3x2">
+                      <img src="/vvedenie/img/teacher-zyuzina.webp"
+                           alt="Дарья Зюзина, преподаватель мини-курса"
+                           width="1116" height="740" loading="lazy" class="image-cover">
+                      <figcaption class="lessons_photo_name">Дарья Зюзина</figcaption>
+                    </figure>
+                  </div>
+                </div>
+
+
+                <article class="lesson_card" style="--card-z: 10">
+                  <div class="lesson_body">
+                    <div class="lesson_head">
+                      <span class="pill-stack_component" style="--before: 0; --after: 5">
+                        <span class="chip is-brand pill-stack_main">Урок 1</span>
+                        <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 3" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 4" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 5" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                    </div>
+                    <h3 class="text-size-block-title text-style-balance margin-top margin-xsmall">
+                      Что такое клиническая психология
+                    </h3>
+                    <ol class="lesson_list text-size-note text-color-secondary">
+                      <li>Чем занимается клиническая психология</li>
+                      <li>Как часто клиническая психология встречается в&nbsp;практике психолога</li>
+                      <li>Чем клинический психолог отличается от&nbsp;психиатра</li>
+                      <li>Как знание клинической психологии помогает улучшить помощь клиенту</li>
+                    </ol>
+                  </div>
+                </article>
+
+                <article class="lesson_card" style="--card-z: 20">
+                  <div class="lesson_body">
+                    <div class="lesson_head">
+                      <span class="pill-stack_component" style="--before: 1; --after: 4">
+                        <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                        <span class="chip is-brand pill-stack_main">Урок 2</span>
+                        <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 3" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 4" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-body text-color-secondary">28&nbsp;минут</span>
+                    </div>
+                    <h3 class="text-size-block-title text-style-balance margin-top margin-xsmall">
+                      Патопсихология
+                    </h3>
+                    <ol class="lesson_list text-size-note text-color-secondary">
+                      <li>Чем занимается патопсихология</li>
+                      <li>Какова роль патопсихолога в&nbsp;mental health помощи</li>
+                      <li>Как патопсихолог рассуждает о&nbsp;клиенте</li>
+                      <li>С&nbsp;чего начать изучение патопсихологии</li>
+                    </ol>
+                  </div>
+                </article>
+
+              </div>
+
+              <!-- ---------- Модуль 2 · Борис Пашков · урок 3 ---------- -->
+              <div class="lessons_group" style="--group-index: 2">
+                <!-- 🔴 Слой с фотографией. Он лежит ВЫШЕ карточек «своего» преподавателя
+                     и НИЖЕ карточки следующего — поэтому уроки этого преподавателя
+                     подъезжают под фото, а следующий преподаватель закрывает его.
+                     Номер слоя задан ниже в --photo-z. -->
+                <div class="lessons_photo" style="--photo-z: 35">
+                  <div class="lessons_photo_inner">
+                    <figure class="lessons_photo_frame ratio-3x2">
+                      <img src="/vvedenie/img/teacher-pashkov.webp"
+                           alt="Борис Пашков, преподаватель мини-курса"
+                           width="1116" height="660" loading="lazy" class="image-cover">
+                      <figcaption class="lessons_photo_name">Борис Пашков</figcaption>
+                    </figure>
+                  </div>
+                </div>
+
+
+                <article class="lesson_card" style="--card-z: 30">
+                  <div class="lesson_body">
+                    <div class="lesson_head">
+                      <span class="pill-stack_component" style="--before: 2; --after: 3">
+                        <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                        <span class="chip is-brand pill-stack_main">Урок 3</span>
+                        <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 3" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                    </div>
+                    <h3 class="text-size-block-title text-style-balance margin-top margin-xsmall">
+                      Нейропсихология
+                    </h3>
+                    <ol class="lesson_list text-size-note text-color-secondary">
+                      <li>В&nbsp;чём значимость нейропсихологии</li>
+                      <li>Какие основные идеи и&nbsp;направления есть в&nbsp;нейропсихологии</li>
+                      <li>Как нейропсихология применяется на&nbsp;практике</li>
+                      <li>Какие преимущества даёт нейропсихологический подход в&nbsp;работе психолога</li>
+                    </ol>
+                  </div>
+                </article>
+
+              </div>
+
+              <!-- ---------- Модуль 3 · Виктория Лимаренко · урок 4 ---------- -->
+              <div class="lessons_group is-alt" style="--group-index: 3">
+                <!-- 🔴 Слой с фотографией. Он лежит ВЫШЕ карточек «своего» преподавателя
+                     и НИЖЕ карточки следующего — поэтому уроки этого преподавателя
+                     подъезжают под фото, а следующий преподаватель закрывает его.
+                     Номер слоя задан ниже в --photo-z. -->
+                <div class="lessons_photo" style="--photo-z: 45">
+                  <div class="lessons_photo_inner">
+                    <figure class="lessons_photo_frame ratio-3x2">
+                      <img src="/vvedenie/img/teacher-limarenko.webp"
+                           alt="Виктория Лимаренко, преподаватель мини-курса"
+                           width="1116" height="692" loading="lazy" class="image-cover">
+                      <figcaption class="lessons_photo_name">Виктория Лимаренко</figcaption>
+                    </figure>
+                  </div>
+                </div>
+
+
+                <article class="lesson_card" style="--card-z: 40">
+                  <div class="lesson_body">
+                    <div class="lesson_head">
+                      <span class="pill-stack_component" style="--before: 3; --after: 2">
+                        <span class="pill-stack_ghost is-before" style="--n: 3" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                        <span class="chip is-brand pill-stack_main">Урок 4</span>
+                        <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                    </div>
+                    <h3 class="text-size-block-title text-style-balance margin-top margin-xsmall">
+                      Психофизиология сна
+                    </h3>
+                    <ol class="lesson_list text-size-note text-color-secondary">
+                      <li>Как устроена физиология сна</li>
+                      <li>Как формируются нарушения сна при тревоге</li>
+                      <li>Как проводится диагностика нарушений сна</li>
+                      <li>Какие существуют варианты лечения нарушений сна</li>
+                      <li>Как разбирать клиентский кейс, связанный с&nbsp;нарушениями сна</li>
+                    </ol>
+                  </div>
+                </article>
+
+              </div>
+
+              <!-- ---------- Модуль 4 · Иона Гусаченко · уроки 5–6 ---------- -->
+              <div class="lessons_group" style="--group-index: 4">
+                <!-- 🔴 Слой с фотографией. Он лежит ВЫШЕ карточек «своего» преподавателя
+                     и НИЖЕ карточки следующего — поэтому уроки этого преподавателя
+                     подъезжают под фото, а следующий преподаватель закрывает его.
+                     Номер слоя задан ниже в --photo-z. -->
+                <div class="lessons_photo" style="--photo-z: 65">
+                  <div class="lessons_photo_inner">
+                    <figure class="lessons_photo_frame ratio-3x2">
+                      <img src="/vvedenie/img/teacher-gusachenko.webp"
+                           alt="Иона Гусаченко, преподаватель мини-курса"
+                           width="1116" height="900" loading="lazy" class="image-cover">
+                      <figcaption class="lessons_photo_name">Иона Гусаченко</figcaption>
+                    </figure>
+                  </div>
+                </div>
+
+
+                <article class="lesson_card" style="--card-z: 50">
+                  <div class="lesson_body">
+                    <div class="lesson_head">
+                      <span class="pill-stack_component" style="--before: 4; --after: 1">
+                        <span class="pill-stack_ghost is-before" style="--n: 4" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 3" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                        <span class="chip is-brand pill-stack_main">Урок 5</span>
+                        <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                    </div>
+                    <h3 class="text-size-block-title text-style-balance margin-top margin-xsmall">
+                      Расстройства пищевого поведения и&nbsp;расстройства питания
+                    </h3>
+                    <ol class="lesson_list text-size-note text-color-secondary">
+                      <li>В&nbsp;чём разница между расстройствами пищевого поведения и&nbsp;расстройствами питания</li>
+                      <li>Какие мифы существуют о&nbsp;РПП и&nbsp;РП</li>
+                      <li>Почему с&nbsp;пищевыми расстройствами бывает сложно работать</li>
+                      <li>Что объединяет разные пищевые расстройства</li>
+                      <li>Какие сомнительные идеи о&nbsp;РПП важно уметь распознавать</li>
+                    </ol>
+                  </div>
+                </article>
+
+                <article class="lesson_card" style="--card-z: 60">
+                  <div class="lesson_body">
+                    <div class="lesson_head">
+                      <span class="pill-stack_component" style="--before: 5; --after: 0">
+                        <span class="pill-stack_ghost is-before" style="--n: 5" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 4" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 3" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                        <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                        <span class="chip is-brand pill-stack_main">Урок 6</span>
+                      </span>
+                      <span class="text-size-body text-color-secondary">22&nbsp;минуты</span>
+                    </div>
+                    <h3 class="text-size-block-title text-style-balance margin-top margin-xsmall">
+                      Профессия: клинический психолог
+                    </h3>
+                    <ol class="lesson_list text-size-note text-color-secondary">
+                      <li>Как стать клиническим психологом</li>
+                      <li>Как выбрать, где учиться</li>
+                      <li>Клинический психолог в&nbsp;Академии: разбор программы и&nbsp;организации обучения</li>
+                    </ol>
+                  </div>
+                </article>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         7. ПРИЗЫВ ЗАПИСАТЬСЯ
+         ====================================================================== -->
+    <section class="section_cta">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="cta_component background-color-inverse">
+            <!-- 🟢 -->
+            <span class="chip is-grant margin-bottom margin-small">Грант на&nbsp;обучение 20 000&nbsp;₽</span>
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Пройдите 6&nbsp;бесплатных уроков<br>и&nbsp;получите грант 20 000&nbsp;₽
+            </h2>
+            <p class="text-size-lead text-color-on-inverse text-align-center margin-top margin-xsmall">
+              Начните знакомство с&nbsp;клинической психологией уже сейчас
+            </p>
+            <!-- 🟡 -->
+            <a class="button is-md margin-top margin-medium" href="#programma">Посмотреть уроки</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         8. ОТВЕТЫ НА ПОПУЛЯРНЫЕ ВОПРОСЫ
+         ======================================================================
+         Аккордеон сделан на теге <details> — открывается сам, без JS.
+
+         🟢 ЧТОБЫ ДОБАВИТЬ ВОПРОС: скопируйте образец из комментария ниже
+            и вставьте внутрь <div class="faq_list">. Порядок — как в файле.
+
+            <details class="faq_item">
+              <summary class="faq_question">
+                <span class="text-size-card-title">Текст вопроса</span>
+                <span class="faq_sign" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer text-size-body text-color-secondary">
+                <p>Текст ответа.</p>
+              </div>
+            </details>
+
+         🔴 СЕЙЧАС ВНУТРИ ЗАГЛУШКИ: семь пунктов «Вопрос №N» с текстом
+            «Текст ответа. Замените на настоящий.» — ровно как в макете.
+            Перед выкладкой на боевой сайт их обязательно надо заменить
+            настоящими вопросами и ответами. Лишние пункты просто удалите
+            вместе с их <details>…</details>.
+         ====================================================================== -->
+    <section class="section_faq" id="voprosy">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title margin-bottom margin-xsmall">Ответы на популярные вопросы</h2>
+            <p class="text-size-body text-color-secondary margin-bottom margin-medium">
+              Не нашли ответа на&nbsp;свой вопрос?
+              <!-- 🟡 Поставьте сюда адрес почты или чата -->
+              <a class="text-link" href="mailto:info@modern-psy.ru">Напишите нам</a>
+            </p>
+
+            <div class="faq_list">
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-card-title">Вопрос №1</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-card-title">Вопрос №2</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-card-title">Вопрос №3</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-card-title">Вопрос №4</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-card-title">Вопрос №5</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-card-title">Вопрос №6</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-card-title">Вопрос №7</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================================================
+       ПОДВАЛ
+       ========================================================================== -->
+  <footer class="site-footer_component">
+    <div class="padding-global">
+      <div class="container-large">
+        <div class="site-footer_inner">
+
+          <div class="site-footer_col">
+            <!-- 🟢 Контакты -->
+            <p class="text-size-body text-weight-semibold text-color-heading">
+              <a class="text-link is-subtle" href="tel:+78124435189">+7 812 443-51-89</a>
+            </p>
+            <p class="text-size-note text-color-secondary margin-bottom margin-small">Отдел продаж</p>
+
+            <p class="text-size-body text-weight-semibold text-color-heading margin-bottom margin-medium">
+              <a class="text-link is-subtle" href="mailto:info@modern-psy.ru">info@modern-psy.ru</a>
+            </p>
+
+            <p class="text-size-note text-color-secondary">
+              197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный округ Введенский,
+              пр-т Большой П.с., д.&nbsp;7/4, литера А, помещ.&nbsp;2-Н
+            </p>
+            <p class="text-size-note text-color-secondary margin-top margin-xsmall">ОГРН 1217800102783</p>
+            <p class="text-size-note text-color-secondary margin-top margin-xsmall">ИНН/КПП 7839141929/781301001</p>
+          </div>
+
+          <nav class="site-footer_col" aria-label="Правовая информация">
+            <p class="text-size-note text-color-secondary site-footer_title">Правовая информация</p>
+            <ul class="site-footer_links">
+              <!-- 🟡 Подставьте настоящие адреса документов -->
+              <li><a class="text-link is-subtle text-size-note" href="#">Публичная оферта</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="#">Политика конфиденциальности</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="#">Согласие на обработку персональных данных</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="#">Сведения об образовательной организации</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="#">Образовательная лицензия</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="#">Документы</a></li>
+            </ul>
+          </nav>
+
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- 🔴 Микроразметка для поиска: описание курса.
+     Цена в разметке обязана совпадать с ценой на странице — курс бесплатный,
+     поэтому price 0. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Введение в клиническую психологию",
+  "description": "Бесплатный мини-курс из 6 уроков о клинической психологии и профессии клинического психолога.",
+  "inLanguage": "ru",
+  "provider": {
+    "@type": "EducationalOrganization",
+    "name": "Академия современной психологии",
+    "url": "https://modern-psy.ru"
+  },
+  "offers": {
+    "@type": "Offer",
+    "category": "Free",
+    "price": 0,
+    "priceCurrency": "RUB",
+    "availability": "https://schema.org/InStock"
+  },
+  "hasCourseInstance": {
+    "@type": "CourseInstance",
+    "courseMode": "online",
+    "courseWorkload": "PT2H30M"
+  }
+}
+</script>
+
+</body>
+</html>

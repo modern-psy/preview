@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ПРАЙС-ЛИСТ КУРСОВ — ВНУТРЕННЯЯ СТРАНИЦА ДЛЯ ОТДЕЛА ПРОДАЖ
+  ============================================================================
+
+  Что это: все курсы с открытым набором, у каждого — вся лесенка цен:
+  какая цена была, какая действует сейчас и какие повышения впереди, с датами.
+  Данные приходят из CMS через Public API (/api/public/pricelist) и обновляются
+  сами — руками цены здесь не пишутся вообще.
+
+  Как пользоваться продажнику:
+    • общий список: поиск по названию, фильтр по типу программы и «Курс месяца»;
+    • «Открыть отдельно» — страница одного курса: ?course=slug.
+      Такую ссылку удобно отправить клиенту в мессенджер;
+    • «Скопировать ссылку» — кладёт адрес страницы курса в буфер обмена.
+
+  🔴 Страница закрыта от поиска (noindex) — она для сотрудников, не для клиентов.
+  🔴 Адрес API — в <meta name="public-api-url">. Меняется только вместе с API.
+  🟢 Тексты шапки и подсказок можно править прямо здесь.
+
+  Файлы: page.css — стили, page.js — загрузка данных и отрисовка.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Прайс-лист курсов — для отдела продаж</title>
+
+  <!-- 🔴 Адрес Public API. Без него страница не узнает цены. -->
+  <meta name="public-api-url" content="https://modern-psy-asp-prod-8ceb.twc1.net" />
+
+  <!-- Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="page.css" />
+</head>
+<body>
+<div class="price-page" data-price-page>
+
+  <!-- ======================================================================
+       ШАПКА
+       В общем режиме: заголовок, подводка, время обновления.
+       В режиме одного курса (?course=…): ссылка «Все курсы» и название курса.
+       ====================================================================== -->
+  <header class="header_component">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="header_inner">
+          <p class="header_eyebrow">
+            Академия современной психологии · внутренний прайс для отдела продаж
+          </p>
+
+          <!-- Показывается только на странице одного курса -->
+          <a class="header_back" href="./" data-back hidden>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Все курсы
+          </a>
+
+          <h1 class="header_heading" data-heading>
+            Прайс-лист <span class="accent-word">курсов</span>
+          </h1>
+          <p class="header_description" data-description>
+            Цены, повышения и&nbsp;даты повышений по&nbsp;всем курсам с&nbsp;открытым набором.
+            Данные из&nbsp;CMS, обновляются сами&nbsp;— как в&nbsp;админке, так и&nbsp;здесь.
+          </p>
+
+          <p class="header_status" data-status>Загружаем цены из&nbsp;CMS…</p>
+
+          <!-- Адрес страницы одного курса — чтобы его было видно и можно было выделить -->
+          <p class="header_link" data-single-link hidden>
+            <a class="header_link-url" data-single-url></a>
+            <button class="button is-soft is-small" type="button" data-copy>
+              <span data-copy-label>Скопировать ссылку</span>
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main_component">
+    <div class="padding-global">
+      <div class="container-xlarge">
+
+        <!-- ================================================================
+             ПАНЕЛЬ: поиск и фильтр по типу программы (только в общем списке)
+             ================================================================ -->
+        <div class="toolbar_component" data-toolbar>
+          <label class="toolbar_search">
+            <svg class="toolbar_search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.75"/>
+              <path d="m13.5 13.5 3.5 3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            </svg>
+            <span class="screen-reader-only">Поиск по названию курса</span>
+            <input class="toolbar_input" type="search" placeholder="Найти курс" autocomplete="off" data-search />
+          </label>
+
+          <div class="toolbar_filters" role="group" aria-label="Тип программы" data-filters>
+            <!-- Кнопки-фильтры добавляет page.js по данным из CMS -->
+          </div>
+        </div>
+
+        <!-- ================================================================
+             СПИСОК КУРСОВ — рисует page.js по шаблону ниже
+             ================================================================ -->
+        <p class="list_empty" data-empty hidden>Ничего не&nbsp;нашлось. Попробуйте другое слово.</p>
+
+        <div class="list_component" data-list aria-live="polite"></div>
+
+        <!-- Ошибка загрузки -->
+        <div class="error_component" data-error hidden>
+          <p class="error_heading">Не&nbsp;удалось загрузить цены</p>
+          <p class="error_text">
+            CMS или API не&nbsp;ответили. Проверьте интернет и&nbsp;попробуйте ещё&nbsp;раз&nbsp;—
+            обычно помогает.
+          </p>
+          <button class="button is-accent" type="button" data-retry>Попробовать снова</button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer_component">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <p class="footer_text">
+          Цена «Сейчас»&nbsp;— та, что действует при единовременной оплате.
+          Если у&nbsp;курса есть отдельная цена в&nbsp;рассрочку, она подписана рядом.
+          Скидка «Курс месяца» применяется только к&nbsp;цене единовременной оплаты
+          и&nbsp;не&nbsp;меняет лесенку повышений.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       ШАБЛОН КАРТОЧКИ КУРСА. page.js клонирует его для каждого курса.
+       Метки data-* — для скрипта, менять нельзя. Тексты подписей — можно.
+       ====================================================================== -->
+  <template data-course-template>
+    <article class="course_component" data-course-card>
+      <header class="course_head">
+        <div class="course_titles">
+          <p class="course_level" data-level></p>
+          <h2 class="course_heading"><a class="course_heading-link" data-title-link></a></h2>
+          <p class="course_subtitle" data-subtitle hidden></p>
+        </div>
+        <ul class="course_meta" data-meta></ul>
+      </header>
+
+      <div class="course_streams" data-streams></div>
+
+      <footer class="course_actions">
+        <a class="button is-accent is-small" data-open>Открыть отдельно</a>
+        <button class="button is-soft is-small" type="button" data-copy>
+          <span data-copy-label>Скопировать ссылку</span>
+        </button>
+        <a class="course_site-link" target="_blank" rel="noopener" data-site-link hidden>Страница курса на&nbsp;сайте ↗</a>
+      </footer>
+    </article>
+  </template>
+
+  <!-- Поток внутри курса. Название потока видно, если потоков больше одного. -->
+  <template data-stream-template>
+    <section class="stream_component" data-stream>
+      <h3 class="stream_heading" data-stream-label hidden></h3>
+      <ul class="stream_meta" data-stream-meta></ul>
+      <div class="stream_tariffs" data-tariffs></div>
+      <ul class="stream_notes" data-notes hidden></ul>
+    </section>
+  </template>
+
+  <!-- Тариф (или единственная цена потока): таблица ступеней цены -->
+  <template data-tariff-template>
+    <div class="tariff_component" data-tariff>
+      <h4 class="tariff_heading" data-tariff-title hidden></h4>
+      <div class="ladder_scroll">
+        <table class="ladder_table" data-table>
+          <thead>
+            <tr>
+              <th class="ladder_head is-period" scope="col">Действует</th>
+              <th class="ladder_head is-price" scope="col">Цена</th>
+              <th class="ladder_head is-note" scope="col">Примечание</th>
+            </tr>
+          </thead>
+          <tbody data-ladder></tbody>
+        </table>
+      </div>
+      <p class="tariff_installment" data-installment hidden></p>
+    </div>
+  </template>
+
+  <!-- Одна строка таблицы: past / active / upcoming -->
+  <template data-step-template>
+    <tr class="ladder_row" data-step>
+      <td class="ladder_cell is-period">
+        <span data-step-label></span>
+        <span class="ladder_now" data-step-now hidden>сейчас</span>
+      </td>
+      <td class="ladder_cell is-price">
+        <s class="ladder_old" data-step-old hidden></s>
+        <span class="ladder_value" data-step-value></span>
+      </td>
+      <td class="ladder_cell is-note" data-step-sub></td>
+    </tr>
+  </template>
+
+</div>
+<script src="page.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ПСИХОСОМАТИКА В ПРАКТИКЕ ПСИХОЛОГА»  →  адрес /psihosomatika
+  ============================================================================
+
+  Новая версия страницы https://modern-psy.ru/psihosomatika.
+  Контент перенесён с неё с правками из задачи (август 2026): новое название
+  и описание, блок мифов, блок «7 систем организма» с горизонтальной лентой,
+  «Кому подойдёт», «Карта компетенций», программа с раскрытием вбок.
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Дизайн — макет большого курса «Психолог-консультант» из Фигмы
+    (файл TcOrbHPc5C6i6x8INps8qZ). Сетка, имена классов, кнопки, карточки,
+    аккордеон и адаптив — со страницы /klinicheskaya-baza (в конечном счёте
+    с /trauma-therapy): контейнер 1520px, боковые поля до 80px,
+    брейкпоинты 480 / 768 / 992.
+    Страница самодостаточная: все стили в page.css, скрипт в page.js.
+
+  ГОТОВЫЕ БЛОКИ, ПЕРЕНЕСЁННЫЕ ЦЕЛИКОМ ИЗ /klinicheskaya-baza:
+    · «98% студентов» (отзывы площадок) — иконки в icons/;
+    · «Академия» — картинки уже лежат на CDN Тильды.
+
+  ХЕДЕРА И ФУТЕРА ЗДЕСЬ НЕТ — по задаче они не верстаются:
+  на боевой странице их даёт сама Тильда.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАРТИНКИ
+    Картинки систем, фото преподавателей и фото с сертификатом лежат на S3
+    (s3.twcstorage.ru/asp-media). Чтобы заменить — подставьте новый адрес
+    в src нужного <img>.
+
+  КНОПКИ «ОСТАВИТЬ ЗАЯВКУ»
+    🟡 Ведут на всплывающее окно Тильды: в href стоит «#popup:zayavka» —
+    имя попапа из настроек блока Тильды (BF502 и т.п.).
+    На превью попапа нет — клик просто ничего не откроет, так и должно быть.
+
+  ФОРМА ВНИЗУ СТРАНИЦЫ
+    Своя вёрстка полей + скрытая форма Тильды. Скрипт page.js переносит
+    значения в форму Тильды и отправляет её (см. комментарий в page.js).
+    🟡 Имя формы Тильды указывается в data-tilda-form-name. Форма Тильды
+    с этим именем должна стоять на странице отдельным блоком (не в попапе).
+    Что скрипт нашёл, он пишет в консоль браузера строкой «[заявка] …».
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 иллюстрации 7–8 в «Карте компетенций»;
+    · 🟡 адреса «согласия» и «политики» под формой;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Психосоматика в практике психолога — курс повышения квалификации Академии</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Научитесь понимать механизмы функциональных симптомов, выстраивать безопасный план терапии и взаимодействовать с профильными врачами — на примере реальных клинических случаев." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Психосоматика в практике психолога" />
+  <meta property="og:description" content="Курс повышения квалификации: функциональные симптомы, безопасный план терапии и взаимодействие с профильными врачами." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили и поведение только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры. В Тильду не переносится. -->
+<a class="skip-link" href="#hero">Перейти к содержимому</a>
+
+<!-- ======================================================================
+     🔴 КАК СТРАНИЦА РАЗБИТА НА БЛОКИ ТИЛЬДЫ (T123)
+     ======================================================================
+     Каждая секция ниже — отдельный блок T123. Копируется целиком: от строки
+     <div class="page-wrapper psy-page"> до парного </div> после </section>.
+     Обёртка .psy-page у каждого блока своя: на ней заданы переменные из
+     page.css, и скрипт page.js ищет свои элементы внутри каждой такой обёртки.
+     Общей обёртки на всю страницу нет — иначе Тильда закрыла бы её в первом
+     же T123. page.css и page.js подключаются один раз в настройках страницы.
+     ====================================================================== -->
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки с форматом,
+       заголовок, подводка, кнопка «Программа курса» и карточка «103 часа»
+       в правом нижнем углу — как на макете.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟡 Фотография первого экрана. Без loading="lazy": она видна сразу. -->
+            <img class="hero_image" src="https://s3.twcstorage.ru/asp-media/final_sunburst_shaded_551457846c.webp"
+                 alt="Психолог и врач вместе разбирают случай за ноутбуком"
+                 width="2560" height="1099" />
+
+            <!-- 🟢 Плашки с форматом и стартом -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component is-accent">Онлайн</li>
+              <li class="meta-pill_component">Старт потока — 27 октября</li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">Психосоматика в&nbsp;практике психолога</span>
+                </h1>
+                <p class="hero_description">
+                  Научитесь понимать механизмы функциональных симптомов,
+                  выстраивать безопасный план терапии и&nbsp;взаимодействовать
+                  с&nbsp;профильными врачами&nbsp;— на&nbsp;примере реальных
+                  клинических случаев.
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🔴 Первая кнопка ведёт на блок программы на этой же странице.
+                     🟡 Вторая — на всплывающее окно Тильды: замените имя попапа. -->
+                <a class="button is-light is-full-width" href="#programma">Изучить программу</a>
+                <a class="button is-outline-light is-full-width" href="#popup:zayavka">Оставить заявку</a>
+              </div>
+            </div>
+
+            <!-- 🟢 Карточка с часами — как «1200 часов» на макете -->
+            <div class="hero_stat" aria-label="103 академических часа обучения">
+              <p class="hero_stat-value">103</p>
+              <p class="hero_stat-label">академических часа полноценного обучения</p>
+            </div>
+          </div>
+
+          <!-- ------------------------------------------------------------------
+               Плитка под первым экраном: срок, удостоверение, сертификат.
+               ------------------------------------------------------------------ -->
+          <ul class="hero-facts_list">
+            <li class="hero-facts_card">
+              <h2 class="hero-facts_heading">4,5&nbsp;месяца обучения</h2>
+              <p class="hero-facts_description">
+                В&nbsp;поддерживающей и&nbsp;профессиональной среде
+                с&nbsp;опытными преподавателями
+              </p>
+            </li>
+            <!-- Документы: два текста на одной белой подложке и картинка справа.
+                 🟡 Заменить картинку: src ниже. -->
+            <li class="hero-facts_card is-documents">
+              <div class="hero-facts_copy">
+                <h2 class="hero-facts_heading">Удостоверение о&nbsp;повышении квалификации</h2>
+                <p class="hero-facts_description">
+                  По&nbsp;итогам обучения выдаём документ установленного образца.
+                </p>
+              </div>
+              <div class="hero-facts_copy">
+                <h2 class="hero-facts_heading">Сертификат Академии</h2>
+                <p class="hero-facts_description">
+                  В&nbsp;дополнение к&nbsp;удостоверению вы&nbsp;получите именной
+                  сертификат Академии Современной Психологии.
+                </p>
+              </div>
+              <div class="hero-facts_media" aria-hidden="true">
+                <img src="https://s3.twcstorage.ru/asp-media/hero_docs_d7d16112c9.webp" alt="" width="900" height="676" loading="lazy" />
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       2. МИФЫ О ПСИХОСОМАТИКЕ
+       ======================================================================
+       Заголовок, четыре карточки-мифа и тёмная плашка-вывод про
+       биопсихосоциальную модель. Карточки появляются по очереди при
+       прокрутке — за это отвечает data-reveal и скрипт page.js.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_myths" id="mify">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="myths_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Мифы о&nbsp;психосоматике,
+              <span class="accent-word">из-за которых терапия не&nbsp;помогает&nbsp;— и&nbsp;может навредить</span>
+            </h2>
+          </div>
+
+          <!-- 🔴 Каждая карточка из двух половин: «Миф» и «Правда»,
+               между ними светло-серая линия. -->
+          <ul class="myths_list" data-reveal-group>
+            <li class="myth_component" data-reveal>
+              <div class="myth_part">
+                <p class="myth_label">Миф</p>
+                <h3 class="myth_quote">«Болезнь&nbsp;— это подавленные эмоции»</h3>
+              </div>
+              <div class="myth_part is-truth">
+                <p class="myth_label is-truth">Правда</p>
+                <p class="myth_truth">Это упрощение с&nbsp;реальными последствиями для&nbsp;клиента</p>
+              </div>
+            </li>
+            <li class="myth_component" data-reveal>
+              <div class="myth_part">
+                <p class="myth_label">Миф</p>
+                <h3 class="myth_quote">«Психосоматика&nbsp;= воображаемые симптомы»</h3>
+              </div>
+              <div class="myth_part is-truth">
+                <p class="myth_label is-truth">Правда</p>
+                <p class="myth_truth">Функциональные расстройства реальны и&nbsp;требуют комплексного подхода</p>
+              </div>
+            </li>
+            <li class="myth_component" data-reveal>
+              <div class="myth_part">
+                <p class="myth_label">Миф</p>
+                <h3 class="myth_quote">«Психолог справится без&nbsp;врача»</h3>
+              </div>
+              <div class="myth_part is-truth">
+                <p class="myth_label is-truth">Правда</p>
+                <p class="myth_truth">Большинство случаев требуют мультидисциплинарного взаимодействия</p>
+              </div>
+            </li>
+            <li class="myth_component" data-reveal>
+              <div class="myth_part">
+                <p class="myth_label">Миф</p>
+                <h3 class="myth_quote">«Если анализы в&nbsp;норме&nbsp;— всё в&nbsp;голове»</h3>
+              </div>
+              <div class="myth_part is-truth">
+                <p class="myth_label is-truth">Правда</p>
+                <p class="myth_truth">Это стигматизирующая позиция, а&nbsp;не&nbsp;диагноз</p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       3. «7 СИСТЕМ ОРГАНИЗМА» — ЛЕНТА С ГОРИЗОНТАЛЬНЫМ СКРОЛЛОМ
+       ======================================================================
+       Карточки листаются пальцем или стрелками.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_systems" id="sistemy">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="systems_component">
+
+          <div class="systems_intro">
+            <div class="systems_intro-copy">
+              <h2 class="systems_heading">
+                7&nbsp;систем организма и&nbsp;более 20&nbsp;конкретных запросов,
+                <span class="accent-word">с&nbsp;которыми вы&nbsp;сможете работать увереннее</span>
+              </h2>
+              <p class="systems_description">
+                Разбираем функциональные симптомы не&nbsp;в&nbsp;теории,
+                а&nbsp;на&nbsp;реальных клинических ситуациях&nbsp;—
+                вместе с&nbsp;психологами и&nbsp;профильными врачами
+              </p>
+            </div>
+            <!-- 🔴 Стрелки листают ленту, скрипт в page.js -->
+            <div class="slider_controls" data-slider-controls="systems">
+              <button class="slider_arrow" type="button" data-slider-prev aria-label="Назад">
+                <span class="slider_arrow-icon is-prev" aria-hidden="true"></span>
+              </button>
+              <button class="slider_arrow is-accent" type="button" data-slider-next aria-label="Вперёд">
+                <span class="slider_arrow-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <ul class="systems_track" data-slider-track="systems" tabindex="0"
+              aria-label="Системы организма — лента карточек">
+
+            <li class="system_component">
+              <div class="system_media"><img src="https://s3.twcstorage.ru/asp-media/01_neuro_temple_sunburst_7377327169.webp" alt="Неврологическая система" width="1240" height="824" loading="lazy" /></div>
+              <div class="system_copy">
+                <h3 class="system_name">Неврологическая система</h3>
+                <p class="system_description">
+                  Вы&nbsp;разберётесь, какие факторы могут поддерживать симптомы,
+                  что&nbsp;учитывать при&nbsp;сборе информации и&nbsp;когда клиенту
+                  необходима консультация невролога.
+                </p>
+              </div>
+            </li>
+
+            <li class="system_component">
+              <div class="system_media"><img src="https://s3.twcstorage.ru/asp-media/02_cardio_chest_sunburst_eec7f4d7ce.webp" alt="Сердечно-сосудистая система" width="1240" height="824" loading="lazy" /></div>
+              <div class="system_copy">
+                <h3 class="system_name">Сердечно-сосудистая система</h3>
+                <p class="system_description">
+                  Поймёте, как&nbsp;работать с&nbsp;тревогой вокруг телесных ощущений
+                  и&nbsp;как выстраивать взаимодействие с&nbsp;врачом,
+                  не&nbsp;обесценивая состояние клиента.
+                </p>
+              </div>
+            </li>
+
+            <li class="system_component">
+              <div class="system_media"><img src="https://s3.twcstorage.ru/asp-media/03_digestive_stomach_sunburst_2ccf9c7e2d.webp" alt="Пищеварительная система" width="1240" height="824" loading="lazy" /></div>
+              <div class="system_copy">
+                <h3 class="system_name">Пищеварительная система</h3>
+                <p class="system_description">
+                  Увидите взаимосвязь телесных симптомов, тревоги и&nbsp;поведения
+                  клиента, а&nbsp;также разберёте возможную логику
+                  психологической работы.
+                </p>
+              </div>
+            </li>
+
+            <li class="system_component">
+              <div class="system_media"><img src="https://s3.twcstorage.ru/asp-media/04_reproductive_abdomen_sunburst_aef2799f9a.webp" alt="Репродуктивная система" width="1240" height="824" loading="lazy" /></div>
+              <div class="system_copy">
+                <h3 class="system_name">Репродуктивная система</h3>
+                <p class="system_description">
+                  Разберёте, как&nbsp;бережно обсуждать симптомы, учитывать
+                  цикличность состояния и&nbsp;определять место
+                  психологической помощи.
+                </p>
+              </div>
+            </li>
+
+            <li class="system_component">
+              <div class="system_media"><img src="https://s3.twcstorage.ru/asp-media/05_urinary_door_sunburst_19994efacd.webp" alt="Мочевыделительная система" width="1240" height="824" loading="lazy" /></div>
+              <div class="system_copy">
+                <h3 class="system_name">Мочевыделительная система</h3>
+                <p class="system_description">
+                  Поймёте, как&nbsp;симптомы могут влиять на&nbsp;поведение
+                  и&nbsp;качество жизни клиента и&nbsp;какие психологические
+                  факторы важно учитывать в&nbsp;терапии.
+                </p>
+              </div>
+            </li>
+
+            <li class="system_component">
+              <div class="system_media"><img src="https://s3.twcstorage.ru/asp-media/06_musculoskeletal_back_sunburst_8a770df00e.webp" alt="Болевые и мышечно-скелетные состояния" width="1240" height="824" loading="lazy" /></div>
+              <div class="system_copy">
+                <h3 class="system_name">Болевые и&nbsp;мышечно-скелетные состояния</h3>
+                <p class="system_description">
+                  Разберётесь, как&nbsp;формируется и&nbsp;поддерживается
+                  хроническая боль и&nbsp;как помогать клиенту постепенно
+                  возвращать активность.
+                </p>
+              </div>
+            </li>
+
+            <li class="system_component">
+              <div class="system_media"><img src="https://s3.twcstorage.ru/asp-media/07_dental_cold_compress_sunburst_803365e1ed.webp" alt="Стоматологические симптомы" width="1240" height="824" loading="lazy" /></div>
+              <div class="system_copy">
+                <h3 class="system_name">Стоматологические симптомы</h3>
+                <p class="system_description">
+                  Узнаете, как&nbsp;работать с&nbsp;напряжением, тревогой
+                  и&nbsp;поведенческими факторами в&nbsp;рамках
+                  комплексной помощи.
+                </p>
+              </div>
+            </li>
+
+          </ul>
+
+          <!-- 🟡 Кнопка ведёт на всплывающее окно Тильды: замените имя попапа -->
+          <div class="systems_action">
+            <a class="button is-accent" href="#popup:zayavka">Оставить заявку</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       4. «КОМУ ПОДОЙДЁТ ДАННАЯ ПРОГРАММА»
+       ======================================================================
+       Три светлые карточки «кому подойдёт» и тёмная «курс не подойдёт».
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Кому подойдёт <span class="accent-word">данная программа</span>
+            </h2>
+          </div>
+
+          <ul class="card-grid_component is-stack-tablet audience_list">
+            <li class="card_component is-spacious">
+              <!-- 🔴 Иконка встроена как svg, файла нет -->
+              <span class="card_icon"><svg width="24" height="24" viewBox="-2 -2.5 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#7C5CDB" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" stroke-width="2" style="display:block"><path d="M1 18C3.33579 15.5226 6.50702 14 10 14C13.493 14 16.6642 15.5226 19 18M14.5 5.5C14.5 7.98528 12.4853 10 10 10C7.51472 10 5.5 7.98528 5.5 5.5C5.5 3.01472 7.51472 1 10 1C12.4853 1 14.5 3.01472 14.5 5.5Z"/></svg></span>
+              <div class="card_content">
+                <h3 class="card_heading">Практикующим специалистам</h3>
+                <p class="card_description">
+                  Психологам, психотерапевтам и&nbsp;психиатрам,
+                  которые уже ведут клиентов
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <!-- 🔴 Иконка встроена как svg, файла нет -->
+              <span class="card_icon"><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#7C5CDB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:block"><path d="M12 5.5a3 3 0 0 0-5.8-1A2.8 2.8 0 0 0 4 7.2a3 3 0 0 0-.6 4.6A3 3 0 0 0 4 16.6a2.8 2.8 0 0 0 2.4 2.9A3 3 0 0 0 12 18.5Z"/><path d="M12 5.5a3 3 0 0 1 5.8-1A2.8 2.8 0 0 1 20 7.2a3 3 0 0 1 .6 4.6A3 3 0 0 1 20 16.6a2.8 2.8 0 0 1-2.4 2.9A3 3 0 0 1 12 18.5Z"/></svg></span>
+              <div class="card_content">
+                <h3 class="card_heading">Практикам доказательных подходов</h3>
+                <p class="card_description">
+                  Знакомым с&nbsp;КПТ, АСТ или смежными подходами
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <!-- 🔴 Иконка встроена как svg, файла нет -->
+              <span class="card_icon"><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#7C5CDB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:block"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+              <div class="card_content">
+                <h3 class="card_heading">Тем, кто уже встречал телесные запросы</h3>
+                <p class="card_description">
+                  Специалистам с&nbsp;базовым представлением об&nbsp;анатомии
+                  и&nbsp;физиологии&nbsp;— или тем, кто уже сталкивался
+                  с&nbsp;клиентами с&nbsp;телесными жалобами
+                  или хронической болью
+                </p>
+              </div>
+            </li>
+          </ul>
+
+          <!-- Честное предупреждение — тёмная карточка -->
+          <div class="audience_warning">
+            <p class="audience_warning-label">Курс не&nbsp;подойдёт</p>
+            <p class="audience_warning-text">
+              Студентам без практического опыта консультирования
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       5. «КАРТА КОМПЕТЕНЦИЙ СПЕЦИАЛИСТА» — макет из Фигмы (файл i16peAVaEbv1q5QbfhRW6s)
+       ======================================================================
+       Один контейнер из двух частей. Слева — белая карточка с табами,
+       заголовком и описанием выбранной компетенции. Справа — тёмная сцена
+       с анимированной иллюстрацией. Таб переключает и текст, и сцену
+       (скрипт в page.js; без скрипта виден первый таб).
+
+       Иллюстрации — inline-SVG с системой координат 660×432, как на макете:
+       так они масштабируются на любой экран. Анимация — чистый CSS,
+       зациклена (см. «сцены» в page.css).
+
+       🟡 Иллюстрации 5–8 в макете ещё не нарисованы — вместо них стоит
+       заглушка. Когда появятся, добавьте <svg class="scene"> по образцу
+       первых четырёх.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_skills" id="kompetencii">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="skills_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">Карта компетенций специалиста</h2>
+            <p class="section-intro_description">Навыки, которые вы&nbsp;получите после прохождения курса</p>
+          </div>
+
+          <div class="skills_layout" data-skills>
+
+            <!-- ------------------------------------------------------------
+                 Левая часть: табы и текст выбранной компетенции
+                 ------------------------------------------------------------ -->
+            <div class="skills_panel">
+
+              <!-- 🔴 Табы. aria-controls связывает кнопку со сценой справа. -->
+              <div class="skills_tabs" role="tablist" aria-label="Компетенции">
+                <button class="skills_tab" type="button" role="tab" id="skills-tab-1" aria-selected="true" aria-controls="skills-scene-1" data-skills-tab>Профессиональная терминология</button>
+                <button class="skills_tab" type="button" role="tab" id="skills-tab-2" aria-selected="false" aria-controls="skills-scene-2" data-skills-tab>Клинический анализ</button>
+                <button class="skills_tab" type="button" role="tab" id="skills-tab-3" aria-selected="false" aria-controls="skills-scene-3" data-skills-tab>Учёт фармакотерапии</button>
+                <button class="skills_tab" type="button" role="tab" id="skills-tab-4" aria-selected="false" aria-controls="skills-scene-4" data-skills-tab>7&nbsp;систем организма</button>
+                <button class="skills_tab" type="button" role="tab" id="skills-tab-5" aria-selected="false" aria-controls="skills-scene-5" data-skills-tab>Междисциплинарное взаимодействие</button>
+                <button class="skills_tab" type="button" role="tab" id="skills-tab-6" aria-selected="false" aria-controls="skills-scene-6" data-skills-tab>Психообразование клиента</button>
+                <button class="skills_tab" type="button" role="tab" id="skills-tab-7" aria-selected="false" aria-controls="skills-scene-7" data-skills-tab>Коррекция тактики</button>
+              </div>
+
+              <!-- 🟢 Тексты компетенций — по одному на таб, в том же порядке -->
+              <div class="skills_copy">
+                <div class="skills_text" data-skills-text>
+                  <h3 class="skills_heading">Профессиональная терминология</h3>
+                  <p class="skills_description">Различать функциональные, соматоформные и&nbsp;органические расстройства и&nbsp;объяснять разницу клиенту без стигматизации</p>
+                </div>
+                <div class="skills_text" data-skills-text hidden>
+                  <h3 class="skills_heading">Клинический анализ</h3>
+                  <p class="skills_description">Собирать клинически значимый анамнез с&nbsp;учётом телесных симптомов и&nbsp;факторов их&nbsp;поддержания</p>
+                </div>
+                <div class="skills_text" data-skills-text hidden>
+                  <h3 class="skills_heading">Учёт фармакотерапии</h3>
+                  <p class="skills_description">Строить план терапии с&nbsp;учётом фармакотерапии и&nbsp;коморбидных расстройств</p>
+                </div>
+                <div class="skills_text" data-skills-text hidden>
+                  <h3 class="skills_heading">7&nbsp;систем организма</h3>
+                  <p class="skills_description">Работать с&nbsp;7&nbsp;соматическими системами: от&nbsp;головных болей до&nbsp;ВНЧС</p>
+                </div>
+                <div class="skills_text" data-skills-text hidden>
+                  <h3 class="skills_heading">Междисциплинарное взаимодействие</h3>
+                  <p class="skills_description">Работать в&nbsp;мультидисциплинарной команде с&nbsp;врачами</p>
+                </div>
+                <div class="skills_text" data-skills-text hidden>
+                  <h3 class="skills_heading">Психообразование клиента</h3>
+                  <p class="skills_description">Объяснять клиенту механизм симптома понятным языком&nbsp;— без обесценивания и&nbsp;мифов</p>
+                </div>
+                <div class="skills_text" data-skills-text hidden>
+                  <h3 class="skills_heading">Коррекция тактики</h3>
+                  <p class="skills_description">Оценивать эффективность интервенций и&nbsp;корректировать тактику</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ------------------------------------------------------------
+                 Правая часть: тёмная сцена с иллюстрацией
+                 ------------------------------------------------------------ -->
+            <div class="skills_stage">
+
+              <!-- 🔴 Общие иконки для всех сцен. Цвет обводки берётся
+                   из color родителя (currentColor). -->
+              <svg class="scene_defs" width="0" height="0" aria-hidden="true" focusable="false">
+                <defs>
+                  <symbol id="sk-icon-search" viewBox="0 0 18.3158 18.3158" fill="none" stroke="currentColor" stroke-width="1.53" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16.0263 16.0263L12.7142 12.7142"/>
+                    <path d="M8.39474 14.5C11.7666 14.5 14.5 11.7666 14.5 8.39474C14.5 5.0229 11.7666 2.28948 8.39474 2.28948C5.0229 2.28948 2.28948 5.0229 2.28948 8.39474C2.28948 11.7666 5.0229 14.5 8.39474 14.5Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7.25328 3.102C7.2946 2.66725 7.49653 2.26353 7.81961 1.96971C8.14268 1.67589 8.5637 1.51307 9.00041 1.51307C9.43711 1.51307 9.85813 1.67589 10.1812 1.96971C10.5043 2.26353 10.7062 2.66725 10.7475 3.102C10.7724 3.38284 10.8645 3.65356 11.0161 3.89125C11.1678 4.12895 11.3744 4.32661 11.6186 4.46751C11.8628 4.60841 12.1374 4.6884 12.4191 4.70072C12.7007 4.71303 12.9812 4.6573 13.2368 4.53825C13.6336 4.35808 14.0833 4.33201 14.4983 4.46511C14.9133 4.59821 15.2639 4.88096 15.4819 5.25833C15.6999 5.63569 15.7697 6.08068 15.6778 6.50668C15.5858 6.93268 15.3386 7.30921 14.9843 7.563C14.7536 7.72489 14.5652 7.93996 14.4352 8.19002C14.3052 8.44008 14.2373 8.71778 14.2373 8.99963C14.2373 9.28147 14.3052 9.55917 14.4352 9.80923C14.5652 10.0593 14.7536 10.2744 14.9843 10.4363C15.3386 10.69 15.5858 11.0666 15.6778 11.4926C15.7697 11.9186 15.6999 12.3636 15.4819 12.7409C15.2639 13.1183 14.9133 13.401 14.4983 13.5341C14.0833 13.6672 13.6336 13.6412 13.2368 13.461C12.9812 13.3419 12.7007 13.2862 12.4191 13.2985C12.1374 13.3108 11.8628 13.3908 11.6186 13.5317C11.3744 13.6726 11.1678 13.8703 11.0161 14.108C10.8645 14.3457 10.7724 14.6164 10.7475 14.8973C10.7062 15.332 10.5043 15.7357 10.1812 16.0295C9.85813 16.3234 9.43711 16.4862 9.00041 16.4862C8.5637 16.4862 8.14268 16.3234 7.81961 16.0295C7.49653 15.7357 7.2946 15.332 7.25328 14.8973C7.22849 14.6163 7.13635 14.3455 6.98468 14.1077C6.83301 13.8699 6.62626 13.6722 6.38196 13.5313C6.13765 13.3904 5.86298 13.3104 5.58122 13.2982C5.29945 13.2859 5.01888 13.3418 4.76328 13.461C4.36645 13.6412 3.91678 13.6672 3.50178 13.5341C3.08679 13.401 2.73616 13.1183 2.51814 12.7409C2.30013 12.3636 2.23032 11.9186 2.3223 11.4926C2.41428 11.0666 2.66148 10.69 3.01578 10.4363C3.2465 10.2744 3.43483 10.0593 3.56485 9.80923C3.69487 9.55917 3.76275 9.28147 3.76275 8.99963C3.76275 8.71778 3.69487 8.44008 3.56485 8.19002C3.43483 7.93996 3.2465 7.72489 3.01578 7.563C2.66198 7.30908 2.41522 6.9327 2.32346 6.50699C2.2317 6.08128 2.30149 5.63666 2.51927 5.25953C2.73705 4.88241 3.08727 4.59973 3.50185 4.46643C3.91643 4.33313 4.36577 4.35873 4.76253 4.53825C5.0181 4.6573 5.29859 4.71303 5.58026 4.70072C5.86192 4.6884 6.13648 4.60841 6.38068 4.46751C6.62489 4.32661 6.83155 4.12895 6.98318 3.89125C7.13481 3.65356 7.22694 3.38284 7.25178 3.102"/>
+                    <path d="M8.99999 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 8.99999 6.75C7.75734 6.75 6.74999 7.75736 6.74999 9C6.74999 10.2426 7.75734 11.25 8.99999 11.25Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-user" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8.99999 9.75C11.0711 9.75 12.75 8.07107 12.75 6C12.75 3.92893 11.0711 2.25 8.99999 2.25C6.92892 2.25 5.24999 3.92893 5.24999 6C5.24999 8.07107 6.92892 9.75 8.99999 9.75Z"/>
+                    <path d="M15 15.75C15 14.1587 14.3678 12.6326 13.2426 11.5074C12.1174 10.3821 10.5913 9.75 8.99999 9.75C7.40869 9.75 5.88256 10.3821 4.75735 11.5074C3.63213 12.6326 2.99999 14.1587 2.99999 15.75"/>
+                  </symbol>
+                  <symbol id="sk-icon-brain" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8.99999 13.5V3.75"/>
+                    <path d="M11.25 9.75C10.6011 9.56032 10.0311 9.16547 9.62549 8.62463C9.21985 8.08378 9.00039 7.42606 8.99999 6.75C8.99958 7.42606 8.78012 8.08378 8.37449 8.62463C7.96885 9.16547 7.39889 9.56032 6.74999 9.75"/>
+                    <path d="M13.1985 4.87501C13.3711 4.57612 13.4726 4.24155 13.4952 3.89715C13.5177 3.55276 13.4608 3.20779 13.3287 2.88893C13.1967 2.57006 12.993 2.28586 12.7335 2.05829C12.4741 1.83073 12.1657 1.66591 11.8323 1.57658C11.499 1.48725 11.1495 1.47581 10.811 1.54315C10.4725 1.61048 10.154 1.75478 9.88024 1.96489C9.60643 2.175 9.38463 2.44528 9.23199 2.75482C9.07935 3.06437 8.99997 3.40488 8.99999 3.75001C9 3.40488 8.92062 3.06437 8.76798 2.75482C8.61534 2.44528 8.39354 2.175 8.11974 1.96489C7.84593 1.75478 7.52746 1.61048 7.18896 1.54315C6.85046 1.47581 6.50101 1.48725 6.16764 1.57658C5.83426 1.66591 5.52591 1.83073 5.26643 2.05829C5.00695 2.28586 4.8033 2.57006 4.67123 2.88893C4.53917 3.20779 4.48222 3.55276 4.50481 3.89715C4.5274 4.24155 4.62891 4.57612 4.80149 4.87501"/>
+                    <path d="M13.4977 3.84375C13.9385 3.9571 14.3478 4.16929 14.6945 4.46423C15.0412 4.75918 15.3163 5.12916 15.4988 5.54614C15.6814 5.96312 15.7666 6.41617 15.7482 6.87099C15.7297 7.3258 15.608 7.77045 15.3922 8.17125"/>
+                    <path d="M13.5 13.5C14.1604 13.5 14.8023 13.2821 15.3262 12.88C15.8501 12.478 16.2267 11.9144 16.3976 11.2765C16.5685 10.6386 16.5242 9.96215 16.2715 9.35203C16.0188 8.74192 15.5719 8.23223 15 7.90201"/>
+                    <path d="M14.9752 13.1123C15.0278 13.5189 14.9964 13.9321 14.8831 14.3261C14.7697 14.7202 14.5768 15.0869 14.3161 15.4035C14.0555 15.7201 13.7328 15.9799 13.3678 16.1668C13.0029 16.3538 12.6035 16.4639 12.1943 16.4905C11.7851 16.5171 11.3748 16.4594 10.9887 16.3212C10.6026 16.183 10.249 15.9671 9.94966 15.6868C9.65032 15.4066 9.4116 15.0679 9.24826 14.6918C9.08492 14.3157 9.00042 13.9101 8.99998 13.5C8.99955 13.9101 8.91505 14.3157 8.75171 14.6918C8.58837 15.0679 8.34965 15.4066 8.0503 15.6868C7.75096 15.9671 7.39733 16.183 7.01127 16.3212C6.62521 16.4594 6.21492 16.5171 5.80572 16.4905C5.39652 16.4639 4.99711 16.3538 4.63215 16.1668C4.26719 15.9799 3.94444 15.7201 3.68382 15.4035C3.42321 15.0869 3.23026 14.7202 3.1169 14.3261C3.00354 13.9321 2.97217 13.5189 3.02473 13.1123"/>
+                    <path d="M4.49995 13.5C3.83957 13.5 3.19765 13.2821 2.67375 12.88C2.14984 12.478 1.77322 11.9144 1.6023 11.2765C1.43138 10.6386 1.47571 9.96215 1.72841 9.35203C1.98111 8.74192 2.42806 8.23223 2.99995 7.90201"/>
+                    <path d="M4.50227 3.84375C4.06143 3.9571 3.65215 4.16929 3.30545 4.46423C2.95874 4.75918 2.6837 5.12916 2.50116 5.54614C2.31861 5.96312 2.23334 6.41617 2.25182 6.87099C2.27029 7.3258 2.39201 7.77045 2.60777 8.17125"/>
+                  </symbol>
+                  <symbol id="sk-icon-play" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 2.49999C2.49995 2.32404 2.54632 2.15118 2.63444 1.99889C2.72256 1.84659 2.8493 1.72024 3.00188 1.63259C3.15445 1.54494 3.32744 1.4991 3.50339 1.4997C3.67935 1.5003 3.85203 1.54731 4.004 1.63599L10.0025 5.13499C10.1539 5.22283 10.2796 5.34886 10.367 5.50049C10.4544 5.65212 10.5005 5.82404 10.5006 5.99906C10.5008 6.17408 10.455 6.34608 10.3678 6.49786C10.2807 6.64964 10.1552 6.77589 10.004 6.86399L4.004 10.364C3.85203 10.4527 3.67935 10.4997 3.50339 10.5003C3.32744 10.5009 3.15445 10.455 3.00188 10.3674C2.8493 10.2797 2.72256 10.1534 2.63444 10.0011C2.54632 9.8488 2.49995 9.67595 2.5 9.49999V2.49999Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-heart" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.30673 4.36798C8.78023 4.96198 8.44423 5.48998 8.24548 5.99248L9.86023 7.60948C9.93053 7.6798 9.97003 7.77517 9.97003 7.87461C9.97003 7.97404 9.93053 8.06941 9.86023 8.13973L8.14048 9.85948C8.07018 9.9298 8.03069 10.0252 8.03069 10.1246C8.03069 10.224 8.07018 10.3194 8.14048 10.3897L8.99998 11.25"/>
+                    <path d="M10.131 15.2348C9.99125 15.3953 9.81895 15.5242 9.62553 15.613C9.43212 15.7018 9.22203 15.7484 9.00922 15.7498C8.7964 15.7511 8.58574 15.7072 8.39122 15.6208C8.19669 15.5345 8.02277 15.4078 7.881 15.249L3.75 11.25C2.625 10.125 1.5 8.85003 1.5 7.12503C1.49986 6.29037 1.75293 5.4753 2.22578 4.7875C2.69863 4.09969 3.369 3.57151 4.14836 3.27272C4.92771 2.97393 5.77936 2.9186 6.59083 3.11402C7.40229 3.30945 8.13538 3.74645 8.69325 4.36728C8.77645 4.44499 8.88601 4.48827 8.99985 4.48841C9.1137 4.48855 9.22336 4.44554 9.30675 4.36803C9.86458 3.74724 10.5976 3.31027 11.409 3.11482C12.2204 2.91937 13.072 2.97464 13.8513 3.27333C14.6306 3.57203 15.301 4.10009 15.7739 4.78778C16.2468 5.47547 16.5 6.29044 16.5 7.12503C16.5 8.84253 15.375 10.125 14.25 11.25L10.131 15.2348Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-pill" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7.875 15.375L15.375 7.875C15.7255 7.53156 16.0044 7.12204 16.1956 6.67014C16.3868 6.21824 16.4865 5.73292 16.489 5.24224C16.4915 4.75155 16.3966 4.26525 16.21 3.81144C16.0234 3.35763 15.7486 2.94532 15.4017 2.59835C15.0547 2.25138 14.6424 1.97664 14.1886 1.79001C13.7348 1.60337 13.2485 1.50856 12.7578 1.51103C12.2671 1.51351 11.7818 1.61324 11.3299 1.80445C10.878 1.99565 10.4684 2.27455 10.125 2.625L2.625 10.125C2.27455 10.4684 1.99565 10.878 1.80445 11.3299C1.61324 11.7818 1.51351 12.2671 1.51103 12.7578C1.50856 13.2485 1.60337 13.7348 1.79001 14.1886C1.97664 14.6424 2.25138 15.0547 2.59835 15.4017C2.94532 15.7486 3.35763 16.0234 3.81144 16.21C4.26525 16.3966 4.75155 16.4915 5.24224 16.489C5.73292 16.4865 6.21824 16.3868 6.67014 16.1956C7.12204 16.0044 7.53156 15.7255 7.875 15.375Z"/>
+                    <path d="M6.375 6.375L11.625 11.625"/>
+                  </symbol>
+                  <symbol id="sk-icon-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15.7388 9.36448C15.6685 10.6666 15.2225 11.9205 14.4548 12.9745C13.6871 14.0286 12.6305 14.8377 11.4128 15.3041C10.195 15.7705 8.86826 15.8742 7.59285 15.6026C6.31743 15.3311 5.14798 14.6959 4.22586 13.7738C3.30374 12.8518 2.66843 11.6824 2.39673 10.4071C2.12503 9.13167 2.22856 7.80489 2.69483 6.58709C3.16109 5.36929 3.97011 4.31262 5.0241 3.54481C6.07809 2.77699 7.33192 2.33091 8.63402 2.26048C8.93777 2.24398 9.09677 2.60548 8.93552 2.86273C8.39619 3.72564 8.16525 4.74588 8.28039 5.75694C8.39553 6.768 8.84996 7.71019 9.56951 8.42974C10.2891 9.14929 11.2312 9.60371 12.2423 9.71886C13.2534 9.834 14.2736 9.60306 15.1365 9.06373C15.3945 8.90248 15.7553 9.06073 15.7388 9.36448Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-cloud" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4.49998 12.2445C3.70965 11.8692 3.02564 11.3024 2.51012 10.5955C1.9946 9.88861 1.66391 9.06409 1.54811 8.19688C1.43231 7.32968 1.53508 6.44729 1.84706 5.6299C2.15904 4.81251 2.67036 4.08606 3.33453 3.51655C3.99869 2.94705 4.79466 2.55256 5.65007 2.36894C6.50549 2.18532 7.39323 2.21839 8.23262 2.46515C9.072 2.7119 9.83641 3.16451 10.4564 3.78185C11.0763 4.39919 11.5322 5.16168 11.7825 6.00001H13.125C13.9886 5.9985 14.8199 6.32811 15.4479 6.92101C16.0758 7.5139 16.4526 8.32495 16.5006 9.18723C16.5487 10.0495 16.2644 10.8974 15.7062 11.5564C15.148 12.2154 14.3584 12.6353 13.5 12.7298"/>
+                    <path d="M9.75 9L7.5 12.75H10.5L8.25 16.5"/>
+                  </symbol>
+                  <symbol id="sk-icon-case" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7.5 11.25H10.5"/>
+                    <path d="M11.1127 8.24622L10.3845 7.15873L11.16 6.23472C11.3685 5.99212 11.494 5.6892 11.5182 5.37021C11.5423 5.05122 11.4638 4.73286 11.2942 4.46163C11.1246 4.19039 10.8727 3.9805 10.5753 3.86258C10.2779 3.74467 9.95063 3.72493 9.64123 3.80622L8.27623 4.07922L7.43248 2.91372C7.2663 2.66678 7.0304 2.47486 6.75482 2.36239C6.47923 2.24992 6.17641 2.22199 5.8849 2.28214C5.59339 2.34229 5.32636 2.48781 5.11781 2.70018C4.90925 2.91255 4.76859 3.18217 4.71373 3.47472L4.60573 4.91247L3.31198 5.23197C3.01727 5.32218 2.75749 5.50099 2.568 5.74406C2.37851 5.98714 2.26849 6.28269 2.25292 6.59051C2.23735 6.89832 2.31698 7.20346 2.48098 7.46442C2.64497 7.72538 2.88537 7.92949 3.16948 8.04898L3.66223 8.25147"/>
+                    <path d="M14.1165 8.24621L15.8115 4.21121C15.8502 4.11902 15.8701 4.02002 15.87 3.92003C15.8698 3.82004 15.8497 3.72109 15.8108 3.62899C15.7719 3.53689 15.7149 3.4535 15.6433 3.38373C15.5717 3.31396 15.4869 3.25922 15.3938 3.22271L12.7155 2.17496C12.5348 2.10437 12.3337 2.10657 12.1545 2.18111C11.9754 2.25566 11.8321 2.39674 11.7548 2.57471L11.0618 4.16621"/>
+                    <path d="M3.00001 9.0045C2.99942 8.90601 3.01823 8.80836 3.05538 8.71714C3.09252 8.62592 3.14727 8.54291 3.2165 8.47285C3.28572 8.40279 3.36807 8.34705 3.45884 8.30881C3.54961 8.27057 3.64702 8.25059 3.74551 8.25H14.25C14.4489 8.25 14.6397 8.32902 14.7803 8.46967C14.921 8.61032 15 8.80109 15 9V14.25C15 14.6478 14.842 15.0294 14.5607 15.3107C14.2794 15.592 13.8978 15.75 13.5 15.75H4.50001C4.10219 15.75 3.72066 15.592 3.43935 15.3107C3.15805 15.0294 3.00001 14.6478 3.00001 14.25V9.0045Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2H19C19.2652 2 19.5196 2.10536 19.7071 2.29289C19.8946 2.48043 20 2.73478 20 3V21C20 21.2652 19.8946 21.5196 19.7071 21.7071C19.5196 21.8946 19.2652 22 19 22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5ZM4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20"/>
+                    <path d="M9 10H15"/>
+                  </symbol>
+                  <symbol id="sk-icon-arrow" viewBox="0 0 13 14.7279">
+                    <path fill="currentColor" d="M12.7071 8.07107C13.0976 7.68054 13.0976 7.04738 12.7071 6.65685L6.34315 0.292893C5.95262 -0.097631 5.31946 -0.097631 4.92893 0.292893C4.53841 0.683418 4.53841 1.31658 4.92893 1.70711L10.5858 7.36396L4.92893 13.0208C4.53841 13.4113 4.53841 14.0445 4.92893 14.435C5.31946 14.8256 5.95262 14.8256 6.34315 14.435L12.7071 8.07107ZM0 7.36396V8.36396H12V7.36396V6.36396H0V7.36396Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-steth" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8.25 1.5V3"/><path d="M3.75 1.5V3"/>
+                    <path d="M3.75 2.25H3C2.60218 2.25 2.22064 2.40804 1.93934 2.68934C1.65804 2.97064 1.5 3.35218 1.5 3.75V6.75C1.5 7.94347 1.97411 9.08807 2.81802 9.93198C3.66193 10.7759 4.80653 11.25 6 11.25C7.19347 11.25 8.33807 10.7759 9.18198 9.93198C10.0259 9.08807 10.5 7.94347 10.5 6.75V3.75C10.5 3.35218 10.342 2.97064 10.0607 2.68934C9.77936 2.40804 9.39782 2.25 9 2.25H8.25"/>
+                    <path d="M6 11.25C6 12.4435 6.47411 13.5881 7.31802 14.432C8.16193 15.2759 9.30653 15.75 10.5 15.75C11.6935 15.75 12.8381 15.2759 13.682 14.432C14.5259 13.5881 15 12.4435 15 11.25V9"/>
+                    <path d="M15 9C15.8284 9 16.5 8.32843 16.5 7.5C16.5 6.67157 15.8284 6 15 6C14.1716 6 13.5 6.67157 13.5 7.5C13.5 8.32843 14.1716 9 15 9Z"/>
+                  </symbol>
+                  <symbol id="sk-icon-stomach" viewBox="0 0 19 18.6">
+                    <path fill="currentColor" d="M7.75587 0.00390625C8.0177 -0.0187516 8.26425 0.0677306 8.4463 0.243164C8.62204 0.412591 8.71223 0.638417 8.73146 0.862305L8.79591 1.61328V1.61426C8.80184 1.68338 8.82691 1.76746 8.86915 1.8623C9.40435 1.84775 9.85655 1.56936 10.4932 1.21191L11.5156 0.637695L11.5244 0.632812L11.5342 0.62793C12.332 0.222639 13.2198 0.0314356 14.1358 0.134766L14.4385 0.180664C15.9296 0.463844 17.0872 1.55431 17.8018 2.75781H17.8027C18.8843 4.57809 19.1995 6.90513 18.8828 8.94922C18.5828 10.8878 17.7466 12.7024 16.4717 14.1875C14.6591 16.2993 12.0365 17.5078 9.18165 16.9814C8.5078 16.8572 7.89281 16.6519 7.28224 16.376V16.377L5.70216 15.6631C5.3671 15.5119 4.88137 15.3383 4.46583 15.292C4.25705 15.2687 4.10834 15.2829 4.01661 15.3145C3.94468 15.3393 3.92139 15.3673 3.90431 15.4121C3.85575 15.5402 3.82732 15.6673 3.82521 15.7773V15.7783L3.80177 16.8037C3.79625 17.057 3.79717 17.4801 3.70997 17.8174C3.66607 17.9871 3.58288 18.2083 3.40333 18.376C3.22079 18.5462 2.98941 18.6149 2.74904 18.5928L2.64552 18.5781C2.06128 18.4624 1.83582 17.8941 1.96388 17.4268L1.99025 17.3037C2.01064 17.1746 2.01537 17.0262 2.01857 16.8389L2.03419 15.8389L2.05275 15.5518C2.0846 15.269 2.1549 14.9981 2.25587 14.7402L2.35646 14.5215C2.61408 14.0394 3.02973 13.7468 3.49415 13.6045C4.00656 13.4475 4.57147 13.4734 5.07423 13.5859C5.55526 13.6934 6.01262 13.8414 6.46876 14.0488L7.95314 14.7227H7.95411C8.43237 14.9398 8.88985 15.1021 9.39064 15.209C11.529 15.6655 13.5664 14.7731 15.0371 13.1182C15.971 12.067 16.6257 10.8059 16.9697 9.43262C17.441 7.55212 17.2453 5.30946 16.2695 3.67188C15.651 2.63355 14.7186 1.87653 13.624 1.8916C13.1362 1.89862 12.6826 2.02011 12.2686 2.25586L12.2676 2.25488L11.3047 2.80469C10.597 3.20811 9.72737 3.70619 8.69532 3.6416C8.17661 3.60904 7.7223 3.35781 7.43068 2.94141L7.31642 2.75293C7.18066 2.49505 7.06481 2.19377 7.03126 1.85742L6.94728 1.01465C6.89981 0.536526 7.21174 0.0517751 7.7549 0.00390625H7.75587ZM6.04493 0.00292969C6.53979 0.0412115 6.87216 0.471715 6.86329 0.938477L6.84669 1.83203C6.83288 2.57572 6.94813 3.24183 7.32521 3.67578L7.40431 3.75977L8.25197 4.58691C8.95632 5.27401 9.47022 6.10841 9.74122 7.06836C10.1513 8.51929 9.99407 10.0311 9.20314 11.3408C9.03601 11.6175 8.8572 11.8779 8.64259 12.127L8.41603 12.3721C7.72746 13.0633 6.82257 13.444 5.8379 13.4521C5.55918 13.4543 5.28752 13.4386 5.02247 13.415L4.24611 13.3311C3.85678 13.2862 3.52598 13.2686 3.20216 13.3232H3.20118C2.6396 13.4177 2.20756 13.7735 2.01271 14.2988C1.83602 14.7761 1.79859 15.2606 1.78908 15.8096L1.78419 16.3818L1.77736 17.7549C1.77572 18.0549 1.61363 18.2814 1.43263 18.4141C1.25784 18.5421 1.03149 18.6111 0.806653 18.5898H0.805677C0.313333 18.5425 -0.00231506 18.13 1.27883e-05 17.668L0.00196591 17.667L0.00684873 16.5459V16.5381L0.0380987 15.1338L0.0478644 14.9443C0.0803191 14.5078 0.187595 14.1026 0.325208 13.7178V13.7168C0.821355 12.3348 2.04822 11.5382 3.47462 11.5078C3.9419 11.4979 4.44338 11.5752 4.81544 11.6016L5.81642 11.6709C6.36336 11.661 6.84664 11.4517 7.20118 11.0586C7.60773 10.6078 7.90027 10.0966 8.05958 9.52832L8.15138 9.03125C8.26718 8.00888 7.96152 6.97252 7.30568 6.18262V6.18359C7.20948 6.06778 7.10127 5.96175 6.97462 5.84375C6.85387 5.73125 6.70566 5.59815 6.5674 5.45312L6.56642 5.45215L5.96095 4.81543L5.94826 4.80273L5.93751 4.78906C5.58937 4.36684 5.34169 3.88886 5.21583 3.34277L5.15138 3.0293C5.09561 2.71432 5.06594 2.39431 5.0674 2.06348L5.07326 0.928711C5.07549 0.470588 5.39484 0.0168472 5.94337 0L6.04493 0.00292969ZM14.7217 9.17676C14.8747 8.671 15.4033 8.45618 15.832 8.58789L15.833 8.58887C16.3492 8.74865 16.5571 9.27292 16.4199 9.72656C16.1867 10.4962 15.8866 11.2418 15.4502 11.9502C14.5372 13.4327 13.0977 14.6052 11.2578 14.8447V14.8457C10.7953 14.9056 10.3133 14.6458 10.2139 14.1455L10.1992 14.043C10.1737 13.7567 10.2713 13.4942 10.4795 13.3096C10.6653 13.1448 10.8944 13.081 11.0811 13.0596C11.7767 12.9797 12.4266 12.6412 12.9902 12.1475C13.8483 11.3963 14.37 10.3368 14.7217 9.17676Z"/>
+                  </symbol>
+                </defs>
+              </svg>
+
+              <!-- ===== Сцена 1. Дифференциальный взгляд ==================
+                   Три симптома слева → «Анализ» в центре → три типа справа.
+                   ======================================================== -->
+              <div class="scene_panel" id="skills-scene-1" role="tabpanel" aria-labelledby="skills-tab-1" data-skills-scene>
+                <svg class="scene" viewBox="0 0 660 432" aria-hidden="true" focusable="false">
+                  <!-- линии слева: симптомы → анализ -->
+                  <path class="scene_line sk-draw-4" pathLength="1" d="M178 128.5 C 212 128.5, 218 213.5, 255 213.5"/>
+                  <path class="scene_line sk-draw-4" pathLength="1" d="M172 214.5 H 255"/>
+                  <path class="scene_line sk-draw-4" pathLength="1" d="M178 300 C 212 300, 218 213.5, 255 213.5"/>
+                  <!-- линии справа: анализ → типы -->
+                  <path class="scene_line sk-draw-5" pathLength="1" d="M382 213 C 416 213, 424 132, 463 132"/>
+                  <path class="scene_line sk-draw-7" pathLength="1" d="M382 213 H 428"/>
+                  <path class="scene_line sk-draw-11" pathLength="1" d="M382 213 C 416 213, 424 300, 463 300"/>
+                  <path class="scene_line is-dotted sk-draw-10" pathLength="1" d="M430 213 H 462"/>
+
+                  <!-- карточки симптомов -->
+                  <g transform="translate(34.7 99)"><g class="sk-in-1">
+                    <rect class="scene_card" width="146" height="52" rx="7"/>
+                    <rect class="scene_chip" x="16" y="10" width="46" height="16" rx="8"/>
+                    <text class="scene_chip-text" x="39" y="21.3" text-anchor="middle">Симптом</text>
+                    <text class="scene_title" x="16" y="42">Головная боль</text>
+                  </g></g>
+                  <g transform="translate(34.7 182)"><g class="sk-in-2">
+                    <rect class="scene_card" width="146" height="63" rx="7"/>
+                    <rect class="scene_chip" x="16" y="10" width="46" height="16" rx="8"/>
+                    <text class="scene_chip-text" x="39" y="21.3" text-anchor="middle">Симптом</text>
+                    <text class="scene_title" x="16" y="42">Кожный зуд и<tspan x="16" dy="11">расчесывание</tspan></text>
+                  </g></g>
+                  <g transform="translate(34.7 268)"><g class="sk-in-3">
+                    <rect class="scene_card" width="146" height="63" rx="7"/>
+                    <rect class="scene_chip" x="16" y="10" width="46" height="16" rx="8"/>
+                    <text class="scene_chip-text" x="39" y="21.3" text-anchor="middle">Симптом</text>
+                    <text class="scene_title" x="16" y="42">Частые позывы к<tspan x="16" dy="11">мочеиспусканию</tspan></text>
+                  </g></g>
+
+                  <!-- центр: анализ -->
+                  <g transform="translate(242.7 182)"><g class="sk-in-4">
+                    <rect class="scene_card" width="145" height="62" rx="7"/>
+                    <circle class="scene_dot" cx="25.5" cy="31" r="14.5"/>
+                    <use class="scene_icon" href="#sk-icon-search" x="16.3" y="21.8" width="18.3" height="18.3"/>
+                    <text class="scene_caps" x="55" y="36.5">АНАЛИЗ</text>
+                  </g></g>
+
+                  <!-- кнопка «play» на линии -->
+                  <g transform="translate(419.7 213)"><g class="sk-in-9 sk-pulse">
+                    <circle class="scene_dot" r="10"/>
+                    <use class="scene_icon" href="#sk-icon-play" x="-6" y="-6" width="12" height="12"/>
+                  </g></g>
+
+                  <!-- типы справа -->
+                  <g transform="translate(459.7 99)"><g class="sk-in-6">
+                    <rect class="scene_card" width="166" height="66" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="33" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-settings" x="24" y="24" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="37">Функциональное</text>
+                  </g></g>
+                  <g transform="translate(459.7 183)"><g class="sk-in-8">
+                    <rect class="scene_card" width="166" height="66" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="33" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-brain" x="24" y="24" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="37">Соматоформное</text>
+                  </g></g>
+                  <g transform="translate(459.7 267)"><g class="sk-in-12">
+                    <rect class="scene_card" width="166" height="66" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="33" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-user" x="24" y="24" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="37">Органическое</text>
+                  </g></g>
+                </svg>
+              </div>
+
+              <!-- ===== Сцена 2. Клинический анамнез =======================
+                   Клиент в центре, вокруг — факторы, между ними связи.
+                   ======================================================== -->
+              <div class="scene_panel" id="skills-scene-2" role="tabpanel" aria-labelledby="skills-tab-2" data-skills-scene hidden>
+                <svg class="scene" viewBox="0 0 660 432" aria-hidden="true" focusable="false">
+                  <!-- связи с клиентом -->
+                  <path class="scene_line sk-draw-2" pathLength="1" d="M300 145 L 230 104"/>
+                  <path class="scene_line sk-draw-2" pathLength="1" d="M370 145 L 432 104"/>
+                  <path class="scene_line sk-draw-3" pathLength="1" d="M262 226 L 212 245"/>
+                  <path class="scene_line sk-draw-3" pathLength="1" d="M397 222 L 458 258"/>
+                  <path class="scene_line sk-draw-3" pathLength="1" d="M329 257 V 338"/>
+                  <!-- связи между факторами -->
+                  <path class="scene_line is-dashed sk-draw-6" pathLength="1" d="M262 84 H 394"/>
+                  <path class="scene_line is-dashed sk-draw-6" pathLength="1" d="M182 266 L 300 350"/>
+
+                  <!-- клиент -->
+                  <g transform="translate(259.7 142)"><g class="sk-in-1">
+                    <rect class="scene_card" width="139" height="115" rx="8"/>
+                    <circle class="scene_dot" cx="69.5" cy="31.5" r="16"/>
+                    <use class="scene_icon" href="#sk-icon-user" x="60.5" y="22.5" width="18" height="18"/>
+                    <text class="scene_name" x="69.5" y="71" text-anchor="middle">Анна, 32 года</text>
+                    <rect class="scene_chip" x="49.5" y="83.4" width="40" height="16" rx="8"/>
+                    <text class="scene_chip-text" x="69.5" y="94.7" text-anchor="middle">Клиент</text>
+                  </g></g>
+
+                  <!-- факторы -->
+                  <g transform="translate(163.7 63)"><g class="sk-in-4">
+                    <rect class="scene_card" width="97" height="42" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="21" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-moon" x="24" y="12" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="25">Сон</text>
+                  </g></g>
+                  <g transform="translate(394.7 63)"><g class="sk-in-4">
+                    <rect class="scene_card" width="114" height="42" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="21" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-cloud" x="24" y="12" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="25">Стресс</text>
+                  </g></g>
+                  <g transform="translate(75.7 224)"><g class="sk-in-5">
+                    <rect class="scene_card" width="137" height="42" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="21" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-heart" x="24" y="12" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="25">Отношения</text>
+                  </g></g>
+                  <g transform="translate(457.7 237)"><g class="sk-in-5">
+                    <rect class="scene_card" width="102" height="42" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="21" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-pill" x="24" y="12" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="25">Боль</text>
+                  </g></g>
+                  <g transform="translate(272.7 337)"><g class="sk-in-5">
+                    <rect class="scene_card" width="113" height="42" rx="7"/>
+                    <circle class="scene_dot" cx="33" cy="21" r="13"/>
+                    <use class="scene_icon" href="#sk-icon-case" x="24" y="12" width="18" height="18"/>
+                    <text class="scene_title" x="56" y="25">Работа</text>
+                  </g></g>
+                </svg>
+              </div>
+
+              <!-- ===== Сцена 3. Целостный план терапии ====================
+                   Три источника сходятся в одну точку → план работы.
+                   ======================================================== -->
+              <div class="scene_panel" id="skills-scene-3" role="tabpanel" aria-labelledby="skills-tab-3" data-skills-scene hidden>
+                <svg class="scene" viewBox="0 0 660 432" aria-hidden="true" focusable="false">
+                  <path class="scene_line is-accent sk-draw-s3a" pathLength="1" d="M232 138 C 302 138, 330 208.5, 367 208.5"/>
+                  <path class="scene_line is-accent sk-draw-s3a" pathLength="1" d="M232 208.5 H 367"/>
+                  <path class="scene_line is-accent sk-draw-s3a" pathLength="1" d="M232 278 C 302 278, 330 208.5, 367 208.5"/>
+                  <path class="scene_line is-accent sk-draw-s3b" pathLength="1" d="M367 208.5 H 404"/>
+
+                  <!-- источники -->
+                  <g transform="translate(65.7 121)"><g class="sk-in-1">
+                    <rect class="scene_card" width="168" height="34" rx="7"/>
+                    <use class="scene_icon is-accent" href="#sk-icon-user" x="20" y="8" width="18" height="18"/>
+                    <text class="scene_title" x="48" y="21">Симптомы</text>
+                  </g></g>
+                  <g transform="translate(65.7 191)"><g class="sk-in-2">
+                    <rect class="scene_card" width="168" height="34" rx="7"/>
+                    <use class="scene_icon is-accent" href="#sk-icon-brain" x="20" y="8" width="18" height="18"/>
+                    <text class="scene_title" x="48" y="21">Коморбидность</text>
+                  </g></g>
+                  <g transform="translate(65.7 261)"><g class="sk-in-3">
+                    <rect class="scene_card" width="168" height="34" rx="7"/>
+                    <use class="scene_icon is-accent" href="#sk-icon-pill" x="20" y="8" width="18" height="18"/>
+                    <text class="scene_title" x="48" y="21">Препараты</text>
+                  </g></g>
+
+                  <!-- точки на концах карточек и узел слияния: расширяются из центра -->
+                  <circle class="scene_node sk-in-pop1" cx="232" cy="138" r="6.5"/>
+                  <circle class="scene_node sk-in-pop2" cx="232" cy="208.5" r="6.5"/>
+                  <circle class="scene_node sk-in-pop3" cx="232" cy="278" r="6.5"/>
+                  <g class="sk-in-popnode"><circle class="scene_node is-hollow sk-pulse" cx="367" cy="208.5" r="5.5"/></g>
+
+                  <!-- план работы -->
+                  <g transform="translate(403.7 137)"><g class="sk-in-s3plan">
+                    <rect class="scene_card" width="206" height="142" rx="8"/>
+                    <use class="scene_icon is-accent" href="#sk-icon-book" x="20" y="8" width="24" height="24"/>
+                    <text class="scene_name" x="54" y="25.5">План работы</text>
+                    <g class="sk-grow-s3a"><rect class="scene_bar" x="20" y="42" width="166" height="8" rx="4"/><rect class="scene_bar" x="20" y="52" width="109" height="8" rx="4"/></g>
+                    <g class="sk-grow-s3b"><rect class="scene_bar" x="20" y="79" width="166" height="8" rx="4"/><rect class="scene_bar" x="20" y="89" width="109" height="8" rx="4"/></g>
+                    <g class="sk-grow-s3c"><rect class="scene_bar" x="20" y="116" width="166" height="8" rx="4"/><rect class="scene_bar" x="20" y="126" width="109" height="8" rx="4"/></g>
+                  </g></g>
+                </svg>
+              </div>
+
+              <!-- ===== Сцена 4. Работа с телесными симптомами ==============
+                   Контур тела, точка на голове → карточка с маршрутом.
+                   ======================================================== -->
+              <div class="scene_panel" id="skills-scene-4" role="tabpanel" aria-labelledby="skills-tab-4" data-skills-scene hidden>
+                <!-- Силуэт и маркеры стоят всегда. По кругу сверху вниз: активный
+                     маркер растёт в полтора раза, от него тянется линия к карточке,
+                     в карточке меняется текст. Свой цикл 15 с — шесть фаз
+                     по 2,5 с (классы sk-b-*, см. page.css). -->
+                <svg class="scene" viewBox="0 0 660 432" aria-hidden="true" focusable="false">
+                  <!-- 🔴 Контур тела встроен прямо в сцену (вложенный svg), файла нет -->
+                  <svg x="97.7" y="38" width="125" height="356" viewBox="0 0 125 356" fill="none">
+                    <path d="M62.0741 2.23167C65.8483 2.23167 69.618 3.40106 73.0044 5.73985C75.8562 7.70818 78.1154 10.3728 78.0574 14.2291L77.9148 23.8431C80.6107 27.1281 77.7411 31.9843 76.0746 36.7243C75.2235 39.1434 75.1032 41.6742 72.3673 43.2363C73.1069 44.7494 73.5169 47.5033 75.0675 48.4584L88.355 56.6219C90.1285 57.7109 92.1514 58.5723 94.2145 58.9294C103.732 60.5719 108.808 68.5524 110.884 77.7156C111.891 82.8752 112.167 87.8697 112.083 93.2123C116.062 103.902 118.013 114.962 116.873 126.219C120.919 135.73 121.712 145.545 121.605 155.619L122.786 173.396C122.019 178.368 121.966 183.189 122.42 188.246C122.763 192.057 122.198 195.829 120.077 199.047C116.998 203.72 113.041 209.085 107.587 210.455C107.457 207.951 108.972 206.992 110.363 205.702C112.002 204.18 112.867 202.118 113.633 199.922C114.836 196.472 116.311 191.589 114.48 191.589C114.458 191.589 114.435 191.589 114.413 191.589C114.034 191.611 113.451 192.133 113.246 192.526L110.176 198.435C110.015 198.739 109.271 199.154 108.874 199.154C108.816 199.154 108.767 199.145 108.727 199.127C108.415 198.975 107.867 198.052 107.93 197.628L109.062 190.241C109.659 186.349 109.36 182.68 110.773 178.94C111.285 177.592 112.029 175.552 111.548 174.128C107.203 161.305 102.618 147.75 101.135 134.364C100.8 131.351 101.166 128.334 101.513 125.478L95.4488 107.473C93.2476 120.939 92.1292 134.512 92.2673 148.379L96.4068 181.077C97.1866 185.693 97.3336 190.116 97.0306 194.883C96.3132 206.103 95.1191 217.074 92.753 228.045L90.6275 237.887C89.8121 244.818 89.5982 251.594 89.919 258.632C93.9873 268.296 93.1897 279.65 91.3048 289.978C89.2818 301.065 85.8152 311.402 81.6979 321.838C80.1651 325.73 79.2338 329.93 79.6749 334C79.8754 335.826 80.2096 337.339 79.5502 339.035C78.8684 340.793 79.6437 342.623 81.1721 343.632L87.3925 347.734C88.6179 348.542 90.2577 350.175 89.7408 351.849C89.4066 352.934 87.1118 353.661 85.9043 353.666L72.3583 353.764C72.3583 353.764 72.3227 353.764 72.3049 353.764C68.8248 353.764 66.7484 351.273 66.7038 347.863C66.6236 341.726 67.9426 335.964 68.4906 329.796C69.4843 318.633 68.8783 307.693 68.7624 296.517C67.5549 292.072 67.3187 287.872 67.2653 283.301C67.5371 276.945 68.2233 270.755 69.6625 264.586C70.6116 260.529 70.3933 256.838 69.0432 252.888L67.4479 248.224L62.5019 187.067L57.4846 248.617L55.6354 253.83C54.3788 257.378 54.4947 260.913 55.3324 264.573C56.7805 270.911 57.5024 277.204 57.7341 283.712C57.6494 288.139 57.3954 292.206 56.2325 296.517C56.1121 307.814 55.4616 318.896 56.5399 330.157C57.1147 336.196 58.349 341.847 58.2866 347.859C58.251 351.273 56.1522 353.759 52.6766 353.759C52.6633 353.759 52.6455 353.759 52.6321 353.759L39.4605 353.679C38.1059 353.67 35.6729 353.077 35.2585 351.858C34.6748 350.144 36.3948 348.555 37.6113 347.743L44.0589 343.449C45.4626 342.516 46.0329 340.602 45.4403 339.053C44.7719 337.308 45.115 335.835 45.3155 333.996C45.7656 329.805 44.7585 325.511 43.1856 321.534C39.3535 311.835 36.1274 302.275 34.0822 292.014C31.9033 281.074 30.7625 268.925 35.0714 258.619C35.4011 251.469 35.1962 244.577 34.3094 237.534L32.3132 228.367C29.9338 217.44 28.7262 206.487 27.9821 195.289C27.6568 190.384 27.7637 185.822 28.5836 181.073L32.7231 148.339C32.8791 134.199 31.7607 120.416 29.8313 106.629L23.4326 125.692L24.0208 133.547C22.3676 147.62 17.992 160.774 13.438 174.119C12.9479 175.561 13.7277 177.578 14.2267 178.94C15.5991 182.684 15.3451 186.349 15.9378 190.236L17.0607 197.614C17.1275 198.047 16.575 198.967 16.2675 199.127C16.2274 199.15 16.1739 199.158 16.116 199.158C15.7239 199.158 14.9798 198.739 14.8327 198.458L11.7626 192.504C11.5799 192.147 10.9605 191.629 10.5907 191.589C10.5461 191.584 10.506 191.58 10.4659 191.58C8.69695 191.58 10.154 196.454 11.3616 199.922C12.128 202.118 12.988 204.175 14.6367 205.697C16.0224 206.983 17.5464 207.951 17.4082 210.446C15.1714 209.701 12.7162 208.764 11.2947 207.05L5.88528 200.529C2.91765 196.954 2.10668 192.472 2.58792 187.839C3.09143 182.965 2.91765 178.225 2.21808 173.396L3.38552 155.619C3.24293 145.433 4.16976 135.543 8.13996 126.031C6.95024 114.77 8.9955 103.813 12.8989 93.2123C12.8187 87.8697 13.0994 82.8841 14.093 77.7156C16.0893 68.896 20.9952 60.9156 30.0719 59.0767C31.9968 58.6884 34.2114 58.1171 35.8467 57.0816L49.4907 48.4406C50.5957 47.298 51.1616 44.9904 51.8122 43.3077C49.2055 41.817 48.907 39.3041 48.0648 36.7823C46.4963 32.0735 43.4262 27.1728 46.2557 23.8699L46.0997 13.814C46.0463 10.288 48.3143 7.75728 50.9032 5.91392C54.3387 3.46355 58.1975 2.24059 62.0563 2.24059L62.0741 2.23167ZM62.0741 0C57.6806 0 53.3762 1.41488 49.6288 4.08841C45.7656 6.84229 43.8317 10.1273 43.8896 13.8453L44.0367 23.1379C41.7151 26.6283 43.3906 30.8416 44.8788 34.5864C45.262 35.546 45.6542 36.5413 45.9705 37.4831C46.1042 37.8803 46.2201 38.2776 46.3448 38.6971C46.8572 40.4244 47.4677 42.4865 49.1788 44.1022C48.8446 45.0663 48.4525 46.1687 48.0381 46.7222L34.6704 55.1891C33.2668 56.0773 31.1279 56.5817 29.6441 56.8852C20.7858 58.6839 14.4985 65.9056 11.9364 77.2202C11.9319 77.2425 11.9275 77.2692 11.923 77.2916C11.0096 82.0406 10.613 86.9859 10.6798 92.8284C6.43781 104.473 4.86933 115.239 5.88082 125.701C2.46315 134.123 1.00607 143.367 1.16648 155.561L0.00349614 173.249C-0.00541565 173.405 0.00349614 173.561 0.0213197 173.717C0.725351 178.587 0.841205 183.131 0.377791 187.612C-0.219299 193.37 1.05954 198.194 4.17867 201.957L9.58813 208.478C11.3972 210.66 14.2133 211.732 16.7131 212.566C16.9448 212.642 17.181 212.682 17.4171 212.682C17.8583 212.682 18.295 212.553 18.6692 212.299C19.2441 211.906 19.605 211.272 19.6406 210.576C19.8189 207.317 17.9875 205.693 16.6507 204.506C16.4859 204.358 16.321 204.215 16.1606 204.064C15.256 203.225 14.6277 202.131 14.0485 200.716C14.7124 201.145 15.4966 201.395 16.1249 201.395C16.5482 201.395 16.9493 201.301 17.3102 201.109C18.4019 200.538 19.4936 198.743 19.2708 197.284L18.1479 189.906C17.9608 188.67 17.8583 187.402 17.7602 186.179C17.5553 183.604 17.3414 180.935 16.3254 178.172L16.2675 178.02C15.9868 177.261 15.3362 175.485 15.5501 174.847C20.6209 160.002 24.6268 147.553 26.2398 133.815C26.2576 133.672 26.2576 133.53 26.2487 133.387L25.6962 125.982L28.8421 116.605C30.063 127.683 30.6066 138.096 30.5041 148.196L26.3869 180.756C25.5982 185.322 25.4021 189.995 25.763 195.449C26.6319 208.523 28.0222 219.136 30.1387 228.853L32.1171 237.923C32.9281 244.43 33.1732 251.049 32.8657 258.137C30.8606 263.087 29.8981 268.639 29.9204 275.093C29.9382 280.168 30.5843 285.845 31.9033 292.456C33.7302 301.628 36.573 310.849 41.1225 322.36C42.7979 326.6 43.4663 330.439 43.1054 333.764C43.0742 334.036 43.043 334.304 43.0118 334.563C42.8113 336.187 42.6019 337.865 43.3683 339.861C43.5955 340.459 43.3505 341.253 42.8336 341.597L36.3859 345.891C33.5742 347.765 32.3667 350.265 33.1554 352.586C34.0465 355.197 37.6647 355.906 39.4515 355.915L52.6232 355.996H52.6811C57.2439 355.996 60.47 352.661 60.519 347.886C60.5636 343.788 60.0244 339.834 59.5031 336.013C59.2357 334.036 58.955 331.992 58.7589 329.952C57.9524 321.476 58.1307 313.25 58.3178 304.538C58.3713 302.016 58.4292 299.414 58.4604 296.825C59.5833 292.527 59.8774 288.483 59.9665 283.756C59.9665 283.716 59.9665 283.676 59.9665 283.636C59.717 276.606 58.9104 270.21 57.5113 264.078C56.6736 260.409 56.7449 257.387 57.743 254.58L59.5922 249.366C59.659 249.184 59.6991 248.996 59.7125 248.8L62.4974 214.602L65.2334 248.407C65.2467 248.59 65.2868 248.773 65.3448 248.951L66.94 253.616C68.1743 257.226 68.348 260.453 67.497 264.082C66.1513 269.844 65.3492 276.097 65.0418 283.207C65.0418 283.248 65.0418 283.288 65.0418 283.328C65.0997 288.224 65.3804 292.406 66.5434 296.825C66.5701 299.378 66.6236 301.949 66.6771 304.435C66.8553 313.049 67.0246 321.19 66.276 329.595C66.08 331.778 65.7814 333.965 65.4918 336.08C64.9705 339.883 64.4268 343.815 64.4803 347.895C64.5427 352.666 67.7643 356 72.3093 356H72.3806L85.9221 355.902C87.4638 355.893 91.0998 355.023 91.8707 352.51C92.7173 349.756 90.7434 347.274 88.6179 345.873L82.3975 341.771C81.8405 341.405 81.3058 340.682 81.6266 339.847C82.393 337.874 82.1836 336.169 81.9786 334.518C81.9474 334.273 81.9162 334.018 81.8895 333.759C81.5286 330.465 82.1613 326.729 83.7654 322.659C88.7026 310.144 91.7014 300.19 93.4927 290.38C95.0611 281.793 96.6073 269.152 92.1247 258.137C91.8306 251.308 92.0623 244.796 92.8243 238.253L94.9275 228.518C97.044 218.703 98.4209 208.063 99.2497 195.025C99.5794 189.852 99.3744 185.313 98.608 180.752L94.4908 148.227C94.3927 137.81 94.9898 127.526 96.3088 117.024L99.2319 125.71C98.9021 128.464 98.5679 131.534 98.911 134.61C100.422 148.245 105.002 161.769 109.431 174.847C109.668 175.547 108.928 177.507 108.683 178.154C107.636 180.921 107.431 183.59 107.235 186.17C107.137 187.456 107.043 188.665 106.851 189.906L105.72 197.293C105.492 198.77 106.642 200.605 107.747 201.14C108.09 201.305 108.469 201.39 108.866 201.39C109.494 201.39 110.282 201.136 110.951 200.707C110.372 202.131 109.743 203.229 108.834 204.073C108.669 204.224 108.5 204.376 108.335 204.523C107.003 205.706 105.18 207.326 105.35 210.58C105.385 211.245 105.715 211.861 106.25 212.258C106.638 212.544 107.101 212.696 107.573 212.696C107.756 212.696 107.939 212.673 108.117 212.629C114.088 211.125 118.281 205.809 121.926 200.283C124.145 196.913 125.054 192.803 124.626 188.054C124.158 182.858 124.27 178.315 124.974 173.749C125 173.588 125.005 173.423 124.996 173.258L123.824 155.565C123.913 146.687 123.414 136.252 119.136 125.879C120.112 115.324 118.49 104.214 114.311 92.8329C114.386 86.8833 113.999 82.0763 113.067 77.2916C113.067 77.2692 113.058 77.2469 113.054 77.2246C110.421 65.611 103.862 58.3358 94.5888 56.7334C92.9535 56.4523 91.1979 55.756 89.518 54.7205L76.2305 46.557C75.8295 46.3116 75.3483 44.8922 75.0898 44.129C75.0764 44.0933 75.0631 44.0531 75.0497 44.0174C76.7251 42.4419 77.2821 40.4914 77.7455 38.8623C77.8836 38.3758 78.0173 37.9116 78.1733 37.4697C78.4763 36.6127 78.8328 35.7156 79.1759 34.8497C80.7042 31.0113 82.4198 26.6952 80.1517 23.1379L80.2809 14.2604C80.3389 10.1853 78.3159 6.69947 74.2655 3.90095C70.5715 1.34793 66.3562 0 62.0741 0Z" fill="#E3DFFC"/>
+                  </svg>
+
+                  <path class="scene_line is-accent sk-b-line-0" pathLength="1" d="M160.2 52.5 C 230.2 52.5, 203.8 216.5, 273.8 216.5"/>
+                  <path class="scene_line is-accent sk-b-line-1" pathLength="1" d="M148.3 77.6 C 218.3 77.6, 203.8 216.5, 273.8 216.5"/>
+                  <path class="scene_line is-accent sk-b-line-2" pathLength="1" d="M161.3 120.6 C 231.3 120.6, 203.8 216.5, 273.8 216.5"/>
+                  <path class="scene_line is-accent sk-b-line-3" pathLength="1" d="M161.3 161.6 C 231.3 161.6, 203.8 216.5, 273.8 216.5"/>
+                  <path class="scene_line is-accent sk-b-line-4" pathLength="1" d="M177.3 184.6 C 247.3 184.6, 203.8 216.5, 273.8 216.5"/>
+                  <path class="scene_line is-accent sk-b-line-5" pathLength="1" d="M161.3 215.6 C 231.3 215.6, 203.8 216.5, 273.8 216.5"/>
+
+                  <g class="scene_marker sk-b-mark-0"><circle class="scene_node" cx="160.2" cy="52.5" r="6"/><circle class="scene_marker-core" cx="160.2" cy="52.5" r="2.5"/></g>
+                  <g class="scene_marker sk-b-mark-1"><circle class="scene_node" cx="148.3" cy="77.6" r="6"/><circle class="scene_marker-core" cx="148.3" cy="77.6" r="2.5"/></g>
+                  <g class="scene_marker sk-b-mark-2"><circle class="scene_node" cx="161.3" cy="120.6" r="6"/><circle class="scene_marker-core" cx="161.3" cy="120.6" r="2.5"/></g>
+                  <g class="scene_marker sk-b-mark-3"><circle class="scene_node" cx="161.3" cy="161.6" r="6"/><circle class="scene_marker-core" cx="161.3" cy="161.6" r="2.5"/></g>
+                  <g class="scene_marker sk-b-mark-4"><circle class="scene_node" cx="177.3" cy="184.6" r="6"/><circle class="scene_marker-core" cx="177.3" cy="184.6" r="2.5"/></g>
+                  <g class="scene_marker sk-b-mark-5"><circle class="scene_node" cx="161.3" cy="215.6" r="6"/><circle class="scene_marker-core" cx="161.3" cy="215.6" r="2.5"/></g>
+
+                  <!-- карточка системы: подложка и чип постоянные, текст меняется -->
+                  <g transform="translate(272.3 168.5)">
+                    <rect class="scene_card" width="290" height="95" rx="8"/>
+                    <rect class="scene_chip" x="20" y="16" width="45" height="16" rx="8"/>
+                    <text class="scene_chip-text" x="42.5" y="27.3" text-anchor="middle">Система</text>
+                    <g class="sk-b-text-0">
+                      <text class="scene_name" x="20" y="57">Неврологическая система</text>
+                      <text class="scene_note" x="20" y="76">головные боли, головокружение</text>
+                    </g>
+                    <g class="sk-b-text-1">
+                      <text class="scene_name" x="20" y="57">Стоматологические симптомы</text>
+                      <text class="scene_note" x="20" y="76">сжатие челюстей, скрежет зубами</text>
+                    </g>
+                    <g class="sk-b-text-2">
+                      <text class="scene_name" x="20" y="57">Сердечно-сосудистая система</text>
+                      <text class="scene_note" x="20" y="76">сердцебиение, дискомфорт в груди</text>
+                    </g>
+                    <g class="sk-b-text-3">
+                      <text class="scene_name" x="20" y="57">Пищеварительная система</text>
+                      <text class="scene_note" x="20" y="76">боли в животе, вздутие</text>
+                    </g>
+                    <g class="sk-b-text-4">
+                      <text class="scene_name" x="20" y="57">Репродуктивная система</text>
+                      <text class="scene_note" x="20" y="76">тазовая боль, дискомфорт при близости</text>
+                    </g>
+                    <g class="sk-b-text-5">
+                      <text class="scene_name" x="20" y="57">Мочевыделительная система</text>
+                      <text class="scene_note" x="20" y="76">частые позывы, дискомфорт при мочеиспускании</text>
+                    </g>
+                  </g>
+                  <circle class="scene_node" cx="273.8" cy="216.5" r="7.5"/>
+                </svg>
+              </div>
+
+              <!-- ===== Сцена 5. Маршрутизация клиента ======================
+                   Клиент слева → четыре врача справа, нужный подсвечен.
+                   ======================================================== -->
+              <div class="scene_panel" id="skills-scene-5" role="tabpanel" aria-labelledby="skills-tab-5" data-skills-scene hidden>
+                <svg class="scene" viewBox="0 0 660 432" aria-hidden="true" focusable="false">
+                  <path class="scene_line sk-draw-7" pathLength="1" d="M243 208 C 330 208, 340 158, 425 158"/>
+                  <path class="scene_line sk-draw-8" pathLength="1" d="M243 208 C 330 208, 340 257, 425 257"/>
+                  <path class="scene_line sk-draw-9" pathLength="1" d="M243 208 C 330 208, 340 340, 425 340"/>
+                  <path class="scene_line is-accent sk-draw-6" pathLength="1" d="M243 208 C 330 208, 340 77, 425 77"/>
+
+                  <!-- клиент -->
+                  <g transform="translate(56.7 175)"><g class="sk-in-1">
+                    <rect class="scene_card" width="187" height="66" rx="8"/>
+                    <circle class="scene_dot" cx="36" cy="33" r="16"/>
+                    <use class="scene_icon" href="#sk-icon-user" x="27" y="24" width="18" height="18"/>
+                    <text class="scene_name" x="62" y="25">Клиент</text>
+                    <rect class="scene_chip" x="62" y="38" width="105" height="16" rx="8"/>
+                    <text class="scene_chip-text" x="114.5" y="49.3" text-anchor="middle">Запрос на консультацию</text>
+                  </g></g>
+
+                  <!-- врачи -->
+                  <g transform="translate(424.7 60)"><g class="sk-in-2 is-from-right">
+                    <rect class="scene_card" width="168" height="34" rx="7"/>
+                    <use class="scene_icon is-doctor is-active" href="#sk-icon-brain" x="20" y="8" width="18" height="18"/>
+                    <text class="scene_title is-doctor is-active" x="48" y="21">Невролог</text>
+                    <!-- рамка — часть карточки, появляется вместе с ней -->
+                    <rect class="scene_outline" width="168" height="34" rx="7"/>
+                  </g></g>
+                  <g transform="translate(424.7 141)"><g class="sk-in-3 is-from-right">
+                    <rect class="scene_card" width="168" height="34" rx="7"/>
+                    <use class="scene_icon is-doctor" href="#sk-icon-steth" x="20" y="8" width="18" height="18"/>
+                    <text class="scene_title is-doctor" x="48" y="21">Терапевт</text>
+                  </g></g>
+                  <g transform="translate(424.7 240)"><g class="sk-in-4 is-from-right">
+                    <rect class="scene_card" width="168" height="34" rx="7"/>
+                    <use class="scene_icon is-doctor" href="#sk-icon-stomach" x="20" y="8" width="18" height="18"/>
+                    <text class="scene_title is-doctor" x="48" y="21">Гастроэнтеролог</text>
+                  </g></g>
+                  <g transform="translate(424.7 323)"><g class="sk-in-5 is-from-right">
+                    <rect class="scene_card" width="168" height="34" rx="7"/>
+                    <use class="scene_icon is-doctor" href="#sk-icon-pill" x="20" y="8" width="18" height="18"/>
+                    <text class="scene_title is-doctor" x="48" y="21">Психиатр</text>
+                  </g></g>
+
+                </svg>
+              </div>
+              <!-- ===== Сцена 6. Понятное объяснение симптома ================
+                   Круговая схема связей → сжимается → «Стресс → Напряжение → Симптом».
+                   Стрелки и подписи сгенерированы: шесть вариантов тайминга
+                   (sk-web-1…6) розданы вразнобой — так появление выглядит хаотичным,
+                   но цикл остаётся общим.
+                   ======================================================== -->
+              <div class="scene_panel" id="skills-scene-6" role="tabpanel" aria-labelledby="skills-tab-6" data-skills-scene hidden>
+                <svg class="scene" viewBox="0 0 660 432" aria-hidden="true" focusable="false">
+                  <g transform="translate(0 48)"><g class="sk-diagram">
+                    <path class="scene_web sk-web-3" pathLength="1" d="M296.6 67.5 L430.0 142.9"/><polygon class="scene_head sk-webhead-3" points="0,0 -6,-3 -6,3" transform="translate(430.0 142.9) rotate(29.5)"/><polygon class="scene_head sk-webhead-3" points="0,0 -6,-3 -6,3" transform="translate(296.6 67.5) rotate(209.5)"/><path class="scene_web sk-web-2" pathLength="1" d="M284.1 80.0 L386.0 259.1"/><polygon class="scene_head sk-webhead-2" points="0,0 -6,-3 -6,3" transform="translate(386.0 259.1) rotate(60.4)"/><polygon class="scene_head sk-webhead-2" points="0,0 -6,-3 -6,3" transform="translate(284.1 80.0) rotate(240.4)"/><path class="scene_web sk-web-4" pathLength="1" d="M267.7 84.3 L267.7 254.8"/><polygon class="scene_head sk-webhead-4" points="0,0 -6,-3 -6,3" transform="translate(267.7 254.8) rotate(90.0)"/><polygon class="scene_head sk-webhead-4" points="0,0 -6,-3 -6,3" transform="translate(267.7 84.3) rotate(270.0)"/><path class="scene_web sk-web-6" pathLength="1" d="M402.4 84.3 L402.4 254.8"/><polygon class="scene_head sk-webhead-6" points="0,0 -6,-3 -6,3" transform="translate(402.4 254.8) rotate(90.0)"/><polygon class="scene_head sk-webhead-6" points="0,0 -6,-3 -6,3" transform="translate(402.4 84.3) rotate(270.0)"/><path class="scene_web sk-web-1" pathLength="1" d="M386.0 80.0 L284.1 259.1"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(284.1 259.1) rotate(119.6)"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(386.0 80.0) rotate(299.6)"/><path class="scene_web sk-web-1" pathLength="1" d="M373.3 67.2 L235.5 143.2"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(235.5 143.2) rotate(151.1)"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(373.3 67.2) rotate(331.1)"/><path class="scene_web sk-web-5" pathLength="1" d="M431.3 177.9 L295.3 269.4"/><polygon class="scene_head sk-webhead-5" points="0,0 -6,-3 -6,3" transform="translate(295.3 269.4) rotate(146.1)"/><polygon class="scene_head sk-webhead-5" points="0,0 -6,-3 -6,3" transform="translate(431.3 177.9) rotate(326.1)"/><path class="scene_web sk-web-1" pathLength="1" d="M425.6 159.3 L239.6 159.3"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(239.6 159.3) rotate(180.0)"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(425.6 159.3) rotate(360.0)"/><path class="scene_web sk-web-3" pathLength="1" d="M374.6 269.7 L234.2 177.6"/><polygon class="scene_head sk-webhead-3" points="0,0 -6,-3 -6,3" transform="translate(234.2 177.6) rotate(-146.7)"/><polygon class="scene_head sk-webhead-3" points="0,0 -6,-3 -6,3" transform="translate(374.6 269.7) rotate(33.3)"/>
+                    <path class="scene_web sk-web-5" pathLength="1" d="M298.9 51.1 Q335.3 17.1 371.1 51.1"/><polygon class="scene_head sk-webhead-5" points="0,0 -6,-3 -6,3" transform="translate(371.1 51.1) rotate(43.5)"/><path class="scene_web sk-web-1" pathLength="1" d="M416.9 78.8 Q459.4 87.0 444.4 131.6"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(444.4 131.6) rotate(108.6)"/><path class="scene_web sk-web-5" pathLength="1" d="M446.3 187.9 Q459.8 241.1 415.0 259.4"/><polygon class="scene_head sk-webhead-5" points="0,0 -6,-3 -6,3" transform="translate(415.0 259.4) rotate(157.8)"/><path class="scene_web sk-web-2" pathLength="1" d="M371.1 288.0 Q335.3 322.0 298.9 288.0"/><polygon class="scene_head sk-webhead-2" points="0,0 -6,-3 -6,3" transform="translate(298.9 288.0) rotate(-136.9)"/><path class="scene_web sk-web-1" pathLength="1" d="M254.3 259.8 Q207.8 241.0 219.8 187.5"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(219.8 187.5) rotate(-77.3)"/><path class="scene_web sk-web-1" pathLength="1" d="M221.8 132.1 Q208.2 87.1 252.3 78.3"/><polygon class="scene_head sk-webhead-1" points="0,0 -6,-3 -6,3" transform="translate(252.3 78.3) rotate(-11.4)"/>
+                    <text class="scene_web-label sk-webhead-4" x="314.0" y="21.4">усиливают</text><text class="scene_web-label sk-webhead-4" x="449.9" y="92.4">вызывают</text><text class="scene_web-label sk-webhead-1" x="458.3" y="233.0">усиливает</text><text class="scene_web-label sk-webhead-2" x="437.8" y="261.9">влияет</text><text class="scene_web-label sk-webhead-1" x="314.0" y="316.0">моделирует</text><text class="scene_web-label sk-webhead-5" x="187.8" y="259.5">провоцирует</text><text class="scene_web-label sk-webhead-4" x="178.1" y="224.6">формирует</text><text class="scene_web-label sk-webhead-1" x="182.9" y="97.2">влияет</text><text class="scene_web-label sk-webhead-5" x="309.2" y="98.4">поддерживают</text>
+                    <g transform="translate(267.7 51.1)"><g class="sk-in-1 is-pop"><circle class="scene_card" r="28.25"/><text class="scene_orb-label" text-anchor="middle" y="3.5">Мысли</text></g></g><g transform="translate(402.4 51.1)"><g class="sk-in-1 is-pop"><circle class="scene_card" r="28.25"/><text class="scene_orb-label" text-anchor="middle" y="3.5">Эмоции</text></g></g><g transform="translate(206.4 159.3)"><g class="sk-in-2 is-pop"><circle class="scene_card" r="28.25"/><text class="scene_orb-label" text-anchor="middle" y="3.5">Поведение</text></g></g><g transform="translate(458.9 159.3)"><g class="sk-in-2 is-pop"><circle class="scene_card" r="28.25"/><text class="scene_orb-label" text-anchor="middle" y="3.5">Тело</text></g></g><g transform="translate(267.7 288.0)"><g class="sk-in-3 is-pop"><circle class="scene_card" r="28.25"/><text class="scene_orb-label" text-anchor="middle" y="3.5">Окружение</text></g></g><g transform="translate(402.4 288.0)"><g class="sk-in-3 is-pop"><circle class="scene_card" r="28.25"/><text class="scene_orb-label" text-anchor="middle" y="3.5">Биология</text></g></g>
+                  </g></g>
+
+                  <!-- итоговая карточка появляется на месте схемы -->
+                  <g transform="translate(162.5 184.5)"><g class="sk-fin-card">
+                    <rect class="scene_card" width="335" height="63" rx="8"/>
+                    <g class="sk-fin-1"><rect class="scene_tag is-active" x="20" y="16" width="64" height="31" rx="6"/><text class="scene_title is-on-accent" x="33" y="35.5">Стресс</text></g>
+                    <g class="sk-fin-2"><use class="scene_icon is-muted" href="#sk-icon-arrow" x="86" y="25" width="29" height="13.6" preserveAspectRatio="none"/><rect class="scene_tag" x="117" y="16" width="92" height="31" rx="6"/><text class="scene_title" x="130" y="35.5">Напряжение</text></g>
+                    <g class="sk-fin-3"><use class="scene_icon is-muted" href="#sk-icon-arrow" x="211" y="25" width="29" height="13.6" preserveAspectRatio="none"/><rect class="scene_tag" x="242" y="16" width="73" height="31" rx="6"/><text class="scene_title" x="255" y="35.5">Симптом</text></g>
+                  </g></g>
+                </svg>
+              </div>
+              <!-- ===== Сцена 7. Коррекция тактики ===========================
+                   График динамики по сессиям: шкала и деления статичны, линия
+                   рисуется слева направо (белая до 4-й сессии, дальше
+                   фиолетовая), точки и подписи появляются в момент,
+                   когда линия проходит отметку. Свой цикл 12 с (sk-g-*).
+                   ======================================================== -->
+              <div class="scene_panel" id="skills-scene-7" role="tabpanel" aria-labelledby="skills-tab-7" data-skills-scene hidden>
+                <svg class="scene" viewBox="0 0 660 432" aria-hidden="true" focusable="false">
+                  <line class="scene_grid" x1="63.7" y1="61" x2="63.7" y2="344.3"/><line class="scene_grid" x1="122.7" y1="61" x2="122.7" y2="344.3"/><line class="scene_grid" x1="181.7" y1="61" x2="181.7" y2="344.3"/><line class="scene_grid" x1="240.7" y1="61" x2="240.7" y2="344.3"/><line class="scene_grid" x1="299.7" y1="61" x2="299.7" y2="344.3"/><line class="scene_grid" x1="358.7" y1="61" x2="358.7" y2="344.3"/><line class="scene_grid" x1="417.7" y1="61" x2="417.7" y2="344.3"/><line class="scene_grid" x1="476.7" y1="61" x2="476.7" y2="344.3"/><line class="scene_grid" x1="535.7" y1="61" x2="535.7" y2="344.3"/><line class="scene_grid" x1="594.7" y1="61" x2="594.7" y2="344.3"/>
+                  <line class="scene_axis" x1="48.7" y1="348.3" x2="611.7" y2="348.3"/>
+                  <text class="scene_axis-label" x="63.7" y="367.5" text-anchor="middle">Сессия 1</text><text class="scene_axis-label" x="122.7" y="367.5" text-anchor="middle">Сессия 2</text><text class="scene_axis-label" x="181.7" y="367.5" text-anchor="middle">Сессия 3</text><text class="scene_axis-label" x="240.7" y="367.5" text-anchor="middle">Сессия 4</text><text class="scene_axis-label" x="299.7" y="367.5" text-anchor="middle">Сессия 5</text><text class="scene_axis-label" x="358.7" y="367.5" text-anchor="middle">Сессия 6</text><text class="scene_axis-label" x="417.7" y="367.5" text-anchor="middle">Сессия 7</text><text class="scene_axis-label" x="476.7" y="367.5" text-anchor="middle">Сессия 8</text><text class="scene_axis-label" x="535.7" y="367.5" text-anchor="middle">Сессия 9</text><text class="scene_axis-label" x="594.7" y="367.5" text-anchor="middle">Сессия 10</text>
+
+                  <!-- линия графика: белый участок и фиолетовый продолжающий -->
+                  <g transform="translate(63.2 123.3)">
+                    <path class="scene_graph is-white sk-g-white" pathLength="1" d="M0 197.146H62.5H122H178.5"/>
+                    <path class="scene_graph sk-g-purple" pathLength="1" d="M178.5 197.146C178.5 197.146 216.22 187.769 239 176.158C263.346 163.749 276.254 153.816 298 134.837C322.582 113.382 329.956 89.4624 356 71.2155C377.078 56.4477 390.408 50.626 414 45.6358C436.94 40.7834 450.934 45.0334 473.5 37.7651C499.749 29.3105 533.5 0.379372 533.5 0.379372"/>
+                  </g>
+
+                  <!-- точки на отметках -->
+                  <circle class="scene_dot-white sk-g-dot-1" cx="64.2" cy="320.1" r="2.9"/><circle class="scene_dot-white sk-g-dot-2" cx="123.2" cy="320.1" r="2.9"/><circle class="scene_dot-white sk-g-dot-3" cx="182.2" cy="320.1" r="2.9"/><circle class="scene_node is-ring sk-g-dot-4" cx="241.7" cy="319.0" r="4"/><circle class="scene_node sk-g-dot-5" cx="299.7" cy="300.0" r="4"/><circle class="scene_node is-ring sk-g-dot-6" cx="358.7" cy="258.0" r="4"/><circle class="scene_node sk-g-dot-7" cx="419.7" cy="193.0" r="4"/><circle class="scene_node is-ring sk-g-dot-8" cx="476.7" cy="167.0" r="4"/><circle class="scene_node sk-g-dot-9" cx="535.7" cy="160.0" r="4"/>
+
+                  <!-- подписи с линией вниз к точке -->
+                  <line class="scene_tick sk-g-tick-4" pathLength="1" x1="241.7" y1="315.1" x2="241.7" y2="271.8"/>
+                  <g class="sk-g-chip-4"><rect class="scene_chip is-accent" x="199.2" y="255.8" width="85" height="16" rx="8"/><text class="scene_chip-text is-on-accent" x="241.7" y="267.1" text-anchor="middle">Коррекция тактики</text></g>
+                  <line class="scene_tick sk-g-tick-6" pathLength="1" x1="358.7" y1="254.2" x2="358.7" y2="210.9"/>
+                  <g class="sk-g-chip-6"><rect class="scene_chip is-accent" x="327.2" y="194.9" width="63" height="16" rx="8"/><text class="scene_chip-text is-on-accent" x="358.7" y="206.2" text-anchor="middle">Интервенция</text></g>
+                  <line class="scene_tick sk-g-tick-8" pathLength="1" x1="476.7" y1="167.5" x2="476.7" y2="124.2"/>
+                  <g class="sk-g-chip-8"><rect class="scene_chip is-accent" x="445.2" y="108.2" width="63" height="16" rx="8"/><text class="scene_chip-text is-on-accent" x="476.7" y="119.5" text-anchor="middle">Интервенция</text></g>
+                </svg>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       6. ПРОГРАММА КУРСА — РАСКРЫТИЕ ВБОК
+       ======================================================================
+       Слева список модулей, справа — содержимое выбранного модуля.
+       На узких экранах панель встаёт под список. Переключение — page.js;
+       без скрипта виден первый модуль.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_program" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="program_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading is-on-dark">Программа курса</h2>
+            <p class="section-intro_description is-on-dark">
+              Занятия проходят по&nbsp;вторникам с&nbsp;18:00 до&nbsp;21:00
+            </p>
+          </div>
+
+          <div class="program_layout" data-program>
+
+            <!-- 🔴 Список модулей. aria-controls связывает кнопку с панелью. -->
+            <div class="program_nav" role="tablist" aria-label="Модули курса">
+              <button class="program_tab" type="button" role="tab" id="program-tab-1"
+                      aria-controls="program-panel-1" aria-selected="true" data-program-tab>
+                <span class="program_tab-label">Модуль 1 · 21 академ. час</span>
+                <span class="program_tab-title">Функциональные расстройства: взаимодействие нервной системы и&nbsp;психики</span>
+              </button>
+              <button class="program_tab" type="button" role="tab" id="program-tab-2"
+                      aria-controls="program-panel-2" aria-selected="false" data-program-tab>
+                <span class="program_tab-label">Модуль 2 · 33 академ. часа</span>
+                <span class="program_tab-title">Терапевтические интервенции и&nbsp;составление плана терапии</span>
+              </button>
+              <button class="program_tab" type="button" role="tab" id="program-tab-3"
+                      aria-controls="program-panel-3" aria-selected="false" data-program-tab>
+                <span class="program_tab-label">Модуль 3 · 37 академ. часов</span>
+                <span class="program_tab-title">Специфические интервенции и&nbsp;особенности отдельных расстройств</span>
+              </button>
+              <button class="program_tab" type="button" role="tab" id="program-tab-4"
+                      aria-controls="program-panel-4" aria-selected="false" data-program-tab>
+                <span class="program_tab-label">Контрольная точка · 12 академ. часов</span>
+                <span class="program_tab-title">Финальная аттестация</span>
+              </button>
+            </div>
+
+            <!-- Панели модулей -->
+            <div class="program_panels">
+
+              <div class="program_panel" role="tabpanel" id="program-panel-1"
+                   aria-labelledby="program-tab-1" data-program-panel>
+                <h3 class="program_panel-heading">
+                  Функциональные расстройства: взаимодействие нервной системы и&nbsp;психики
+                </h3>
+                <p class="program_list-title">Основные темы</p>
+                <ul class="program_topics">
+                  <li class="program_topic">Различия между функциональными, соматоформными и&nbsp;органическими расстройствами</li>
+                  <li class="program_topic">Роль психики и&nbsp;нервной системы в&nbsp;возникновении телесных симптомов</li>
+                  <li class="program_topic">Основы работы центральной и&nbsp;вегетативной нервной системы</li>
+                  <li class="program_topic">Хроническая боль и&nbsp;механизмы хронификации симптомов</li>
+                  <li class="program_topic">Нейропластичность и&nbsp;центральная сенситизация</li>
+                </ul>
+                <div class="program_result">
+                  <p class="program_list-title">Результат</p>
+                  <p class="program_result-text">Умеете точно формулировать случай профессиональным языком, отличать функциональные расстройства от&nbsp;органических и&nbsp;понимать механизмы развития симптома.</p>
+                </div>
+              </div>
+
+              <div class="program_panel" role="tabpanel" id="program-panel-2"
+                   aria-labelledby="program-tab-2" data-program-panel hidden>
+                <h3 class="program_panel-heading">
+                  Терапевтические интервенции и&nbsp;составление плана терапии
+                </h3>
+                <p class="program_list-title">Основные темы</p>
+                <ul class="program_topics">
+                  <li class="program_topic">Междисциплинарное взаимодействие со&nbsp;смежными специалистами</li>
+                  <li class="program_topic">Роль фармакотерапии и&nbsp;учёт коморбидных расстройств</li>
+                  <li class="program_topic">Основные психотерапевтические подходы и&nbsp;интервенции</li>
+                  <li class="program_topic">Клинический анализ симптомов и&nbsp;формирование рабочей гипотезы</li>
+                  <li class="program_topic">Объяснение клиенту механизмов симптома и&nbsp;логики терапии</li>
+                </ul>
+                <div class="program_result">
+                  <p class="program_list-title">Результат</p>
+                  <p class="program_result-text">Выстраиваете безопасный план терапии на&nbsp;основе клинического анализа, доказательных интервенций и&nbsp;взаимодействия с&nbsp;врачами.</p>
+                </div>
+              </div>
+
+              <div class="program_panel" role="tabpanel" id="program-panel-3"
+                   aria-labelledby="program-tab-3" data-program-panel hidden>
+                <h3 class="program_panel-heading">
+                  Специфические интервенции и&nbsp;особенности отдельных расстройств
+                </h3>
+                <p class="program_list-title">Основные темы</p>
+                <ul class="program_topics">
+                  <li class="program_topic">Головные боли и&nbsp;мигрень</li>
+                  <li class="program_topic">Кардиофобия и&nbsp;кардиологические болевые синдромы</li>
+                  <li class="program_topic">Синдром раздражённого кишечника и&nbsp;функциональная диспепсия</li>
+                  <li class="program_topic">Хроническая тазовая боль и&nbsp;ПМДР</li>
+                  <li class="program_topic">Гиперактивный мочевой пузырь</li>
+                  <li class="program_topic">Фибромиалгия и&nbsp;боли в&nbsp;спине</li>
+                  <li class="program_topic">Дисфункция ВНЧС, бруксизм и&nbsp;хроническая стоматологическая боль</li>
+                </ul>
+                <div class="program_result">
+                  <p class="program_list-title">Результат</p>
+                  <p class="program_result-text">Работаете с&nbsp;телесными запросами в&nbsp;разных системах организма, адаптируясь под коморбидность и&nbsp;выстраивая междисциплинарное взаимодействие.</p>
+                </div>
+              </div>
+
+              <div class="program_panel" role="tabpanel" id="program-panel-4"
+                   aria-labelledby="program-tab-4" data-program-panel hidden>
+                <h3 class="program_panel-heading">Финальная аттестация</h3>
+                <p class="program_panel-lead">
+                  Запись реальных интервенций с&nbsp;клиентом, который ещё
+                  не&nbsp;знаком с&nbsp;вашим терапевтическим подходом
+                  к&nbsp;его симптому. Вы&nbsp;демонстрируете освоенные
+                  интервенции в&nbsp;живой работе&nbsp;— не&nbsp;в&nbsp;ролевой
+                  игре с&nbsp;однокурсником.
+                </p>
+                <div class="program_result">
+                  <p class="program_list-title">Преподаватель оценивает</p>
+                  <ul class="program_topics">
+                    <li class="program_topic">Клинический анализ случая</li>
+                    <li class="program_topic">Выбор и&nbsp;реализацию интервенций</li>
+                    <li class="program_topic">Терапевтический альянс</li>
+                    <li class="program_topic">Умение объяснять клиенту механизм симптома</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       7. ПРЕПОДАВАТЕЛИ — ЛЕНТА СО СТРЕЛКАМИ
+       ======================================================================
+       Слева заголовок и подводка, справа стрелки. Ниже — лента карточек.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_teachers" id="prepodavateli">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="teachers_component">
+
+          <div class="systems_intro">
+            <div class="systems_intro-copy">
+              <h2 class="systems_heading">
+                Авторы и&nbsp;преподаватели курса&nbsp;—
+                <span class="accent-word">специалисты-практики</span>
+              </h2>
+              <p class="systems_description">
+                Команда курса&nbsp;— клинические психологи, психотерапевты
+                и&nbsp;врачи с&nbsp;опытом работы с&nbsp;функциональными
+                расстройствами и&nbsp;психосоматическими запросами.
+                Преподавательский состав будет расширяться.
+              </p>
+            </div>
+            <div class="slider_controls" data-slider-controls="teachers">
+              <button class="slider_arrow" type="button" data-slider-prev aria-label="Назад">
+                <span class="slider_arrow-icon is-prev" aria-hidden="true"></span>
+              </button>
+              <button class="slider_arrow is-accent" type="button" data-slider-next aria-label="Вперёд">
+                <span class="slider_arrow-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <ul class="teachers_track" data-slider-track="teachers" tabindex="0"
+              aria-label="Преподаватели курса — лента карточек">
+
+            <li class="teacher_component">
+              <!-- 🟡 Фотография: впишите адрес в src и уберите hidden -->
+              <div class="teacher_media">
+                <img src="https://s3.twcstorage.ru/asp-media/teacher_limarenko_2eb8f4e132.webp" alt="Виктория Лимаренко" width="900" height="900" loading="lazy" />
+                <span class="teacher_chip">Врач-невролог</span>
+              </div>
+              <h3 class="teacher_name">Виктория Лимаренко</h3>
+              <p class="teacher_description">
+                Врач-невролог, врач функциональной диагностики, сомнолог,
+                руководитель отделения функциональной диагностики
+                в&nbsp;медицинском центре «Доктрина». Специализация: диагностика
+                и&nbsp;лечение заболеваний нервной системы.
+              </p>
+            </li>
+
+            <li class="teacher_component">
+              <div class="teacher_media">
+                <img src="https://s3.twcstorage.ru/asp-media/teacher_zyuzina_6980f0c48d.webp" alt="Дарья Зюзина" width="900" height="900" loading="lazy" />
+                <span class="teacher_chip">Клинический психолог</span>
+              </div>
+              <h3 class="teacher_name">Дарья Зюзина</h3>
+              <p class="teacher_description">
+                Клинический психолог, аккредитованный Минздравом. АСТ,
+                FAP&nbsp;— терапевтка. Аспирантка и&nbsp;старший преподаватель
+                СПбГУ. Психолог в&nbsp;благотворительной организации «Ночлежка».
+              </p>
+            </li>
+
+            <li class="teacher_component">
+              <div class="teacher_media">
+                <img src="https://s3.twcstorage.ru/asp-media/teacher_pyatnitskiy_028497680d.webp" alt="Александр Пятницкий" width="900" height="900" loading="lazy" />
+                <span class="teacher_chip">Врач-психиатр</span>
+              </div>
+              <h3 class="teacher_name">Александр Пятницкий</h3>
+              <p class="teacher_description">
+                Врач-психиатр, психотерапевт, супервизор с&nbsp;опытом работы
+                более 25&nbsp;лет. Сооснователь Академии Современной Психологии.
+                Член АКПН, ACBS. Главный врач клиники доказательной
+                психотерапии ALVI.
+              </p>
+            </li>
+
+            <li class="teacher_component">
+              <div class="teacher_media">
+                <img src="https://s3.twcstorage.ru/asp-media/teacher_degteva_7415815a0f.webp" alt="Анастасия Дегтева" width="900" height="900" loading="lazy" />
+                <span class="teacher_chip">Врач акушер-гинеколог</span>
+              </div>
+              <h3 class="teacher_name">Анастасия Дегтева</h3>
+              <p class="teacher_description">
+                Врач акушер-гинеколог, врач лечебной физкультуры, специалист
+                по&nbsp;работе с&nbsp;сексуальными дисфункциями у&nbsp;женщин,
+                аспирант кафедры лечебной физкультуры и&nbsp;спортивной медицины
+                СЗГМУ им.&nbsp;И.&nbsp;И.&nbsp;Мечникова. Автор книги
+                «Девочка взрослеет» и&nbsp;более 10&nbsp;научных работ.
+                Ведущая социального проекта «Гинекологини».
+              </p>
+            </li>
+
+            <li class="teacher_component">
+              <div class="teacher_media">
+                <img src="https://s3.twcstorage.ru/asp-media/teacher_solomatina_51ac6f3517.webp" alt="Серафима Соломатина" width="900" height="900" loading="lazy" />
+                <span class="teacher_chip">Кризисный психолог</span>
+              </div>
+              <h3 class="teacher_name">Серафима Соломатина</h3>
+              <p class="teacher_description">
+                Магистр психологии и&nbsp;педагогики, клинический и&nbsp;кризисный
+                психолог, телесно-ориентированный психотерапевт, йогатерапевт
+                (специализация в&nbsp;области реабилитации тазового дна).
+                Специализация в&nbsp;психотерапии сексуальных расстройств
+                и&nbsp;консультировании кризисных состояний в&nbsp;репродуктивной
+                сфере. Опыт преподавания и&nbsp;консультирования с&nbsp;2018&nbsp;года.
+              </p>
+            </li>
+
+            <li class="teacher_component">
+              <div class="teacher_media">
+                <img src="https://s3.twcstorage.ru/asp-media/teacher_bondarenko_1c1336e193.webp" alt="Светлана Бондаренко" width="900" height="900" loading="lazy" />
+                <span class="teacher_chip">Тренер и реабилитолог</span>
+              </div>
+              <h3 class="teacher_name">Светлана Бондаренко</h3>
+              <p class="teacher_description">
+                Дипломированный педагог по&nbsp;физической культуре и&nbsp;методист
+                по&nbsp;адаптивной физической культуре. Тренер и&nbsp;реабилитолог.
+                Специалист по&nbsp;послеродовому восстановлению и&nbsp;женскому
+                здоровью. Мастер спорта по&nbsp;армлифтингу.
+              </p>
+            </li>
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       8. КОМАНДА ПОДДЕРЖКИ — макет из Фигмы, кадр 118-790
+       ======================================================================
+       Кто будет рядом на протяжении курса. Фотографии — с макета.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_team" id="komanda">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="team_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Команда, которая <span class="accent-word">поддерживает вас
+              на&nbsp;всём пути</span>
+            </h2>
+            <p class="section-intro_description">
+              На&nbsp;протяжении программы рядом будут специалисты, наставники
+              и&nbsp;единомышленники, которые помогают учиться, практиковаться
+              и&nbsp;увереннее применять новые знания
+            </p>
+          </div>
+
+          <!-- 🔴 Порядок карточек важен: высоты и сдвиги «вразнобой» на десктопе
+               привязаны к порядковому номеру карточки (см. page.css). -->
+          <ul class="team_list">
+            <li class="team_member">
+              <div class="team_copy">
+                <h3 class="team_role">Кураторы</h3>
+                <p class="team_note">Организуют обучение и&nbsp;сопровождают вас на&nbsp;протяжении курса</p>
+              </div>
+              <!-- 🟡 Фотографии из макета — при желании замените на свои -->
+              <img class="team_photo" src="https://static.tildacdn.com/tild6136-6632-4831-b061-626339323934/img-asp-curators.webp" alt="" width="960" height="1032" loading="lazy" />
+            </li>
+            <li class="team_member">
+              <div class="team_copy">
+                <h3 class="team_role">Преподаватели-практики</h3>
+                <p class="team_note">Разбирают ваши вопросы и&nbsp;дают персональную обратную связь</p>
+              </div>
+              <img class="team_photo" src="https://s3.twcstorage.ru/asp-media/Iona_Gusachenko_01_48ad538e30.jpg" alt="Иона Гусаченко" width="828" height="1242" loading="lazy" />
+            </li>
+            <li class="team_member">
+              <div class="team_copy">
+                <h3 class="team_role">Одногруппники</h3>
+                <p class="team_note">Вместе с&nbsp;вами отрабатывают навыки на&nbsp;интервизиях и&nbsp;разборах кейсов</p>
+              </div>
+              <img class="team_photo" src="https://optim.tildacdn.com/tild3862-3164-4637-a463-363639646338/-/format/webp/img-asp-classmates.webp" alt="" width="960" height="1004" loading="lazy" />
+            </li>
+            <li class="team_member">
+              <div class="team_copy">
+                <h3 class="team_role">Выпускники Академии</h3>
+                <p class="team_note">После выпуска вы&nbsp;остаётесь в&nbsp;профессиональном сообществе</p>
+              </div>
+              <img class="team_photo" src="https://s3.twcstorage.ru/asp-media/team_alumni_f29634f9a8.jpeg" alt="" width="900" height="675" loading="lazy" />
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       9. «98% СТУДЕНТОВ» — ОЦЕНКИ ПЛОЩАДОК
+       ======================================================================
+       Блок перенесён из /klinicheskaya-baza без изменений.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_reviews" id="otzyvy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="reviews_component">
+
+          <div class="reviews_grid">
+
+            <div class="reviews_headline">
+              <p class="reviews_percent">98% студентов</p>
+              <p class="reviews_lead">
+                рекомендуют обучение<br />
+                в&nbsp;Академии Современной Психологии
+              </p>
+
+              <ul class="reviews_tags">
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Практика
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Преподаватели
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Поддержка
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Комьюнити
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Качество
+                </li>
+              </ul>
+
+              <!-- 🔴 Декоративная молния с макета -->
+              <img class="reviews_zap" src="https://s3.twcstorage.ru/asp-media/icon_zap_a064f3db0f.svg" alt="" width="100" height="100" aria-hidden="true" />
+            </div>
+
+            <ul class="reviews_scores">
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.45
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_tutortop_cc004891ad.svg" alt="tutortop" width="126" height="28" loading="lazy" />
+              </li>
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.82
+                </p>
+                <!-- 🔴 Логотип «Сравни» состоит из двух частей: кружок + надпись -->
+                <span class="reviews_logo-group">
+                  <img class="reviews_logo-mark" src="https://s3.twcstorage.ru/asp-media/logo_sravni_mark_4e1f6ca088.png" alt="" width="84" height="72" loading="lazy" />
+                  <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_sravni_33a4ab5059.svg" alt="Сравни" width="113" height="22" loading="lazy" />
+                </span>
+              </li>
+              <li class="reviews_score is-wide">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.9
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_otzovik_786226e74e.svg" alt="Отзовик" width="134" height="28" loading="lazy" />
+              </li>
+            </ul>
+
+          </div>
+
+          <p class="reviews_note">* По&nbsp;данным отзывов на&nbsp;независимых площадках</p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       10. АКАДЕМИЯ — макет из Фигмы, кадр 103-136
+       ======================================================================
+       Плитка из четырёх карточек. Перенесена из /klinicheskaya-baza,
+       заголовок — с нового макета. Картинки лежат на CDN Тильды.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Академия Современной Психологии&nbsp;—
+            <span class="accent-word">от&nbsp;интереса к&nbsp;практике</span>
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+              <div class="academy-showcase_teachers-media" aria-hidden="true">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="480"
+                  height="328"
+                  alt=""
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <!-- 🟡 Полоса под фотографией — декоративная, как на макете -->
+                <div class="academy-showcase_teachers-controls">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status"><span></span><span></span><span></span></span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       11. ДОКУМЕНТЫ ОБ ОКОНЧАНИИ — макет из Фигмы, кадр 1-806
+       ======================================================================
+       Слева текст с условиями, справа — картинка документа.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_document" id="dokument">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="document_component">
+
+          <div class="document_copy">
+            <h2 class="document_heading">
+              Документы, за&nbsp;которыми стоит
+              <span class="accent-word">серьёзная подготовка</span>
+            </h2>
+            <p class="document_description">
+              После успешного завершения программы вы&nbsp;получаете
+              удостоверение о&nbsp;повышении квалификации установленного
+              образца и&nbsp;сертификат АСП.
+            </p>
+            <p class="document_description">
+              Программа реализуется на&nbsp;основании образовательной лицензии.
+              Чтобы получить документы, необходимо:
+            </p>
+
+            <ul class="document_terms">
+              <li class="document_term">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#7C5CDB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:block;flex:none;margin-top:0.125rem"><path d="m4 12.5 5 5L20 6.5"/></svg>
+                Посетить более 80% занятий с&nbsp;включённой камерой
+                и&nbsp;активным участием
+              </li>
+              <li class="document_term">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#7C5CDB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:block;flex:none;margin-top:0.125rem"><path d="m4 12.5 5 5L20 6.5"/></svg>
+                Пройти финальную аттестацию&nbsp;— запись реальных интервенций
+                с&nbsp;клиентом
+              </li>
+            </ul>
+
+            <div class="document_summary">
+              Такой документ подтверждает, что вы&nbsp;не&nbsp;просто прослушали
+              лекции, а&nbsp;прошли практическую подготовку
+              и&nbsp;итоговую аттестацию
+            </div>
+
+            <p class="document_license">
+              Образовательная лицензия Л035–01271–78/00176689,<br />
+              Распоряжение от&nbsp;31.03.2022 №&nbsp;631-р
+            </p>
+          </div>
+
+          <div class="document_media">
+            <img src="https://s3.twcstorage.ru/asp-media/document_certificate_d7f8d2f8a1.webp" alt="Выпускница с сертификатом Академии" width="1200" height="1200" loading="lazy" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       12. СТОИМОСТЬ И ФОРМА ЗАЯВКИ — макет из Фигмы, кадр 1-864
+       ======================================================================
+       Один тёмный блок: слева цена, скидки и подводка (цены не было
+       в списке правок — перенесены с исходного лендинга), справа поля.
+       Отправка идёт через скрытую форму Тильды — скрипт page.js переносит
+       значения и отправляет её. На превью формы Тильды нет: скрипт покажет
+       успешное состояние и напишет об этом в консоль.
+
+       🟡 data-tilda-form-name — имя формы в настройках Тильды.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_signup" id="zayavka">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component" data-lead-form data-tilda-form-name="psihosomatika-kurs">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">
+              Присоединяйтесь сейчас&nbsp;—
+              <span class="accent-word is-on-dark">успейте попасть
+              в&nbsp;этот поток</span>
+            </h2>
+            <div class="signup_price">
+              <p class="signup_price-label">Стоимость обучения</p>
+              <p class="signup_price-value">55&nbsp;000&nbsp;₽</p>
+              <p class="signup_price-note">Занятия начнутся 27&nbsp;октября</p>
+            </div>
+
+            <ul class="signup_perks">
+              <li class="signup_perk">
+                <p class="signup_perk-value">−10%</p>
+                <p class="signup_perk-text">новым студентам</p>
+              </li>
+              <li class="signup_perk">
+                <p class="signup_perk-value">−20%</p>
+                <p class="signup_perk-text">нашему студенту и&nbsp;коллеге, который у&nbsp;нас впервые</p>
+              </li>
+              <li class="signup_perk">
+                <p class="signup_perk-value">до&nbsp;−20%</p>
+                <p class="signup_perk-text">нашим выпускникам за&nbsp;отзыв</p>
+              </li>
+            </ul>
+
+            <p class="signup_perks-note">
+              Суммируйте скидки для большей выгоды. Доступна рассрочка
+              до&nbsp;24&nbsp;месяцев от&nbsp;банков-партнёров или Академии
+              и&nbsp;налоговый вычет&nbsp;13%.
+            </p>
+          </div>
+
+          <form class="lead-form_component" novalidate>
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Оставьте заявку</h3>
+              <p class="lead-form_lead">
+                Ответим на&nbsp;все вопросы, поможем определиться
+                с&nbsp;направлением и&nbsp;способом оплаты. Свяжемся
+                с&nbsp;вами в&nbsp;рабочее время.
+              </p>
+            </div>
+
+            <label class="lead-form_field">
+              <span class="lead-form_field-label screen-reader-only">Имя</span>
+              <input class="lead-form_input" type="text" name="Name"
+                     placeholder="Как к вам обращаться? *" autocomplete="name" required />
+            </label>
+
+            <label class="lead-form_field">
+              <span class="lead-form_field-label screen-reader-only">Электронная почта</span>
+              <input class="lead-form_input" type="email" name="Email"
+                     placeholder="Почта" autocomplete="email" />
+            </label>
+
+            <label class="lead-form_field">
+              <span class="lead-form_field-label screen-reader-only">Телефон</span>
+              <input class="lead-form_input" type="tel" name="Phone"
+                     placeholder="Ваш телефон *" autocomplete="tel" required />
+            </label>
+
+            <fieldset class="lead-form_messengers">
+              <legend class="lead-form_messengers-label">Где вам удобнее общаться?</legend>
+              <div class="lead-form_messenger-row" role="group">
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="Телефон" checked />
+                  <span>Телефон</span>
+                </label>
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="Telegram" />
+                  <span>Telegram</span>
+                </label>
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="MAX" />
+                  <span>MAX</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <button class="button is-accent is-full-width lead-form_submit" type="submit">
+              Отправить заявку
+            </button>
+
+            <!-- 🔴 Статус отправки, заполняет page.js -->
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <p class="lead-form_consent">
+              <!-- 🟡 Подставьте адреса согласия и политики с боевого сайта -->
+              Нажимая на&nbsp;кнопку «Отправить», я&nbsp;даю
+              <a href="#">согласие</a> на&nbsp;обработку моих персональных данных
+              в&nbsp;соответствии с&nbsp;<a href="#">политикой обработки
+              персональных данных</a>
+            </p>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+
+  <!-- ======================================================================
+       14. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       Аккордеон перенесён из /klinicheskaya-baza, контент — с исходного
+       лендинга психосоматики.
+       ====================================================================== -->
+  <div class="page-wrapper psy-page">
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+          </div>
+
+          <div class="faq_list" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Можно приобрести курс в&nbsp;рассрочку?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Да, вы&nbsp;можете приобрести курс в&nbsp;рассрочку.
+                    На&nbsp;выбор несколько вариантов: от&nbsp;банков
+                    и&nbsp;Академии. Условия не&nbsp;отличаются: стоимость
+                    делится на&nbsp;равные части, проценты не&nbsp;начисляются.
+                    Разница только в&nbsp;длительности рассрочки.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Это живые лекции или всё в&nbsp;записи?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Преподаватель проводит лекции (теоретическую часть)
+                    на&nbsp;платформе Контур.Толк. Там вы&nbsp;сможете задать
+                    вопросы в&nbsp;режиме реального времени. Практика также
+                    проходит онлайн, со&nbsp;включёнными камерой и&nbsp;микрофоном.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Кому я&nbsp;смогу задать вопросы о&nbsp;процессе обучения?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    За&nbsp;каждым курсом закреплён куратор. Вы&nbsp;можете
+                    задать все вопросы ему.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Вы&nbsp;заключаете договор со&nbsp;студентами?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Оказание услуг на&nbsp;образовательную деятельность
+                    осуществляется по&nbsp;договору оферты. В&nbsp;индивидуальных
+                    случаях мы&nbsp;можем предложить формирование договора для
+                    студента лично. Однако оба этих договора имеют одинаковую
+                    юридическую силу.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">У&nbsp;вас есть лицензия на&nbsp;обучение?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Наша лицензия на&nbsp;осуществление образовательной
+                    деятельности: Л035–01271–78/00176689, Распоряжение
+                    от&nbsp;31.03.2022 №&nbsp;631-р.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Я&nbsp;смогу вернуть деньги за&nbsp;курс, если мне не&nbsp;понравится?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Можно вернуть деньги за&nbsp;непройденный материал. Однако
+                    в&nbsp;этом случае вы&nbsp;не&nbsp;сможете получить документ
+                    о&nbsp;повышении квалификации или профессиональной
+                    переподготовке.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Можно перевестись на&nbsp;другой курс, если я&nbsp;передумаю?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Перевод на&nbsp;другой курс возможен только на&nbsp;старте
+                    обучения и&nbsp;при условии соответствия всем требованиям
+                    для зачисления на&nbsp;другую программу. В&nbsp;этом случае
+                    вам будет пересчитана стоимость обучения.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+</body>
+</html>

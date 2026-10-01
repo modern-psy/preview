@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';
+import {renderGraduation} from '../../shared/academy/graduation-render.mjs';
+const root = new URL('./', import.meta.url);
+const data = JSON.parse(await fs.readFile(new URL('data/graduation.json', root), 'utf8'));
+const file = new URL('index.html', root);
+const source = await fs.readFile(file, 'utf8');
+const start = '<!-- graduation:start -->';
+const end = '<!-- graduation:end -->';
+if (source.split(start).length !== 2 || source.split(end).length !== 2 || source.indexOf(end) < source.indexOf(start)) throw new Error('graduation: expected one ordered region');
+const next = source.replace(/<!-- graduation:start -->[\s\S]*?<!-- graduation:end -->/, () => `${start}\n${renderGraduation(data, {id: 'graduation'})}\n${end}`);
+if (next !== source) await fs.writeFile(file, next);

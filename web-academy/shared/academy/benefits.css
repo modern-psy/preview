@@ -1,0 +1,101 @@
+/* Reusable benefits composition; Hero supplies fluid tokens through inheritance. */
+.benefits_component {
+  --benefits-padding: var(--card-padding, 1rem);
+  --benefits-gap: var(--card-grid-gap, 1rem);
+  --benefits-radius: var(--radius-card, 1rem);
+  --benefits-height: var(--hero-card-height, 12.5rem);
+  --content-heading-gap: var(--hero-title-gap, 0.75rem);
+  --text-body-size: var(--hero-card-body-size, 1.25rem);
+  --text-body-line-height: 1.2;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--benefits-gap);
+}
+.card_component.benefits_card {
+  position: relative;
+  min-height: var(--benefits-height);
+  padding: var(--benefits-padding);
+  gap: 0.5rem;
+  justify-content: space-between;
+  border-radius: var(--benefits-radius);
+}
+.benefits_card .card_heading { font-size: var(--hero-card-title-size, 1.5rem); }
+.benefits_card .card_description { font-weight: 444; }
+.benefits_card.is-diploma { padding-bottom: 3.75rem; }
+.benefits_diploma {
+  position: absolute;
+  right: -2rem;
+  bottom: -5.1875rem;
+  display: block;
+  width: 12.5625rem;
+  height: 8.875rem;
+}
+.benefits_link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  margin: 0 0 -0.625rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent-primary);
+  font: 500 var(--hero-link-size, 1.25rem) / 1.2 var(--font-family-body);
+  letter-spacing: -0.01em;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+  transition: color var(--transition-site);
+}
+.benefits_link:hover { color: var(--color-accent-text, #644ab2); }
+.benefits_link:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+.avatar-group_list { display: flex; width: 100%; align-items: center; justify-content: flex-end; isolation: isolate; }
+.avatar-group_item { flex: none; }
+.avatar-group_item + .avatar-group_item { margin-left: -1.125rem; }
+.avatar-group_item:nth-child(1) { z-index: 4; }
+.avatar-group_item:nth-child(2) { z-index: 3; }
+.avatar-group_item:nth-child(3) { z-index: 2; }
+.avatar-group_avatar {
+  display: block;
+  width: var(--hero-avatar-size, 4rem);
+  height: var(--hero-avatar-size, 4rem);
+  border-radius: 50%;
+}
+.benefits_practice { max-width: 31rem; }
+.card_icon.benefits_icon { align-self: flex-end; width: 2.5rem; height: 2.5rem; padding: 0.625rem; }
+.benefits_card.is-dark {
+  --color-text-primary: var(--color-text-on-dark-muted);
+  --color-text-secondary-large: var(--color-program-muted, #bdb7b7);
+  gap: 1.5rem;
+  background: var(--color-surface-dark);
+}
+.program-tags_list { display: flex; max-width: 28.0625rem; flex-wrap: wrap; gap: var(--hero-tag-gap, 0.375rem); }
+.program-tags_tag {
+  display: inline-flex;
+  min-height: calc(var(--hero-tag-size, 0.75rem) + 0.75rem);
+  max-width: 100%;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-program-tag, #4d3d5f);
+  color: var(--color-program-text, #ededed);
+  font-size: var(--hero-tag-size, 0.75rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.program-tags_more { display: block; width: 1.4375rem; height: 0.3125rem; }
+@media (min-width: 32.5625rem) and (max-width: 47.999rem) {
+  .benefits_card.is-diploma { padding-bottom: var(--benefits-padding); }
+  .benefits_card.is-diploma .card_content { max-width: 61%; }
+  .benefits_diploma { right: -1.8125rem; bottom: -2.3125rem; }
+}
+@media (min-width: 48rem) {
+  .benefits_component { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .benefits_card.is-dark { grid-column: 1 / -1; }
+  .benefits_diploma { right: -2rem; bottom: -3.890625rem; }
+}
+@media (min-width: 64.0625rem) {
+  .benefits_component { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .benefits_card { grid-column: span 2; }
+  .benefits_card.is-wide { grid-column: span 3; }
+  .benefits_diploma { right: -1rem; bottom: -4.125rem; }
+}
+@media (prefers-reduced-motion: reduce) { .benefits_link { transition: none; } }

@@ -1,0 +1,168 @@
+/* Dual-action Hero: viewport anchors 420/600/991/1680 include the approved gutters.
+   Continuous ramps survive gutter/layout changes at 768 and 1025; see hero.md. */
+.hero_component.is-dual-action {
+  /* Retained for the Hero note; tag geometry belongs to meta-pill. */
+  --hero-meta-size: calc(0.875rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --hero-link-size: calc(1rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  --hero-stat-gap: calc(0.5rem + clamp(0rem, 2.22222222vw - 0.58333333rem, 0.25rem));
+  --hero-heading-size: calc(2rem + clamp(0rem, 4.44444444vw - 1.16666667rem, 0.5rem) + clamp(0rem, 2.04603581vw - 0.76726343rem, 0.5rem) + clamp(0rem, 1.16110305vw - 0.71915820rem, 0.5rem));
+  --hero-subtitle-size: calc(1.125rem + clamp(0rem, 2.22222222vw - 0.58333333rem, 0.25rem) + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem) + clamp(0rem, 1.16110305vw - 0.71915820rem, 0.5rem));
+  --hero-description-size: calc(1rem + clamp(0rem, 1.11111111vw - 0.29166667rem, 0.125rem) + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  --hero-padding: calc(0.75rem + clamp(0rem, 2.22222222vw - 0.58333333rem, 0.25rem) + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem) + clamp(0rem, 0.58055152vw - 0.35957910rem, 0.25rem));
+  --hero-gap: calc(0.75rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem));
+  --hero-radius: var(--radius-card, 1rem);
+  --hero-title-gap: calc(0.5rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem));
+  --hero-copy-gap: calc(0.75rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem));
+  --hero-content-gap: calc(1.25rem + clamp(0rem, 2.22222222vw - 0.58333333rem, 0.25rem) + clamp(0rem, 2.04603581vw - 0.76726343rem, 0.5rem));
+  --hero-stat-size: calc(2.75rem + clamp(0rem, 2.04603581vw - 0.76726343rem, 0.5rem));
+  --hero-stat-label-size: calc(0.9375rem + clamp(0rem, 0.55555556vw - 0.14583333rem, 0.0625rem) + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --hero-card-height: calc(9.375rem + clamp(0rem, 4.53964194vw - 1.70236573rem, 1.109375rem) + clamp(0rem, 4.68069666vw - 2.89910649rem, 2.015625rem));
+  --hero-card-title-size: calc(1.375rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --hero-card-body-size: calc(0.9375rem + clamp(0rem, 0.55555556vw - 0.14583333rem, 0.0625rem) + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  --hero-avatar-size: calc(3.5rem + clamp(0rem, 1.16110305vw - 0.71915820rem, 0.5rem));
+  --hero-tag-size: calc(0.625rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --hero-tag-gap: calc(0.25rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  gap: var(--hero-gap);
+}
+.hero_component.is-dual-action .hero_visual { display: grid; gap: var(--hero-gap); }
+.hero_component.is-dual-action .hero_media {
+  min-height: var(--hero-panel-min-height, 43.75rem);
+  grid-template-rows: auto minmax(2rem, 1fr) auto;
+  border-radius: var(--hero-radius);
+}
+.hero_component.is-dual-action .hero_media::after { background: rgb(0 0 0 / 15%); }
+.hero_component.is-dual-action .hero_image { object-position: var(--hero-image-position, 61% top); }
+/* Right-side subjects move towards the centre of the adaptive crop. */
+.hero_component.is-dual-action .hero_image.is-subject-right { object-position: var(--hero-subject-position-portrait, 85% center); }
+@media (min-width: 32.5625rem) {
+  .hero_component.is-dual-action .hero_image.is-subject-right { object-position: var(--hero-subject-position-landscape, 92% center); }
+}
+@media (min-width: 48rem) {
+  .hero_component.is-dual-action .hero_image.is-subject-right { object-position: var(--hero-subject-position-tablet, right center); }
+}
+@media (min-width: 64.0625rem) {
+  .hero_component.is-dual-action .hero_image.is-subject-right { object-position: var(--hero-subject-position-desktop, right center); }
+}
+.hero_component.is-dual-action .meta-pill_list {
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: var(--hero-padding);
+}
+.hero_component.is-dual-action .meta-pill_component.is-accent { order: -1; }
+.hero_component.is-dual-action .hero_content {
+  grid-row: 3;
+  width: 100%;
+  padding: var(--hero-padding);
+  gap: var(--hero-content-gap);
+  text-align: center;
+  align-items: center;
+}
+.hero_component.is-dual-action .hero_copy { align-items: center; gap: var(--hero-copy-gap); }
+.hero_title {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--hero-title-gap, 0.75rem);
+  min-width: 0;
+}
+.hero_component.is-dual-action .hero_heading {
+  max-width: 45.5rem;
+  font-size: var(--hero-heading-size);
+  text-wrap: initial;
+  overflow-wrap: anywhere;
+}
+.hero_subtitle {
+  width: 100%;
+  max-width: 45.5rem;
+  color: var(--hero-subtitle-color, #dedede);
+  font-size: var(--hero-subtitle-size, 2rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.hero_component.is-dual-action .hero_description {
+  max-width: none;
+  font-size: var(--hero-description-size);
+  text-wrap: initial;
+}
+.hero_component.is-dual-action .hero_actions { max-width: none; }
+.hero_buttons {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+}
+.hero_buttons > .button:only-child { grid-column: 1 / -1; }
+.hero_component.is-dual-action .hero_start-note {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  color: var(--hero-note-color, #53ee34);
+  font-size: var(--hero-meta-size);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+.hero_separator {
+  width: 0.25rem;
+  height: 0.25rem;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+.hero_component.is-dual-action .hero_start-note.is-with-icon {
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  font-weight: 400;
+}
+.hero_note-icon { display: block; width: 1.375rem; height: 1.375rem; flex: none; }
+.hero_component.is-dual-action .stat-card_component {
+  position: static;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: none;
+  padding: var(--card-padding, 1rem);
+  gap: var(--hero-stat-gap);
+  border-radius: var(--hero-radius);
+  text-align: left;
+}
+.hero_component.is-dual-action .stat-card_value { font-size: var(--hero-stat-size); }
+.hero_component.is-dual-action .stat-card_label {
+  display: block;
+  max-width: none;
+  font-size: var(--hero-stat-label-size);
+  line-height: 1.4;
+  white-space: normal;
+}
+@media (min-width: 48rem) {
+  .hero_component.is-dual-action .meta-pill_list {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .hero_component.is-dual-action .meta-pill_component.is-accent { order: 0; }
+  .hero_component.is-dual-action .hero_content { text-align: left; align-items: flex-start; }
+  .hero_component.is-dual-action .hero_copy { align-items: flex-start; }
+  .hero_component.is-dual-action .hero_start-note { justify-content: flex-start; }
+  .hero_component.is-dual-action .stat-card_component { min-height: var(--hero-card-height); }
+  .hero_component.is-dual-action .hero_image { object-position: center; }
+  .hero_buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .hero_component.is-dual-action .hero_content { width: min(72%, calc(45.5rem + 2 * var(--hero-padding))); }
+  .hero_component.is-dual-action .hero_image { object-position: var(--hero-image-position-desktop, center 15%); }
+  .hero_component.is-dual-action .stat-card_component {
+    position: absolute;
+    right: var(--hero-padding);
+    bottom: var(--hero-padding);
+    width: max-content;
+    max-width: calc(28% - var(--hero-padding));
+    min-height: 0;
+  }
+  .hero_component.is-dual-action .stat-card_label { max-width: 21ch; }
+}

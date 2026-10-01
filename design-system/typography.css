@@ -1,0 +1,365 @@
+/* ============================================================================
+   ТИПОГРАФИКА · две шкалы в классах Client-first v2
+   ============================================================================
+
+   ЧТО ЭТО. Единственный источник размеров текста на проекте.
+   Задавать font-size в вёрстке страниц ЗАПРЕЩЕНО — только эти классы.
+
+   ЗДЕСЬ ДВЕ ШКАЛЫ, у них разные задачи:
+     каталожная (display / paragraph / caption) — каталог, расписание,
+       личный кабинет: интерфейс, где текста много;
+     промо (hero / section-title / card-title / block-title / lead /
+       body / note) — лендинги по макетам.
+   На одной странице смешивать их нельзя. Подробности — у самой промо-шкалы.
+
+   КАК УСТРОЕНО (правило Client-first v2):
+     размер, начертание и цвет — это ТРИ РАЗНЫХ класса, они комбинируются.
+
+     <p class="text-size-paragraph-md text-weight-semibold text-color-secondary">
+
+   Размеры плавно тянутся внутри диапазона через clamp() — формулы взяты
+   из гайда Typo Academy без изменений, переведены в rem.
+
+   БРЕЙКПОИНТЫ (совпадают с гайдом Typo Academy):
+     мобильный портрет    ≤ 520px    — базовые правила, без медиазапроса
+     мобильный альбом     521–768px
+     планшет              769–1024px
+     десктоп              ≥ 1025px
+
+   ВАЖНО ПРО ЕДИНИЦЫ. Всё в rem, потому что ниже 375px мы масштабируем
+   корневой размер шрифта (см. base.css) — тогда вся страница уменьшается
+   пропорционально, а не превращается в вертикальную простыню.
+   Значения в px здесь работать не будут: они не масштабируются.
+
+   ACTION. Стиль текста кнопок вынесен в отдельную группу (см. ниже):
+   Action Lg 18px · Action Md 16px · Action Sm 14px.
+   ============================================================================ */
+
+
+/* ==========================================================================
+   БАЗА
+   ========================================================================== */
+body {
+  font-family: var(--font-family-base);
+  font-size: 1rem;            /* 16px — P-SM, базовый размер */
+  line-height: 1.3em;
+  font-weight: var(--weight-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ==========================================================================
+   РАЗМЕРЫ · text-size-[имя]
+   ==========================================================================
+   Класс задаёт размер, межстрочное и трекинг. Начертание — отдельным классом.
+   ========================================================================== */
+
+/* --- Display 2XL — только hero лендинга. Всегда Bold. --------------------- */
+.text-size-display-2xl {
+  font-size: clamp(2.625rem, 10vw, 3.25rem);
+  line-height: .94em;
+  letter-spacing: -.04em;
+}
+@media (min-width: 32.5625rem) { .text-size-display-2xl { font-size: clamp(3.25rem, calc(11.29vw - .42rem), 5rem); } }
+@media (min-width: 48.0625rem) { .text-size-display-2xl { font-size: clamp(5rem, calc(11.72vw - .625rem), 6.875rem); } }
+@media (min-width: 64.0625rem) { .text-size-display-2xl { font-size: 6.875rem; } }
+
+/* --- Display XL — главный заголовок страницы (h1) ------------------------- */
+.text-size-display-xl {
+  font-size: 1.875rem;
+  line-height: 1em;
+  letter-spacing: -.06em;
+}
+@media (min-width: 32.5625rem) { .text-size-display-xl { font-size: clamp(1.875rem, calc(4.049vw + .5567rem), 2.5rem); } }
+@media (min-width: 48.0625rem) { .text-size-display-xl { font-size: clamp(2.5rem, calc(4.706vw + .2383rem), 3.25rem); } }
+@media (min-width: 64.0625rem) { .text-size-display-xl { font-size: 3.25rem; } }
+
+/* --- Display MD — заголовки разделов -------------------------------------- */
+.text-size-display-md {
+  font-size: 1.75rem;
+  line-height: 1em;
+  letter-spacing: -.03em;
+}
+@media (min-width: 32.5625rem) { .text-size-display-md { font-size: clamp(1.75rem, calc(1.619vw + 1.2227rem), 2rem); } }
+@media (min-width: 48.0625rem) { .text-size-display-md { font-size: clamp(2rem, calc(1.569vw + 1.2461rem), 2.25rem); } }
+@media (min-width: 64.0625rem) { .text-size-display-md { font-size: 2.25rem; } }
+
+/* --- Display SM — заголовки карточек и подразделов ------------------------ */
+.text-size-display-sm {
+  font-size: 1.25rem;
+  line-height: 1.1em;
+  letter-spacing: 0;
+}
+@media (min-width: 32.5625rem) { .text-size-display-sm { font-size: clamp(1.25rem, calc(1.619vw + .7227rem), 1.5rem); } }
+@media (min-width: 48.0625rem) { .text-size-display-sm { font-size: 1.5rem; } }
+
+/* --- Paragraph XL — крупный поддерживающий текст -------------------------- */
+.text-size-paragraph-xl {
+  font-size: 1.125rem;
+  line-height: 1.2em;
+  letter-spacing: 0;
+}
+@media (min-width: 32.5625rem) { .text-size-paragraph-xl { font-size: clamp(1.125rem, calc(.81vw + .8613rem), 1.25rem); } }
+@media (min-width: 48.0625rem) { .text-size-paragraph-xl { font-size: clamp(1.25rem, calc(.784vw + .8731rem), 1.375rem); } }
+@media (min-width: 64.0625rem) { .text-size-paragraph-xl { font-size: 1.375rem; } }
+
+/* --- Paragraph MD — основной текст.
+       Единственный стиль, у которого межстрочное растёт на десктопе. ------- */
+.text-size-paragraph-md {
+  font-size: 1.125rem;
+  line-height: 1.2em;
+  letter-spacing: 0;
+}
+@media (min-width: 64.0625rem) { .text-size-paragraph-md { line-height: 1.4em; } }
+
+/* --- Paragraph SM — навигация, кнопки, метаданные. Размер один на всех ---- */
+.text-size-paragraph-sm {
+  font-size: 1rem;
+  line-height: 1.3em;
+  letter-spacing: 0;
+}
+
+/* --- Caption MD — примечания, справочная информация ----------------------- */
+.text-size-caption-md {
+  font-size: .875rem;
+  line-height: 1.45em;
+  letter-spacing: 0;
+}
+
+/* --- Caption SM — статусы, плашки, теги. По умолчанию Medium ------------- */
+.text-size-caption-sm {
+  font-size: .75rem;
+  line-height: 1.2em;
+  letter-spacing: 0;
+  font-weight: var(--weight-caption);
+}
+
+
+/* ==========================================================================
+   ACTION · текст внутри кнопок и других интерактивных элементов
+   ==========================================================================
+   ЧТО ТАКОЕ ACTION. Это отдельная роль текста — надпись на кнопке.
+   Её выделяют в отдельную ступень, потому что она подчиняется другой логике,
+   чем текст в абзаце: не переносится по смыслу, читается «одним куском»,
+   и её размер привязан к размеру кнопки, а не к иерархии заголовков.
+
+   Три размера, по одному на каждый размер кнопки:
+     Action Lg  18px  → CTA Lg  (главное действие на экране)
+     Action Md  16px  → CTA Md  (обычные кнопки, табы)
+     Action Sm  14px  → CTA Sm  (компактные кнопки внутри карточек)
+
+   Начертание одно — Medium: на кнопке важна не жирность, а контраст с фоном.
+
+   В вёрстке эти классы отдельно ставить не нужно: они уже внутри классов
+   кнопок .button.is-lg / .is-md / .is-sm. Классы ниже — на случай, когда
+   такой текст нужен вне кнопки (например, в табе или в ссылке-действии).
+   ========================================================================== */
+.text-size-action-lg { font-size: 1.125rem; line-height: 1.3em; font-weight: var(--weight-action); }
+.text-size-action-md { font-size: 1rem;     line-height: 1.3em; font-weight: var(--weight-action); }
+.text-size-action-sm { font-size: .875rem;  line-height: 1.3em; font-weight: var(--weight-action); }
+
+
+/* ==========================================================================
+   ШКАЛА ПРОМО-СТРАНИЦ · text-size-[роль]
+   ==========================================================================
+   ЗАЧЕМ ВТОРАЯ ШКАЛА. Шкала выше (display / paragraph / caption) описывает
+   каталог и расписание: это интерфейс, где текста много и он должен быть
+   спокойным. Лендинги живут по другой логике — крупный первый экран,
+   плотные заголовки, короткие абзацы. Дизайн рисует их отдельно, и попытка
+   натянуть на макет каталожную шкалу каждый раз заканчивалась расхождением
+   с макетом на 2–4 пункта в каждой ступени.
+
+   Поэтому здесь второй набор, снятый с макетов лендингов один в один.
+   Первый лендинг на нём — «Введение в клиническую психологию»
+   (apps/preview/vvedenie).
+
+   ЧЕМ ОТЛИЧАЕТСЯ ОТ КАТАЛОЖНОЙ ШКАЛЫ:
+     · заголовки НЕ полужирные — Medium (500), а не Bold (700);
+     · у заголовков отрицательный трекинг: буквы стоят плотнее;
+     · межстрочное у заголовков 110 %, у первого экрана 92 %, у текста 120 %;
+     · ступени названы по роли на странице, а не по размеру.
+
+   КАКУЮ ШКАЛУ БРАТЬ:
+     каталог, расписание, личный кабинет  →  display / paragraph / caption
+     лендинг, промо-страница по макету    →  эта
+
+   Смешивать их на одной странице нельзя: получится две системы сразу.
+
+   КАК ТЯНЕТСЯ. clamp() ведёт размер линейно от 375 px до 1440 px ширины
+   экрана: первое число — мобильный размер, последнее — размер из макета.
+   Чем крупнее ступень, тем сильнее она ужимается. Ниже 375 px размеры
+   не пересчитываются — там уменьшается корневой кегль (base.css, раздел 2),
+   и страница садится целиком.
+
+   ЦВЕТ ЗДЕСЬ НЕ ЗАДАЁТСЯ — он приходит классом text-color-* или стилями
+   страницы. Правило «размер, начертание и цвет — разные классы» в силе;
+   начертание вшито только потому, что Medium — определяющая черта шкалы.
+   ========================================================================== */
+
+/* --- Hero — заголовок первого экрана. Один на страницу. 40 → 70 ----------- */
+.text-size-hero {
+  font-size: clamp(2.5rem, calc(2.8169vw + 1.8398rem), 4.375rem);
+  line-height: .92em;
+  letter-spacing: -.04em;
+  font-weight: var(--weight-emphasis);
+}
+
+/* --- Section title — заголовок секции и тёмного блока. 30 → 42 ------------ */
+.text-size-section-title {
+  font-size: clamp(1.875rem, calc(1.1268vw + 1.6109rem), 2.625rem);
+  line-height: 1.1em;
+  letter-spacing: -.025em;
+  font-weight: var(--weight-emphasis);
+}
+
+/* --- Card title — заголовок крупной карточки, вопрос в FAQ. 28 → 36 ------- */
+.text-size-card-title {
+  font-size: clamp(1.75rem, calc(.7512vw + 1.5739rem), 2.25rem);
+  line-height: 1.1em;
+  letter-spacing: -.025em;
+  font-weight: var(--weight-emphasis);
+}
+
+/* --- Block title — заголовок урока, колонки, небольшой карточки. 22 → 28 -- */
+.text-size-block-title {
+  font-size: clamp(1.375rem, calc(.5634vw + 1.2429rem), 1.75rem);
+  line-height: 1.1em;
+  font-weight: var(--weight-emphasis);
+}
+
+/* --- Lead — подводка в герое, абзац карточки, подпись под призывом. 18 → 22
+       Regular. Выделенный кусок внутри — классом text-weight-medium. ------- */
+.text-size-lead {
+  font-size: clamp(1.125rem, calc(.3756vw + 1.0369rem), 1.375rem);
+  line-height: 1.2em;
+  letter-spacing: -.01em;
+  font-weight: var(--weight-body);
+}
+
+/* --- Body — текст карточек и колонок. 18 → 20 ----------------------------- */
+.text-size-body {
+  font-size: clamp(1.125rem, calc(.1878vw + 1.081rem), 1.25rem);
+  line-height: 1.2em;
+  font-weight: var(--weight-body);
+}
+
+/* --- Note — пункты списков, подвал. 16 на всех экранах -------------------- */
+.text-size-note {
+  font-size: 1rem;
+  line-height: 1.4em;
+  font-weight: var(--weight-body);
+}
+
+
+/* ==========================================================================
+   НАЧЕРТАНИЯ · text-weight-[имя]
+   ==========================================================================
+   Классы ссылаются на слой назначения в tokens.css, а не на числа напрямую.
+   Поэтому «сделать все заголовки чуть легче» — это одна правка в токенах.
+   ========================================================================== */
+.text-weight-normal   { font-weight: var(--weight-body); }      /* 400 */
+.text-weight-medium   { font-weight: var(--weight-emphasis); }  /* 500 */
+.text-weight-semibold { font-weight: var(--weight-strong); }    /* 600 */
+.text-weight-bold     { font-weight: var(--weight-heading); }   /* 700 */
+.text-weight-xbold    { font-weight: var(--weight-xbold); }     /* 800 */
+
+
+/* ==========================================================================
+   ЦВЕТ ТЕКСТА · text-color-[имя]
+   ==========================================================================
+   ⚠️ ВАЖНО ПРО text-color-muted (gray-500).
+      Его контраст на светлом фоне — 3.5:1. По WCAG этого хватает только
+      для КРУПНОГО текста (от 24px, или от 19px полужирным) и для иконок.
+      Для мелких подписей и капшенов берите text-color-secondary (7.1:1).
+   ========================================================================== */
+.text-color-heading    { color: var(--text-heading); }     /* заголовки, violet-900 */
+.text-color-primary    { color: var(--text-primary); }     /* основной текст, gray-700 */
+.text-color-secondary  { color: var(--text-secondary); }   /* пояснения, gray-600 */
+.text-color-muted      { color: var(--text-muted); }       /* только крупное и иконки */
+.text-color-disabled   { color: var(--text-disabled); }    /* плейсхолдер, выключено */
+.text-color-accent     { color: var(--text-accent); }      /* ссылки, теги, violet-700 */
+.text-color-inverse    { color: var(--text-inverse); }     /* заголовки на тёмном */
+.text-color-on-inverse { color: var(--text-on-inverse); }  /* текст на тёмном */
+.text-color-error      { color: var(--error-text); }
+.text-color-success    { color: var(--success-text); }
+
+/* ==========================================================================
+   ВЫРАВНИВАНИЕ · text-align-[имя]
+   ========================================================================== */
+.text-align-left   { text-align: left; }
+.text-align-center { text-align: center; }
+.text-align-right  { text-align: right; }
+
+
+/* ==========================================================================
+   СТИЛЕВЫЕ УТИЛИТЫ · text-style-[имя]
+   ========================================================================== */
+.text-style-nowrap        { white-space: nowrap; }
+.text-style-strikethrough { text-decoration: line-through; }
+.text-style-muted         { opacity: .64; }
+.text-style-balance       { text-wrap: balance; }  /* красивый перенос заголовков */
+
+/* Перенос длинных слов. Русские названия курсов бывают очень длинными —
+   без этого карточка ломается по ширине. */
+.text-style-break         { overflow-wrap: anywhere; }
+
+
+/* ==========================================================================
+   ЗАГОЛОВКИ ПО УМОЛЧАНИЮ + heading-style-[h#]
+   ==========================================================================
+   Правило Client-first v2: семантика (какой это тег) и внешний вид (какого
+   он размера) — разные вещи. Если по смыслу нужен h2, но выглядеть он должен
+   как h3 — ставим <h2 class="heading-style-h3">, а не <h3>.
+   Ломать иерархию заголовков ради размера ЗАПРЕЩЕНО: это ломает SEO.
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: var(--weight-heading); color: var(--text-heading); }
+
+h1, .heading-style-h1 {
+  font-size: 1.875rem; line-height: 1em; letter-spacing: -.06em; font-weight: var(--weight-heading);
+}
+@media (min-width: 32.5625rem) { h1, .heading-style-h1 { font-size: clamp(1.875rem, calc(4.049vw + .5567rem), 2.5rem); } }
+@media (min-width: 48.0625rem) { h1, .heading-style-h1 { font-size: clamp(2.5rem, calc(4.706vw + .2383rem), 3.25rem); } }
+@media (min-width: 64.0625rem) { h1, .heading-style-h1 { font-size: 3.25rem; } }
+
+h2, .heading-style-h2 {
+  font-size: 1.75rem; line-height: 1em; letter-spacing: -.03em; font-weight: var(--weight-heading);
+}
+@media (min-width: 32.5625rem) { h2, .heading-style-h2 { font-size: clamp(1.75rem, calc(1.619vw + 1.2227rem), 2rem); } }
+@media (min-width: 48.0625rem) { h2, .heading-style-h2 { font-size: clamp(2rem, calc(1.569vw + 1.2461rem), 2.25rem); } }
+@media (min-width: 64.0625rem) { h2, .heading-style-h2 { font-size: 2.25rem; } }
+
+h3, .heading-style-h3 {
+  font-size: 1.25rem; line-height: 1.1em; letter-spacing: 0; font-weight: var(--weight-heading);
+}
+@media (min-width: 32.5625rem) { h3, .heading-style-h3 { font-size: clamp(1.25rem, calc(1.619vw + .7227rem), 1.5rem); } }
+@media (min-width: 48.0625rem) { h3, .heading-style-h3 { font-size: 1.5rem; } }
+
+h4, .heading-style-h4 {
+  font-size: 1.125rem; line-height: 1.2em; font-weight: var(--weight-subheading);
+}
+@media (min-width: 48.0625rem) { h4, .heading-style-h4 { font-size: clamp(1.25rem, calc(.784vw + .8731rem), 1.375rem); } }
+
+h5, .heading-style-h5 { font-size: 1.125rem; line-height: 1.2em; font-weight: var(--weight-subheading); }
+h6, .heading-style-h6 { font-size: 1rem;     line-height: 1.3em; font-weight: var(--weight-subheading); }
+
+/* ⚠️ НЕТ ДАННЫХ: h4–h6 в гайде Typo Academy отдельно не описаны.
+      Значения выше — рабочее предположение, дизайну нужно подтвердить. */
+
+
+/* ==========================================================================
+   ТЕКСТОВЫЙ БЛОК · text-rich-text
+   ==========================================================================
+   Для текста, приходящего из CMS одним куском (описание курса, статья).
+   Внутри такого блока классы навесить некуда — стилизуем по тегам.
+   ========================================================================== */
+.text-rich-text > * + *      { margin-top: var(--space-small); }
+.text-rich-text > * + h2,
+.text-rich-text > * + h3     { margin-top: var(--space-medium); }
+.text-rich-text p            { font-size: 1.125rem; line-height: 1.2em; }
+@media (min-width: 64.0625rem) { .text-rich-text p { line-height: 1.4em; } }
+.text-rich-text ul,
+.text-rich-text ol           { padding-left: 1.25rem; }
+.text-rich-text li + li      { margin-top: var(--space-xsmall); }
+.text-rich-text a            { color: var(--text-accent); text-decoration: underline; }

@@ -1,0 +1,15 @@
+import fs from 'node:fs/promises';
+import {renderLeadFormSection} from '../../shared/academy/lead-form-render.mjs';
+const root = new URL('./', import.meta.url);
+const data = JSON.parse(await fs.readFile(new URL('data/lead-form.json', root), 'utf8'));
+const contract = JSON.parse(await fs.readFile(new URL('data/form-contract.json', root), 'utf8'));
+data.nativeMarker = contract.native_tilda_form.discovery.value;
+data.agreementUrl = contract.personal_data.agreement_url;
+data.privacyUrl = contract.personal_data.privacy_url;
+const file = new URL('index.html', root);
+const source = await fs.readFile(file, 'utf8');
+const start = '<!-- lead-form:start -->';
+const end = '<!-- lead-form:end -->';
+if (source.split(start).length !== 2 || source.split(end).length !== 2 || source.indexOf(end) < source.indexOf(start)) throw new Error('lead-form: expected one ordered region');
+const next = source.replace(/<!-- lead-form:start -->[\s\S]*?<!-- lead-form:end -->/, () => `${start}\n${renderLeadFormSection(data, {id: 'application', formId: 'lead-form'})}\n${end}`);
+if (next !== source) await fs.writeFile(file, next);

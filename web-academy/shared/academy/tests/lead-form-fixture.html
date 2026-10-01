@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Consultant form bridge fixture</title>
+    <style>
+      html,
+      body,
+      iframe {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="position:fixed;top:0;left:0;z-index:999;background:white;padding:8px"><button id="run" disabled>Проверить форму</button><output id="result">Загрузка</output></div>
+    <div id="app"></div>
+    <script>
+      
+      const params = new URL(location.href).searchParams;
+      const mode = params.get('event') || 'success';
+      const targetIndex = params.get('target') === 'second' ? 1 : 0;
+      let submitCount = 0;
+      let ready = false;
+
+      (async () => {
+        const project = params.get('project') === 'trauma-therapy' ? 'trauma-therapy' : 'psychologist-consultant';
+        const sourceUrl = new URL('../../../projects/' + project + '/index.html', location.href);
+        const source = new DOMParser().parseFromString(await (await fetch(sourceUrl)).text(), 'text/html');
+        for (const link of source.querySelectorAll('link[rel="stylesheet"]')) {
+          const copy = document.createElement('link'); copy.rel = 'stylesheet'; copy.href = new URL(link.getAttribute('href'), sourceUrl); document.head.append(copy);
+        }
+        const main = source.querySelector('main');
+        main.classList.add(...source.querySelector('.academy-page').classList);
+        if (params.get('forms') === 'two') {
+          const duplicate = source.querySelector('[data-academy-lead-form]').cloneNode(true);
+          duplicate.dataset.tildaFormName = 'fixture-secondary';
+          duplicate.querySelectorAll('[id], [for], [aria-describedby]').forEach(element => {
+            for (const attribute of ['id','for','aria-describedby']) {
+              if (element.hasAttribute(attribute)) element.setAttribute(attribute, 'second-' + element.getAttribute(attribute));
+            }
+          });
+          main.append(duplicate);
+        }
+        for (const media of main.querySelectorAll('[src]')) media.setAttribute('src', new URL(media.getAttribute('src'), sourceUrl));
+        document.querySelector('#app').append(main);
+        for (const script of source.querySelectorAll('script[src]')) await new Promise((resolve, reject) => {
+          const copy = document.createElement('script'); copy.src = new URL(script.getAttribute('src'), sourceUrl); copy.onload = resolve; copy.onerror = reject; document.body.append(copy);
+        });
+        const pageWindow = window;
+        const pageDocument = document;
+        const record = pageDocument.createElement("section");
+
+        record.className = "t-rec";
+        record.innerHTML = `
+          <form class="t-form">
+            <input type="hidden" name="tildaspec-formname" value="trauma-therapy" />
+            <input type="text" name="Name" data-tilda-rule="name" data-tilda-req="1" />
+            <input type="email" name="email" data-tilda-rule="email" />
+
+            <div class="t-input-group t-input-group_ph" data-field-name="Phone">
+              <input class="js-phonemask-result-iso" type="hidden" name="tildaspec-phone-part[]-iso" />
+              <input
+                class="t-input t-input-phonemask"
+                type="tel"
+                name="tildaspec-phone-part[]"
+                data-phonemask-code="+7"
+                data-phonemask-iso="ru"
+              />
+              <input
+                class="js-phonemask-result js-tilda-rule"
+                type="hidden"
+                name="Phone"
+                data-tilda-rule="phone"
+                data-tilda-rule-minlength="18"
+              />
+              <span class="t-input-error"></span>
+            </div>
+
+            <div class="t-input-group t-input-group_contact_method" data-field-name="messenger-type;messenger-id">
+              <input type="radio" name="messenger-type" value="whatsapp" checked />
+              <input type="radio" name="messenger-type" value="telegram" />
+
+              <div class="t-contact-method__telegram-value t-phonemask-input-group t-contact-method__hybrid t-contact-method__hidden">
+                <input class="js-phonemask-result-iso" type="hidden" name="tildaspec-phone-part[]-iso" disabled />
+                <input class="t-input t-input-phonemask" type="tel" name="tildaspec-phone-part[]" disabled />
+                <input class="js-phonemask-result js-tilda-rule" type="hidden" name="messenger-id" data-tilda-rule="phone" data-tilda-rule-minlength="18" disabled />
+                <input class="t-input js-username-input js-tilda-rule" type="text" name="messenger-id" disabled />
+              </div>
+
+              <div class="t-contact-method__whatsapp-value t-phonemask-input-group">
+                <input class="js-phonemask-result-iso" type="hidden" name="tildaspec-phone-part[]-iso" />
+                <input
+                  class="t-input t-input-phonemask"
+                  type="tel"
+                  name="tildaspec-phone-part[]"
+                  data-phonemask-code="+7"
+                  data-phonemask-iso="ru"
+                />
+                <input
+                  class="js-phonemask-result js-tilda-rule"
+                  type="hidden"
+                  name="messenger-id"
+                  data-tilda-rule="phone"
+                  data-tilda-rule-minlength="18"
+                />
+              </div>
+              <span class="t-input-error"></span>
+            </div>
+
+            <button type="submit">Отправить</button>
+          </form>
+        `;
+
+        const nativeForm = record.querySelector("form");
+        nativeForm.querySelector('input[name="tildaspec-formname"]').value = pageDocument.querySelectorAll('[data-academy-lead-form]')[targetIndex].dataset.tildaFormName;
+        const messengerGroup = nativeForm.querySelector(".t-input-group_contact_method");
+        const telegramFields = messengerGroup.querySelector(
+          ".t-contact-method__telegram-value",
+        );
+        const maxFields = messengerGroup.querySelector(
+          ".t-contact-method__whatsapp-value",
+        );
+
+        const renderMessenger = () => {
+          const isTelegram =
+            messengerGroup.querySelector('input[name="messenger-type"]:checked')
+              ?.value === "telegram";
+
+          telegramFields.classList.toggle("t-contact-method__hidden", !isTelegram);
+          maxFields.classList.toggle("t-contact-method__hidden", isTelegram);
+          telegramFields.querySelectorAll("input").forEach((input) => {
+            input.disabled =
+              !isTelegram || !(input.name === "messenger-id" && input.type === "text");
+          });
+          maxFields.querySelectorAll("input").forEach((input) => {
+            input.disabled = isTelegram;
+          });
+        };
+
+        messengerGroup
+          .querySelectorAll('input[name="messenger-type"]')
+          .forEach((input) => input.addEventListener("change", renderMessenger));
+
+        pageWindow.t_form_phonemask__setValue = (group, phone) => {
+          const digits = String(phone).replace(/\D/g, "");
+          const national = digits.startsWith("7") ? digits.slice(1, 11) : digits;
+          const formattedNational = national.replace(
+            /^(\d{3})(\d{3})(\d{2})(\d{2})$/,
+            "($1) $2-$3-$4",
+          );
+          const visible = group.querySelector(
+            'input.t-input-phonemask:not([type="hidden"])',
+          );
+
+          visible.value = formattedNational;
+          visible.dataset.phonemaskCode = "+7";
+          visible.dataset.phonemaskCurrent = formattedNational;
+          visible.dataset.phonemaskIso = "ru";
+          group.querySelectorAll(".js-phonemask-result").forEach((input) => {
+            input.value = `+7 ${formattedNational}`;
+          });
+          group.querySelectorAll(".js-phonemask-result-iso").forEach((input) => {
+            input.value = "ru";
+          });
+        };
+
+        nativeForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          submitCount++;
+
+          const phone = nativeForm.querySelector('input[name="Phone"]');
+          const activeMessenger = nativeForm.querySelector(
+            'input[name="messenger-id"]:not(:disabled)',
+          );
+          const inactiveContactValues = [
+            ...messengerGroup.querySelectorAll(
+              'input[name="messenger-id"]:disabled, input[name="tildaspec-phone-part[]"]:disabled, input[name="tildaspec-phone-part[]-iso"]:disabled',
+            ),
+          ].map((input) => input.value);
+          const isValid =
+            phone.value.length >= 18 &&
+            Boolean(activeMessenger?.value) &&
+            inactiveContactValues.every((value) => !value);
+
+          pageWindow.__formBridgeFixture = {
+            isValid,
+            values: {
+              Name: nativeForm.querySelector('input[name="Name"]').value,
+              email: nativeForm.querySelector('input[name="email"]').value,
+              Phone: phone.value,
+              messengerType: nativeForm.querySelector(
+                'input[name="messenger-type"]:checked',
+              ).value,
+              messengerId: activeMessenger?.value || "",
+              inactiveContactValues,
+            },
+          };
+
+          if (!isValid || mode === "validation") {
+            phone.closest(".t-input-group").classList.add("js-error-control-box");
+            return;
+          }
+
+          pageWindow.setTimeout(() => {
+            pageWindow.__fixtureEventDispatched = true;
+            if (mode === "captcha") return;
+            pageDocument.dispatchEvent(
+              new pageWindow.CustomEvent(mode === "error" ? "tildaform:aftererror" : "tildaform:aftersuccess", {
+                detail: mode === "unscoped" ? {} : { form: mode === "unrelated" ? pageDocument.createElement("form") : nativeForm },
+              }),
+            );
+          }, 50);
+        });
+
+        pageDocument.body.append(record);
+        renderMessenger();
+        if (mode === 'missing') record.remove();
+        const enableRun = () => { ready = true; document.querySelector('#run').disabled = false; document.querySelector('#result').textContent = 'Готово'; };
+        if (params.get('init') === 'twice') {
+          const again = pageDocument.createElement('script'); again.src = '../lead-form.js?fixture=twice'; again.onload = enableRun; pageDocument.body.append(again);
+        } else enableRun();
+
+        if (new URL(window.location.href).searchParams.get("messenger") === "telegram") {
+          const customTelegram = pageDocument.querySelectorAll('[data-academy-lead-form]')[targetIndex].querySelector('input[name="messenger"][value="telegram"]');
+
+          customTelegram.checked = true;
+          customTelegram.dispatchEvent(
+            new pageWindow.Event("change", { bubbles: true }),
+          );
+        }
+      })().catch(error => { document.querySelector('#result').textContent = String(error); });
+
+      document.querySelector('#run').addEventListener('click', async () => {
+        if (!ready) return;
+        const result = document.querySelector('#result');
+        const win = window; const doc = document;
+        const form = doc.querySelectorAll('[data-academy-lead-form]')[targetIndex];
+        const submit = form.querySelector('[data-lead-submit]');
+        const put = (name, value) => { const input = form.elements[name]; input.value = value; input.dispatchEvent(new win.Event('input', {bubbles:true})); };
+        put('name', 'Локальный тест'); put('email', 'preview@example.com'); put('phone', '9991234567');
+        put(params.get('messenger') === 'telegram' ? 'telegramContact' : 'maxContact', params.get('messenger') === 'telegram' ? '@preview_user' : '9997654321');
+        const deadline = Date.now() + 15000;
+        while (submit.disabled && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 50));
+        if (submit.disabled) { result.textContent = JSON.stringify({passed:false,reason:'validation not ready'}); return; }
+        submit.click();
+        const settleDeadline = Date.now() + 15000;
+        while (Date.now() < settleDeadline) {
+          const currentStatus = form.querySelector('[data-lead-status]');
+          const eventDone = win.__fixtureEventDispatched;
+          const waitingMode = ['captcha','unrelated','unscoped'].includes(mode);
+          if (waitingMode ? eventDone : (!form.querySelector('[data-lead-success]').hidden || currentStatus.dataset.state === 'error')) break;
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        const busy = submit.getAttribute('aria-busy') === 'true';
+        const success = !form.querySelector('[data-lead-success]').hidden;
+        const status = form.querySelector('[data-lead-status]');
+        const fixture = win.__formBridgeFixture;
+        const waitExpected = ['captcha','unrelated','unscoped'].includes(mode);
+        const errorExpected = ['error','validation','missing'].includes(mode);
+        const passed = mode === 'missing' ? submitCount === 0 && status.dataset.state === 'error' && !success :
+          submitCount === 1 && fixture?.isValid && (waitExpected ? busy && !success : errorExpected ? !busy && !success && status.dataset.state === 'error' : success && !busy);
+        result.textContent = JSON.stringify({passed,mode,submitCount,busy,success,status:status.textContent,values:fixture?.values,phoneInstances:doc.querySelectorAll('.lead-form_control > .iti').length,otherSuccessHidden:[...doc.querySelectorAll('[data-academy-lead-form]')].filter(e=>e!==form).every(e=>e.querySelector('[data-lead-success]').hidden),duplicateIds:[...doc.querySelectorAll('[id]')].map(e=>e.id).filter((id,index,ids)=>ids.indexOf(id)!==index),preserved:form.elements.name.value === 'Локальный тест'});
+      });
+    </script>
+  </body>
+</html>

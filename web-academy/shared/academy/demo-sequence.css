@@ -1,0 +1,10 @@
+.demo-sequence_item { position: relative; transform: scale(1); transition: opacity var(--demo-motion-duration, 200ms) ease-out, transform var(--demo-motion-duration, 200ms) ease-out, box-shadow var(--demo-motion-duration, 200ms) ease-out; }
+.is-sequence-enhanced .demo-sequence_item:not(.is-visible) { opacity: 0; transform: scale(0.94); }
+.demo-sequence_item.is-emphasized { z-index: 1; transform: scale(1.04); box-shadow: 0 0.5rem 1.125rem rgb(28 27 29 / 18%); }
+@media (max-width: 47.9375rem), (pointer: coarse) {
+  .demo-sequence_item.is-emphasized { transform: scale(1.02); box-shadow: 0 0.25rem 0.625rem rgb(28 27 29 / 14%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-sequence_item, .demo-sequence_item.is-emphasized { transform: none; box-shadow: none; transition: none; }
+  .is-sequence-enhanced .demo-sequence_item:not(.is-visible) { opacity: 1; transform: none; }
+}

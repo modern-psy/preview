@@ -1,0 +1,53 @@
+/* Course-owned illustrative interfaces. Shared owns navigation and panel layout. */
+.oxford-demo_canvas {
+  --demo-text-size: 0.75rem;
+  --demo-title-size: 1rem;
+  --demo-rail-width: 2.5rem;
+  display: grid; place-items: center; width: 100%; min-width: 0;
+  max-width: 22.25rem; min-height: 14.8125rem; padding: 1rem;
+  border-radius: var(--radius-card); background: #4c3c5e;
+  color: var(--color-text-primary); font-size: var(--demo-text-size); line-height: 1.2; letter-spacing: -0.01em;
+  box-shadow: 0 1.1875rem 2.625rem rgb(28 27 29 / 10%);
+}
+.oxford-demo_note { display: flex; width: 100%; max-width: 29.0625rem; min-width: 0; min-height: 12.8125rem; border-radius: var(--radius-card); overflow: hidden; background: #dad6ff; }
+.oxford-demo_rail { display: flex; flex: 0 0 var(--demo-rail-width); align-items: end; justify-content: center; padding-bottom: 1rem; background: #c8c4e9; }
+.oxford-demo_avatar { display: block; flex: none; width: 1.5rem; height: 1.5rem; object-fit: cover; border-radius: 50%; }
+.oxford-demo_content { display: flex; flex: 1; flex-direction: column; justify-content: space-between; gap: 1.25rem; min-width: 0; padding: 1rem 1rem 1rem 0.625rem; }
+.oxford-demo_body { display: flex; flex-direction: column; align-items: start; gap: 0.5rem; min-width: 0; }
+.oxford-demo_title { margin: 0; font-size: var(--demo-title-size); font-weight: 700; line-height: 1.2; }
+.oxford-demo_text { margin: 0; font-size: var(--demo-text-size); font-weight: 400; line-height: 1.2; width: 100%; }
+.oxford-demo_tag { display: inline-flex; align-items: center; gap: 0.25rem; max-width: 100%; margin: 0; padding: 0.25rem 0.375rem; border-radius: 1.5rem; background: #c8c4e9; color: #5e5a6a; font-weight: 600; }
+.oxford-demo_action { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-weight: 500; }
+.oxford-demo_arrow { display: grid; place-items: center; flex: 0 0 1.5rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--color-accent-primary); }
+.oxford-demo_icon { display: inline-block; flex: 0 0 0.75rem; width: 0.75rem; height: 0.75rem; }
+.oxford-demo_eyebrow { display: flex; align-items: center; gap: 0.25rem; margin: 0; color: #644ab2; font-weight: 500; }
+.oxford-demo_options, .oxford-demo_steps { display: flex; flex-direction: column; align-items: start; gap: 0.25rem; padding: 0; margin: 0; list-style: none; }
+.oxford-demo_option { display: flex; gap: 0.25rem; align-items: center; }
+.oxford-demo_radio { display: grid; flex: none; width: 0.75rem; height: 0.75rem; }
+.oxford-demo_radio > .oxford-demo_icon { grid-area: 1 / 1; }
+.oxford-demo_radio-selected { opacity: 0; }
+.is-selected .oxford-demo_radio-selected { opacity: 1; }
+.is-selected .oxford-demo_radio-empty { opacity: 0; }
+.typewriter_component.is-playing .is-selected .oxford-demo_radio-selected { animation: oxford-choice-bounce var(--demo-motion-duration, 200ms) ease-out both; }
+@keyframes oxford-choice-bounce {
+  0% { transform: scale(0.82); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .typewriter_component.is-playing .is-selected .oxford-demo_radio-selected { animation: none; }
+}
+.oxford-demo_cases { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 29.0625rem; margin: 0; padding: 0; list-style: none; }
+.oxford-demo_case { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: #dad6ff; border-radius: var(--radius-card); min-width: 0; }
+.oxford-demo_case > .oxford-demo_avatar { width: 2.5rem; height: 2.5rem; }
+.oxford-demo_case-copy { flex: 1; min-width: 0; }
+@media (min-width: 32.5625rem) {
+  .oxford-demo_canvas { --demo-text-size: 0.875rem; --demo-title-size: 1.125rem; --demo-rail-width: 2.875rem; max-width: 33rem; min-height: 17.125rem; }
+  .oxford-demo_note { min-height: 12.5rem; }
+}
+@media (min-width: 48rem) {
+  .oxford-demo_canvas { max-width: 43.9375rem; min-height: 24.25rem; padding: 2rem; }
+}
+@media (min-width: 64.0625rem) {
+  .oxford-demo_canvas { max-width: 40.9375rem; min-height: 24.5rem; padding: clamp(1rem, 2.2vw, 2rem); }
+}

@@ -1,0 +1,1240 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap");
+
+/* ==========================================================================
+   Токены. Палитра снята с макета Figma 840:1261 и совпадает с действующим
+   контрактом АЛВИ (site/healthy-sleep/styles/tokens.css), поэтому значения
+   переиспользованы, а не заведены заново. Новое здесь — только акцент скидки.
+   ========================================================================== */
+
+.rpp-training-page {
+  --font-family-primary: "Raleway", Arial, sans-serif;
+
+  --color-brand-950: #343171;
+  --color-brand-900: #413e84;
+  --color-brand-700: #5753a7;
+  --color-brand-200: #e8e5f5;
+  --color-brand-100: #f1eeff;
+  --color-page: #f7f7f9;
+  --color-surface: #ffffff;
+  --color-tag: #e8e8f9;
+  --color-text-primary: #0d172a;
+  --color-text-secondary: rgba(13, 23, 42, 0.59);
+  --color-text-muted: #909090;
+  --color-text-inverse: #ffffff;
+  --color-accent-sale: #fa8a8a;
+  --color-focus: rgba(65, 62, 132, 0.3);
+
+  --radius-card: 1.25rem;          /* 20px — замерено по карточкам макета */
+  --radius-hero: 1.5rem;
+  --radius-note: 0.75rem;
+  --radius-tag: 0.625rem;
+  --radius-pill: 3.5rem;
+
+  --container-large: 72.5rem;      /* 1160px — замерено: контент 380…1540 */
+  --page-gutter: 1.5rem;
+  --page-gutter-mobile: 1rem;
+  --grid-gap: 1.25rem;             /* 20px — карточки-кейсы, ценности, формат */
+  --grid-gap-tight: 1rem;          /* 16px — карточки-цели, занятия, вопросы */
+  --section-space: 8rem;
+  --anchor-gap: 1.5rem;
+  --anchor-header-offset: 0px;
+
+  --font-size-h1: 2.25rem;         /* 36px / 43px — замерено по строкам макета */
+  --font-size-h2: 3rem;            /* 48px */
+  --font-size-h3: 1.75rem;
+  --font-size-card-title: 1.25rem;
+  --font-size-body: 1.125rem;
+  --font-size-body-small: 1rem;
+  --line-height-body: 1.625rem;
+  --letter-spacing-body: -0.0135rem;
+  --letter-spacing-button: 0.0225rem;
+}
+
+@media (max-width: 61.9375rem) {
+  .rpp-training-page {
+    --font-size-h1: 2rem;
+    --font-size-h2: 2.5rem;
+    --section-space: 5.5rem;
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  .rpp-training-page {
+    --font-size-h1: 1.875rem;
+    --font-size-h2: 2.25rem;
+    --font-size-h3: 1.5rem;
+    --page-gutter: var(--page-gutter-mobile);
+    --section-space: 4rem;
+    --grid-gap: 1rem;
+    --anchor-gap: 1rem;
+  }
+}
+
+@media (max-width: 32.5rem) {
+  .rpp-training-page {
+    --font-size-h1: 1.75rem;
+    --font-size-h2: 2rem;
+  }
+}
+
+/* ==========================================================================
+   База
+   ========================================================================== */
+
+.rpp-training-page,
+.rpp-training-page *,
+.rpp-training-page *::before,
+.rpp-training-page *::after {
+  box-sizing: border-box;
+}
+
+.rpp-training-page {
+  min-width: 0;
+  padding: 1.5rem 0 3.75rem;
+  overflow-x: clip;
+  background: var(--color-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-primary);
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.rpp-training-page :where(h1, h2, h3, p, ol, ul) {
+  margin: 0;
+}
+
+.rpp-training-page :where(ol, ul) {
+  padding: 0;
+  list-style: none;
+}
+
+.rpp-training-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rpp-training-page :where(img, svg) {
+  display: block;
+}
+
+.rpp-training-page :where(section[id]) {
+  scroll-margin-top: calc(var(--anchor-header-offset) + var(--anchor-gap));
+}
+
+.rpp-training-page .icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 47.9375rem) {
+  .rpp-training-page {
+    padding-top: 1rem;
+  }
+}
+
+@scope (.rpp-training-page) {
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+:scope .padding-global {
+  width: 100%;
+  padding-right: var(--page-gutter);
+  padding-left: var(--page-gutter);
+}
+
+:scope .container-large {
+  width: 100%;
+  max-width: var(--container-large);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Сиреневая полоса во всю ширину окна (формат участия + программа). */
+.band {
+  width: 100vw;
+  margin-top: var(--section-space);
+  margin-left: calc(50% - 50vw);
+  padding: 3.5rem 0 3rem;
+  background: var(--color-brand-100);
+}
+
+.band_inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-space);
+}
+
+/* ==========================================================================
+   Типографика. Самостоятельные классы: не требуют предка страницы,
+   секции, блока или карточки.
+   ========================================================================== */
+
+.heading-style-h2 {
+  font-size: var(--font-size-h2);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03rem;
+}
+
+.heading-style-h3 {
+  font-size: var(--font-size-h3);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: min(100%, 53.125rem);
+}
+
+.section-heading_copy {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+
+/* ==========================================================================
+   Иконки
+   ========================================================================== */
+
+.icon-check {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: 0 0 1.125rem;
+  margin-top: 0.25rem;
+  color: var(--color-brand-700);
+}
+
+.icon-calendar {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: 0 0 1.125rem;
+  color: currentColor;
+}
+
+.icon-spark {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Общий список с круглой галочкой — используется в hero, программе и цене. */
+.check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+
+/* ==========================================================================
+   Хлебные крошки
+   ========================================================================== */
+
+.breadcrumbs {
+  min-width: 0;
+  margin-bottom: 1.1875rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  scrollbar-width: none;
+}
+
+.breadcrumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.breadcrumbs_list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.375rem;
+}
+
+.breadcrumbs_list > * {
+  flex: 0 0 auto;
+}
+
+.breadcrumbs a:hover {
+  color: var(--color-brand-900);
+}
+
+.breadcrumbs_dot {
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 50%;
+  background: var(--color-brand-700);
+}
+
+.breadcrumbs_current {
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 622fr) minmax(0, 538fr);
+  min-height: 40rem;
+  overflow: hidden;
+  border-radius: var(--radius-hero);
+  background: var(--color-surface);
+}
+
+.hero-layout_content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+  padding: 1.5rem;
+}
+
+.hero-layout_copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hero-layout_tag {
+  align-self: flex-start;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-tag);
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.hero-layout_title {
+  font-size: var(--font-size-h1);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero-layout_lead {
+  color: var(--color-text-muted);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.hero-layout_points {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.hero-layout_points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+
+.hero-layout_start {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 0.0625rem solid var(--color-brand-200);
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.hero-layout_actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+
+.hero-layout_media {
+  min-width: 0;
+}
+
+.hero-layout_media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ==========================================================================
+   Кнопки
+   ========================================================================== */
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: var(--letter-spacing-button);
+  text-align: center;
+  transition: background-color 200ms ease, color 200ms ease, transform 120ms ease;
+}
+
+.cta-button:active {
+  transform: scale(0.98);
+}
+
+.cta-button:focus-visible {
+  outline: 0.1875rem solid var(--color-focus);
+  outline-offset: 0.1875rem;
+}
+
+.cta-button.is-primary {
+  background: var(--color-brand-900);
+  color: var(--color-text-inverse);
+}
+
+.cta-button.is-primary:hover {
+  background: var(--color-brand-950);
+}
+
+.cta-button.is-secondary {
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
+}
+
+.cta-button.is-secondary:hover {
+  background: #d9d5ee;
+}
+
+/* ==========================================================================
+   Над чем будем работать
+   ========================================================================== */
+
+.section_goals {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2.25rem;
+}
+
+.case-grid,
+.format-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  align-items: stretch;
+}
+
+.goal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap-tight);
+  align-items: stretch;
+}
+
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.goal-card_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 2.25rem;
+  border-radius: var(--radius-note);
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
+}
+
+.goal-card_text {
+  font-size: var(--font-size-body-small);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Когда программа будет полезна / Какие навыки останутся
+   ========================================================================== */
+
+.section_cases,
+.section_skills {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: var(--section-space);
+}
+
+.case-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--color-brand-100);
+}
+
+.case-card_title {
+  font-size: var(--font-size-card-title);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.case-card_text {
+  font-size: var(--font-size-body-small);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Формат участия
+   ========================================================================== */
+
+.section_format {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.format-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.format-facts li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+
+.format-facts strong {
+  font-weight: 700;
+}
+
+.format-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.format-card_title {
+  font-size: var(--font-size-card-title);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.format-card_text {
+  font-size: var(--font-size-body-small);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Из чего состоит программа
+   ========================================================================== */
+
+.section_curriculum {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.section_curriculum .lesson-list {
+  margin-bottom: 0.5rem;
+}
+
+.lesson-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gap-tight);
+}
+
+.lesson {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.lesson_summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.6875rem 2rem 0.875rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.lesson_summary::-webkit-details-marker {
+  display: none;
+}
+
+.lesson_summary:focus-visible {
+  outline: 0.1875rem solid var(--color-focus);
+  outline-offset: -0.1875rem;
+  border-radius: var(--radius-card);
+}
+
+.lesson_badge {
+  flex: 0 0 auto;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-900);
+  color: var(--color-text-inverse);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.lesson_title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-card-title);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Круглый маркер раскрытия: шеврон вверх, в закрытом состоянии повёрнут вниз. */
+.lesson_marker {
+  position: relative;
+  width: 2.125rem;
+  height: 2.125rem;
+  flex: 0 0 2.125rem;
+  border: 0.0625rem solid var(--color-brand-900);
+  border-radius: 50%;
+  transition: background-color 200ms ease;
+}
+
+.lesson_marker::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top: 0.09375rem solid var(--color-brand-900);
+  border-left: 0.09375rem solid var(--color-brand-900);
+  content: "";
+  transform: translate(-50%, -30%) rotate(45deg);
+  transition: transform 250ms ease;
+}
+
+.lesson:not([open]) .lesson_marker::before {
+  transform: translate(-50%, -70%) rotate(225deg);
+}
+
+.lesson_summary:hover .lesson_marker {
+  background: var(--color-brand-100);
+}
+
+.lesson_body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 0 2rem 1.5rem;
+}
+
+/* В занятии пункты идут сплошным ритмом 30px, без дополнительного зазора. */
+.lesson_body .check-list {
+  gap: 0;
+}
+
+.lesson_body .check-list li {
+  line-height: 1.875rem;
+}
+
+.lesson_body .check-list .icon-check {
+  margin-top: 0.375rem;
+}
+
+/* Плашка цели уже карточки: замерено 931px при карточке 1160px. */
+.lesson_goal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-width: 58.1875rem;
+  padding: 1.125rem 1.25rem 0.875rem;
+  border-radius: var(--radius-note);
+  background: var(--color-brand-100);
+  font-size: var(--font-size-body-small);
+  line-height: 1.5625rem;
+}
+
+.lesson_goal-label {
+  font-weight: 700;
+}
+
+.curriculum_cta {
+  align-self: flex-start;
+  min-width: 22.5rem;
+}
+
+/* ==========================================================================
+   Ведущая и стоимость
+   ========================================================================== */
+
+.section_enroll {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: var(--section-space);
+}
+
+.section_enroll > .heading-style-h2 {
+  width: min(100%, 53.125rem);
+}
+
+.enroll-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  align-items: start;
+}
+
+.author-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.author-card_photo {
+  width: 10.625rem;
+  height: 10.625rem;
+  flex: 0 0 10.625rem;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.author-card_info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.author-card_name {
+  font-size: var(--font-size-card-title);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.author-card_tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.author-card_tags li {
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-tag);
+  background: var(--color-tag);
+  font-size: var(--font-size-body-small);
+  line-height: 1.375rem;
+}
+
+.author-card_text {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+
+.price-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--color-brand-100);
+}
+
+.price-card_badge {
+  position: absolute;
+  top: -1.125rem;
+  right: -0.75rem;
+  padding: 0.625rem 1.125rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-sale);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.price-card_label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-small);
+  line-height: 1.4;
+}
+
+.price-card_note {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-note);
+  background: var(--color-brand-200);
+  font-size: var(--font-size-body-small);
+  line-height: 1.5;
+}
+
+.price-card_note-title {
+  font-weight: 600;
+}
+
+.price-card_note strong {
+  font-weight: 700;
+}
+
+.price-card_when {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.price-card_when-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-brand-900);
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.price-card_when-note {
+  font-size: var(--font-size-body-small);
+  line-height: 1.4;
+}
+
+.price-card_total {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: auto;
+}
+
+.price-card_sum {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.price-card_sum strong {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.045rem;
+}
+
+.price-card_sum s {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-small);
+}
+
+.price-card_terms {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+}
+
+.price-card_cta {
+  width: 100%;
+}
+
+/* ==========================================================================
+   Наши ценности
+   ========================================================================== */
+
+.section_values {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: var(--section-space);
+}
+
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  align-items: stretch;
+}
+
+.value-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.value-card_icon {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.value-card_title {
+  font-size: var(--font-size-card-title);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.value-card_text {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-small);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+
+.section_faq {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: var(--section-space);
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gap-tight);
+}
+
+.faq-item {
+  border-radius: var(--radius-card);
+  background: var(--color-brand-100);
+}
+
+.faq-item_summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.75rem 2rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-item_summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item_summary:focus-visible {
+  outline: 0.1875rem solid var(--color-focus);
+  outline-offset: -0.1875rem;
+  border-radius: var(--radius-card);
+}
+
+.faq-item_question {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-card-title);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Круглый маркер: минус в раскрытом состоянии, плюс в закрытом. */
+.faq-item_marker {
+  position: relative;
+  width: 2.125rem;
+  height: 2.125rem;
+  flex: 0 0 2.125rem;
+  border: 0.0625rem solid var(--color-brand-900);
+  border-radius: 50%;
+  transition: background-color 200ms ease;
+}
+
+.faq-item_marker::before,
+.faq-item_marker::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: var(--color-brand-900);
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.faq-item_marker::before {
+  width: 0.75rem;
+  height: 0.09375rem;
+}
+
+.faq-item_marker::after {
+  width: 0.09375rem;
+  height: 0.75rem;
+  opacity: 0;
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.faq-item:not([open]) .faq-item_marker::after {
+  opacity: 1;
+}
+
+.faq-item_summary:hover .faq-item_marker {
+  background: var(--color-brand-200);
+}
+
+.faq-item_answer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 2rem 1.75rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-small);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-button,
+  .lesson_marker,
+  .lesson_marker::before,
+  .faq-item_marker,
+  .faq-item_marker::after {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Адаптация. Desktop-first: узкие брейкпоинты переопределяют только то,
+   что действительно меняется.
+   ========================================================================== */
+
+@media (max-width: 61.9375rem) {
+  .hero-layout {
+    grid-template-columns: minmax(0, 1.1fr) minmax(15rem, 0.9fr);
+    min-height: 0;
+  }
+
+  .hero-layout_lead {
+    font-size: 1.25rem;
+  }
+
+  .cta-button {
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
+    font-size: var(--font-size-body-small);
+  }
+
+  /* Кнопки перестраиваются в столбец сами, как только перестают помещаться. */
+  .hero-layout_actions {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+
+  .band {
+    padding: 3rem 0 2.5rem;
+  }
+
+  .goal-grid,
+  .case-grid,
+  .format-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .curriculum_cta {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  .breadcrumbs {
+    margin-bottom: 1rem;
+  }
+
+  .hero-layout {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  /* В колоночной раскладке высоту диктует само изображение, поэтому
+     пропорция задаётся ему, а не контейнеру. */
+  .hero-layout_media img {
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
+
+  .hero-layout_content {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .hero-layout_lead {
+    font-size: 1.125rem;
+  }
+
+  .section_goals {
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .goal-grid,
+  .case-grid,
+  .format-grid,
+  .enroll-layout,
+  .value-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section_cases,
+  .section_skills,
+  .section_enroll,
+  .section_values,
+  .section_faq,
+  .section_format {
+    gap: 2rem;
+  }
+
+  .band {
+    padding: 3rem 0;
+  }
+
+  .case-card,
+  .format-card,
+  .value-card,
+  .author-card,
+  .price-card {
+    padding: 1.25rem;
+  }
+
+  .lesson_summary,
+  .faq-item_summary {
+    gap: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .lesson_body,
+  .faq-item_answer {
+    padding: 0 1.25rem 1.25rem;
+  }
+
+  .lesson_title,
+  .faq-item_question,
+  .case-card_title,
+  .format-card_title,
+  .value-card_title {
+    font-size: 1.125rem;
+  }
+
+  .price-card_badge {
+    top: -0.875rem;
+    right: 0;
+  }
+}
+
+@media (max-width: 32.5rem) {
+  .hero-layout_content {
+    padding: 1.25rem 1rem;
+  }
+
+  .hero-layout_actions {
+    grid-template-columns: 1fr;
+  }
+
+  /* Бейдж занятия переносится над заголовком: в строку они не помещаются. */
+  .lesson_summary {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .lesson_badge {
+    order: -1;
+  }
+
+  .lesson_title {
+    flex: 1 1 100%;
+  }
+
+  .lesson_marker {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+
+  .lesson {
+    position: relative;
+  }
+
+  .lesson_summary {
+    padding-right: 4rem;
+  }
+
+  .author-card_photo {
+    width: 8.75rem;
+    height: 8.75rem;
+    flex-basis: 8.75rem;
+  }
+
+  .price-card_sum strong {
+    font-size: 2rem;
+  }
+}
+}
+
+/* ==========================================================================
+   Интеграция с Tilda. Каждое переопределение привязано к этому лендингу.
+   Хедер и футер остаются нативными блоками Tilda и здесь не стилизуются.
+   ========================================================================== */
+
+#allrecords .rpp-training-page :where(ul, ol) {
+  padding-left: 0 !important;
+}
+
+#allrecords .rpp-training-page .cta-button.is-primary {
+  color: var(--color-text-inverse) !important;
+}
+
+#allrecords .rpp-training-page .cta-button.is-secondary {
+  color: var(--color-brand-900) !important;
+}
+
+#allrecords .rpp-training-page .lesson_badge,
+#allrecords .rpp-training-page .price-card_badge {
+  color: var(--color-text-inverse) !important;
+}
+
+html:has(.rpp-training-page) {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.rpp-training-page) {
+    scroll-behavior: auto;
+  }
+}

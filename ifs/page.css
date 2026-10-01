@@ -1,0 +1,2716 @@
+/* ============================================================================
+   СТИЛИ СТРАНИЦЫ «ТЕРАПИЯ ВНУТРЕННИХ СЕМЕЙНЫХ СИСТЕМ (IFS)»
+   ============================================================================
+
+   Файл самодостаточный: дизайн-система из /design-system сюда не подключается.
+   Сетка, имена классов и брейкпоинты — как на /psihosomatika и
+   /klinicheskaya-baza (в конечном счёте — с /trauma-therapy).
+
+   СЕТКА (1680 = 80 + 1520 + 80)
+     .padding-global   боковые поля страницы, от 16px на телефоне до 80px
+     .container-xlarge содержимое, максимум 1520px (95rem)
+     Внутри блоков шаг сетки — 16px (1rem).
+
+   БРЕЙКПОИНТЫ
+     до 480px   одна колонка везде
+     от 768px   планшет: две колонки, крупнее поля
+     от 992px   десктоп: три колонки, «взрослая» типографика
+
+   ПАЛИТРА
+     Снята с живой страницы /ifs: фон #eff2f9, текст #1d1d33,
+     сиреневые плашки #d7d6ef, фиолетовый акцент #7766c6.
+
+   ПОРЯДОК РАЗДЕЛОВ
+     0. Переменные и сброс
+     1. Каркас страницы
+     2. Общие детали: кнопки, плашки, карточки, заголовки, списки
+     3. Первый экран и плитка фактов
+     4. «Как IFS работает» — карточки с фото
+     5. «Как вы будете учиться» — таймлайн
+     6. «Чему научитесь» — сиреневая плашка
+     7. Преподаватель
+     8. Программа — модули и занятия
+     9. Пакет супервизий
+    10. Удостоверение
+    11. «Почему выбирают нас»
+    12. Модули и цены
+    13. Форма заявки
+    14. Вопросы и ответы
+    15. Планшет (от 768px)
+    16. Десктоп (от 992px)
+    17. Мелкие экраны и особые случаи
+    18. Защита от общих стилей Тильды
+   ========================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   0. ПЕРЕМЕННЫЕ И СБРОС
+   ---------------------------------------------------------------------------
+   Цвета сняты с живой страницы. Менять их нужно здесь, а не по месту.
+   --------------------------------------------------------------------------- */
+
+.ifs-page {
+  /* Цвет */
+  --color-page-background: #eff2f9;
+  --color-surface-primary: #ffffff;
+  --color-surface-lavender: #d7d6ef;
+  --color-surface-soft: #f3f2fb;
+  --color-text-primary: #1d1d33;
+  --color-text-secondary: #585873;
+  --color-text-muted: #8a8aa0;
+  --color-text-on-dark: #ffffff;
+  --color-accent-primary: #7766c6;
+  --color-accent-hover: #6656b5;
+  --color-accent-soft: #d7d6ef;
+  --color-accent-light: #c9c2f2;
+  --color-surface-dark: #1d1d33;
+  --color-surface-dark-soft: #2c2c47;
+  --color-text-on-dark-muted: #b9b8cf;
+  --color-focus: #7766c6;
+  --color-divider: #d7d6ef;
+  --color-placeholder: #e4e6f0;
+
+  /* Типографика. Размеры тянутся от 375px до 1680px ширины экрана. */
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+  --text-hero-size: clamp(2.25rem, 5.5vw, 3.5rem);
+  --text-section-size: clamp(1.875rem, 3.6vw, 2.75rem);
+  --text-block-size: clamp(1.625rem, 2.8vw, 2.25rem);
+  --text-card-size: clamp(1.25rem, 1.9vw, 1.5rem);
+  --text-lead-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  --text-body-size: clamp(1rem, 1.3vw, 1.125rem);
+  --text-note-size: clamp(0.9375rem, 1.1vw, 1rem);
+  --text-price-size: clamp(1.5rem, 2.4vw, 2rem);
+
+  /* Сетка и отступы */
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --section-gap: clamp(3.5rem, 6.5vw, 7rem);
+  --grid-gap: 1rem;
+  --radius-card: 1rem;
+  --radius-inner: 0.75rem;
+  --radius-button: 0.5rem;
+  --panel-padding: clamp(1.25rem, 3.8vw, 4rem);
+  --transition-site: 180ms ease;
+
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.ifs-page,
+.ifs-page *,
+.ifs-page *::before,
+.ifs-page *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #eff2f9;
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+}
+
+.ifs-page :where(h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, figure, blockquote, fieldset, legend) {
+  margin: 0;
+  padding: 0;
+}
+
+.ifs-page :where(ul, ol) {
+  list-style: none;
+}
+
+.ifs-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ifs-page img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* Ссылка «перейти к содержимому» — видна только при переходе с клавиатуры */
+.skip-link {
+  position: absolute;
+  z-index: 100;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #1d1d33;
+  font: 500 1rem/1.2 "Wix Madefor Text", Arial, sans-serif;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Атрибут hidden сильнее, чем display у компонентов */
+.ifs-page [hidden] {
+  display: none !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   1. КАРКАС СТРАНИЦЫ
+   --------------------------------------------------------------------------- */
+
+.padding-global {
+  width: 100%;
+  padding-right: var(--page-padding, clamp(1rem, 4.7619vw, 5rem));
+  padding-left: var(--page-padding, clamp(1rem, 4.7619vw, 5rem));
+}
+
+.container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge, 95rem);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Узкая колонка — 1160px вместо 1520px, для аккордеона FAQ */
+.container-xlarge.is-narrow {
+  max-width: 72.5rem;
+}
+
+.main-wrapper {
+  display: block;
+}
+
+/* Первый экран прижат к верху, остальные секции разделены одним отступом */
+.section_hero {
+  padding-top: clamp(1.5rem, 2.1vw, 2.25rem);
+}
+
+.section_method,
+.section_practice,
+.section_process,
+.section_skills,
+.section_teacher,
+.section_program,
+.section_supervision,
+.section_document,
+.section_academy,
+.section_payment,
+.section_signup,
+.section_faq {
+  padding-top: var(--section-gap);
+}
+
+/* Последняя секция страницы не должна упираться в подвал Тильды */
+.section_faq {
+  padding-bottom: var(--section-gap);
+}
+
+/* Якоря: содержимое не приклеивается к верхней границе экрана */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. ОБЩИЕ ДЕТАЛИ
+   --------------------------------------------------------------------------- */
+
+/* --- Кнопки ------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border: 0;
+  border-radius: var(--radius-button, 0.5rem);
+  font-family: inherit;
+  font-size: var(--text-lead-size, 1.25rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    color var(--transition-site);
+}
+
+.button.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button.is-accent:not(:disabled):hover {
+    background: var(--color-accent-hover);
+  }
+}
+
+/* --- Плашки формата («Повышение квалификации», «Онлайн») ----------------- */
+
+.meta-pill_list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.meta-pill_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  background: var(--color-surface-lavender);
+  color: var(--color-accent-primary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* «Онлайн» — без подложки, с зелёной точкой */
+.meta-pill_component.is-plain {
+  padding-right: 0;
+  padding-left: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+}
+
+.meta-pill_dot {
+  display: inline-block;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: #34c759;
+  align-self: flex-start;
+}
+
+/* --- Сиреневая плашка-контейнер ------------------------------------------ */
+
+.panel_component {
+  padding: var(--panel-padding);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-lavender);
+}
+
+/* --- Карточки ----------------------------------------------------------- */
+
+.card-grid_component {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.card_component {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 2vw, 1.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.card_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.card_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* --- Заголовок секции --------------------------------------------------- */
+
+.section_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-section-size);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.section_description {
+  max-width: 44rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.section-intro_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* --- Список с галочками ------------------------------------------------- */
+
+.check-list_component {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.check-list_item {
+  position: relative;
+  padding-left: 1.75rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.check-list_item::before {
+  position: absolute;
+  top: 0.2em;
+  left: 0;
+  width: 1rem;
+  height: 1rem;
+  background: url("icons/icon-check.svg") center / contain no-repeat;
+  content: "";
+}
+
+.check-list_component.is-compact {
+  gap: 0.625rem;
+}
+
+/* --- Пункт с иконкой слева и текстом справа ------------------------------ */
+
+.feature-list_component {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.feature-list_item {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.feature-list_icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  margin-top: 0.125rem;
+}
+
+.feature-list_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.feature-list_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.feature-list_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. ПЕРВЫЙ ЭКРАН И ПЛИТКА ФАКТОВ
+   ---------------------------------------------------------------------------
+   Фотография во всю ширину контейнера со скруглением, поверх неё — плашки
+   сверху, заголовок и кнопки снизу, карточка «70 часов» в правом нижнем
+   углу. Под фотографией — плитка из трёх карточек-фактов.
+   --------------------------------------------------------------------------- */
+
+.hero_component {
+  display: grid;
+  width: 100%;
+  gap: var(--grid-gap);
+}
+
+.hero_media {
+  position: relative;
+  display: grid;
+  min-height: 37.5rem;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  isolation: isolate;
+}
+
+.hero_image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 66% center;
+}
+
+/* Затемнение, чтобы белый текст читался на любой фотографии */
+.hero_media::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(0 0 0 / 0%) 30%,
+      rgb(0 0 0 / 25%) 60%,
+      rgb(0 0 0 / 60%) 100%
+    ),
+    rgb(0 0 0 / 15%);
+  content: "";
+  pointer-events: none;
+}
+
+/* Плашки на фотографии: белые, «Онлайн» — фиолетовая */
+.hero_media .meta-pill_list {
+  justify-content: center;
+  padding: 1rem;
+}
+
+.hero_media .meta-pill_component {
+  border-radius: 999px;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+}
+
+.hero_media .meta-pill_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.hero_content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  align-self: end;
+  gap: 2rem;
+  padding: 1.5rem 1rem;
+  color: var(--color-text-on-dark);
+  text-align: center;
+}
+
+.hero_copy,
+.hero_actions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.hero_copy {
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero_heading {
+  display: flex;
+  width: 100%;
+  max-width: 44rem;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.hero_heading-main {
+  font-size: var(--text-hero-size);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.hero_heading-sub {
+  font-size: var(--text-card-size);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.hero_description {
+  width: 100%;
+  max-width: 44rem;
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.hero_actions {
+  max-width: 38.3125rem;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+/* Белая и «стеклянная» кнопки на фотографии */
+.button.is-light {
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+}
+
+.button.is-outline-light {
+  border: 1px solid rgb(255 255 255 / 60%);
+  background: rgb(255 255 255 / 8%);
+  color: var(--color-text-on-dark);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button.is-light:hover {
+    background: var(--color-surface-lavender);
+  }
+
+  .button.is-outline-light:hover {
+    background: rgb(255 255 255 / 14%);
+  }
+}
+
+/* Карточка «70 академических часов». На телефоне встаёт под фотографией */
+.hero_stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-lavender);
+  color: var(--color-text-primary);
+}
+
+.hero_stat-value {
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.hero_stat-label {
+  max-width: 14rem;
+  font-size: var(--text-note-size);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* --- Плитка фактов под карточкой ------------------------------------------ */
+
+.hero-facts_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.hero-facts_card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: clamp(1.25rem, 2vw, 1.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.hero-facts_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.hero-facts_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.hero-facts_card.is-dark {
+  background: var(--color-surface-dark);
+}
+
+.hero-facts_card.is-dark .hero-facts_heading {
+  color: var(--color-text-on-dark);
+}
+
+.hero-facts_card.is-dark .hero-facts_description {
+  color: var(--color-text-on-dark-muted);
+}
+
+/* Карточка документов (как на /rft и /psihosomatika): две колонки — текст
+   в своей, иллюстрация в своей. Удостоверение стоит под углом и выходит
+   за край карточки, лишнее срезает сама карточка. На телефоне колонка
+   с картинкой уходит вниз. */
+.hero-facts_card.is-documents {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  overflow: clip;
+}
+
+.hero-facts_copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hero-facts_media {
+  position: relative;
+  min-height: 8rem;
+}
+
+/* На телефоне картинка меньше и опущена ниже, чтобы повёрнутый угол
+   не залезал на текст над ней */
+.hero-facts_illustration {
+  position: absolute;
+  top: 1.5rem;
+  right: -12%;
+  width: 62%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-inner);
+  background: var(--color-placeholder);
+  transform: rotate(-9deg);
+  transform-origin: center;
+}
+
+.hero-facts_illustration img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  object-position: left top;
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. «КАК IFS РАБОТАЕТ НА ПРАКТИКЕ» — КАРТОЧКИ С ФОТО
+   --------------------------------------------------------------------------- */
+
+.method_component,
+.practice_component,
+.process_component,
+.skills_component,
+.teacher_component,
+.program_component,
+.payment_component,
+.faq_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.photo-card_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.photo-card_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 2vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+/* Фото 3:2 со скруглением. Серый фон виден, пока оно грузится */
+.photo-card_media {
+  position: relative;
+  aspect-ratio: 358 / 250;
+  margin-bottom: 0.75rem;
+  overflow: clip;
+  border-radius: var(--radius-inner);
+  background: var(--color-placeholder);
+}
+
+.photo-card_media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-card_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.photo-card_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. «КАК ВЫ БУДЕТЕ УЧИТЬСЯ» — ТАЙМЛАЙН
+   ---------------------------------------------------------------------------
+   Белая карточка, внутри слева шаги с сиреневой вертикальной линией
+   и кружками, справа фотография.
+   --------------------------------------------------------------------------- */
+
+.process_component {
+  padding: var(--panel-padding);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.process_layout {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.timeline_component {
+  display: grid;
+  min-width: 0;
+  gap: 1.5rem;
+}
+
+.timeline_step {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 2.5rem;
+}
+
+/* Линия между кружками */
+.timeline_step::before {
+  position: absolute;
+  top: 0.5rem;
+  bottom: -1.5rem;
+  left: 0.5rem;
+  width: 2px;
+  background: var(--color-surface-lavender);
+  content: "";
+}
+
+.timeline_step:last-child::before {
+  bottom: 0;
+}
+
+/* Кружок шага */
+.timeline_step::after {
+  position: absolute;
+  top: 0.25rem;
+  left: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: var(--color-surface-lavender);
+  content: "";
+}
+
+.timeline_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.timeline_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Плашка «Занятия проходят только онлайн» */
+.timeline_note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-button);
+  background: var(--color-page-background);
+  color: var(--color-accent-primary);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.3;
+  align-self: flex-start;
+}
+
+.timeline_note img {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+}
+
+.process_media {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1400 / 1876;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-placeholder);
+}
+
+.process_media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* ---------------------------------------------------------------------------
+   6. «ЧЕМУ ВЫ НАУЧИТЕСЬ» — СИРЕНЕВАЯ ПЛАШКА
+   --------------------------------------------------------------------------- */
+
+.skills_component .card_component {
+  padding: clamp(1.25rem, 2vw, 1.5rem) clamp(1.25rem, 2vw, 1.5rem) clamp(1.75rem, 2.6vw, 2.5rem);
+}
+
+
+/* ---------------------------------------------------------------------------
+   7. ПРЕПОДАВАТЕЛЬ
+   ---------------------------------------------------------------------------
+   Одна широкая белая карточка: фото слева, справа имя, роль, плашки
+   с регалиями и факты биографии в две колонки.
+   --------------------------------------------------------------------------- */
+
+.teacher_card {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 2.5vw, 2.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+/* Фото: квадрат со скруглением, сиреневая подложка видна за прозрачным png */
+.teacher_media {
+  position: relative;
+  width: min(100%, 16rem);
+  aspect-ratio: 1;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-lavender);
+}
+
+.teacher_media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.teacher_body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.teacher_intro {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.teacher_name {
+  color: var(--color-text-primary);
+  font-size: var(--text-block-size);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.teacher_role {
+  max-width: 36rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.teacher_tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.teacher_tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  background: var(--color-surface-lavender);
+  color: var(--color-accent-primary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+/* Факты биографии — с галочкой, разделены тонкими линиями */
+.teacher_facts {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 2rem;
+  border-top: 1px solid var(--color-divider);
+}
+
+.teacher_fact {
+  position: relative;
+  padding: 0.875rem 0 0.875rem 1.75rem;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.teacher_fact::before {
+  position: absolute;
+  top: calc(0.875rem + 0.2em);
+  left: 0;
+  width: 1rem;
+  height: 1rem;
+  background: url("icons/icon-check.svg") center / contain no-repeat;
+  content: "";
+}
+
+
+/* ---------------------------------------------------------------------------
+   8. ПРОГРАММА ОБУЧЕНИЯ — РАСКРЫТИЕ ВБОК (как на /psihosomatika)
+   ---------------------------------------------------------------------------
+   Тёмная секция. Слева колонка кнопок-модулей, справа панель с занятиями
+   выбранного модуля. На узких экранах колонки складываются: список сверху,
+   панель под ним. Переключение — page.js; без скрипта виден первый модуль.
+   --------------------------------------------------------------------------- */
+
+.section_program .padding-global {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.program_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding:
+    clamp(2.5rem, 5vw, 5rem)
+    var(--page-padding)
+    clamp(2.5rem, 5vw, 5rem);
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  background: var(--color-surface-dark);
+}
+
+/* Заголовок секции по центру и на тёмном фоне */
+.section-intro_component.is-centered {
+  align-items: center;
+  text-align: center;
+}
+
+.section_heading.is-on-dark {
+  color: var(--color-text-on-dark);
+}
+
+.section_description.is-on-dark {
+  color: var(--color-text-on-dark-muted);
+}
+
+.program_layout {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.program_nav {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.program_tab {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1.125rem 1.25rem;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-surface-dark-soft);
+  color: var(--color-text-on-dark);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-site);
+}
+
+.program_tab[aria-selected="true"] {
+  background: var(--color-accent-primary);
+}
+
+.program_tab:focus-visible {
+  outline: 2px solid var(--color-accent-light);
+  outline-offset: 2px;
+}
+
+.program_tab-label {
+  color: var(--color-accent-light);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.program_tab[aria-selected="true"] .program_tab-label {
+  color: rgb(255 255 255 / 75%);
+}
+
+.program_tab-title {
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .program_tab:not([aria-selected="true"]):hover {
+    background: #3a3a58;
+  }
+}
+
+/* Панель модуля */
+.program_panels {
+  min-width: 0;
+}
+
+.program_panel {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: clamp(1.5rem, 2.6vw, 2.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+/* Панель выезжает сбоку при переключении — класс вешает page.js */
+.program_panel.is-entering {
+  animation: program-slide-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes program-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.program_panel-heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-block-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+.program_panel-lead {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Занятия модуля — разделены тонкими линиями */
+.program_lessons {
+  display: grid;
+  min-width: 0;
+}
+
+.program_lesson {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--color-divider);
+}
+
+.program_lesson:last-child {
+  padding-bottom: 0;
+}
+
+.program_lesson-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.program_lesson-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.program_lesson-date {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  line-height: 1.3;
+}
+
+.program_lesson-heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.program_list-title {
+  color: var(--color-accent-primary);
+  font-size: var(--text-note-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.program_topics {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.program_topic {
+  position: relative;
+  padding-left: 1.25rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Сиреневая точка-маркер */
+.program_topic::before {
+  position: absolute;
+  top: 0.5em;
+  left: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--color-accent-primary);
+  content: "";
+}
+
+/* Сиреневая плашка внутри панели («Условие участия») */
+.program_result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-inner);
+  background: var(--color-surface-lavender);
+}
+
+.program_result-text {
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+
+/* ---------------------------------------------------------------------------
+   9. ПАКЕТ СУПЕРВИЗИЙ
+   --------------------------------------------------------------------------- */
+
+.supervision_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.supervision_intro {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.supervision_intro .section_description {
+  max-width: 60rem;
+}
+
+/* Одна белая карточка: содержание слева, сиреневая врезка с ценой справа */
+.supervision_card {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  padding: clamp(1.25rem, 2vw, 1.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.supervision_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.supervision_offer {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: clamp(1.25rem, 2vw, 1.5rem);
+  border-radius: var(--radius-inner);
+  background: var(--color-surface-lavender);
+}
+
+.supervision_offer-label {
+  color: var(--color-accent-primary);
+  font-size: var(--text-note-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.supervision_price-value {
+  color: var(--color-text-primary);
+  font-size: var(--text-price-size);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.supervision_offer-note {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.supervision_seats {
+  color: var(--color-accent-primary);
+  font-size: var(--text-note-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.supervision_offer-button {
+  margin-top: 0.75rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   10. УДОСТОВЕРЕНИЕ
+   --------------------------------------------------------------------------- */
+
+.document_component {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+}
+
+.document_copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.document_license {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+/* Квадратное фото со скруглением. Серый фон виден, пока оно грузится */
+.document_media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-placeholder);
+}
+
+.document_media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* ---------------------------------------------------------------------------
+   11. АКАДЕМИЯ — перенесено из /psihosomatika
+   ---------------------------------------------------------------------------
+   Плитка из четырёх карточек: зал, сообщество, выпускники, преподаватели.
+   Картинки намеренно упираются в края карточек — лишнее срезает overflow.
+   --------------------------------------------------------------------------- */
+
+.academy_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2.5rem, 6.835vw, 4.375rem);
+}
+
+.academy_heading {
+  width: 100%;
+  color: var(--color-text-primary);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.academy-showcase_layout,
+.academy-showcase_grid,
+.academy-showcase_side-grid {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.academy-showcase_layout {
+  --color-surface-primary: #ffffff;
+  --color-surface-inverse: #2b2334;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  --color-text-on-dark: #e6e5eb;
+  --color-text-muted-on-dark: #bdb7b7;
+  --radius-card: 1rem;
+  --radius-medium: 0.5rem;
+  --radius-small: 0.25rem;
+}
+
+.academy-showcase_card {
+  position: relative;
+  min-width: 0;
+  min-height: 24.5rem;
+  padding: clamp(1.25rem, 2.419vw, 1.5rem);
+  overflow: hidden;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  isolation: isolate;
+}
+
+.academy-showcase_card.is-practice {
+  min-height: 32rem;
+  background: #e9e9e9;
+}
+
+.academy-showcase_practice-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  overflow: clip;
+  border-radius: inherit;
+}
+
+.academy-showcase_practice-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.academy-showcase_card-copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  width: min(100%, 37.5rem);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.academy-showcase_card-heading,
+.academy-showcase_card-description {
+  width: 100%;
+  font-weight: 400;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.academy-showcase_card-heading {
+  color: var(--color-text-primary);
+  font-size: clamp(1.5rem, 3.516vw, 2.25rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.academy-showcase_card-description {
+  color: #6e6e70;
+  font-size: clamp(1rem, 2.016vw, 1.25rem);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.academy-showcase_community-media {
+  position: absolute;
+  right: -6%;
+  bottom: 0;
+  z-index: 1;
+  width: 72%;
+}
+
+.academy-showcase_community-glow {
+  position: absolute;
+  top: 46.54%;
+  left: -23.37%;
+  z-index: -1;
+  width: 70.36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  filter: blur(clamp(4.5rem, 8vw, 6.6875rem));
+}
+
+.academy-showcase_community-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.academy-showcase_card.is-graduates {
+  background: var(--color-surface-inverse);
+}
+
+.academy-showcase_card.is-graduates .academy-showcase_card-heading {
+  color: var(--color-text-on-dark);
+}
+
+.academy-showcase_card.is-graduates .academy-showcase_card-description {
+  color: var(--color-text-muted-on-dark);
+  letter-spacing: 0;
+}
+
+.academy-showcase_graduates-media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.academy-showcase_graduates-primary {
+  position: absolute;
+  top: 52.55%;
+  right: 1rem;
+  width: clamp(8.75rem, 23.94%, 11.25rem);
+  aspect-ratio: 1;
+}
+
+.academy-showcase_graduates-primary img,
+.academy-showcase_graduate-avatar {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  object-fit: cover;
+}
+
+.academy-showcase_graduates-glow {
+  position: absolute;
+  top: 13.33%;
+  left: -18.89%;
+  z-index: 0;
+  width: 162.22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #371462;
+  filter: blur(clamp(5rem, 9vw, 8.125rem));
+}
+
+.academy-showcase_graduate-avatar {
+  position: absolute;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.academy-showcase_graduate-avatar.is-small {
+  top: 23.98%;
+  right: 1rem;
+  width: clamp(4rem, 10.77%, 5.0625rem);
+}
+
+.academy-showcase_graduate-avatar.is-medium {
+  bottom: 4.85%;
+  left: 12%;
+  width: clamp(5rem, 14.63%, 6.875rem);
+}
+
+.academy-showcase_card.is-teachers {
+  display: grid;
+  min-height: 15rem;
+  grid-template-columns: minmax(0, 53.125rem) 15rem;
+  align-items: start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.academy-showcase_card-copy.is-teachers {
+  width: min(100%, 53.125rem);
+}
+
+.academy-showcase_teachers-media {
+  display: flex;
+  width: 15rem;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.academy-showcase_teachers-image {
+  display: block;
+  width: 100%;
+  height: 10.25rem;
+  border-radius: var(--radius-medium);
+  object-fit: cover;
+  object-position: center top;
+}
+
+.academy-showcase_teachers-controls {
+  display: grid;
+  width: 100%;
+  height: 1.25rem;
+  grid-template-columns: 3.75rem minmax(0, 1fr);
+  gap: 0.25rem;
+}
+
+.academy-showcase_teachers-control,
+.academy-showcase_teachers-status {
+  border-radius: var(--radius-small);
+}
+
+.academy-showcase_teachers-control {
+  background: #484845;
+}
+
+.academy-showcase_teachers-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1875rem;
+  background: var(--color-accent-primary);
+}
+
+.academy-showcase_teachers-status span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+}
+
+
+/* ---------------------------------------------------------------------------
+
+
+/* ---------------------------------------------------------------------------
+   12. МОДУЛИ, ЦЕНЫ И ФОРМА ЗАЯВКИ
+   ---------------------------------------------------------------------------
+   Один тёмный блок, как на /psihosomatika: слева заголовок, тарифы строками
+   с разделителями и подводка, справа белая карточка с полями во всю высоту.
+   Отправка — через скрытую форму Тильды (см. page.js).
+   --------------------------------------------------------------------------- */
+
+.signup_component {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  padding: clamp(1.5rem, 4vw, 5rem);
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  background: var(--color-surface-dark);
+}
+
+.signup_copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.signup_heading {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* Сиреневый акцент внутри заголовка: на тёмном блоке — светлее */
+.accent-word {
+  color: var(--color-accent-primary);
+}
+
+.signup_heading .accent-word {
+  color: var(--color-accent-light);
+}
+
+.signup_description {
+  max-width: 36rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* --- Тарифы строками ------------------------------------------------------ */
+
+.tariff_list {
+  display: grid;
+  min-width: 0;
+  margin-top: 0.75rem;
+}
+
+.tariff_item {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid rgb(255 255 255 / 15%);
+}
+
+.tariff_item:last-child {
+  border-bottom: 1px solid rgb(255 255 255 / 15%);
+}
+
+/* «Сразу все модули» — сиреневая плашка внутри тёмного блока */
+.tariff_item.is-featured {
+  margin: 0.5rem 0;
+  padding: 1.25rem 1.25rem;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-accent-primary);
+}
+
+.tariff_item.is-featured + .tariff_item {
+  border-top: 1px solid rgb(255 255 255 / 15%);
+}
+
+.tariff_copy {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 14rem;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tariff_name {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.tariff_meta {
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.tariff_item.is-featured .tariff_meta {
+  color: rgb(255 255 255 / 80%);
+}
+
+.tariff_price {
+  flex: none;
+  color: var(--color-accent-light);
+  font-size: var(--text-price-size);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.tariff_item.is-featured .tariff_price {
+  color: var(--color-text-on-dark);
+}
+
+/* Пока цена грузится из CMS — чуть прозрачная, чтобы не «прыгала» */
+.tariff_price.is-cms-loading,
+[data-cms].is-cms-loading {
+  opacity: 0.55;
+  transition: opacity var(--transition-site);
+}
+
+.signup_note {
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.signup_note strong {
+  color: var(--color-text-on-dark);
+  font-weight: 500;
+}
+
+/* --- Белая карточка формы ------------------------------------------------- */
+
+.lead-form_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.25rem, 2.2vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.lead-form_intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.lead-form_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.lead-form_lead {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.lead-form_field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lead-form_label {
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.lead-form_input {
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-inner);
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  transition: border-color var(--transition-site);
+}
+
+.lead-form_input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.lead-form_input:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-primary);
+}
+
+/* Поле с ошибкой подсвечивает page.js */
+.lead-form_input[aria-invalid="true"] {
+  border-color: #c8502f;
+}
+
+.lead-form_messengers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 0;
+}
+
+.lead-form_messengers legend {
+  /* Сброс особого поведения <legend>: без float браузер сам прижимает
+     легенду к рамке fieldset и не даёт отступа до кнопок */
+  float: left;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.lead-form_messenger-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Кнопка-переключатель мессенджера: скрытая радиокнопка + рамка */
+.lead-form_messenger {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.lead-form_messenger input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lead-form_messenger span {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  background: var(--color-page-background);
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    border-color var(--transition-site),
+    color var(--transition-site);
+}
+
+.lead-form_messenger input:checked + span {
+  border-color: var(--color-accent-primary);
+  color: var(--color-text-primary);
+}
+
+.lead-form_messenger input:focus-visible + span {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.button.is-full-width {
+  width: 100%;
+}
+
+.lead-form_submit {
+  margin-top: 0.5rem;
+}
+
+/* Статус отправки: заполняет page.js */
+.lead-form_status {
+  min-height: 1.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.lead-form_status[data-state="error"] {
+  color: #c8502f;
+}
+
+.lead-form_status[data-state="success"] {
+  color: #2c7a1f;
+}
+
+.lead-form_consent {
+  margin-top: auto;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.lead-form_consent a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+
+/* ---------------------------------------------------------------------------
+   13. ВОПРОСЫ И ОТВЕТЫ — перенесено из /psihosomatika
+   --------------------------------------------------------------------------- */
+
+.faq_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.faq_header {
+  display: flex;
+  width: min(100%, 52.9375rem);
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.faq_heading {
+  width: 100%;
+  color: var(--color-text-primary);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.faq_list {
+  width: 100%;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.faq_item:not(:last-child) {
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.accordion_summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.accordion_summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion_summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -4px;
+}
+
+.faq_question {
+  display: grid;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) 2.0625rem;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-site);
+}
+
+.faq_question-heading {
+  color: inherit;
+  font-size: clamp(1.125rem, 1.9vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.faq_item[open] .faq_question,
+.faq_item[data-accordion-state="opening"] .faq_question {
+  color: var(--color-text-primary);
+}
+
+/* Плюс, который поворачивается в минус */
+.accordion_icon {
+  position: relative;
+  display: block;
+  width: 2.0625rem;
+  height: 2.0625rem;
+  flex: none;
+  color: inherit;
+  transform: rotate(0deg);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.accordion_icon::before,
+.accordion_icon::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.accordion_icon::before {
+  width: 1.25rem;
+  height: 1.5px;
+}
+
+.accordion_icon::after {
+  width: 1.5px;
+  height: 1.25rem;
+}
+
+.accordion_item[open] .accordion_icon,
+.accordion_item[data-accordion-state="opening"] .accordion_icon {
+  transform: rotate(-45deg);
+}
+
+.accordion_item[data-accordion-state="closing"] .accordion_icon {
+  transform: rotate(0deg);
+}
+
+.accordion_panel {
+  min-width: 0;
+  overflow: clip;
+}
+
+.faq_answer-inner {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.faq_answer p {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .faq_item:not([open]):hover .faq_question {
+    color: var(--color-text-primary);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   15. ПЛАНШЕТ — от 768px
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 48rem) {
+  .card-grid_component,
+  .hero-facts_list,
+  .photo-card_list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Пакет супервизий: содержание слева, врезка с ценой справа */
+  .supervision_card {
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  /* Карточка документов на планшете — во всю строку, текст и картинка рядом */
+  .hero-facts_card.is-documents {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) 35%;
+    gap: 1.5rem;
+  }
+
+  .hero-facts_media {
+    min-height: 0;
+  }
+
+  .hero-facts_illustration {
+    top: -4%;
+    right: -22%;
+    width: 118%;
+  }
+
+  .feature-list_component {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+  }
+
+  .hero_media .meta-pill_list {
+    justify-content: flex-start;
+    padding: 1.5rem;
+  }
+
+  .hero_content {
+    padding: 1.5rem;
+  }
+
+  .process_layout {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .teacher_card {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .teacher_media {
+    width: 100%;
+  }
+
+  .document_component {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .signup_component {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 3rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   16. ДЕСКТОП — от 992px
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 62rem) {
+  .photo-card_list,
+  .feature-list_component {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Плитка фактов: две обычные карточки и карточка документов вдвое шире */
+  .hero-facts_list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .hero-facts_card.is-documents {
+    grid-column: span 2;
+  }
+
+  .feature-list_component {
+    gap: 2rem;
+  }
+
+  /* --- Первый экран: текст слева, плашки по той же линии --- */
+  .hero_media {
+    min-height: 43.75rem;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .hero_image {
+    object-position: 80% center;
+  }
+
+  .hero_media::after {
+    background: rgb(0 0 0 / 25%);
+  }
+
+  .hero_media .meta-pill_list {
+    padding: 1.5rem 0;
+  }
+
+  .hero_content {
+    width: min(100%, 44rem);
+    align-items: flex-start;
+    padding: 1.5rem 0 2rem;
+    text-align: left;
+  }
+
+  .hero_copy {
+    align-items: flex-start;
+  }
+
+  .hero_actions {
+    flex-direction: row;
+  }
+
+  .hero_actions .button.is-full-width {
+    width: auto;
+  }
+
+  /* Карточка «70 часов» — в правом нижнем углу фотографии */
+  .hero_stat {
+    position: absolute;
+    right: clamp(1.5rem, 3.5vw, 3.5rem);
+    bottom: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .process_layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr);
+    gap: 3rem;
+  }
+
+  .process_media {
+    max-width: 30rem;
+    justify-self: end;
+  }
+
+  .teacher_card {
+    grid-template-columns: 18rem minmax(0, 1fr);
+    gap: 3rem;
+  }
+
+  .teacher_facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .document_component {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4rem;
+  }
+
+  /* Программа: список модулей слева, панель справа */
+  .program_layout {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: start;
+  }
+
+  .program_nav {
+    position: sticky;
+    top: 2rem;
+  }
+
+  /* Форма: тарифы слева, поля справа; белая карточка на всю высоту блока */
+  .signup_component {
+    grid-template-columns: minmax(0, 689fr) minmax(0, 551fr);
+    align-items: stretch;
+    gap: clamp(2.5rem, 5vw, 6rem);
+  }
+}
+
+
+/* FAQ на планшете и шире: просторнее */
+@media screen and (min-width: 48rem) {
+  .faq_component {
+    gap: 3rem;
+  }
+
+  .faq_question {
+    min-height: 4.625rem;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .faq_answer-inner {
+    padding-right: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+}
+
+/* Блок карточек Академии перенесён целиком из /psihosomatika. */
+/* Блок карточек Академии перенесён целиком из /klinicheskaya-baza. */
+@media screen and (max-width: 61.9375rem) {
+  .academy-showcase_card.is-teachers {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+  }
+}
+
+@media screen and (max-width: 47.9375rem) {
+  .academy-showcase_card.is-community,
+  .academy-showcase_card.is-graduates {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .academy-showcase_community-media {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(88%, 26rem);
+    margin-top: clamp(2rem, 8vw, 3.5rem);
+    margin-right: -1.5rem;
+    margin-bottom: -1.5rem;
+    margin-left: auto;
+  }
+
+  .academy-showcase_graduates-media {
+    position: relative;
+    inset: auto;
+    display: grid;
+    width: 100%;
+    margin-top: clamp(2.5rem, 10vw, 4rem);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr) minmax(0, 0.65fr);
+    align-items: end;
+    gap: clamp(0.75rem, 3vw, 1.25rem);
+  }
+
+  .academy-showcase_graduates-primary {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(100%, 11.25rem);
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(100%, 5.0625rem);
+    margin-bottom: clamp(2rem, 8vw, 3.5rem);
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: min(100%, 6.875rem);
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .academy-showcase_card.is-teachers {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .academy-showcase_teachers-media {
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .academy-showcase_teachers-image {
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
+}
+
+@media screen and (max-width: 32.5rem) {
+  .academy-showcase_card {
+    padding: 1.25rem;
+  }
+}
+
+@media screen and (min-width: 48rem) {
+  .academy-showcase_card.is-practice {
+    min-height: 0;
+    aspect-ratio: 47 / 50;
+  }
+
+  .academy-showcase_community-media {
+    right: 3.19%;
+    width: 55.19%;
+  }
+
+  .academy-showcase_graduates-primary {
+    right: 9.57%;
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    right: 4.26%;
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    left: 43.75%;
+  }
+}
+
+@media screen and (min-width: 62rem) {
+  .academy-showcase_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .academy-showcase_card.is-practice {
+    min-height: 0;
+    aspect-ratio: 47 / 50;
+  }
+
+  .academy-showcase_side-grid {
+    height: 100%;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .academy-showcase_card {
+    min-height: 0;
+  }
+}
+
+@media screen and (min-width: 32.5625rem) and (max-width: 47.9375rem) {
+  .academy-showcase_community-media {
+    width: clamp(18rem, 46vw, 22rem);
+  }
+
+  .academy-showcase_graduates-primary {
+    width: clamp(8rem, 18vw, 9rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    width: clamp(3.5rem, 8vw, 4rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    width: clamp(4.5rem, 11vw, 5.5rem);
+  }
+}
+
+@media screen and (min-width: 48rem) and (max-width: 61.9375rem) {
+  .academy-showcase_community-media {
+    width: clamp(19rem, 45vw, 26rem);
+  }
+
+  .academy-showcase_graduates-primary {
+    width: clamp(7.5rem, 15vw, 9rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    width: clamp(3.5rem, 7vw, 4.25rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    width: clamp(4.5rem, 10vw, 5.75rem);
+  }
+}
+
+@media screen and (min-width: 62rem) and (max-width: 89.9375rem) {
+  .academy-showcase_card-heading {
+    font-size: clamp(
+      1.5rem,
+      calc(2.6786vw - 0.1607rem),
+      2.25rem
+    );
+  }
+
+  .academy-showcase_card-description {
+    font-size: clamp(
+      1rem,
+      calc(0.8929vw + 0.4464rem),
+      1.25rem
+    );
+  }
+
+  .academy-showcase_community-media {
+    width: clamp(9rem, calc(47vw - 20.125rem), 55.19%);
+  }
+
+  .academy-showcase_graduates-primary {
+    width: clamp(6rem, calc(12.95vw - 2.03125rem), 9.625rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    width: clamp(2.75rem, calc(5.58vw - 0.709375rem), 4.3125rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    width: clamp(3.5rem, calc(8.48vw - 1.75625rem), 5.875rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   17. МЕЛКИЕ ЭКРАНЫ И ОСОБЫЕ СЛУЧАИ
+   --------------------------------------------------------------------------- */
+
+/* На телефоне фотография выше, а текст прижат к низу: сверху остаётся
+   свободное место, и героиня в кадре видна целиком, а не за заголовком */
+@media screen and (max-width: 47.9375rem) {
+  .hero_media {
+    min-height: 60rem;
+  }
+
+  .hero_image {
+    object-position: 75% top;
+  }
+}
+
+/* Ниже 480px все сетки карточек — в одну колонку */
+@media screen and (max-width: 30rem) {
+  .card-grid_component,
+  .hero-facts_list,
+  .photo-card_list,
+  .feature-list_component {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+}
+
+/* Пользователь попросил меньше движения — убираем переходы и анимации */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .ifs-page *,
+  .ifs-page *::before,
+  .ifs-page *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   18. ЗАЩИТА ОТ ОБЩИХ СТИЛЕЙ ТИЛЬДЫ
+   ---------------------------------------------------------------------------
+   В шапке сайта на Тильде стоит правило вида a { color: inherit !important }.
+   Оно сильнее наших обычных объявлений, поэтому ссылки, которые выглядят как
+   кнопки, теряют свой цвет.
+
+   🔴 Это «броня», а не оформление. Цвета здесь те же, что и в основных
+   правилах. Если меняете цвет кнопки выше по файлу — поменяйте и здесь,
+   иначе правка не подействует.
+   --------------------------------------------------------------------------- */
+
+.ifs-page .button.is-accent {
+  color: var(--color-text-on-dark) !important;
+}
+
+.ifs-page .button.is-light {
+  color: var(--color-text-primary) !important;
+}
+
+.ifs-page .button.is-outline-light {
+  color: var(--color-text-on-dark) !important;
+}
+
+.ifs-page .lead-form_consent a {
+  color: var(--color-accent-primary) !important;
+}
+
+/* Ссылка «перейти к содержимому» лежит выше .ifs-page, поэтому селектор свой */
+.skip-link {
+  color: #1d1d33 !important;
+}

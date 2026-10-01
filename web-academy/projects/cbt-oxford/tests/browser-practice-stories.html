@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>КПТ — истории: проверка</title>
+<style>body{font:14px system-ui}iframe{display:block;border:1px solid #aaa;max-width:none}pre{white-space:pre-wrap;max-height:8rem;overflow:auto}</style>
+<h1>Проверка историй студентов</h1>
+<pre id="result">Выполняется…</pre>
+<iframe id="preview" width="1440" height="900"></iframe>
+<script type="module">
+const results=[];
+const check=(name,pass,detail='')=>results.push({name,pass:!!pass,detail});
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const nextFrame=target=>new Promise(resolve=>target.requestAnimationFrame(()=>target.requestAnimationFrame(resolve)));
+
+try {
+  const frame=globalThis.document.querySelector('#preview');
+  const html=await fetch('../tilda/preview.html').then(response=>response.text());
+  const loaded=new Promise(resolve=>frame.onload=resolve);
+  frame.srcdoc=html;
+  await loaded;
+  await frame.contentDocument.fonts.ready;
+  await wait(250);
+
+  const previewDocument=frame.contentDocument;
+  const previewWindow=frame.contentWindow;
+  const names=['Тамара Карькова','Дана Качура','Ксения Вакорина','Елизавета Вакула','Валерия Чуприянова'];
+  const cards=[...previewDocument.querySelectorAll('.practice-stories_item')];
+  const component=previewDocument.querySelector('.practice-stories_component');
+  const sticky=previewDocument.querySelector('.practice-stories_sticky');
+  const smallHeading=previewDocument.querySelector('#recognition .content-heading_component.is-card');
+  let desktopMediaHeight=0;
+  check('Names and heading semantics',cards.length===names.length&&cards.every((card,index)=>card.querySelector('h3.review-card_name')?.textContent===names[index]));
+
+  for (const width of [375,520,521,767,768,1024,1025,1440]) {
+    frame.width=width;
+    await nextFrame(previewWindow);
+    const nameStyle=previewWindow.getComputedStyle(cards[0].querySelector('.review-card_name'));
+    const headingStyle=previewWindow.getComputedStyle(smallHeading);
+    const copyStyle=previewWindow.getComputedStyle(cards[0].querySelector('.review-card_copy'));
+    const captionStyle=previewWindow.getComputedStyle(cards[0].querySelector('.review-card_caption'));
+    const expectedGap=width<768?8:12;
+    const expectedTop=width<=520?60:width<768?80:100;
+    check(`Typography ${width}`,nameStyle.fontFamily===headingStyle.fontFamily&&nameStyle.fontSize===headingStyle.fontSize&&nameStyle.fontWeight===headingStyle.fontWeight&&nameStyle.lineHeight===headingStyle.lineHeight&&nameStyle.color===captionStyle.color);
+    check(`Name gap ${width}`,parseFloat(copyStyle.rowGap)===expectedGap,copyStyle.rowGap);
+    check(`Section inset ${width}`,parseFloat(previewWindow.getComputedStyle(sticky).paddingTop)===expectedTop,previewWindow.getComputedStyle(sticky).paddingTop);
+    if(width>=768){
+      check(`Dark boundary sticky ${width}`,component.classList.contains('is-scroll-driven')&&previewWindow.getComputedStyle(sticky).top==='0px',`${component.className}; top: ${previewWindow.getComputedStyle(sticky).top}`);
+      const sectionStart=component.getBoundingClientRect().top+previewWindow.scrollY;
+      previewWindow.scrollTo({top:sectionStart+200,behavior:'instant'});
+      await nextFrame(previewWindow);
+      check(`Dark boundary pinned ${width}`,Math.abs(sticky.getBoundingClientRect().top)<1,`${sticky.getBoundingClientRect().top}px`);
+      const mediaHeights=cards.map(card=>card.querySelector('.review-card_media').getBoundingClientRect().height);
+      check(`Equal story media ${width}`,Math.max(...mediaHeights)-Math.min(...mediaHeights)<1,mediaHeights.join('/'));
+      const copyBottom=Math.max(...cards.map(card=>card.querySelector('.review-card_caption').getBoundingClientRect().bottom));
+      check(`Story copy visible ${width}`,copyBottom<=previewWindow.innerHeight,`${copyBottom}/${previewWindow.innerHeight}`);
+      if(width===1440) desktopMediaHeight=cards[0].querySelector('.review-card_media').getBoundingClientRect().height;
+      previewWindow.scrollTo({top:0,behavior:'instant'});
+      await nextFrame(previewWindow);
+    }
+    check(`No overflow ${width}`,previewDocument.documentElement.scrollWidth===width,`${previewDocument.documentElement.scrollWidth}/${width}`);
+  }
+
+  frame.width=1440;
+  frame.height=1000;
+  await nextFrame(previewWindow);
+  const tallSectionStart=component.getBoundingClientRect().top+previewWindow.scrollY;
+  previewWindow.scrollTo({top:tallSectionStart+200,behavior:'instant'});
+  await nextFrame(previewWindow);
+  const tallMediaHeight=cards[0].querySelector('.review-card_media').getBoundingClientRect().height;
+  const tallCopyBottom=Math.max(...cards.map(card=>card.querySelector('.review-card_caption').getBoundingClientRect().bottom));
+  check('Desktop media uses remaining height',tallMediaHeight>desktopMediaHeight,`${desktopMediaHeight}/${tallMediaHeight}`);
+  check('Tall desktop copy visible',tallCopyBottom<=previewWindow.innerHeight,`${tallCopyBottom}/${previewWindow.innerHeight}`);
+  previewWindow.scrollTo({top:0,behavior:'instant'});
+
+  frame.width=520;
+  frame.height=900;
+  await nextFrame(previewWindow);
+  const track=previewDocument.querySelector('.practice-stories_track');
+  check('520 uses one column',previewWindow.getComputedStyle(track).gridTemplateColumns.split(' ').length===1,previewWindow.getComputedStyle(track).gridTemplateColumns);
+
+  frame.width=521;
+  await nextFrame(previewWindow);
+  check('521 uses two columns',previewWindow.getComputedStyle(track).gridTemplateColumns.split(' ').length===2,previewWindow.getComputedStyle(track).gridTemplateColumns);
+
+  frame.width=767;
+  frame.height=390;
+  await nextFrame(previewWindow);
+  const landscapeCards=[...track.children].map(card=>card.getBoundingClientRect());
+  const trackRect=track.getBoundingClientRect();
+  const landscapeColumns=previewWindow.getComputedStyle(track).gridTemplateColumns.split(' ').length;
+  check('Landscape uses two columns',landscapeColumns===2,previewWindow.getComputedStyle(track).gridTemplateColumns);
+  check('Landscape fifth card centered',Math.abs(landscapeCards[4].width-landscapeCards[0].width)<1&&Math.abs((landscapeCards[4].left+landscapeCards[4].right)/2-(trackRect.left+trackRect.right)/2)<1,JSON.stringify({first:landscapeCards[0],last:landscapeCards[4],track:trackRect}));
+  check('Landscape has no horizontal overflow',previewDocument.documentElement.scrollWidth===767,`${previewDocument.documentElement.scrollWidth}/767`);
+  previewWindow.scrollTo({top:component.getBoundingClientRect().top+previewWindow.scrollY,behavior:'instant'});
+} catch(error) {
+  check('Exception',false,error.stack);
+}
+
+document.querySelector('#result').textContent=JSON.stringify(results,null,2);
+const failures=results.filter(result=>!result.pass);
+document.title=failures.length?`КПТ — истории FAIL: ${failures.map(result=>result.name).join(', ')}`:'КПТ — истории: PASS';
+</script>
+</html>

@@ -1,0 +1,10 @@
+import fs from 'node:fs/promises';
+import {renderRatings} from '../../shared/academy/ratings-render.mjs';
+const root = new URL('./', import.meta.url);
+export const ratingsData = JSON.parse(await fs.readFile(new URL('data/ratings.json', root), 'utf8'));
+export const ratingsSection = renderRatings(ratingsData);
+const path = new URL('index.html', root);
+const source = await fs.readFile(path, 'utf8');
+const region = /<!-- ratings:start -->[\s\S]*?<!-- ratings:end -->|<section class="section_ratings\b[\s\S]*?<\/section>/;
+if (!region.test(source)) throw new Error('Ratings insertion point missing.');
+await fs.writeFile(path, source.replace(region, () => `<!-- ratings:start -->\n${ratingsSection}\n<!-- ratings:end -->`));

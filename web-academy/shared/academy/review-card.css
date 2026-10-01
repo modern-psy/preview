@@ -1,0 +1,32 @@
+.review-card_component { --review-card-copy-gap: 0.5rem; display: flex; width: 100%; min-width: 0; flex-direction: column; gap: 0.875rem; }
+.review-card_media { position: relative; width: 100%; overflow: hidden; border-radius: var(--radius-card); background: #d0cdd9; }
+.review-card_image { display: block; width: 100%; height: auto; aspect-ratio: 368 / 450; object-fit: cover; object-position: var(--review-image-position, center 20%); }
+.review-card_content { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; }
+.review-card_caption { color: var(--review-caption-color, var(--color-text-primary)); font-size: 1.125rem; font-weight: 444; line-height: 1.3; letter-spacing: -0.02em; }
+.review-card_caption-muted { color: var(--review-caption-muted, var(--color-text-secondary-large)); }
+.review-card_copy { --content-heading-gap: var(--review-card-copy-gap); }
+.content-heading_component.review-card_name { color: var(--review-caption-color, var(--color-text-primary)); overflow-wrap: anywhere; }
+/* A short story uses the same media, inset, quote panel and caption, without disclosure. */
+.review-card_component.is-quote .review-card_media { display: grid; align-items: end; min-height: var(--review-media-height, 28.125rem); }
+.review-card_component.is-quote .review-card_image { position: absolute; inset: 0; height: 100%; }
+.review-card_component.is-quote .review-card_content { position: relative; }
+.review-card_component.is-quote .review-panel_component { background: var(--review-quote-surface, var(--color-text-primary)); font-weight: 500; }
+.review-card_component[data-ready] .review-card_media { aspect-ratio: 368 / 450; }
+.review-card_component[data-ready] .review-card_image { position: absolute; inset: 0; height: 100%; }
+.review-card_component[data-ready] .review-card_content { position: absolute; inset: 1rem; padding: 0; }
+.review-card_component[data-ready] .review-panel_component { position: absolute; inset: auto 0 0; max-height: calc(100% - 3.25rem); }
+.review-card_component[data-ready][data-open] .review-panel_component { height: calc(100% - 3.25rem); }
+.review-card_component:not([data-ready]) [data-review-quote] { display: none; }
+.review-card_play { position: absolute; top: 1rem; right: 1rem; }
+.review-card_poster { position: absolute; inset: 0; height: 100%; pointer-events: none; }
+.review-card_poster[hidden] { display: none; }
+.review-card_play-icon { width: 1.375rem; height: 1.375rem; }
+.review-card_play[hidden], .review-card_status[hidden] { display: none; }
+.review-card_play-glyph { display: flex; }
+.review-card_pause-glyph { display: none; }
+.review-card_play[data-playing] .review-card_play-glyph { display: none; }
+.review-card_play[data-playing] .review-card_pause-glyph { display: flex; }
+.review-card_status { position: absolute; inset: auto 1rem 1rem; margin: 0; padding: 0.75rem; border-radius: 0.625rem; background: var(--color-text-primary); color: var(--color-text-on-dark); font-size: 1rem; line-height: 1.4; }
+@media (min-width: 48rem) {
+  .review-card_component { --review-card-copy-gap: 0.75rem; }
+}

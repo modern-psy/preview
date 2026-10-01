@@ -1,0 +1,68 @@
+import fs from 'node:fs/promises';
+import '../teachers/build-tilda.mjs';
+const root = new URL('../', import.meta.url);
+const preview = await fs.readFile(new URL('teachers/tilda/preview.html', root), 'utf8');
+const checks = `<output id="teacher-test-results" style="display:block;padding:1rem;white-space:pre-wrap"></output><script>
+window.addEventListener('load', async () => {
+  await customElements.whenDefined('academy-teachers');
+  const result = document.getElementById('teacher-test-results');
+  const host = document.querySelector('academy-teachers');
+  const module = document.getElementById('consultant-teachers-data');
+  const original = module.textContent;
+  const teacherCount = JSON.parse(original).length;
+  const lastIndex = teacherCount - 1;
+  const assertions = [];
+  const check = (condition, message) => {if (!condition) throw new Error(message); assertions.push(message)};
+  const tick = async () => {await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));await Promise.all(host.getAnimations({subtree:true}).map(animation=>animation.finished.catch(()=>{})));};
+  let copy;
+  try {
+    check(host.slider && host.tabs.length === teacherCount, 'all records mounted');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    check(host.slider.options.speed===(reduced?0:400),'teachers respect shared duration and reduced motion');
+    host.next.click();
+    check(getComputedStyle(host.querySelector('.teachers_list')).transitionDuration===(reduced?'0s':'0.4s'),'slide track respects motion preference');
+    await new Promise(resolve=>setTimeout(resolve,450));
+    host.slider.options = {speed:0};host.slider.go(0);await tick();
+    const root=host.querySelector('[data-js="teacher-slider"]');
+    const wheel=(x,y)=>{const e=new WheelEvent('wheel',{deltaX:x,deltaY:y,bubbles:true,cancelable:true});root.dispatchEvent(e);return e;};
+    check(!wheel(0,100).defaultPrevented && host.slider.index===0,'vertical wheel stays on page');
+    wheel(100,0);await tick();check(host.slider.index===1,'shared horizontal gesture advances teacher');
+    host.previous.click();await tick();check(host.slider.index===0,'shared previous control returns teacher');
+    host.tabs[0].focus({preventScroll:true});
+    const nextKey=host.tablist.getAttribute('aria-orientation')==='vertical'?'ArrowDown':'ArrowRight';
+    host.tabs[0].dispatchEvent(new KeyboardEvent('keydown',{key:nextKey,bubbles:true,cancelable:true}));await tick();
+    check(host.tabs[1].getAttribute('aria-selected')==='true' && document.activeElement===host.tabs[1],'keyboard updates focus and selection');
+    host.tabs[1].dispatchEvent(new KeyboardEvent('keydown',{key:'Home',bubbles:true,cancelable:true}));await tick();
+    check(host.tabs[0].getAttribute('aria-selected')==='true','Home returns to first teacher');
+    host.slider.go(lastIndex); await tick();
+    let track = host.querySelector('.teachers_track').getBoundingClientRect();
+    let last = host.querySelector('.teachers_slide:last-child').getBoundingClientRect();
+    check(Math.abs(track.right-last.right)<1, 'last card ends at section boundary');
+    check(host.tabs[lastIndex].getAttribute('aria-selected')==='true', 'last teacher remains selected');
+    host.refresh(); await tick();
+    check(host.tabs[lastIndex].getAttribute('aria-selected')==='true', 'refresh preserves selection');
+    const parent=host.parentElement, next=host.nextSibling;host.remove();
+    check(!host.slider, 'disconnect destroys slider');
+    parent.insertBefore(host,next); await tick();
+    check(host.tabs[lastIndex].getAttribute('aria-selected')==='true', 'reconnect preserves selection');
+    copy=host.cloneNode(true);copy.id='teachers-second';copy.querySelector('h2').id='teachers-second-heading';parent.append(copy);await tick();
+    check(copy.slider && copy.tabs.length===teacherCount, 'independent second instance mounts');
+    const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);
+    check(new Set(ids).size===ids.length,'multiple instances have unique IDs');
+    const firstSelection=host.selectedId;copy.slider.options={speed:0};copy.slider.go(3);await tick();
+    check(host.selectedId===firstSelection && copy.selectedId!==host.selectedId,'instances do not share selection');
+    copy.remove();copy=null;
+    const changed=JSON.parse(original);changed.unshift({...changed.pop(),id:'teacher-added',name:'Преподаватель с очень длинным именем и фамилией',photo:null});
+    module.textContent=JSON.stringify(changed);host.refresh();await tick();
+    check(host.tabs[0].dataset.teacherId==='teacher-added' && host.querySelector('.teachers_slide').dataset.teacherId==='teacher-added','module edit updates cards and tabs together');
+    check(document.documentElement.scrollWidth<=innerWidth,'longest name does not overflow page');
+    check([...host.querySelectorAll('[aria-controls]')].every(e=>document.getElementById(e.getAttribute('aria-controls'))),'ARIA references resolve');
+    result.textContent=JSON.stringify({passed:assertions.length,assertions},null,2);
+  } catch(error) { result.textContent=JSON.stringify({failed:error.message,passed:assertions},null,2); }
+  finally {copy?.remove();module.textContent=original;host.refresh()}
+});
+</script>`;
+await fs.writeFile(new URL('tests/teachers-fixture.html',root),preview.replace('</body>',`${checks}</body>`));
+const reducedMotion = `<script>const nativeMatchMedia=window.matchMedia.bind(window);window.matchMedia=query=>{const result=nativeMatchMedia(query);if(query.includes('prefers-reduced-motion'))Object.defineProperty(result,'matches',{value:query.includes('reduce')&&!query.includes('no-preference')});return result};</script>`;
+await fs.writeFile(new URL('tests/teachers-reduced-motion-fixture.html',root),preview.replace('<head>',`<head>${reducedMotion}`).replace('</body>',`${checks}</body>`));
+await fs.writeFile(new URL('tests/teachers-no-js-fixture.html',root),preview.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,''));

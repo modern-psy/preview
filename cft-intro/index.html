@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ПЕРВАЯ ВСТРЕЧА С МЕТОДОМ CFT»  →  адрес /cft-intro
+  ============================================================================
+
+  Страница бесплатного вебинара Эльвиры Исмагиловой, 18 сентября в 18:00 МСК.
+  Тема: «Как работает терапия состраданием: первая встреча с методом CFT».
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Всё устройство страницы — с лендинга /seksologiya-dlya-psihologov (то есть
+    в конечном счёте с /klinicheskaya-baza и /trauma-therapy): контейнер 1520px,
+    боковые поля до 80px, брейкпоинты 480 / 768 / 992, кнопки, карточки,
+    аккордеон и форма записи через BotHelp.
+    Страница самодостаточная: все стили в page.css, скрипт в page.js,
+    картинки и иконки — в папках img/ и icons/ рядом.
+
+  ЧЕМ ОТЛИЧАЕТСЯ ОТ СЕКСОЛОГИИ ПО СОСТАВУ БЛОКОВ
+    · нет кейса-интриги и демо-сессии — здесь другой формат: три клиентских
+      случая вынесены в главный блок и разбираются на самом вебинаре;
+    · нет ленты направлений и блока ошибок — их нет в вводных;
+    · вместо них — вернулся бонус-чек-лист в блоке записи (как было
+      на /klinicheskaya-baza): рабочий лист «Взгляд CFT на трудности клиента»;
+    · программа разделена на две карточки рядом: «Теория» (шесть тем из ТЗ)
+      и «Практика» (три клиентских случая) на фотографии.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАК РАБОТАЕТ ЗАПИСЬ
+    Полей на странице нет. В блоке записи стоит виджет BotHelp: человек
+    видит кнопки мессенджеров и нажимает одну. Скрипт page.js перехватывает
+    нажатие, кладёт служебные значения (ClientID Метрики и UTM-метки)
+    в скрытую форму Тильды и отправляет её — оттуда данные уходят в AmoCRM.
+    Как только Тильда ответила, скрипт возвращает нажатие виджету.
+    На превью формы Тильды нет, поэтому шаг с ней пропускается.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 ВИДЖЕТА BOTHELP ЭТОГО ВЕБИНАРА ЕЩЁ НЕТ: в блоке записи временно
+      стоит виджет прошлого вебинара — только чтобы проверять вёрстку.
+      Когда виджет придёт, замените data-bh-widget-id
+      и data-bh-customer-id — больше ничего менять не нужно;
+    · 🟡 обложка чек-листа в блоке записи — временная, с чек-листа
+      прошлого вебинара. Замените, когда нарисуют обложку этого;
+    · 🟡 ДЛЯ ТИЛЬДЫ: иконки и логотипы уже подтягиваются по ссылкам с S3
+      (asp-media), три мелкие иконки вшиты в разметку как data-URI. Локально
+      лежат только три картинки — img/hero.webp, img/speaker-ismagilova.webp
+      и img/gift.webp: их нужно загрузить на S3 и подставить ссылки в src;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Как работает терапия состраданием: первая встреча с методом CFT. Бесплатный вебинар</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный вебинар для психологов 18 сентября в 18:00 МСК. Три клиентские ситуации — самокритика, отказ от поддержки, вина за заботу о себе — и взгляд CFT на то, что за ними стоит. Предварительное знакомство с методом не требуется." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Как работает терапия состраданием: первая встреча с методом CFT" />
+  <meta property="og:description" content="Бесплатный вебинар для психологов и студентов. 18 сентября, 18:00 МСК." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Загрузчик виджета BotHelp. На боевой странице он подключается
+       в настройках Тильды — здесь нужен, чтобы форму можно было проверить. -->
+  <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
+
+  <!-- 🔴 Скрипт страницы: FAQ, меню и связка «кнопка BotHelp → форма Тильды» -->
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
+<div class="page-wrapper cft-page">
+
+<!-- ==========================================================================
+     ШАПКА
+     ==========================================================================
+     Белая полоса во всю ширину экрана. Не липкая — как на прошлых страницах.
+     На мобильном дата уезжает в меню, кнопка растягивается на всю ширину.
+     ========================================================================== -->
+<header class="site-header_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+
+        <!-- 🟡 Логотип ведёт на главную сайта -->
+        <a class="site-header_logo" href="/" aria-label="Академия современной психологии">
+          <img src="https://s3.twcstorage.ru/asp-media/logo_asp_fec13e6c96.svg" alt="" width="102" height="34" />
+        </a>
+
+        <!-- 🟢 Дата и время вебинара -->
+        <p class="site-header_date">18&nbsp;сентября, 18:00&nbsp;МСК</p>
+
+        <!-- 🟡 Кнопка ведёт на блок с формой в конце страницы -->
+        <a class="button is-accent site-header_cta" href="#reg">Записаться на&nbsp;вебинар</a>
+
+        <!-- 🔴 Кнопка меню. Видна только на узких экранах. -->
+        <button class="site-header_burger" type="button"
+                aria-expanded="false" aria-controls="site-menu"
+                aria-label="Разделы страницы" data-menu-toggle>
+          <span class="site-header_burger-icon" aria-hidden="true"></span>
+        </button>
+
+        <!-- 🟢 Меню разделов. Ссылки ведут на блоки этой же страницы. -->
+        <nav class="site-header_menu" id="site-menu" aria-label="Разделы страницы" hidden>
+          <p class="site-header_menu-date">18 сентября, 18:00 МСК</p>
+          <a href="#situacii">О&nbsp;вебинаре</a>
+          <a href="#programma">Программа</a>
+          <a href="#spiker">Спикер</a>
+          <a href="#voprosy">Вопросы</a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки с датой,
+       заголовок, подводка и кнопка. Сделан так же, как на прошлых вебинарах.
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟢 Фотография первого экрана. Без loading="lazy": она видна сразу.
+                 Сжата до 1920px из присланного оригинала (hf_…png в img/). -->
+            <img class="hero_image" src="https://s3.twcstorage.ru/asp-media/hero_5d1fac0905.webp"
+                 alt="Психолог внимательно слушает клиентку на консультации"
+                 width="1920" height="814" />
+
+            <!-- 🟢 Плашки с датой и форматом -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_bla_9bf3d3c717.svg" alt="" width="20" height="20" />
+                18 сентября, 18:00 МСК
+              </li>
+              <li class="meta-pill_component is-accent">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_earth_white_a41613d615.svg" alt="" width="20" height="20" />
+                Онлайн
+              </li>
+              <li class="meta-pill_component">60 минут</li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <!-- 🟢 Заголовок из двух частей: название крупно, подзаголовок
+                     помельче. Оба куска — внутри одного <h1>. -->
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">Как работает терапия состраданием</span>
+                  <span class="hero_heading-sub">первая встреча с&nbsp;методом CFT</span>
+                </h1>
+                <p class="hero_description">
+                  Открытый вебинар для психологов о&nbsp;том, как CFT помогает
+                  понимать самокритику, отвержение поддержки и&nbsp;чувство
+                  вины за&nbsp;заботу о&nbsp;себе. 
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🟡 Кнопка ведёт на блок с формой -->
+                <a class="button is-light is-full-width" href="#reg">Записаться на&nbsp;вебинар</a>
+                <p class="hero_start-note">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_whi_486d69a1a5.svg" alt="" width="22" height="22" />
+                  Участие бесплатное, нужна только регистрация
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. ТРИ КЛИЕНТСКИЕ СИТУАЦИИ, КОТОРЫЕ СТАВЯТ ТЕРАПИЮ В ТУПИК
+       ======================================================================
+       Главный блок вебинара: три случая из ТЗ, вокруг которых построен
+       весь эфир. Карточки с картинкой сверху (слоты под изображения,
+       см. пометки 🟡) и текстом. Плашка-вывод под карточками — это «блок 2» из ТЗ:
+       она продаёт сам вебинар, а не метод.
+       ====================================================================== -->
+  <section class="section_optics" id="situacii">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="optics_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Три клиентские ситуации, которые ставят терапию
+              в&nbsp;<span class="accent-word">тупик</span>
+            </h2>
+            <p class="section-intro_description">
+              Клиент как будто отказывается от&nbsp;того, что должно
+              помогать: защищает свою самокритику, не&nbsp;принимает
+              поддержку, стыдится заботы о&nbsp;себе. Привычные способы
+              работы перестают действовать.
+            </p>
+          </div>
+
+          <ul class="optics_list">
+            <li class="card_component">
+              <!-- 🟡 Картинка ситуации 1 (лежит на S3). Пропорции слота 16:10,
+                   лишнее срежется по центру. -->
+              <div class="card_media">
+                <img src="https://s3.twcstorage.ru/asp-media/01_selfcriticism_desk_night_a_f1b45408f9.webp" alt="Человек поздно вечером за рабочим столом" width="1240" height="824" loading="lazy" />
+              </div>
+              <div class="card_content">
+                <h3 class="card_heading">«Если я&nbsp;перестану себя критиковать, то&nbsp;ничего не&nbsp;добьюсь»</h3>
+                <p class="card_description">
+                  Клиент уверен, что самокритика помогает ему сохранять
+                  мотивацию, контролировать себя и&nbsp;двигаться вперед.
+                  Более поддерживающее отношение к&nbsp;себе кажется ему
+                  опасным.
+                </p>
+              </div>
+            </li>
+            <li class="card_component">
+              <!-- 🟡 Картинка ситуации 2 (лежит на S3). Пропорции слота 16:10,
+                   лишнее срежется по центру. -->
+              <div class="card_media">
+                <img src="https://s3.twcstorage.ru/asp-media/02_withdraws_tea_shirt_b_f9f14c4b2c.webp" alt="Человек с чашкой чая отстраняется от собеседника" width="1240" height="824" loading="lazy" />
+              </div>
+              <div class="card_content">
+                <h3 class="card_heading">Клиент отстраняется в&nbsp;ответ на&nbsp;тепло</h3>
+                <p class="card_description">
+                  Поддержка и&nbsp;забота со&nbsp;стороны терапевта вызывают
+                  не&nbsp;облегчение, а&nbsp;напряжение, недоверие, стыд
+                  или желание увеличить дистанцию.
+                </p>
+              </div>
+            </li>
+            <li class="card_component">
+              <!-- 🟡 Картинка ситуации 3 (лежит на S3). Пропорции слота 16:10,
+                   лишнее срежется по центру. -->
+              <div class="card_media">
+                <img src="https://s3.twcstorage.ru/asp-media/03_junkfood_2am_c_7c2bd35de1.webp" alt="Человек ест фастфуд посреди ночи" width="1240" height="824" loading="lazy" />
+              </div>
+              <div class="card_content">
+                <h3 class="card_heading">«Я&nbsp;не&nbsp;имею права заботиться о&nbsp;себе»</h3>
+                <p class="card_description">
+                  Клиент с&nbsp;травматическим опытом или опытом утраты
+                  воспринимает сострадание к&nbsp;себе как слабость, эгоизм
+                  или предательство.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+          <!-- 🟢 Мостик к программе: продаём сам вебинар, а не метод -->
+          <p class="summary_component is-dark">
+            <img class="summary_icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3QzVDREIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik05IDE3LjVhNiA2IDAgMSAxIDYgMCIvPjxwYXRoIGQ9Ik05LjUgMjAuNWg1Ii8+PHBhdGggZD0iTTEwIDE3LjVoNCIvPjwvc3ZnPgo=" alt="" width="24" height="24" />
+            <span>
+              <b>Чтобы разобраться в&nbsp;этих ситуациях, не&nbsp;нужно
+              заранее знать CFT.</b> Приходите на&nbsp;вебинар&nbsp;—
+              покажем метод в&nbsp;действии на&nbsp;разборе этих трех
+              клиентских случаев.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       3. «ЗА ОДНУ ВСТРЕЧУ МЫ РАЗБЕРЕМ» — ТЕОРИЯ И ПРАКТИКА
+       ======================================================================
+       Заголовок по центру, ниже две карточки рядом. Слева «Теория» — шесть
+       вопросов из ТЗ списком. Справа «Практика» — фотография фоном и белая
+       карточка с тремя клиентскими случаями поверх неё. Раньше практика была
+       седьмым пунктом в конце ленты, и до неё могли не долистать.
+       Ниже 992px карточки встают одна под другой.
+       ====================================================================== -->
+  <section class="section_agenda" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="agenda_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">За&nbsp;одну встречу мы&nbsp;разберем</h2>
+            <p class="section-intro_description">
+              Первая встреча с&nbsp;методом&nbsp;— через живые примеры.
+              Сначала посмотрим, как CFT объясняет реакции клиента,
+              а&nbsp;затем разберем три клиентских случая вместе с&nbsp;экспертом.
+            </p>
+          </div>
+
+          <div class="agenda_grid">
+
+            <!-- 🟢 Теория: шесть вопросов из ТЗ -->
+            <div class="agenda_theory">
+              <p class="agenda_label">Теория</p>
+              <h3 class="agenda_card-heading">Как CFT объясняет привычные реакции клиента</h3>
+              <ol class="agenda_list">
+                <li class="agenda_item">
+                  <span class="agenda_badge" aria-hidden="true">01</span>
+                  <p class="agenda_item-text">
+                    Почему клиент может держаться за&nbsp;самокритику,
+                    даже если она причиняет ему страдание
+                  </p>
+                </li>
+                <li class="agenda_item">
+                  <span class="agenda_badge" aria-hidden="true">02</span>
+                  <p class="agenda_item-text">
+                    Почему поддержка и&nbsp;тепло иногда вызывают
+                    не&nbsp;облегчение, а&nbsp;тревогу и&nbsp;сопротивление
+                  </p>
+                </li>
+                <li class="agenda_item">
+                  <span class="agenda_badge" aria-hidden="true">03</span>
+                  <p class="agenda_item-text">
+                    Что может стоять за&nbsp;убеждением
+                    «я&nbsp;не&nbsp;заслуживаю заботы»
+                  </p>
+                </li>
+                <li class="agenda_item">
+                  <span class="agenda_badge" aria-hidden="true">04</span>
+                  <p class="agenda_item-text">
+                    Почему попытка просто «быть добрее к&nbsp;себе»
+                    не&nbsp;всегда работает
+                  </p>
+                </li>
+                <li class="agenda_item">
+                  <span class="agenda_badge" aria-hidden="true">05</span>
+                  <p class="agenda_item-text">
+                    Какие процессы могут поддерживать эти реакции
+                  </p>
+                </li>
+                <li class="agenda_item">
+                  <span class="agenda_badge" aria-hidden="true">06</span>
+                  <p class="agenda_item-text">
+                    Как терапевт может работать с&nbsp;ними на&nbsp;практике
+                  </p>
+                </li>
+              </ol>
+            </div>
+
+            <!-- 🔴 Практика: фотография лежит фоном, поверх неё белая карточка,
+                 прижатая к нижнему краю. Так же устроен блок «Как это выглядит
+                 в кабинете» на /seksologiya-dlya-psihologov. -->
+            <div class="agenda_practice">
+              <!-- 🟡 Фотография фона (лежит на S3). Кадр подрежется по центру. -->
+              <img class="agenda_image" src="https://s3.twcstorage.ru/asp-media/01_classic_curtains_lamp_6dcd42a038.webp"
+                   alt="Кабинет психолога: кресла, шторы и лампа"
+                   width="1800" height="2412" loading="lazy" />
+
+              <div class="agenda_practice-card">
+                <p class="agenda_label">Практика</p>
+                <h3 class="agenda_card-heading">Разбор трех клиентских случаев вместе с&nbsp;экспертом</h3>
+                <ul class="agenda_cases">
+                  <li class="agenda_case">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3QzVDREIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Im00IDEyLjUgNSA1TDIwIDYuNSIvPjwvc3ZnPgo=" alt="" width="20" height="20" />
+                    <span>«Если я&nbsp;перестану себя критиковать, то&nbsp;ничего не&nbsp;добьюсь»</span>
+                  </li>
+                  <li class="agenda_case">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3QzVDREIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Im00IDEyLjUgNSA1TDIwIDYuNSIvPjwvc3ZnPgo=" alt="" width="20" height="20" />
+                    <span>Клиент отстраняется в&nbsp;ответ на&nbsp;тепло</span>
+                  </li>
+                  <li class="agenda_case">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3QzVDREIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Im00IDEyLjUgNSA1TDIwIDYuNSIvPjwvc3ZnPgo=" alt="" width="20" height="20" />
+                    <span>«Я&nbsp;не&nbsp;имею права заботиться о&nbsp;себе»</span>
+                  </li>
+                </ul>
+                <p class="agenda_practice-note">
+                  Вы&nbsp;увидите, что происходит за&nbsp;привычными реакциями
+                  клиента и&nbsp;какие направления работы можно использовать
+                  в&nbsp;терапии.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. «ПОСЛЕ ВЕБИНАРА ВЫ СМОЖЕТЕ»
+       ======================================================================
+       Три результата — по образцу лендинга вебинара по АСТ,
+       адаптированы под CFT. Карточки с тонкой обводкой.
+       ====================================================================== -->
+  <section class="section_shifts" id="rezultaty">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="shifts_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">После вебинара вы&nbsp;сможете</h2>
+          </div>
+
+          <ul class="shifts_list">
+            <li class="shift_component">
+              <h3 class="card_heading">Лучше понимать клиента</h3>
+              <p class="card_description">
+                Почему он&nbsp;продолжает делать то, что причиняет ему
+                страдания, и&nbsp;держится за&nbsp;самокритику.
+              </p>
+            </li>
+            <li class="shift_component">
+              <h3 class="card_heading">Познакомиться с&nbsp;CFT</h3>
+              <p class="card_description">
+                Составить первое представление о&nbsp;терапии,
+                сфокусированной на&nbsp;сострадании,&nbsp;—
+                без&nbsp;предварительной подготовки.
+              </p>
+            </li>
+            <li class="shift_component">
+              <h3 class="card_heading">Разобраться, ваш&nbsp;ли это метод</h3>
+              <p class="card_description">
+                Понять, подходит ли&nbsp;CFT для вашей практики
+                и&nbsp;стоит ли&nbsp;изучать его глубже.
+              </p>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. «ДЛЯ КОГО ЭТОТ ВЕБИНАР»
+       ======================================================================
+       Три портрета из описания вебинара. Карточки в один ряд на десктопе.
+       ====================================================================== -->
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">Для кого этот вебинар</h2>
+            <p class="section-intro_description">
+              Предварительное знакомство с&nbsp;CFT не&nbsp;требуется.
+            </p>
+          </div>
+
+          <ul class="card-grid_component is-stack-tablet audience_list">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_briefcase_0134f477b3.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Практикующим психологам и&nbsp;психотерапевтам</h3>
+                <p class="card_description">
+                  Замечаете в&nbsp;работе самокритику, стыд и&nbsp;отказ
+                  от&nbsp;поддержки&nbsp;— и&nbsp;хотите лучше понимать,
+                  что за&nbsp;ними стоит.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM3QzVDREIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxjaXJjbGUgY3g9IjExIiBjeT0iMTEiIHI9IjciLz48cGF0aCBkPSJtMjAgMjAtMy41LTMuNSIvPjwvc3ZnPgo=" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Специалистам, работающим со&nbsp;сложными темами</h3>
+                <p class="card_description">
+                  С&nbsp;самокритикой, стыдом, травматическим опытом, утратой
+                  и&nbsp;трудностями в&nbsp;принятии поддержки.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Студентам психологических программ</h3>
+                <p class="card_description">
+                  Студентам старших курсов, которые присматриваются
+                  к&nbsp;современным методам и&nbsp;выбирают, что изучать
+                  дальше.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       6. СПИКЕР
+       ======================================================================
+       Заголовок по центру, ниже — фотография и текст в две колонки.
+       Регалии — из описания на лендинге курса /cft, слово в слово.
+       Цитаты нет: в вводных её не было, выдумывать за спикера нельзя.
+       ====================================================================== -->
+  <section class="section_speaker" id="spiker">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="speaker_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">Кто проведет вебинар</h2>
+          </div>
+
+          <div class="speaker_card">
+            <div class="speaker_media">
+              <!-- 🟡 Фотография спикера (сжата до 800×800 из присланного
+                   оригинала «спикер.png») -->
+              <img class="speaker_image" src="https://s3.twcstorage.ru/asp-media/speaker_ismagilova_9b57f96359.webp"
+                   alt="Эльвира Исмагилова, клинический психолог, CFT-терапевт"
+                   width="800" height="800" loading="lazy" />
+            </div>
+
+            <div class="speaker_copy">
+              <h3 class="speaker_name">Эльвира Исмагилова</h3>
+              <p class="speaker_description">
+                Ведет в&nbsp;Академии курс «Введение в&nbsp;терапию,
+                сфокусированную на&nbsp;сострадании (CFT)». На&nbsp;вебинаре
+                познакомит с&nbsp;основными идеями метода и&nbsp;разберет
+                три клиентских случая.
+              </p>
+
+              <!-- 🟢 Регалии. Плашки переносятся по мере нехватки места. -->
+              <ul class="speaker_credentials">
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Клинический (медицинский) психолог
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Преподаватель, супервизор
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Кандидат химических наук
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  CFT-, DBT-, ACT-, Схема-терапевт
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Опыт работы 6&nbsp;лет
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       7. ОТЗЫВЫ  —  макет из Фигмы, кадр 470-2077
+       ======================================================================
+       Слева тёмная карточка с процентом и плашками, справа три белые
+       карточки с оценками независимых площадок.
+       🟢 Оценки площадок меняются со временем — сверяйтесь перед запуском.
+       ====================================================================== -->
+  <section class="section_reviews" id="otzyvy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="reviews_component">
+
+          <div class="reviews_grid">
+
+            <div class="reviews_headline">
+              <p class="reviews_percent">98% студентов</p>
+              <p class="reviews_lead">
+                рекомендуют обучение<br />
+                в&nbsp;Академии Современной Психологии
+              </p>
+
+              <ul class="reviews_tags">
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Практика
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Преподаватели
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Поддержка
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Комьюнити
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Качество
+                </li>
+              </ul>
+
+              <!-- 🔴 Декоративная молния с макета -->
+              <img class="reviews_zap" src="https://s3.twcstorage.ru/asp-media/icon_zap_a064f3db0f.svg" alt="" width="100" height="100" aria-hidden="true" />
+            </div>
+
+            <ul class="reviews_scores">
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.45
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_tutortop_cc004891ad.svg" alt="tutortop" width="126" height="28" loading="lazy" />
+              </li>
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.82
+                </p>
+                <!-- 🔴 Логотип «Сравни» на макете состоит из двух частей:
+                     цветного кружка (растр) и надписи (вектор). -->
+                <span class="reviews_logo-group">
+                  <img class="reviews_logo-mark" src="https://s3.twcstorage.ru/asp-media/logo_sravni_mark_4e1f6ca088.png" alt="" width="84" height="72" loading="lazy" />
+                  <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_sravni_33a4ab5059.svg" alt="Сравни" width="113" height="22" loading="lazy" />
+                </span>
+              </li>
+              <li class="reviews_score is-wide">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.9
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_otzovik_786226e74e.svg" alt="Отзовик" width="134" height="28" loading="lazy" />
+              </li>
+            </ul>
+
+          </div>
+
+          <p class="reviews_note">* По&nbsp;данным отзывов на&nbsp;независимых площадках</p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       8. АКАДЕМИЯ  —  макет из Фигмы, кадр 470-752
+       ======================================================================
+       Плитка из четырёх карточек: зал, сообщество, выпускники, преподаватели.
+       ====================================================================== -->
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Мы&nbsp;растем на&nbsp;обратной связи от&nbsp;наших студентов, поэтому
+            каждый новый поток&nbsp;— это улучшенный предыдущий
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+
+              <div class="academy-showcase_teachers-media">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="496"
+                  height="550"
+                  alt="Участники открытого разбора Академии"
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="academy-showcase_teachers-controls" aria-hidden="true">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       9. «УЧАСТИЕ БЕСПЛАТНОЕ» + ФОРМА
+       ======================================================================
+       Тёмная плашка. Слева — как проходит запись и чек-лист в подарок
+       (как было на /klinicheskaya-baza), справа — белая карточка
+       с кнопками мессенджеров.
+       ====================================================================== -->
+  <section class="section_signup" id="reg">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">Участие бесплатное</h2>
+            <p class="signup_description">
+              Один вечер&nbsp;— и&nbsp;у&nbsp;вас появится первое
+              представление о&nbsp;том, как CFT объясняет самокритику
+              и&nbsp;отказ от&nbsp;заботы о&nbsp;себе. Плюс рабочий лист,
+              который останется с&nbsp;вами после вебинара.
+            </p>
+
+            <ol class="signup_steps">
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">01</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Выберите мессенджер</h3>
+                  <p class="signup_step-description">
+                    Одно нажатие, без анкет и&nbsp;лишних полей
+                  </p>
+                </div>
+              </li>
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">02</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Доступ придет в&nbsp;мессенджер</h3>
+                  <p class="signup_step-description">
+                    Ссылка на&nbsp;эфир придет в&nbsp;Telegram или MAX. Напомним
+                    за&nbsp;час до&nbsp;начала
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <!-- 🟢 Подарок участникам: чек-лист -->
+            <div class="gift_component">
+              <div class="gift_copy">
+                <p class="gift_label">Бонус для участников вебинара</p>
+                <h3 class="gift_heading">
+                  Взгляд CFT на&nbsp;трудности клиента: рабочий лист
+                  для психолога
+                </h3>
+              </div>
+              <!-- 🟡 Обложка чек-листа. Сейчас стоит временная картинка
+                   с прошлого вебинара — замените её на обложку этого. -->
+              <img class="gift_image" src="img/gift.webp"
+                   alt="Разворот рабочего листа «Взгляд CFT на трудности клиента»"
+                   width="541" height="477" loading="lazy" />
+            </div>
+          </div>
+
+          <!-- 🔴 РЕГИСТРАЦИЯ ЧЕРЕЗ BOTHELP.
+               На странице нет ни одного поля и ни одной своей кнопки:
+               человек видит только кнопки мессенджеров, которые рисует виджет
+               BotHelp. По нажатию на любую из них скрипт:
+
+                 1) перехватывает нажатие, чтобы BotHelp не увёл со страницы
+                    раньше времени;
+                 2) кладёт служебные значения (ClientID Метрики и UTM-метки)
+                    в скрытую форму Тильды и отправляет её — дальше данные
+                    уходят в AmoCRM штатной интеграцией Тильды;
+                 3) и только после ответа Тильды возвращает нажатие виджету.
+
+               🟡 data-tilda-form-name — имя формы в настройках Тильды.
+                  Должно совпадать с ним буква в букву. Сейчас стоит рабочее
+                  название — сверьте его, когда форму заведут.
+               🟡 data-metrika-id — номер счётчика Метрики. Можно оставить
+                  пустым: скрипт сам найдёт счётчик на странице.
+               🔴 ВАЖНО: атрибуты data-bh-widget-id и data-bh-customer-id
+                  должны стоять ТОЛЬКО на пустом контейнере
+                  #bh-widget-button-root ниже. -->
+          <div class="lead-form_component" data-signup data-state="idle"
+               data-tilda-form-name="cft-intro-webinar"
+               data-metrika-id="">
+
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Зарегистрироваться на&nbsp;вебинар</h3>
+              <p class="lead-form_date">18 сентября, 18:00 МСК</p>
+            </div>
+
+            <p class="lead-form_hint">
+              Выберите мессенджер: пришлем ссылку на&nbsp;эфир туда
+              и&nbsp;напомним за&nbsp;час до&nbsp;начала.
+            </p>
+
+            <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
+                 Пока виджет не пришёл, на этом месте стоит серый скелет.
+                 🟡 Сейчас подключён виджет ПРОШЛОГО вебинара — только чтобы
+                 проверять вёрстку на превью. Когда придёт виджет этого
+                 вебинара, замените data-bh-widget-id и data-bh-customer-id. -->
+            <div class="lead-form_widget" data-bh-mount data-bh-state="loading">
+              <div class="lead-form_widget-skeleton" data-bh-skeleton aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+
+              <div class="lead-form_bh" id="bh-widget-button-root"
+                   data-bh-widget-id="23" data-bh-customer-id="278875"></div>
+
+              <p class="lead-form_note" data-bh-error hidden>
+                Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу
+                или напишите нам, и&nbsp;мы&nbsp;пришлем ссылку на&nbsp;эфир вручную.
+              </p>
+            </div>
+
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <!-- 🔴 Запасной выход. Показывается, только если переход
+                 в мессенджер не сработал. Адрес подставляет скрипт. -->
+            <p class="lead-form_manual" data-lead-manual hidden>
+              Мессенджер не&nbsp;открылся?
+              <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
+            </p>
+
+            <p class="lead-form_note">
+              Запись эфира будет доступна зарегистрированным участникам.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       10. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       Обычный аккордеон на <details>. Без скрипта он тоже работает —
+       скрипт нужен только для плавного раскрытия.
+       ====================================================================== -->
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+            <!-- 🟡 Ссылка ведёт в Telegram-бот приёмной комиссии -->
+            <p class="faq_support">
+              Не&nbsp;нашли ответа на&nbsp;свой вопрос?
+              <a href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener">Напишите нам</a>
+            </p>
+          </div>
+
+          <div class="faq_list accordion_component" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько стоит участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Участие бесплатное, нужна только регистрация. Ссылка на&nbsp;эфир придет в&nbsp;выбранный мессенджер, напомним за&nbsp;час до&nbsp;начала.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;ничего не&nbsp;знаю о&nbsp;CFT. Мне подойдет вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Да, вебинар задуман как первая встреча с&nbsp;методом. Предварительное знакомство с&nbsp;CFT не&nbsp;требуется: основные идеи разберем на&nbsp;живых примерах, без сложной терминологии.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;работаю в&nbsp;другом подходе. Зачем мне CFT?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Самокритика, отвержение поддержки и&nbsp;чувство вины за&nbsp;заботу о&nbsp;себе встречаются в&nbsp;работе специалистов любого направления. Вебинар покажет, как CFT смотрит на&nbsp;эти реакции,&nbsp;— этот взгляд может дополнить ваш подход, а&nbsp;не&nbsp;заменить его.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;студент, у&nbsp;меня мало опыта. Будет понятно?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Да, вебинар рассчитан и&nbsp;на&nbsp;студентов старших курсов психологических программ. Специальная подготовка не&nbsp;нужна, термины объясняются по&nbsp;ходу.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Где проходит вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Онлайн. Ссылка на&nbsp;эфир придет в&nbsp;выбранный мессенджер после регистрации. Достаточно перейти по&nbsp;ней в&nbsp;назначенное время.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько длится эфир?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Около 60&nbsp;минут.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Будет ли&nbsp;запись?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Да, запись будет доступна зарегистрированным участникам. Но&nbsp;живое участие дает больше: разбор клиентских случаев проходит в&nbsp;прямом эфире, и&nbsp;вопрос спикеру можно задать сразу.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Получу ли&nbsp;я&nbsp;подарок за&nbsp;участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Да. Участникам будет доступен рабочий лист «Взгляд CFT на&nbsp;трудности клиента»&nbsp;— он поможет смотреть на&nbsp;реакции клиента глазами метода.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Выдается ли&nbsp;сертификат за&nbsp;участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Нет, за&nbsp;вебинар сертификат не&nbsp;выдается. Документы установленного образца можно получить только по&nbsp;итогам обучающих программ Академии.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Это продающий вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Скажем честно: это вебинар про CFT, но&nbsp;в&nbsp;конце мы&nbsp;коротко расскажем о&nbsp;возможности обучиться методу в&nbsp;Академии. Это несколько минут, все остальное время займут знакомство с&nbsp;методом и&nbsp;разбор клиентских случаев.</p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ==========================================================================
+     ПОДВАЛ
+     ==========================================================================
+     Контакты и реквизиты — те же, что на прошлых страницах вебинаров.
+     ========================================================================== -->
+<footer class="site-footer_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+
+      <h2 class="site-footer_heading">Контакты</h2>
+
+      <div class="site-footer_grid">
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Отдел продаж</p>
+          <p class="site-footer_line"><a href="tel:+78124702901">+7&nbsp;812&nbsp;470-29-01</a></p>
+          <p class="site-footer_line"><a href="mailto:info@modern-psy.ru">info@modern-psy.ru</a></p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Адрес</p>
+          <p class="site-footer_line">
+            197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ
+            Введенский, пр-т&nbsp;Большой&nbsp;П.с., д.&nbsp;7/4, литера&nbsp;А,
+            помещ.&nbsp;2-Н
+          </p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Правовая информация</p>
+          <!-- 🟡 Адреса документов подставьте с боевого сайта -->
+          <p class="site-footer_line"><a href="/oferta">Публичная оферта</a></p>
+          <p class="site-footer_line"><a href="/privacy">Политика конфиденциальности</a></p>
+          <p class="site-footer_line"><a href="/documents">Сведения об&nbsp;образовательной организации</a></p>
+        </div>
+
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+        <p>ОГРН 1217800102783<br />ИНН/КПП 7839141929/781301001</p>
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>
+          Доступ к&nbsp;мессенджеру Telegram и&nbsp;видеохостингу YouTube
+          в&nbsp;РФ ограничен в&nbsp;связи с&nbsp;применяемыми техническими мерами
+          и&nbsp;требованиями российского законодательства; работоспособность
+          сервисов может быть нестабильной.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «СЕКСОЛОГИЯ ДЛЯ ПСИХОЛОГОВ»  →  адрес /seksologiya-dlya-psihologov
+  ============================================================================
+
+  Страница бесплатного вебинара Екатерины Девяткиной, 16 сентября в 17:00 МСК.
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Всё устройство страницы — с лендинга /klinicheskaya-baza (то есть
+    в конечном счёте с /pochemu-kpt-v2 и /trauma-therapy): контейнер 1520px,
+    боковые поля до 80px, брейкпоинты 480 / 768 / 992, кнопки, карточки,
+    аккордеон и форма записи через BotHelp.
+    Страница самодостаточная: все стили в page.css, скрипт в page.js,
+    картинки и иконки — в папках img/ и icons/ рядом.
+
+  ЧЕМ ОТЛИЧАЕТСЯ ОТ КЛИН-БАЗЫ ПО СОСТАВУ БЛОКОВ
+    · нет блока с цифрами рынка — данных для этого вебинара нет;
+    · нет блока «кому это не нужно» и бонуса-чек-листа — их нет в вводных;
+    · вместо них — лента направлений работы сексолога (блок «С чем работает
+      современный сексолог») и кейс Анны, обрезанный до интриги: полный
+      разбор пройдёт на демо-сессии, спойлерить его на странице нельзя.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАК РАБОТАЕТ ЗАПИСЬ
+    Полей на странице нет. В блоке записи стоит виджет BotHelp: человек
+    видит кнопки мессенджеров и нажимает одну. Скрипт page.js перехватывает
+    нажатие, кладёт служебные значения (ClientID Метрики и UTM-метки)
+    в скрытую форму Тильды и отправляет её — оттуда данные уходят в AmoCRM.
+    Как только Тильда ответила, скрипт возвращает нажатие виджету.
+    На превью формы Тильды нет, поэтому шаг с ней пропускается.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 в блоке записи стоит виджет BotHelp прошлого вебинара — чтобы
+      вёрстку можно было проверить. Когда придёт виджет этого вебинара,
+      замените data-bh-widget-id и data-bh-customer-id;
+    · 🟡 фотография первого экрана временная (с прошлой страницы);
+    · 🟡 фотография спикера взята с лендинга курса /sexology — будет
+      заменена, когда придёт новая;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Сексология для психологов: как работать с запросами, о которых обычно молчат. Бесплатный вебинар</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный вебинар 16 сентября в 17:00 МСК. Разберем, какие сексуальные темы скрываются за обычными запросами клиентов и как экологично поднимать их в консультации. С демо-сессией в прямом эфире." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Сексология для психологов: как работать с запросами, о которых обычно молчат" />
+  <meta property="og:description" content="Бесплатный вебинар для психологов и студентов. 16 сентября, 17:00 МСК." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Загрузчик виджета BotHelp. На боевой странице он подключается
+       в настройках Тильды — здесь нужен, чтобы форму можно было проверить. -->
+  <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
+
+  <!-- 🔴 Скрипт страницы: FAQ, меню и связка «кнопка BotHelp → форма Тильды» -->
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
+<div class="page-wrapper sexology-page">
+
+<!-- ==========================================================================
+     ШАПКА
+     ==========================================================================
+     Белая полоса во всю ширину экрана. Не липкая — как на прошлых страницах.
+     На мобильном дата уезжает в меню, кнопка растягивается на всю ширину.
+     ========================================================================== -->
+<header class="site-header_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+
+        <!-- 🟡 Логотип ведёт на главную сайта -->
+        <a class="site-header_logo" href="/" aria-label="Академия современной психологии">
+          <img src="https://s3.twcstorage.ru/asp-media/logo_asp_fec13e6c96.svg" alt="" width="102" height="34" />
+        </a>
+
+        <!-- 🟢 Дата и время вебинара -->
+        <p class="site-header_date">16&nbsp;сентября, 17:00&nbsp;МСК</p>
+
+        <!-- 🟡 Кнопка ведёт на блок с формой в конце страницы -->
+        <a class="button is-accent site-header_cta" href="#reg">Записаться на&nbsp;вебинар</a>
+
+        <!-- 🔴 Кнопка меню. Видна только на узких экранах. -->
+        <button class="site-header_burger" type="button"
+                aria-expanded="false" aria-controls="site-menu"
+                aria-label="Разделы страницы" data-menu-toggle>
+          <span class="site-header_burger-icon" aria-hidden="true"></span>
+        </button>
+
+        <!-- 🟢 Меню разделов. Ссылки ведут на блоки этой же страницы. -->
+        <nav class="site-header_menu" id="site-menu" aria-label="Разделы страницы" hidden>
+          <p class="site-header_menu-date">16 сентября, 17:00 МСК</p>
+          <a href="#zaprosy">О&nbsp;вебинаре</a>
+          <a href="#keis">Демо-сессия</a>
+          <a href="#programma">Программа</a>
+          <a href="#spiker">Спикер</a>
+          <a href="#voprosy">Вопросы</a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки с датой,
+       заголовок, подводка и кнопка. Сделан так же, как на /klinicheskaya-baza.
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟡 Фотография первого экрана. Без loading="lazy": она видна сразу.
+                 Если будете менять — берите пропорции примерно 2,33:1. -->
+            <img class="hero_image" src="https://s3.twcstorage.ru/asp-media/hero_21e56b541f.webp"
+                 alt="Психолог в кабинете с блокнотом на консультации"
+                 width="2400" height="1030" />
+
+            <!-- 🟢 Плашки с датой и форматом -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_bla_9bf3d3c717.svg" alt="" width="20" height="20" />
+                16 сентября, 17:00 МСК
+              </li>
+              <li class="meta-pill_component is-accent">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_earth_white_a41613d615.svg" alt="" width="20" height="20" />
+                Онлайн
+              </li>
+              <li class="meta-pill_component">90 минут</li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <!-- 🟢 Заголовок из двух частей: название крупно, подзаголовок
+                     помельче. Оба куска — внутри одного <h1>. -->
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">Сексология для&nbsp;психологов</span>
+                  <span class="hero_heading-sub">как работать с&nbsp;запросами, о&nbsp;которых обычно молчат</span>
+                </h1>
+                <p class="hero_description">
+                  За 90 минут научимся распознавать сексуальные трудности за темами тревоги, самооценки и отношений, бережно обсуждать их и уверенно реагировать на неожиданные вопросы.
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🟡 Кнопка ведёт на блок с формой -->
+                <a class="button is-light is-full-width" href="#reg">Записаться на&nbsp;вебинар</a>
+                <p class="hero_start-note">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_whi_486d69a1a5.svg" alt="" width="22" height="22" />
+                  Участие бесплатное, нужна только регистрация
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. «О ЧЁМ МОЛЧАТ В КАБИНЕТЕ» — РЕПЛИКИ ПСИХОЛОГОВ
+       ======================================================================
+       Три реплики оформлены как сообщения из чата коллег.
+       ====================================================================== -->
+  <section class="section_voices" id="problema">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="voices_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Клиенты говорят о&nbsp;чем угодно,
+              только не&nbsp;о&nbsp;сексе
+            </h2>
+            <p class="section-intro_description">
+              Сексуальность присутствует в&nbsp;жизни каждого клиента,
+              но&nbsp;мало кто готов говорить о&nbsp;ней открыто. Психологи
+              чувствуют это с&nbsp;обеих сторон: клиент молчит,
+              а&nbsp;специалисту неловко спросить первым.
+            </p>
+          </div>
+
+          <ul class="voices_list">
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Клиентка полгода говорит о&nbsp;раздражении на&nbsp;мужа.
+                Чувствую, что за&nbsp;этим что-то еще, а&nbsp;спросить
+                о&nbsp;близости неловко»
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Практик, 4&nbsp;года в&nbsp;работе
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Клиент сам заговорил о&nbsp;сексе, и&nbsp;я&nbsp;растерялась:
+                это моя компетенция или уже пора направлять к&nbsp;другому
+                специалисту?»
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Психолог в&nbsp;частной практике
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Боюсь поднимать тему сексуальности: вдруг задам вопрос
+                не&nbsp;так и&nbsp;разрушу контакт»
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Начинающий специалист
+              </p>
+            </li>
+          </ul>
+
+          <p class="summary_component">
+            <img class="summary_icon" src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" />
+            <span>
+              <b>Говорить о&nbsp;сексуальности первым обычно приходится
+              психологу.</b> Как делать это экологично, разберем
+              на&nbsp;вебинаре.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       3. «СЕКСУАЛЬНЫЕ ТРУДНОСТИ ПРЯЧУТСЯ ЗА ОБЫЧНЫМИ ЗАПРОСАМИ»
+       ======================================================================
+       Главная мысль вебинара. Три карточки с иконкой.
+       ====================================================================== -->
+  <section class="section_optics" id="zaprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="optics_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Сексуальные трудности прячутся
+              за&nbsp;<span class="accent-word">обычными запросами</span>
+            </h2>
+            <p class="section-intro_description">
+              Клиенты редко приходят со&nbsp;словами «у&nbsp;меня сексуальная
+              проблема». Гораздо чаще они приносят ее&nbsp;последствия
+              и&nbsp;просят помочь именно с&nbsp;ними.
+            </p>
+          </div>
+
+          <ul class="optics_list">
+            <li class="card_component">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_users_c9fd595244.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">«Мы&nbsp;отдалились друг от&nbsp;друга»</h3>
+                <p class="card_description">
+                  За&nbsp;раздражением на&nbsp;партнера и&nbsp;ссорами
+                  из&#8209;за мелочей может стоять долгое избегание близости,
+                  о&nbsp;котором больно говорить.
+                </p>
+              </div>
+            </li>
+            <li class="card_component">
+              <span class="card_icon"><img src="icons/icon-search.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">«Я&nbsp;ничего не&nbsp;чувствую»</h3>
+                <p class="card_description">
+                  За&nbsp;«кажется, я&nbsp;разлюбила» может стоять снижение
+                  желания, болезненный опыт или тревога перед интимностью.
+                </p>
+              </div>
+            </li>
+            <li class="card_component">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">«Со&nbsp;мной что-то не&nbsp;так»</h3>
+                <p class="card_description">
+                  За&nbsp;запросом про тревогу и&nbsp;самооценку может стоять
+                  стыд, страх неудачи и&nbsp;ожидание оценки родом
+                  из&nbsp;сексуальной жизни.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+          <p class="summary_component is-dark">
+            <img class="summary_icon" src="icons/icon-lightbulb.svg" alt="" width="24" height="24" />
+            <span>
+              Клиенты редко говорят о&nbsp;трудностях в&nbsp;сексуальной жизни
+              напрямую. Чаще они обращаются с&nbsp;их&nbsp;последствиями:
+              тревогой, неуверенностью в&nbsp;себе и&nbsp;проблемами
+              в&nbsp;отношениях.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. КЕЙС АННЫ — ИНТРИГА ПЕРЕД ДЕМО-СЕССИЕЙ
+       ======================================================================
+       Кейс из вводных спикера, намеренно обрезанный до четырёх шагов:
+       полный разбор пройдёт на демо-сессии в прямом эфире, поэтому
+       развязку на странице не раскрываем. Дописывать её сюда нельзя —
+       иначе пропадает главный повод прийти на эфир.
+       ====================================================================== -->
+  <section class="section_cases" id="keis">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="cases_component">
+
+          <!-- 🔴 Фотография лежит фоном, поверх неё заголовок и четыре
+               стеклянные карточки. Так же устроен блок «Почему психологи
+               работают в КПТ» на /pochemu-kpt. -->
+          <div class="cases_media">
+
+            <!-- 🟡 Фотография консультации -->
+            <img class="cases_image" src="https://s3.twcstorage.ru/asp-media/case_room_2837ee1f3f.webp"
+                 alt="Психолог и клиентка на консультации в кабинете"
+                 width="2400" height="1030" loading="lazy" />
+
+            <h2 class="cases_heading">Как это выглядит в&nbsp;кабинете</h2>
+
+            <ol class="cases_list">
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Запрос</h3>
+                  <p class="card_description is-on-media">
+                    Анна, 34&nbsp;года, замужем восемь лет: «Постоянно раздражаюсь
+                    на&nbsp;мужа. Мы&nbsp;стали как соседи. Кажется, отношения
+                    зашли в&nbsp;тупик».
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Работа идет, изменений нет</h3>
+                  <p class="card_description is-on-media">
+                    Обсуждаются роли, быт, коммуникация. Анна активно включается,
+                    но&nbsp;от&nbsp;встречи к&nbsp;встрече повторяет:
+                    «Я&nbsp;ничего не&nbsp;чувствую к&nbsp;мужу».
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Один вопрос меняет картину</h3>
+                  <p class="card_description is-on-media">
+                    На&nbsp;шестой встрече психолог задает простой вопрос,
+                    и&nbsp;после долгой паузы разговор впервые становится
+                    настоящим.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Проблема не&nbsp;там, где ее&nbsp;искали</h3>
+                  <p class="card_description is-on-media">
+                    Дело оказалось не&nbsp;в&nbsp;«разлюбила»
+                    и&nbsp;не&nbsp;в&nbsp;несовместимости. Что скрывалось
+                    за&nbsp;запросом, узнаете на&nbsp;эфире.
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <p class="summary_component is-dark cases_note">
+              <span>
+                <b>Екатерина Девяткина</b> проведет демо-сессию и&nbsp;разберет
+                этот кейс: какие вопросы раскрывают такую историю и&nbsp;что
+                делать психологу дальше
+              </span>
+            </p>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. «С ЧЕМ РАБОТАЕТ СОВРЕМЕННЫЙ СЕКСОЛОГ» — ЛЕНТА НАПРАВЛЕНИЙ
+       ======================================================================
+       Двенадцать направлений из вводных спикера — плашками, а не карточками:
+       так широта профессии видна с одного взгляда и блок не раздувается.
+       ====================================================================== -->
+  <!-- <section class="section_scope" id="napravleniya">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="scope_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              С&nbsp;чем работает современный сексолог
+            </h2>
+            <p class="section-intro_description">
+              Спектр запросов гораздо шире, чем принято думать.
+            </p>
+          </div>
+
+          <ul class="scope_list">
+            <li class="scope_item">Сексуальное здоровье</li>
+            <li class="scope_item">Снижение сексуального желания</li>
+            <li class="scope_item">Проблемы возбуждения</li>
+            <li class="scope_item">Аноргазмия</li>
+            <li class="scope_item">Болезненный секс</li>
+            <li class="scope_item">Сексуальные трудности в&nbsp;паре</li>
+            <li class="scope_item">Коммуникация в&nbsp;отношениях</li>
+            <li class="scope_item">Сексуальность во&nbsp;время беременности и&nbsp;после родов</li>
+            <li class="scope_item">Сексуальность в&nbsp;разные возрастные периоды</li>
+            <li class="scope_item">Сексуализированная травма</li>
+            <li class="scope_item">Сексуальная ориентация и&nbsp;гендерная идентичность</li>
+            <li class="scope_item">Разнообразие сексуальности</li>
+          </ul>
+
+          <p class="summary_component is-dark">
+            <img class="summary_icon" src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" />
+            <span>
+              <b>Сексолог работает не&nbsp;только с&nbsp;сексом</b>,
+              но&nbsp;и&nbsp;с&nbsp;отношениями, самооценкой, телесностью,
+              эмоциональной близостью и&nbsp;качеством жизни клиента.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+
+    <!-- ======================================================================
+       6. «ОШИБКИ ПСИХОЛОГОВ ПРИ РАБОТЕ С СЕКСУАЛЬНЫМИ ЗАПРОСАМИ»
+       ======================================================================
+       Тёмная плашка с четырьмя типичными ошибками из вводных спикера.
+       ====================================================================== -->
+  <!-- <section class="section_risks" id="oshibki">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="risks_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading is-on-dark">
+              Ошибки психологов при работе
+              с&nbsp;сексуальными запросами
+            </h2>
+            <p class="section-intro_description is-on-dark">
+              Они случаются не&nbsp;от&nbsp;недостатка опыта. Просто работе
+              с&nbsp;темой сексуальности нигде специально не&nbsp;учат.
+            </p>
+          </div>
+
+          <ul class="risks_list">
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_help_light_4426b15a34.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Избегание темы</h3>
+                <p class="card_description is-on-dark">
+                  Психолог не&nbsp;спрашивает о&nbsp;сексуальной жизни,
+                  и&nbsp;главный механизм проблемы месяцами остается
+                  незамеченным, а&nbsp;терапия заходит в&nbsp;тупик.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_alert_light_51fb436b1d.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Собственная неловкость</h3>
+                <p class="card_description is-on-dark">
+                  Специалисту неудобно говорить о&nbsp;сексе, и&nbsp;клиент
+                  это считывает и&nbsp;окончательно закрывает тему.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_shield_light_3056d874e8.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Советы и&nbsp;оценки</h3>
+                <p class="card_description is-on-dark">
+                  Преждевременные рекомендации и&nbsp;оценочные суждения вместо
+                  исследования быстро разрушают доверие клиента.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_scale_light_dd7ffa4f3b.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Границы компетенции</h3>
+                <p class="card_description is-on-dark">
+                  Непонимание, где психолог работает самостоятельно,
+                  а&nbsp;где нужно направить клиента к&nbsp;врачу или другому
+                  специалисту.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+
+  <!-- ======================================================================
+       7. «ПОСЛЕ ВЕБИНАРА ВЫ СМОЖЕТЕ»
+       ======================================================================
+       Четыре результата из вводных. Карточки с тонкой обводкой.
+       ====================================================================== -->
+  <section class="section_shifts" id="rezultaty">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="shifts_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">После вебинара вы&nbsp;сможете</h2>
+            <p class="section-intro_description">
+              Это не&nbsp;обучение профессии за&nbsp;один вечер,
+              а&nbsp;рабочая система координат.
+            </p>
+          </div>
+
+          <ul class="shifts_list">
+            <li class="shift_component">
+              <h3 class="card_heading">Увереннее говорить о&nbsp;сексуальности</h3>
+              <p class="card_description">
+                Поднимать тему в&nbsp;консультации экологично,
+                не&nbsp;дожидаясь, пока клиент решится сам.
+              </p>
+            </li>
+            <li class="shift_component">
+              <h3 class="card_heading">Замечать скрытые запросы</h3>
+              <p class="card_description">
+                Видеть, когда за&nbsp;«обычной» жалобой на&nbsp;отношения,
+                тревогу или самооценку стоит сексуальная трудность.
+              </p>
+            </li>
+            <li class="shift_component">
+              <h3 class="card_heading">Понимать границы компетенции</h3>
+              <p class="card_description">
+                Знать, когда психолог работает самостоятельно, а&nbsp;когда
+                клиента нужно направить к&nbsp;врачу или другому специалисту.
+              </p>
+            </li>
+            <li class="shift_component">
+              <h3 class="card_heading">Оценить перспективы специализации</h3>
+              <p class="card_description">
+                Получить представление о&nbsp;современной доказательной
+                сексологии и&nbsp;пути в&nbsp;профессию сексолога.
+              </p>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+    <!-- ======================================================================
+       8. «ДЛЯ КОГО ЭТОТ ВЕБИНАР»
+       ======================================================================
+       Три портрета из описания вебинара. Карточки в один ряд на десктопе.
+       ====================================================================== -->
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">Для кого этот вебинар</h2>
+            <p class="section-intro_description">
+              Для тех, кто хочет расширить профессиональные компетенции
+              и задумывается о работе с темой сексуальности.
+            </p>
+          </div>
+
+          <ul class="card-grid_component is-stack-tablet audience_list">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_briefcase_0134f477b3.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Практикующим психологам</h3>
+                <p class="card_description">
+                  Сексуальные темы уже звучат в&nbsp;вашем кабинете,
+                  прямо или между строк. Пора встречать их&nbsp;уверенно,
+                  а&nbsp;не&nbsp;обходить стороной.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_trending_85d5942254.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Начинающим специалистам</h3>
+                <p class="card_description">
+                  Хочется расширить компетенции и&nbsp;не&nbsp;растеряться,
+                  когда клиент впервые поднимет «неудобную» тему.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Студентам психологических программ</h3>
+                <p class="card_description">
+                  Полезно заранее понять, как устроена работа
+                  с&nbsp;сексуальностью, и&nbsp;присмотреться
+                  к&nbsp;возможной специализации.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       9. «ЧТО РАЗБЕРЁМ ПО ПУНКТАМ»
+       ======================================================================
+       Слева заголовок, справа лента из шести пунктов. Ниже 992px заголовок
+       встаёт над лентой.
+       ====================================================================== -->
+  <section class="section_agenda" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="agenda_component">
+
+          <div class="agenda_intro">
+            <h2 class="agenda_heading">Что разберем по&nbsp;пунктам</h2>
+            <p class="agenda_description">
+            Основная задача: показать, какие сексуальные темы могут скрываться за «обычными» запросами клиентов, и дать понятные ориентиры, как поднимать эти вопросы, с чем работать самому и куда расти дальше.
+            </p>
+          </div>
+
+          <ol class="agenda_list">
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">01</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Почему о&nbsp;сексе молчат</h3>
+                <p class="agenda_description">
+                  Почему сексуальность остается одной из&nbsp;самых
+                  табуированных тем в&nbsp;психотерапии. Статистика
+                  и&nbsp;наблюдения из&nbsp;практики.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">02</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Что стоит за&nbsp;«обычными» запросами</h3>
+                <p class="agenda_description">
+                  Разбор кейсов: как сексуальные трудности маскируются
+                  под&nbsp;проблемы отношений, тревогу и&nbsp;самооценку.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">03</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">С&nbsp;чем работает сексолог</h3>
+                <p class="agenda_description">
+                  Широта профессии: от&nbsp;сексуального здоровья
+                  до&nbsp;коммуникации в&nbsp;паре и&nbsp;работы
+                  с&nbsp;сексуализированной травмой.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">04</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Норма, проблема, диагностика</h3>
+                <p class="agenda_description">
+                  Как отличить норму от&nbsp;проблемы, провести первичную
+                  диагностику сексологического запроса и&nbsp;не&nbsp;навредить
+                  клиенту.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">05</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Демо-сессия в&nbsp;прямом эфире</h3>
+                <p class="agenda_description">
+                  Полный разбор кейса Анны: какие гипотезы проверять, какие
+                  вопросы задавать и&nbsp;где проходят границы компетенции
+                  психолога.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">06</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Путь в&nbsp;профессию</h3>
+                <p class="agenda_description">
+                  Какие знания и&nbsp;навыки нужны для работы
+                  с&nbsp;сексуальностью и&nbsp;как освоить профессию сексолога.
+                  В&nbsp;конце ответим на&nbsp;вопросы из&nbsp;чата.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       10. СПИКЕР
+       ======================================================================
+       Заголовок по центру, ниже — фотография и текст в две колонки.
+       Цитаты нет: в вводных её не было, выдумывать за спикера нельзя.
+       ====================================================================== -->
+  <section class="section_speaker" id="spiker">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="speaker_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">Кто проведет вебинар</h2>
+          </div>
+
+          <div class="speaker_card">
+            <div class="speaker_media">
+              <!-- 🟡 Фотография спикера -->
+              <img class="speaker_image" src="https://s3.twcstorage.ru/asp-media/speaker_devyatkina_5dacdb06b4.jpg"
+                   alt="Екатерина Девяткина, консультант в сфере сексуальных отношений"
+                   width="960" height="1280" loading="lazy" />
+            </div>
+
+            <div class="speaker_copy">
+              <h3 class="speaker_name">Екатерина Девяткина</h3>
+              <p class="speaker_description">
+                Работает с&nbsp;темами сексуальности, отношений
+                и&nbsp;телесности. На&nbsp;вебинаре покажет, как психологу
+                экологично поднимать сексуальные темы в&nbsp;консультации,
+                и&nbsp;проведет демо-сессию с&nbsp;разбором кейса
+                в&nbsp;прямом эфире.
+              </p>
+
+              <!-- 🟢 Регалии. Плашки переносятся по мере нехватки места. -->
+              <ul class="speaker_credentials">
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Консультант в&nbsp;сфере сексуальных отношений
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Нарративный практик
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Телесный терапевт
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Основательница проекта «Сексориум»
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       11. ОТЗЫВЫ  —  макет из Фигмы, кадр 470-2077
+       ======================================================================
+       Слева тёмная карточка с процентом и плашками, справа три белые
+       карточки с оценками независимых площадок.
+       🟢 Оценки площадок меняются со временем — сверяйтесь перед запуском.
+       ====================================================================== -->
+  <section class="section_reviews" id="otzyvy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="reviews_component">
+
+          <div class="reviews_grid">
+
+            <div class="reviews_headline">
+              <p class="reviews_percent">98% студентов</p>
+              <p class="reviews_lead">
+                рекомендуют обучение<br />
+                в&nbsp;Академии Современной Психологии
+              </p>
+
+              <ul class="reviews_tags">
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Практика
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Преподаватели
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Поддержка
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Комьюнити
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Качество
+                </li>
+              </ul>
+
+              <!-- 🔴 Декоративная молния с макета -->
+              <img class="reviews_zap" src="https://s3.twcstorage.ru/asp-media/icon_zap_a064f3db0f.svg" alt="" width="100" height="100" aria-hidden="true" />
+            </div>
+
+            <ul class="reviews_scores">
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.45
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_tutortop_cc004891ad.svg" alt="tutortop" width="126" height="28" loading="lazy" />
+              </li>
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.82
+                </p>
+                <!-- 🔴 Логотип «Сравни» на макете состоит из двух частей:
+                     цветного кружка (растр) и надписи (вектор). -->
+                <span class="reviews_logo-group">
+                  <img class="reviews_logo-mark" src="https://s3.twcstorage.ru/asp-media/logo_sravni_mark_4e1f6ca088.png" alt="" width="84" height="72" loading="lazy" />
+                  <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_sravni_33a4ab5059.svg" alt="Сравни" width="113" height="22" loading="lazy" />
+                </span>
+              </li>
+              <li class="reviews_score is-wide">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.9
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_otzovik_786226e74e.svg" alt="Отзовик" width="134" height="28" loading="lazy" />
+              </li>
+            </ul>
+
+          </div>
+
+          <p class="reviews_note">* По&nbsp;данным отзывов на&nbsp;независимых площадках</p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       12. АКАДЕМИЯ  —  макет из Фигмы, кадр 470-752
+       ======================================================================
+       Плитка из четырёх карточек: зал, сообщество, выпускники, преподаватели.
+       ====================================================================== -->
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Мы&nbsp;растем на&nbsp;обратной связи от&nbsp;наших студентов, поэтому
+            каждый новый поток&nbsp;— это улучшенный предыдущий
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+
+              <div class="academy-showcase_teachers-media">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="496"
+                  height="550"
+                  alt="Участники открытого разбора Академии"
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="academy-showcase_teachers-controls" aria-hidden="true">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       13. «УЧАСТИЕ БЕСПЛАТНОЕ» + ФОРМА
+       ======================================================================
+       Тёмная плашка. Слева — как проходит запись, справа — белая карточка
+       с кнопками мессенджеров. Бонуса-чек-листа у этого вебинара нет.
+       ====================================================================== -->
+  <section class="section_signup" id="reg">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">Участие бесплатное</h2>
+            <p class="signup_description">
+              Один вечер, и&nbsp;у&nbsp;вас появятся понятные ориентиры
+              для работы с&nbsp;темой, о&nbsp;которой обычно молчат.
+              Нужна только регистрация.
+            </p>
+
+            <ol class="signup_steps">
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">01</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Выберите мессенджер</h3>
+                  <p class="signup_step-description">
+                    Одно нажатие, без анкет и&nbsp;лишних полей
+                  </p>
+                </div>
+              </li>
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">02</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Доступ придет в&nbsp;мессенджер</h3>
+                  <p class="signup_step-description">
+                    Ссылка на&nbsp;эфир придет в&nbsp;Telegram или MAX. Напомним
+                    за&nbsp;час до&nbsp;начала
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <!-- 🟢 Лид-магнит: подарок участникам вебинара.
+                 Стоит слева от формы, прижат к низу колонки. -->
+            <div class="gift_component">
+              <div class="gift_copy">
+                <h3 class="gift_heading">Подарок участникам вебинара</h3>
+                <p class="gift_description">
+                  Чек-лист «5&nbsp;маркеров скрытой сексуальной трудности
+                  в&nbsp;„обычных“ запросах»
+                </p>
+              </div>
+              <!-- 🟡 Обложка лид-магнита -->
+              <img class="gift_image" src="https://s3.twcstorage.ru/asp-media/gift_checklist_fc8225a4b9.webp"
+                   alt="Обложка чек-листа «Разговор о сексуальности»"
+                   width="541" height="477" loading="lazy" />
+            </div>
+          </div>
+
+          <!-- 🔴 РЕГИСТРАЦИЯ ЧЕРЕЗ BOTHELP.
+               На странице нет ни одного поля и ни одной своей кнопки:
+               человек видит только кнопки мессенджеров, которые рисует виджет
+               BotHelp. По нажатию на любую из них скрипт:
+
+                 1) перехватывает нажатие, чтобы BotHelp не увёл со страницы
+                    раньше времени;
+                 2) кладёт служебные значения (ClientID Метрики и UTM-метки)
+                    в скрытую форму Тильды и отправляет её — дальше данные
+                    уходят в AmoCRM штатной интеграцией Тильды;
+                 3) и только после ответа Тильды возвращает нажатие виджету.
+
+               🟡 data-tilda-form-name — имя формы в настройках Тильды.
+                  Должно совпадать с ним буква в букву. Сейчас стоит рабочее
+                  название — сверьте его, когда форму заведут.
+               🟡 data-metrika-id — номер счётчика Метрики. Можно оставить
+                  пустым: скрипт сам найдёт счётчик на странице.
+               🔴 ВАЖНО: атрибуты data-bh-widget-id и data-bh-customer-id
+                  должны стоять ТОЛЬКО на пустом контейнере
+                  #bh-widget-button-root ниже. -->
+          <div class="lead-form_component" data-signup data-state="idle"
+               data-tilda-form-name="sexology-webinar"
+               data-metrika-id="">
+
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Зарегистрироваться на&nbsp;вебинар</h3>
+              <p class="lead-form_date">16 сентября, 17:00 МСК</p>
+            </div>
+
+            <p class="lead-form_hint">
+              Выберите мессенджер: пришлем ссылку на&nbsp;эфир туда
+              и&nbsp;напомним за&nbsp;час до&nbsp;начала.
+            </p>
+
+            <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
+                 Пока виджет не пришёл, на этом месте стоит серый скелет.
+                 🟡 Сейчас подключён виджет ПРОШЛОГО вебинара — только чтобы
+                 проверять вёрстку на превью. Когда придёт виджет этого
+                 вебинара, замените data-bh-widget-id и data-bh-customer-id. -->
+            <div class="lead-form_widget" data-bh-mount data-bh-state="loading">
+              <div class="lead-form_widget-skeleton" data-bh-skeleton aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+
+              <div class="lead-form_bh" id="bh-widget-button-root"
+                   data-bh-widget-id="23" data-bh-customer-id="278875"></div>
+
+              <p class="lead-form_note" data-bh-error hidden>
+                Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу
+                или напишите нам, и&nbsp;мы&nbsp;пришлем ссылку на&nbsp;эфир вручную.
+              </p>
+            </div>
+
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <!-- 🔴 Запасной выход. Показывается, только если переход
+                 в мессенджер не сработал. Адрес подставляет скрипт. -->
+            <p class="lead-form_manual" data-lead-manual hidden>
+              Мессенджер не&nbsp;открылся?
+              <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
+            </p>
+
+            <p class="lead-form_note">
+              Запись эфира будет доступна зарегистрированным участникам.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       14. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       Обычный аккордеон на <details>. Без скрипта он тоже работает —
+       скрипт нужен только для плавного раскрытия.
+       ====================================================================== -->
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+            <!-- 🟡 Ссылка ведёт в Telegram-бот приёмной комиссии -->
+            <p class="faq_support">
+              Не&nbsp;нашли ответа на&nbsp;свой вопрос?
+              <a href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener">Напишите нам</a>
+            </p>
+          </div>
+
+          <div class="faq_list accordion_component" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько стоит участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Участие бесплатное, нужна только регистрация. Ссылка на&nbsp;эфир придет в&nbsp;выбранный мессенджер, напомним за&nbsp;час до&nbsp;начала.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;не&nbsp;собираюсь становиться сексологом. Мне это нужно?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Да, вебинар в&nbsp;первую очередь для психологов, которые не&nbsp;планируют менять специализацию. Сексуальные трудности прячутся за&nbsp;«обычными» запросами про отношения, тревогу и&nbsp;самооценку, поэтому замечать их&nbsp;и&nbsp;корректно поднимать тему полезно специалисту любого профиля.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Будут ли&nbsp;откровенные материалы? Мне будет комфортно?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Никаких откровенных материалов не&nbsp;будет. Это профессиональный разговор о&nbsp;консультировании: запросы, диагностика, этика, границы компетенции. Тема обсуждается так&nbsp;же корректно и&nbsp;бережно, как это происходит в&nbsp;самой консультации.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;студент, у&nbsp;меня мало опыта. Будет понятно?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Да, вебинар рассчитан и&nbsp;на&nbsp;студентов психологических программ. Специальная подготовка не&nbsp;нужна, термины объясняются по&nbsp;ходу, а&nbsp;вопросы можно задавать прямо в&nbsp;чате эфира.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Где проходит вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Онлайн. Ссылка на&nbsp;эфир придет в&nbsp;выбранный мессенджер после регистрации. Достаточно перейти по&nbsp;ней в&nbsp;назначенное время.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько длится эфир?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Около 90&nbsp;минут вместе с&nbsp;ответами на&nbsp;вопросы.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Будет ли&nbsp;запись?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Да, запись будет доступна зарегистрированным участникам. Но&nbsp;живое участие дает больше: демо-сессия проходит в&nbsp;прямом эфире, и&nbsp;вопрос спикеру можно задать сразу.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Выдается ли&nbsp;сертификат за&nbsp;участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Нет, за&nbsp;вебинар сертификат не&nbsp;выдается. Документы установленного образца можно получить только по&nbsp;итогам обучающих программ Академии.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Это продающий вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Скажем честно: в&nbsp;конце коротко расскажем, как освоить профессию сексолога в&nbsp;Академии, и&nbsp;пригласим на&nbsp;консультацию с&nbsp;менеджером. Это несколько минут, все остальное время займут разбор темы и&nbsp;демо-сессия.</p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ==========================================================================
+     ПОДВАЛ
+     ==========================================================================
+     Контакты и реквизиты — те же, что на боевой странице /clinical-base.
+     ========================================================================== -->
+<footer class="site-footer_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+
+      <h2 class="site-footer_heading">Контакты</h2>
+
+      <div class="site-footer_grid">
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Отдел продаж</p>
+          <p class="site-footer_line"><a href="tel:+78124702901">+7&nbsp;812&nbsp;470-29-01</a></p>
+          <p class="site-footer_line"><a href="mailto:info@modern-psy.ru">info@modern-psy.ru</a></p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Адрес</p>
+          <p class="site-footer_line">
+            197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ
+            Введенский, пр-т&nbsp;Большой&nbsp;П.с., д.&nbsp;7/4, литера&nbsp;А,
+            помещ.&nbsp;2-Н
+          </p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Правовая информация</p>
+          <!-- 🟡 Адреса документов подставьте с боевого сайта -->
+          <p class="site-footer_line"><a href="/oferta">Публичная оферта</a></p>
+          <p class="site-footer_line"><a href="/privacy">Политика конфиденциальности</a></p>
+          <p class="site-footer_line"><a href="/documents">Сведения об&nbsp;образовательной организации</a></p>
+        </div>
+
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+        <p>ОГРН 1217800102783<br />ИНН/КПП 7839141929/781301001</p>
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>
+          Доступ к&nbsp;мессенджеру Telegram и&nbsp;видеохостингу YouTube
+          в&nbsp;РФ ограничен в&nbsp;связи с&nbsp;применяемыми техническими мерами
+          и&nbsp;требованиями российского законодательства; работоспособность
+          сервисов может быть нестабильной.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>

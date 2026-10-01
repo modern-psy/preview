@@ -1,0 +1,20 @@
+/* Shared after-course composition, extracted from trauma-therapy decision-after. */
+.graduation_component { --section-layout-gap: clamp(2.5rem, 2.857vw, 3rem); display: flex; width: 100%; min-width: 0; flex-direction: column; align-items: center; gap: var(--section-layout-gap); }
+.graduation_heading { max-width: 69.875rem; text-align: center; }
+.graduation_mark { position: relative; width: 3.75rem; height: 3.75rem; }
+.graduation_mark-base { display: block; width: 100%; height: 100%; }
+.graduation_mark-detail { position: absolute; bottom: 0; right: 0; width: 1.375rem; height: 1.375rem; }
+.graduation_media { display: grid; width: 100%; min-width: 0; gap: 0.5rem; }
+.graduation_image-frame { position: relative; min-width: 0; aspect-ratio: 4 / 3; overflow: hidden; overflow: clip; border-radius: var(--radius-card); background: var(--color-surface-dark); isolation: isolate; }
+.graduation_image-frame::after { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgb(17 23 1 / 80%) 0%, rgb(30 40 3 / 0%) 62.06%); content: ''; pointer-events: none; }
+.graduation_image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.graduation_cards { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+@media (min-width: 48rem) {
+  .graduation_cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .graduation_image-frame { aspect-ratio: 16 / 9; }
+}
+@media (min-width: 64.0625rem) {
+  .graduation_media { position: relative; display: flex; min-height: clamp(37.5rem, 41.667vw, 43.75rem); align-items: flex-end; justify-content: center; padding: 3rem; overflow: hidden; overflow: clip; border-radius: var(--radius-card); background: var(--color-surface-dark); }
+  .graduation_image-frame { position: absolute; top: -6.25rem; right: 0; bottom: 0; left: 0; height: auto; aspect-ratio: auto; border-radius: 0; }
+  .graduation_cards { position: relative; z-index: 2; width: 100%; max-width: 79rem; }
+}

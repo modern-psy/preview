@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  UI-КИТ «МЕЖДУ СЕССИЙ» · демо-страница
+  ============================================================================
+  Живой эталон компонентов форм: кнопки, крестики, лоадеры, чекбоксы,
+  радио, поля ввода. Все стили — в tokens.css и ui-kit.css, тут только
+  разметка-пример и оформление самой витрины (класс kit_*).
+
+  🟢 Можно править: подписи, примеры, добавлять новые секции.
+  🔴 Нельзя: менять классы компонентов — они повторяют Figma.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>UI-кит · Между сессий</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="ui-kit.css" />
+  <style>
+    /* Оформление витрины — не часть UI-кита */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: var(--font-family-body);
+      -webkit-font-smoothing: antialiased;
+    }
+    .kit_header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 1.25rem clamp(1rem, 4.7619vw, 5rem);
+      background: var(--bg-primary-solid);
+      color: var(--text-white);
+    }
+    .kit_logo { display: block; height: 2.25rem; width: auto; }
+    .kit_header-note { margin: 0; color: var(--color-neutral-400); font-size: var(--font-size-text-sm); }
+    .kit_main {
+      max-width: 72.5rem;
+      margin: 0 auto;
+      padding: 2.5rem clamp(1rem, 4.7619vw, 5rem) 5rem;
+    }
+    .kit_title { margin: 0 0 0.5rem; font-size: var(--font-size-display-sm); font-weight: 600; line-height: 1.2; }
+    .kit_lead { margin: 0 0 2.5rem; color: var(--text-tertiary); font-size: var(--font-size-text-md); line-height: 1.5; max-width: 42rem; }
+    .kit_section { margin-bottom: 3.5rem; }
+    .kit_h2 { margin: 0 0 0.25rem; font-size: var(--font-size-display-xs); font-weight: 600; line-height: 1.2; }
+    .kit_desc { margin: 0 0 1.25rem; color: var(--text-tertiary); font-size: var(--font-size-text-sm); }
+    .kit_card {
+      padding: 1.5rem;
+      border-radius: var(--radius-2xl);
+      background: var(--bg-primary);
+      box-shadow: var(--shadow-xs);
+    }
+    .kit_card + .kit_card { margin-top: 1rem; }
+    .kit_card.is-dark { background: var(--bg-primary-solid); color: var(--text-white); }
+    .kit_row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+    .kit_row + .kit_row { margin-top: 1rem; }
+    .kit_caption {
+      flex: 0 0 8rem;
+      color: var(--text-tertiary);
+      font-size: var(--font-size-text-xs);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .kit_grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: 1.5rem 2rem; }
+    .kit_swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); gap: 0.5rem; }
+    .kit_swatch { border-radius: var(--radius-md); overflow: hidden; box-shadow: inset 0 0 0 1px var(--border-secondary); font-size: var(--font-size-text-xs); }
+    .kit_swatch-color { height: 3rem; }
+    .kit_swatch-name { padding: 0.375rem 0.5rem; color: var(--text-secondary); }
+    .kit_type p { margin: 0 0 0.5rem; }
+    code { font-size: 0.8125rem; color: var(--text-brand-secondary); background: var(--bg-brand-primary); padding: 0.1em 0.35em; border-radius: var(--radius-xs); }
+    @media (max-width: 40rem) { .kit_caption { flex-basis: 100%; } }
+  </style>
+</head>
+<body>
+
+  <header class="kit_header">
+    <img class="kit_logo" src="https://s3.twcstorage.ru/asp-media/Logo_8894ede159.svg" alt="Между сессий" width="143" height="46" />
+    <p class="kit_header-note">UI-кит · черновик от 07.09.2026</p>
+  </header>
+
+  <main class="kit_main">
+    <h1 class="kit_title">Компоненты форм</h1>
+    <p class="kit_lead">
+      Собрано по макетам «Между сессий UI». Токены — в <code>tokens.css</code>,
+      компоненты — в <code>ui-kit.css</code>. Наведите курсор и пройдитесь Tab’ом,
+      чтобы увидеть hover и focus.
+    </p>
+
+    <!-- ================================================================ -->
+    <section class="kit_section">
+      <h2 class="kit_h2">Палитра</h2>
+      <p class="kit_desc">Бренд — лаймовый, нейтраль — свой серо-зелёный. Полная шкала в tokens.css.</p>
+      <div class="kit_card">
+        <div class="kit_swatches">
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-50)"></div><div class="kit_swatch-name">brand-50</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-100)"></div><div class="kit_swatch-name">brand-100</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-300)"></div><div class="kit_swatch-name">brand-300</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-400)"></div><div class="kit_swatch-name">brand-400</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-500)"></div><div class="kit_swatch-name">brand-500</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-600)"></div><div class="kit_swatch-name">brand-600</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-700)"></div><div class="kit_swatch-name">brand-700</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-brand-900)"></div><div class="kit_swatch-name">brand-900</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-neutral-50)"></div><div class="kit_swatch-name">neutral-50</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-neutral-100)"></div><div class="kit_swatch-name">neutral-100</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-neutral-300)"></div><div class="kit_swatch-name">neutral-300</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-neutral-500)"></div><div class="kit_swatch-name">neutral-500</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-neutral-700)"></div><div class="kit_swatch-name">neutral-700</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-neutral-950)"></div><div class="kit_swatch-name">neutral-950</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-red-300)"></div><div class="kit_swatch-name">red-300</div></div>
+          <div class="kit_swatch"><div class="kit_swatch-color" style="background: var(--color-red-600)"></div><div class="kit_swatch-name">red-600</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="kit_section">
+      <h2 class="kit_h2">Типографика</h2>
+      <p class="kit_desc">Wix Madefor Text, 400 / 500 / 600 / 700. Размеры фиксированные, как в Figma.</p>
+      <div class="kit_card kit_type">
+        <p style="font-size: var(--font-size-display-lg); line-height: var(--line-height-display-lg); font-weight: 600;">Display lg · 48</p>
+        <p style="font-size: var(--font-size-display-md); line-height: var(--line-height-display-md); font-weight: 600;">Display md · 36</p>
+        <p style="font-size: var(--font-size-display-sm); line-height: var(--line-height-display-sm); font-weight: 600;">Display sm · 30</p>
+        <p style="font-size: var(--font-size-display-xs); line-height: var(--line-height-display-xs); font-weight: 600;">Display xs · 24</p>
+        <p style="font-size: var(--font-size-text-xl); line-height: var(--line-height-text-xl);">Text xl · 20 — Между сессиями важно не терять контакт</p>
+        <p style="font-size: var(--font-size-text-lg); line-height: var(--line-height-text-lg);">Text lg · 18 — Между сессиями важно не терять контакт</p>
+        <p style="font-size: var(--font-size-text-md); line-height: var(--line-height-text-md);">Text md · 16 — Между сессиями важно не терять контакт</p>
+        <p style="font-size: var(--font-size-text-sm); line-height: var(--line-height-text-sm);">Text sm · 14 — Между сессиями важно не терять контакт</p>
+        <p style="font-size: var(--font-size-text-xs); line-height: var(--line-height-text-xs); margin: 0;">Text xs · 12 — Между сессиями важно не терять контакт</p>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="kit_section">
+      <h2 class="kit_h2">Кнопки</h2>
+      <p class="kit_desc">Классы: <code>.button</code> + иерархия <code>.is-primary / .is-secondary / .is-tertiary / .is-link / .is-link-gray</code> + размер <code>.is-xs … .is-xl</code>.</p>
+
+      <div class="kit_card">
+        <div class="kit_row">
+          <span class="kit_caption">Primary</span>
+          <button class="button is-primary" type="button"><span class="button_label">Записаться</span></button>
+          <button class="button is-primary" type="button"><span class="icon is-check"></span><span class="button_label">С иконкой</span></button>
+          <button class="button is-primary is-loading" type="button"><span class="icon is-loader"></span><span class="button_label">Отправляем…</span></button>
+          <button class="button is-primary" type="button" disabled><span class="button_label">Недоступно</span></button>
+          <button class="button is-primary is-icon-only" type="button" aria-label="Готово"><span class="icon is-check"></span></button>
+        </div>
+        <div class="kit_row">
+          <span class="kit_caption">Secondary</span>
+          <button class="button is-secondary" type="button"><span class="button_label">Подробнее</span></button>
+          <button class="button is-secondary" type="button"><span class="icon is-mail"></span><span class="button_label">Написать</span></button>
+          <button class="button is-secondary is-loading" type="button"><span class="icon is-loader"></span><span class="button_label">Загрузка</span></button>
+          <button class="button is-secondary" type="button" disabled><span class="button_label">Недоступно</span></button>
+          <button class="button is-secondary is-icon-only" type="button" aria-label="Почта"><span class="icon is-mail"></span></button>
+        </div>
+        <div class="kit_row">
+          <span class="kit_caption">Tertiary</span>
+          <button class="button is-tertiary" type="button"><span class="button_label">Отмена</span></button>
+          <button class="button is-tertiary" type="button"><span class="icon is-help"></span><span class="button_label">Помощь</span></button>
+          <button class="button is-tertiary" type="button" disabled><span class="button_label">Недоступно</span></button>
+          <button class="button is-tertiary is-icon-only" type="button" aria-label="Помощь"><span class="icon is-help"></span></button>
+        </div>
+        <div class="kit_row">
+          <span class="kit_caption">Link</span>
+          <a class="button is-link" href="#">Ссылка цветная</a>
+          <a class="button is-link" href="#"><span class="button_label">Со стрелкой</span><span class="icon is-chevron-down"></span></a>
+          <a class="button is-link-gray" href="#">Ссылка серая</a>
+          <span class="button is-link is-disabled">Недоступна</span>
+        </div>
+      </div>
+
+      <div class="kit_card">
+        <div class="kit_row">
+          <span class="kit_caption">Размеры</span>
+          <button class="button is-primary is-xs" type="button"><span class="button_label">xs · 33</span></button>
+          <button class="button is-primary is-sm" type="button"><span class="button_label">sm · 44</span></button>
+          <button class="button is-primary" type="button"><span class="button_label">md · 40</span></button>
+          <button class="button is-primary is-lg" type="button"><span class="button_label">lg · 40 / 16px</span></button>
+          <button class="button is-primary is-xl" type="button"><span class="button_label">xl · 52</span></button>
+        </div>
+        <div class="kit_row">
+          <span class="kit_caption">Icon only</span>
+          <button class="button is-secondary is-icon-only is-xs" type="button" aria-label="xs"><span class="icon is-check"></span></button>
+          <button class="button is-secondary is-icon-only is-sm" type="button" aria-label="sm"><span class="icon is-check"></span></button>
+          <button class="button is-secondary is-icon-only" type="button" aria-label="md"><span class="icon is-check"></span></button>
+          <button class="button is-secondary is-icon-only is-lg" type="button" aria-label="lg"><span class="icon is-check"></span></button>
+          <button class="button is-secondary is-icon-only is-xl" type="button" aria-label="xl"><span class="icon is-check"></span></button>
+        </div>
+      </div>
+
+      <div class="kit_card">
+        <div class="kit_row">
+          <span class="kit_caption">Destructive</span>
+          <button class="button is-destructive is-primary" type="button"><span class="button_label">Удалить</span></button>
+          <button class="button is-destructive is-secondary" type="button"><span class="button_label">Удалить</span></button>
+          <button class="button is-destructive is-tertiary" type="button"><span class="button_label">Удалить</span></button>
+          <a class="button is-destructive is-link" href="#">Удалить</a>
+          <button class="button is-destructive is-primary" type="button" disabled><span class="button_label">Недоступно</span></button>
+          <button class="button is-destructive is-primary is-icon-only" type="button" aria-label="Удалить"><span class="icon is-x-close"></span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="kit_section">
+      <h2 class="kit_h2">Крестик модалки и утилити-кнопки</h2>
+      <p class="kit_desc"><code>.button-close</code> (sm 36 / md 40 / lg 44) и <code>.button-utility</code> (xs 32 / sm 36, вариант <code>.is-secondary</code> с рамкой).</p>
+      <div class="kit_card">
+        <div class="kit_row">
+          <span class="kit_caption">Крестик</span>
+          <button class="button-close is-sm" type="button" aria-label="Закрыть"><span class="icon is-x-close"></span></button>
+          <button class="button-close" type="button" aria-label="Закрыть"><span class="icon is-x-close"></span></button>
+          <button class="button-close is-lg" type="button" aria-label="Закрыть"><span class="icon is-x-close"></span></button>
+        </div>
+        <div class="kit_row">
+          <span class="kit_caption">Утилити</span>
+          <button class="button-utility" type="button" aria-label="Помощь"><span class="icon is-help"></span></button>
+          <button class="button-utility is-sm" type="button" aria-label="Помощь"><span class="icon is-help"></span></button>
+          <button class="button-utility is-secondary" type="button" aria-label="Помощь"><span class="icon is-help"></span></button>
+          <button class="button-utility is-secondary is-sm" type="button" aria-label="Помощь"><span class="icon is-help"></span></button>
+          <button class="button-utility is-secondary is-sm" type="button" aria-label="Помощь" disabled><span class="icon is-help"></span></button>
+        </div>
+      </div>
+      <div class="kit_card is-dark">
+        <div class="kit_row">
+          <span class="kit_caption" style="color: var(--color-neutral-400)">На тёмном</span>
+          <button class="button-close is-on-dark is-sm" type="button" aria-label="Закрыть"><span class="icon is-x-close"></span></button>
+          <button class="button-close is-on-dark" type="button" aria-label="Закрыть"><span class="icon is-x-close"></span></button>
+          <button class="button-close is-on-dark is-lg" type="button" aria-label="Закрыть"><span class="icon is-x-close"></span></button>
+          <span class="loader is-white"></span>
+          <span class="loader is-md is-white"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="kit_section">
+      <h2 class="kit_h2">Лоадеры</h2>
+      <p class="kit_desc"><code>.loader</code> — 20px, <code>.loader.is-md</code> — 24px. Цвет наследуется через <code>color</code>.</p>
+      <div class="kit_card">
+        <div class="kit_row">
+          <span class="kit_caption">Размеры</span>
+          <span class="loader"></span>
+          <span class="loader is-md"></span>
+          <span class="loader" style="color: var(--text-tertiary)"></span>
+          <span class="loader is-md" style="color: var(--text-error-primary)"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="kit_section">
+      <h2 class="kit_h2">Чекбоксы и радио</h2>
+      <p class="kit_desc"><code>.checkbox</code> (16px) и <code>.checkbox.is-md</code> (20px); для радио добавить <code>.is-radio</code>. Настоящий input скрыт, клавиатура работает.</p>
+      <div class="kit_card">
+        <div class="kit_grid">
+          <div>
+            <label class="checkbox"><input class="checkbox_input" type="checkbox" /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Запомнить меня</span><span class="checkbox_hint">Сохранить вход на этом устройстве.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox"><input class="checkbox_input" type="checkbox" checked /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Отмечен</span><span class="checkbox_hint">Сохранить вход на этом устройстве.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox"><input class="checkbox_input" type="checkbox" data-indeterminate /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Частично</span><span class="checkbox_hint">Выбраны не все вложенные пункты.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox"><input class="checkbox_input" type="checkbox" disabled /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Недоступен</span><span class="checkbox_hint">Сохранить вход на этом устройстве.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox is-md"><input class="checkbox_input" type="checkbox" /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Размер md</span><span class="checkbox_hint">Сохранить вход на этом устройстве.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox is-md"><input class="checkbox_input" type="checkbox" checked /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Размер md, отмечен</span><span class="checkbox_hint">Сохранить вход на этом устройстве.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox is-md"><input class="checkbox_input" type="checkbox" checked disabled /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">md, отмечен, недоступен</span></span></label>
+          </div>
+          <div class="kit_row" style="gap: 1.5rem">
+            <label class="checkbox"><input class="checkbox_input" type="checkbox" /><span class="checkbox_box"></span></label>
+            <label class="checkbox"><input class="checkbox_input" type="checkbox" checked /><span class="checkbox_box"></span></label>
+            <label class="checkbox is-md"><input class="checkbox_input" type="checkbox" /><span class="checkbox_box"></span></label>
+            <label class="checkbox is-md"><input class="checkbox_input" type="checkbox" checked /><span class="checkbox_box"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="kit_card">
+        <div class="kit_grid">
+          <div>
+            <label class="checkbox is-radio"><input class="checkbox_input" type="radio" name="r1" /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Онлайн</span><span class="checkbox_hint">Встречи по видеосвязи.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox is-radio"><input class="checkbox_input" type="radio" name="r1" checked /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Очно</span><span class="checkbox_hint">В кабинете специалиста.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox is-radio"><input class="checkbox_input" type="radio" name="r1" disabled /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Недоступно</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox is-radio is-md"><input class="checkbox_input" type="radio" name="r2" /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Размер md</span><span class="checkbox_hint">Встречи по видеосвязи.</span></span></label>
+          </div>
+          <div>
+            <label class="checkbox is-radio is-md"><input class="checkbox_input" type="radio" name="r2" checked /><span class="checkbox_box"></span><span class="checkbox_text"><span class="checkbox_label">Размер md, выбран</span><span class="checkbox_hint">В кабинете специалиста.</span></span></label>
+          </div>
+          <div class="kit_row" style="gap: 1.5rem">
+            <label class="checkbox is-radio"><input class="checkbox_input" type="radio" name="r3" /><span class="checkbox_box"></span></label>
+            <label class="checkbox is-radio"><input class="checkbox_input" type="radio" name="r3" checked /><span class="checkbox_box"></span></label>
+            <label class="checkbox is-radio is-md"><input class="checkbox_input" type="radio" name="r4" /><span class="checkbox_box"></span></label>
+            <label class="checkbox is-radio is-md"><input class="checkbox_input" type="radio" name="r4" checked /><span class="checkbox_box"></span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="kit_section">
+      <h2 class="kit_h2">Поля ввода</h2>
+      <p class="kit_desc"><code>.field</code> + <code>.is-sm / .is-lg</code>, состояния <code>.is-error</code>, <code>.is-disabled</code>. Фокус и заполненность — нативные.</p>
+      <div class="kit_card">
+        <div class="kit_grid">
+
+          <div class="field">
+            <label class="field_label" for="f1">Email <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="icon is-mail field_icon"></span>
+              <input class="field_input" id="f1" type="email" placeholder="olivia@untitledui.com" />
+              <span class="icon is-help field_help"></span>
+            </div>
+            <p class="field_hint">Подсказка под полем.</p>
+          </div>
+
+          <div class="field">
+            <label class="field_label" for="f2">Email, заполнено <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="icon is-mail field_icon"></span>
+              <input class="field_input" id="f2" type="email" value="olivia@untitledui.com" />
+              <span class="icon is-help field_help"></span>
+            </div>
+            <p class="field_hint">Подсказка под полем.</p>
+          </div>
+
+          <div class="field is-error">
+            <label class="field_label" for="f3">Email, ошибка <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="icon is-mail field_icon"></span>
+              <input class="field_input" id="f3" type="email" value="olivia@untitledui" aria-invalid="true" />
+              <span class="icon is-alert field_status"></span>
+            </div>
+            <p class="field_hint">Это сообщение об ошибке.</p>
+          </div>
+
+          <div class="field is-disabled">
+            <label class="field_label" for="f4">Email, недоступно <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="icon is-mail field_icon"></span>
+              <input class="field_input" id="f4" type="email" placeholder="olivia@untitledui.com" disabled />
+              <span class="icon is-help field_help"></span>
+            </div>
+            <p class="field_hint">Подсказка под полем.</p>
+          </div>
+
+          <div class="field is-sm">
+            <label class="field_label" for="f5">Размер sm <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="icon is-mail field_icon"></span>
+              <input class="field_input" id="f5" type="email" placeholder="olivia@untitledui.com" />
+              <span class="icon is-help field_help"></span>
+            </div>
+            <p class="field_hint">Подсказка 12px.</p>
+          </div>
+
+          <div class="field is-lg">
+            <label class="field_label" for="f6">Размер lg <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="icon is-mail field_icon"></span>
+              <input class="field_input" id="f6" type="email" placeholder="olivia@untitledui.com" />
+              <span class="icon is-help field_help"></span>
+            </div>
+            <p class="field_hint">Отступы 10 / 14.</p>
+          </div>
+
+          <div class="field">
+            <label class="field_label" for="f7">Пароль <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="icon is-lock field_icon"></span>
+              <input class="field_input" id="f7" type="password" placeholder="••••••••••••" />
+              <span class="icon is-help field_help"></span>
+            </div>
+            <p class="field_hint"><span class="icon is-check-circle"></span>Не меньше 8 символов.</p>
+          </div>
+
+          <div class="field">
+            <label class="field_label" for="f8">Сайт <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span class="field_addon">https://</span>
+              <input class="field_input" id="f8" type="text" placeholder="www.untitledui.com" />
+              <span class="icon is-help field_help"></span>
+            </div>
+            <p class="field_hint">Префикс слева.</p>
+          </div>
+
+          <div class="field">
+            <label class="field_label" for="f9">Сумма <span class="field_required">*</span></label>
+            <div class="field_control">
+              <span style="color: var(--text-tertiary)">$</span>
+              <input class="field_input" id="f9" type="text" placeholder="1,000.00" />
+              <span class="icon is-help field_help"></span>
+              <span class="field_addon is-trailing">USD <span class="icon is-chevron-down"></span></span>
+            </div>
+            <p class="field_hint">Дропдаун справа.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="kit_card">
+        <div class="kit_grid">
+          <div class="field">
+            <label class="field_label" for="t1">Описание <span class="field_required">*</span> <span class="icon is-help field_help"></span></label>
+            <div class="field_control is-textarea">
+              <textarea class="field_textarea" id="t1" placeholder="Введите описание"></textarea>
+            </div>
+            <p class="field_hint">Подсказка под полем.</p>
+          </div>
+          <div class="field">
+            <label class="field_label" for="t2">Описание, заполнено <span class="field_required">*</span></label>
+            <div class="field_control is-textarea">
+              <textarea class="field_textarea" id="t2">Немного о том, с чем вы пришли и что хотите изменить.</textarea>
+            </div>
+            <p class="field_hint">Подсказка под полем.</p>
+          </div>
+          <div class="field is-error">
+            <label class="field_label" for="t3">Описание, ошибка <span class="field_required">*</span></label>
+            <div class="field_control is-textarea">
+              <textarea class="field_textarea" id="t3" placeholder="Введите описание" aria-invalid="true"></textarea>
+            </div>
+            <p class="field_hint">Это сообщение об ошибке.</p>
+          </div>
+          <div class="field is-disabled">
+            <label class="field_label" for="t4">Описание, недоступно <span class="field_required">*</span></label>
+            <div class="field_control is-textarea">
+              <textarea class="field_textarea" id="t4" placeholder="Введите описание" disabled></textarea>
+            </div>
+            <p class="field_hint">Подсказка под полем.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Состояние «частично отмечен» ставится только из JS
+    document.querySelectorAll("[data-indeterminate]").forEach(function (el) {
+      el.indeterminate = true;
+    });
+  </script>
+</body>
+</html>

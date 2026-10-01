@@ -1,0 +1,3791 @@
+/* ============================================================================
+   СТИЛИ СТРАНИЦЫ «СПОРТИВНАЯ ПСИХОЛОГИЯ: НОВАЯ ТОЧКА РОСТА»
+   ============================================================================
+
+   Файл самодостаточный: дизайн-система из /design-system сюда не подключается.
+   Сетка, имена классов и брейкпоинты взяты со страниц /pochemu-kpt-v2
+   и /psikholog-konsultant — то есть в конечном счёте с /trauma-therapy.
+
+   СЕТКА (совпадает с макетом: 1680 = 80 + 1520 + 80)
+     .padding-global   боковые поля страницы, от 16px на телефоне до 80px
+     .container-xlarge содержимое, максимум 1520px (95rem)
+     Внутри блоков шаг сетки — 16px (1rem).
+
+   БРЕЙКПОИНТЫ
+     до 480px   одна колонка везде
+     от 768px   планшет: две колонки, крупнее поля
+     от 992px   десктоп: три колонки, «взрослая» типографика
+
+   ПАЛИТРА
+     Взята с двух макетов из Фигмы («Воронки Верга», кадры 470-2077 и 470-752)
+     и с презентации вебинара: тёмный #2b2334, сиреневый #7c5cdb,
+     фон страницы — светло-серый #f5f5f5, тот же, что на прошлых вебинарах
+     и мини-курсах. Тёмная плашка при этом не почти чёрная, как раньше,
+     а тёплого фиолетового оттенка — как на макетах и в презентации.
+
+   ПОРЯДОК РАЗДЕЛОВ
+     0. Переменные и сброс
+     1. Каркас страницы
+     2. Общие детали: кнопки, плашки, карточки, заголовки секций
+     3. Шапка
+     4. Первый экран
+     5. «Что звучит в чатах коллег» — реплики
+     6. Три карточки-тезиса («Масштаб рынка») — optics_*
+     7. Карточки-цифры — на этой странице не используются
+     8. Нумерованные карточки — на этой странице не используются
+     9. Тёмный блок с четырьмя карточками («Почему сейчас») — risks_*
+    10. Карточки на фотографии («С кем работает спортивный психолог») — shifts_*
+    11. Две колонки «было / стало» («Клиент изменился») — fit_*
+    12. «Кому подходит профессия»
+    24. Новые блоки этой страницы: мифы, два кейса, пять отличий —
+        в самом конце файла
+    13. «Что разберём по пунктам»
+    14. Спикер
+    15. Отзывы (макет из Фигмы, кадр 470-2077)
+    16. Академия (макет из Фигмы, кадр 470-752)
+    17. «Участие бесплатное» и форма
+    18. Вопросы и ответы
+    19. Подвал
+    20. Планшет (от 768px)
+    21. Десктоп (от 992px)
+    22. Мелкие экраны и особые случаи
+    23. Защита от общих стилей Тильды
+   ========================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   0. ПЕРЕМЕННЫЕ И СБРОС
+   ---------------------------------------------------------------------------
+   Цвета сняты пипеткой с макетов. Менять их нужно здесь, а не по месту.
+   --------------------------------------------------------------------------- */
+
+.sport-page {
+  /* Цвет */
+  --color-page-background: #f5f5f5;
+  --color-surface-primary: #ffffff;
+  --color-surface-soft: #ebeaee;
+  --color-surface-dark: #2b2334;
+  --color-surface-dark-soft: #3a3047;
+  --color-text-primary: #2b2334;
+  --color-text-secondary: #5b5468;
+  --color-text-muted: #8b8598;
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #cfc9dd;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-hover: #6a49c9;
+  --color-accent-soft: #e4deff;
+  --color-accent-soft-strong: #ddd5ff;
+  --color-accent-light: #c4b5fd;
+  --color-accent-mid: #9e7ff0;
+  --color-accent-deep: #5b3fb0;
+  --color-focus: #7c5cdb;
+  --color-divider: #e7e5ee;
+  --color-card-outline: #ded6fa;
+  --color-placeholder: #e2e0e7;
+  --color-positive: #2fca10;
+  --color-star: #f4d042;
+  --border-gradient-accent: linear-gradient(
+    to top right,
+    rgba(124, 92, 219, 0.8) 0%,
+    rgba(124, 92, 219, 0.3) 50%,
+    rgba(124, 92, 219, 0.8) 100%
+  );
+
+  /* Типографика. Размеры тянутся от 375px до 1680px ширины экрана. */
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+  --text-hero-size: clamp(2.25rem, 5.5vw, 3.5rem);
+  --text-section-size: clamp(2rem, 4.8vw, 3rem);
+  --text-block-size: clamp(1.75rem, 3.4vw, 2.25rem);
+  --text-subhead-size: clamp(1.5rem, 2.6vw, 1.875rem);
+  --text-card-size: clamp(1.25rem, 1.9vw, 1.5rem);
+  --text-lead-size: clamp(1.125rem, 1.7vw, 1.375rem);
+  --text-body-size: clamp(1rem, 1.4vw, 1.25rem);
+  --text-note-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+  --text-stat-size: clamp(2.5rem, 5vw, 3.75rem);
+
+  /* Сетка и отступы */
+  --container-xlarge: 95rem;
+  --container-narrow: 72.5rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --section-gap: clamp(4rem, 7.62vw, 8rem);
+  --grid-gap: 1rem;
+  --radius-card: 1rem;
+  --radius-inner: 0.75rem;
+  --radius-button: 0.5rem;
+  --transition-site: 180ms ease;
+
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.sport-page,
+.sport-page *,
+.sport-page *::before,
+.sport-page *::after,
+.site-header_component,
+.site-header_component * {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+}
+
+.sport-page :where(h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, figure, blockquote, fieldset, legend),
+.site-header_component :where(p) {
+  margin: 0;
+  padding: 0;
+}
+
+.sport-page :where(ul, ol) {
+  list-style: none;
+}
+
+.sport-page a,
+.site-header_component a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sport-page img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* Ссылка «перейти к содержимому» — видна только при переходе с клавиатуры */
+.skip-link {
+  position: absolute;
+  z-index: 100;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-button, 0.5rem);
+  background: #ffffff;
+  color: #2b2334;
+  font: 500 1rem/1.2 "Wix Madefor Text", Arial, sans-serif;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Атрибут hidden сильнее, чем display у компонентов */
+.sport-page [hidden] {
+  display: none !important;
+}
+
+/* Текст только для скринридеров */
+.sport-page .screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
+
+/* ---------------------------------------------------------------------------
+   1. КАРКАС СТРАНИЦЫ
+   --------------------------------------------------------------------------- */
+
+.padding-global {
+  width: 100%;
+  padding-right: var(--page-padding, clamp(1rem, 4.7619vw, 5rem));
+  padding-left: var(--page-padding, clamp(1rem, 4.7619vw, 5rem));
+}
+
+.container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge, 95rem);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Узкая колонка — 1160px вместо 1520px. Ровно та ширина, которую занимает
+   карточка спикера: фотография 300 + отступ 76 + текст 784. Так блоки
+   с карточками и плитками не растягиваются на всю ширину экрана и стоят
+   по одной линии с блоком «Кто проведёт вебинар». */
+.container-xlarge.is-narrow {
+  max-width: var(--container-narrow, 72.5rem);
+}
+
+.main-wrapper {
+  display: block;
+}
+
+/* Первый экран прижат к шапке, остальные секции разделены одним отступом */
+.section_hero {
+  padding-top: clamp(1.5rem, 2.1vw, 2.25rem);
+}
+
+.section_voices,
+.section_optics,
+.section_data,
+.section_cases,
+.section_risks,
+.section_shifts,
+.section_fit,
+.section_myths,
+.section_duo,
+.section_diff,
+.section_audience,
+.section_agenda,
+.section_speaker,
+.section_reviews,
+.section_academy,
+.section_signup,
+.section_faq {
+  padding-top: var(--section-gap);
+}
+
+/* Последняя секция страницы не должна упираться в подвал */
+.section_faq {
+  padding-bottom: var(--section-gap);
+}
+
+/* Якоря: содержимое не приклеивается к верхней границе экрана */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. ОБЩИЕ ДЕТАЛИ
+   --------------------------------------------------------------------------- */
+
+/* --- Кнопки ------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border: 0;
+  border-radius: var(--radius-button, 0.5rem);
+  font-family: inherit;
+  font-size: var(--text-lead-size, 1.375rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-wrap: balance;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    color var(--transition-site);
+}
+
+.button.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.button.is-light {
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+}
+
+.button.is-full-width {
+  width: 100%;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button.is-accent:hover {
+    background: var(--color-accent-hover);
+  }
+
+  .button.is-light:hover {
+    background: #f0edfb;
+  }
+}
+
+/* --- Надзаголовок-плашка -------------------------------------------------
+   Обычный текст с большой буквы. Капслока и разрядки на сайте нет —
+   не добавляем их и здесь.
+   ------------------------------------------------------------------------- */
+
+.eyebrow_component {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 0.4375rem 1rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.eyebrow_component.is-on-dark {
+  background: rgb(255 255 255 / 12%);
+  color: var(--color-accent-light);
+}
+
+/* --- Плашки с датой и форматом ------------------------------------------ */
+
+.meta-pill_list {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.meta-pill_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.meta-pill_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.meta-pill_component img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* --- Карточка ----------------------------------------------------------- */
+
+.card-grid_component {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+.card-grid_component.is-stack-tablet {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.card_component {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  overflow: clip;
+  border-radius: var(--radius-inner);
+  background: var(--color-surface-primary);
+}
+
+/* Квадратик с иконкой: сиреневая заливка и тонкая градиентная рамка */
+.card_icon {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem;
+  border: 0.25px solid transparent;
+  border-radius: var(--radius-inner);
+  background:
+    linear-gradient(var(--color-accent-soft), var(--color-accent-soft)) padding-box,
+    var(--border-gradient-accent) border-box;
+}
+
+.card_icon img {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.card_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.card_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Карточка поверх фотографии — стекло с размытием */
+.card_component.is-on-media {
+  border: 0.25px solid rgb(239 242 249 / 40%);
+  background: rgb(23 23 23 / 42%);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.card_heading.is-on-media {
+  color: var(--color-text-on-dark);
+}
+
+.card_description.is-on-media {
+  color: #d4d4d4;
+}
+
+/* Карточка на тёмной плашке */
+.card_component.is-on-dark {
+  background: var(--color-surface-dark-soft);
+}
+
+.card_heading.is-on-dark {
+  color: var(--color-text-on-dark);
+}
+
+.card_description.is-on-dark {
+  color: var(--color-text-on-dark-muted);
+}
+
+/* --- Заголовок секции --------------------------------------------------- */
+
+.section-intro_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.section-intro_component .eyebrow_component {
+  align-self: center;
+}
+
+.section-intro_heading {
+  width: 100%;
+  color: var(--color-text-primary);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.section-intro_description {
+  width: min(100%, 52rem);
+  color: var(--color-text-secondary);
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Заголовок секции на тёмной плашке */
+.section-intro_heading.is-on-dark {
+  color: var(--color-text-on-dark);
+}
+
+.section-intro_description.is-on-dark {
+  color: var(--color-text-on-dark-muted);
+}
+
+/* Сиреневый акцент внутри заголовка — как на слайдах презентации */
+.accent-word {
+  color: var(--color-accent-primary);
+}
+
+.accent-word.is-on-dark {
+  color: var(--color-accent-light);
+}
+
+/* --- Итоговая плашка под блоком ----------------------------------------- */
+
+.summary_component {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-inner);
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.summary_component.is-dark {
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+
+.summary_component b {
+  color: var(--color-accent-deep);
+  font-weight: 600;
+}
+
+.summary_component.is-dark b {
+  color: var(--color-accent-light);
+}
+
+.summary_icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  margin-top: 0.125rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. ШАПКА
+   --------------------------------------------------------------------------- */
+
+.site-header_component {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  background: #ffffff;
+}
+
+/* На узких экранах шапка в одну строку: логотип, кнопка и меню.
+   Дата туда не помещается — она уезжает в меню, а на первом экране
+   всё равно продублирована плашкой, так что ничего не теряется. */
+.site-header_bar {
+  display: flex;
+  min-height: 4.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+
+.site-header_logo {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+
+.site-header_logo img {
+  display: block;
+  width: auto;
+  height: 1.75rem;
+}
+
+.site-header_date {
+  display: none;
+  color: var(--color-text-secondary, #5b5468);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.site-header_cta {
+  min-height: 3rem;
+  flex: 1 1 auto;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  font-size: 1rem;
+}
+
+/* --- Кнопка меню и само меню --------------------------------------------
+   ⚠️ Выпадающее меню в макетах не нарисовано. Здесь оно собрано из тех же
+   токенов, что и остальная страница, — когда дизайн появится, править надо
+   будет только этот кусок.
+   ------------------------------------------------------------------------ */
+
+.site-header_burger {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button, 0.5rem);
+  background: transparent;
+  color: var(--color-text-primary, #2b2334);
+  cursor: pointer;
+}
+
+.site-header_burger:focus-visible {
+  outline: 2px solid var(--color-focus, #7c5cdb);
+  outline-offset: 2px;
+}
+
+/* Три полоски нарисованы прямо в CSS, картинка не нужна */
+.site-header_burger-icon {
+  position: relative;
+}
+
+.site-header_burger-icon,
+.site-header_burger-icon::before,
+.site-header_burger-icon::after {
+  display: block;
+  width: 1.5rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+  transition:
+    transform var(--transition-site, 180ms ease),
+    background-color var(--transition-site, 180ms ease);
+}
+
+.site-header_burger-icon::before {
+  position: absolute;
+  top: -0.4375rem;
+  left: 0;
+}
+
+.site-header_burger-icon::after {
+  position: absolute;
+  top: 0.4375rem;
+  left: 0;
+}
+
+/* Меню открыто — полоски складываются в крестик */
+.site-header_burger[aria-expanded="true"] .site-header_burger-icon {
+  background: transparent;
+}
+
+.site-header_burger[aria-expanded="true"] .site-header_burger-icon::before {
+  transform: translateY(0.4375rem) rotate(45deg);
+}
+
+.site-header_burger[aria-expanded="true"] .site-header_burger-icon::after {
+  transform: translateY(-0.4375rem) rotate(-45deg);
+}
+
+.site-header_menu {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem var(--page-padding, 1rem) 1.25rem;
+  border-top: 1px solid var(--color-divider, #e7e5ee);
+  background: #ffffff;
+  box-shadow: 0 12px 24px rgb(43 35 52 / 10%);
+}
+
+.site-header_menu-date {
+  margin-bottom: 0.5rem;
+  color: var(--color-accent-primary, #7c5cdb);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.site-header_menu a {
+  padding: 0.625rem 0;
+  color: var(--color-text-primary, #2b2334);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.site-header_menu a:focus-visible {
+  outline: 2px solid var(--color-focus, #7c5cdb);
+  outline-offset: 2px;
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. ПЕРВЫЙ ЭКРАН
+   ---------------------------------------------------------------------------
+   Фотография во всю ширину контейнера со скруглением, поверх неё — плашки
+   с датой сверху, заголовок, подводка и кнопка снизу. Ровно так же устроен
+   первый экран на /pochemu-kpt-v2.
+   --------------------------------------------------------------------------- */
+
+.hero_component {
+  display: grid;
+  width: 100%;
+  gap: var(--grid-gap);
+}
+
+.hero_media {
+  position: relative;
+  display: grid;
+  min-height: 37.5rem;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  isolation: isolate;
+}
+
+.hero_image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* На телефоне и планшете кадр сдвинут вправо, чтобы спортсменки были
+     в кадре. Не 100%: у самого правого края фотографии только деревья
+     и плечо, лица стоят на 60–80% ширины. На десктопе кадр центрируется —
+     правило ниже, в разделе 21. */
+  object-position: 78% center;
+}
+
+/* Затемнение, чтобы белый текст читался на любой фотографии.
+   На узких экранах текст лежит поверх светлой части кадра, поэтому снизу
+   добавлен градиент — без него заголовок и подводка почти сливаются с фоном. */
+.hero_media::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(0 0 0 / 0%) 30%,
+      rgb(0 0 0 / 25%) 60%,
+      rgb(0 0 0 / 60%) 100%
+    ),
+    rgb(0 0 0 / 15%);
+  content: "";
+  pointer-events: none;
+}
+
+.hero_content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  align-self: end;
+  gap: 2rem;
+  padding: 1.5rem 1rem;
+  color: var(--color-text-on-dark);
+  text-align: center;
+}
+
+.hero_copy,
+.hero_actions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.hero_copy {
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Заголовок из двух частей: название крупно, подзаголовок помельче */
+.hero_heading {
+  display: flex;
+  width: 100%;
+  max-width: 38.3125rem;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.hero_heading-main {
+  font-size: var(--text-hero-size);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+/* Здесь именно pretty, а не balance: балансировщик на узком экране
+   оставлял «тренд» одиноко висеть на первой строке */
+.hero_heading-sub {
+  font-size: var(--text-subhead-size);
+  line-height: 1.15;
+  text-wrap: pretty;
+}
+
+.hero_description {
+  width: 100%;
+  max-width: 38.3125rem;
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.hero_actions {
+  max-width: 38.3125rem;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.hero_start-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-text-on-dark);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  opacity: 0.9;
+}
+
+.hero_start-note img {
+  display: block;
+  width: 1.375rem;
+  height: 1.375rem;
+  flex: none;
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. «СО СЛОЖНЫМИ КЛИЕНТАМИ ТРУДНО» — РЕПЛИКИ КОЛЛЕГ
+   ---------------------------------------------------------------------------
+   Три реплики оформлены как цитаты из чата: белое облачко с «хвостиком».
+   --------------------------------------------------------------------------- */
+
+.voices_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+.voices_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem var(--grid-gap);
+}
+
+.voice_component {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  border-bottom-left-radius: 0.25rem;
+  background: var(--color-surface-primary);
+  box-shadow: 0 1px 2px rgb(43 35 52 / 6%);
+}
+
+/* «Хвостик» облачка */
+.voice_component::after {
+  position: absolute;
+  bottom: -0.6875rem;
+  left: 0;
+  width: 1.25rem;
+  height: 0.75rem;
+  background: var(--color-surface-primary);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  content: "";
+}
+
+.voice_quote {
+  color: var(--color-text-primary);
+  font-size: var(--text-lead-size);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.voice_author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+  color: var(--color-text-muted);
+  font-size: var(--text-note-size);
+  line-height: 1.3;
+}
+
+.voice_author img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+
+/* ---------------------------------------------------------------------------
+   6. «КЛИНИКА — ЭТО НЕ ПРО ДИАГНОЗЫ»
+   --------------------------------------------------------------------------- */
+
+.optics_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+.optics_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+
+/* ---------------------------------------------------------------------------
+   7. «ЧТО ГОВОРЯТ ДАННЫЕ» — ЦИФРЫ
+   ---------------------------------------------------------------------------
+   Шесть карточек-цифр. Вторая в каждом ряду — тёмная, как на слайдах.
+   --------------------------------------------------------------------------- */
+
+.data_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+.data_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.stat_component {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: clamp(1.5rem, 2.4vw, 2.25rem) 1.25rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  text-align: center;
+}
+
+/* Выделенная карточка: светло-сиреневая, как плашка с цитатой спикера */
+.stat_component.is-accent {
+  background: var(--color-accent-soft);
+}
+
+.stat_value {
+  color: var(--color-accent-primary);
+  font-size: var(--text-stat-size);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.stat_component.is-accent .stat_value {
+  color: var(--color-accent-deep);
+}
+
+.stat_label {
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.stat_component.is-accent .stat_label {
+  color: var(--color-text-primary);
+}
+
+.stat_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.stat_component.is-accent .stat_description {
+  color: var(--color-text-secondary);
+}
+
+.data_sources {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-style: italic;
+  line-height: 1.4;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+
+/* ---------------------------------------------------------------------------
+   8. «ЧЕТЫРЕ ТИПИЧНЫХ СЛОЖНЫХ СЛУЧАЯ»
+   --------------------------------------------------------------------------- */
+
+.cases_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+.cases_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.case_component {
+  display: grid;
+  min-width: 0;
+  height: 100%;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5rem 1rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.case_number {
+  color: var(--color-accent-light);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.case_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   9. «ЧТО ТЕРЯЕТЕ БЕЗ КЛИНИЧЕСКОЙ ОПТИКИ» — ТЁМНЫЙ БЛОК
+   --------------------------------------------------------------------------- */
+
+.risks_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3.25rem);
+  padding: clamp(1.75rem, 3.6vw, 3.5rem) clamp(1.25rem, 3.6vw, 3.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-dark);
+}
+
+.risks_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+/* На тёмном фоне квадратик с иконкой окрашен так же, как плашка-бровь
+   над блоком: полупрозрачная белая подложка без рамки. Сама иконка —
+   светло-сиреневая, для неё рядом лежат отдельные файлы icon-*-light.svg. */
+.card_component.is-on-dark .card_icon {
+  border: 0;
+  background: rgb(255 255 255 / 12%);
+}
+
+
+/* ---------------------------------------------------------------------------
+   10. «ЧТО МЕНЯЕТСЯ У ТЕХ, КТО ДОБРАЛ БАЗУ»
+   ---------------------------------------------------------------------------
+   Четыре траектории на фотографии: снимок лежит фоном, поверх него заголовок,
+   стеклянные карточки и тихая подпись. Такой же блок — «Как это выглядит
+   в кабинете» на /seksologiya-dlya-psihologov.
+   --------------------------------------------------------------------------- */
+
+.shifts_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+/* isolation: isolate держит слои фото и затемнения внутри блока: без него
+   отрицательные z-index уводят их под фон страницы, и блок становится серым */
+.shifts_media {
+  position: relative;
+  display: grid;
+  min-height: 32rem;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  padding: 1.5rem 1rem;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: #2b2b2b;
+  isolation: isolate;
+}
+
+.shifts_image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Затемнение поверх фотографии. Кадр здесь светлый (белая стена, полки),
+   поэтому затемнение сильнее, чем на клинической базе: иначе белый
+   заголовок теряется на стене. */
+.shifts_media::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgb(0 0 0 / 32%) 0%, rgb(0 0 0 / 58%) 100%);
+  content: "";
+  pointer-events: none;
+}
+
+.shifts_heading {
+  align-self: end;
+  color: var(--color-text-on-dark);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.shifts_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+
+/* ---------------------------------------------------------------------------
+   11. «НЕ КАЖДОМУ НУЖНА КЛИНИЧЕСКАЯ ПОДГОТОВКА»
+   ---------------------------------------------------------------------------
+   Две колонки: слева светлая «можно обойтись без», справа тёмная «стоит идти».
+   --------------------------------------------------------------------------- */
+
+.fit_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+.fit_columns {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.fit_column {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.5rem, 2.4vw, 2.25rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.fit_column.is-dark {
+  background: var(--color-surface-dark);
+}
+
+.fit_label {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.fit_column.is-dark .fit_label {
+  color: var(--color-accent-light);
+}
+
+.fit_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-subhead-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.fit_column.is-dark .fit_heading {
+  color: var(--color-text-on-dark);
+}
+
+.fit_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.fit_item {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.fit_column.is-dark .fit_item {
+  color: var(--color-text-on-dark-muted);
+}
+
+/* Прочерк у «можно обойтись» и галочка у «стоит идти» */
+.fit_marker {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+}
+
+.fit_marker.is-dash::before {
+  display: block;
+  width: 0.875rem;
+  height: 1.5px;
+  margin-top: 0.75rem;
+  background: var(--color-text-muted);
+  content: "";
+}
+
+
+/* ---------------------------------------------------------------------------
+   12. «ДЛЯ КОГО ЭТОТ ВЕБИНАР»
+   --------------------------------------------------------------------------- */
+
+.audience_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+
+/* ---------------------------------------------------------------------------
+   13. «ЧТО РАЗБЕРЁМ ПО ПУНКТАМ»
+   --------------------------------------------------------------------------- */
+
+.agenda_component {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 3.5vw, 3rem) var(--grid-gap);
+}
+
+.agenda_intro {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.agenda_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-block-size);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.agenda_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.agenda_list {
+  display: grid;
+  min-width: 0;
+  gap: var(--grid-gap);
+}
+
+.agenda_item {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5rem 1rem;
+  padding: 1.25rem 1rem;
+  border-radius: var(--radius-inner);
+  background: var(--color-surface-primary);
+}
+
+/* Кружок с номером шага */
+.agenda_badge {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-accent-primary);
+  border-radius: 999px;
+  color: var(--color-accent-deep);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+/* На тёмной плашке кружок сиреневый, а не белый — как на макете */
+.agenda_badge.is-inverse {
+  border-color: var(--color-accent-mid);
+  color: var(--color-accent-light);
+}
+
+.agenda_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.agenda_title {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.agenda_item .agenda_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+}
+
+
+/* ---------------------------------------------------------------------------
+   14. СПИКЕР
+   --------------------------------------------------------------------------- */
+
+.speaker_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3.5rem);
+}
+
+.speaker_card {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.speaker_media {
+  min-width: 0;
+}
+
+.speaker_image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-card);
+  object-fit: cover;
+}
+
+.speaker_copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.speaker_name {
+  color: var(--color-text-primary);
+  font-size: var(--text-block-size);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.speaker_description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.speaker_credentials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.speaker_credential {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+  font-size: var(--text-note-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.speaker_credential img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* Цитата спикера. Плашка стоит по тем же границам, что и карточка
+   спикера над ней, — 1160px по центру, а не во всю ширину контейнера.
+   Цвета те же, что у итоговых плашек по странице (.summary_component):
+   светло-сиреневый фон и тёмный текст. */
+.speaker_quote {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  max-width: var(--container-narrow, 72.5rem);
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  padding: clamp(1.75rem, 3.6vw, 3.5rem) clamp(1.25rem, 3.6vw, 3.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-accent-soft);
+  text-align: center;
+}
+
+.speaker_quote blockquote {
+  max-width: 44rem;
+  color: var(--color-text-primary);
+  font-size: var(--text-block-size);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+
+/* ---------------------------------------------------------------------------
+   15. ОТЗЫВЫ — макет из Фигмы, кадр 470-2077
+   ---------------------------------------------------------------------------
+   Слева тёмная карточка с процентом и плашками, справа три белые карточки
+   с оценками площадок: две в верхнем ряду, одна во всю ширину под ними.
+   На макете блок 1008×289 при контейнере 1520 — пропорции колонок 57:42.
+   --------------------------------------------------------------------------- */
+
+.reviews_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reviews_grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+/* --- Тёмная карточка ------------------------------------------------------ */
+
+.reviews_headline {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.5rem, 2.6vw, 2.5rem);
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-dark);
+}
+
+.reviews_percent {
+  color: var(--color-text-on-dark);
+  font-size: clamp(2.5rem, 4.6vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.reviews_lead {
+  max-width: 26rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.reviews_tags {
+  display: flex;
+  max-width: 30rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.reviews_tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 10%);
+  color: var(--color-text-on-dark);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.reviews_tag img {
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: none;
+}
+
+/* Сиреневая молния в правом нижнем углу карточки */
+.reviews_zap {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 3.75rem;
+  width: 6.25rem;
+  height: 6.25rem;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* --- Оценки площадок ------------------------------------------------------ */
+
+.reviews_scores {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+.reviews_score {
+  display: flex;
+  min-width: 0;
+  min-height: 7.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+/* Третья карточка занимает обе колонки — как на макете */
+.reviews_score.is-wide {
+  grid-column: 1 / -1;
+}
+
+.reviews_rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-primary);
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.reviews_rating img {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+}
+
+.reviews_logo {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 1.75rem;
+}
+
+/* Логотип из двух частей: кружок + надпись.
+   На узкой карточке надпись ужимается, а не вылезает за край. */
+.reviews_logo-group {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.reviews_logo-group .reviews_logo {
+  min-width: 0;
+  height: auto;
+  max-height: 1.375rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.reviews_logo-mark {
+  display: block;
+  width: auto;
+  height: 1.75rem;
+  flex: none;
+}
+
+.reviews_note {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+
+/* ---------------------------------------------------------------------------
+   16. АКАДЕМИЯ — макет из Фигмы, кадр 470-752
+   ---------------------------------------------------------------------------
+   Плитка из четырёх карточек. На макете 1520×1230:
+     · слева большая светлая карточка с фотографией зала (752×812);
+     · справа сверху белая карточка про сообщество с телефоном (752×400);
+     · справа снизу тёмная карточка про выпускников с аватарами (752×400);
+     · внизу во всю ширину белая карточка про преподавателей.
+   Картинки намеренно упираются в края карточек — лишнее срезает overflow.
+   --------------------------------------------------------------------------- */
+
+.academy_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2.5rem, 6.835vw, 4.375rem);
+}
+
+.academy_heading {
+  width: 100%;
+  color: var(--color-text-primary);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.academy-showcase_layout,
+.academy-showcase_grid,
+.academy-showcase_side-grid {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.academy-showcase_layout {
+  --color-surface-primary: #ffffff;
+  --color-surface-inverse: #2b2334;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  --color-text-on-dark: #e6e5eb;
+  --color-text-muted-on-dark: #bdb7b7;
+  --radius-card: 1rem;
+  --radius-medium: 0.5rem;
+  --radius-small: 0.25rem;
+}
+
+.academy-showcase_card {
+  position: relative;
+  min-width: 0;
+  min-height: 24.5rem;
+  padding: clamp(1.25rem, 2.419vw, 1.5rem);
+  overflow: hidden;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  isolation: isolate;
+}
+
+.academy-showcase_card.is-practice {
+  min-height: 32rem;
+  background: #e9e9e9;
+}
+
+.academy-showcase_practice-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  overflow: clip;
+  border-radius: inherit;
+}
+
+.academy-showcase_practice-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.academy-showcase_card-copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  width: min(100%, 37.5rem);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.academy-showcase_card-heading,
+.academy-showcase_card-description {
+  width: 100%;
+  font-weight: 400;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.academy-showcase_card-heading {
+  color: var(--color-text-primary);
+  font-size: clamp(1.5rem, 3.516vw, 2.25rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.academy-showcase_card-description {
+  color: #6e6e70;
+  font-size: clamp(1rem, 2.016vw, 1.25rem);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.academy-showcase_community-media {
+  position: absolute;
+  right: -6%;
+  bottom: 0;
+  z-index: 1;
+  width: 72%;
+}
+
+.academy-showcase_community-glow {
+  position: absolute;
+  top: 46.54%;
+  left: -23.37%;
+  z-index: -1;
+  width: 70.36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  filter: blur(clamp(4.5rem, 8vw, 6.6875rem));
+}
+
+.academy-showcase_community-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.academy-showcase_card.is-graduates {
+  background: var(--color-surface-inverse);
+}
+
+.academy-showcase_card.is-graduates .academy-showcase_card-heading {
+  color: var(--color-text-on-dark);
+}
+
+.academy-showcase_card.is-graduates .academy-showcase_card-description {
+  color: var(--color-text-muted-on-dark);
+  letter-spacing: 0;
+}
+
+.academy-showcase_graduates-media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.academy-showcase_graduates-primary {
+  position: absolute;
+  top: 52.55%;
+  right: 1rem;
+  width: clamp(8.75rem, 23.94%, 11.25rem);
+  aspect-ratio: 1;
+}
+
+.academy-showcase_graduates-primary img,
+.academy-showcase_graduate-avatar {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  object-fit: cover;
+}
+
+.academy-showcase_graduates-glow {
+  position: absolute;
+  top: 13.33%;
+  left: -18.89%;
+  z-index: 0;
+  width: 162.22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #371462;
+  filter: blur(clamp(5rem, 9vw, 8.125rem));
+}
+
+.academy-showcase_graduate-avatar {
+  position: absolute;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.academy-showcase_graduate-avatar.is-small {
+  top: 23.98%;
+  right: 1rem;
+  width: clamp(4rem, 10.77%, 5.0625rem);
+}
+
+.academy-showcase_graduate-avatar.is-medium {
+  bottom: 4.85%;
+  left: 12%;
+  width: clamp(5rem, 14.63%, 6.875rem);
+}
+
+.academy-showcase_card.is-teachers {
+  display: grid;
+  min-height: 15rem;
+  grid-template-columns: minmax(0, 53.125rem) 15rem;
+  align-items: start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.academy-showcase_card-copy.is-teachers {
+  width: min(100%, 53.125rem);
+}
+
+.academy-showcase_teachers-media {
+  display: flex;
+  width: 15rem;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.academy-showcase_teachers-image {
+  display: block;
+  width: 100%;
+  height: 10.25rem;
+  border-radius: var(--radius-medium);
+  object-fit: cover;
+  object-position: center top;
+}
+
+.academy-showcase_teachers-controls {
+  display: grid;
+  width: 100%;
+  height: 1.25rem;
+  grid-template-columns: 3.75rem minmax(0, 1fr);
+  gap: 0.25rem;
+}
+
+.academy-showcase_teachers-control,
+.academy-showcase_teachers-status {
+  border-radius: var(--radius-small);
+}
+
+.academy-showcase_teachers-control {
+  background: #484845;
+}
+
+.academy-showcase_teachers-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1875rem;
+  background: var(--color-accent-primary);
+}
+
+.academy-showcase_teachers-status span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+}
+
+
+/* ---------------------------------------------------------------------------
+   17. «УЧАСТИЕ БЕСПЛАТНОЕ» И ФОРМА
+   --------------------------------------------------------------------------- */
+
+.signup_component {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 3.5vw, 3rem) clamp(1.5rem, 3.6vw, 3.5rem);
+  padding: clamp(1.5rem, 3.6vw, 3.5rem) clamp(1rem, 3.6vw, 3.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-dark);
+}
+
+.signup_copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.signup_heading {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.signup_description {
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.signup_steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.signup_step {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.25rem 0.75rem;
+}
+
+.signup_step-content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.signup_step-title {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.signup_step-description {
+  color: var(--color-text-muted);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* --- Подарок: чек-лист ----------------------------------------------------
+   Обложка чек-листа намеренно вылезает за правый и нижний край карточки —
+   лишнее срезает overflow. На десктопе она лежит отдельным слоем, а не
+   в потоке: так картинка не растягивает карточку по высоте, и блок
+   совпадает по высоте с карточкой записи справа. Так же сделано
+   на /pochemu-kpt-v2.
+   -------------------------------------------------------------------------- */
+
+.gift_component {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+  padding: 1.5rem;
+  overflow: hidden;
+  border: 1px solid var(--color-accent-soft-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-accent-primary);
+}
+
+.gift_copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.gift_label {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 22%);
+  color: var(--color-text-on-dark);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.gift_heading {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* На узких экранах картинка остаётся в потоке под текстом */
+.gift_image {
+  display: block;
+  width: min(100%, 17rem);
+  height: auto;
+  justify-self: end;
+  margin-right: -1.5rem;
+  margin-bottom: -1.5rem;
+}
+
+/* --- Карточка записи ------------------------------------------------------
+   Полей в ней нет: только заголовок, подсказка и кнопки мессенджеров,
+   которые рисует виджет BotHelp.
+   -------------------------------------------------------------------------- */
+
+.lead-form_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-self: start;
+  padding: clamp(1.25rem, 2.4vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.lead-form_intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lead-form_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-subhead-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.lead-form_date {
+  color: var(--color-accent-primary);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.lead-form_hint {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* --- Виджет BotHelp -------------------------------------------------------
+   Разметку внутри рисует чужой скрипт, поэтому правим её по их классам —
+   и через !important: часть размеров BotHelp проставляет прямо в style="".
+   -------------------------------------------------------------------------- */
+
+.lead-form_widget {
+  min-width: 0;
+}
+
+.lead-form_bh,
+.lead-form_bh .bh-widget-button,
+.lead-form_bh .bh-w-button-list {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+}
+
+.lead-form_bh .bh-widget-button {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.lead-form_bh .bh-w-button-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.lead-form_bh .bh-w-messenger-button {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 3.5rem !important;
+  max-height: none !important;
+  flex: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  margin: 0 !important;
+  padding: 1rem 1.5rem !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: var(--radius-button) !important;
+  background: var(--color-accent-primary) !important;
+  color: var(--color-text-on-dark) !important;
+  font-family: inherit !important;
+  font-size: var(--text-lead-size) !important;
+  font-weight: 500 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: background-color var(--transition-site), opacity var(--transition-site) !important;
+}
+
+.lead-form_bh .bh-w-messenger-button:focus-visible {
+  outline: 2px solid var(--color-focus) !important;
+  outline-offset: 4px !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lead-form_bh .bh-w-messenger-button:hover {
+    background: var(--color-accent-hover) !important;
+  }
+}
+
+/* Пока заявка уходит в Тильду, кнопки не нажимаются повторно */
+.lead-form_component[data-state="sending"] .lead-form_bh .bh-w-messenger-button {
+  opacity: 0.65 !important;
+  pointer-events: none !important;
+}
+
+.lead-form_bh .bh-w-button__icon {
+  position: static !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  flex: none !important;
+  margin: 0 !important;
+}
+
+.lead-form_bh .bh-w-button__title {
+  position: static !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+/* Виджет подписывает кнопку ВКонтакте латиницей — меняем на русское имя.
+   🟡 Если подписи переименуют в настройках BotHelp, эти два правила можно убрать. */
+.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title {
+  font-size: 0 !important;
+}
+
+.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title::after {
+  content: "ВКонтакте";
+  font-size: var(--text-lead-size);
+}
+
+/* --- Галочка согласия (её тоже рисует BotHelp) ---------------------------- */
+
+.lead-form_bh .bh-w-consent__body {
+  min-width: 0;
+}
+
+.lead-form_bh .bh-w-consent__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  cursor: pointer;
+}
+
+.lead-form_bh .bh-w-consent__checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-accent-primary);
+  cursor: pointer;
+}
+
+.lead-form_bh .bh-w-consent__label {
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.lead-form_bh .bh-w-consent__label a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Своё сообщение об ошибке у виджета прячем — мы пишем его в общей строке
+   статуса под кнопками, чтобы не было двух разных подсказок */
+.lead-form_bh .bh-w-consent__message {
+  display: none;
+}
+
+/* Подпись «Сделано на BotHelp» на странице не показываем */
+.lead-form_bh .bh-w-powered-by {
+  display: none;
+}
+
+/* --- Скелет, пока виджет не пришёл ---------------------------------------- */
+
+.lead-form_widget-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lead-form_widget-skeleton span {
+  height: 3.5rem;
+  border-radius: var(--radius-button);
+  background: linear-gradient(90deg, #f0f0f5 25%, #e6e5ee 37%, #f0f0f5 63%);
+  background-size: 400% 100%;
+  animation: lead-form-skeleton 1.4s ease infinite;
+}
+
+/* Третья полоска — под галочку согласия, она ниже и уже */
+.lead-form_widget-skeleton span:last-child {
+  width: 70%;
+  height: 1rem;
+}
+
+@keyframes lead-form-skeleton {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+.lead-form_widget[data-bh-state="loading"] .lead-form_bh {
+  display: none;
+}
+
+/* --- Статус и запасные подсказки ------------------------------------------ */
+
+.lead-form_note {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.lead-form_status {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.lead-form_status[data-state="error"] {
+  color: #d92d20;
+}
+
+.lead-form_status[data-state="loading"] {
+  color: var(--color-text-secondary);
+}
+
+.lead-form_status:empty {
+  display: none;
+}
+
+.lead-form_manual {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.lead-form_manual a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* --- Скрытая форма Тильды -------------------------------------------------
+   Тильда рисует свою форму где-то на странице. Мы её не удаляем — она нужна,
+   чтобы отправлять заявку, — а убираем с глаз. Именно убираем, а не прячем
+   через hidden: скриптам Тильды нужно измерять поля и ставить в них фокус,
+   а у display:none этого не выходит.
+   -------------------------------------------------------------------------- */
+
+[data-sport-native-form-record] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   18. ВОПРОСЫ И ОТВЕТЫ
+   --------------------------------------------------------------------------- */
+
+.faq_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.faq_header {
+  display: flex;
+  width: min(100%, 52.9375rem);
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.faq_heading {
+  width: 100%;
+  color: var(--color-text-primary);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.faq_support {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.faq_support a {
+  color: var(--color-accent-primary);
+  font-weight: 400;
+  transition: color var(--transition-site);
+}
+
+.faq_support a:focus-visible,
+.faq_answer a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 0.1875rem;
+}
+
+.faq_list {
+  width: 100%;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.faq_item:not(:last-child) {
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.accordion_summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.accordion_summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion_summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -4px;
+}
+
+.faq_question {
+  display: grid;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) 2.0625rem;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-site);
+}
+
+.faq_question-heading {
+  color: inherit;
+  font-size: clamp(1.125rem, 1.9vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.faq_item[open] .faq_question,
+.faq_item[data-accordion-state="opening"] .faq_question {
+  color: var(--color-text-primary);
+}
+
+/* Плюс, который поворачивается в минус */
+.accordion_icon {
+  position: relative;
+  display: block;
+  width: 2.0625rem;
+  height: 2.0625rem;
+  flex: none;
+  color: inherit;
+  transform: rotate(0deg);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.accordion_icon::before,
+.accordion_icon::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.accordion_icon::before {
+  width: 1.25rem;
+  height: 1.5px;
+}
+
+.accordion_icon::after {
+  width: 1.5px;
+  height: 1.25rem;
+}
+
+.accordion_item[open] .accordion_icon,
+.accordion_item[data-accordion-state="opening"] .accordion_icon {
+  transform: rotate(-45deg);
+}
+
+.accordion_item[data-accordion-state="closing"] .accordion_icon {
+  transform: rotate(0deg);
+}
+
+.accordion_panel {
+  min-width: 0;
+  overflow: clip;
+}
+
+.faq_answer-inner {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.faq_answer p {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .faq_item:not([open]):hover .faq_question {
+    color: var(--color-text-primary);
+  }
+
+  .faq_support a:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   19. ПОДВАЛ
+   --------------------------------------------------------------------------- */
+
+.site-footer_component {
+  width: 100%;
+  padding: clamp(2.5rem, 4vw, 4rem) 0 clamp(2rem, 3vw, 3rem);
+  background: var(--color-surface-dark, #2b2334);
+  color: #ffffff;
+}
+
+.site-footer_heading {
+  margin: 0 0 clamp(1.5rem, 2.4vw, 2.5rem);
+  font-size: clamp(1.75rem, 3.4vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.site-footer_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem var(--grid-gap, 1rem);
+}
+
+.site-footer_group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.site-footer_group-title {
+  color: #a29ab4;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+
+.site-footer_line {
+  color: #ffffff;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.site-footer_line a {
+  transition: color var(--transition-site, 180ms ease);
+}
+
+.site-footer_bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: clamp(2rem, 3.4vw, 3rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+  color: #a29ab4;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-footer_line a:hover {
+    color: var(--color-accent-light, #c4b5fd);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   20. ПЛАНШЕТ — от 768px
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 48rem) {
+  /* От планшета в шапку помещается всё, меню не нужно */
+  .site-header_bar {
+    min-height: 5rem;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .site-header_logo img {
+    height: 2rem;
+  }
+
+  .site-header_date {
+    display: block;
+  }
+
+  .site-header_cta {
+    min-height: 3.5rem;
+    flex: none;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+    font-size: 1.125rem;
+  }
+
+  .site-header_burger,
+  .site-header_menu {
+    display: none;
+  }
+
+  .card-grid_component.is-stack-tablet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .meta-pill_list {
+    justify-content: flex-start;
+    padding: 1.5rem;
+  }
+
+  .hero_content {
+    padding: 1.5rem;
+  }
+
+  .voices_list,
+  .optics_list,
+  .cases_list,
+  .risks_list,
+  .shifts_list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .data_list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fit_columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .agenda_item {
+    gap: 0.5rem 1rem;
+    padding: 1.5rem;
+  }
+
+  .shifts_media {
+    padding: 2rem 1.5rem;
+  }
+
+  .case_component {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .speaker_card {
+    grid-template-columns: 18.75rem minmax(0, 1fr);
+    align-items: start;
+    gap: 2.5rem;
+  }
+
+  /* Отзывы: тёмная карточка и оценки встают в две колонки, как на макете */
+  .reviews_grid {
+    grid-template-columns: minmax(0, 57fr) minmax(0, 42fr);
+  }
+
+  .faq_component {
+    gap: 3rem;
+  }
+
+  .faq_question {
+    min-height: 4.625rem;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .faq_answer-inner {
+    padding-right: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .site-footer_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-footer_bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   21. ДЕСКТОП — от 992px
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 62rem) {
+  .card-grid_component,
+  .card-grid_component.is-stack-tablet {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card_component {
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--radius-card);
+  }
+
+  /* --- Первый экран --- */
+
+  /* На десктопе текст уходит влево, на тёмную часть кадра — хватает
+     общего затемнения, градиент снизу только мешал бы фотографии.
+     Боковой отступ задан один раз на всей фотографии, чтобы плашки
+     и текст стояли по одной линии. Значение 1.5rem — из макета. */
+  .hero_media {
+    min-height: 43.75rem;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .hero_image {
+    object-position: center;
+  }
+
+  .hero_media::after {
+    background: rgb(0 0 0 / 15%);
+  }
+
+  .meta-pill_list {
+    padding: 1.5rem 0;
+  }
+
+  /* Колонка чуть шире, чем на клинической базе (613px): иначе
+     «Спортивная психология» на 56px не помещается в одну строку.
+     Подводка и кнопка остаются прежней ширины — их ограничивает
+     собственный max-width. */
+  .hero_content {
+    width: min(100%, 42rem);
+    align-items: flex-start;
+    padding: 1.5rem 0 2rem;
+    text-align: left;
+  }
+
+  .hero_heading {
+    max-width: 42rem;
+  }
+
+  /* Название вебинара — всегда одной строкой */
+  .hero_heading-main {
+    white-space: nowrap;
+  }
+
+  .hero_copy {
+    align-items: flex-start;
+  }
+
+  .hero_start-note {
+    justify-content: flex-start;
+  }
+
+  /* --- Реплики коллег --- */
+
+  .voices_list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* --- Клиника — не про диагнозы --- */
+
+  .optics_list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* --- Сложные случаи, риски, траектории --- */
+
+  .cases_list,
+  .risks_list,
+  .shifts_list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Блок с фотографией становится выше, поля по бокам — как на /pochemu-kpt */
+  .shifts_media {
+    min-height: 43.75rem;
+    gap: 2.5rem;
+    padding: 2.5rem 5rem 3rem;
+  }
+
+  /* --- Программа --- */
+
+  .agenda_component {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Заголовок «прилипает» к верху экрана и едет вместе с лентой пунктов,
+     пока блок не закончится. Иначе слева остаётся пустое поле во весь экран. */
+  .agenda_intro {
+    position: sticky;
+    top: 2rem;
+    align-self: start;
+  }
+
+  /* --- Спикер --- */
+
+  .speaker_card {
+    grid-template-columns: 18.75rem minmax(0, 49rem);
+    justify-content: center;
+    gap: 4.75rem;
+  }
+
+  .speaker_copy {
+    gap: 1.25rem;
+  }
+
+  /* --- Отзывы --- */
+
+  .reviews_headline {
+    min-height: 16.5rem;
+  }
+
+  /* --- Участие бесплатное --- */
+
+  /* Поля плашки и пропорции колонок сняты с макета:
+     1520 = 120 + (689 + 40 + 551) + 120 */
+  .signup_component {
+    grid-template-columns: minmax(0, 689fr) minmax(0, 551fr);
+    align-items: stretch;
+    gap: 2.5rem;
+    padding: clamp(3rem, 6vw, 7.5rem);
+  }
+
+  .signup_copy {
+    gap: 2rem;
+  }
+
+  .lead-form_component {
+    align-self: start;
+  }
+
+  /* Карточка подарка: 689×168 в макете */
+  .gift_component {
+    min-height: 10.5rem;
+  }
+
+  .gift_copy {
+    max-width: 60%;
+  }
+
+  /* Размер, поворот и вылет за край посчитаны по макету: обложка
+     уменьшена вдвое, повёрнута на 11° и заходит за правый и нижний край */
+  .gift_image {
+    position: absolute;
+    z-index: 0;
+    top: -0.25rem;
+    right: -3.375rem;
+    width: 16.8125rem;
+    margin: 0;
+    transform: rotate(-11deg);
+    pointer-events: none;
+  }
+}
+
+/* Блок карточек Академии перенесён целиком из /cbt-first-steps. */
+@media screen and (max-width: 61.9375rem) {
+  .academy-showcase_card.is-teachers {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+  }
+}
+
+@media screen and (max-width: 47.9375rem) {
+  .academy-showcase_card.is-community,
+  .academy-showcase_card.is-graduates {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .academy-showcase_community-media {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(88%, 26rem);
+    margin-top: clamp(2rem, 8vw, 3.5rem);
+    margin-right: -1.5rem;
+    margin-bottom: -1.5rem;
+    margin-left: auto;
+  }
+
+  .academy-showcase_graduates-media {
+    position: relative;
+    inset: auto;
+    display: grid;
+    width: 100%;
+    margin-top: clamp(2.5rem, 10vw, 4rem);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr) minmax(0, 0.65fr);
+    align-items: end;
+    gap: clamp(0.75rem, 3vw, 1.25rem);
+  }
+
+  .academy-showcase_graduates-primary {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(100%, 11.25rem);
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(100%, 5.0625rem);
+    margin-bottom: clamp(2rem, 8vw, 3.5rem);
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: min(100%, 6.875rem);
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .academy-showcase_card.is-teachers {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .academy-showcase_teachers-media {
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .academy-showcase_teachers-image {
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
+}
+
+@media screen and (max-width: 32.5rem) {
+  .academy-showcase_card {
+    padding: 1.25rem;
+  }
+}
+
+@media screen and (min-width: 48rem) {
+  .academy-showcase_card.is-practice {
+    min-height: 0;
+    aspect-ratio: 47 / 50;
+  }
+
+  .academy-showcase_community-media {
+    right: 3.19%;
+    width: 55.19%;
+  }
+
+  .academy-showcase_graduates-primary {
+    right: 9.57%;
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    right: 4.26%;
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    left: 43.75%;
+  }
+}
+
+@media screen and (min-width: 62rem) {
+  .academy-showcase_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .academy-showcase_card.is-practice {
+    min-height: 0;
+    aspect-ratio: 47 / 50;
+  }
+
+  .academy-showcase_side-grid {
+    height: 100%;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .academy-showcase_card {
+    min-height: 0;
+  }
+}
+
+@media screen and (min-width: 32.5625rem) and (max-width: 47.9375rem) {
+  .academy-showcase_community-media {
+    width: clamp(18rem, 46vw, 22rem);
+  }
+
+  .academy-showcase_graduates-primary {
+    width: clamp(8rem, 18vw, 9rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    width: clamp(3.5rem, 8vw, 4rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    width: clamp(4.5rem, 11vw, 5.5rem);
+  }
+}
+
+@media screen and (min-width: 48rem) and (max-width: 61.9375rem) {
+  .academy-showcase_community-media {
+    width: clamp(19rem, 45vw, 26rem);
+  }
+
+  .academy-showcase_graduates-primary {
+    width: clamp(7.5rem, 15vw, 9rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    width: clamp(3.5rem, 7vw, 4.25rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    width: clamp(4.5rem, 10vw, 5.75rem);
+  }
+}
+
+@media screen and (min-width: 62rem) and (max-width: 89.9375rem) {
+  .academy-showcase_card-heading {
+    font-size: clamp(
+      1.5rem,
+      calc(2.6786vw - 0.1607rem),
+      2.25rem
+    );
+  }
+
+  .academy-showcase_card-description {
+    font-size: clamp(
+      1rem,
+      calc(0.8929vw + 0.4464rem),
+      1.25rem
+    );
+  }
+
+  .academy-showcase_community-media {
+    width: clamp(9rem, calc(47vw - 20.125rem), 55.19%);
+  }
+
+  .academy-showcase_graduates-primary {
+    width: clamp(6rem, calc(12.95vw - 2.03125rem), 9.625rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    width: clamp(2.75rem, calc(5.58vw - 0.709375rem), 4.3125rem);
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    width: clamp(3.5rem, calc(8.48vw - 1.75625rem), 5.875rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   22. МЕЛКИЕ ЭКРАНЫ И ОСОБЫЕ СЛУЧАИ
+   --------------------------------------------------------------------------- */
+
+/* Ниже 480px все сетки карточек — в одну колонку */
+@media screen and (max-width: 30rem) {
+  .card-grid_component,
+  .card-grid_component.is-stack-narrow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Молния на карточке отзывов на телефоне только мешает тексту */
+  .reviews_zap {
+    display: none;
+  }
+
+  /* На телефоне карточка оценки узкая — логотипу нужно больше места */
+  .reviews_score {
+    padding: 1.125rem 0.625rem;
+  }
+
+  .reviews_logo,
+  .reviews_logo-group .reviews_logo {
+    max-height: 1.25rem;
+  }
+
+  .reviews_logo-mark {
+    height: 1.375rem;
+  }
+}
+
+/* Совсем узкие экраны: карточки поджимаются по бокам */
+@media screen and (max-width: 23.4375rem) {
+  .card_component,
+  .agenda_item,
+  .case_component {
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+  }
+}
+
+/* Пользователь попросил меньше движения — убираем переходы */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .sport-page *,
+  .sport-page *::before,
+  .sport-page *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   23. ЗАЩИТА ОТ ОБЩИХ СТИЛЕЙ ТИЛЬДЫ
+   ---------------------------------------------------------------------------
+   В шапке сайта на Тильде стоит правило вида a { color: inherit !important }.
+   Оно сильнее наших обычных объявлений, поэтому ссылки, которые выглядят как
+   кнопки, теряют свой цвет: у белой кнопки текст становится белым на белом
+   и пропадает совсем.
+
+   🔴 Это «броня», а не оформление. Цвета здесь те же, что и в основных
+   правилах. Если меняете цвет кнопки выше по файлу — поменяйте и здесь,
+   иначе правка не подействует.
+   --------------------------------------------------------------------------- */
+
+.sport-page .button.is-accent {
+  color: var(--color-text-on-dark) !important;
+}
+
+.sport-page .button.is-light {
+  color: var(--color-text-primary) !important;
+}
+
+.sport-page .site-header_menu a {
+  color: var(--color-text-primary, #2b2334) !important;
+}
+
+.sport-page .faq_support a,
+.sport-page .lead-form_manual a,
+.sport-page .lead-form_bh .bh-w-consent__label a {
+  color: var(--color-accent-primary) !important;
+}
+
+.sport-page .site-footer_line a {
+  color: #ffffff !important;
+}
+
+/* Ссылка «перейти к содержимому» лежит выше .sport-page, поэтому селектор свой */
+.skip-link {
+  color: #2b2334 !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   24. БЛОКИ ТОЛЬКО ЭТОЙ СТРАНИЦЫ
+   ---------------------------------------------------------------------------
+   Всё выше — общий набор со страниц /klinicheskaya-baza и
+   /seksologiya-dlya-psihologov. Ниже — компоненты, которых там не было:
+   «Мифы и реальность», «Два кейса», «Пять отличий» и мелкие добавки.
+   --------------------------------------------------------------------------- */
+
+/* --- Иконки-маски ----------------------------------------------------------
+   Как в «Между сессий»: <span class="icon is-check"></span>. Форма иконки
+   вшита сюда как data-URI (чёрные lucide-иконки, stroke="currentColor"),
+   цвет задаёт CSS через color, размер — переменная --icon-size.
+   Файлы на сервере не нужны: маску из чужого домена (S3) браузер
+   не пускает без CORS-заголовков, а data-URI работает везде.
+   ------------------------------------------------------------------------- */
+
+.icon {
+  display: block;
+  width: var(--icon-size, 1.5rem);
+  height: var(--icon-size, 1.5rem);
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: var(--icon-src) center / contain no-repeat;
+  mask: var(--icon-src) center / contain no-repeat;
+}
+
+.icon.is-activity { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMjIgMTJoLTIuNDhhMiAyIDAgMCAwLTEuOTMgMS40NmwtMi4zNSA4LjM2YS4yNS4yNSAwIDAgMS0uNDggMEw5LjI0IDIuMThhLjI1LjI1IDAgMCAwLS40OCAwbC0yLjM1IDguMzZBMiAyIDAgMCAxIDQuNDkgMTJIMiIvPjwvc3ZnPg=="); }
+.icon.is-check { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMjAgNiA5IDE3bC01LTUiLz48L3N2Zz4="); }
+.icon.is-door { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMTEgMjBIMiIvPjxwYXRoIGQ9Ik0xMSA0LjU2MnYxNi4xNTdhMSAxIDAgMCAwIDEuMjQyLjk3TDE5IDIwVjUuNTYyYTIgMiAwIDAgMC0xLjUxNS0xLjk0bC00LTFBMiAyIDAgMCAwIDExIDQuNTYxeiIvPjxwYXRoIGQ9Ik0xMSA0SDhhMiAyIDAgMCAwLTIgMnYxNCIvPjxwYXRoIGQ9Ik0xNCAxMmguMDEiLz48cGF0aCBkPSJNMjIgMjBoLTMiLz48L3N2Zz4="); }
+.icon.is-flame { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMTIgM3ExIDQgNCA2LjV0MyA1LjVhMSAxIDAgMCAxLTE0IDAgNSA1IDAgMCAxIDEtMyAxIDEgMCAwIDAgNSAwYzAtMi0xLjUtMy0xLjUtNXEwLTIgMi41LTQiLz48L3N2Zz4="); }
+.icon.is-heart { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMiA5LjVhNS41IDUuNSAwIDAgMSA5LjU5MS0zLjY3Ni41Ni41NiAwIDAgMCAuODE4IDBBNS40OSA1LjQ5IDAgMCAxIDIyIDkuNWMwIDIuMjktMS41IDQtMyA1LjVsLTUuNDkyIDUuMzEzYTIgMiAwIDAgMS0zIC4wMTlMNSAxNWMtMS41LTEuNS0zLTMuMi0zLTUuNSIvPjxwYXRoIGQ9Ik0zLjIyIDEzSDkuNWwuNS0xIDIgNC41IDItNyAxLjUgMy41aDUuMjciLz48L3N2Zz4="); }
+.icon.is-help { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIvPjxwYXRoIGQ9Ik05LjA5IDlhMyAzIDAgMCAxIDUuODMgMWMwIDItMyAzLTMgMyIvPjxwYXRoIGQ9Ik0xMiAxN2guMDEiLz48L3N2Zz4="); }
+.icon.is-trending { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMTYgN2g2djYiLz48cGF0aCBkPSJtMjIgNy04LjUgOC41LTUtNUwyIDE3Ii8+PC9zdmc+"); }
+.icon.is-users { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMTggMjFhOCA4IDAgMCAwLTE2IDAiLz48Y2lyY2xlIGN4PSIxMCIgY3k9IjgiIHI9IjUiLz48cGF0aCBkPSJNMjIgMjBjMC0zLjM3LTItNi41LTQtOGE1IDUgMCAwIDAtLjQ1LTguMyIvPjwvc3ZnPg=="); }
+.icon.is-x { --icon-src: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiID48cGF0aCBkPSJNMTggNiA2IDE4Ii8+PHBhdGggZD0ibTYgNiAxMiAxMiIvPjwvc3ZnPg=="); }
+
+/* Цвета по местам: сиреневая на белом, светло-сиреневая на тёмном,
+   серая у подписи «Миф» (цвет подписи наследуется через currentColor) */
+.card_icon {
+  color: var(--color-accent-primary);
+}
+
+.card_component.is-on-dark .card_icon {
+  color: var(--color-accent-light);
+}
+
+.summary_icon.icon,
+.duo_client .icon {
+  color: var(--color-accent-primary);
+}
+
+.fit_column.is-dark .fit_marker.icon {
+  color: var(--color-accent-light);
+}
+
+.myth_label .icon {
+  --icon-size: 1.125rem;
+}
+
+/* --- Плашка вокруг программы эфира ----------------------------------------
+   Тёмно-фиолетовый фон вокруг всего блока «Что разберём по пунктам», как
+   у блока «Почему сейчас»: без него белые карточки терялись на сером фоне
+   страницы. Поля и скругление — те же, что у тёмной плашки. Карточки
+   пунктов остаются белыми, как карточка записи в блоке «Участие бесплатное».
+   ------------------------------------------------------------------------- */
+
+.agenda_panel {
+  width: 100%;
+  min-width: 0;
+  padding: clamp(1.75rem, 3.6vw, 3.5rem) clamp(1.25rem, 3.6vw, 3.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-dark);
+}
+
+.agenda_panel .eyebrow_component {
+  background: rgb(255 255 255 / 12%);
+  color: var(--color-accent-light);
+}
+
+.agenda_panel .agenda_heading {
+  color: var(--color-text-on-dark);
+}
+
+.agenda_panel .agenda_intro .agenda_description {
+  color: var(--color-text-on-dark-muted);
+}
+
+.agenda_panel .agenda_item {
+  border-radius: var(--radius-card);
+}
+
+/* --- Светло-сиреневая карточка в ряду белых ------------------------------ */
+
+.card_component.is-accent {
+  background: var(--color-accent-soft);
+}
+
+.card_component.is-accent .card_icon {
+  background:
+    linear-gradient(var(--color-surface-primary), var(--color-surface-primary)) padding-box,
+    var(--border-gradient-accent) border-box;
+}
+
+/* --- «Мифы и реальность» --------------------------------------------------
+   Каждая строка — пара: слева белая ячейка с мифом, справа сиреневая
+   с тем, как на самом деле. На телефоне ячейки встают друг под другом.
+   ------------------------------------------------------------------------- */
+
+.myths_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+.myths_list {
+  display: grid;
+  min-width: 0;
+  gap: var(--grid-gap);
+}
+
+.myth_row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+}
+
+.myth_cell {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-inner);
+  background: var(--color-surface-primary);
+}
+
+.myth_cell.is-fact {
+  background: var(--color-accent-soft);
+}
+
+.myth_label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.myth_cell.is-fact .myth_label {
+  color: var(--color-accent-deep);
+}
+
+.myth_label img,
+.myth_label .icon {
+  display: block;
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+}
+
+.myth_text {
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.myth_cell.is-myth .myth_text {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* --- «Два кейса» -----------------------------------------------------------
+   Две большие белые карточки: номер, название запроса в кавычках, строка
+   про клиента и сиреневая плашка «что разберём».
+   ------------------------------------------------------------------------- */
+
+.duo_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+.duo_list {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.duo_card {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.5rem, 2.4vw, 2.25rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.duo_label {
+  color: var(--color-accent-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.duo_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-subhead-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.duo_client {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.625rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.duo_client img,
+.duo_client .icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+}
+
+.duo_note {
+  margin-top: auto;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-inner);
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+  font-size: var(--text-note-size);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.duo_note b {
+  color: var(--color-accent-deep);
+  font-weight: 600;
+}
+
+/* --- «Пять отличий» — лента с горизонтальным скроллом --------------------
+   Перенесено с /psihosomatika (лента «7 систем организма»). Карточки
+   листаются пальцем, колесом или стрелками из page.js. Лента вылезает
+   из контейнера вправо до края экрана — для этого отрицательное поле
+   и компенсирующий padding.
+   ------------------------------------------------------------------------- */
+
+.diff_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
+}
+
+/* Шапка ленты: слева заголовок, справа стрелки (от планшета — в одну строку) */
+.diff_intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+/* Заголовок секции, прижатый к левому краю, — для шапки ленты */
+.section-intro_component.is-start {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.section-intro_component.is-start .eyebrow_component {
+  align-self: flex-start;
+}
+
+.section-intro_component.is-start .section-intro_heading {
+  max-width: 60rem;
+}
+
+.diff_track {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--grid-gap);
+  margin-right: calc(var(--page-padding) * -1);
+  padding-right: var(--page-padding);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.diff_track::-webkit-scrollbar {
+  display: none;
+}
+
+.diff_track:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.diff_item {
+  display: flex;
+  width: min(82vw, 22rem);
+  min-width: 0;
+  flex-direction: column;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  scroll-snap-align: start;
+}
+
+/* 🟡 Серая заглушка под картинку. Когда в <img> внутри появится src
+   и с него снимут hidden — картинка закроет заглушку целиком. */
+.diff_media {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  background: var(--color-placeholder);
+}
+
+.diff_media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.diff_copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+.diff_item .card_content {
+  gap: 0.375rem;
+}
+
+/* --- Стрелки ленты ---------------------------------------------------------
+   Тёмная стрелка — вперёд, светлая — назад, как на /psihosomatika.
+   ------------------------------------------------------------------------- */
+
+.slider_controls {
+  display: flex;
+  flex: none;
+  gap: 0.5rem;
+}
+
+.slider_arrow {
+  display: inline-flex;
+  width: 3rem;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: var(--color-surface-soft);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-site), opacity var(--transition-site);
+}
+
+.slider_arrow.is-accent {
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+
+.slider_arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.slider_arrow:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Стрелка нарисована рамкой, чтобы не плодить иконки */
+.slider_arrow-icon {
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.slider_arrow-icon.is-prev {
+  transform: rotate(-135deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .slider_arrow:not(:disabled):hover {
+    background: var(--color-accent-soft);
+  }
+
+  .slider_arrow.is-accent:not(:disabled):hover {
+    background: var(--color-accent-primary);
+  }
+}
+
+/* --- Пять портретов «кому подходит» ---------------------------------------
+   Пять карточек: три в первом ряду, две — во втором, растянутые по ширине.
+   Обычная сетка оставила бы справа пустую клетку, поэтому здесь flex.
+   ------------------------------------------------------------------------- */
+
+.audience_list.is-flow {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: var(--grid-gap);
+}
+
+.audience_list.is-flow > .card_component {
+  flex: 1 1 100%;
+  height: auto;
+}
+
+/* --- Подпись под названием чек-листа ------------------------------------- */
+
+.gift_description {
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-note-size);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* --- Адаптив новых блоков -------------------------------------------------- */
+
+@media screen and (min-width: 48rem) {
+  .myth_row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .myth_cell {
+    padding: 1.5rem;
+  }
+
+  .duo_list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Шапка ленты: заголовок слева, стрелки справа */
+  .diff_intro {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .diff_copy {
+    padding: 1.5rem;
+  }
+
+  .audience_list.is-flow > .card_component {
+    flex-basis: calc((100% - var(--grid-gap)) / 2);
+  }
+}
+
+@media screen and (min-width: 62rem) {
+  .myth_row {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
+  /* Карточки ленты фиксированной ширины, как на /psihosomatika */
+  .diff_item {
+    width: 22.75rem;
+  }
+
+  .diff_copy {
+    padding: 1.5rem 1.5rem 1.75rem;
+  }
+
+  /* Шесть сегментов на фотографии — три в ряд, два ряда */
+  .shifts_list.is-three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .audience_list.is-flow > .card_component {
+    flex-basis: calc((100% - 2 * var(--grid-gap)) / 3);
+  }
+}
+
+/* Пользователь попросил меньше движения — лента листается без анимации */
+@media (prefers-reduced-motion: reduce) {
+  .diff_track {
+    scroll-behavior: auto;
+  }
+}

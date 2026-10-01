@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ДЕМО-ЛЕНДИНГ КУРСА «ТРФ: Теория реляционных фреймов»
+  ============================================================================
+
+  Как читать этот файл (правило светофора):
+
+    🟢 ЗЕЛЁНОЕ — обычный текст МЕЖДУ тегами. Это то, что видит человек.
+       Например здесь можно смело менять слова:  <h1>...ТУТ ТЕКСТ...</h1>
+       Меняйте, переписывайте, не бойтесь — сломать нельзя.
+
+    🔴 КРАСНОЕ — «шестерёнки». Их лучше НЕ трогать:
+         • атрибуты data-cms="..." и data-course="..."  — по ним код понимает,
+           куда подставлять цену/дату/картинку из CMS;
+         • строки со <script ...>  — это подключение программ;
+         • сам знак < > и названия тегов (h1, div, section…).
+
+    Подсказка: тег — это команда в угловых скобках, например <h1>.
+    Открывающему <h1> всегда соответствует закрывающий </h1> (со слэшем).
+    Текст пишется между ними. Если случайно удалили закрывающий тег —
+    просто верните его обратно, и всё встанет на место.
+
+  ВАЖНО ПРО data-course: значение в кавычках — это «слаг» курса, его имя в CMS
+  (поле slug в админке). Чтобы сделать лендинг другого курса, нужно заменить
+  слаг ВО ВСЕХ местах страницы на слаг нужного курса.
+  ============================================================================
+-->
+<html lang="ru"> <!-- 🔴 lang="ru" — язык страницы, оставляем -->
+<head>
+  <!--
+    HEAD — «служебная шапка». Её саму видно НЕ на странице, а в браузере
+    и в поиске Google/Яндекс. Поэтому тут важные для поиска строки.
+  -->
+  <meta charset="utf-8" /> <!-- 🔴 кодировка (чтобы русские буквы не «кракозябрились») -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- 🔴 чтобы сайт красиво открывался на телефоне -->
+
+  <!-- 🔴 noindex — это черновик на согласовании, в поиск ему нельзя. Не убираем. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 ЗАГОЛОВОК ВКЛАДКИ и текст в поиске. Меняйте текст внутри <title>. -->
+  <title>ТРФ: Теория реляционных фреймов — курс повышения квалификации</title>
+
+  <!-- 🟢 ОПИСАНИЕ для поиска. Меняйте текст в кавычках после content= -->
+  <meta name="description" content="Курс повышения квалификации по теории реляционных фреймов (ТРФ): гибкое применение интервенций ACT, работа с процессами слияния. 18 академических часов, онлайн." />
+
+  <!--
+    🔴 АДРЕС «МОЗГА» САЙТА (Public API). Отсюда страница берёт свежие цены,
+    даты и статусы из CMS. Сейчас указан наш рабочий сервер на Timeweb.
+    Когда переедем на свой домен для API — поменяем здесь (я подскажу).
+  -->
+  <meta name="public-api-url" content="https://modern-psy-asp-prod-8ceb.twc1.net" />
+
+  <!-- 🔴 подключение файла со стилями (внешний вид). Не трогаем. -->
+  <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <!--
+    🔴 SCHEMA-РАЗМЕТКА (JSON-LD). Это «карточка курса» для поисковиков:
+    невидимая на странице, но её читают Google/Яндекс.
+    Цену и дату сюда ПОДСТАВИТ САМ КОД из CMS — руками не заполняем.
+    Название/описание можно поправить, но аккуратно, не ломая кавычки и запятые.
+  -->
+  <script type="application/ld+json" id="course-jsonld">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "ТРФ: Теория реляционных фреймов",
+    "description": "Курс повышения квалификации по теории реляционных фреймов: гибкое применение интервенций ACT.",
+    "provider": {
+      "@type": "Organization",
+      "name": "Академия современной психологии",
+      "sameAs": "https://modern-psy.ru"
+    }
+  }
+  </script>
+</head>
+
+<!-- BODY — «тело» страницы. Всё, что ниже, человек видит. -->
+<body>
+
+  <!-- ВЕРХНЯЯ ШАПКА САЙТА (меню) -->
+  <header class="site-header">
+    <div class="container header__inner">
+      <a class="logo" href="/">Академия</a> <!-- 🟢 название/логотип текстом -->
+      <nav class="nav">
+        <!-- 🟢 пункты меню. href="#program" — это «прыжок» к секции с id="program" ниже. -->
+        <a href="#program">Программа</a>
+        <a href="#teachers">Преподаватели</a>
+        <a href="#faq">FAQ</a>
+        <a class="nav__cta" href="#signup">Записаться</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ПЕРВЫЙ ЭКРАН (hero) — самый верх, крупный блок с ценой и кнопкой -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__content">
+        <!-- 🟢 Главный заголовок и описание — меняйте текст свободно -->
+        <h1>ТРФ: Теория реляционных фреймов</h1>
+        <p class="hero__lead">
+          Изучив ТРФ, вы сможете гибче использовать интервенции ACT, прицельно
+          воздействовать на процессы слияния и помогать клиентам развивать
+          более высокие формы познания. 18 академических часов, онлайн.
+        </p>
+
+        <!--
+          СТАТУС НАБОРА (например «Идет набор»).
+          🔴 data-cms="sales-status" — код подставит сюда актуальный статус из CMS.
+          🟢 Текст «Уточните статус…» — это ЗАПАСКА: показывается, только если
+             CMS вдруг недоступна. Его можно переписать своими словами.
+        -->
+        <p class="badge" data-cms="sales-status" data-course="trf-teoriya-relyacionnyh-freymov">Уточните статус набора у менеджера</p>
+
+        <!--
+          БЛОК ЦЕНЫ. Строчки: старая цена (зачёркнутая, видна только в акцию),
+          текущая цена, рассрочка, цена при единовременной оплате.
+          🔴 data-cms="old-price" / "price" / "installment-price" / "full-price" — метки для кода.
+          🟢 Текст-запаска внутри (например «Стоимость уточняется») — можно менять.
+             Реальные цифры придут из CMS и встанут сюда сами.
+        -->
+        <div class="price">
+          <span class="price__old" data-cms="old-price" data-course="trf-teoriya-relyacionnyh-freymov"></span>
+          <span class="price__current" data-cms="price" data-course="trf-teoriya-relyacionnyh-freymov">Стоимость уточняется</span>
+          <span class="price__installment" data-cms="installment-price" data-course="trf-teoriya-relyacionnyh-freymov"></span>
+          <span class="price__installment" data-cms="full-price" data-course="trf-teoriya-relyacionnyh-freymov"></span>
+        </div>
+        <!-- 🔴 строка акции «Курс месяца». Появится сама, когда акция активна. -->
+        <p class="price__discount" data-cms="discount" data-course="trf-teoriya-relyacionnyh-freymov"></p>
+
+        <!-- ДАТА СТАРТА и РАСПИСАНИЕ. 🔴 data-cms="start-date" / "schedule" — подставит код. -->
+        <p class="hero__meta">
+          Старт: <span data-cms="start-date" data-course="trf-teoriya-relyacionnyh-freymov">дата уточняется</span>
+          <br />
+          <span data-cms="schedule" data-course="trf-teoriya-relyacionnyh-freymov"></span>
+        </p>
+
+        <!-- ГЛАВНАЯ КНОПКА. Ведёт к форме заявки внизу. 🟢 Текст на кнопке меняйте как угодно. -->
+        <a class="btn btn--primary" href="#signup">
+          Записаться на курс
+        </a>
+      </div>
+
+      <div class="hero__media">
+        <!--
+          ОБЛОЖКА КУРСА.
+          🔴 data-cms="cover" — код вставит обложку курса из CMS (поле catalog_cover).
+          🟢 alt="..." — короткое описание картинки (его читают незрячие
+             и поисковики). Можно поправить текст в кавычках.
+        -->
+        <img class="hero__img" data-cms="cover" data-course="trf-teoriya-relyacionnyh-freymov" alt="Курс ТРФ: Теория реляционных фреймов" />
+      </div>
+    </div>
+  </section>
+
+  <!-- СЕКЦИЯ «ЧТО ПОЛУЧИТЕ» — обычный текст, весь 🟢 зелёный, меняйте смело -->
+  <section class="section" id="benefits">
+    <div class="container">
+      <h2>Что вы получите</h2>
+      <!-- три карточки в ряд. Внутри каждой — заголовок <h3> и абзац <p>. -->
+      <div class="grid grid--3">
+        <article class="card"><h3>Удостоверение о повышении квалификации</h3><p>Официальный документ после успешного завершения курса.</p></article>
+        <article class="card"><h3>Практические навыки</h3><p>Гибкое применение интервенций ACT и прицельная работа с процессами слияния.</p></article>
+        <article class="card"><h3>Доступ к записям</h3><p>Все занятия остаются у вас — можно вернуться в любой момент.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЕКЦИЯ «ПРОГРАММА» — тоже весь 🟢 текст. id="program" — чтобы меню сюда прыгало. -->
+  <section class="section section--muted" id="program">
+    <div class="container">
+      <h2>Программа курса</h2>
+      <!-- <ol> — нумерованный список. Каждый пункт — <li>...</li>. -->
+      <ol class="program">
+        <li><strong>Модуль 1.</strong> Основы теории реляционных фреймов: язык и познание.</li>
+        <li><strong>Модуль 2.</strong> Реляционные фреймы и процессы слияния.</li>
+        <li><strong>Модуль 3.</strong> Применение ТРФ в интервенциях ACT.</li>
+        <li><strong>Модуль 4.</strong> Практика и разбор кейсов.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!--
+    СЕКЦИЯ «ПРЕПОДАВАТЕЛИ».
+    🔴 data-cms="teachers" — код сам построит карточки преподавателей из CMS
+    (фото, имя, роль, описание). Руками внутри ничего писать не нужно.
+    🟢 Текст-запаска в <p> виден, только если CMS недоступна.
+  -->
+  <section class="section section--muted" id="teachers">
+    <div class="container">
+      <h2>Преподаватели</h2>
+      <div class="grid grid--3" data-cms="teachers" data-course="trf-teoriya-relyacionnyh-freymov">
+        <p class="muted">Состав преподавателей уточняйте у менеджера.</p>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    СЕКЦИЯ «ЧАСТЫЕ ВОПРОСЫ» (FAQ).
+    <details> — раскрывающийся блок. <summary> — видимый вопрос,
+    <p> внутри — ответ, который раскрывается по клику. Весь текст 🟢 зелёный.
+  -->
+  <section class="section" id="faq">
+    <div class="container">
+      <h2>Частые вопросы</h2>
+      <details><summary>Кому подойдёт курс?</summary><p>Психологам и психотерапевтам, которые работают в подходе ACT или хотят глубже понять его теоретическую основу.</p></details>
+      <details><summary>Сколько длится обучение?</summary><p>18 академических часов. Даты и расписание ближайшего потока указаны выше.</p></details>
+      <details><summary>Выдаётся ли документ?</summary><p>Да, удостоверение о повышении квалификации.</p></details>
+    </div>
+  </section>
+
+  <!--
+    ФОРМА ЗАЯВКИ.
+    🔴 data-form="course-request" — говорит коду, КУДА отправлять заявку.
+    🔴 data-course="..." — какой это курс.
+    🟢 Подписи полей (<label>) и заголовок — меняйте текстом.
+    ⚠️ Отправка заявок заработает, когда запустим Forms API (следующий этап).
+  -->
+  <section class="section section--cta" id="signup">
+    <div class="container container--narrow">
+      <h2>Записаться на курс</h2>
+      <p class="muted">Оставьте контакты — менеджер свяжется с вами и ответит на вопросы.</p>
+
+      <form class="form" data-form="course-request" data-course="trf-teoriya-relyacionnyh-freymov" novalidate>
+        <!--
+          Одно поле = блок .form__row: подпись <label> + поле ввода <input>.
+          🔴 name="name" / name="phone" и т.п. — «имена» полей, по ним код
+             собирает данные. Их НЕ меняем.
+          🟢 Текст подписи между <label>...</label> — меняйте.
+          🔴 required — значит «поле обязательно к заполнению».
+        -->
+        <div class="form__row">
+          <label for="name">Имя</label>
+          <input id="name" name="name" type="text" required autocomplete="name" />
+        </div>
+        <div class="form__row">
+          <label for="phone">Телефон</label>
+          <input id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="+7 900 000-00-00" />
+        </div>
+        <div class="form__row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" />
+        </div>
+        <div class="form__row">
+          <label for="comment">Комментарий</label>
+          <textarea id="comment" name="comment" rows="3"></textarea>
+        </div>
+
+        <!--
+          🔴 ЛОВУШКА ДЛЯ СПАМ-БОТОВ (honeypot). Живой человек это поле не видит
+          (оно спрятано стилями), а робот-спамер заполняет — и мы такую заявку
+          отбрасываем. НЕ удаляем и не трогаем.
+        -->
+        <div class="hp" aria-hidden="true">
+          <label>Не заполняйте это поле<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+        </div>
+
+        <!-- 🟢 Текст на кнопке отправки — можно менять -->
+        <button class="btn btn--primary" type="submit">Отправить заявку</button>
+        <!-- 🔴 сюда код выведет «Спасибо!» или сообщение об ошибке. Оставляем пустым. -->
+        <p class="form__status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- НИЖНИЙ ПОДВАЛ САЙТА -->
+  <footer class="site-footer">
+    <div class="container">
+      <!-- 🔴 <span id="year"></span> — сюда код внизу подставит текущий год. -->
+      <p>© <span id="year"></span> Академия современной психологии. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <!--
+    🔴 ПОДКЛЮЧЕНИЕ ПРОГРАММ (в самом низу — так правильно, грузится быстрее).
+       cms-loader.js — берёт из CMS цены/даты/картинки и подставляет их выше.
+       forms.js — отправляет заявку из формы.
+    Эти три строки НЕ трогаем.
+  -->
+  <script src="assets/js/cms-loader.js" defer></script>
+  <script src="assets/js/forms.js" defer></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

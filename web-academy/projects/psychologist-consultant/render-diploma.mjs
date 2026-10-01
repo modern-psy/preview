@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';
+import {renderDiploma} from '../../shared/academy/diploma-render.mjs';
+const root = new URL('./', import.meta.url);
+const data = JSON.parse(await fs.readFile(new URL('data/diploma.json', root), 'utf8'));
+const file = new URL('index.html', root);
+const source = await fs.readFile(file, 'utf8');
+const start = '<!-- diploma:start -->';
+const end = '<!-- diploma:end -->';
+if (source.split(start).length !== 2 || source.split(end).length !== 2 || source.indexOf(end) < source.indexOf(start)) throw new Error('diploma: expected one ordered region');
+const next = source.replace(/<!-- diploma:start -->[\s\S]*?<!-- diploma:end -->/, () => `${start}\n${renderDiploma(data, {id: 'diploma'})}\n${end}`);
+if (next !== source) await fs.writeFile(file, next);

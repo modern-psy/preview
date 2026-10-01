@@ -1,0 +1,24 @@
+.typewriter_component { display: grid; }
+.typewriter_text, .typewriter_visual { grid-area: 1 / 1; }
+.typewriter_visual { display: none; }
+.typewriter_component.is-playing .typewriter_text { opacity: 0; }
+.typewriter_component.is-playing .typewriter_visual { display: block; }
+.typewriter_component.is-playing .typewriter_visual::after { content: ''; display: inline-block; width: 1px; height: 1em; margin-inline-start: 2px; background: currentColor; vertical-align: -0.12em; animation: academy-caret 700ms steps(1) infinite; }
+@keyframes academy-caret { 50% { opacity: 0; } }
+.is-typewriter-reveal { opacity: 0; transform: scale(0.94); transform-origin: left center; }
+.is-typewriter-reveal.is-revealed { opacity: 1; transform: scale(1); transition: opacity var(--demo-motion-duration, 200ms) ease-out, transform var(--demo-motion-duration, 200ms) ease-out; }
+.is-typewriter-card { opacity: 0; transform: scale(0.96); transition: opacity var(--demo-motion-duration, 200ms) ease-out, transform var(--demo-motion-duration, 200ms) ease-out; }
+.is-typewriter-card.is-card-visible { opacity: 1; transform: scale(1); }
+.typewriter_component.is-sequence { display: flex; flex-direction: column; gap: 0.5rem; }
+.typewriter_step-copy { display: grid; min-width: 0; }
+.is-staged-idle [data-typewriter-step],
+.is-sequence.is-playing [data-typewriter-step]:not(.is-typing):not(.is-complete) { opacity: 0; }
+.is-sequence.is-playing .is-complete .typewriter_text { opacity: 1; }
+.is-sequence.is-playing .is-complete .typewriter_visual { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .typewriter_component.is-playing .typewriter_text { opacity: 1; }
+  .typewriter_component.is-playing .typewriter_visual { display: none; }
+  .is-typewriter-reveal { opacity: 1; transform: none; transition: none; }
+  .is-typewriter-card { opacity: 1; transform: none; transition: none; }
+  .is-staged-idle [data-typewriter-step], .is-sequence.is-playing [data-typewriter-step] { opacity: 1; }
+}

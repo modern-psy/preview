@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  АКЦИОННЫЙ БАННЕР «−25% на все курсы» · 1–4 сентября
+  ============================================================================
+
+  Что это. Демо-страница. Сам баннер — один блок ниже, между метками
+  «НАЧАЛО БЛОКА» и «КОНЕЦ БЛОКА»: стили, разметка и скрипт в одном куске.
+  Копируется целиком в HTML-блок Tilda. Единственное, что подтягивается
+  снаружи, — шесть фоновых картинок с s3.twcstorage.ru.
+
+  Три состояния по макетам Figma:
+      Mobile 376   → до 768px    · высота 52px
+      Tablet 801   → 769–1024px  · высота 70px
+      Desktop 1921 → от 1025px   · высота 100px
+
+  Закрытие. Крестик над баннером. Факт закрытия пишется в sessionStorage,
+  поэтому в рамках одной сессии баннер больше не появится ни на одной
+  странице. Новая сессия (новая вкладка после закрытия браузера) — покажется
+  снова. Если нужно «закрыл навсегда» — заменить sessionStorage на
+  localStorage в скрипте, это одно слово.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Акционный баннер — демо</title>
+
+  <!-- Шрифт нужен только этой демо-странице: на боевом сайте Wix Madefor
+       уже подключён, баннер берёт его через var(--font-family-base). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Оформление только демо-страницы. В блок не входит. */
+    body {
+      margin: 0;
+      font-family: "Wix Madefor Text", Arial, sans-serif;
+      color: #374151;
+      background: #F7F7FA;
+    }
+    .demo { max-width: 80rem; margin: 0 auto; padding: 3rem 1.5rem 12rem; }
+    .demo h1 { font-size: 2rem; }
+    .demo p { line-height: 1.6; max-width: 42rem; }
+  </style>
+</head>
+<body>
+
+  <main class="demo">
+    <h1>Демо-страница</h1>
+    <p>Баннер прижат к нижней кромке экрана и не уезжает при прокрутке.
+       Покрутите страницу и подвигайте ширину окна — на 768 и 1024 пикселях
+       он переключается между тремя макетами.</p>
+    <p>Крестик над баннером закрывает его до конца сессии: перезагрузите
+       страницу после закрытия — баннер не вернётся. Чтобы проверить снова,
+       откройте страницу в новой вкладке приватного окна.</p>
+    <p style="height: 60vh"></p>
+    <p>Конец страницы.</p>
+  </main>
+
+
+<!-- ========================= НАЧАЛО БЛОКА ========================= -->
+
+<style>
+/* ============================================================================
+   АКЦИОННЫЙ БАННЕР · нижняя фиксированная полоса
+   ============================================================================
+   Все классы начинаются с promo-banner_ — блок не заденет стили страницы.
+   Значения размеров сняты один в один с макетов Figma и переведены в rem
+   (16px = 1rem), поэтому баннер корректно масштабируется вместе с настройкой
+   размера шрифта в браузере.
+
+   ГДЕ ПРАВИТЬ БЕЗОПАСНО:
+     · --pb-bg          — цвет полосы;
+     · --pb-bg-left / --pb-bg-right — фоновая графика (листья);
+     · тексты и ссылка — в разметке ниже.
+
+   ⚠️ ПРО ФОН. Листья — две картинки на каждый брейкпоинт: левая прижата
+   к левому краю, правая к правому, между ними ровная заливка --pb-bg.
+   Внутренние края картинок сведены в прозрачность, поэтому стык не виден
+   ни на какой ширине экрана. Картинки в формате WebP именно из-за этой
+   прозрачности — заменять их на JPEG нельзя, посреди баннера появится шов.
+   Размеры вывода заданы жёстко в --pb-bg-*-size и к адресам не привязаны.
+   ============================================================================ */
+
+.promo-banner_component {
+  /* ---- цвет и типографика ------------------------------------------------ */
+  --pb-bg: #D34A13;                 /* оранжевый фон полосы, из макета */
+  --pb-ink: #FFFFFF;                /* весь текст и рамка плашки — белые */
+
+  /* ---- мобильный макет (Mobile 376) — база, дальше только переопределения - */
+  --pb-height: 3.25rem;             /* 52px */
+  --pb-edge: min(14%, 3.281rem);    /* боковое поле: 52.5px на 375px */
+  --pb-bg-left:  url("https://s3.twcstorage.ru/asp-media/banner_mobile_left_253ea5d980.webp");
+  --pb-bg-right: url("https://s3.twcstorage.ru/asp-media/banner_mobile_right_3efd30727f.webp");
+  --pb-bg-left-size:  10.625rem var(--pb-height);   /* 170px */
+  --pb-bg-right-size: 17rem var(--pb-height);       /* 272px */
+
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 70;                      /* --z-toast дизайн-системы */
+  height: var(--pb-height);
+
+  font-family: var(--font-family-base, "Wix Madefor Text", Arial, Helvetica, sans-serif);
+  color: var(--pb-ink);
+
+  /* Порядок слоёв: правая картинка, левая, ровная заливка. */
+  background-color: var(--pb-bg);
+  background-image: var(--pb-bg-right), var(--pb-bg-left);
+  background-position: right center, left center;
+  background-size: var(--pb-bg-right-size), var(--pb-bg-left-size);
+  background-repeat: no-repeat, no-repeat;
+
+  /* Плавное исчезновение при закрытии. */
+  transition: opacity .25s cubic-bezier(.22, .61, .36, 1);
+}
+.promo-banner_component.is-closing { opacity: 0; }
+
+/* Кто отключил анимации в системе — у того баннер просто исчезает. */
+@media (prefers-reduced-motion: reduce) {
+  .promo-banner_component { transition: none; }
+}
+
+/* ---- ссылка: кликабелен весь баннер ------------------------------------- */
+.promo-banner_link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+.promo-banner_link:focus-visible {
+  outline: 2px solid var(--pb-ink);
+  outline-offset: -4px;
+}
+
+/* ---- сетка содержимого --------------------------------------------------- */
+/* Мобильный: заголовок и плашка в один ряд, приписка — под ними по центру. */
+.promo-banner_row {
+  height: 100%;
+  padding-inline: var(--pb-edge);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "title date"
+    "note  note";
+  align-content: start;
+}
+
+.promo-banner_title {
+  grid-area: title;
+  font-size: 1.204rem;              /* 19.27px */
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;          /* трекинг из макета */
+  white-space: nowrap;
+  padding-top: 0.7rem;              /* базовая линия на 27.7px от верха */
+}
+
+.promo-banner_note {
+  grid-area: note;
+  justify-self: center;
+  font-size: 0.44rem;               /* 7.04px — ровно как в макете (см. README) */
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  padding-top: 0.031rem;            /* базовая линия на 42.4px от верха */
+}
+/* Перенос приписки на две строки нужен только на планшете. */
+.promo-banner_note-break { display: none; }
+
+/* ---- плашка с датой ------------------------------------------------------ */
+.promo-banner_date {
+  grid-area: date;
+  box-sizing: border-box;
+  width: 2.276rem;                  /* 36.42px */
+  height: 1.714rem;                 /* 27.42px */
+  margin-top: 0.4375rem;            /* 7px от верхней кромки */
+  border: 1px solid var(--pb-ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
+  /* Размытие подложки — как «Background blur» в макете. Где не поддержано,
+     плашка просто останется прозрачной с белой рамкой. */
+  backdrop-filter: blur(0.4rem);
+  -webkit-backdrop-filter: blur(0.4rem);
+}
+.promo-banner_date-num {
+  font-size: 0.706rem;              /* 11.3px */
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.promo-banner_date-month {
+  font-size: 0.424rem;              /* 6.78px */
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ---- крестик ------------------------------------------------------------- */
+/* Сидит над полосой и выровнен по её правому полю. 44px — минимальная
+   тач-область по доступности, сам квадратик визуально меньше. */
+.promo-banner_close {
+  position: absolute;
+  bottom: 100%;
+  right: var(--pb-edge);
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background: var(--pb-bg);
+  color: var(--pb-ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.promo-banner_close::before {
+  /* Невидимая подложка до 44×44: палец попадает, а вид не меняется.
+     Вниз не растём — иначе кнопка перехватывала бы клики по самому баннеру. */
+  content: "";
+  position: absolute;
+  inset: -0.5rem -0.5rem 0;
+}
+.promo-banner_close:focus-visible {
+  outline: 2px solid var(--pb-ink);
+  outline-offset: -2px;
+}
+.promo-banner_close svg { display: block; width: 0.75rem; height: 0.75rem; }
+
+
+/* ############################################################################
+   ПЛАНШЕТ · от 769px (Tablet 801)
+   ############################################################################ */
+@media (min-width: 48.0625rem) {
+
+  .promo-banner_component {
+    --pb-height: 4.375rem;          /* 70px */
+    --pb-edge: 4.125%;              /* 33px на 800px — правое поле макета */
+    --pb-bg-left:  url("https://s3.twcstorage.ru/asp-media/banner_tablet_left_445f647f69.webp");
+    --pb-bg-right: url("https://s3.twcstorage.ru/asp-media/banner_tablet_right_264353a836.webp");
+    --pb-bg-left-size:  32.813rem var(--pb-height);  /* 525px */
+    --pb-bg-right-size: 19.063rem var(--pb-height);  /* 305px */
+  }
+
+  /* Заголовок, приписка и плашка в одну строку с равными промежутками. */
+  .promo-banner_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10.25%;           /* 82px на 800px */
+    padding-right: var(--pb-edge);
+  }
+
+  .promo-banner_title {
+    font-size: 2.052rem;            /* 32.83px */
+    padding-top: 0;
+  }
+
+  .promo-banner_note {
+    font-size: 0.75rem;             /* 12px */
+    padding-top: 0;
+    padding-bottom: 0.663rem;
+    align-self: flex-end;           /* в макете приписка стоит ниже центра */
+  }
+  .promo-banner_note-break { display: inline; }
+
+  .promo-banner_date {
+    width: 3.871rem;                /* 61.94px */
+    height: 2.934rem;               /* 46.94px */
+    margin-top: 1px;                /* в макете плашка на полпикселя ниже центра */
+    gap: 0.1rem;
+  }
+  .promo-banner_date-num   { font-size: 1.204rem; }  /* 19.26px */
+  .promo-banner_date-month { font-size: 0.722rem; }  /* 11.55px */
+}
+
+
+/* ############################################################################
+   ДЕСКТОП · от 1025px (Desktop 1921)
+   ############################################################################ */
+@media (min-width: 64.0625rem) {
+
+  .promo-banner_component {
+    --pb-height: 6.25rem;           /* 100px */
+    /* Контент — колонка 1340px по центру, но не ближе 24px к краю экрана.
+       На 1920px это даёт ровно 290px поля, как в макете. */
+    --pb-edge: max(1.5rem, calc((100% - 83.75rem) / 2));
+    --pb-bg-left:  url("https://s3.twcstorage.ru/asp-media/banner_desktop_left_8af65e7850.webp");
+    --pb-bg-right: url("https://s3.twcstorage.ru/asp-media/banner_desktop_right_987b859bfb.webp");
+    --pb-bg-left-size:  43.75rem var(--pb-height);   /* 700px */
+    --pb-bg-right-size: 46.25rem var(--pb-height);   /* 740px */
+  }
+
+  .promo-banner_row {
+    padding-left: var(--pb-edge);
+    padding-right: var(--pb-edge);
+  }
+
+  .promo-banner_title {
+    font-size: 3.75rem;             /* 60px */
+    transform: translateY(-1px);    /* попадание в базовую линию макета */
+  }
+
+  /* Приписка в макете прижата не к центру, а к низу полосы. */
+  .promo-banner_note {
+    align-self: flex-end;
+    padding-bottom: 0.406rem;
+  }
+  .promo-banner_note-break { display: none; }
+
+  .promo-banner_date {
+    width: 7rem;                    /* 112px */
+    height: 5.375rem;               /* 86px */
+    border-width: 2px;
+    gap: 0.2rem;
+    backdrop-filter: blur(0.75rem);
+    -webkit-backdrop-filter: blur(0.75rem);
+  }
+  .promo-banner_date-num   { font-size: 2.2rem; }    /* 35.2px */
+  .promo-banner_date-month { font-size: 1.32rem; }   /* 21.12px */
+}
+</style>
+
+<aside class="promo-banner_component" id="promo-banner" aria-label="Акция Академии">
+
+  <!-- Кликабелен весь баннер целиком. -->
+  <a class="promo-banner_link" href="https://modern-psy.ru/courses">
+    <span class="promo-banner_row">
+      <span class="promo-banner_title">-25% на все курсы</span>
+      <span class="promo-banner_note">предложение не суммируется <br class="promo-banner_note-break">с другими акциями Академии</span>
+      <span class="promo-banner_date">
+        <span class="promo-banner_date-num">1-4</span>
+        <span class="promo-banner_date-month">сентября</span>
+      </span>
+    </span>
+  </a>
+
+  <!-- Крестик — отдельная кнопка, а не часть ссылки: иначе клик по нему
+       уводил бы на страницу курсов. -->
+  <button class="promo-banner_close" type="button" data-js="promo-banner-close" aria-label="Закрыть баннер">
+    <svg viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">
+      <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+</aside>
+
+<script>
+/* ============================================================================
+   ЗАКРЫТИЕ БАННЕРА
+   ============================================================================
+   Скрипт стоит сразу после разметки, поэтому закрытый баннер убирается
+   до отрисовки страницы — моргания не будет.
+
+   Память: sessionStorage. Закрыли — до конца сессии баннер не появится
+   ни на одной странице сайта. Закрыли браузер, открыли заново — покажется.
+   Нужно «навсегда» — поменяйте sessionStorage на localStorage (два места).
+   Приватный режим и запрет на хранилище обработаны: если записать нельзя,
+   баннер просто закроется на текущей странице, без ошибок в консоли.
+   ============================================================================ */
+(function () {
+  var KEY  = 'promo-banner-courses-25';
+  var root = document.getElementById('promo-banner');
+
+  if (!root || root.dataset.pbReady === '1') return;   /* защита от двойного запуска */
+  root.dataset.pbReady = '1';
+
+  function remember() {
+    try { sessionStorage.setItem(KEY, '1'); } catch (e) { /* хранилище недоступно */ }
+  }
+  function wasClosed() {
+    try { return sessionStorage.getItem(KEY) === '1'; } catch (e) { return false; }
+  }
+
+  if (wasClosed()) { root.remove(); return; }
+
+  root.querySelector('[data-js="promo-banner-close"]').addEventListener('click', function () {
+    remember();
+    var quick = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (quick) { root.remove(); return; }
+    root.classList.add('is-closing');
+    root.addEventListener('transitionend', function () { root.remove(); }, { once: true });
+    setTimeout(function () { if (root.isConnected) root.remove(); }, 400);  /* страховка */
+  });
+})();
+</script>
+
+<!-- ========================== КОНЕЦ БЛОКА ========================== -->
+
+</body>
+</html>

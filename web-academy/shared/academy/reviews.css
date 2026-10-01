@@ -1,0 +1,22 @@
+/* Section composition on the existing Academy/Splide behavior. */
+.reviews_component { min-width: 0; }
+.reviews_header { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+.reviews_controls { display: none; gap: 0.75rem; flex: none; }
+.reviews_slider { width: 100%; min-width: 0; visibility: visible; }
+.reviews_track { overflow: visible; }
+.reviews_list { display: grid; width: 100%; min-width: 0; align-items: start; gap: 2rem; }
+.reviews_slide { width: 100%; min-width: 0; }
+.reviews_slider:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0.25rem; }
+@media (min-width: 32.5625rem) {
+  .reviews_header { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .reviews_controls { display: flex; }
+  .reviews_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .reviews_slider.is-initialized .reviews_list { display: flex; gap: 0; }
+  .reviews_slider.is-initialized .reviews_slide { width: clamp(18rem, calc((100% - 3rem) / 4), 23rem); }
+}
+@media (min-width: 64.0625rem) { .reviews_list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* Splide retains is-initialized after destroy; preserve the stacked grid gap. */
+@media (max-width: 32.5rem) {
+  .reviews_slider.is-initialized:not(.is-active) .reviews_list { display: grid; gap: 2rem; }
+}

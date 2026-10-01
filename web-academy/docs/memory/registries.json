@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "registries": [
+    {
+      "file": "projects/content-workshop/data/assets.json",
+      "toon_file": "projects/content-workshop/data/assets.toon",
+      "collection": "assets",
+      "required_fields": [
+        "id",
+        "scope",
+        "status",
+        "kind",
+        "role",
+        "replacement_group",
+        "url",
+        "canonical_path"
+      ],
+      "count_rules": [
+        {
+          "where": {
+            "status": "active",
+            "replacement_group": "comparison-pair"
+          },
+          "equals": 2,
+          "message": "comparison-pair must contain exactly two active assets"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,740 @@
+<script>
+(() => {
+  window.__academyAnchorScrollCleanup?.();
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const interruptEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown', 'popstate', 'hashchange'];
+  let frame = 0;
+  let finish = null;
+  let releaseFocus = null;
+
+  const cancel = () => {
+    window.cancelAnimationFrame(frame);
+    frame = 0;
+    finish = null;
+    interruptEvents.forEach(name => window.removeEventListener(name, cancel));
+  };
+
+  const focusTarget = target => {
+    releaseFocus?.();
+    if (!target.hasAttribute('tabindex') && target.tabIndex < 0) {
+      target.setAttribute('tabindex', '-1');
+      releaseFocus = () => {
+        if (target.getAttribute('tabindex') === '-1') target.removeAttribute('tabindex');
+        target.removeEventListener('blur', releaseFocus);
+        releaseFocus = null;
+      };
+      target.addEventListener('blur', releaseFocus);
+    }
+    target.focus({ preventScroll: true });
+  };
+
+  const handleClick = event => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey ||
+        event.ctrlKey || event.shiftKey || event.altKey || !(event.target instanceof Element)) return;
+    const link = event.target.closest('a[href^="#"]');
+    const root = link?.closest('[data-academy-anchor-scroll]');
+    const hash = link?.getAttribute('href');
+    if (!root || !hash || hash === '#' ||
+        link.matches('.skip-link, [data-anchor-scroll-ignore], [aria-disabled="true"], [download]') ||
+        link.hasAttribute("data-tilda-popup-link") ||
+        (link.target && link.target.toLowerCase() !== '_self')) return;
+
+    let id;
+    try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!(target instanceof HTMLElement) || !target.getClientRects().length) return;
+
+    event.preventDefault();
+    cancel();
+    releaseFocus?.();
+    const startY = window.scrollY;
+    const scrollMarginTop = parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
+    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const targetY = Math.min(maxY, Math.max(0, target.getBoundingClientRect().top + startY - scrollMarginTop));
+    const distance = targetY - startY;
+    const left = window.scrollX;
+    const scroll = top => window.scrollTo({ left, top, behavior: 'instant' });
+
+    if (window.location.hash === hash) {
+      window.history.replaceState(window.history.state, '', hash);
+    } else {
+      window.history.pushState(window.history.state, '', hash);
+    }
+
+    finish = () => {
+      cancel();
+      if (!target.isConnected || !root.isConnected) return;
+      scroll(targetY);
+      focusTarget(target);
+    };
+    if (reducedMotion.matches || Math.abs(distance) < 1) {
+      finish();
+      return;
+    }
+
+    const duration = Math.min(900, Math.max(480, Math.abs(distance) * 0.28));
+    const startTime = performance.now();
+    interruptEvents.forEach(name => window.addEventListener(name, cancel, { passive: true }));
+    const render = currentTime => {
+      if (!target.isConnected || !root.isConnected) { cancel(); return; }
+      const progress = Math.min(1, Math.max(0, (currentTime - startTime) / duration));
+      if (progress === 1) { finish(); return; }
+      scroll(startY + distance * (1 - (1 - progress) ** 3));
+      frame = window.requestAnimationFrame(render);
+    };
+    frame = window.requestAnimationFrame(render);
+  };
+
+  const handleMotionChange = () => { if (reducedMotion.matches) finish?.(); };
+  document.addEventListener('click', handleClick);
+  reducedMotion.addEventListener('change', handleMotionChange);
+  window.__academyAnchorScrollCleanup = () => {
+    cancel();
+    releaseFocus?.();
+    document.removeEventListener('click', handleClick);
+    reducedMotion.removeEventListener('change', handleMotionChange);
+  };
+})();
+
+(() => {
+  if (customElements.get('academy-review-panel')) return;
+  customElements.define('academy-review-panel', class extends HTMLElement {
+    connectedCallback() {
+      this.disconnect();
+      this.controller = new AbortController();
+      this.update = () => {
+        const scroll = this.querySelector('[data-review-full]');
+        if (!scroll) return;
+        this.dataset.scrollable = String(!scroll.hidden && scroll.scrollHeight > scroll.clientHeight + 1);
+        this.dataset.scrollEnd = String(scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 2);
+      };
+      this.addEventListener('scroll', this.update, {capture: true, signal: this.controller.signal});
+      this.resize = new ResizeObserver(this.update);
+      this.resize.observe(this);
+      this.update();
+    }
+    disconnect() { this.controller?.abort(); this.resize?.disconnect(); }
+    disconnectedCallback() { this.disconnect(); }
+  });
+})();
+
+(() => {
+  if (customElements.get('academy-review')) return;
+  customElements.define('academy-review', class extends HTMLElement {
+    static observedAttributes = ['open'];
+    connectedCallback() {
+      this.observer?.disconnect();
+      const initialize = () => {
+        if (this.hasAttribute('data-review-video-card')) {
+          if (!this.controller && this.querySelector('[data-review-video-toggle]')) this.initializeVideo();
+          return;
+        }
+        if (this.controller || !this.querySelector('[data-review-full]')) return;
+        this.observer?.disconnect();
+        this.button = this.querySelector('[data-review-toggle]');
+        this.panel = this.querySelector('academy-review-panel');
+        this.quote = this.querySelector('[data-review-quote]');
+        this.full = this.querySelector('[data-review-full]');
+        this.controller = new AbortController();
+        const signal = this.controller.signal;
+        this.motion = matchMedia('(prefers-reduced-motion: reduce)');
+        this.motion.addEventListener('change', () => this.cancelMotion(), {signal});
+        this.button.addEventListener('click', () => this.toggleAttribute('open'), {signal});
+        this.addEventListener('keydown', event => {
+          if (event.key === 'Escape' && this.hasAttribute('open')) {
+            event.preventDefault(); this.removeAttribute('open'); this.button.focus({preventScroll: true});
+          }
+        }, {signal});
+        this.button.hidden = false;
+        this.dataset.ready = '';
+        this.sync(false);
+      };
+      initialize();
+      if (!this.controller) {
+        this.observer = new MutationObserver(initialize);
+        this.observer.observe(this, {childList: true, subtree: true});
+      }
+    }
+    attributeChangedCallback() { if (this.controller && this.full) this.sync(true); }
+    initializeVideo() {
+      this.observer?.disconnect();
+      this.controller = new AbortController();
+      const signal = this.controller.signal;
+      this.video = this.querySelector('[data-review-video]');
+      this.videoButton = this.querySelector('[data-review-video-toggle]');
+      this.videoStatus = this.querySelector('[data-review-video-status]');
+      this.videoPoster = this.querySelector('[data-review-video-poster]');
+      this.previewPlaying = false;
+      this.videoButton.hidden = false;
+      this.videoButton.addEventListener('click', () => this.toggleVideo(), {signal});
+      if (this.video) {
+        this.video.controls = false;
+        this.video.addEventListener('play', () => {
+          this.clearPosterTimer();
+          if (this.videoPoster) this.videoPoster.hidden = true;
+          this.closest('[data-slider-component]')?.querySelectorAll('[data-review-video]').forEach(video => {
+            if (video !== this.video) video.pause();
+          });
+        }, {signal});
+        this.video.addEventListener('pause', () => {
+          this.clearPosterTimer();
+          this.posterTimer = setTimeout(() => {
+            this.posterTimer = null;
+            if (this.isConnected && this.video.paused && this.videoPoster) this.videoPoster.hidden = false;
+          }, 2500);
+        }, {signal});
+        for (const name of ['play', 'playing', 'pause', 'ended', 'emptied']) {
+          this.video.addEventListener(name, () => this.syncVideo(), {signal});
+        }
+        this.video.addEventListener('error', () => this.showVideoError(), {signal});
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) this.pauseVideo();
+        }, {signal});
+        // Stop sound when the card leaves either the viewport or the carousel.
+        this.videoObserver = new IntersectionObserver(entries => {
+          if (!entries[0].isIntersecting) this.pauseVideo();
+        });
+        this.videoObserver.observe(this);
+      }
+      this.syncVideo();
+    }
+    syncVideo() {
+      const playing = this.video ? !this.video.paused && !this.video.ended : this.previewPlaying;
+      this.videoButton.toggleAttribute('data-playing', playing);
+      this.videoButton.setAttribute('aria-label', `${playing ? 'Пауза' : 'Воспроизвести видеоотзыв'}${this.video ? '' : ' — предпросмотр'}`);
+    }
+    clearPosterTimer() {
+      clearTimeout(this.posterTimer);
+      this.posterTimer = null;
+    }
+    pauseVideo() {
+      this.playRequest = null;
+      this.video?.pause();
+      this.previewPlaying = false;
+      this.syncVideo();
+    }
+    showVideoError() {
+      this.pauseVideo();
+      this.videoStatus.textContent = 'Не удалось воспроизвести видео. Попробуйте ещё раз.';
+      this.videoStatus.hidden = false;
+    }
+    async toggleVideo() {
+      if (!this.video) {
+        this.previewPlaying = !this.previewPlaying;
+        this.syncVideo();
+        return;
+      }
+      if (!this.video.paused || this.playRequest) {
+        this.pauseVideo();
+        return;
+      }
+      this.videoStatus.hidden = true;
+      if (this.video.error) this.video.load();
+      if (this.video.ended) this.video.currentTime = 0;
+      const request = {};
+      this.playRequest = request;
+      try {
+        await this.video.play();
+      } catch (error) {
+        if (this.playRequest === request && !this.controller?.signal.aborted && this.isConnected && error.name !== 'AbortError') this.showVideoError();
+      } finally {
+        if (this.playRequest === request) {
+          this.playRequest = null;
+          this.syncVideo();
+        }
+      }
+    }
+    cancelMotion() { this.animations?.forEach(animation => animation.cancel()); this.animations = []; }
+    sync(animate) {
+      const height = this.panel.getBoundingClientRect().height;
+      const width = this.button.getBoundingClientRect().width;
+      this.cancelMotion();
+      const open = this.hasAttribute('open');
+      this.toggleAttribute('data-open', open);
+      if (!open && this.full.contains(document.activeElement)) this.button.focus({preventScroll: true});
+      this.full.hidden = !open;
+      this.full.tabIndex = open && !this.closest('[aria-hidden="true"]') ? 0 : -1;
+      this.quote.hidden = open;
+      this.button.setAttribute('aria-expanded', String(open));
+      this.button.setAttribute('aria-label', `${open ? 'Свернуть' : 'Подробнее'}: ${this.dataset.author}`);
+      this.panel.update?.();
+      if (!animate || this.motion.matches) return;
+      const styles = getComputedStyle(this);
+      const token = styles.getPropertyValue('--motion-duration').trim() || '250ms';
+      const duration = parseFloat(token) * (token.endsWith('ms') ? 1 : 1000);
+      const options = {duration, easing: styles.getPropertyValue('--motion-easing').trim() || 'linear'};
+      const buttonContent = this.button.querySelector(open ? '.review-toggle_icon' : '.review-toggle_label');
+      this.animations = [
+        this.panel.animate([{height: `${height}px`}, {height: `${this.panel.getBoundingClientRect().height}px`}], options),
+        this.button.animate([{width: `${width}px`, offset: 0}, {width: `${this.button.getBoundingClientRect().width}px`, offset: 0.7}, {width: `${this.button.getBoundingClientRect().width}px`, offset: 1}], options),
+        buttonContent.animate([{opacity: 0, offset: 0}, {opacity: 0, offset: 0.7}, {opacity: 1, offset: 1}], options),
+        (open ? this.full : this.quote).animate([{opacity: 0}, {opacity: 1}], options),
+      ];
+    }
+    disconnectedCallback() {
+      this.observer?.disconnect(); this.controller?.abort(); this.controller = null; this.cancelMotion();
+      if (this.videoButton) {
+        this.clearPosterTimer();
+        if (this.videoPoster) this.videoPoster.hidden = true;
+        this.videoObserver?.disconnect();
+        this.pauseVideo();
+        this.videoButton.hidden = true;
+        if (this.video) this.video.controls = true;
+        this.videoStatus.hidden = true;
+        return;
+      }
+      if (!this.button) return;
+      delete this.dataset.ready; this.button.hidden = true; this.full.hidden = false; this.quote.hidden = true;
+    }
+  });
+})();
+
+(() => {
+  window.__academyLearningTimelineCleanup?.();
+  const timelines = [...document.querySelectorAll('[data-learning-timeline]')];
+  if (!timelines.length) return;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const controller = new AbortController();
+  const options = { passive: true, signal: controller.signal };
+  let frame = 0;
+  let active = true;
+  let visible = new Set(timelines);
+
+  const update = () => {
+    frame = 0;
+    if (!active) return;
+    // Read geometry before writing styles. Text and markers never animate.
+    const positions = timelines.filter(el => visible.has(el)).map(el => {
+      const bounds = el.getBoundingClientRect();
+      const origin = parseFloat(getComputedStyle(el, '::before').top) || 0;
+      const length = Math.max(1, bounds.height - origin);
+      // Keep the growing tip 10% above the viewport bottom on every screen.
+      const progress = reduced.matches ? 1 : Math.max(0, Math.min(1, (innerHeight * 0.9 - bounds.top - origin) / length));
+      return [el, progress];
+    });
+    positions.forEach(([el, progress]) => el.style.setProperty('--timeline-progress', String(progress)));
+  };
+  const schedule = () => { if (!frame && active) frame = requestAnimationFrame(update); };
+  const observer = typeof IntersectionObserver === 'function' ? new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) visible.add(entry.target);
+      else {
+        visible.delete(entry.target);
+        entry.target.style.setProperty('--timeline-progress', reduced.matches || entry.boundingClientRect.bottom < 0 ? '1' : '0');
+      }
+    });
+    schedule();
+  }, { rootMargin: '20% 0px' }) : null;
+  timelines.forEach(el => observer?.observe(el));
+  const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(schedule) : null;
+  resize?.observe(document.body);
+  window.addEventListener('scroll', schedule, options);
+  window.addEventListener('resize', schedule, options);
+  reduced.addEventListener('change', schedule, { signal: controller.signal });
+  update();
+
+  window.__academyLearningTimelineCleanup = () => {
+    active = false;
+    controller.abort();
+    observer?.disconnect();
+    resize?.disconnect();
+    cancelAnimationFrame(frame);
+    timelines.forEach(el => el.style.removeProperty('--timeline-progress'));
+    visible.clear();
+  };
+})();
+
+</script>
+<script>
+(() => {
+  window.AcademySliderControls = {
+    motion(slider) {
+      const style = getComputedStyle(slider);
+      const token = style.getPropertyValue('--slider-duration').trim() || style.getPropertyValue('--motion-duration').trim();
+      return {
+        speed: token ? parseFloat(token) * (token.endsWith('ms') ? 1 : 1000) : 650,
+        easing: style.getPropertyValue('--motion-easing').trim() || 'cubic-bezier(0.25, 1, 0.5, 1)',
+        reducedMotion: {speed: 0, rewindSpeed: 0, autoplay: 'pause'},
+      };
+    },
+    bind(slider, component, getInstance, previousButton, nextButton) {
+      let wheelDistance = 0;
+      let wheelIdleTimer = 0;
+      let wheelLastMoveAt = Number.NEGATIVE_INFINITY;
+      let wheelLastDirection = 0;
+      let wheelPreviousMagnitude = 0;
+      let wheelAwaitingFreshImpulse = false;
+
+      const getEnd = () => {
+        const splide = getInstance();
+        if (!splide) return 0;
+        let end = splide.Components.Controller.getEnd();
+        const move = splide.Components.Move;
+        while (end > 0 && Math.abs(move.toPosition(end, true) - move.toPosition(end - 1, true)) < 1) end -= 1;
+        return end;
+      };
+      const updateControls = () => {
+        const splide = getInstance();
+        const endIndex = getEnd();
+
+        if (previousButton) previousButton.disabled = !splide || splide.index <= 0;
+        if (nextButton) nextButton.disabled = !splide || splide.index >= endIndex;
+      };
+
+      const showPrevious = () => {
+        const splide = getInstance();
+        if (splide) splide.go(splide.index > getEnd() ? Math.max(0, getEnd() - 1) : '<');
+      };
+      const showNext = () => { const splide = getInstance(); if (splide && splide.index < getEnd()) splide.go('>'); };
+
+      const resetWheelGesture = () => {
+        wheelDistance = 0;
+        wheelIdleTimer = 0;
+        wheelLastDirection = 0;
+        wheelPreviousMagnitude = 0;
+        wheelAwaitingFreshImpulse = false;
+      };
+
+      const handleWheel = (event) => {
+        const splide = getInstance();
+        if (!splide || event.defaultPrevented || event.ctrlKey || event.metaKey) return;
+        const protectedTarget = event.target.closest('[data-slider-no-drag], input, textarea, select, [contenteditable]');
+        if (protectedTarget && !(protectedTarget.matches('[data-review-video]') && !protectedTarget.controls)) return;
+
+        const horizontalDistance = Math.abs(event.deltaX);
+        const verticalDistance = Math.abs(event.deltaY);
+        if (horizontalDistance < 1 || horizontalDistance <= verticalDistance) return;
+        const delta = event.deltaX;
+
+        const endIndex = getEnd();
+        if ((delta < 0 && splide.index <= 0) || (delta > 0 && splide.index >= endIndex)) {
+          window.clearTimeout(wheelIdleTimer);
+          resetWheelGesture();
+          return;
+        }
+
+        event.preventDefault();
+        window.clearTimeout(wheelIdleTimer);
+        wheelIdleTimer = window.setTimeout(resetWheelGesture, 140);
+
+        const deltaMultiplier =
+          event.deltaMode === WheelEvent.DOM_DELTA_LINE
+            ? 16
+            : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+              ? window.innerWidth
+              : 1;
+        const normalizedDelta = delta * deltaMultiplier;
+        const normalizedMagnitude = Math.abs(normalizedDelta);
+        const normalizedDirection = Math.sign(normalizedDelta);
+        const eventTime = event.timeStamp;
+
+        if (wheelAwaitingFreshImpulse) {
+          const impulseDelayElapsed = eventTime - wheelLastMoveAt >= 96;
+          const directionChanged = normalizedDirection !== wheelLastDirection;
+          const magnitudeIncreased =
+            normalizedMagnitude >= 4 &&
+            normalizedMagnitude >= wheelPreviousMagnitude * 1.35;
+
+          wheelPreviousMagnitude = normalizedMagnitude;
+
+          if (!impulseDelayElapsed || (!directionChanged && !magnitudeIncreased)) {
+            return;
+          }
+
+          wheelDistance = 0;
+          wheelAwaitingFreshImpulse = false;
+        }
+
+        if (wheelDistance !== 0 && Math.sign(wheelDistance) !== normalizedDirection) {
+          wheelDistance = 0;
+        }
+
+        wheelDistance += normalizedDelta;
+        wheelPreviousMagnitude = normalizedMagnitude;
+
+        if (Math.abs(wheelDistance) < 36) return;
+
+        wheelDistance = 0;
+        wheelLastMoveAt = eventTime;
+        wheelLastDirection = normalizedDirection;
+        wheelAwaitingFreshImpulse = true;
+
+        if (normalizedDirection > 0) showNext();
+        else showPrevious();
+      };
+
+      const handleKeydown = (event) => {
+        const splide = getInstance();
+        if (
+          !splide ||
+          event.target.closest('[data-slider-no-drag], input, textarea, select, [contenteditable]') ||
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey
+        ) {
+          return;
+        }
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showPrevious();
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showNext();
+        }
+      };
+
+      const focusSlider = (event) => {
+        if (!event.target.closest('button, a, input, textarea, select, [contenteditable], [data-slider-no-drag]')) slider.focus({ preventScroll: true });
+      };
+
+
+      previousButton?.addEventListener('click', showPrevious);
+      nextButton?.addEventListener('click', showNext);
+      slider.addEventListener('wheel', handleWheel, {passive: false});
+      slider.addEventListener('pointerdown', focusSlider);
+      component.addEventListener('keydown', handleKeydown);
+      return {
+        update: updateControls,
+        destroy() {
+          previousButton?.removeEventListener('click', showPrevious);
+          nextButton?.removeEventListener('click', showNext);
+          slider.removeEventListener('wheel', handleWheel);
+          slider.removeEventListener('pointerdown', focusSlider);
+          component.removeEventListener('keydown', handleKeydown);
+          window.clearTimeout(wheelIdleTimer);
+        },
+      };
+    },
+  };
+})();
+
+/* Shared static card renderer for build-time and Tilda data refresh. */
+(() => {
+  const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
+  const text = (value) => escape(value).replace(/\u00a0/g, ' ').replace(/(^|[\s(])([АаВвИиКкОоСсУуЯя]|во|до|за|из|на|не|ни|но|об|от|по|со|без|для|над|под|при|про) /g, '$1$2&nbsp;').replace(/ (—|бы|же|ли)(?=\s|[,.!?]|$)/g, '&nbsp;$1');
+  const photoUrl = (value) => {
+    if (value == null || value === '') return '';
+    if (typeof value !== 'string') throw new Error('photo должна быть ссылкой или null.');
+    if (/^teacher:[a-z0-9-]+$/.test(value) || /^assets\/images\/teachers\/[a-z0-9-]+\.webp$/.test(value)) return value;
+    let url;
+    try { url = new URL(value); } catch { throw new Error('Некорректная ссылка photo.'); }
+    if (url.protocol !== 'https:' || url.username || url.password) throw new Error('Для photo нужна ссылка HTTPS.');
+    return url.href;
+  };
+  function validate(data) {
+    if (!Array.isArray(data) || !data.length) throw new Error('Нужен непустой список преподавателей.');
+    const ids = new Set();
+    return data.map((item) => {
+      if (!item || !/^[a-z][a-z0-9-]*$/.test(item.id) || ids.has(item.id)) throw new Error('У каждого преподавателя должен быть уникальный id латиницей.');
+      ids.add(item.id);
+      for (const key of ['name', 'description']) if (typeof item[key] !== 'string' || !item[key].trim()) throw new Error(`Заполните ${key}: ${item.id}.`);
+      if (item.tag != null && typeof item.tag !== 'string') throw new Error(`Тег должен быть текстом: ${item.id}.`);
+      const crop = item.crop;
+      if (crop && (!Array.isArray(crop) || crop.length !== 4 || !crop.every(Number.isFinite) || crop[0] <= 0 || crop[1] <= 0)) throw new Error(`Некорректная обрезка: ${item.id}.`);
+      const width = Number.isInteger(item.width) && item.width > 0 ? item.width : undefined;
+      const height = Number.isInteger(item.height) && item.height > 0 ? item.height : undefined;
+      return {id: item.id, name: item.name.trim(), tag: (item.tag || '').trim(), description: item.description.trim(), photo: photoUrl(item.photo), crop, width, height};
+    });
+  }
+  function render(record, {headingLevel = 3} = {}) {
+    if (![2, 3, 4, 5, 6].includes(headingLevel)) throw new Error('Invalid teacher heading level.');
+    const teacher = validate([record])[0];
+    const assetKey = teacher.photo.startsWith('teacher:') ? teacher.photo.slice(8) : '';
+    const source = assetKey ? 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' : teacher.photo;
+    const crop = teacher.crop ? ` style="--teacher-image-width:${teacher.crop[0]}%;--teacher-image-height:${teacher.crop[1]}%;--teacher-image-left:${teacher.crop[2]}%;--teacher-image-top:${teacher.crop[3]}%"` : '';
+    const media = source
+      ? `<img class="teacher-card_image" src="${escape(source)}"${assetKey ? ` data-teacher-asset="${assetKey}"` : ''}${teacher.width && teacher.height ? ` width="${teacher.width}" height="${teacher.height}"` : ''} alt="${escape(teacher.name)} — преподаватель курса" loading="lazy" decoding="async" draggable="false">`
+      : `<span class="teacher-card_initials" aria-hidden="true">${escape(teacher.name.split(/\s+/).map(part => part[0]).slice(0, 2).join(''))}</span>`;
+    return `<article class="teacher-card_component"><div class="teacher-card_media"${crop}>${media}${teacher.tag ? `<span class="teacher-card_tag">${text(teacher.tag)}</span>` : ''}</div><div class="content-header_component teacher-card_copy"><h${headingLevel} class="content-heading_component is-profile teacher-card_name">${text(teacher.name)}</h${headingLevel}><p class="body-text_component is-reading is-profile teacher-card_description">${text(teacher.description)}</p></div></article>`;
+
+  }
+  globalThis.AcademyTeacherCard = {render, validate, text};
+})();
+
+/* One shared layout for server rendering and editable Tilda data. */
+(() => {
+  const {validate, text} = globalThis.AcademyTeacherCard;
+  const escape = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+  function render(data, prefix = 'academy-teachers', labels = {}) {
+    if (!/^[a-z][a-z0-9-]*$/.test(prefix)) throw new Error('Некорректный id секции.');
+    const teachers = validate(data);
+    const links = teachers.map((teacher) => `<a class="teachers_tab" href="#${prefix}-${teacher.id}" data-js="teacher-tab" data-teacher-id="${teacher.id}">${text(teacher.name)}</a>`);
+    const rowCount = links.length > 8 ? 3 : 1;
+    const split = Math.ceil(links.length / rowCount);
+    const tabs = Array.from({length: rowCount}, (_, index) => links.slice(index * split, (index + 1) * split)).filter(row => row.length).map(row => `<div class="teachers_tab-row">${row.join('\n')}</div>`).join('\n');
+    const slides = teachers.map(teacher => `<li class="teachers_slide splide__slide" id="${prefix}-${teacher.id}" data-teacher-id="${teacher.id}">${globalThis.AcademyTeacherCard.render(teacher)}</li>`).join('\n');
+    return `<div class="teachers_layout"><div class="teachers_navigation" data-js="teacher-navigation"><div class="teachers_tabs" data-js="teacher-tabs" aria-label="${escape(labels.tabsLabel || 'Выбрать преподавателя')}">${tabs}</div></div><div class="teachers_slider splide" data-js="teacher-slider" id="${prefix}-slider" aria-label="${escape(labels.sliderLabel || 'Преподаватели курса')}"><div class="teachers_track splide__track"><ul class="teachers_list splide__list">${slides}</ul></div></div></div>`;
+  }
+  globalThis.AcademyTeacherTemplate = {render, validate};
+})();
+
+(() => {
+  if (customElements.get('academy-teachers')) return;
+  class AcademyTeachers extends HTMLElement {
+    connectedCallback() {
+      if (this.slider) return;
+      this.connect();
+    }
+    disconnectedCallback() { this.disconnect(); }
+    connect() {
+      const module = this.ownerDocument.getElementById(this.dataset.config);
+      if (module && globalThis.AcademyTeacherTemplate) {
+        try {
+          const layout = globalThis.AcademyTeacherTemplate.render(JSON.parse(module.textContent), this.id, {tabsLabel: this.dataset.tabsLabel, sliderLabel: this.dataset.sliderLabel});
+          this.querySelector('.teachers_layout').outerHTML = layout;
+        } catch (error) {
+          console.warn('Преподаватели: сохранена предыдущая разметка.', error.message);
+        }
+      }
+      // Tilda keeps bundled local photos in HEAD; user-provided URLs need no map.
+      const photoModule = this.dataset.assets ? this.ownerDocument.getElementById(this.dataset.assets) : null;
+      if (photoModule) {
+        try {
+          const photos = JSON.parse(photoModule.textContent);
+          this.querySelectorAll('[data-teacher-asset]').forEach((image) => {
+            const source = photos[image.dataset.teacherAsset];
+            if (typeof source === 'string' && /^data:image\/webp;base64,[A-Za-z0-9+/=]+$/.test(source)) image.src = source;
+          });
+        } catch (error) { console.warn('Преподаватели: не удалось прочитать фотографии.', error.message); }
+      }
+      if (typeof window.Splide !== 'function' || !window.AcademySliderControls) return;
+      const root = this.querySelector('[data-js="teacher-slider"]');
+      this.tabs = Array.from(this.querySelectorAll('[data-js="teacher-tab"]'));
+      this.tablist = this.querySelector('[data-js="teacher-tabs"]');
+      this.navigation = this.querySelector('[data-js="teacher-navigation"]');
+      this.controls = this.querySelector('[data-js="teacher-controls"]');
+      this.previous = this.querySelector('[data-js="teacher-previous"]');
+      this.next = this.querySelector('[data-js="teacher-next"]');
+      if (!root || !this.tabs.length || !this.tablist) return;
+      this.previous?.setAttribute('aria-controls', root.id);
+      this.next?.setAttribute('aria-controls', root.id);
+      this.listeners = new AbortController();
+      const signal = this.listeners.signal;
+      root.tabIndex = 0;
+      this.slider = new window.Splide(root, {
+        type: 'slide', role: 'group', autoWidth: true, perMove: 1,
+        focus: 0, trimSpace: true, arrows: false, pagination: false,
+        ...window.AcademySliderControls.motion(root), gap: '1rem', breakpoints: {767: {gap: '0.75rem'}}, rewind: false,
+        keyboard: false, drag: true, autoplay: false, waitForTransition: false,
+        wheel: false, snap: true, noDrag: '[data-slider-no-drag], button, a',
+        start: Math.max(0, this.tabs.findIndex(tab => tab.dataset.teacherId === this.selectedId)),
+        reducedMotion: {speed: 0, rewindSpeed: 0, autoplay: 'pause'},
+        i18n: {carousel: 'Преподаватели', slide: 'Преподаватель', slideLabel: '%s из %s', select: 'Выбрать преподавателя %s'},
+      });
+      this.tablist.setAttribute('role', 'tablist');
+      this.tabs.forEach((tab, index) => {
+        tab.setAttribute('role', 'tab');
+        tab.id = `${this.id}-tab-${tab.dataset.teacherId}`;
+        tab.setAttribute('aria-controls', tab.getAttribute('href').slice(1));
+        tab.addEventListener('click', (event) => { event.preventDefault(); this.slider.go(index); }, {signal});
+        tab.addEventListener('keydown', (event) => {
+          const vertical = this.tablist.getAttribute('aria-orientation') === 'vertical';
+          const previousKey = vertical ? 'ArrowUp' : 'ArrowLeft';
+          const nextKey = vertical ? 'ArrowDown' : 'ArrowRight';
+          let target;
+          if (event.key === previousKey) target = (index - 1 + this.tabs.length) % this.tabs.length;
+          if (event.key === nextKey) target = (index + 1) % this.tabs.length;
+          if (event.key === 'Home') target = 0;
+          if (event.key === 'End') target = this.tabs.length - 1;
+          if (event.key === ' ') { event.preventDefault(); this.slider.go(index); }
+          if (target === undefined) return;
+          event.preventDefault();
+          this.tabs[target].focus({preventScroll: true});
+          this.slider.go(target);
+        }, {signal});
+      });
+      this.sliderControls = window.AcademySliderControls.bind(root, this, () => this.slider, this.previous, this.next);
+      this.tablist.addEventListener('scroll', () => this.updateOverflow(), {signal, passive: true});
+      this.slider.on('mounted moved updated resized', () => this.update());
+      this.slider.on('move', index => this.updateSelection(index));
+      this.slider.mount();
+      this.slider.refresh();
+      root.querySelectorAll('.teachers_slide').forEach((slide, index) => {
+        this.tabs[index].setAttribute('aria-controls', slide.id);
+        slide.setAttribute('role', 'tabpanel');
+        slide.setAttribute('aria-labelledby', this.tabs[index].id);
+        slide.removeAttribute('aria-roledescription');
+        slide.removeAttribute('aria-label');
+      });
+      if (this.controls) this.controls.hidden = this.tabs.length < 2;
+      this.observer = new ResizeObserver(() => this.update());
+      const photo = this.querySelector('.teacher-card_media');
+      if (photo) this.observer.observe(photo);
+      this.observer.observe(this.tablist);
+      this.update();
+    }
+    update() {
+      if (!this.slider) return;
+      this.arrangeTabs();
+      const vertical = getComputedStyle(this.querySelector('.teachers_tab-row')).display === 'contents';
+      this.tablist.setAttribute('aria-orientation', vertical ? 'vertical' : 'horizontal');
+      const height = this.querySelector('.teacher-card_media')?.getBoundingClientRect().height;
+      if (height) this.style.setProperty('--teachers-media-height', `${height}px`);
+      this.updateSelection(this.slider.index);
+    }
+    arrangeTabs() {
+      const desktop = window.matchMedia('(min-width: 64.0625rem)').matches;
+      const tablet = window.matchMedia('(min-width: 48rem)').matches;
+      const count = this.tabs.length > 8 && !desktop ? (tablet ? 2 : 3) : 1;
+      if (this.tablist.children.length === count) return;
+      const rows = document.createDocumentFragment();
+      const size = Math.ceil(this.tabs.length / count);
+      for (let index = 0; index < count; index += 1) {
+        const row = document.createElement('div');
+        row.className = 'teachers_tab-row';
+        row.append(...this.tabs.slice(index * size, (index + 1) * size));
+        rows.append(row);
+      }
+      this.tablist.replaceChildren(rows);
+    }
+    updateSelection(index) {
+      this.tabs.forEach((tab, position) => {
+        tab.setAttribute('aria-selected', String(index === position));
+        tab.tabIndex = index === position ? 0 : -1;
+      });
+      this.selectedId = this.tabs[index]?.dataset.teacherId;
+      this.sliderControls?.update();
+      const tab = this.tabs[index];
+      if (tab) {
+        const frame = this.tablist.getBoundingClientRect();
+        const selected = tab.getBoundingClientRect();
+        // Scroll only the list; scrollIntoView would also move the landing.
+        if (this.tablist.getAttribute('aria-orientation') === 'vertical' && selected.top < frame.top + 16) this.tablist.scrollTop += selected.top - frame.top - 16;
+        else if (this.tablist.getAttribute('aria-orientation') === 'vertical') {
+          const inset = Math.min(120, frame.height * 0.25) + 16;
+          if (selected.bottom > frame.bottom - inset) this.tablist.scrollTop += selected.bottom - frame.bottom + inset;
+        }
+        if (selected.left < frame.left + 16) this.tablist.scrollLeft += selected.left - frame.left - 16;
+        else if (selected.right > frame.right - 16) this.tablist.scrollLeft += selected.right - frame.right + 16;
+      }
+      this.updateOverflow();
+    }
+    updateOverflow() {
+      this.navigation.dataset.overflow = String(this.tablist.scrollHeight - this.tablist.clientHeight - this.tablist.scrollTop > 2);
+    }
+    disconnect() {
+      this.observer?.disconnect();
+      this.listeners?.abort();
+      this.sliderControls?.destroy();
+      this.slider?.destroy(true);
+      this.slider = null;
+      this.controls?.setAttribute('hidden', '');
+      this.tablist?.removeAttribute('role');
+      this.tablist?.removeAttribute('aria-orientation');
+      this.tabs?.forEach(tab => ['role', 'aria-selected', 'aria-controls', 'tabindex'].forEach(name => tab.removeAttribute(name)));
+    }
+    refresh() { this.disconnect(); this.connect(); }
+  }
+  customElements.define('academy-teachers', AcademyTeachers);
+})();
+
+</script>
+<script>
+// Timeline behavior is shared: ../../shared/academy/learning-timeline.js.
+// This landing currently needs no additional page-owned runtime.
+
+</script>

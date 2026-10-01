@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ПЕРВЫЕ ШАГИ В КПТ»  →  адрес /cbt-first-steps
+  ============================================================================
+
+  Бесплатный мини-курс из 5 уроков. Ведущий — Алексей Бабурин.
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Стили, сетка и имена классов — со страницы «Введение в клиническую
+    психологию» (apps/preview/vvedenie): та же дизайн-система /design-system,
+    контейнер 1280, промо-шкала текста, наслаивание уроков по скроллу.
+    Блок про Академию перенесён из /klinicheskaya-baza (то есть в конечном
+    счёте с /cbt-first-steps) и использует канонические CDN-адреса Тильды.
+
+  ЧТО ВЗЯТО ИЗ ФИГМЫ («Воронки Верга», кадр 330-4908 и вложенные блоки)
+    Вся страница. Макет нарисован на кадре 1680 px: поля по 80,
+    контейнер контентных секций — 1264 (у нас 1280, разница 8 px незаметна),
+    шапка / первый экран / блок Академии — во всю ширину 1520.
+    Иллюстрации (первый экран и пять картинок уроков) выгружены из макета:
+    в исходнике они серые, фиолетовый оттенок в Фигме сделан режимом
+    наложения Color; здесь оттенок уже «впечён» в файлы.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и наслаивание.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём от вас):
+    · 🟡 настоящие вопросы и ответы в блоке FAQ — сейчас там заглушки
+      «Вопрос №N», ровно как в макете;
+    · 🟡 настоящие адреса кнопок регистрации, кнопки «Посмотреть вебинары»
+      и ссылок подвала;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене;
+    · 🟡 в блоке Академии стоят цифры из макета — 7000 участников
+      и 2000 выпускников. На свежем лендинге /klinicheskaya-baza (31.08)
+      те же карточки идут с цифрами 7500 и 4000 — проверьте, какие верные;
+    · 🟡 текст призыва «Посмотрите все 4 вебинара» взят из макета. Если
+      грант считается по этому мини-курсу, а не по вебинарам, — поправьте.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Первые шаги в КПТ — бесплатный мини-курс Академии</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный мини-курс из 5 уроков: базовая когнитивная модель, когнитивные искажения, концептуализация случая и первые техники КПТ. Ведёт клинический психолог Алексей Бабурин." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер.
+       ⚠️ og:image не задан — картинки 1200×630 для соцсетей ещё не нарисованы.
+       ⚠️ canonical появится, когда страница переедет на боевой домен. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Первые шаги в КПТ — бесплатный мини-курс" />
+  <meta property="og:description" content="5 практических уроков, чтобы освоить базовые инструменты КПТ и начать применять их в консультировании." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 ДИЗАЙН-СИСТЕМА. Порядок подключения менять нельзя.
+       Файлы — копии из design-system/ в корне репозитория, правятся ТОЛЬКО там. -->
+  <link rel="stylesheet" href="/design-system/tokens.css" />
+  <link rel="stylesheet" href="/design-system/base.css" />
+  <link rel="stylesheet" href="/design-system/typography.css" />
+  <link rel="stylesheet" href="/design-system/components.css" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+</head>
+
+<body>
+<div class="page-wrapper">
+
+  <!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+  <a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+
+  <!-- ==========================================================================
+       ШАПКА
+       ==========================================================================
+       В этом макете шапка прозрачная: логотип, плашка и кнопка лежат прямо
+       на иллюстрации первого экрана. Белой полосы нет — это отличие
+       от страницы «Введение в клиническую психологию».
+       ========================================================================== -->
+  <header class="site-header_component">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="site-header_bar">
+
+          <!-- 🟢 Логотип. Пока текстом: файла логотипа в репозитории ещё нет. -->
+          <a class="site-header_logo text-size-logo" href="/">АСП</a>
+
+          <!-- 🟢 Жёлтая плашка про грант -->
+          <span class="chip is-grant site-header_promo">Дарим грант на&nbsp;обучение <b>20 000&nbsp;₽</b></span>
+
+          <!-- 🟡 Кнопка ведёт на форму регистрации — подставьте настоящий адрес -->
+          <a class="button is-md site-header_cta" href="#programma">Получить грант</a>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <main class="main-wrapper" id="soderzhimoe">
+
+    <!-- ======================================================================
+         1. ПЕРВЫЙ ЭКРАН
+         ======================================================================
+         Фоновая картинка — декоративная, поэтому она в CSS (background-image),
+         а не тегом <img>. Так правильно по гайду, раздел 11.
+
+         В макете картинка плавно растворяется в фоне страницы сверху вниз —
+         это второй слой фона, линейный градиент.
+         ====================================================================== -->
+    <section class="section_hero" id="hero">
+      <div class="padding-global">
+        <div class="container-xlarge">
+          <div class="hero_inner">
+
+            <div class="hero_left">
+              <span class="chip is-brand is-tiny hero_chip">
+                Бесплатный мини курс
+                <span class="icon is-xs" style="--icon-url: url('/cbt-first-steps/icons/sparkle.svg')"></span>
+              </span>
+              <!-- 🟢 Главный заголовок страницы. На странице он один — это важно для поиска. -->
+              <h1 class="text-size-hero text-style-balance">Первые шаги в&nbsp;КПТ</h1>
+              <p class="text-size-block-title text-color-secondary text-weight-normal hero_subtitle">
+                Практические основы для начинающего терапевта
+              </p>
+            </div>
+
+            <div class="hero_right">
+              <!-- 🟢 Текст-подводка -->
+              <p class="text-size-lead text-color-secondary margin-bottom margin-medium">
+                За&nbsp;5&nbsp;практических уроков познакомитесь с&nbsp;базовыми инструментами КПТ,
+                научитесь анализировать мысли клиента, строить концептуализацию случая
+                и&nbsp;использовать первые техники в&nbsp;консультировании
+              </p>
+              <!-- 🟡 Подставьте настоящий адрес регистрации -->
+              <a class="button is-md" href="#programma">Пройти курс</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         2. КОМУ ПОДОЙДЁТ МИНИ-КУРС (тёмный блок во всю ширину)
+         ======================================================================
+         Тёмная плашка идёт от края до края экрана, углы скруглены — как
+         в макете. Внутри — четыре одинаковые карточки сеткой 2×2.
+         ====================================================================== -->
+    <section class="section_fit" id="komu">
+      <div class="fit_component background-color-inverse">
+        <div class="padding-global">
+          <div class="container-large">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Мини-курс подойдет вам<br><span class="section-title_muted">если вы:</span>
+            </h2>
+
+            <ul class="icon-card_grid is-2-up">
+              <li class="icon-card">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/sparkle.svg')"></span>
+                </span>
+                <p class="icon-card_text">Хотите освоить КПТ с&nbsp;нуля</p>
+              </li>
+              <li class="icon-card">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/sparkle.svg')"></span>
+                </span>
+                <p class="icon-card_text">Уже консультируете и&nbsp;хотите добавить КПТ в&nbsp;свою практику</p>
+              </li>
+              <li class="icon-card">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/sparkle.svg')"></span>
+                </span>
+                <p class="icon-card_text">Изучаете психологию и&nbsp;хотите понять, подходит&nbsp;ли вам этот подход</p>
+              </li>
+              <li class="icon-card">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/sparkle.svg')"></span>
+                </span>
+                <p class="icon-card_text">Ищете понятное и&nbsp;структурированное введение в&nbsp;КПТ</p>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         3. ЧТО БУДЕТЕ УМЕТЬ ПОСЛЕ КУРСА
+         ======================================================================
+         Пять карточек: три в первой строке, две во второй. Вторая строка
+         тянется на всю ширину — так в макете.
+         ====================================================================== -->
+    <section class="section_outcomes">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance margin-bottom margin-large">
+              После прохождения мини-курса<br><span class="section-title_muted">вы сможете</span>
+            </h2>
+
+            <ul class="icon-card_grid is-3-up">
+              <li class="icon-card">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/sparkle.svg')"></span>
+                </span>
+                <p class="icon-card_text">Понимать базовую когнитивную модель</p>
+              </li>
+              <li class="icon-card">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/activity.svg')"></span>
+                </span>
+                <p class="icon-card_text">Выявлять автоматические мысли и&nbsp;когнитивные искажения</p>
+              </li>
+              <li class="icon-card">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/blocks.svg')"></span>
+                </span>
+                <p class="icon-card_text">Составлять простую когнитивную концептуализацию</p>
+              </li>
+              <li class="icon-card is-wide">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/box.svg')"></span>
+                </span>
+                <p class="icon-card_text">Применять первые техники работы с&nbsp;мышлением</p>
+              </li>
+              <li class="icon-card is-wide">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/cbt-first-steps/icons/spline.svg')"></span>
+                </span>
+                <p class="icon-card_text">Понимать, когда использовать поведенческие техники</p>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         4. КАК УСТРОЕН МИНИ-КУРС (тёмный блок)
+         ======================================================================
+         🔴 Иконки подключаются по ссылке на svg-файл и красятся маской.
+            Путь всегда начинается со слеша — см. AGENTS.md, раздел 10.
+         ====================================================================== -->
+    <section class="section_how">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="how_component background-color-inverse">
+
+            <h2 class="text-size-section-title text-align-center">Как устроен мини-курс</h2>
+
+            <ul class="how_list">
+              <li class="how_item">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/icons/video.svg')"></span>
+                </span>
+                <h3 class="text-size-block-title">Получите доступ к&nbsp;урокам</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Зарегистрируйтесь на&nbsp;этой странице и&nbsp;получите доступ на&nbsp;платформу
+                  в&nbsp;телеграм-боте
+                </p>
+              </li>
+              <li class="how_item">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/icons/clock.svg')"></span>
+                </span>
+                <h3 class="text-size-block-title">Посмотрите уроки</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Все уроки можно будет посмотреть с&nbsp;любого устройства и&nbsp;в&nbsp;любое время
+                </p>
+              </li>
+              <li class="how_item">
+                <span class="icon-tile" aria-hidden="true">
+                  <span class="icon is-md" style="--icon-url: url('/icons/send.svg')"></span>
+                </span>
+                <h3 class="text-size-block-title">Задайте вопросы</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Напишите нам в&nbsp;бот или оставьте комментарий на&nbsp;платформе.
+                  Вам ответят преподаватели и&nbsp;кураторы
+                </p>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         5. ПРОГРАММА КУРСА
+         ======================================================================
+         🔴 КАК УСТРОЕН ЭТОТ БЛОК — прочитайте, если будете его править.
+
+         Пять карточек уроков лежат стопкой: каждая доезжает до верха экрана,
+         прилипает, и следующая наезжает на неё сверху. Это чистый CSS
+         (position: sticky), см. page.css, раздел 9. JavaScript не нужен.
+
+         🟢 Менять можно: номер урока, длительность, название, пункты списка.
+         🟢 Чтобы добавить шестой урок — скопируйте <article> целиком,
+            поменяйте --card-z на 60, число «до»/«после» у пилюль и картинку.
+         🔴 Картинка урока — украшение, поэтому alt пустой и она не читается
+            голосом. На телефоне она прячется: места под неё нет.
+         ====================================================================== -->
+    <section class="section_program" id="programma">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center margin-bottom margin-large">Программа курса</h2>
+
+            <div class="lessons_stack">
+
+              <!-- ---------- Урок 1 ---------- -->
+              <article class="lesson_card" style="--card-z: 10">
+                <div class="lesson_body">
+                  <div class="lesson_head">
+                    <span class="pill-stack_component" style="--before: 0; --after: 4">
+                      <span class="chip is-brand pill-stack_main">Урок 1</span>
+                      <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-after" style="--n: 3" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-after" style="--n: 4" aria-hidden="true"></span>
+                    </span>
+                    <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                  </div>
+                  <h3 class="text-size-card-title text-style-balance lesson_title">Базовая когнитивная модель</h3>
+                  <ul class="lesson_list text-size-lead text-color-secondary">
+                    <li>Когнитивный треугольник</li>
+                    <li>Автоматические мысли</li>
+                    <li>Модель ABC</li>
+                    <li>Дневник мыслей</li>
+                  </ul>
+                </div>
+                <img class="lesson_art" src="/cbt-first-steps/img/lesson-1.webp"
+                     alt="" aria-hidden="true" width="720" height="720" loading="lazy" decoding="async"
+                     style="--art-width: 40%; --art-top: -4%; --art-right: -12%">
+              </article>
+
+              <!-- ---------- Урок 2 ---------- -->
+              <article class="lesson_card" style="--card-z: 20">
+                <div class="lesson_body">
+                  <div class="lesson_head">
+                    <span class="pill-stack_component" style="--before: 1; --after: 3">
+                      <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                      <span class="chip is-brand pill-stack_main">Урок 2</span>
+                      <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-after" style="--n: 3" aria-hidden="true"></span>
+                    </span>
+                    <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                  </div>
+                  <h3 class="text-size-card-title text-style-balance lesson_title">Когнитивные искажения</h3>
+                  <ul class="lesson_list text-size-lead text-color-secondary">
+                    <li>12 типичных ошибок мышления</li>
+                    <li>Как их выявлять</li>
+                    <li>Когда не&nbsp;стоит указывать клиенту на&nbsp;искажения</li>
+                    <li>Практика на&nbsp;кейсах</li>
+                  </ul>
+                </div>
+                <img class="lesson_art" src="/cbt-first-steps/img/lesson-2.webp"
+                     alt="" aria-hidden="true" width="720" height="720" loading="lazy" decoding="async"
+                     style="--art-width: 42%; --art-top: -22%; --art-right: -5%">
+              </article>
+
+              <!-- ---------- Урок 3 ---------- -->
+              <article class="lesson_card" style="--card-z: 30">
+                <div class="lesson_body">
+                  <div class="lesson_head">
+                    <span class="pill-stack_component" style="--before: 2; --after: 2">
+                      <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                      <span class="chip is-brand pill-stack_main">Урок 3</span>
+                      <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-after" style="--n: 2" aria-hidden="true"></span>
+                    </span>
+                    <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                  </div>
+                  <h3 class="text-size-card-title text-style-balance lesson_title">Когнитивная концептуализация</h3>
+                  <ul class="lesson_list text-size-lead text-color-secondary">
+                    <li>Что это такое</li>
+                    <li>Зачем нужна</li>
+                    <li>Виды концептуализации</li>
+                    <li>Пример готовой концептуализации</li>
+                  </ul>
+                </div>
+                <img class="lesson_art" src="/cbt-first-steps/img/lesson-3.webp"
+                     alt="" aria-hidden="true" width="720" height="720" loading="lazy" decoding="async"
+                     style="--art-width: 52%; --art-top: -36%; --art-right: -7%">
+              </article>
+
+              <!-- ---------- Урок 4 ---------- -->
+              <article class="lesson_card" style="--card-z: 40">
+                <div class="lesson_body">
+                  <div class="lesson_head">
+                    <span class="pill-stack_component" style="--before: 3; --after: 1">
+                      <span class="pill-stack_ghost is-before" style="--n: 3" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                      <span class="chip is-brand pill-stack_main">Урок 4</span>
+                      <span class="pill-stack_ghost is-after" style="--n: 1" aria-hidden="true"></span>
+                    </span>
+                    <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                  </div>
+                  <h3 class="text-size-card-title text-style-balance lesson_title">Базовые техники КПТ</h3>
+                  <ul class="lesson_list text-size-lead text-color-secondary">
+                    <li>Работа с&nbsp;автоматическими мыслями</li>
+                    <li>Аргументы «за» и&nbsp;«против»</li>
+                    <li>Сократовские вопросы</li>
+                    <li>Адаптивный ответ</li>
+                  </ul>
+                </div>
+                <img class="lesson_art" src="/cbt-first-steps/img/lesson-4.webp"
+                     alt="" aria-hidden="true" width="720" height="720" loading="lazy" decoding="async"
+                     style="--art-width: 39%; --art-top: -7%; --art-right: -8%">
+              </article>
+
+              <!-- ---------- Урок 5 ---------- -->
+              <article class="lesson_card" style="--card-z: 50">
+                <div class="lesson_body">
+                  <div class="lesson_head">
+                    <span class="pill-stack_component" style="--before: 4; --after: 0">
+                      <span class="pill-stack_ghost is-before" style="--n: 4" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-before" style="--n: 3" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-before" style="--n: 2" aria-hidden="true"></span>
+                      <span class="pill-stack_ghost is-before" style="--n: 1" aria-hidden="true"></span>
+                      <span class="chip is-brand pill-stack_main">Урок 5</span>
+                    </span>
+                    <span class="text-size-body text-color-secondary">25&nbsp;минут</span>
+                  </div>
+                  <h3 class="text-size-card-title text-style-balance lesson_title">Поведенческие техники</h3>
+                  <ul class="lesson_list text-size-lead text-color-secondary">
+                    <li>Поведенческая активация</li>
+                    <li>Основы экспозиции</li>
+                    <li>Поведенческие эксперименты</li>
+                    <li>Мотивация клиента</li>
+                  </ul>
+                </div>
+                <img class="lesson_art" src="/cbt-first-steps/img/lesson-5.webp"
+                     alt="" aria-hidden="true" width="720" height="720" loading="lazy" decoding="async"
+                     style="--art-width: 44%; --art-top: -22%; --art-right: -8%">
+              </article>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         6. ВЕДУЩИЙ КУРСА
+         ======================================================================
+         Фотография оформлена как окно видеозвонка: плашка «REC» сверху
+         и две кнопки-заглушки снизу. Кнопки декоративные — это картинка
+         состояния, а не работающее управление, поэтому aria-hidden.
+         ====================================================================== -->
+    <section class="section_speaker" id="spiker">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center margin-bottom margin-large">Ведущий курса</h2>
+
+            <div class="speaker_inner">
+
+              <figure class="speaker_video">
+                <div class="speaker_video_frame">
+                  <!-- 🟡 Фотография ведущего -->
+                  <img src="/cbt-first-steps/img/teacher-baburin.webp"
+                       alt="Алексей Бабурин, ведущий мини-курса"
+                       width="342" height="512" loading="lazy" decoding="async" class="image-cover">
+                  <span class="speaker_rec" aria-hidden="true">REC</span>
+                </div>
+                <div class="speaker_video_controls" aria-hidden="true">
+                  <span class="speaker_video_button">
+                    <span class="icon is-sm" style="--icon-url: url('/cbt-first-steps/icons/mic.svg')"></span>
+                  </span>
+                  <span class="speaker_video_button">
+                    <span class="icon is-sm" style="--icon-url: url('/icons/video.svg')"></span>
+                  </span>
+                </div>
+              </figure>
+
+              <div class="speaker_text">
+                <h3 class="text-size-card-title speaker_name">Алексей Бабурин</h3>
+                <p class="text-size-body text-color-secondary margin-top margin-xsmall">
+                  Работает с&nbsp;тревожными и&nbsp;депрессивными расстройствами, травмой,
+                  кризисными состояниями. Преподаёт и&nbsp;сопровождает специалистов
+                  на&nbsp;старте практики
+                </p>
+
+                <ul class="credential_list">
+                  <li class="credential">
+                    <span class="icon-tile is-sm" aria-hidden="true">
+                      <span class="icon is-sm" style="--icon-url: url('/icons/check-circle.svg')"></span>
+                    </span>Клинический психолог
+                  </li>
+                  <li class="credential">
+                    <span class="icon-tile is-sm" aria-hidden="true">
+                      <span class="icon is-sm" style="--icon-url: url('/icons/check-circle.svg')"></span>
+                    </span>Магистр психологии
+                  </li>
+                  <li class="credential">
+                    <span class="icon-tile is-sm" aria-hidden="true">
+                      <span class="icon is-sm" style="--icon-url: url('/icons/check-circle.svg')"></span>
+                    </span>КПТ-терапевт
+                  </li>
+                  <li class="credential">
+                    <span class="icon-tile is-sm" aria-hidden="true">
+                      <span class="icon is-sm" style="--icon-url: url('/icons/check-circle.svg')"></span>
+                    </span>АСТ-терапевт
+                  </li>
+                  <li class="credential">
+                    <span class="icon-tile is-sm" aria-hidden="true">
+                      <span class="icon is-sm" style="--icon-url: url('/icons/check-circle.svg')"></span>
+                    </span>EMDR-практик
+                  </li>
+                  <li class="credential">
+                    <span class="icon-tile is-sm" aria-hidden="true">
+                      <span class="icon is-sm" style="--icon-url: url('/icons/check-circle.svg')"></span>
+                    </span>Член АКПН
+                  </li>
+                  <li class="credential">
+                    <span class="icon-tile is-sm" aria-hidden="true">
+                      <span class="icon is-sm" style="--icon-url: url('/icons/check-circle.svg')"></span>
+                    </span>Член Ассоциации EMDR России
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         7. ПРИЗЫВ: ГРАНТ НА ОБУЧЕНИЕ
+         ====================================================================== -->
+    <section class="section_cta">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="cta_component background-color-inverse">
+            <!-- 🟢 -->
+            <span class="chip is-grant is-tiny margin-bottom margin-small">
+              Дарим грант на&nbsp;обучение
+              <span class="icon is-xs" style="--icon-url: url('/cbt-first-steps/icons/sparkle.svg')"></span>
+            </span>
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Посмотрите все 4&nbsp;вебинара<br>и&nbsp;получите
+              <span class="text-color-accent-soft">грант на&nbsp;обучение 20 000&nbsp;₽</span>
+            </h2>
+            <!-- 🟡 -->
+            <a class="button is-md is-inverse-solid margin-top margin-medium" href="#programma">Посмотреть вебинары</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         8. АКАДЕМИЯ
+         ======================================================================
+         Плитка из трёх карточек. Разметка и стили перенесены целиком
+         с /klinicheskaya-baza — там же живут канонические CDN-адреса
+         картинок, уже готовые для переноса в Тильду.
+         ====================================================================== -->
+    <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+      <div class="padding-global">
+        <div class="container-xlarge">
+          <div class="academy_component">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance" id="academy-heading">
+              Академия Современной Психологии<br><span class="section-title_muted">от интереса к&nbsp;практике</span>
+            </h2>
+
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7000&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 2000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         9. ОТВЕТЫ НА ПОПУЛЯРНЫЕ ВОПРОСЫ
+         ======================================================================
+         Аккордеон сделан на теге <details> — открывается сам, без JS.
+
+         🟢 ЧТОБЫ ДОБАВИТЬ ВОПРОС: скопируйте образец из комментария ниже
+            и вставьте внутрь <div class="faq_list">. Порядок — как в файле.
+
+            <details class="faq_item">
+              <summary class="faq_question">
+                <span class="text-size-block-title">Текст вопроса</span>
+                <span class="faq_sign" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer text-size-body text-color-secondary">
+                <p>Текст ответа.</p>
+              </div>
+            </details>
+
+         🔴 СЕЙЧАС ВНУТРИ ЗАГЛУШКИ: семь пунктов «Вопрос №N» — ровно как
+            в макете. Перед выкладкой на боевой сайт их обязательно надо
+            заменить настоящими вопросами и ответами. Лишние пункты просто
+            удалите вместе с их <details>…</details>.
+         ====================================================================== -->
+    <section class="section_faq" id="voprosy">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center margin-bottom margin-xsmall">Ответы на популярные вопросы</h2>
+            <p class="text-size-lead text-color-secondary text-align-center margin-bottom margin-medium">
+              Не нашли ответа на&nbsp;свой вопрос?
+              <!-- 🟡 Поставьте сюда адрес почты или чата -->
+              <a class="text-link" href="mailto:info@modern-psy.ru">Напишите нам</a>
+            </p>
+
+            <div class="faq_list">
+              <details class="faq_item" open>
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Вопрос №1</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Вопрос №2</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Вопрос №3</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Вопрос №4</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Вопрос №5</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Вопрос №6</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Вопрос №7</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Текст ответа. Замените на настоящий.</p>
+                </div>
+              </details>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================================================
+       ПОДВАЛ
+       ========================================================================== -->
+  <footer class="site-footer_component">
+    <div class="padding-global">
+      <div class="container-large">
+        <div class="site-footer_inner">
+
+          <div class="site-footer_col">
+            <!-- 🟢 Контакты -->
+            <p class="text-size-body text-weight-semibold text-color-heading">
+              <a class="text-link is-subtle" href="tel:+78124435189">+7 812 443-51-89</a>
+            </p>
+            <p class="text-size-note text-color-secondary margin-bottom margin-small">Отдел продаж</p>
+
+            <p class="text-size-body text-weight-semibold text-color-heading margin-bottom margin-medium">
+              <a class="text-link is-subtle" href="mailto:info@modern-psy.ru">info@modern-psy.ru</a>
+            </p>
+
+            <p class="text-size-note text-color-secondary">
+              197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный округ Введенский,
+              пр-т Большой П.с., д.&nbsp;7/4, литера А, помещ.&nbsp;2-Н
+            </p>
+            <p class="text-size-note text-color-secondary margin-top margin-xsmall">ОГРН 1217800102783</p>
+            <p class="text-size-note text-color-secondary margin-top margin-xsmall">ИНН/КПП 7839141929/781301001</p>
+          </div>
+
+          <nav class="site-footer_col" aria-label="Правовая информация">
+            <p class="text-size-body text-color-heading site-footer_title">Правовая информация</p>
+            <ul class="site-footer_links">
+              <!-- 🟡 Подставьте настоящие адреса документов -->
+              <li><a class="text-link is-subtle text-size-body" href="#">Публичная оферта</a></li>
+              <li><a class="text-link is-subtle text-size-body" href="#">Политика конфиденциальности</a></li>
+              <li><a class="text-link is-subtle text-size-body" href="#">Согласие на обработку персональных данных</a></li>
+              <li><a class="text-link is-subtle text-size-body" href="#">Сведения об образовательной организации</a></li>
+              <li><a class="text-link is-subtle text-size-body" href="#">Образовательная лицензия</a></li>
+              <li><a class="text-link is-subtle text-size-body" href="#">Документы</a></li>
+            </ul>
+          </nav>
+
+        </div>
+
+        <p class="site-footer_copyright text-size-note text-color-secondary">
+          © 2026 Академия Современной Психологии
+        </p>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- 🔴 Микроразметка для поиска: описание курса.
+     Цена в разметке обязана совпадать с ценой на странице — курс бесплатный,
+     поэтому price 0. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Первые шаги в КПТ",
+  "description": "Бесплатный мини-курс из 5 уроков: базовая когнитивная модель, когнитивные искажения, когнитивная концептуализация и первые техники КПТ.",
+  "inLanguage": "ru",
+  "provider": {
+    "@type": "EducationalOrganization",
+    "name": "Академия современной психологии",
+    "url": "https://modern-psy.ru"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "RUB",
+    "category": "Free"
+  },
+  "hasCourseInstance": {
+    "@type": "CourseInstance",
+    "courseMode": "online",
+    "courseWorkload": "PT2H5M"
+  }
+}
+</script>
+
+</body>
+</html>

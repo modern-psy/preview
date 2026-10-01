@@ -1,0 +1,137 @@
+/* Промо-блок цены: слева курс, справа деньги. Плоская тёмная поверхность, без карточек, градиентов и кнопок. */
+.pricing-promo_component {
+  --pricing-promo-text: var(--color-text-on-dark-muted);
+  --pricing-promo-muted: #bdb7b7;
+  --pricing-promo-faint: #99929f;
+  --pricing-promo-line: rgb(255 255 255 / 14%);
+  --pricing-promo-featured-surface: #3a2f48;
+  --pricing-promo-tabs-surface: #4c3c5e;
+  --pricing-promo-tab-active: var(--color-accent-primary);
+  --pricing-promo-number-size: 2.5rem;
+  --pricing-promo-row-number-size: 1.75rem;
+  --pricing-promo-suffix-size: 1rem;
+  --section-subtitle-color: var(--pricing-promo-text);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--pricing-promo-text);
+}
+
+.pricing-promo_component [hidden] { display: none; }
+/* Пока идёт запрос к CMS, деньги чуть прозрачные; блок целиком перерисуется по ответу. */
+.pricing-promo[data-cms-state="loading"] .pricing-promo_price { opacity: 0.55; transition: opacity var(--transition-site, 250ms linear); }
+.pricing-promo_old { margin-right: 0.25rem; color: var(--pricing-promo-muted); font-size: 0.55em; font-weight: 400; text-decoration: line-through; }
+.pricing-promo_unconfirmed { font-size: 1.375rem; line-height: 1.2; }
+.pricing-promo_discount { --body-text-color: var(--color-text-on-dark); }
+
+.pricing-promo_tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(max-content, 1fr);
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  align-self: flex-start;
+  padding: 0.125rem;
+  border-radius: 6rem;
+  background: var(--pricing-promo-tabs-surface);
+}
+
+.pricing-promo_tab {
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--pricing-promo-muted);
+  font: 400 1rem / 1.2 var(--font-family-body);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  cursor: pointer;
+  transition: color var(--transition-site, 250ms linear), background-color var(--transition-site, 250ms linear);
+}
+.pricing-promo_tab[aria-selected="true"], .pricing-promo_tab:hover { color: var(--color-text-on-dark); }
+.pricing-promo_tab:hover { background-color: rgb(255 255 255 / 6%); }
+.pricing-promo_tab[aria-selected="true"] { background-color: var(--pricing-promo-tab-active); }
+.pricing-promo_tab:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: -3px; }
+.pricing-promo_panel:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: 3px; }
+
+.pricing-promo_panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: center; }
+.pricing-promo_heading { color: var(--color-text-on-dark); }
+.pricing-promo_tabs { order: -1; }
+.pricing-promo_intro { display: flex; flex-direction: column; gap: var(--space-heading-copy, 1.25rem); min-width: 0; }
+.pricing-promo_copy { display: flex; flex-direction: column; gap: var(--space-subtitle-pair, 0.5rem); max-width: 34rem; }
+.pricing-promo_course { color: var(--color-text-on-dark); }
+.pricing-promo_description { --body-text-color: var(--pricing-promo-text); white-space: pre-line; }
+.pricing-promo_start-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pricing-promo_start { color: var(--color-text-primary); }
+
+.pricing-promo_price { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.pricing-promo_price.is-single { padding: 1rem; border-radius: var(--radius-card); background: var(--pricing-promo-featured-surface); }
+.pricing-promo_amount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem; color: var(--color-text-on-dark); line-height: 1; letter-spacing: -0.05em; }
+.pricing-promo_price.is-single + .pricing-promo_price.is-single { margin-top: 1rem; }
+.pricing-promo_number { font-size: var(--pricing-promo-number-size); font-weight: 600; letter-spacing: -0.03em; }
+.pricing-promo_amount.is-row .pricing-promo_number { font-size: var(--pricing-promo-row-number-size); }
+.pricing-promo_terms { --body-text-color: var(--pricing-promo-muted); }
+.pricing-promo_increase { margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--pricing-promo-line); }
+.pricing-promo_increase-next { --body-text-color: var(--pricing-promo-faint); }
+
+.pricing-promo_rows { display: flex; flex-direction: column; list-style: none; }
+.pricing-promo_row { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem 0; border-top: 1px solid var(--pricing-promo-line); }
+.pricing-promo_row:first-child { border-top: 0; }
+.pricing-promo_row:first-child:not(.is-featured) { padding-top: 0; }
+.pricing-promo_row:last-child:not(.is-featured) { padding-bottom: 0; }
+/* Фон рекомендуемой строки выходит наружу на величину полей, текст остаётся на общей вертикали с соседними строками. */
+.pricing-promo_row.is-featured { margin-inline: -0.75rem; padding-inline: 0.75rem; border-top: 0; border-radius: var(--radius-card); background: var(--pricing-promo-featured-surface); }
+.pricing-promo_row.is-featured + .pricing-promo_row { border-top: 0; }
+.pricing-promo_row-copy { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.pricing-promo_row-name { color: var(--color-text-on-dark); overflow-wrap: normal; }
+.pricing-promo_row-note { --body-text-color: var(--pricing-promo-muted); max-width: 22rem; }
+.pricing-promo_row-cost { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.pricing-promo_stream-label { --body-text-color: var(--pricing-promo-muted); }
+.pricing-promo_component[data-ready] .pricing-promo_stream-label { display: none; }
+
+@media (min-width: 32.5625rem) {
+  .pricing-promo_component { --pricing-promo-number-size: 2.75rem; --pricing-promo-row-number-size: 2rem; --pricing-promo-suffix-size: 1.125rem; }
+  .pricing-promo_tab { font-size: 1.125rem; }
+  .pricing-promo_row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 1.5rem; align-items: start; }
+  .pricing-promo_row-copy { grid-column: 1; grid-row: 1 / span 2; }
+  .pricing-promo_row-cost { grid-column: 2; text-align: right; align-items: flex-end; }
+  .pricing-promo_row-cost .pricing-promo_amount { justify-content: flex-end; }
+}
+
+@media (min-width: 48rem) {
+  /* От планшета сам компонент становится сеткой: табы стоят над строками тарифов в правой колонке,
+     панель растягивается на обе колонки через subgrid, вводная слева занимает всю высоту. */
+  .pricing-promo_component { --pricing-promo-suffix-size: 1.125rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); grid-template-rows: auto 1fr; gap: var(--space-heading-copy, 1.5rem) 2.5rem; align-items: start; }
+  .pricing-promo_component.is-tabbed { grid-template-rows: auto auto 1fr; }
+  .pricing-promo_heading { grid-column: 1 / -1; grid-row: 1; }
+  .pricing-promo_tabs { order: 0; grid-column: 2; grid-row: 2; z-index: 1; justify-self: start; padding: 0.3125rem; }
+  .pricing-promo_tab { padding: 0.5rem 1.25rem; font-size: 1.25rem; }
+  .pricing-promo_panel { grid-column: 1 / -1; grid-row: 2 / -1; grid-template-columns: subgrid; grid-template-rows: subgrid; align-items: start; }
+  .pricing-promo_intro { grid-column: 1; grid-row: 1 / -1; }
+  .pricing-promo_price { grid-column: 2; grid-row: -2 / -1; }
+  .pricing-promo_price.is-single { padding: 1.25rem; }
+  .pricing-promo_row { padding-block: 1.25rem; }
+  .pricing-promo_row.is-featured { margin-inline: -1.25rem; padding-inline: 1.25rem; }
+  .pricing-promo_increase { margin-top: 0.75rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  .pricing-promo_component { --pricing-promo-number-size: 3rem; --pricing-promo-row-number-size: 2.25rem; --pricing-promo-suffix-size: 1.25rem; column-gap: 4rem; }
+  .pricing-promo_tab { font-size: 1.375rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-promo_component { --transition-site: 0s linear; }
+}
+
+/* Внешняя оболочка блока (решение пользователя 17.09.2026): тёмная карточка с полями и скруглением контейнера
+   программы, стоит в колонке формы заявки (column-grid_content.is-content-wide). Секция без is-inset. */
+.pricing-promo_card { display: flex; width: 100%; min-width: 0; flex-direction: column; padding: var(--section-inset-space) var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+@media (min-width: 48rem) { .pricing-promo_card { padding-inline: 1.5rem; } }
+@media (min-width: 64.0625rem) { .pricing-promo_card { padding-inline: 2.5rem; } }

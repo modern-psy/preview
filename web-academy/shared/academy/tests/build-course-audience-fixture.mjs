@@ -1,0 +1,5 @@
+import fs from 'node:fs/promises';
+import {renderCourseAudience} from '../course-audience-render.mjs';
+const section = count => renderCourseAudience({heading: `${count} карточки: независимый экземпляр`, cards: Array.from({length: count}, (_, i) => ({lead: `Ситуация ${i + 1}.`, text: 'Длинное описание помогает проверить естественную высоту карточки, перенос текста и расположение фотографии рядом со списком.'}))}, {id: `audience-${count}`});
+const styles = ['components', 'card-spacing', 'body-text', 'course-audience', 'section-spacing', 'section-heading'];
+await fs.writeFile(new URL('course-audience-fixture.html', import.meta.url), `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Course audience fixture</title><link rel="icon" href="data:,">${styles.map(file => `<link rel="stylesheet" href="../${file}.css">`).join('')}</head><body><main class="academy-page">${[3,5,6].map(section).join('')}</main></body></html>`);

@@ -1,0 +1,40 @@
+/* The same surface contains either a short quote or the scrollable full review. */
+.review-panel_component {
+  position: relative;
+  min-width: 0;
+  padding: 0.75rem;
+  overflow: hidden;
+  border-radius: 0.625rem;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+.review-panel_quote { margin: 0; }
+.review-panel_scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+  touch-action: pan-y;
+}
+.review-panel_scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.review-panel_scroll:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: -2px; }
+.review-panel_content { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+.review-panel_header { --content-heading-gap: 0.125rem; --content-heading-size: 1.375rem; --content-heading-line-height: 1.3; }
+.review-panel_author { color: var(--color-text-on-dark); }
+.review-panel_role { color: #bdb7b7; font-size: 0.9375rem; line-height: 1.2; }
+.review-panel_component [hidden] { display: none; }
+.review-panel_component[data-scrollable="true"]::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 3rem;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, transparent, var(--color-text-primary));
+  pointer-events: none;
+  content: "";
+  opacity: 1;
+  transition: opacity var(--transition-site);
+}
+.review-panel_component[data-scroll-end="true"]::after { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .review-panel_component::after { transition: none; } }

@@ -1,0 +1,921 @@
+/* ============================================================================
+   СТИЛИ СТРАНИЦЫ «ПРАЙС-ЛИСТ КУРСОВ» (внутренняя, для отдела продаж)
+   ============================================================================
+
+   Файл самодостаточный: дизайн-система из /design-system не подключается.
+   Палитра, сетка и типографика — те же, что на лендингах /psihosomatika
+   и /rft (тёмный #2b2334, сиреневый #7c5cdb, фон #f5f5f5).
+
+   СЕТКА
+     .padding-global   боковые поля, от 16px на телефоне до 80px
+     .container-xlarge содержимое, максимум 1520px (95rem)
+
+   БРЕЙКПОИНТЫ
+     до 768px   телефон: всё в одну колонку, таблица цен во всю ширину
+     от 768px   планшет: таблица по содержимому, кнопки в ряд
+     от 992px   десктоп: шапка карточки в две колонки
+
+   ПОРЯДОК РАЗДЕЛОВ
+     0. Переменные и сброс
+     1. Каркас
+     2. Общие детали: кнопки, плашки
+     3. Шапка страницы
+     4. Панель поиска и фильтров
+     5. Карточка курса
+     6. Поток и тариф
+     7. Таблица цен
+     8. Пустые состояния, ошибка, подвал
+     9. Планшет и десктоп
+    10. Печать
+   ========================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   0. ПЕРЕМЕННЫЕ И СБРОС
+   --------------------------------------------------------------------------- */
+
+.price-page {
+  --color-page-background: #f5f5f5;
+  --color-surface-primary: #ffffff;
+  --color-surface-soft: #ebeaee;
+  --color-surface-dark: #2b2334;
+  --color-text-primary: #2b2334;
+  --color-text-secondary: #5b5468;
+  --color-text-muted: #8b8598;
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #cfc9dd;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-hover: #6a49c9;
+  --color-accent-soft: #e4deff;
+  --color-accent-light: #c4b5fd;
+  --color-accent-deep: #5b3fb0;
+  --color-focus: #7c5cdb;
+  --color-divider: #e7e5ee;
+  --color-warning-surface: #fff4d6;
+  --color-warning-text: #7a5a00;
+  --color-danger: #c8502f;
+
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+  --text-hero-size: clamp(2rem, 4.8vw, 3rem);
+  --text-subhead-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  --text-card-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  --text-lead-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  --text-body-size: clamp(1rem, 1.3vw, 1.125rem);
+  --text-note-size: clamp(0.875rem, 1.1vw, 1rem);
+  --text-price-size: clamp(1.5rem, 2.4vw, 2rem);
+
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --radius-card: 1rem;
+  --radius-inner: 0.75rem;
+  --radius-button: 0.5rem;
+  --transition-site: 180ms ease;
+
+  min-height: 100vh;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.price-page,
+.price-page *,
+.price-page *::before,
+.price-page *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+}
+
+.price-page :where(h1, h2, h3, h4, p, ul, ol, li, s) {
+  margin: 0;
+  padding: 0;
+}
+
+.price-page :where(ul, ol) {
+  list-style: none;
+}
+
+.price-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.price-page :where(button, input) {
+  font: inherit;
+  color: inherit;
+}
+
+.price-page :focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* Текст только для скринридера */
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.price-page [hidden] {
+  display: none !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   1. КАРКАС
+   --------------------------------------------------------------------------- */
+
+.padding-global {
+  padding-right: var(--page-padding);
+  padding-left: var(--page-padding);
+}
+
+.container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.main_component {
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. ОБЩИЕ ДЕТАЛИ
+   --------------------------------------------------------------------------- */
+
+/* --- Кнопки ------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: var(--radius-button);
+  font-size: var(--text-body-size);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    color var(--transition-site);
+}
+
+.button.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+/* Светло-сиреневая кнопка — второе действие в карточке */
+.button.is-soft {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+}
+
+.button.is-small {
+  min-height: 2.75rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 1rem;
+}
+
+/* Состояние «ссылка скопирована» — держится и под курсором */
+.button.is-copied,
+.button.is-copied:hover {
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button.is-accent:hover {
+    background: var(--color-accent-hover);
+  }
+
+  .button.is-soft:hover {
+    background: #d8cffc;
+  }
+}
+
+/* --- Плашки ----------------------------------------------------------------
+   Дата старта, расписание, статус набора, документ, акция.
+   ------------------------------------------------------------------------- */
+
+.meta-pill_list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meta-pill_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.meta-pill_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.meta-pill_component.is-soft {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+}
+
+.meta-pill_component.is-muted {
+  background: var(--color-surface-soft);
+  color: var(--color-text-secondary);
+}
+
+.meta-pill_component.is-warning {
+  background: var(--color-warning-surface);
+  color: var(--color-warning-text);
+}
+
+/* Сиреневое слово в заголовке */
+.accent-word {
+  color: var(--color-accent-primary);
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. ШАПКА СТРАНИЦЫ
+   --------------------------------------------------------------------------- */
+
+.header_component {
+  padding-top: clamp(2rem, 5vw, 4rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.header_inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.header_eyebrow {
+  color: var(--color-text-muted);
+  font-size: var(--text-note-size);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.header_back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: fit-content;
+  color: var(--color-accent-deep);
+  font-size: var(--text-body-size);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.header_back:hover {
+  color: var(--color-accent-hover);
+}
+
+.header_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-hero-size);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.header_description {
+  max-width: 52rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-lead-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Строка состояния: «Актуально на … · 38 курсов» */
+.header_status {
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-note-size);
+  line-height: 1.4;
+}
+
+.header_status.is-warning {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-inner);
+  background: var(--color-warning-surface);
+  color: var(--color-warning-text);
+}
+
+.header_status.is-error {
+  color: var(--color-danger);
+}
+
+/* Адрес страницы курса с кнопкой копирования (режим одного курса) */
+.header_link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.header_link-url {
+  min-width: 0;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-button);
+  background: var(--color-surface-primary);
+  color: var(--color-accent-deep);
+  font-size: var(--text-note-size);
+  line-height: 1.3;
+  word-break: break-all;
+  user-select: all;
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. ПАНЕЛЬ ПОИСКА И ФИЛЬТРОВ
+   --------------------------------------------------------------------------- */
+
+.toolbar_component {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.toolbar_search {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.toolbar_search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  color: var(--color-text-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.toolbar_input {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border: 1px solid #cdc9d6;
+  border-radius: var(--radius-inner);
+  background: var(--color-surface-primary);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color var(--transition-site);
+}
+
+.toolbar_input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.toolbar_input:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-primary);
+}
+
+.toolbar_filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Кнопка-фильтр по типу программы. Активная — тёмная. */
+.filter_chip {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    color var(--transition-site);
+}
+
+.filter_chip-count {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.filter_chip[aria-pressed="true"] {
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+
+.filter_chip[aria-pressed="true"] .filter_chip-count {
+  color: var(--color-text-on-dark-muted);
+}
+
+/* Фильтр «Курс месяца» — жёлтый, как плашка акции в карточке */
+.filter_chip.is-promo:not([aria-pressed="true"]) {
+  background: var(--color-warning-surface);
+  color: var(--color-warning-text);
+}
+
+.filter_chip.is-promo:not([aria-pressed="true"]) .filter_chip-count {
+  color: inherit;
+  opacity: 0.7;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filter_chip:not([aria-pressed="true"]):hover {
+    background: var(--color-accent-soft);
+  }
+
+  .filter_chip.is-promo:not([aria-pressed="true"]):hover {
+    background: #ffe9a8;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. КАРТОЧКА КУРСА
+   --------------------------------------------------------------------------- */
+
+.list_component {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.course_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  scroll-margin-top: 1rem;
+}
+
+/* Подсветка карточки, к которой пришли по ссылке с #якорем */
+.course_component.is-highlighted {
+  animation: course-highlight 2.4s ease-out;
+}
+
+@keyframes course-highlight {
+  0% { box-shadow: 0 0 0 4px var(--color-accent-primary); }
+  100% { box-shadow: 0 0 0 4px transparent; }
+}
+
+.course_head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.course_titles {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.course_level {
+  color: var(--color-text-muted);
+  font-size: var(--text-note-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.course_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-subhead-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.course_heading-link:hover {
+  color: var(--color-accent-deep);
+}
+
+.course_subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.course_meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.course_streams {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Кнопки внизу карточки */
+.course_actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-divider);
+}
+
+.course_actions .button {
+  width: 100%;
+}
+
+.course_site-link {
+  align-self: flex-start;
+  padding: 0.5rem 0;
+  color: var(--color-accent-deep);
+  font-size: var(--text-note-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.course_site-link:hover {
+  color: var(--color-accent-hover);
+}
+
+/* На странице одного курса кнопка «Открыть отдельно» не нужна */
+.price-page.is-single [data-open] {
+  display: none;
+}
+
+
+/* ---------------------------------------------------------------------------
+   6. ПОТОК И ТАРИФ
+   --------------------------------------------------------------------------- */
+
+.stream_component {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* Название потока — только когда потоков несколько */
+.stream_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.stream_component + .stream_component {
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--color-divider);
+}
+
+.stream_meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stream_tariffs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Примечания к потоку: бронь места, единовременная оплата и т. п. */
+.stream_notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  line-height: 1.4;
+}
+
+.tariff_component {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.tariff_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.tariff_installment {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  line-height: 1.4;
+}
+
+
+/* ---------------------------------------------------------------------------
+   7. ТАБЛИЦА ЦЕН
+   ---------------------------------------------------------------------------
+   Страница информационная, поэтому лесенка — обычная таблица:
+   строка = ступень цены. Три состояния строки:
+     is-past      цена уже не действует — серый текст;
+     is-active    действует сейчас — светло-сиреневая подложка, жирная цена,
+                  метка «сейчас»;
+     is-upcoming  впереди — обычный текст.
+   На узком экране таблица прокручивается по горизонтали внутри себя.
+   --------------------------------------------------------------------------- */
+
+.ladder_scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ladder_table {
+  width: 100%;
+  min-width: 20rem;
+  border-collapse: collapse;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.ladder_head {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ladder_head:first-child,
+.ladder_cell:first-child {
+  padding-left: 0.75rem;
+}
+
+.ladder_cell {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  line-height: 1.35;
+  vertical-align: baseline;
+}
+
+.ladder_cell.is-period {
+  white-space: nowrap;
+}
+
+.ladder_cell.is-price {
+  white-space: nowrap;
+}
+
+.ladder_cell.is-note {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+}
+
+/* Если примечаний нет ни в одной строке — колонку прячем */
+.ladder_table.is-no-notes .is-note {
+  display: none;
+}
+
+.ladder_value {
+  font-weight: 500;
+}
+
+/* Прошедшая ступень */
+.ladder_row.is-past .ladder_cell {
+  color: var(--color-text-muted);
+}
+
+.ladder_row.is-past .ladder_value {
+  font-weight: 400;
+}
+
+/* Действующая ступень */
+.ladder_row.is-active .ladder_cell {
+  background: #f3f0ff;
+}
+
+.ladder_row.is-active .ladder_value {
+  font-weight: 600;
+}
+
+.ladder_row.is-active .ladder_cell:first-child {
+  box-shadow: inset 3px 0 0 var(--color-accent-primary);
+}
+
+/* Метка «сейчас» рядом с датой */
+.ladder_now {
+  display: inline-block;
+  margin-left: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  vertical-align: middle;
+}
+
+/* Зачёркнутая цена до скидки «Курс месяца» */
+.ladder_old {
+  margin-right: 0.375rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+/* Курс без назначенной цены (лист ожидания) */
+.ladder_row.is-none .ladder_cell {
+  color: var(--color-text-muted);
+}
+
+
+/* ---------------------------------------------------------------------------
+   8. ПУСТЫЕ СОСТОЯНИЯ, ОШИБКА, ПОДВАЛ
+   --------------------------------------------------------------------------- */
+
+.list_empty {
+  padding: 2rem 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-lead-size);
+  text-align: center;
+}
+
+.error_component {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.error_heading {
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.error_text {
+  max-width: 40rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: 1.4;
+}
+
+.footer_component {
+  padding-top: 1rem;
+  padding-bottom: clamp(2rem, 5vw, 4rem);
+  border-top: 1px solid var(--color-divider);
+}
+
+.footer_text {
+  max-width: 60rem;
+  padding-top: 1.5rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-note-size);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+
+/* ---------------------------------------------------------------------------
+   9. ПЛАНШЕТ И ДЕСКТОП
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 48rem) {
+  .toolbar_component {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .toolbar_search {
+    width: min(100%, 24rem);
+  }
+
+  /* Таблица цен не растягивается на всю ширину карточки */
+  .ladder_table {
+    width: auto;
+    min-width: 32rem;
+  }
+
+  .course_actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .course_actions .button {
+    width: auto;
+  }
+
+  .course_site-link {
+    margin-left: auto;
+    align-self: center;
+  }
+}
+
+@media screen and (min-width: 62rem) {
+  .course_head {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .course_titles {
+    max-width: 56rem;
+  }
+
+  .course_meta {
+    flex: none;
+    justify-content: flex-end;
+    max-width: 24rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   10. ПЕЧАТЬ — прайс можно распечатать или сохранить в PDF
+   --------------------------------------------------------------------------- */
+
+@media print {
+  .price-page {
+    background: #fff;
+  }
+
+  .toolbar_component,
+  .course_actions,
+  .header_back {
+    display: none !important;
+  }
+
+  .course_component {
+    break-inside: avoid;
+    border: 1px solid #ddd;
+  }
+
+  .ladder_row.is-active .ladder_cell,
+  .ladder_now {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

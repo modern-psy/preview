@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ПЕРВОЕ ЗНАКОМСТВО С ACT»  →  адрес /act-intro
+  ============================================================================
+
+  Бесплатный мини-курс из 5 лекций о терапии принятия и ответственности.
+  Преподаватели — Ксения Белова, Ольга Турчинская, Елизавета Силина.
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Сетка, цвета, шрифт, кнопки, карточки и адаптив — со страницы
+    /psikholog-konsultant (то есть в конечном счёте с /trauma-therapy):
+    контейнер 1520px, боковые поля до 80px, имена классов hero_, card_,
+    card-grid_, section-intro_, meta-pill_ и брейкпоинты 480 / 768 / 992.
+    Состав блоков — по мини-курсу «Первые шаги в КПТ» (/cbt-first-steps):
+    кому подойдёт → что поймёте → программа → преподаватели → грант.
+    Страница самодостаточная: все стили лежат в page.css, дизайн-система
+    из /design-system сюда НЕ подключается. Скриптов нет.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка.
+
+  КАРТИНКИ И ЗАГЛУШКИ
+
+    Фото Ксении Беловой и Ольги Турчинской лежат на S3 (asp-media),
+    квадратные 600×600. Фото Елизаветы Силиной — с лендинга вебинара
+    «Шрек в кабинете психолога», круглая аватарка на сиреневом фоне.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 адреса кнопок «Получить доступ бесплатно» и «Посмотреть уроки» —
+      формы на странице нет, в href стоят заглушки «#»;
+    · 🟡 длительность лекций — в карточках программы её нет, добавьте
+      плашкой, если нужно (образец в комментарии в блоке «Как устроен
+      мини-курс»);
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Первое знакомство с ACT — бесплатный мини-курс для психологов</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="5 лекций о базовой логике терапии принятия и ответственности: психологическая гибкость, функциональный анализ поведения, работа с тревогой и знакомство с полноценной программой обучения. Бесплатно для психологов и психотерапевтов." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Первое знакомство с ACT: как по-новому понимать поведение клиента" />
+  <meta property="og:description" content="Бесплатный мини-курс из 5 лекций для психологов и психотерапевтов — от психологической гибкости и функционального анализа до работы с тревогой." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили только этой страницы. Скрипты странице не нужны:
+       вся вёрстка работает без JavaScript. -->
+  <link rel="stylesheet" href="page.css" />
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
+<div class="page-wrapper act-page">
+
+<!-- ==========================================================================
+     ШАПКА
+     ==========================================================================
+     Белая полоса во всю ширину экрана. Не липкая — как на исходной странице.
+     На телефоне пункты меню прячутся, остаются логотип и кнопка.
+     ========================================================================== -->
+<header class="site-header_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+
+        <!-- 🟡 Логотип ведёт на главную сайта -->
+        <a class="site-header_logo" href="/" aria-label="Академия современной психологии">
+          <img src="https://s3.twcstorage.ru/asp-media/logo_asp_fec13e6c96.svg" alt="" width="102" height="34" />
+        </a>
+
+        <!-- 🟢 Пункты меню. Ведут к блокам на этой же странице. -->
+        <nav class="site-header_nav" aria-label="Разделы страницы">
+          <a class="site-header_link" href="#programma">Программа</a>
+          <a class="site-header_link" href="#prepodavateli">Преподаватели</a>
+          <a class="site-header_link" href="#grant">Грант</a>
+        </nav>
+
+        <!-- 🟡 Кнопка записи — подставьте адрес формы или бота -->
+        <a class="button is-accent site-header_cta" href="#">Получить доступ</a>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки, подводка,
+       заголовок, описание и кнопка. Фото лежит на S3 (asp-media).
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <!-- 🟢 Фотография первого экрана -->
+          <img class="hero_image"
+               src="https://s3.twcstorage.ru/asp-media/hero_therapist_bob_v2_63151fb92a.webp"
+               alt="" width="2560" height="1087" fetchpriority="high" />
+
+          <!-- 🟢 Плашки над заголовком -->
+          <ul class="meta-pill_list hero_pills">
+            <li class="meta-pill_component is-accent">мини-курс</li>
+            <li class="meta-pill_component is-glass">5&nbsp;лекций</li>
+            <li class="meta-pill_component is-glass">онлайн</li>
+            <li class="meta-pill_component is-glass">бесплатно</li>
+          </ul>
+
+          <div class="hero_content">
+            <div class="hero_copy">
+              <h1 class="hero_heading">
+                Первое знакомство с&nbsp;ACT:
+                как по-новому понимать поведение клиента
+              </h1>
+
+              <p class="hero_description">
+                5&nbsp;лекций о&nbsp;базовой логике терапии принятия
+                и&nbsp;ответственности&nbsp;— от&nbsp;психологической гибкости
+                и&nbsp;функционального анализа до&nbsp;работы с&nbsp;тревогой
+                и&nbsp;знакомства с&nbsp;полноценной программой обучения.
+              </p>
+            </div>
+
+            <!-- 🟡 Кнопка записи. Формы на странице нет — подставьте сюда
+                 адрес формы, бота или всплывающего окна регистрации. -->
+            <a class="button is-light hero_action" href="#">Получить доступ бесплатно</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. «КОГДА ЭТОТ КУРС СТОИТ ВАШЕГО ВРЕМЕНИ»
+       ======================================================================
+       Заголовок и четыре карточки с иконкой. На десктопе и планшете —
+       две в ряд, ниже 480px — одна.
+       ====================================================================== -->
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Когда этот курс стоит вашего времени
+            </h2>
+          </div>
+
+          <ul class="card-grid_component is-two-up audience_list">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://static.tildacdn.com/tild3034-6538-4265-a438-313432653764/icon-astroid.svg" alt="" width="20" height="20" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Только начинаете знакомство с&nbsp;ACT</h3>
+                <p class="card_description">
+                  Хотите разобраться, что это за&nbsp;подход, на&nbsp;чём он&nbsp;основан
+                  и&nbsp;как выглядит работа ACT-терапевта.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://static.tildacdn.com/tild3034-6538-4265-a438-313432653764/icon-astroid.svg" alt="" width="20" height="20" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Работаете в&nbsp;другом подходе</h3>
+                <p class="card_description">
+                  Хотите познакомиться с&nbsp;альтернативным взглядом на&nbsp;поведение
+                  клиента и&nbsp;понять, чем ACT отличается от&nbsp;привычных вам методов.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://static.tildacdn.com/tild3034-6538-4265-a438-313432653764/icon-astroid.svg" alt="" width="20" height="20" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Хотите глубже понимать поведение клиента</h3>
+                <p class="card_description">
+                  Интересуетесь тем, почему человек продолжает делать то, что ему
+                  мешает, даже когда понимает последствия.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://static.tildacdn.com/tild3034-6538-4265-a438-313432653764/icon-astroid.svg" alt="" width="20" height="20" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Выбираете направление для&nbsp;дальнейшего обучения</h3>
+                <p class="card_description">
+                  Хотите сначала познакомиться с&nbsp;логикой ACT и&nbsp;понять,
+                  подходит&nbsp;ли вам этот подход.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       3. «ЗА 5 ЛЕКЦИЙ ВЫ ПОЙМЁТЕ…»
+       ======================================================================
+       Пять карточек: на десктопе три в первой строке и две во второй,
+       вторая строка растягивается на всю ширину. На планшете — по две
+       (последняя во всю ширину), ниже 480px — по одной.
+       ====================================================================== -->
+  <section class="section_outcomes" id="chto-poymete">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="outcomes_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              За&nbsp;5&nbsp;лекций вы&nbsp;поймёте, как ACT смотрит
+              на&nbsp;клиента и&nbsp;терапию
+            </h2>
+          </div>
+
+          <ol class="outcomes_list">
+            <li class="card_component outcome_component">
+              <span class="badge_component" aria-hidden="true">01</span>
+              <div class="card_content">
+                <h3 class="card_heading">Увидите логику ACT</h3>
+                <p class="card_description">
+                  Разберётесь, что такое психологическая гибкость, зачем она нужна
+                  и&nbsp;как шесть процессов ACT связаны между собой.
+                </p>
+              </div>
+            </li>
+            <li class="card_component outcome_component">
+              <span class="badge_component" aria-hidden="true">02</span>
+              <div class="card_content">
+                <h3 class="card_heading">Научитесь смотреть на&nbsp;поведение глубже</h3>
+                <p class="card_description">
+                  Поймёте разницу между тем, что делает клиент, и&nbsp;тем, какую
+                  функцию выполняет его поведение.
+                </p>
+              </div>
+            </li>
+            <li class="card_component outcome_component">
+              <span class="badge_component" aria-hidden="true">03</span>
+              <div class="card_content">
+                <h3 class="card_heading">Разберёте знакомый запрос по-новому</h3>
+                <p class="card_description">
+                  На&nbsp;примере тревоги увидите, почему попытки избавиться
+                  от&nbsp;неприятных переживаний иногда поддерживают проблему.
+                </p>
+              </div>
+            </li>
+            <li class="card_component outcome_component is-wide">
+              <span class="badge_component" aria-hidden="true">04</span>
+              <div class="card_content">
+                <h3 class="card_heading">Познакомитесь с&nbsp;профессиональными стандартами ACT</h3>
+                <p class="card_description">
+                  Узнаете, как устроены международные стандарты обучения
+                  и&nbsp;на&nbsp;что обращать внимание при выборе программы.
+                </p>
+              </div>
+            </li>
+            <li class="card_component outcome_component is-wide">
+              <span class="badge_component" aria-hidden="true">05</span>
+              <div class="card_content">
+                <h3 class="card_heading">Поймёте, куда двигаться дальше</h3>
+                <p class="card_description">
+                  Получите целостное представление о&nbsp;подходе и&nbsp;сможете
+                  решить, хотите&nbsp;ли изучать ACT глубже.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. «КАК УСТРОЕН МИНИ-КУРС»
+       ======================================================================
+       Тёмная плашка: сверху заголовок, под ним — пять белых карточек
+       лекций в один столбец. В карточке только номер, название
+       и подзаголовок: подробные описания лекций уже есть в блоке
+       «За 5 лекций вы поймёте», здесь они дублировали бы его.
+
+       🟢 Чтобы добавить длительность, вставьте после названия плашку:
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component">
+                <img src="https://static.tildacdn.com/tild3661-3930-4334-a631-643062633834/icon-clock-alert-bla.svg" alt="" width="20" height="20" />
+                15&nbsp;мин
+              </li>
+            </ul>
+       ====================================================================== -->
+  <section class="section_program" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="program_component">
+
+          <h2 class="program_heading">Как устроен мини-курс</h2>
+
+          <ol class="program_list">
+
+            <li class="lesson_component">
+              <span class="lesson_number" aria-hidden="true">01</span>
+              <div class="lesson_head">
+                <h3 class="lesson_title">Что такое ACT?</h3>
+                <p class="lesson_lead">Познакомитесь с&nbsp;подходом и&nbsp;его научной основой</p>
+              </div>
+            </li>
+
+            <li class="lesson_component">
+              <span class="lesson_number" aria-hidden="true">02</span>
+              <div class="lesson_head">
+                <h3 class="lesson_title">Как ACT понимает поведение клиента</h3>
+                <p class="lesson_lead">Научитесь смотреть не&nbsp;только на&nbsp;форму поведения</p>
+              </div>
+            </li>
+
+            <li class="lesson_component">
+              <span class="lesson_number" aria-hidden="true">03</span>
+              <div class="lesson_head">
+                <h3 class="lesson_title">Ловушка контроля</h3>
+                <p class="lesson_lead">Почему попытки избавиться от&nbsp;тревоги могут поддерживать проблему</p>
+              </div>
+            </li>
+
+            <li class="lesson_component">
+              <span class="lesson_number" aria-hidden="true">04</span>
+              <div class="lesson_head">
+                <h3 class="lesson_title">Как выбрать качественное обучение ACT</h3>
+                <p class="lesson_lead">Международные стандарты ACBS</p>
+              </div>
+            </li>
+
+            <li class="lesson_component">
+              <span class="lesson_number" aria-hidden="true">05</span>
+              <div class="lesson_head">
+                <h3 class="lesson_title">Как устроено обучение ACT</h3>
+                <p class="lesson_lead">Познакомитесь с&nbsp;полной программой</p>
+              </div>
+            </li>
+
+          </ol>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. «ЗНАКОМЬТЕСЬ С ПРЕПОДАВАТЕЛЯМИ»
+       ======================================================================
+       Три карточки: круглое фото, имя и описание. На десктопе — в ряд,
+       на планшете — по две, ниже 480px — по одной.
+       ====================================================================== -->
+  <section class="section_hosts" id="prepodavateli">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hosts_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">Знакомьтесь с&nbsp;преподавателями</h2>
+            <p class="section-intro_description">
+              Практикующие специалисты, которые работают в&nbsp;ACT и&nbsp;помогают
+              увидеть подход не&nbsp;только через теорию, но&nbsp;и&nbsp;через реальные
+              клинические задачи.
+            </p>
+          </div>
+
+          <ul class="hosts_list">
+
+            <li class="host_component">
+              <div class="host_media">
+                <img class="host_image" src="https://s3.twcstorage.ru/asp-media/Kseniya_Belova_148da709e3.jpg"
+                     alt="Ксения Белова" width="600" height="600" loading="lazy" />
+              </div>
+              <div class="host_copy">
+                <h3 class="host_name">Ксения Белова</h3>
+                <p class="host_description">
+                  Клинический психолог, супервизор, член правления Ассоциации
+                  специалистов в&nbsp;области контекстуально-поведенческой науки,
+                  преподаватель.
+                </p>
+              </div>
+            </li>
+
+            <li class="host_component">
+              <div class="host_media">
+                <img class="host_image" src="https://s3.twcstorage.ru/asp-media/Olga_Turchinskaya_2f00ecd91d.jpg"
+                     alt="Ольга Турчинская" width="600" height="600" loading="lazy" />
+              </div>
+              <div class="host_copy">
+                <h3 class="host_name">Ольга Турчинская</h3>
+                <p class="host_description">
+                  Клинический психолог, ACT-терапевт, супервизор, преподаватель
+                  медиапроекта «Чистые когниции», преподаватель онлайн-школы
+                  Психодемия, член ACBS.
+                </p>
+              </div>
+            </li>
+
+            <li class="host_component">
+              <div class="host_media">
+                <!-- 🟡 Фото с лендинга вебинара «Шрек в кабинете психолога» -->
+                <img class="host_image" src="https://optim.tildacdn.com/tild6163-6331-4337-b564-363234643430/-/format/webp/silina-avatar.webp"
+                     alt="Елизавета Силина" width="950" height="950" loading="lazy" />
+              </div>
+              <div class="host_copy">
+                <h3 class="host_name">Елизавета Силина</h3>
+                <p class="host_description">
+                  Практикующий ACT-терапевт, супервизор, член Ассоциации
+                  специалистов в&nbsp;сфере контекстуально-поведенческих наук,
+                  поддерживает начинающих специалистов.
+                </p>
+              </div>
+            </li>
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       6. ГРАНТ
+       ======================================================================
+       Сиреневая плашка: слева текст и кнопка, справа картинка (конверт
+       на прозрачном фоне, лежит на S3).
+       ====================================================================== -->
+  <section class="section_grant" id="grant">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="grant_component">
+
+          <div class="grant_copy">
+            <p class="grant_label">Дарим грант на&nbsp;обучение</p>
+            <h2 class="grant_heading">
+              Пройдите 5&nbsp;уроков и&nbsp;получите
+              <strong>грант 20&nbsp;000&nbsp;₽</strong>
+            </h2>
+            <p class="grant_description">
+              Грант действует на&nbsp;полную программу обучения ACT в&nbsp;Академии.
+            </p>
+            <!-- 🟡 Формы на странице нет — подставьте сюда адрес формы
+                 или всплывающего окна регистрации -->
+            <a class="button is-light grant_action" href="#">Посмотреть уроки</a>
+          </div>
+
+          <!-- 🟢 Картинка гранта: конверт с сертификатом, фон прозрачный -->
+          <img class="grant_image"
+               src="https://s3.twcstorage.ru/asp-media/10_envelope_star_b_1250ed041e.webp"
+               alt="" width="2048" height="2048" loading="lazy" />
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</main>
+
+
+<!-- ==========================================================================
+     ПОДВАЛ
+     ==========================================================================
+     Контакты и реквизиты — те же, что на свежих страницах превью.
+     ========================================================================== -->
+<footer class="site-footer_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+
+      <h2 class="site-footer_heading">Контакты</h2>
+
+      <div class="site-footer_grid">
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Отдел продаж</p>
+          <!-- 🟡 Телефон и почта -->
+          <p class="site-footer_line"><a href="tel:+78124702901">+7&nbsp;812&nbsp;470-29-01</a></p>
+          <p class="site-footer_line"><a href="mailto:info@modern-psy.ru">info@modern-psy.ru</a></p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Адрес</p>
+          <p class="site-footer_line">
+            197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ
+            Введенский, пр-т&nbsp;Большой&nbsp;П.с., д.&nbsp;7/4, литера&nbsp;А,
+            помещ.&nbsp;2-Н
+          </p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Правовая информация</p>
+          <!-- 🟡 Адреса документов подставьте с боевого сайта -->
+          <p class="site-footer_line"><a href="/oferta">Публичная оферта</a></p>
+          <p class="site-footer_line"><a href="/privacy">Политика конфиденциальности</a></p>
+          <p class="site-footer_line"><a href="/documents">Сведения об&nbsp;образовательной организации</a></p>
+        </div>
+
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+        <p>ОГРН 1217800102783<br />ИНН/КПП 7839141929/781301001</p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>

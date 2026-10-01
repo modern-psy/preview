@@ -1,0 +1,599 @@
+/* Собрано build.mjs: база, meta-pill и pricing-promo.css из apps/preview/web-academy/shared/academy, затем theme.css. Править исходники и пересобирать. */
+
+.academy-page {
+  --color-page-background: #f5f5f5;
+  --color-surface-primary: #ffffff;
+  --color-text-primary: #332f41;
+  --color-text-secondary: #747476;
+  --color-text-secondary-large: #7b7b7c;
+  --color-text-secondary-on-accent: #5e5a6a;
+  --color-text-on-dark: #ffffff;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-soft: #dad6ff;
+  --color-focus: #7c5cdb;
+  --color-surface-dark: #2b2334;
+  --color-text-on-dark-muted: #e6e5eb;
+  --color-cta-grid-muted: #32293c;
+  --color-cta-grid-medium: #3b2e49;
+  --color-cta-grid-bright: #38254e;
+  --border-gradient-accent: linear-gradient(
+    to top right,
+    rgba(124, 92, 219, 0.8) 0%,
+    rgba(124, 92, 219, 0.3) 50%,
+    rgba(124, 92, 219, 0.8) 100%
+  );
+  --section-heading-gap: clamp(1.25rem, 3.63vw, 1.75rem);
+  --section-heading-description-size: clamp(1rem, 2.149vw, 1.375rem);
+  --text-body-size: clamp(1.125rem, 2.016vw, 1.25rem);
+  --text-body-line-height: 1.4;
+  --content-heading-gap: 0.5rem;
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+  --font-family-emphasis: var(--font-family-body);
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --radius-card: 1rem;
+  --transition-site: 180ms ease;
+  --hero-section-offset: 3rem;
+  --hero-section-end: 5rem;
+  --hero-section-end-desktop: 9.375rem;
+  --hero-media-min-height: 37.5rem;
+  --hero-media-min-height-desktop: 43.75rem;
+  --hero-image-position: 66% center;
+  --hero-image-position-desktop: center;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.academy-page,
+.academy-page *,
+.academy-page *::before,
+.academy-page *::after {
+  box-sizing: border-box;
+}
+
+body:has(.academy-page) {
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.academy-page :where(h1, h2, h3, h4, h5, h6, p, ul, li) {
+  margin: 0;
+  padding: 0;
+}
+
+.academy-page ul {
+  list-style: none;
+}
+
+.academy-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.academy-page img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.academy-page .main-wrapper {
+  display: block;
+}
+
+.academy-page .padding-global {
+  width: 100%;
+  padding-right: var(--page-padding);
+  padding-left: var(--page-padding);
+}
+
+.academy-page .container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.meta-pill_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.meta-pill_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.meta-pill_component img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* The approved Hero tag, also used independently in content cards. */
+.meta-pill_component.is-responsive {
+  --meta-pill-padding-y: calc(0.3125rem + clamp(0rem, 0.25575448vw - 0.09590793rem, 0.0625rem));
+  --meta-pill-padding-start: calc(0.375rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-padding-end: calc(0.5625rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-size: calc(0.875rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --meta-pill-icon-size: calc(1.125rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  padding: var(--meta-pill-padding-y) var(--meta-pill-padding-end) var(--meta-pill-padding-y) var(--meta-pill-padding-start);
+  font-size: var(--meta-pill-size);
+  white-space: normal;
+}
+.meta-pill_icon {
+  display: block;
+  width: var(--meta-pill-icon-size, 1.25rem);
+  height: var(--meta-pill-icon-size, 1.25rem);
+  flex: none;
+}
+.meta-pill_component.is-responsive .meta-pill_icon {
+  width: var(--meta-pill-icon-size);
+  height: var(--meta-pill-icon-size);
+}
+
+/* Shared spacing for Academy cards. Opt in once per landing. */
+.academy-page {
+  --card-padding: 0.75rem;
+  --radius-card: 0.75rem;
+  --card-grid-gap: 0.75rem;
+}
+@media (min-width: 48rem) {
+  .academy-page { --card-padding: 1rem; --card-grid-gap: 1rem; --radius-card: 1rem; }
+}
+
+
+/* Separate inter-section rhythm from internal padding of dark sections. */
+.academy-page { --section-space: 3.75rem; --section-inset-space: 2.5rem; }
+@media (min-width: 32.5625rem) { .academy-page { --section-space: 5rem; } }
+@media (min-width: 48rem) { .academy-page { --section-space: 6.25rem; --section-inset-space: 3.125rem; } }
+@media (min-width: 64.0625rem) { .academy-page { --section-space: 9.375rem; --section-inset-space: 4.375rem; } }
+.section-spacing_component { padding-block: 0 var(--section-space); }
+.section-spacing_component.is-inset { padding-block: var(--section-inset-space); }
+.section-spacing_component.is-after-inset { padding-block-start: var(--section-space); }
+
+
+/* Shared body typography; compositions own only layout and spacing. */
+.body-text_component {
+  margin: 0;
+  color: var(--body-text-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: min(var(--body-text-max, 1.25rem), 0.9375rem);
+  font-weight: 444;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.body-text_component.is-regular { font-weight: 400; }
+.body-text_component.is-statement { letter-spacing: normal; }
+.body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1rem)); }
+.body-text_component.is-reading { line-height: 1.4; letter-spacing: normal; }
+.body-text_component.is-showcase { font-size: 1rem; font-weight: 400; line-height: 1.1; }
+.body-text_component.is-detailed { line-height: 1.4; letter-spacing: normal; }
+.body-text_lead { color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) {
+  .body-text_component.is-showcase { font-size: 1.125rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.125rem)); }
+}
+@media (min-width: 48rem) {
+  .body-text_component.is-showcase { font-size: 1.25rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.125rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.25rem)); }
+}
+@media (min-width: 64.0625rem) {
+  .body-text_component.is-showcase { font-size: 1.5rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.25rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.375rem)); }
+}
+
+/* Small supporting copy for prices and compact factual captions. */
+.body-text_component.is-caption { font-size: 0.9375rem; }
+@media (min-width: 32.5625rem) { .body-text_component.is-caption { font-size: 1rem; } }
+@media (min-width: 64.0625rem) { .body-text_component.is-caption { font-size: 1.125rem; } }
+
+/* Shared emphasis, callout and fine-print roles; no section owns a second scale. */
+.body-text_component.is-emphasis { font-weight: 600; }
+.body-text_component.is-callout { font-weight: 500; line-height: 1.3; }
+.body-text_component.is-fine-print { font-size: 0.875rem; font-weight: 400; line-height: 1.4; }
+
+
+/* Opt-in heading and section composition; load after the consuming component CSS. */
+.academy-page {
+  --space-heading-copy: 1.25rem;
+  --space-subtitle-pair: 0.25rem;
+  --space-mark-heading: 0.75rem;
+  --space-section-content: 2rem;
+  --space-cta-action: 2rem;
+}
+@media (min-width: 32.5625rem) {
+  .academy-page { --space-subtitle-pair: 0.5rem; --space-section-content: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .academy-page { --space-heading-copy: 1.5rem; --space-subtitle-pair: 0.75rem; --space-mark-heading: 1rem; --space-section-content: 2.625rem; }
+}
+@media (min-width: 64.0625rem) {
+  .academy-page { --space-heading-copy: 1.75rem; --space-subtitle-pair: 1rem; --space-section-content: 4.375rem; --space-cta-action: 2.25rem; }
+}
+
+.section-title_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--section-title-size, clamp(2.25rem, 3.1vw, 3.25rem));
+  font-weight: var(--section-title-weight, 400);
+  line-height: var(--section-title-line-height, 1.1);
+  letter-spacing: var(--section-title-tracking, -0.06em);
+  text-align: inherit;
+  text-wrap: var(--section-title-wrap, balance);
+}
+
+.section-title_component.is-left {
+  text-align: left;
+}
+
+.section-title_component.is-center {
+  text-align: center;
+}
+
+.section-title_component.is-right {
+  text-align: right;
+}
+
+/* The same responsive title scale can be used without changing section gaps. */
+.section-title_component.is-responsive { --section-title-size: 2rem; --section-title-line-height: 1; overflow-wrap: anywhere; }
+@media (min-width: 32.5625rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-title_component.is-responsive { --section-title-size: 3.25rem; }
+}
+
+.section-title_accent {
+  display: inline;
+  color: var(--color-accent-text, var(--color-accent-primary));
+}
+
+.section-subtitle_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--section-subtitle-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: var(--section-subtitle-line-height, 1.2);
+  letter-spacing: var(--section-subtitle-tracking, -0.01em);
+  text-wrap: pretty;
+}
+
+.content-heading_component {
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--content-heading-size, clamp(1.25rem, 2.419vw, 1.5rem));
+  font-weight: 500;
+  line-height: var(--content-heading-line-height, 1.1);
+  letter-spacing: 0;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.content-heading_component.is-prominent {
+  font-size: var(--content-prominent-size, clamp(1.75rem, 2.4vw, 2.25rem));
+  font-weight: 444;
+  letter-spacing: -0.03em;
+}
+
+/* One portrait heading size for the standard card families. */
+@media (max-width: 32.5rem) {
+  .card_component.is-icon-statement,
+  .card_component.is-stage { --content-heading-size: 1.25rem; }
+  .card_component.benefits_card { --hero-card-title-size: 1.25rem; }
+}
+
+/* Shared card/question heading role; independent of its surrounding surface. */
+.content-heading_component.is-card { --content-heading-size: 1.25rem; }
+.content-heading_component.is-profile { --content-heading-size: 1.375rem; font-weight: 400; }
+@media (min-width: 32.5625rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.375rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.5rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .content-heading_component.is-profile { --content-heading-size: 2rem; }
+}
+
+.content-header_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--content-heading-gap);
+}
+
+.section-header_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-heading-gap);
+}
+
+/* Separate the heading-to-copy distance from gaps inside a copy group. */
+.section-subtitles_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-subtitles-gap, 1rem);
+}
+.section-header_title {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: inherit;
+  gap: var(--section-heading-mark-gap, 1rem);
+}
+.section-header_component.is-responsive {
+  --section-heading-gap: var(--space-heading-copy);
+  --section-heading-description-size: 1rem;
+  --section-subtitles-gap: var(--space-subtitle-pair);
+  --section-heading-mark-gap: var(--space-mark-heading);
+}
+@media (min-width: 32.5625rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.125rem; }
+}
+@media (min-width: 48rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.375rem; }
+}
+
+.section-header_component.is-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.section-header_component.is-center {
+  align-items: center;
+  text-align: center;
+}
+
+.section-header_component.is-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.section-layout_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-layout-gap, clamp(2.5rem, 6.835vw, 4.375rem));
+}
+.section-layout_component.is-responsive {
+  --section-title-size: 2rem;
+  --section-title-line-height: 1;
+  --section-layout-gap: var(--space-section-content);
+}
+@media (min-width: 32.5625rem) {
+  .section-layout_component.is-responsive { --section-title-size: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .section-layout_component.is-responsive { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-layout_component.is-responsive { --section-title-size: 3.25rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  .section-layout_component.is-split {
+    display: grid;
+    grid-template-columns: var(--section-layout-columns, minmax(0, 0.75fr) minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+
+/* Промо-блок цены: слева курс, справа деньги. Плоская тёмная поверхность, без карточек, градиентов и кнопок. */
+.pricing-promo_component {
+  --pricing-promo-text: var(--color-text-on-dark-muted);
+  --pricing-promo-muted: #bdb7b7;
+  --pricing-promo-faint: #99929f;
+  --pricing-promo-line: rgb(255 255 255 / 14%);
+  --pricing-promo-featured-surface: #3a2f48;
+  --pricing-promo-tabs-surface: #4c3c5e;
+  --pricing-promo-tab-active: var(--color-accent-primary);
+  --pricing-promo-number-size: 2.5rem;
+  --pricing-promo-row-number-size: 1.75rem;
+  --pricing-promo-suffix-size: 1rem;
+  --section-subtitle-color: var(--pricing-promo-text);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--pricing-promo-text);
+}
+
+.pricing-promo_component [hidden] { display: none; }
+/* Пока идёт запрос к CMS, деньги чуть прозрачные; блок целиком перерисуется по ответу. */
+.pricing-promo[data-cms-state="loading"] .pricing-promo_price { opacity: 0.55; transition: opacity var(--transition-site, 250ms linear); }
+.pricing-promo_old { margin-right: 0.25rem; color: var(--pricing-promo-muted); font-size: 0.55em; font-weight: 400; text-decoration: line-through; }
+.pricing-promo_unconfirmed { font-size: 1.375rem; line-height: 1.2; }
+.pricing-promo_discount { --body-text-color: var(--color-text-on-dark); }
+
+.pricing-promo_tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(max-content, 1fr);
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  align-self: flex-start;
+  padding: 0.125rem;
+  border-radius: 6rem;
+  background: var(--pricing-promo-tabs-surface);
+}
+
+.pricing-promo_tab {
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--pricing-promo-muted);
+  font: 400 1rem / 1.2 var(--font-family-body);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  cursor: pointer;
+  transition: color var(--transition-site, 250ms linear), background-color var(--transition-site, 250ms linear);
+}
+.pricing-promo_tab[aria-selected="true"], .pricing-promo_tab:hover { color: var(--color-text-on-dark); }
+.pricing-promo_tab:hover { background-color: rgb(255 255 255 / 6%); }
+.pricing-promo_tab[aria-selected="true"] { background-color: var(--pricing-promo-tab-active); }
+.pricing-promo_tab:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: -3px; }
+.pricing-promo_panel:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: 3px; }
+
+.pricing-promo_panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: center; }
+.pricing-promo_heading { color: var(--color-text-on-dark); }
+.pricing-promo_tabs { order: -1; }
+.pricing-promo_intro { display: flex; flex-direction: column; gap: var(--space-heading-copy, 1.25rem); min-width: 0; }
+.pricing-promo_copy { display: flex; flex-direction: column; gap: var(--space-subtitle-pair, 0.5rem); max-width: 34rem; }
+.pricing-promo_course { color: var(--color-text-on-dark); }
+.pricing-promo_description { --body-text-color: var(--pricing-promo-text); white-space: pre-line; }
+.pricing-promo_start-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pricing-promo_start { color: var(--color-text-primary); }
+
+.pricing-promo_price { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.pricing-promo_price.is-single { padding: 1rem; border-radius: var(--radius-card); background: var(--pricing-promo-featured-surface); }
+.pricing-promo_amount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem; color: var(--color-text-on-dark); line-height: 1; letter-spacing: -0.05em; }
+.pricing-promo_price.is-single + .pricing-promo_price.is-single { margin-top: 1rem; }
+.pricing-promo_number { font-size: var(--pricing-promo-number-size); font-weight: 600; letter-spacing: -0.03em; }
+.pricing-promo_amount.is-row .pricing-promo_number { font-size: var(--pricing-promo-row-number-size); }
+.pricing-promo_terms { --body-text-color: var(--pricing-promo-muted); }
+.pricing-promo_increase { margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--pricing-promo-line); }
+.pricing-promo_increase-next { --body-text-color: var(--pricing-promo-faint); }
+
+.pricing-promo_rows { display: flex; flex-direction: column; list-style: none; }
+.pricing-promo_row { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem 0; border-top: 1px solid var(--pricing-promo-line); }
+.pricing-promo_row:first-child { border-top: 0; }
+.pricing-promo_row:first-child:not(.is-featured) { padding-top: 0; }
+.pricing-promo_row:last-child:not(.is-featured) { padding-bottom: 0; }
+/* Фон рекомендуемой строки выходит наружу на величину полей, текст остаётся на общей вертикали с соседними строками. */
+.pricing-promo_row.is-featured { margin-inline: -0.75rem; padding-inline: 0.75rem; border-top: 0; border-radius: var(--radius-card); background: var(--pricing-promo-featured-surface); }
+.pricing-promo_row.is-featured + .pricing-promo_row { border-top: 0; }
+.pricing-promo_row-copy { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.pricing-promo_row-name { color: var(--color-text-on-dark); overflow-wrap: normal; }
+.pricing-promo_row-note { --body-text-color: var(--pricing-promo-muted); max-width: 22rem; }
+.pricing-promo_row-cost { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.pricing-promo_stream-label { --body-text-color: var(--pricing-promo-muted); }
+.pricing-promo_component[data-ready] .pricing-promo_stream-label { display: none; }
+
+@media (min-width: 32.5625rem) {
+  .pricing-promo_component { --pricing-promo-number-size: 2.75rem; --pricing-promo-row-number-size: 2rem; --pricing-promo-suffix-size: 1.125rem; }
+  .pricing-promo_tab { font-size: 1.125rem; }
+  .pricing-promo_row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 1.5rem; align-items: start; }
+  .pricing-promo_row-copy { grid-column: 1; grid-row: 1 / span 2; }
+  .pricing-promo_row-cost { grid-column: 2; text-align: right; align-items: flex-end; }
+  .pricing-promo_row-cost .pricing-promo_amount { justify-content: flex-end; }
+}
+
+@media (min-width: 48rem) {
+  /* От планшета сам компонент становится сеткой: табы стоят над строками тарифов в правой колонке,
+     панель растягивается на обе колонки через subgrid, вводная слева занимает всю высоту. */
+  .pricing-promo_component { --pricing-promo-suffix-size: 1.125rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); grid-template-rows: auto 1fr; gap: var(--space-heading-copy, 1.5rem) 2.5rem; align-items: start; }
+  .pricing-promo_component.is-tabbed { grid-template-rows: auto auto 1fr; }
+  .pricing-promo_heading { grid-column: 1 / -1; grid-row: 1; }
+  .pricing-promo_tabs { order: 0; grid-column: 2; grid-row: 2; z-index: 1; justify-self: start; padding: 0.3125rem; }
+  .pricing-promo_tab { padding: 0.5rem 1.25rem; font-size: 1.25rem; }
+  .pricing-promo_panel { grid-column: 1 / -1; grid-row: 2 / -1; grid-template-columns: subgrid; grid-template-rows: subgrid; align-items: start; }
+  .pricing-promo_intro { grid-column: 1; grid-row: 1 / -1; }
+  .pricing-promo_price { grid-column: 2; grid-row: -2 / -1; }
+  .pricing-promo_price.is-single { padding: 1.25rem; }
+  .pricing-promo_row { padding-block: 1.25rem; }
+  .pricing-promo_row.is-featured { margin-inline: -1.25rem; padding-inline: 1.25rem; }
+  .pricing-promo_increase { margin-top: 0.75rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  .pricing-promo_component { --pricing-promo-number-size: 3rem; --pricing-promo-row-number-size: 2.25rem; --pricing-promo-suffix-size: 1.25rem; column-gap: 4rem; }
+  .pricing-promo_tab { font-size: 1.375rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-promo_component { --transition-site: 0s linear; }
+}
+
+/* Внешняя оболочка блока (решение пользователя 17.09.2026): тёмная карточка с полями и скруглением контейнера
+   программы, стоит в колонке формы заявки (column-grid_content.is-content-wide). Секция без is-inset. */
+.pricing-promo_card { display: flex; width: 100%; min-width: 0; flex-direction: column; padding: var(--section-inset-space) var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+@media (min-width: 48rem) { .pricing-promo_card { padding-inline: 1.5rem; } }
+@media (min-width: 64.0625rem) { .pricing-promo_card { padding-inline: 2.5rem; } }
+
+
+/* Тема страницы «Блок „Цена обучения“: шесть вариантов». Только переменные и внешние секции; внутренности компонента не трогать. */
+.pricing-variants-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-page-background: #f5f5f5;
+  --color-accent-text: #644ab2;
+  --page-padding: 1rem;
+}
+
+/* Колонка формы (10 из 12) из components.css: блок цены стоит в той же колонке, что форма заявки. */
+.pricing-variants-page .column-grid_component { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.pricing-variants-page .column-grid_content { min-width: 0; grid-column: 1; }
+@media (min-width: 48rem) { .pricing-variants-page { --page-padding: 1.5rem; } }
+@media (min-width: 64.0625rem) {
+  .pricing-variants-page .column-grid_component { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 1rem; }
+  .pricing-variants-page .column-grid_content.is-content-wide { grid-column: 2 / span 10; }
+}
+@media (min-width: 75rem) { .pricing-variants-page { --page-padding: 5rem; } }
+
+/* Вводная страницы и подписи к вариантам: страница владеет ими целиком. */
+.section_intro { padding-block: 2.5rem 1rem; }
+.intro_component { display: flex; flex-direction: column; gap: 1rem; max-width: 66.5rem; margin-inline: auto; }
+.intro_lead { max-width: 44rem; font-size: 1rem; line-height: 1.4; color: var(--color-text-secondary); }
+.intro_lead a { color: var(--color-accent-primary); text-decoration: underline; text-underline-offset: 0.15em; }
+
+.section_variant-note { padding-block: 2.5rem 1.25rem; }
+.variant-note_component { display: flex; flex-direction: column; gap: 0.5rem; max-width: 66.5rem; margin-inline: auto; }
+.variant-note_label { font-size: 0.875rem; line-height: 1.2; color: var(--color-text-secondary); }
+.variant-note_heading { font-size: 1.375rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.03em; }
+.variant-note_text { max-width: 44rem; font-size: 1rem; line-height: 1.4; color: var(--color-text-secondary); }
+.variant-note_text code { font: inherit; color: var(--color-text-primary); }
+

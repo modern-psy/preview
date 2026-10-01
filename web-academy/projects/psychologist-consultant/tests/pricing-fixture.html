@@ -1,0 +1,2506 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pricing component fixture</title><link rel="icon" href="data:,"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;444;500;600&display=swap"><style>.academy-page {
+  --color-page-background: #f5f5f5;
+  --color-surface-primary: #ffffff;
+  --color-text-primary: #332f41;
+  --color-text-secondary: #747476;
+  --color-text-secondary-large: #7b7b7c;
+  --color-text-secondary-on-accent: #5e5a6a;
+  --color-text-on-dark: #ffffff;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-soft: #dad6ff;
+  --color-focus: #7c5cdb;
+  --color-surface-dark: #2b2334;
+  --color-text-on-dark-muted: #e6e5eb;
+  --color-cta-grid-muted: #32293c;
+  --color-cta-grid-medium: #3b2e49;
+  --color-cta-grid-bright: #38254e;
+  --border-gradient-accent: linear-gradient(
+    to top right,
+    rgba(124, 92, 219, 0.8) 0%,
+    rgba(124, 92, 219, 0.3) 50%,
+    rgba(124, 92, 219, 0.8) 100%
+  );
+  --section-heading-gap: clamp(1.25rem, 3.63vw, 1.75rem);
+  --section-heading-description-size: clamp(1rem, 2.149vw, 1.375rem);
+  --text-body-size: clamp(1.125rem, 2.016vw, 1.25rem);
+  --text-body-line-height: 1.4;
+  --content-heading-gap: 0.5rem;
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+  --font-family-emphasis: var(--font-family-body);
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --radius-card: 1rem;
+  --transition-site: 180ms ease;
+  --hero-section-offset: 3rem;
+  --hero-section-end: 5rem;
+  --hero-section-end-desktop: 9.375rem;
+  --hero-media-min-height: 37.5rem;
+  --hero-media-min-height-desktop: 43.75rem;
+  --hero-image-position: 66% center;
+  --hero-image-position-desktop: center;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.academy-page,
+.academy-page *,
+.academy-page *::before,
+.academy-page *::after {
+  box-sizing: border-box;
+}
+
+body:has(.academy-page) {
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.academy-page :where(h1, h2, h3, h4, h5, h6, p, ul, li) {
+  margin: 0;
+  padding: 0;
+}
+
+.academy-page ul {
+  list-style: none;
+}
+
+.academy-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.academy-page img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.academy-page .main-wrapper {
+  display: block;
+}
+
+.academy-page .padding-global {
+  width: 100%;
+  padding-right: var(--page-padding);
+  padding-left: var(--page-padding);
+}
+
+.academy-page .container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.column-grid_component {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.column-grid_content {
+  min-width: 0;
+  grid-column: 1;
+}
+
+.section_hero {
+  padding-top: var(--hero-section-offset);
+  padding-bottom: var(--hero-section-end);
+}
+
+.hero_component {
+  display: grid;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.hero_visual {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.hero_media {
+  position: relative;
+  display: grid;
+  min-height: var(--hero-media-min-height);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  isolation: isolate;
+}
+
+.hero_image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--hero-image-position);
+}
+
+.hero_media::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgb(0 0 0 / 15%);
+  content: "";
+  pointer-events: none;
+}
+
+.meta-pill_list {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem;
+}
+
+.meta-pill_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.meta-pill_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.meta-pill_component img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* The approved Hero tag, also used independently in content cards. */
+.meta-pill_component.is-responsive {
+  --meta-pill-padding-y: calc(0.3125rem + clamp(0rem, 0.25575448vw - 0.09590793rem, 0.0625rem));
+  --meta-pill-padding-start: calc(0.375rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-padding-end: calc(0.5625rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-size: calc(0.875rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --meta-pill-icon-size: calc(1.125rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  padding: var(--meta-pill-padding-y) var(--meta-pill-padding-end) var(--meta-pill-padding-y) var(--meta-pill-padding-start);
+  font-size: var(--meta-pill-size);
+  white-space: normal;
+}
+.meta-pill_icon {
+  display: block;
+  width: var(--meta-pill-icon-size, 1.25rem);
+  height: var(--meta-pill-icon-size, 1.25rem);
+  flex: none;
+}
+.meta-pill_component.is-responsive .meta-pill_icon {
+  width: var(--meta-pill-icon-size);
+  height: var(--meta-pill-icon-size);
+}
+
+.hero_content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  align-self: end;
+  gap: 2rem;
+  padding: 1.5rem 0.75rem 1rem;
+  color: var(--color-text-on-dark);
+  text-align: center;
+}
+
+.hero_copy,
+.hero_actions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.hero_copy {
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero_heading {
+  width: 100%;
+  max-width: 38.3125rem;
+  font-size: clamp(2.25rem, 5.645vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.hero_description {
+  width: 100%;
+  max-width: 38.3125rem;
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: 1.2;
+  text-wrap: pretty;
+}
+
+.hero_actions {
+  max-width: 38.3125rem;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.button {
+  display: inline-flex;
+  width: var(--button-width, auto);
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    box-shadow var(--transition-site);
+}
+
+.button.is-light {
+  min-height: 3.75rem;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  font-size: 1.125rem;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+}
+
+.button.is-accent {
+  min-height: 3.75rem;
+  padding: 1rem 2rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+  font-size: 1.125rem;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+}
+
+.button.is-full-width {
+  width: 100%;
+}
+
+.button.is-light:hover {
+  background: #eeeeff;
+}
+
+.button.is-accent:hover {
+  background: #644ab2;
+}
+
+.button.is-light:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 70%);
+}
+
+.button.is-accent:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 90%);
+}
+
+.hero_start-note {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-text-on-dark);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  opacity: 0.9;
+}
+
+.hero_start-note img {
+  display: block;
+  width: 1.375rem;
+  height: 1.375rem;
+  flex: none;
+}
+
+.stat-card_component {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-card);
+  background: var(--color-accent-soft);
+  color: #000000;
+}
+
+.stat-card_value {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.stat-card_label {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--stat-card-label-size, var(--text-body-size));
+  font-weight: 400;
+  line-height: var(--text-body-line-height);
+  letter-spacing: -0.01em;
+}
+
+.card-grid_component {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.card-grid_component.is-stack-tablet {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.card_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: var(--card-padding, 1rem 0.75rem);
+  overflow: hidden;
+  overflow: clip;
+  border-radius: 0.75rem;
+  background: var(--color-surface-primary);
+}
+
+.card_component.is-spacious {
+  gap: 0.75rem;
+}
+
+.card_component.is-unframed {
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+}
+
+.card_icon {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem;
+  border: 0.25px solid transparent;
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(
+        var(--color-accent-soft, #dad6ff),
+        var(--color-accent-soft, #dad6ff)
+      )
+      padding-box,
+    var(--border-gradient-accent) border-box;
+}
+
+.card_icon img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.card_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--content-heading-gap);
+}
+
+.card_content.is-spacious {
+  gap: var(--content-heading-gap);
+}
+
+.card_heading {
+  color: var(--color-text-primary);
+  font-size: clamp(1.25rem, 2.419vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.card_description {
+  color: var(--color-text-secondary-large);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: var(--text-body-line-height);
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.price-panel_component {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 1.5rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.price-panel_intro {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.price-panel_heading {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(1.75rem, 2.143vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.price-panel_description {
+  margin: 0;
+  color: var(--color-text-secondary-large);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.price-list_component {
+  display: grid;
+  min-width: 0;
+  gap: 0.625rem;
+  margin: 0;
+}
+
+.price-list_item {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-card);
+  background: var(--color-page-background);
+  color: var(--color-text-secondary-large);
+}
+
+.price-list_item.is-current {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  border: 0.25px solid transparent;
+  background:
+    linear-gradient(var(--color-accent-soft), var(--color-accent-soft)) padding-box,
+    var(--border-gradient-accent) border-box;
+  color: var(--color-text-primary);
+}
+
+.price-list_label,
+.price-list_value,
+.price-list_amount,
+.price-list_note {
+  margin: 0;
+}
+
+.price-list_label,
+.price-list_amount {
+  font-family: var(--font-family-emphasis);
+  font-size: clamp(1.25rem, 1.667vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.price-list_value {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.price-list_item.is-current .price-list_label,
+.price-list_item.is-current .price-list_amount {
+  font-size: clamp(1.5rem, 1.905vw, 2rem);
+}
+
+.price-list_amount {
+  white-space: nowrap;
+}
+
+.price-list_note {
+  color: var(--color-text-secondary-on-accent);
+  font-family: var(--font-family-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.section-heading_component,
+.section-intro_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-heading-gap);
+}
+
+.section-heading_component {
+  align-items: center;
+  text-align: center;
+}
+
+.section-intro_component {
+  align-items: center;
+  text-align: center;
+}
+
+.section-intro_component.is-compact {
+  gap: 1rem;
+}
+
+.section-intro_mark {
+  display: block;
+  width: 3.75rem;
+  height: 3.75rem;
+  flex: none;
+}
+
+.section-intro_heading {
+  width: 100%;
+  color: var(--color-text-primary);
+  font-size: clamp(2.25rem, 5.078vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.section-intro_accent {
+  display: block;
+  color: var(--color-accent-primary);
+}
+
+.section-heading_description,
+.section-intro_description {
+  width: 100%;
+  color: var(--color-text-secondary-large);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.statement-card_text {
+  color: var(--color-text-secondary-large);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: var(--text-body-line-height);
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.statement-card_lead {
+  color: var(--color-text-primary);
+}
+
+.media-card-list_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2.5rem, 6.835vw, 4.375rem);
+}
+
+.media-card-list_heading {
+  width: 100%;
+  color: var(--color-text-primary);
+  font-size: clamp(2.25rem, 5.078vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.media-card-list_layout {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.media-card-list_list {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 0.5rem;
+}
+
+.media-card-list_media {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  overflow: clip;
+  border-radius: var(--radius-card);
+}
+
+.media-card-list_image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.accordion_component {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: var(--accordion-item-gap, 1rem);
+}
+
+.accordion_item {
+  min-width: 0;
+}
+
+.accordion_summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.accordion_summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion_summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -4px;
+  border-radius: var(--radius-card);
+}
+
+.accordion_panel {
+  min-width: 0;
+  overflow: hidden;
+  overflow: clip;
+}
+
+.accordion_icon {
+  position: relative;
+  display: block;
+  width: 2.0625rem;
+  height: 2.0625rem;
+  flex: none;
+  color: var(--color-text-primary);
+  transform: rotate(0deg);
+  transition: transform var(--motion-duration, 260ms) var(--motion-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.accordion_icon::before,
+.accordion_icon::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.accordion_icon::before {
+  width: 1.25rem;
+  height: 1.5px;
+}
+
+.accordion_icon::after {
+  width: 1.5px;
+  height: 1.25rem;
+}
+
+.accordion_item[open] .accordion_icon,
+.accordion_item[data-accordion-state="opening"] .accordion_icon {
+  transform: rotate(-45deg);
+}
+
+.accordion_item[data-accordion-state="closing"] .accordion_icon {
+  transform: rotate(0deg);
+}
+
+.faq_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.faq_header {
+  display: flex;
+  width: min(100%, 52.9375rem);
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.faq_heading {
+  width: 100%;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(2.25rem, 5.078vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.faq_support {
+  margin: 0;
+  color: var(--color-text-secondary-large);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.faq_support a {
+  color: var(--color-link-primary, var(--color-accent-primary));
+  font-weight: 500;
+  transition: color var(--transition-site);
+}
+
+.faq_support a:hover {
+  color: var(--color-link-hover, var(--color-text-primary));
+}
+
+.faq_support a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 0.1875rem;
+}
+
+.faq_list {
+  --accordion-item-gap: 0;
+  width: 100%;
+  overflow: hidden;
+  overflow: clip;
+  border: 0.3px solid var(--faq-divider-color, #acacac);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.faq_item {
+  background: var(--color-surface-primary);
+}
+
+.faq_item:not(:last-child) {
+  border-bottom: 0.3px solid var(--faq-divider-color, #acacac);
+}
+
+.faq_question {
+  display: grid;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) 2.0625rem;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text-secondary-large);
+  font-size: clamp(1.125rem, 2.419vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  text-align: left;
+  transition: color var(--transition-site);
+}
+
+.faq_question-heading {
+  color: inherit;
+  font: inherit;
+}
+
+.faq_question .accordion_icon {
+  color: inherit;
+}
+
+.faq_item[open] .faq_question,
+.faq_item[data-accordion-state="opening"] .faq_question {
+  color: var(--color-text-primary);
+}
+
+.faq_answer-inner {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.faq_answer p {
+  max-width: 66.625rem;
+  margin: 0;
+  color: var(--color-text-secondary-large);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.faq_answer a {
+  text-decoration: underline;
+  text-underline-position: from-font;
+  transition: color var(--transition-site);
+}
+
+.faq_answer a:hover {
+  color: var(--color-accent-primary);
+}
+
+.faq_answer a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 0.1875rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .faq_item:not([open]):hover .faq_question {
+    color: var(--color-text-primary);
+  }
+}
+
+.academy-showcase_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2.5rem, 6.835vw, 4.375rem);
+}
+
+.academy-showcase_heading {
+  width: min(100%, 63rem);
+  color: var(--color-text-primary);
+  font-size: clamp(2.25rem, 5.078vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.academy-showcase_heading span {
+  display: inline;
+  color: var(--color-academy-accent, #644ab2);
+}
+
+.academy-showcase_grid,
+.academy-showcase_side-grid {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.academy-showcase_card {
+  position: relative;
+  min-width: 0;
+  min-height: 24.5rem;
+  padding: clamp(1.25rem, 2.419vw, 1.5rem);
+  overflow: hidden;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  isolation: isolate;
+}
+
+.academy-showcase_card.is-practice {
+  min-height: 32rem;
+  background: #e9e9e9;
+}
+
+.academy-showcase_practice-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  overflow: clip;
+  border-radius: inherit;
+}
+
+.academy-showcase_practice-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.academy-showcase_card-copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  width: min(100%, 37.5rem);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--content-heading-gap);
+}
+
+.academy-showcase_card-heading {
+  color: var(--color-text-primary);
+  font-size: clamp(1.5rem, 3.516vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.academy-showcase_card-description {
+  color: var(--color-text-secondary-large);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: var(--text-body-line-height);
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.academy-showcase_community-media {
+  position: absolute;
+  right: -6%;
+  bottom: 0;
+  z-index: 1;
+  width: 72%;
+}
+
+.academy-showcase_community-glow {
+  position: absolute;
+  top: 46.54%;
+  left: -23.37%;
+  z-index: -1;
+  width: 70.36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  filter: blur(clamp(4.5rem, 8vw, 6.6875rem));
+}
+
+.academy-showcase_community-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.academy-showcase_card.is-graduates {
+  background: var(--color-surface-dark);
+}
+
+.academy-showcase_card.is-graduates .academy-showcase_card-heading {
+  color: var(--color-text-on-dark-muted);
+}
+
+.academy-showcase_card.is-graduates .academy-showcase_card-description {
+  color: #bdb7b7;
+  letter-spacing: 0;
+}
+
+.academy-showcase_graduates-media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.academy-showcase_graduates-primary {
+  position: absolute;
+  top: 52.55%;
+  right: 1rem;
+  width: clamp(8.75rem, 23.94%, 11.25rem);
+  aspect-ratio: 1;
+}
+
+.academy-showcase_graduates-primary img,
+.academy-showcase_graduate-avatar {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  object-fit: cover;
+}
+
+.academy-showcase_graduates-glow {
+  position: absolute;
+  top: 13.33%;
+  left: -18.89%;
+  z-index: 0;
+  width: 162.22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #371462;
+  filter: blur(clamp(5rem, 9vw, 8.125rem));
+}
+
+.academy-showcase_graduate-avatar {
+  position: absolute;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.academy-showcase_graduate-avatar.is-small {
+  top: 23.98%;
+  right: 1rem;
+  width: clamp(4rem, 10.77%, 5.0625rem);
+}
+
+.academy-showcase_graduate-avatar.is-medium {
+  bottom: 4.85%;
+  left: 12%;
+  width: clamp(5rem, 14.63%, 6.875rem);
+}
+
+.cta_component {
+  --grid-color-muted: var(--color-cta-grid-muted);
+  --grid-color-medium: var(--color-cta-grid-medium);
+  --grid-color-bright: var(--color-cta-grid-bright);
+  --grid-line-color: rgb(93 93 93 / 72%);
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cta-padding, 2rem 1rem);
+  overflow: hidden;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-dark);
+  isolation: isolate;
+}
+
+.cta_component.is-comparison {
+  align-items: stretch;
+  padding: 2rem 1rem;
+}
+
+.cta_grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 24%,
+    #000 76%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 24%,
+    #000 76%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.cta_grid.is-tall {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.cta_grid-scene {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 79rem;
+  height: 20.5rem;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 24%,
+    #000 76%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 24%,
+    #000 76%,
+    transparent 100%
+  );
+  transform: translate(-50%, -50%);
+}
+
+.cta_grid-scene.is-tall {
+  top: 0;
+  width: 74.875rem;
+  height: 30.75rem;
+  -webkit-mask-image: none;
+  mask-image: none;
+  transform: translateX(-50%);
+}
+
+.cta_grid-image,
+.cta_grid-reset-layer,
+.cta_grid-highlights,
+.cta_grid-cross-layer,
+.cta_comet-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cta_grid-image {
+  z-index: 0;
+}
+
+.cta_grid-reset-layer {
+  z-index: 1;
+}
+
+.cta_grid-highlights {
+  z-index: 2;
+}
+
+.cta_grid-cross-layer {
+  z-index: 3;
+}
+
+.cta_grid-reset-cell {
+  position: absolute;
+  top: var(--cta-cell-y);
+  left: var(--cta-cell-x);
+  width: 6.25rem;
+  height: 6.25rem;
+  background: var(--color-surface-dark);
+  box-shadow: inset 0 0 0 0.25px rgb(93 93 93 / 58%);
+}
+
+.cta_grid-cross {
+  --cta-cross-size: 0.625rem;
+  position: absolute;
+  top: calc(var(--cta-cross-y) - (var(--cta-cross-size) / 2));
+  left: calc(var(--cta-cross-x) - (var(--cta-cross-size) / 2));
+  width: var(--cta-cross-size);
+  height: var(--cta-cross-size);
+}
+
+.cta_grid-cross::before,
+.cta_grid-cross::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 999px;
+  background: #949494;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.cta_grid-cross::before {
+  width: 100%;
+  height: 0.5px;
+}
+
+.cta_grid-cross::after {
+  width: 0.5px;
+  height: 100%;
+}
+
+.interactive-grid_cell {
+  position: absolute;
+  top: var(--grid-cell-y);
+  left: var(--grid-cell-x);
+  width: var(--grid-cell-size, 6.25rem);
+  height: var(--grid-cell-size, 6.25rem);
+  background: transparent;
+  opacity: 0;
+  box-shadow: inset 0 0 0 0.25px var(--grid-line-color);
+  transition:
+    opacity var(--transition-site),
+    background-color var(--transition-site);
+  transition-delay: var(--grid-cell-delay, 0ms);
+  will-change: opacity, background-color;
+}
+
+.interactive-grid_cell.is-touch-static {
+  transition: none;
+  transition-delay: 0ms;
+  will-change: auto;
+}
+
+.interactive-grid_cell.is-muted {
+  z-index: 1;
+  background: var(--grid-color-muted);
+  opacity: 1;
+}
+
+.interactive-grid_cell.is-medium {
+  z-index: 2;
+  background: var(--grid-color-medium);
+  opacity: 1;
+}
+
+.interactive-grid_cell.is-bright {
+  z-index: 3;
+  background: var(--grid-color-bright);
+  opacity: 1;
+}
+
+.cta_comet-layer {
+  z-index: 4;
+}
+
+.cta_comet {
+  position: absolute;
+  display: block;
+  width: 1.25rem;
+  height: 1px;
+  margin-top: -0.5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgb(230 229 235 / 0%), rgb(230 229 235 / 38%));
+  filter: drop-shadow(0 0 1.5px rgb(230 229 235 / 12%));
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: left center;
+  will-change: transform, opacity;
+}
+
+.cta_content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cta-content-gap, 2rem);
+  text-align: center;
+}
+
+.cta_heading {
+  width: 100%;
+  max-width: 68rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: clamp(1.875rem, 5.078vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.cta_heading.is-statement {
+  max-width: none;
+  line-height: 1.1;
+}
+
+.cta_button {
+  display: inline-flex;
+  width: var(--cta-button-width, 100%);
+  min-height: var(--cta-button-min-height, 3.75rem);
+  align-items: center;
+  justify-content: center;
+  padding: var(--cta-button-padding, 1rem 1.5rem);
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--color-surface-primary);
+  color: var(--color-surface-dark);
+  font-size: var(--cta-button-size, 1.125rem);
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--transition-site);
+}
+
+.cta_button:hover {
+  background: #eeeeff;
+}
+
+.cta_button:focus-visible {
+  outline: 2px solid #c9b8ff;
+  outline-offset: 4px;
+}
+
+@media screen and (min-width: 48rem) {
+  .card-grid_component.is-stack-tablet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .price-panel_component {
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+
+  .price-list_item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding-top: 1.125rem;
+    padding-bottom: 1.125rem;
+  }
+
+  .price-list_value {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .faq_component {
+    gap: 3rem;
+  }
+
+  .faq_header {
+    gap: 1.75rem;
+  }
+
+  .faq_question {
+    min-height: 4.625rem;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .faq_answer-inner {
+    padding-right: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .section-heading_component:not(.section-intro_component) {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .meta-pill_list {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .meta-pill_component {
+    font-size: 1rem;
+  }
+
+  .hero_content {
+    padding: 1.5rem;
+  }
+
+  .card_component {
+    padding: var(--card-padding, 1rem);
+  }
+
+  .media-card-list_layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .media-card-list_media {
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .cta_component {
+    padding: var(--cta-padding, 2.5rem 1.5rem);
+  }
+
+  .cta_component.is-comparison {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .cta_button {
+    width: var(--cta-button-width, auto);
+  }
+
+  .academy-showcase_card.is-practice {
+    min-height: 0;
+    aspect-ratio: 47 / 50;
+  }
+
+  .academy-showcase_community-media {
+    right: 3.19%;
+    width: 55.19%;
+  }
+
+  .academy-showcase_graduates-primary {
+    right: 9.57%;
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    right: 4.26%;
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    left: 43.75%;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .card-grid_component.is-stack-tablet {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .column-grid_component {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1rem;
+  }
+
+  .column-grid_content.is-content-medium {
+    grid-column: 3 / span 8;
+  }
+
+  .column-grid_content.is-content-wide {
+    grid-column: 2 / span 10;
+  }
+
+  .price-panel_component {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+  }
+
+  .section_hero {
+    padding-bottom: var(--hero-section-end-desktop);
+  }
+
+  .hero_component {
+    gap: 1rem;
+  }
+
+  .hero_visual {
+    display: block;
+  }
+
+  .hero_media {
+    min-height: var(--hero-media-min-height-desktop);
+  }
+
+  .hero_image {
+    object-position: var(--hero-image-position-desktop);
+  }
+
+  .hero_content {
+    width: min(55%, 38.3125rem);
+    align-items: flex-start;
+    gap: 2rem;
+    text-align: left;
+  }
+
+  .hero_copy {
+    align-items: flex-start;
+  }
+
+  .hero_heading,
+  .hero_description,
+  .hero_actions {
+    max-width: none;
+  }
+
+  .hero_heading {
+    font-size: 3.5rem;
+  }
+
+  .hero_description {
+    font-size: 1.375rem;
+  }
+
+  .button.is-light {
+    min-height: 4rem;
+    padding: 1.25rem 4rem;
+    font-size: 1.375rem;
+  }
+
+  .hero_start-note {
+    justify-content: flex-start;
+    font-size: 1rem;
+  }
+
+  .stat-card_component {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    width: max-content;
+    max-width: calc(45% - 3rem);
+    padding: 1rem;
+  }
+
+  .stat-card_value {
+    font-size: 3.25rem;
+  }
+
+  .stat-card_label {
+    white-space: nowrap;
+  }
+
+  .card-grid_component {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .card_component {
+    border-radius: var(--radius-card);
+  }
+
+  .card_component.is-spacious {
+    gap: 1.75rem;
+  }
+
+  .card_heading {
+    font-size: 1.5rem;
+  }
+
+  .card_component.is-on-media {
+    border: 0.25px solid rgb(239 242 249 / 80%);
+    border-radius: 1rem;
+    background: rgb(51 47 65 / 25%);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+
+  .card_heading.is-on-media {
+    color: var(--color-text-on-dark-muted);
+  }
+
+  .card_description.is-on-media {
+    color: #bdb7b7;
+  }
+
+  .media-card-list_heading {
+    font-size: 3.25rem;
+  }
+
+  .media-card-list_list {
+    gap: 1rem;
+  }
+
+  .section-intro_heading,
+  .cta_heading {
+    font-size: 3.25rem;
+  }
+
+  .cta_component {
+    padding: var(--cta-padding, 3rem 2.5rem);
+  }
+
+  .cta_component.is-comparison {
+    padding: 3rem 2.5rem;
+  }
+
+  .cta_content {
+    gap: var(--cta-content-gap, 2.25rem);
+  }
+
+  .cta_button {
+    min-height: var(--cta-button-min-height, 4.1875rem);
+    padding: var(--cta-button-padding, 1.25rem 3rem);
+    font-size: var(--cta-button-size, 1.375rem);
+  }
+
+  .button.is-accent {
+    min-height: 4.1875rem;
+    padding: 1.25rem 4rem;
+    font-size: 1.375rem;
+  }
+
+  .academy-showcase_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .academy-showcase_side-grid {
+    height: 100%;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .academy-showcase_card {
+    min-height: 0;
+  }
+}
+
+@media screen and (max-width: 47.9375rem) {
+  .academy-showcase_card.is-community,
+  .academy-showcase_card.is-graduates {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .academy-showcase_community-media {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(88%, 26rem);
+    margin-top: clamp(2rem, 8vw, 3.5rem);
+    margin-right: -1.5rem;
+    margin-bottom: -1.5rem;
+    margin-left: auto;
+  }
+
+  .academy-showcase_graduates-media {
+    position: relative;
+    inset: auto;
+    display: grid;
+    width: 100%;
+    margin-top: clamp(2.5rem, 10vw, 4rem);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr) minmax(0, 0.65fr);
+    align-items: end;
+    gap: clamp(0.75rem, 3vw, 1.25rem);
+  }
+
+  .academy-showcase_graduates-primary {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(100%, 11.25rem);
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .academy-showcase_graduate-avatar.is-small {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(100%, 5.0625rem);
+    margin-bottom: clamp(2rem, 8vw, 3.5rem);
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .academy-showcase_graduate-avatar.is-medium {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: min(100%, 6.875rem);
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+}
+
+@media screen and (max-width: 64rem) {
+  .card_component {
+    gap: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 48rem) {
+  .card_icon {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.375rem;
+  }
+}
+
+@media screen and (max-width: 23.4375rem) {
+  .hero_heading {
+    font-size: clamp(2rem, 9.6vw, 2.25rem);
+  }
+
+  .card_component {
+    padding-right: var(--card-padding, 0.625rem);
+    padding-left: var(--card-padding, 0.625rem);
+  }
+}
+
+@media screen and (max-width: 28.125rem) {
+  .card-grid_component.is-stack-narrow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button.is-light,
+  .button.is-accent,
+  .accordion_icon,
+  .cta_button,
+  .faq_question,
+  .faq_support a,
+  .faq_answer a,
+  .interactive-grid_cell {
+    transition-duration: 0.01ms;
+  }
+
+  .interactive-grid_cell {
+    transition-delay: 0ms;
+  }
+
+  .cta_comet-layer {
+    display: none;
+  }
+}
+
+/* Complete showcase and described CTA variants. */
+.cta_heading.is-wide {
+  max-width: 75.875rem;
+  line-height: 1.1;
+}
+
+.academy-showcase_layout {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.academy-showcase_card-copy.is-teachers {
+  width: min(100%, 53.125rem);
+}
+
+.academy-showcase_card.is-teachers {
+  display: grid;
+  width: 100%;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.academy-showcase_teachers-media {
+  display: flex;
+  width: min(100%, 20rem);
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-self: center;
+}
+
+.academy-showcase_teachers-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 240 / 164;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.academy-showcase_teachers-controls {
+  display: grid;
+  height: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  gap: 0.25rem;
+}
+
+.academy-showcase_teachers-control {
+  border-radius: 0.25rem;
+  background: #484845;
+}
+
+.academy-showcase_teachers-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border-radius: 0.25rem;
+  background: var(--color-accent-primary);
+}
+
+.academy-showcase_teachers-status span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+}
+
+@media (min-width: 48rem) {
+  .academy-showcase_card.is-teachers { grid-template-columns: minmax(0, 1fr) minmax(10rem, 15rem); align-items: start; min-height: 15rem; }
+
+  .academy-showcase_teachers-media { width: 100%; }
+
+}
+
+.cta_copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cta-copy-gap, 1.75rem);
+}
+
+.cta_component.is-described .cta_heading {
+  max-width: 38rem;
+  line-height: 1.1;
+}
+
+.cta_description {
+  max-width: 47rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: clamp(1.125rem, 1.65vw, 1.375rem);
+  line-height: 1.2;
+  text-wrap: pretty;
+}
+
+@media (min-width: 64.0625rem) {
+
+  .cta_component.is-described {
+    padding: var(--cta-padding, 3rem 2.5rem);
+  }
+
+  .cta_component.is-described .cta_content {
+    gap: var(--cta-content-gap, 2.25rem);
+  }
+
+}
+/* Intrinsic tab pill, extracted from Teachers. Legacy teachers_tab is an alias. */
+.academy-page :is(.tab_component, .teachers_tab) {
+  --tab-size: 0.9375rem;
+  appearance: none; position: relative; display: block; flex: none;
+  width: max-content; max-width: 100%; margin: 0; border: 0; border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  background: var(--teachers-tab-background, var(--tabs-idle-surface, #e8e6ee));
+  color: var(--color-text-primary) !important;
+  font: 444 var(--teachers-tab-size, var(--tab-size)) / 1 var(--font-family-body);
+  text-align: start; letter-spacing: -0.02em; text-decoration: none;
+  overflow-wrap: anywhere; cursor: pointer;
+  transition: background-color var(--transition-site), color var(--transition-site);
+}
+:is(.tab_component, .teachers_tab)::after { content: ""; position: absolute; inset: 50% 0 auto; height: 100%; min-height: 2.75rem; transform: translateY(-50%); }
+.academy-page :is(.tab_component, .teachers_tab):hover { background: var(--color-accent-soft); }
+.academy-page :is(.tab_component, .teachers_tab)[aria-selected="true"] { background: var(--color-text-primary); color: white !important; }
+:is(.tab_component, .teachers_tab):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0.25rem; }
+@media (min-width: 32.5625rem) { .academy-page :is(.tab_component, .teachers_tab) { --tab-size: 1rem; } }
+@media (min-width: 48rem) { .academy-page :is(.tab_component, .teachers_tab) { --tab-size: 1.125rem; padding: 0.75rem 0.875rem; } }
+@media (min-width: 64.0625rem) { .academy-page :is(.tab_component, .teachers_tab) { --tab-size: 1.25rem; } }
+@media (prefers-reduced-motion: reduce) { .academy-page :is(.tab_component, .teachers_tab) { transition: none; } }
+
+/* Shared spacing for Academy cards. Opt in once per landing. */
+.academy-page {
+  --card-padding: 0.75rem;
+  --radius-card: 0.75rem;
+  --card-grid-gap: 0.75rem;
+}
+@media (min-width: 48rem) {
+  .academy-page { --card-padding: 1rem; --card-grid-gap: 1rem; --radius-card: 1rem; }
+}
+
+/* Opt-in course pricing; content and palette belong to the consuming landing. */
+.pricing_component {
+  --pricing-surface: var(--color-surface-dark);
+  --pricing-text: var(--color-text-on-dark-muted);
+  --pricing-muted: #bdb7b7;
+  --pricing-excluded: #99929f;
+  --pricing-card-top: #4d3d5f;
+  --pricing-featured-top: #543c9b;
+  --pricing-tabs-surface: #4c3c5e;
+  --pricing-tab-active: var(--color-accent-primary);
+  --content-prominent-size: 1.5rem;
+  --content-heading-line-height: 1;
+  --content-heading-gap: 0.5rem;
+  --section-heading-description-size: 1rem;
+  --section-subtitle-tracking: 0;
+  --pricing-badge-space: 2.125rem;
+  --pricing-icon-size: 1rem;
+  --section-subtitle-color: var(--pricing-text);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--pricing-text);
+}
+
+.pricing_tabs {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(max-content, 1fr);
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  align-self: center;
+  isolation: isolate;
+  padding: 0.3125rem;
+  border-radius: 6rem;
+  background: var(--pricing-tabs-surface);
+}
+
+.pricing_tabs[hidden],
+.pricing_component [hidden] {
+  display: none;
+}
+
+.pricing_tab {
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--pricing-muted);
+  font: 400 1rem / 1.2 var(--font-family-body);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  cursor: pointer;
+  transition: color var(--transition-site, 250ms linear), background-color var(--transition-site, 250ms linear);
+}
+
+.pricing_tab[aria-selected="true"],
+.pricing_tab:hover {
+  color: var(--color-text-on-dark);
+}
+
+.pricing_tab:hover { background-color: rgb(255 255 255 / 6%); }
+.pricing_tab[aria-selected="true"] { background-color: var(--pricing-tab-active); }
+.pricing_tab:focus-visible,
+.pricing_panel:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: 3px; }
+.pricing_tab:focus-visible { outline-offset: -3px; }
+
+.pricing_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem 1rem;
+  align-items: start;
+}
+
+/* A single offer stays centered instead of stretching across the section. */
+.pricing_grid.is-single {
+  --pricing-name-max-width: 19.375rem;
+  width: 100%;
+  max-width: var(--pricing-single-max-width, 31rem);
+  align-self: center;
+}
+.pricing_card .content-heading_component { max-width: var(--pricing-name-max-width, none); }
+
+.pricing_plan {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pricing_offer { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+
+.pricing_highlight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0;
+  border-radius: var(--radius-card);
+  background: linear-gradient(to bottom, var(--color-accent-primary) 28.108%, transparent);
+}
+
+.pricing_badge { display: flex; align-items: center; justify-content: center; gap: 0.25rem; color: var(--color-text-on-dark); font-size: 0.875rem; font-weight: 600; line-height: 1.2; }
+.pricing_badge-icon { display: block; flex: none; width: var(--pricing-icon-size); height: var(--pricing-icon-size); }
+
+.pricing_card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 20rem;
+  gap: 2.5rem;
+  padding: 1rem;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--pricing-card-top);
+  color: var(--color-text-on-dark);
+}
+
+.pricing_card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, var(--pricing-card-top), var(--pricing-surface) var(--pricing-gradient-end, 110.47%));
+  content: "";
+  pointer-events: none;
+  transition: opacity var(--transition-site, 250ms linear);
+}
+
+.pricing_card.is-featured {
+  --pricing-card-top: var(--pricing-featured-top);
+  --pricing-gradient-end: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pricing_card:hover::before { opacity: 0; }
+}
+
+.pricing_description { --body-text-color: var(--pricing-text); }
+.pricing_costs { display: flex; flex-direction: column; gap: 1rem; }
+.pricing_cost { display: flex; flex-direction: column; gap: 0.5rem; }
+.pricing_amount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem; font-size: 1rem; line-height: 1; letter-spacing: -0.05em; }
+.pricing_number { font-size: 2.5rem; font-weight: 600; letter-spacing: -0.03em; overflow-wrap: anywhere; }
+.pricing_terms { --body-text-color: var(--pricing-muted); }
+/* Optional price-increase ladder; without `increase` in the data nothing here renders. */
+.pricing_increase { display: flex; flex-direction: column; gap: 0.25rem; color: var(--pricing-muted); }
+.pricing_increase-until { --body-text-color: var(--pricing-muted); }
+.pricing_increase-next { --body-text-color: var(--pricing-excluded); }
+.pricing_unconfirmed { font-size: 1.375rem; line-height: 1.2; }
+.pricing_component[data-ready] .pricing_stream-label { display: none; }
+.pricing_start { display: block; }
+.pricing_sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.pricing_features { --body-text-color: var(--pricing-text); --body-text-max: 1.125rem; display: flex; flex-direction: column; gap: 0.25rem; list-style: none; }
+.pricing_feature { display: flex; align-items: flex-start; gap: 0.5rem; padding-inline: 0; }
+.pricing_plan.is-featured .pricing_features { --body-text-color: var(--color-text-on-dark); }
+.pricing_feature.is-excluded { --body-text-color: var(--pricing-excluded); }
+.pricing_feature-icon { flex: none; display: block; width: var(--pricing-icon-size); height: var(--pricing-icon-size); margin-top: 0.125rem; }
+
+@media (min-width: 32.5625rem) {
+  .pricing_component { --pricing-icon-size: 1.125rem; --content-prominent-size: 1.75rem; --section-heading-description-size: 1.125rem; }
+  .pricing_tab { font-size: 1.125rem; }
+  .pricing_grid { row-gap: 2rem; }
+  .pricing_card { padding: 1.25rem; }
+  .pricing_amount { font-size: 1.125rem; }
+  .pricing_number { font-size: 2.75rem; }
+  .pricing_features { gap: 0.5rem; }
+}
+
+@media (min-width: 48rem) {
+  .pricing_component { --content-prominent-size: 2rem; --content-heading-gap: 0.75rem; --section-heading-description-size: 1.25rem; gap: 1.75rem; }
+  .pricing_tab { font-size: 1.25rem; }
+  .pricing_card { padding: 1.5rem; }
+  .pricing_plan { gap: 1.75rem; }
+  .pricing_feature { padding-inline: 0.75rem; }
+  .pricing_increase { margin-top: 0.25rem; }
+  .pricing_grid { grid-template-columns: repeat(var(--pricing-columns, 2), minmax(0, 1fr)); }
+  .pricing_plan {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    align-self: stretch;
+  }
+  .pricing_offer {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+  }
+  .pricing_highlight .pricing_card { flex: 1; }
+  .pricing_grid:has(.pricing_highlight) .pricing_card:not(.is-featured) { margin-top: var(--pricing-badge-space); }
+}
+
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .pricing_card { min-height: 17rem; }
+  .pricing_grid.is-three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pricing_grid.is-three .pricing_plan:last-child { grid-column: 1 / -1; width: calc((100% - 1rem) / 2); justify-self: center; }
+}
+
+@media (max-width: 47.999rem) {
+  .pricing_card { min-height: 0; gap: 3rem; justify-content: flex-start; }
+  .pricing_tabs { padding: 0.125rem; }
+  .pricing_tab { padding: 0.25rem 0.75rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  .pricing_component { --content-prominent-size: 2.25rem; --section-heading-description-size: 1.375rem; --pricing-badge-space: 2.375rem; gap: 2rem; }
+  .pricing_tab { font-size: 1.375rem; }
+  .pricing_highlight { gap: 0.625rem; padding-top: 0.625rem; }
+  .pricing_number { font-size: 3rem; }
+  .pricing_amount { font-size: 1.25rem; }
+  .pricing_feature { padding-inline: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing_component { --transition-site: 0s linear; }
+}
+
+/* Opt-in action button. Geometry extracted from the approved dual-action Hero.
+   Page specificity intentionally supersedes legacy composition sizing. */
+.academy-page { --button-light-padding-inline: 0.75rem; }
+@media (min-width: 48rem) {
+  .academy-page { --button-light-padding-inline: 1.5rem; }
+}
+.academy-page .button_component {
+  --button-font-size: calc(1rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  --button-min-height: calc(3.125rem + clamp(0rem, 2.91560102vw - 1.09335038rem, 0.7125rem) + clamp(0rem, 0.31059507vw - 0.19237482rem, 0.13375rem));
+  display: inline-flex;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--button-min-height);
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: var(--button-font-size);
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 150ms ease-in-out),
+    box-shadow var(--transition-site, 150ms ease-in-out);
+}
+.academy-page .button_component.is-light { padding-inline: var(--button-light-padding-inline, 0.75rem); background: var(--color-surface-primary); color: var(--color-text-primary); }
+.button_component.is-light:where(:not(:disabled)):hover { background: var(--color-text-on-dark-muted); }
+.button_component.is-accent { background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.button_component.is-accent:where(:not(:disabled)):hover { background: var(--color-accent-text); }
+.academy-page .button_component:where(.is-outline) {
+  border-color: var(--color-text-on-dark);
+  background: rgb(255 255 255 / 15%);
+  color: var(--color-text-on-dark);
+  backdrop-filter: blur(4px);
+}
+.button_component.is-outline:where(:not(:disabled)):hover { background: rgb(255 255 255 / 25%); }
+.button_component:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 85%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .academy-page .button_component { transition: none; }
+}
+
+/* Shared body typography; compositions own only layout and spacing. */
+.body-text_component {
+  margin: 0;
+  color: var(--body-text-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: min(var(--body-text-max, 1.25rem), 0.9375rem);
+  font-weight: 444;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.body-text_component.is-regular { font-weight: 400; }
+.body-text_component.is-statement { letter-spacing: normal; }
+.body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1rem)); }
+.body-text_component.is-reading { line-height: 1.4; letter-spacing: normal; }
+.body-text_component.is-showcase { font-size: 1rem; font-weight: 400; line-height: 1.1; }
+.body-text_component.is-detailed { line-height: 1.4; letter-spacing: normal; }
+.body-text_lead { color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) {
+  .body-text_component.is-showcase { font-size: 1.125rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.125rem)); }
+}
+@media (min-width: 48rem) {
+  .body-text_component.is-showcase { font-size: 1.25rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.125rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.25rem)); }
+}
+@media (min-width: 64.0625rem) {
+  .body-text_component.is-showcase { font-size: 1.5rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.25rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.375rem)); }
+}
+
+/* Small supporting copy for prices and compact factual captions. */
+.body-text_component.is-caption { font-size: 0.9375rem; }
+@media (min-width: 32.5625rem) { .body-text_component.is-caption { font-size: 1rem; } }
+@media (min-width: 64.0625rem) { .body-text_component.is-caption { font-size: 1.125rem; } }
+
+/* Shared emphasis, callout and fine-print roles; no section owns a second scale. */
+.body-text_component.is-emphasis { font-weight: 600; }
+.body-text_component.is-callout { font-weight: 500; line-height: 1.3; }
+.body-text_component.is-fine-print { font-size: 0.875rem; font-weight: 400; line-height: 1.4; }
+
+/* Opt-in heading and section composition; load after the consuming component CSS. */
+.academy-page {
+  --space-heading-copy: 1.25rem;
+  --space-subtitle-pair: 0.25rem;
+  --space-mark-heading: 0.75rem;
+  --space-section-content: 2rem;
+  --space-cta-action: 2rem;
+}
+@media (min-width: 32.5625rem) {
+  .academy-page { --space-subtitle-pair: 0.5rem; --space-section-content: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .academy-page { --space-heading-copy: 1.5rem; --space-subtitle-pair: 0.75rem; --space-mark-heading: 1rem; --space-section-content: 2.625rem; }
+}
+@media (min-width: 64.0625rem) {
+  .academy-page { --space-heading-copy: 1.75rem; --space-subtitle-pair: 1rem; --space-section-content: 4.375rem; --space-cta-action: 2.25rem; }
+}
+
+.section-title_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--section-title-size, clamp(2.25rem, 3.1vw, 3.25rem));
+  font-weight: var(--section-title-weight, 400);
+  line-height: var(--section-title-line-height, 1.1);
+  letter-spacing: var(--section-title-tracking, -0.06em);
+  text-align: inherit;
+  text-wrap: var(--section-title-wrap, balance);
+}
+
+.section-title_component.is-left {
+  text-align: left;
+}
+
+.section-title_component.is-center {
+  text-align: center;
+}
+
+.section-title_component.is-right {
+  text-align: right;
+}
+
+/* The same responsive title scale can be used without changing section gaps. */
+.section-title_component.is-responsive { --section-title-size: 2rem; --section-title-line-height: 1; overflow-wrap: anywhere; }
+@media (min-width: 32.5625rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-title_component.is-responsive { --section-title-size: 3.25rem; }
+}
+
+.section-title_accent {
+  display: inline;
+  color: var(--color-accent-text, var(--color-accent-primary));
+}
+
+.section-subtitle_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--section-subtitle-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: var(--section-subtitle-line-height, 1.2);
+  letter-spacing: var(--section-subtitle-tracking, -0.01em);
+  text-wrap: pretty;
+}
+
+.content-heading_component {
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--content-heading-size, clamp(1.25rem, 2.419vw, 1.5rem));
+  font-weight: 500;
+  line-height: var(--content-heading-line-height, 1.1);
+  letter-spacing: 0;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.content-heading_component.is-prominent {
+  font-size: var(--content-prominent-size, clamp(1.75rem, 2.4vw, 2.25rem));
+  font-weight: 444;
+  letter-spacing: -0.03em;
+}
+
+/* One portrait heading size for the standard card families. */
+@media (max-width: 32.5rem) {
+  .card_component.is-icon-statement,
+  .card_component.is-stage { --content-heading-size: 1.25rem; }
+  .card_component.benefits_card { --hero-card-title-size: 1.25rem; }
+}
+
+/* Shared card/question heading role; independent of its surrounding surface. */
+.content-heading_component.is-card { --content-heading-size: 1.25rem; }
+.content-heading_component.is-profile { --content-heading-size: 1.375rem; font-weight: 400; }
+@media (min-width: 32.5625rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.375rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.5rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .content-heading_component.is-profile { --content-heading-size: 2rem; }
+}
+
+.content-header_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--content-heading-gap);
+}
+
+.section-header_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-heading-gap);
+}
+
+/* Separate the heading-to-copy distance from gaps inside a copy group. */
+.section-subtitles_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-subtitles-gap, 1rem);
+}
+.section-header_title {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: inherit;
+  gap: var(--section-heading-mark-gap, 1rem);
+}
+.section-header_component.is-responsive {
+  --section-heading-gap: var(--space-heading-copy);
+  --section-heading-description-size: 1rem;
+  --section-subtitles-gap: var(--space-subtitle-pair);
+  --section-heading-mark-gap: var(--space-mark-heading);
+}
+@media (min-width: 32.5625rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.125rem; }
+}
+@media (min-width: 48rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.375rem; }
+}
+
+.section-header_component.is-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.section-header_component.is-center {
+  align-items: center;
+  text-align: center;
+}
+
+.section-header_component.is-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.section-layout_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-layout-gap, clamp(2.5rem, 6.835vw, 4.375rem));
+}
+.section-layout_component.is-responsive {
+  --section-title-size: 2rem;
+  --section-title-line-height: 1;
+  --section-layout-gap: var(--space-section-content);
+}
+@media (min-width: 32.5625rem) {
+  .section-layout_component.is-responsive { --section-title-size: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .section-layout_component.is-responsive { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-layout_component.is-responsive { --section-title-size: 3.25rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  .section-layout_component.is-split {
+    display: grid;
+    grid-template-columns: var(--section-layout-columns, minmax(0, 0.75fr) minmax(0, 1fr));
+    align-items: start;
+  }
+}
+.academy-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --review-close-icon: url("https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg");
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-page-background: #f5f5f5;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-text: #644ab2;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  --color-text-secondary-large: #747476;
+  --lecture-preview-muted-color: #a8a7ad;
+  --color-text-on-dark-muted: #e6e5eb;
+  --hero-subtitle-color: #dedede;
+  --hero-note-color: #53ee34;
+  --color-program-tag: #4d3d5f;
+  --color-program-text: #ededed;
+  --color-program-muted: #bdb7b7;
+  --content-heading-gap: 0.75rem;
+  --text-body-line-height: 1.2;
+  --stat-card-label-size: 1.125rem;
+  --hero-section-offset: 2rem;
+  --page-padding: 1rem;
+  --hero-image-position-desktop: center 15%;
+  --hero-section-end: var(--section-space);
+  --hero-section-end-desktop: var(--section-space);
+  --hero-panel-min-height: 43.75rem;
+  --hero-image-position: 61% top;
+  overflow: visible;
+}</style><style>main{padding:24px}section{padding:40px 0;background:#2b2334}output{display:block}</style></head><body><main class="academy-page"><button type="button" id="reconnect">Переподключить компоненты</button><button type="button" id="reinit">Повторить скрипт</button><output id="events">Событий: 0</output><section><academy-pricing class="pricing_component" selected-stream="winter">
+<div class="pricing_tabs" role="tablist" aria-label="Поток обучения" data-pricing-tabs hidden><button class="pricing_tab" type="button" role="tab" id="fixture-1-tab-winter" aria-controls="fixture-1-panel" aria-selected="true" tabindex="0" data-pricing-tab="winter">Зимний поток</button></div>
+<div class="pricing_panel section-layout_component is-responsive" id="fixture-1-panel" role="tabpanel" aria-labelledby="fixture-1-tab-winter" tabindex="0" data-pricing-panel>
+<div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center" id="fixture-1-heading">Проверка: 1 тариф(а)</h2><p class="section-subtitle_component"><span data-pricing-stream="winter" class="pricing_start">Старт потока 9&nbsp;декабря</span></p></div>
+<div class="pricing_grid is-single" style="--pricing-columns:1"><article class="pricing_plan" data-pricing-order="0" aria-labelledby="fixture-1-plan-0"><div class="pricing_offer"><div class="pricing_card"><div class="content-header_component"><h3 class="content-heading_component is-prominent" id="fixture-1-plan-0">Стандарт</h3><p class="pricing_description body-text_component is-summary is-regular is-statement">Освоите профессию психолога-консультанта и&nbsp;подготовитесь к&nbsp;самостоятельной практике.</p></div><div class="pricing_costs"><div class="pricing_cost" data-pricing-stream="winter"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Зимний поток</span><p class="pricing_amount"><span class="pricing_number">15&nbsp;000&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 300&nbsp;000&nbsp;₽ одним платежом</p><div class="pricing_increase"><p class="pricing_increase-until body-text_component is-caption is-regular is-statement">Цена действует до&nbsp;30&nbsp;сентября</p><p class="pricing_increase-next body-text_component is-caption is-regular is-statement">С&nbsp;1&nbsp;октября&nbsp;— 250&nbsp;000&nbsp;₽ (от&nbsp;12&nbsp;000&nbsp;₽/мес)</p></div></div></div></div><button class="button button_component is-light is-full-width" type="button" aria-disabled="true" data-action="enrollment">Начать учиться</button></div><ul class="pricing_features" role="list"><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Не&nbsp;просто психолог-консультант, а&nbsp;специалист в&nbsp;доказательных подходах</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Практика встроена в&nbsp;обучение с&nbsp;первых месяцев</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Формирование профессионального мышления, а&nbsp;не&nbsp;только набор техник</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Подготовка к&nbsp;работе с&nbsp;реальными клиентскими запросами</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Усиленный клинический блок</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Обучение границам компетенции и&nbsp;работе в&nbsp;команде</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Работа с&nbsp;разными категориями клиентов</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>15&nbsp;месяцев постепенного профессионального становления</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Поддержка через кураторство, супервизии и&nbsp;профессиональное сообщество</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Индивидуальная супервизия</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Проверка отчетов и&nbsp;обратная связь по&nbsp;самостоятельной работе в&nbsp;тройках</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Супервизорское сопровождение в&nbsp;малых группах, ответы на&nbsp;вопросы в&nbsp;чате на&nbsp;протяжении всего обучения</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>6&nbsp;встреч с&nbsp;супервизором на&nbsp;темы по&nbsp;актуальным запросам от&nbsp;мини-группы</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Курс по&nbsp;продвижению психологов</span></li></ul></article></div>
+</div></academy-pricing></section><section><academy-pricing class="pricing_component" selected-stream="winter">
+<div class="pricing_tabs" role="tablist" aria-label="Поток обучения" data-pricing-tabs hidden><button class="pricing_tab" type="button" role="tab" id="fixture-2-tab-winter" aria-controls="fixture-2-panel" aria-selected="true" tabindex="0" data-pricing-tab="winter">Зимний поток</button><button class="pricing_tab" type="button" role="tab" id="fixture-2-tab-spring" aria-controls="fixture-2-panel" aria-selected="false" tabindex="-1" data-pricing-tab="spring">Весенний поток</button></div>
+<div class="pricing_panel section-layout_component is-responsive" id="fixture-2-panel" role="tabpanel" aria-labelledby="fixture-2-tab-winter" tabindex="0" data-pricing-panel>
+<div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center" id="fixture-2-heading">Проверка: 2 тариф(а)</h2><p class="section-subtitle_component"><span data-pricing-stream="winter" class="pricing_start">Старт потока 9&nbsp;декабря</span><span data-pricing-stream="spring" class="pricing_start">Старт потока 16 марта</span></p></div>
+<div class="pricing_grid" style="--pricing-columns:2"><article class="pricing_plan is-featured" data-pricing-order="1" data-pricing-featured aria-labelledby="fixture-2-plan-1"><div class="pricing_offer"><div class="pricing_highlight"><p class="pricing_badge"><img class="pricing_badge-icon" src="https://static.tildacdn.com/tild3037-6134-4432-a336-333133613630/icon-flame-white.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy">Популярный тариф</p><div class="pricing_card is-featured"><div class="content-header_component"><h3 class="content-heading_component is-prominent" id="fixture-2-plan-1">Эксперт</h3><p class="pricing_description body-text_component is-summary is-regular is-statement">Получите всё из&nbsp;тарифа «Стандарт», а&nbsp;также персональную поддержку супервизора и&nbsp;курс по&nbsp;продвижению</p></div><div class="pricing_costs"><div class="pricing_cost" data-pricing-stream="winter"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Зимний поток</span><p class="pricing_amount"><span class="pricing_number">15&nbsp;001&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 300&nbsp;001&nbsp;₽ одним платежом</p></div><div class="pricing_cost" data-pricing-stream="spring"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Весенний поток</span><p class="pricing_amount"><span class="pricing_number">10&nbsp;250&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 246&nbsp;000&nbsp;₽ одним платежом</p></div></div></div></div><button class="button button_component is-accent is-full-width" type="button" aria-disabled="true" data-action="enrollment">Начать учиться</button></div><ul class="pricing_features" role="list"><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Не&nbsp;просто психолог-консультант, а&nbsp;специалист в&nbsp;доказательных подходах</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Практика встроена в&nbsp;обучение с&nbsp;первых месяцев</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Формирование профессионального мышления, а&nbsp;не&nbsp;только набор техник</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Подготовка к&nbsp;работе с&nbsp;реальными клиентскими запросами</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Усиленный клинический блок</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Обучение границам компетенции и&nbsp;работе в&nbsp;команде</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Работа с&nbsp;разными категориями клиентов</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>15&nbsp;месяцев постепенного профессионального становления</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Поддержка через кураторство, супервизии и&nbsp;профессиональное сообщество</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Индивидуальная супервизия</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Проверка отчетов и&nbsp;обратная связь по&nbsp;самостоятельной работе в&nbsp;тройках</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Супервизорское сопровождение в&nbsp;малых группах, ответы на&nbsp;вопросы в&nbsp;чате на&nbsp;протяжении всего обучения</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>6&nbsp;встреч с&nbsp;супервизором на&nbsp;темы по&nbsp;актуальным запросам от&nbsp;мини-группы</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Курс по&nbsp;продвижению психологов</span></li></ul></article>
+<article class="pricing_plan" data-pricing-order="0" aria-labelledby="fixture-2-plan-0"><div class="pricing_offer"><div class="pricing_card"><div class="content-header_component"><h3 class="content-heading_component is-prominent" id="fixture-2-plan-0">Стандарт</h3><p class="pricing_description body-text_component is-summary is-regular is-statement">Освоите профессию психолога-консультанта и&nbsp;подготовитесь к&nbsp;самостоятельной практике.</p></div><div class="pricing_costs"><div class="pricing_cost" data-pricing-stream="winter"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Зимний поток</span><p class="pricing_amount"><span class="pricing_number">15&nbsp;000&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 300&nbsp;000&nbsp;₽ одним платежом</p><div class="pricing_increase"><p class="pricing_increase-until body-text_component is-caption is-regular is-statement">Цена действует до&nbsp;30&nbsp;сентября</p><p class="pricing_increase-next body-text_component is-caption is-regular is-statement">С&nbsp;1&nbsp;октября&nbsp;— 250&nbsp;000&nbsp;₽ (от&nbsp;12&nbsp;000&nbsp;₽/мес)</p></div></div><div class="pricing_cost" data-pricing-stream="spring"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Весенний поток</span><p class="pricing_amount"><span class="pricing_number">8&nbsp;750&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 182&nbsp;000&nbsp;₽ одним платежом</p></div></div></div><button class="button button_component is-light is-full-width" type="button" aria-disabled="true" data-action="enrollment">Начать учиться</button></div><ul class="pricing_features" role="list"><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Не&nbsp;просто психолог-консультант, а&nbsp;специалист в&nbsp;доказательных подходах</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Практика встроена в&nbsp;обучение с&nbsp;первых месяцев</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Формирование профессионального мышления, а&nbsp;не&nbsp;только набор техник</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Подготовка к&nbsp;работе с&nbsp;реальными клиентскими запросами</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Усиленный клинический блок</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Обучение границам компетенции и&nbsp;работе в&nbsp;команде</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Работа с&nbsp;разными категориями клиентов</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>15&nbsp;месяцев постепенного профессионального становления</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Поддержка через кураторство, супервизии и&nbsp;профессиональное сообщество</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Индивидуальная супервизия</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Проверка отчетов и&nbsp;обратная связь по&nbsp;самостоятельной работе в&nbsp;тройках</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Супервизорское сопровождение в&nbsp;малых группах, ответы на&nbsp;вопросы в&nbsp;чате на&nbsp;протяжении всего обучения</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>6&nbsp;встреч с&nbsp;супервизором на&nbsp;темы по&nbsp;актуальным запросам от&nbsp;мини-группы</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Курс по&nbsp;продвижению психологов</span></li></ul></article></div>
+</div></academy-pricing></section><section><academy-pricing class="pricing_component" selected-stream="winter">
+<div class="pricing_tabs" role="tablist" aria-label="Поток обучения" data-pricing-tabs hidden><button class="pricing_tab" type="button" role="tab" id="fixture-3-tab-winter" aria-controls="fixture-3-panel" aria-selected="true" tabindex="0" data-pricing-tab="winter">Зимний поток</button><button class="pricing_tab" type="button" role="tab" id="fixture-3-tab-spring" aria-controls="fixture-3-panel" aria-selected="false" tabindex="-1" data-pricing-tab="spring">Весенний поток</button></div>
+<div class="pricing_panel section-layout_component is-responsive" id="fixture-3-panel" role="tabpanel" aria-labelledby="fixture-3-tab-winter" tabindex="0" data-pricing-panel>
+<div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center" id="fixture-3-heading">Проверка: 3 тариф(а)</h2><p class="section-subtitle_component"><span data-pricing-stream="winter" class="pricing_start">Старт потока 9&nbsp;декабря</span><span data-pricing-stream="spring" class="pricing_start">Старт потока 16 марта</span></p></div>
+<div class="pricing_grid is-three" style="--pricing-columns:3"><article class="pricing_plan is-featured" data-pricing-order="1" data-pricing-featured aria-labelledby="fixture-3-plan-1"><div class="pricing_offer"><div class="pricing_highlight"><p class="pricing_badge"><img class="pricing_badge-icon" src="https://static.tildacdn.com/tild3037-6134-4432-a336-333133613630/icon-flame-white.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy">Популярный тариф</p><div class="pricing_card is-featured"><div class="content-header_component"><h3 class="content-heading_component is-prominent" id="fixture-3-plan-1">Эксперт</h3><p class="pricing_description body-text_component is-summary is-regular is-statement">Получите всё из&nbsp;тарифа «Стандарт», а&nbsp;также персональную поддержку супервизора и&nbsp;курс по&nbsp;продвижению</p></div><div class="pricing_costs"><div class="pricing_cost" data-pricing-stream="winter"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Зимний поток</span><p class="pricing_amount"><span class="pricing_number">15&nbsp;001&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 300&nbsp;001&nbsp;₽ одним платежом</p></div><div class="pricing_cost" data-pricing-stream="spring"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Весенний поток</span><p class="pricing_amount"><span class="pricing_number">10&nbsp;250&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 246&nbsp;000&nbsp;₽ одним платежом</p></div></div></div></div><button class="button button_component is-accent is-full-width" type="button" aria-disabled="true" data-action="enrollment">Начать учиться</button></div><ul class="pricing_features" role="list"><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Не&nbsp;просто психолог-консультант, а&nbsp;специалист в&nbsp;доказательных подходах</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Практика встроена в&nbsp;обучение с&nbsp;первых месяцев</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Формирование профессионального мышления, а&nbsp;не&nbsp;только набор техник</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Подготовка к&nbsp;работе с&nbsp;реальными клиентскими запросами</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Усиленный клинический блок</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Обучение границам компетенции и&nbsp;работе в&nbsp;команде</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Работа с&nbsp;разными категориями клиентов</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>15&nbsp;месяцев постепенного профессионального становления</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Поддержка через кураторство, супервизии и&nbsp;профессиональное сообщество</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Индивидуальная супервизия</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Проверка отчетов и&nbsp;обратная связь по&nbsp;самостоятельной работе в&nbsp;тройках</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Супервизорское сопровождение в&nbsp;малых группах, ответы на&nbsp;вопросы в&nbsp;чате на&nbsp;протяжении всего обучения</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>6&nbsp;встреч с&nbsp;супервизором на&nbsp;темы по&nbsp;актуальным запросам от&nbsp;мини-группы</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="../assets/icons/pricing-zap.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Курс по&nbsp;продвижению психологов</span></li></ul></article>
+<article class="pricing_plan" data-pricing-order="0" aria-labelledby="fixture-3-plan-0"><div class="pricing_offer"><div class="pricing_card"><div class="content-header_component"><h3 class="content-heading_component is-prominent" id="fixture-3-plan-0">Стандарт</h3><p class="pricing_description body-text_component is-summary is-regular is-statement">Освоите профессию психолога-консультанта и&nbsp;подготовитесь к&nbsp;самостоятельной практике.</p></div><div class="pricing_costs"><div class="pricing_cost" data-pricing-stream="winter"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Зимний поток</span><p class="pricing_amount"><span class="pricing_number">15&nbsp;000&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 300&nbsp;000&nbsp;₽ одним платежом</p><div class="pricing_increase"><p class="pricing_increase-until body-text_component is-caption is-regular is-statement">Цена действует до&nbsp;30&nbsp;сентября</p><p class="pricing_increase-next body-text_component is-caption is-regular is-statement">С&nbsp;1&nbsp;октября&nbsp;— 250&nbsp;000&nbsp;₽ (от&nbsp;12&nbsp;000&nbsp;₽/мес)</p></div></div><div class="pricing_cost" data-pricing-stream="spring"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Весенний поток</span><p class="pricing_amount"><span class="pricing_number">8&nbsp;750&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 182&nbsp;000&nbsp;₽ одним платежом</p></div></div></div><button class="button button_component is-light is-full-width" type="button" aria-disabled="true" data-action="enrollment">Начать учиться</button></div><ul class="pricing_features" role="list"><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Не&nbsp;просто психолог-консультант, а&nbsp;специалист в&nbsp;доказательных подходах</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Практика встроена в&nbsp;обучение с&nbsp;первых месяцев</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Формирование профессионального мышления, а&nbsp;не&nbsp;только набор техник</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Подготовка к&nbsp;работе с&nbsp;реальными клиентскими запросами</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Усиленный клинический блок</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Обучение границам компетенции и&nbsp;работе в&nbsp;команде</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Работа с&nbsp;разными категориями клиентов</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>15&nbsp;месяцев постепенного профессионального становления</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Поддержка через кураторство, супервизии и&nbsp;профессиональное сообщество</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Индивидуальная супервизия</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Проверка отчетов и&nbsp;обратная связь по&nbsp;самостоятельной работе в&nbsp;тройках</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Супервизорское сопровождение в&nbsp;малых группах, ответы на&nbsp;вопросы в&nbsp;чате на&nbsp;протяжении всего обучения</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>6&nbsp;встреч с&nbsp;супервизором на&nbsp;темы по&nbsp;актуальным запросам от&nbsp;мини-группы</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Курс по&nbsp;продвижению психологов</span></li></ul></article>
+<article class="pricing_plan" data-pricing-order="2" aria-labelledby="fixture-3-plan-2"><div class="pricing_offer"><div class="pricing_card"><div class="content-header_component"><h3 class="content-heading_component is-prominent" id="fixture-3-plan-2">Стандарт</h3><p class="pricing_description body-text_component is-summary is-regular is-statement">Освоите профессию психолога-консультанта и&nbsp;подготовитесь к&nbsp;самостоятельной практике.</p></div><div class="pricing_costs"><div class="pricing_cost" data-pricing-stream="winter"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Зимний поток</span><p class="pricing_amount"><span class="pricing_number">15&nbsp;002&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 300&nbsp;002&nbsp;₽ одним платежом</p></div><div class="pricing_cost" data-pricing-stream="spring"><span class="pricing_stream-label pricing_terms body-text_component is-caption is-regular is-statement">Весенний поток</span><p class="pricing_amount"><span class="pricing_number">8&nbsp;750&nbsp;₽</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;24&nbsp;месяца или 182&nbsp;000&nbsp;₽ одним платежом</p></div></div></div><button class="button button_component is-light is-full-width" type="button" aria-disabled="true" data-action="enrollment">Начать учиться</button></div><ul class="pricing_features" role="list"><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Не&nbsp;просто психолог-консультант, а&nbsp;специалист в&nbsp;доказательных подходах</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Практика встроена в&nbsp;обучение с&nbsp;первых месяцев</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Формирование профессионального мышления, а&nbsp;не&nbsp;только набор техник</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Подготовка к&nbsp;работе с&nbsp;реальными клиентскими запросами</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Усиленный клинический блок</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Обучение границам компетенции и&nbsp;работе в&nbsp;команде</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Работа с&nbsp;разными категориями клиентов</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>15&nbsp;месяцев постепенного профессионального становления</span></li><li class="pricing_feature body-text_component is-regular is-statement"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3738-6366-4764-b064-613138376661/icon-circle-check.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span>Поддержка через кураторство, супервизии и&nbsp;профессиональное сообщество</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Индивидуальная супервизия</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Проверка отчетов и&nbsp;обратная связь по&nbsp;самостоятельной работе в&nbsp;тройках</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Супервизорское сопровождение в&nbsp;малых группах, ответы на&nbsp;вопросы в&nbsp;чате на&nbsp;протяжении всего обучения</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>6&nbsp;встреч с&nbsp;супервизором на&nbsp;темы по&nbsp;актуальным запросам от&nbsp;мини-группы</span></li><li class="pricing_feature body-text_component is-regular is-statement is-excluded"><img class="pricing_feature-icon" src="https://static.tildacdn.com/tild3264-3064-4637-b265-396332366237/icon-cross.svg" width="18" height="18" alt="" aria-hidden="true" draggable="false" loading="lazy"><span><span class="pricing_sr-only">Не входит: </span>Курс по&nbsp;продвижению психологов</span></li></ul></article></div>
+</div></academy-pricing></section></main><script>
+const params = new URLSearchParams(location.search);
+if (params.has('zoom')) document.documentElement.style.fontSize = '200%';
+if (params.has('reduce')) {
+  const original = window.matchMedia;
+  window.matchMedia = query => { const media = original(query); if(query.includes('prefers-reduced-motion')) Object.defineProperty(media, 'matches', {value:true}); return media; };
+}
+const boot = () => { const script = document.createElement('script'); script.src = '../../../shared/academy/pricing.js?v=pricing-5'; document.body.append(script); };
+if (!params.has('nojs')) boot();
+let count = 0;
+document.addEventListener('academy-pricing:change', () => {document.querySelector('#events').value = 'Событий: ' + ++count;});
+document.querySelector('#reconnect').onclick = () => document.querySelectorAll('academy-pricing').forEach(element => { const parent = element.parentElement; element.remove(); parent.append(element); });
+document.querySelector('#reinit').onclick = boot;
+</script></body></html>

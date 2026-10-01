@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «КЛИНИЧЕСКАЯ ПСИХОЛОГИЯ ДЛЯ ПРАКТИКОВ»  →  адрес /klinicheskaya-dlya-praktikov
+  ============================================================================
+
+  Второй сентябрьский вебинар по клинической психологии (28 сентября, 18:00 МСК).
+  Спикер тот же — Иона Гусаченко. Страница — копия /klinicheskaya-baza:
+  та же сетка, те же блоки и скрипты, поменялись только тексты.
+
+  О ЧЁМ ВЕБИНАР
+    Решаем страх практикующих психологов: «Я вижу признаки расстройства,
+    но боюсь ошибиться, навредить или выйти за пределы компетенции».
+    Главная мысль: клинический психолог не ставит диагнозы —
+    он понимает, что стоит за ними.
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Сетка, имена классов, кнопки, карточки, аккордеон, форма записи через
+    BotHelp и адаптив — с /klinicheskaya-baza (в конечном счёте
+    с /trauma-therapy): контейнер 1520px, боковые поля до 80px,
+    брейкпоинты 480 / 768 / 992. Страница самодостаточная: все стили
+    в page.css, скрипт в page.js.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАК РАБОТАЕТ ЗАПИСЬ
+    Полей на странице нет. В блоке записи стоит виджет BotHelp: человек
+    видит кнопки мессенджеров и нажимает одну. Скрипт page.js перехватывает
+    нажатие, кладёт служебные значения (ClientID Метрики и UTM-метки)
+    в скрытую форму Тильды и отправляет её — оттуда данные уходят в AmoCRM.
+    Как только Тильда ответила, скрипт возвращает нажатие виджету.
+    На превью формы Тильды нет, поэтому шаг с ней пропускается.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 имя формы Тильды (data-tilda-form-name) и id виджета BotHelp
+      скопированы с прошлого вебинара — сверить перед запуском;
+    · 🟡 фото первого экрана и фон блока «Что получите» — с прошлых страниц;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Клиническая психология для практиков: как начать работать с диагнозами, не теряя профессиональной уверенности — бесплатный вебинар</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный вебинар 28 сентября в 18:00 МСК. Как психологу понимать клинические случаи, уверенно работать с клиентами с психическими расстройствами и не теряться, когда за запросом стоит нечто большее, чем тревога или стресс." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Клиническая психология для практиков: как начать работать с диагнозами, не теряя профессиональной уверенности" />
+  <meta property="og:description" content="Бесплатный вебинар для психологов. 28 сентября, 18:00 МСК." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Загрузчик виджета BotHelp. На боевой странице он подключается
+       в настройках Тильды — здесь нужен, чтобы форму можно было проверить. -->
+  <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
+
+  <!-- 🔴 Скрипт страницы: FAQ, меню и связка «кнопка BotHelp → форма Тильды» -->
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
+<div class="page-wrapper clinic-page">
+
+<!-- ==========================================================================
+     ШАПКА
+     ==========================================================================
+     Белая полоса во всю ширину экрана. Не липкая — как на прошлых страницах.
+     На мобильном дата уезжает в меню, кнопка растягивается на всю ширину.
+     ========================================================================== -->
+<header class="site-header_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+
+        <!-- 🟡 Логотип ведёт на главную сайта -->
+        <a class="site-header_logo" href="/" aria-label="Академия современной психологии">
+          <img src="https://s3.twcstorage.ru/asp-media/logo_asp_fec13e6c96.svg" alt="" width="102" height="34" />
+        </a>
+
+        <!-- 🟢 Дата и время вебинара -->
+        <p class="site-header_date">28&nbsp;сентября, 18:00&nbsp;МСК</p>
+
+        <!-- 🟡 Кнопка ведёт на блок с формой в конце страницы -->
+        <a class="button is-accent site-header_cta" href="#reg">Записаться на&nbsp;вебинар</a>
+
+        <!-- 🔴 Кнопка меню. Видна только на узких экранах. -->
+        <button class="site-header_burger" type="button"
+                aria-expanded="false" aria-controls="site-menu"
+                aria-label="Разделы страницы" data-menu-toggle>
+          <span class="site-header_burger-icon" aria-hidden="true"></span>
+        </button>
+
+        <!-- 🟢 Меню разделов. Ссылки ведут на блоки этой же страницы. -->
+        <nav class="site-header_menu" id="site-menu" aria-label="Разделы страницы" hidden>
+          <p class="site-header_menu-date">28 сентября, 18:00 МСК</p>
+          <a href="#problema">О&nbsp;вебинаре</a>
+          <a href="#komu">Для&nbsp;кого</a>
+          <a href="#programma">Программа</a>
+          <a href="#spiker">Спикер</a>
+          <a href="#voprosy">Вопросы</a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки с датой,
+       заголовок, подводка и кнопка. Сделан так же, как на /pochemu-kpt-v2.
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟡 Фотография первого экрана. Без loading="lazy": она видна сразу.
+                 Если будете менять — берите кадр с пропорциями около 2,3:1
+                 и оставляйте героя в правой половине: слева на десктопе
+                 ложится текст. -->
+            <img class="hero_image" src="https://s3.twcstorage.ru/asp-media/hero_474f848684.webp"
+                 alt="Психолог в кабинете у окна"
+                 width="1920" height="824" />
+
+            <!-- 🟢 Плашки с датой и форматом -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_bla_9bf3d3c717.svg" alt="" width="20" height="20" />
+                28 сентября, 18:00 МСК
+              </li>
+              <li class="meta-pill_component is-accent">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_earth_white_a41613d615.svg" alt="" width="20" height="20" />
+                Онлайн
+              </li>
+              <li class="meta-pill_component">60 минут</li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <!-- 🟢 Заголовок из двух частей: название крупно, подзаголовок
+                     помельче. Оба куска — внутри одного <h1>. -->
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">Клиническая психология для&nbsp;практиков</span>
+                  <span class="hero_heading-sub">как начать работать с&nbsp;диагнозами, не&nbsp;теряя профессиональной уверенности</span>
+                </h1>
+                <p class="hero_description">
+                  Бесплатный вебинар для психологов, которые хотят понимать
+                  клинические случаи и&nbsp;не&nbsp;теряться, когда за&nbsp;запросом
+                  скрывается нечто большее, чем тревога или стресс.
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🟡 Кнопка ведёт на блок с формой -->
+                <a class="button is-light is-full-width" href="#reg">Записаться на&nbsp;вебинар</a>
+                <p class="hero_start-note">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_whi_486d69a1a5.svg" alt="" width="22" height="22" />
+                  Участие бесплатное, нужна только регистрация
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. «КАЖЕТСЯ, ЧТО ДИАГНОЗЫ — ТЕРРИТОРИЯ ПСИХИАТРОВ?» — РЕПЛИКИ КОЛЛЕГ
+       ======================================================================
+       Три реплики оформлены как сообщения из чата коллег.
+       ====================================================================== -->
+  <section class="section_voices" id="problema">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="voices_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Знакомо?</p>
+            <h2 class="section-intro_heading">
+              Кажется, что диагнозы&nbsp;— это территория психиатров?
+            </h2>
+            <p class="section-intro_description">
+              Многие психологи сталкиваются с&nbsp;ситуациями, когда клиент
+              рассказывает о&nbsp;симптомах, которые выходят за&nbsp;рамки обычного
+              консультирования. Хочется брать более сложные случаи&nbsp;—
+              но&nbsp;не&nbsp;хватает знаний и&nbsp;уверенности.
+            </p>
+          </div>
+
+          <ul class="voices_list">
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Сложно понять, где заканчивается психологическая норма
+                и&nbsp;начинается клиническая картина».
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Практик, 3&nbsp;года в&nbsp;работе
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Боюсь пропустить суицидальный риск или серьёзное
+                расстройство&nbsp;— и&nbsp;навредить».
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Начинающий специалист
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Непонятно, когда продолжать работу самостоятельно,
+                а&nbsp;когда направлять к&nbsp;психиатру».
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Психолог в&nbsp;подходе КПТ
+              </p>
+            </li>
+          </ul>
+
+          <p class="summary_component">
+            <img class="summary_icon" src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" />
+            <span>
+              <b>В&nbsp;результате специалист начинает избегать клиентов
+              со&nbsp;сложной симптоматикой</b>&nbsp;— и&nbsp;сам ограничивает
+              собственное профессиональное развитие.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  
+  <!-- ======================================================================
+       3. «КЛИНИЧЕСКИЙ ПСИХОЛОГ НЕ СТАВИТ ДИАГНОЗЫ» — ЧЕМУ ВАЖНО НАУЧИТЬСЯ
+       ======================================================================
+       Тёмная плашка с четырьмя навыками.
+       ====================================================================== -->
+  <section class="section_risks" id="riski">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="risks_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component is-on-dark">Не&nbsp;обязательно становиться врачом</p>
+            <h2 class="section-intro_heading is-on-dark">
+              Клинический психолог не&nbsp;ставит диагнозы. Он&nbsp;понимает, что стоит за&nbsp;ними
+            </h2>
+            <p class="section-intro_description is-on-dark">
+              Чтобы работать с&nbsp;клиентами безопасно и&nbsp;эффективно, важно
+              научиться четырём вещам. Именно этому посвящён вебинар.
+            </p>
+          </div>
+
+          <ul class="risks_list">
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_alert_light_51fb436b1d.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Замечать клинические маркеры</h3>
+                <p class="card_description is-on-dark">
+                  Видеть тревожные сигналы в&nbsp;рассказе клиента, которые
+                  нельзя игнорировать в&nbsp;консультировании.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_help_light_4426b15a34.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Понимать логику расстройств</h3>
+                <p class="card_description is-on-dark">
+                  Ориентироваться в&nbsp;основных психических расстройствах:
+                  как они устроены и&nbsp;как проявляются в&nbsp;кабинете.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_shield_light_3056d874e8.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Работать в&nbsp;рамках компетенции</h3>
+                <p class="card_description is-on-dark">
+                  Выстраивать работу в&nbsp;своих границах и&nbsp;взаимодействовать
+                  с&nbsp;психиатрами и&nbsp;другими специалистами.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_scale_light_dd7ffa4f3b.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Подбирать методы под случай</h3>
+                <p class="card_description is-on-dark">
+                  Выбирать способы помощи под конкретную клиническую картину,
+                  а&nbsp;не&nbsp;«по&nbsp;привычке».
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. «ДЛЯ КОГО ЭТОТ ВЕБИНАР»
+       ======================================================================
+       Два узнаваемых портрета в сетке карточек.
+       ====================================================================== -->
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Два типа</p>
+            <h2 class="section-intro_heading">Для кого этот вебинар</h2>
+            <p class="section-intro_description">
+              Для тех, кто уже работает с&nbsp;людьми и&nbsp;хочет понимать,
+              что происходит с&nbsp;клиентом, когда запрос сложнее обычного.
+              Возможно, вы&nbsp;узнаете себя.
+            </p>
+          </div>
+
+          <ul class="card-grid_component is-stack-tablet audience_list">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_users_c9fd595244.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Практикующие психологи</h3>
+                <p class="card_description">
+                  Если хотите увереннее работать со&nbsp;сложными клиентскими
+                  случаями.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_trending_85d5942254.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Кто думает о&nbsp;переподготовке</h3>
+                <p class="card_description">
+                  Если рассматриваете клиническую психологию как следующий этап
+                  развития в&nbsp;профессии.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. «ЧТО ПОЛУЧИТЕ ПОСЛЕ ВЕБИНАРА»
+       ======================================================================
+       Четыре результата на фотографии: снимок лежит фоном, поверх него
+       заголовок и стеклянные карточки. Так же устроен блок «Как это
+       выглядит в кабинете» на /seksologiya-dlya-psihologov.
+       ====================================================================== -->
+  <section class="section_shifts" id="traektorii">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="shifts_component">
+
+          <div class="shifts_media">
+
+            <!-- 🟡 ВРЕМЕННАЯ ФОТОГРАФИЯ. Стоит снимок с прошлых лендингов,
+                 чтобы блок можно было посмотреть. Замените на свою:
+                 нужен горизонтальный кадр, примерно 2,3:1, без важных
+                 деталей по центру — там ложится заголовок. -->
+            <img class="shifts_image" src="https://s3.twcstorage.ru/asp-media/case_room_2837ee1f3f.webp"
+                 alt="Психолог и клиентка на консультации в кабинете"
+                 width="2400" height="1030" loading="lazy" />
+
+            <h2 class="shifts_heading">Что получите после вебинара</h2>
+
+            <ul class="shifts_list">
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Понимание роли клинического психолога</h3>
+                  <p class="card_description is-on-media">
+                    Что он&nbsp;делает в&nbsp;современной практике, чем отличается
+                    от&nbsp;психиатра&nbsp;— и&nbsp;как выстроить свой путь
+                    в&nbsp;этом направлении.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Карту нужных знаний</h3>
+                  <p class="card_description is-on-media">
+                    Чёткое представление о&nbsp;том, какие знания необходимы
+                    для работы со&nbsp;сложными случаями&nbsp;— без медицинского
+                    образования.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Алгоритм действий</h3>
+                  <p class="card_description is-on-media">
+                    Что делать при встрече с&nbsp;клиентом, у&nbsp;которого есть
+                    признаки психического расстройства.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Уверенную профессиональную позицию</h3>
+                  <p class="card_description is-on-media">
+                    Понимание своих границ компетенции&nbsp;— и&nbsp;меньше страха
+                    перед сложными запросами.
+                  </p>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       6. «ЧТО РАЗБЕРЁМ НА ВЕБИНАРЕ»
+       ======================================================================
+       Слева заголовок, справа лента из пяти пунктов. Ниже 992px заголовок
+       встаёт над лентой.
+       ====================================================================== -->
+  <section class="section_agenda" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="agenda_component">
+
+          <div class="agenda_intro">
+            <p class="eyebrow_component">Программа эфира</p>
+            <h2 class="agenda_heading">Что разберём на&nbsp;вебинаре</h2>
+            <p class="agenda_description">
+              Пять вопросов, которые чаще всего останавливают психолога
+              перед сложным случаем,&nbsp;— и&nbsp;понятные ответы на&nbsp;них
+              за&nbsp;60&nbsp;минут.
+            </p>
+          </div>
+
+          <ol class="agenda_list">
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">01</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Как начать ориентироваться в&nbsp;клинической психологии без медицинского образования</h3>
+                <p class="agenda_description">
+                  Поймёте, какие знания действительно нужны специалисту
+                  помогающей профессии и&nbsp;как их&nbsp;применять в&nbsp;работе.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">02</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Как отличать жизненные трудности от&nbsp;клинических состояний</h3>
+                <p class="agenda_description">
+                  Разберём тревожные сигналы, которые нельзя игнорировать
+                  в&nbsp;консультировании.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">03</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Что делать, если у&nbsp;клиента уже есть психиатрический диагноз</h3>
+                <p class="agenda_description">
+                  Поговорим о&nbsp;границах компетенции психолога
+                  и&nbsp;возможностях психологической помощи.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">04</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Какие ошибки чаще всего совершают начинающие специалисты</h3>
+                <p class="agenda_description">
+                  И&nbsp;как избежать страха перед сложными случаями.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">05</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Как выстроить профессиональный маршрут в&nbsp;клинической психологии</h3>
+                <p class="agenda_description">
+                  Покажем, какие навыки востребованы сегодня и&nbsp;как развивать
+                  их&nbsp;на&nbsp;практике. В&nbsp;конце&nbsp;— ответы на&nbsp;вопросы
+                  из&nbsp;чата.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       7. СПИКЕР
+       ======================================================================
+       Заголовок по центру, ниже — фотография и текст в две колонки.
+       ====================================================================== -->
+  <section class="section_speaker" id="spiker">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="speaker_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Ваш спикер</p>
+            <h2 class="section-intro_heading">Кто проведёт вебинар</h2>
+          </div>
+
+          <div class="speaker_card">
+            <div class="speaker_media">
+              <!-- 🟡 Фотография спикера -->
+              <img class="speaker_image" src="https://s3.twcstorage.ru/asp-media/Iona_Gusachenko_01_48ad538e30.jpg"
+                   alt="Иона Гусаченко, клинический психолог"
+                   width="600" height="600" loading="lazy" />
+            </div>
+
+            <div class="speaker_copy">
+              <h3 class="speaker_name">Иона Гусаченко</h3>
+              <p class="speaker_description">
+                Специализируется на&nbsp;клинической подготовке психологов.
+                Разрабатывает и&nbsp;ведёт обучающие программы, помогая специалистам
+                выстраивать клиническую базу в&nbsp;реальной практике. Работает
+                со&nbsp;сложными случаями: тревожные и&nbsp;депрессивные расстройства,
+                травма, психосоматика, расстройства личности.
+              </p>
+
+              <!-- 🟢 Регалии. Плашки переносятся по мере нехватки места. -->
+              <ul class="speaker_credentials">
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Клинический психолог
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  КПТ- и&nbsp;схема-терапевт
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Эксперт-методист обучающих программ
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  10+&nbsp;лет в&nbsp;практике
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       8. ОТЗЫВЫ  —  макет из Фигмы, кадр 470-2077
+       ======================================================================
+       Слева тёмная карточка с процентом и плашками, справа три белые
+       карточки с оценками независимых площадок.
+       🟢 Оценки площадок меняются со временем — сверяйтесь перед запуском.
+       ====================================================================== -->
+  <section class="section_reviews" id="otzyvy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="reviews_component">
+
+          <div class="reviews_grid">
+
+            <div class="reviews_headline">
+              <p class="reviews_percent">98% студентов</p>
+              <p class="reviews_lead">
+                рекомендуют обучение<br />
+                в&nbsp;Академии Современной Психологии
+              </p>
+
+              <ul class="reviews_tags">
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Практика
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Преподаватели
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Поддержка
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Комьюнити
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Качество
+                </li>
+              </ul>
+
+              <!-- 🔴 Декоративная молния с макета -->
+              <img class="reviews_zap" src="https://s3.twcstorage.ru/asp-media/icon_zap_a064f3db0f.svg" alt="" width="100" height="100" aria-hidden="true" />
+            </div>
+
+            <ul class="reviews_scores">
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.45
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_tutortop_cc004891ad.svg" alt="tutortop" width="126" height="28" loading="lazy" />
+              </li>
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.82
+                </p>
+                <!-- 🔴 Логотип «Сравни» на макете состоит из двух частей:
+                     цветного кружка (растр) и надписи (вектор). -->
+                <span class="reviews_logo-group">
+                  <img class="reviews_logo-mark" src="https://s3.twcstorage.ru/asp-media/logo_sravni_mark_4e1f6ca088.png" alt="" width="84" height="72" loading="lazy" />
+                  <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_sravni_33a4ab5059.svg" alt="Сравни" width="113" height="22" loading="lazy" />
+                </span>
+              </li>
+              <li class="reviews_score is-wide">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.9
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_otzovik_786226e74e.svg" alt="Отзовик" width="134" height="28" loading="lazy" />
+              </li>
+            </ul>
+
+          </div>
+
+          <p class="reviews_note">* По&nbsp;данным отзывов на&nbsp;независимых площадках</p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       13. АКАДЕМИЯ  —  макет из Фигмы, кадр 470-752
+       ======================================================================
+       Плитка из четырёх карточек: зал, сообщество, выпускники, преподаватели.
+       ====================================================================== -->
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Мы&nbsp;растем на&nbsp;обратной связи от&nbsp;наших студентов, поэтому
+            каждый новый поток&nbsp;— это улучшенный предыдущий
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+
+              <div class="academy-showcase_teachers-media">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="496"
+                  height="550"
+                  alt="Участники открытого разбора Академии"
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="academy-showcase_teachers-controls" aria-hidden="true">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       14. «УЧАСТИЕ БЕСПЛАТНОЕ» + ФОРМА
+       ======================================================================
+       Тёмная плашка. Слева — что будет и чек-лист в подарок, справа —
+       белая карточка с кнопками мессенджеров.
+       ====================================================================== -->
+  <section class="section_signup" id="reg">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">Участие бесплатное</h2>
+            <p class="signup_description">
+              Один вечер&nbsp;— и&nbsp;у&nbsp;вас появляется алгоритм действий
+              для встречи с&nbsp;клиентом, за&nbsp;запросом которого стоит
+              нечто большее, чем тревога или стресс.
+            </p>
+
+            <ol class="signup_steps">
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">01</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Выберите мессенджер</h3>
+                  <p class="signup_step-description">
+                    Одно нажатие&nbsp;— без анкет и&nbsp;лишних полей
+                  </p>
+                </div>
+              </li>
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">02</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Доступ придёт в&nbsp;мессенджер</h3>
+                  <p class="signup_step-description">
+                    Ссылка на&nbsp;эфир придёт в&nbsp;Telegram или MAX. Напомним
+                    за&nbsp;час до&nbsp;начала
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <!-- 🟢 Подарок участникам: памятка -->
+            <div class="gift_component">
+              <div class="gift_copy">
+                <p class="gift_label">Бонус для участников вебинара</p>
+                <h3 class="gift_heading">
+                  Памятка: алгоритм действий при подозрении на&nbsp;клиническое состояние
+                </h3>
+              </div>
+              <!-- 🟡 Обложка памятки -->
+              <img class="gift_image" src="https://s3.twcstorage.ru/asp-media/algoritm_f3a15765dd.png"
+                   alt="Разворот памятки «Алгоритм действий при подозрении на клиническое состояние»"
+                   width="541" height="477" loading="lazy" />
+            </div>
+          </div>
+
+          <!-- 🔴 РЕГИСТРАЦИЯ ЧЕРЕЗ BOTHELP.
+               На странице нет ни одного поля и ни одной своей кнопки:
+               человек видит только кнопки мессенджеров, которые рисует виджет
+               BotHelp. По нажатию на любую из них скрипт:
+
+                 1) перехватывает нажатие, чтобы BotHelp не увёл со страницы
+                    раньше времени;
+                 2) кладёт служебные значения (ClientID Метрики и UTM-метки)
+                    в скрытую форму Тильды и отправляет её — дальше данные
+                    уходят в AmoCRM штатной интеграцией Тильды;
+                 3) и только после ответа Тильды возвращает нажатие виджету.
+
+               🟡 data-tilda-form-name — имя формы в настройках Тильды.
+                  Должно совпадать с ним буква в букву.
+               🟡 data-metrika-id — номер счётчика Метрики. Можно оставить
+                  пустым: скрипт сам найдёт счётчик на странице.
+               🔴 ВАЖНО: атрибуты data-bh-widget-id и data-bh-customer-id
+                  должны стоять ТОЛЬКО на пустом контейнере
+                  #bh-widget-button-root ниже. -->
+          <div class="lead-form_component" data-signup data-state="idle"
+               data-tilda-form-name="clinical-practice"
+               data-metrika-id="">
+
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Зарегистрироваться на&nbsp;вебинар</h3>
+              <p class="lead-form_date">28 сентября, 18:00 МСК</p>
+            </div>
+
+            <p class="lead-form_hint">
+              Выберите мессенджер&nbsp;— пришлём ссылку на&nbsp;эфир туда
+              и&nbsp;напомним за&nbsp;час до&nbsp;начала.
+            </p>
+
+            <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
+                 Пока виджет не пришёл, на этом месте стоит серый скелет. -->
+            <div class="lead-form_widget" data-bh-mount data-bh-state="loading">
+              <div class="lead-form_widget-skeleton" data-bh-skeleton aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+
+              <div class="lead-form_bh" id="bh-widget-button-root"
+                   data-bh-widget-id="29" data-bh-customer-id="278875"></div>
+
+              <p class="lead-form_note" data-bh-error hidden>
+                Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу&nbsp;—
+                или напишите нам, и&nbsp;мы&nbsp;пришлём ссылку на&nbsp;эфир вручную.
+              </p>
+            </div>
+
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <!-- 🔴 Запасной выход. Показывается, только если переход
+                 в мессенджер не сработал. Адрес подставляет скрипт. -->
+            <p class="lead-form_manual" data-lead-manual hidden>
+              Мессенджер не&nbsp;открылся?
+              <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
+            </p>
+
+            <p class="lead-form_note">
+              Запись эфира будет доступна зарегистрированным участникам.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       11. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       Обычный аккордеон на <details>. Без скрипта он тоже работает —
+       скрипт нужен только для плавного раскрытия.
+       ====================================================================== -->
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+            <!-- 🟡 Ссылка ведёт в Telegram-бот приёмной комиссии -->
+            <p class="faq_support">
+              Не&nbsp;нашли ответа на&nbsp;свой вопрос?
+              <a href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener">Напишите нам</a>
+            </p>
+          </div>
+
+          <div class="faq_list accordion_component" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько стоит участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Участие бесплатное&nbsp;— нужна только регистрация. Ссылка
+                    на&nbsp;эфир придёт в&nbsp;выбранный мессенджер, напомним
+                    за&nbsp;час до&nbsp;начала.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">У&nbsp;меня нет медицинского образования. Мне будет понятно?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Да, вебинар рассчитан именно на&nbsp;психологов без медицинского
+                    образования. Термины объясняем по&nbsp;ходу, а&nbsp;вопросы можно
+                    задавать прямо на&nbsp;эфире&nbsp;— в&nbsp;чате или голосом.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Это про то, чтобы ставить диагнозы?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет. Диагноз ставит врач. Клинический психолог не&nbsp;ставит
+                    диагнозы&nbsp;— он&nbsp;понимает, что стоит за&nbsp;ними: замечает
+                    клинические маркеры, видит границы своей работы и&nbsp;понимает,
+                    когда подключать психиатра.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">У&nbsp;моего клиента уже есть диагноз. Я&nbsp;могу с&nbsp;ним работать?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Во&nbsp;многих случаях&nbsp;— да, в&nbsp;рамках своей компетенции
+                    и&nbsp;во&nbsp;взаимодействии с&nbsp;лечащим врачом. Где проходят
+                    эти границы и&nbsp;что психолог может дать такому клиенту&nbsp;—
+                    отдельный пункт программы.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;работаю в&nbsp;КПТ (ACT, схема-терапии). Придётся менять подход?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет. Клинические знания не&nbsp;заменяют метод, а&nbsp;усиливают
+                    его: вы&nbsp;продолжаете работать в&nbsp;своём подходе, но&nbsp;точнее
+                    понимаете, с&nbsp;чем именно имеете дело, и&nbsp;подбираете
+                    способ помощи под конкретный случай.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Где проходит вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Вебинар проходит онлайн, достаточно будет перейти по ссылке из мессенджера.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько длится эфир?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>Около 60&nbsp;минут вместе с&nbsp;ответами на&nbsp;вопросы.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Будет ли запись?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Да, запись будет доступна зарегистрированным участникам.
+                    Но&nbsp;живое участие даёт больше: можно задать вопрос спикеру
+                    и&nbsp;сразу получить ответ.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Выдаётся ли сертификат за&nbsp;участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет, за&nbsp;вебинар сертификат не&nbsp;выдаётся. Документы
+                    установленного образца&nbsp;— только по&nbsp;итогам обучающих
+                    программ Академии.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Это продающий вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Скажем честно: в&nbsp;конце коротко расскажем про программу
+                    клинической переподготовки и&nbsp;пригласим на&nbsp;бесплатную
+                    консультацию&nbsp;— это несколько минут. Всё остальное время&nbsp;—
+                    разбор темы и&nbsp;ответы на&nbsp;ваши вопросы.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ==========================================================================
+     ПОДВАЛ
+     ==========================================================================
+     Контакты и реквизиты — те же, что на /klinicheskaya-baza.
+     ========================================================================== -->
+<footer class="site-footer_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+
+      <h2 class="site-footer_heading">Контакты</h2>
+
+      <div class="site-footer_grid">
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Отдел продаж</p>
+          <p class="site-footer_line"><a href="tel:+78124702901">+7&nbsp;812&nbsp;470-29-01</a></p>
+          <p class="site-footer_line"><a href="mailto:info@modern-psy.ru">info@modern-psy.ru</a></p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Адрес</p>
+          <p class="site-footer_line">
+            197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ
+            Введенский, пр-т&nbsp;Большой&nbsp;П.с., д.&nbsp;7/4, литера&nbsp;А,
+            помещ.&nbsp;2-Н
+          </p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Правовая информация</p>
+          <!-- 🟡 Адреса документов подставьте с боевого сайта -->
+          <p class="site-footer_line"><a href="/oferta">Публичная оферта</a></p>
+          <p class="site-footer_line"><a href="/privacy">Политика конфиденциальности</a></p>
+          <p class="site-footer_line"><a href="/documents">Сведения об&nbsp;образовательной организации</a></p>
+        </div>
+
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+        <p>ОГРН 1217800102783<br />ИНН/КПП 7839141929/781301001</p>
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>
+          Доступ к&nbsp;мессенджеру Telegram и&nbsp;видеохостингу YouTube
+          в&nbsp;РФ ограничен в&nbsp;связи с&nbsp;применяемыми техническими мерами
+          и&nbsp;требованиями российского законодательства; работоспособность
+          сервисов может быть нестабильной.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>

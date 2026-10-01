@@ -1,0 +1,795 @@
+/* ============================================================================
+   UI-КИТ «МЕЖДУ СЕССИЙ» · компоненты форм
+   ============================================================================
+
+   Собрано по макетам Figma «Между сессий UI»:
+     Buttons/Button            (3287-427074)  — кнопки бренда
+     Buttons/Button destructive(6218-85578)   — красные кнопки
+     Buttons/Button close X    (2763-420129)  — крестики для модалок
+     Buttons/Button utility    (8003-526508)  — круглые кнопки-иконки
+     Buttons/Button loading    (8993-429278)  — лоадеры
+     Checkbox / Radio          (1097-63886, 1097-63652)
+     Input field               (1090-57817)
+     Textarea input field      (1238-278)
+
+   Значения берутся из tokens.css. Иконки — из папки /icons, красятся через
+   CSS-маску в currentColor, поэтому один SVG работает в любом цвете.
+
+   ИМЕНОВАНИЕ (Client-first)
+     .button            базовый класс кнопки
+     .is-primary …      иерархия: is-primary / is-secondary / is-tertiary /
+                        is-link / is-link-gray
+     .is-destructive    красный вариант той же иерархии
+     .is-xs … .is-xl    размер
+     .is-icon-only      квадратная кнопка с одной иконкой
+     .is-loading        показать спиннер вместо ведущей иконки
+     [disabled]         неактивное состояние — атрибут, а не класс
+
+   ПОРЯДОК РАЗДЕЛОВ
+     0. Иконки
+     1. Кнопки
+     2. Крестик модалки и утилити-кнопки
+     3. Лоадеры
+     4. Чекбоксы и радио
+     5. Поля ввода и textarea
+   ============================================================================ */
+
+@import url("tokens.css");
+
+
+/* ---------------------------------------------------------------------------
+   0. ИКОНКИ
+   <span class="icon is-mail"></span> — размер задаёт родитель через
+   --icon-size, цвет — через color.
+   --------------------------------------------------------------------------- */
+
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--icon-size, 1.25rem);
+  height: var(--icon-size, 1.25rem);
+  background-color: currentColor;
+  -webkit-mask: var(--icon-src) center / contain no-repeat;
+  mask: var(--icon-src) center / contain no-repeat;
+}
+
+.icon.is-check { --icon-src: url("icons/check.svg"); }
+.icon.is-minus { --icon-src: url("icons/minus.svg"); }
+.icon.is-x-close { --icon-src: url("icons/x-close.svg"); }
+.icon.is-mail { --icon-src: url("icons/mail.svg"); }
+.icon.is-lock { --icon-src: url("icons/lock.svg"); }
+.icon.is-help { --icon-src: url("icons/help-circle.svg"); }
+.icon.is-alert { --icon-src: url("icons/alert-circle.svg"); }
+.icon.is-check-circle { --icon-src: url("icons/check-circle.svg"); }
+.icon.is-chevron-down { --icon-src: url("icons/chevron-down.svg"); }
+.icon.is-loader { --icon-src: url("icons/loader-sm.svg"); }
+.icon.is-loader-md { --icon-src: url("icons/loader-md.svg"); }
+
+
+/* ---------------------------------------------------------------------------
+   1. КНОПКИ
+   --------------------------------------------------------------------------- */
+
+.button {
+  --icon-size: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 0.625rem var(--spacing-lg);          /* md: 10 / 16 → высота 40 */
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  color: inherit;
+  font: var(--font-weight-semibold) var(--font-size-text-sm) / 1.2 var(--font-family-body);
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--transition-site), color var(--transition-site), box-shadow var(--transition-site);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.button[disabled],
+.button.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Текст внутри кнопки получает 2px по бокам — как «Text padding» в Figma */
+.button_label {
+  padding: 0 var(--spacing-xxs);
+}
+
+/* --- Размеры --- */
+
+.button.is-xs {
+  --icon-size: 1rem;
+  padding: var(--spacing-sm) var(--spacing-lg);   /* высота 33 */
+}
+
+.button.is-sm {
+  padding: var(--spacing-md) var(--spacing-lg);   /* высота 44 */
+}
+
+.button.is-lg {
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-text-md);            /* высота 40, текст 16 */
+}
+
+.button.is-xl {
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);                     /* высота 52 */
+  font-size: var(--font-size-text-md);
+}
+
+/* Только иконка — квадрат */
+.button.is-icon-only {
+  padding: 0.625rem;
+}
+
+.button.is-icon-only.is-xs { padding: var(--spacing-sm); }
+.button.is-icon-only.is-sm { padding: var(--spacing-md); }
+.button.is-icon-only.is-xl { padding: var(--spacing-lg); }
+
+/* --- Primary --- */
+
+.button.is-primary {
+  background: var(--color-brand-600);
+  color: var(--text-white);
+  box-shadow: var(--shadow-xs);
+}
+
+.button.is-primary:hover {
+  background: var(--color-brand-700);
+}
+
+.button.is-primary:focus-visible {
+  box-shadow: var(--focus-ring), var(--shadow-xs);
+}
+
+.button.is-primary[disabled],
+.button.is-primary.is-disabled {
+  background: var(--color-neutral-200);
+  color: var(--text-placeholder);
+}
+
+/* --- Secondary --- */
+
+.button.is-secondary {
+  background: var(--bg-brand-primary);
+  color: var(--text-brand-tertiary);
+}
+
+.button.is-secondary:hover {
+  background: var(--bg-brand-secondary);
+}
+
+.button.is-secondary[disabled],
+.button.is-secondary.is-disabled {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  box-shadow: inset 0 0 0 1px var(--border-primary), var(--shadow-xs);
+}
+
+/* --- Tertiary --- */
+
+.button.is-tertiary {
+  color: var(--text-brand-tertiary);
+}
+
+.button.is-tertiary:hover {
+  background: var(--bg-brand-primary);
+}
+
+.button.is-tertiary[disabled],
+.button.is-tertiary.is-disabled {
+  color: var(--text-tertiary);
+}
+
+/* --- Link color / Link gray: без фона и вертикальных отступов --- */
+
+.button.is-link,
+.button.is-link-gray {
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 0;
+}
+
+.button.is-link {
+  color: var(--text-brand-secondary);
+}
+
+.button.is-link:hover {
+  color: var(--text-brand-secondary-hover);
+  text-decoration: underline;
+  text-decoration-color: var(--color-brand-500);
+}
+
+.button.is-link-gray {
+  color: var(--text-tertiary);
+}
+
+.button.is-link-gray:hover {
+  color: var(--text-tertiary-hover);
+  text-decoration: underline;
+  text-decoration-color: var(--color-neutral-900);
+}
+
+.button.is-link:focus-visible,
+.button.is-link-gray:focus-visible {
+  border-radius: var(--radius-xs);
+}
+
+/* --- Destructive: та же иерархия, красная палитра --- */
+
+.button.is-destructive.is-primary {
+  background: var(--bg-error-solid);
+  box-shadow: var(--shadow-xs), var(--shadow-skeuomorphic-inner);
+}
+
+.button.is-destructive.is-primary:hover {
+  background: var(--bg-error-solid-hover);
+}
+
+.button.is-destructive.is-primary:focus-visible {
+  box-shadow: var(--focus-ring-error), var(--shadow-xs), var(--shadow-skeuomorphic-inner);
+}
+
+.button.is-destructive.is-primary[disabled],
+.button.is-destructive.is-primary.is-disabled {
+  background: var(--bg-error-solid);
+  color: var(--text-white);
+}
+
+.button.is-destructive.is-secondary {
+  background: var(--bg-primary);
+  color: var(--text-error-primary);
+  box-shadow: inset 0 0 0 1px var(--border-error-subtle), var(--shadow-xs);
+}
+
+.button.is-destructive.is-secondary:hover {
+  background: var(--bg-error-primary);
+  color: var(--text-error-primary-hover);
+}
+
+.button.is-destructive.is-tertiary {
+  color: var(--text-error-primary);
+}
+
+.button.is-destructive.is-tertiary:hover {
+  background: var(--bg-error-primary);
+  color: var(--text-error-primary-hover);
+}
+
+.button.is-destructive.is-link {
+  padding-right: 0;
+  padding-left: 0;
+  color: var(--text-error-primary);
+}
+
+.button.is-destructive.is-link:hover {
+  color: var(--text-error-primary-hover);
+  text-decoration-color: var(--color-red-500);
+}
+
+.button.is-destructive:focus-visible {
+  box-shadow: var(--focus-ring-error);
+}
+
+/* --- Loading: спиннер вместо ведущей иконки --- */
+
+.button.is-loading {
+  pointer-events: none;
+}
+
+.button.is-loading .icon.is-loader {
+  animation: ui-spin 0.9s linear infinite;
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. КРЕСТИК МОДАЛКИ И УТИЛИТИ-КНОПКИ
+   Круглые кнопки с одной иконкой.
+   --------------------------------------------------------------------------- */
+
+/* Крестик: sm 36 / md 40 / lg 44, иконка 20 (lg — 24), цвет бренд-600 */
+.button-close {
+  --icon-size: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--fg-brand-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-site);
+}
+
+.button-close.is-sm { width: 2.25rem; height: 2.25rem; }
+.button-close.is-lg { --icon-size: 1.5rem; width: 2.75rem; height: 2.75rem; }
+
+.button-close:hover {
+  background: var(--bg-brand-secondary);
+}
+
+.button-close:focus-visible {
+  outline: none;
+  background: var(--bg-primary);
+  box-shadow: var(--focus-ring);
+}
+
+/* На тёмном фоне крестик светлый, ховер — светлая плашка */
+.button-close.is-on-dark {
+  color: var(--color-brand-300);
+}
+
+.button-close.is-on-dark:hover,
+.button-close.is-on-dark:focus-visible {
+  background: var(--bg-brand-primary);
+  color: var(--fg-brand-primary);
+}
+
+/* Утилити: xs 32 / sm 36, иконка 16 / 20 */
+.button-utility {
+  --icon-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--fg-secondary);
+  cursor: pointer;
+  transition: background-color var(--transition-site), box-shadow var(--transition-site);
+}
+
+.button-utility.is-sm {
+  --icon-size: 1.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.button-utility:hover {
+  background: var(--bg-primary-hover);
+}
+
+.button-utility:focus-visible {
+  outline: none;
+  background: var(--bg-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.button-utility[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Вторичный утилити — с рамкой и объёмом */
+.button-utility.is-secondary {
+  background: var(--bg-primary);
+  box-shadow: inset 0 0 0 1px var(--border-primary), var(--shadow-xs), var(--shadow-skeuomorphic-inner);
+}
+
+.button-utility.is-secondary:hover {
+  background: var(--bg-primary-hover);
+}
+
+.button-utility.is-secondary:focus-visible {
+  box-shadow: var(--focus-ring), inset 0 0 0 1px var(--border-primary);
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. ЛОАДЕРЫ
+   Дуга — бренд-600, подложка — та же дуга с прозрачностью 0.3 (внутри SVG).
+   --------------------------------------------------------------------------- */
+
+.loader {
+  --icon-size: 1.25rem;
+  display: inline-block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  color: var(--fg-brand-primary);
+  background-color: currentColor;
+  -webkit-mask: url("icons/loader-sm.svg") center / contain no-repeat;
+  mask: url("icons/loader-sm.svg") center / contain no-repeat;
+  animation: ui-spin 0.9s linear infinite;
+}
+
+.loader.is-md {
+  --icon-size: 1.5rem;
+  -webkit-mask-image: url("icons/loader-md.svg");
+  mask-image: url("icons/loader-md.svg");
+}
+
+.loader.is-on-dark,
+.loader.is-white {
+  color: var(--fg-white);
+}
+
+@keyframes ui-spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. ЧЕКБОКСЫ И РАДИО
+   Разметка:
+     <label class="checkbox">
+       <input type="checkbox" class="checkbox_input">
+       <span class="checkbox_box"></span>
+       <span class="checkbox_text">
+         <span class="checkbox_label">Запомнить меня</span>
+         <span class="checkbox_hint">Подсказка</span>
+       </span>
+     </label>
+   Для радио — то же самое, но type="radio" и класс .is-radio на label.
+   Размеры: по умолчанию sm (16px), .is-md — 20px.
+   --------------------------------------------------------------------------- */
+
+.checkbox {
+  --box-size: 1rem;
+  --box-radius: var(--radius-xs);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  line-height: 1.2;
+}
+
+.checkbox.is-md {
+  --box-size: 1.25rem;
+  --box-radius: var(--radius-sm);
+  gap: var(--spacing-lg);
+  font-size: var(--font-size-text-md);
+}
+
+.checkbox.is-radio {
+  --box-radius: var(--radius-full);
+}
+
+/* Настоящий input скрыт, но доступен клавиатуре и скринридеру */
+.checkbox_input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+  opacity: 0;
+}
+
+.checkbox_box {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--box-size);
+  height: var(--box-size);
+  margin-top: var(--spacing-xxs);              /* выравнивание по первой строке */
+  border-radius: var(--box-radius);
+  background: var(--bg-primary);
+  box-shadow: inset 0 0 0 1px var(--border-brand);
+  transition: background-color var(--transition-site), box-shadow var(--transition-site);
+}
+
+/* Галочка / минус / точка */
+.checkbox_box::after {
+  content: "";
+  position: absolute;
+  inset: 12.5%;
+  opacity: 0;
+  background-color: var(--fg-white);
+  -webkit-mask: url("icons/check.svg") center / contain no-repeat;
+  mask: url("icons/check.svg") center / contain no-repeat;
+  transition: opacity var(--transition-site);
+}
+
+.checkbox.is-md .checkbox_box::after {
+  inset: 15%;
+}
+
+.checkbox.is-radio .checkbox_box::after {
+  inset: 31.25%;
+  border-radius: var(--radius-full);
+  -webkit-mask: none;
+  mask: none;
+}
+
+.checkbox.is-radio.is-md .checkbox_box::after {
+  inset: 30%;
+}
+
+/* Состояния */
+.checkbox_input:checked + .checkbox_box,
+.checkbox_input:indeterminate + .checkbox_box {
+  background: var(--bg-brand-solid);
+  box-shadow: none;
+}
+
+.checkbox_input:checked + .checkbox_box::after {
+  opacity: 1;
+}
+
+.checkbox_input:indeterminate + .checkbox_box::after {
+  opacity: 1;
+  -webkit-mask-image: url("icons/minus.svg");
+  mask-image: url("icons/minus.svg");
+}
+
+.checkbox_input:focus-visible + .checkbox_box {
+  box-shadow: inset 0 0 0 1px var(--border-brand), var(--focus-ring);
+}
+
+.checkbox_input:checked:focus-visible + .checkbox_box,
+.checkbox_input:indeterminate:focus-visible + .checkbox_box {
+  box-shadow: var(--focus-ring);
+}
+
+.checkbox_input:disabled + .checkbox_box {
+  background: var(--bg-tertiary);
+  opacity: 0.5;
+}
+
+.checkbox_input:disabled:checked + .checkbox_box {
+  background: var(--bg-brand-solid);
+}
+
+.checkbox:has(.checkbox_input:disabled) {
+  cursor: not-allowed;
+}
+
+.checkbox_text {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox.is-md .checkbox_text {
+  gap: var(--spacing-xxs);
+}
+
+.checkbox_label {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.checkbox_hint {
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. ПОЛЯ ВВОДА И TEXTAREA
+   Разметка:
+     <div class="field">
+       <label class="field_label" for="email">Email <span class="field_required">*</span></label>
+       <div class="field_control">
+         <span class="icon is-mail field_icon"></span>
+         <input class="field_input" id="email" placeholder="…">
+         <span class="icon is-help field_help"></span>
+       </div>
+       <p class="field_hint">Подсказка</p>
+     </div>
+   Модификаторы на .field: .is-sm / .is-lg / .is-error / .is-disabled
+   --------------------------------------------------------------------------- */
+
+.field {
+  --field-padding-y: var(--spacing-md);
+  --field-padding-x: var(--spacing-lg);
+  --field-font-size: var(--font-size-text-md);
+  --field-hint-size: var(--font-size-text-sm);
+  --icon-size: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  font-family: var(--font-family-body);
+}
+
+.field.is-sm {
+  --field-font-size: var(--font-size-text-sm);
+  --field-hint-size: var(--font-size-text-xs);
+  --icon-size: 1rem;
+}
+
+.field.is-lg {
+  --field-padding-y: 0.625rem;
+  --field-padding-x: 0.875rem;
+}
+
+.field_label {
+  display: inline-flex;
+  gap: var(--spacing-xxs);
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+}
+
+.field_required {
+  color: var(--text-brand-tertiary);
+}
+
+.field_control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--field-padding-y) var(--field-padding-x);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  box-shadow: inset 0 0 0 1px var(--border-input);
+  transition: box-shadow var(--transition-site);
+}
+
+/* Фокус — рамка 2px бренда */
+.field_control:focus-within {
+  box-shadow: inset 0 0 0 2px var(--border-brand);
+}
+
+.field_input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: var(--font-weight-regular) var(--field-font-size) / 1.2 var(--font-family-body);
+  outline: none;
+}
+
+.field_input::placeholder {
+  color: var(--text-placeholder);
+  opacity: 1;
+}
+
+.field_icon {
+  color: var(--fg-quaternary);
+}
+
+.field_help,
+.field_status {
+  --icon-size: 1rem;
+  color: var(--fg-quaternary);
+}
+
+.field_status {
+  color: var(--fg-error-primary);
+}
+
+.field_hint {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: var(--field-hint-size);
+  line-height: 1.2;
+}
+
+.field_hint .icon {
+  --icon-size: 1rem;
+}
+
+/* Ошибка */
+.field.is-error .field_required { color: var(--text-error-primary); }
+.field.is-error .field_control { box-shadow: inset 0 0 0 1px var(--border-error-subtle); }
+.field.is-error .field_control:focus-within { box-shadow: inset 0 0 0 2px var(--border-error); }
+.field.is-error .field_hint { color: var(--text-error-primary); }
+
+/* Неактивное */
+.field.is-disabled .field_control,
+.field_control:has(.field_input:disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Префикс «https://» и суффикс-дропдаун */
+.field_addon {
+  display: flex;
+  align-items: center;
+  margin: calc(var(--field-padding-y) * -1) 0 calc(var(--field-padding-y) * -1) calc(var(--field-padding-x) * -1);
+  padding: var(--field-padding-y) var(--field-padding-x);
+  border-right: 1px solid var(--border-input);
+  color: var(--text-tertiary);
+  font-size: var(--field-font-size);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.field_addon.is-trailing {
+  gap: var(--spacing-xxs);
+  margin: calc(var(--field-padding-y) * -1) calc(var(--field-padding-x) * -1) calc(var(--field-padding-y) * -1) 0;
+  border-right: 0;
+  border-left: 1px solid var(--border-input);
+  cursor: pointer;
+}
+
+.field_addon.is-trailing .icon {
+  --icon-size: 1rem;
+}
+
+/* Textarea */
+.field_control.is-textarea {
+  position: relative;
+  align-items: stretch;
+  padding: var(--spacing-lg) 0.875rem;
+  box-shadow: inset 0 0 0 1px var(--border-input), var(--shadow-xs);
+}
+
+.field_control.is-textarea:focus-within {
+  box-shadow: inset 0 0 0 2px var(--border-brand), var(--shadow-xs);
+}
+
+.field.is-error .field_control.is-textarea {
+  box-shadow: inset 0 0 0 1px var(--border-error-subtle), var(--shadow-xs);
+}
+
+.field.is-error .field_control.is-textarea:focus-within {
+  box-shadow: inset 0 0 0 2px var(--border-error), var(--shadow-xs);
+}
+
+.field_textarea {
+  flex: 1 1 auto;
+  min-height: 7rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: var(--font-weight-regular) var(--field-font-size) / 1.2 var(--font-family-body);
+  resize: vertical;
+  outline: none;
+}
+
+.field_textarea::placeholder {
+  color: var(--text-placeholder);
+  opacity: 1;
+}
+
+/* Свой уголок ресайза поверх системного */
+.field_control.is-textarea::after {
+  content: "";
+  position: absolute;
+  right: 0.3125rem;
+  bottom: 0.3125rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--color-neutral-300);
+  pointer-events: none;
+  -webkit-mask: url("icons/resize-handle.svg") center / contain no-repeat;
+  mask: url("icons/resize-handle.svg") center / contain no-repeat;
+}
+
+.field_textarea::-webkit-resizer {
+  background: transparent;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Меньше движения — по просьбе пользователя
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button-close,
+  .button-utility,
+  .checkbox_box,
+  .field_control {
+    transition: none;
+  }
+}

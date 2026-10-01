@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «МЕЖДУ СЕССИЙ»  →  подписка для психологов, клуб АСП
+  ============================================================================
+
+  Сверстано по макету Figma «Между сессий» (файл xetOFKYyczYKIOjWZXLy7A).
+  Страница самодостаточная: tokens.css → ui-kit.css → page.css, скрипт page.js.
+
+  🟢 Можно править: тексты, ссылки. Картинки лежат на s3.twcstorage.ru/asp-media.
+  🔴 Нельзя: классы и структуру блоков — на них завязаны стили и скрипт.
+
+  Все кнопки «Стать участником» ведут на модалку Тильды: href="#popup:mezhdu-sessiy".
+  Попап — блок T868 с виджетом Геткурса.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Между сессий&nbsp;— единая подписка для&nbsp;психологов | АСП</title>
+  <meta name="description" content="Библиотека курсов и лекций, супервизии, закрытые мероприятия, факультативы Академии и профессиональное сообщество в рамках одной подписки. 2 990 ₽ в месяц." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="page.css" />
+  <script src="page.js" defer></script>
+</head>
+<body>
+<div class="sessions-page" lang="ru">
+  <a class="skip-link" href="#main">Перейти к&nbsp;содержимому</a>
+
+  <!-- ================================================================
+       ШАПКА · тёмная «таблетка», на мобилке — лого и бургер
+       ================================================================ -->
+  <header class="site-header padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+        <a class="site-header_logo" href="#" aria-label="Между сессий — на главную">
+          <img src="https://s3.twcstorage.ru/asp-media/Logo_8894ede159.svg" alt="" width="143" height="46" />
+        </a>
+
+        <nav class="site-header_nav" id="site-nav" aria-label="Разделы страницы">
+          <a class="site-header_link" href="#subscription">Что&nbsp;входит в&nbsp;подписку</a>
+          <a class="site-header_link" href="#join">Как&nbsp;попасть в&nbsp;клуб</a>
+          <a class="site-header_logo is-desktop" href="#" aria-label="Между сессий — на главную">
+            <img src="https://s3.twcstorage.ru/asp-media/Logo_8894ede159.svg" alt="" width="143" height="46" />
+          </a>
+          <a class="site-header_link" href="#audience">Кому подойдет</a>
+          <a class="site-header_link is-accent" href="#popup:mezhdu-sessiy">Стать участником</a>
+        </nav>
+
+        <!-- Бургер: виден до 992px, открывает меню, скрипт в page.js -->
+        <button class="site-header_burger" type="button" data-js="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Открыть меню">
+          <span class="icon is-menu"></span>
+          <span class="icon is-x-close"></span>
+        </button>
+      </div>
+    </div>
+    <!-- Затемнение под открытым меню -->
+    <div class="site-header_backdrop" data-js="menu-backdrop" hidden></div>
+  </header>
+
+  <main class="main-wrapper" id="main">
+
+    <!-- ================================================================
+         ПЕРВЫЙ ЭКРАН · заголовок и карточка цены
+         ================================================================ -->
+    <section class="section_hero padding-global">
+      <div class="container-xlarge">
+        <div class="hero_layout">
+          <div class="hero_content">
+            <span class="badge">Онлайн</span>
+            <h1 class="hero_title">Единая подписка для профессионального развития <strong>психологов</strong></h1>
+            <p class="hero_lead">Получите доступ к&nbsp;библиотеке курсов и&nbsp;лекций, супервизиям, закрытым мероприятиям, факультативам Академии и&nbsp;профессиональному сообществу в&nbsp;рамках одной подписки.</p>
+          </div>
+
+          <!-- Карточка цены. Та же карточка повторяется в блоке «Как попасть в клуб» -->
+          <aside class="price-card" aria-label="Стоимость подписки">
+            <p class="price-card_price"><strong>2&nbsp;990&nbsp;₽</strong> <span>в&nbsp;месяц</span></p>
+            <hr class="price-card_divider" />
+            <p class="price-card_caption">В&nbsp;подписку входит</p>
+            <ul class="price-card_list">
+              <li><span class="icon is-check-round"></span>Библиотека курсов и&nbsp;лекций</li>
+              <li><span class="icon is-check-round"></span>Супервизии</li>
+              <li><span class="icon is-check-round"></span>Закрытые лекции</li>
+              <li><span class="icon is-check-round"></span>Факультативы</li>
+              <li><span class="icon is-check-round"></span>Сообщество</li>
+              <li><span class="icon is-check-round"></span>Специальные предложения Академии</li>
+            </ul>
+            <div class="price-card_action">
+              <a class="cta-button is-full" href="#popup:mezhdu-sessiy">Стать участником</a>
+              <p class="price-card_note">После оплаты вы сразу попадаете на&nbsp;обучающую платформу и&nbsp;в&nbsp;чат с&nbsp;участниками клуба</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         ГАЛЕРЕЯ · бесконечная лента, едет влево, скрипт в page.js
+         ================================================================ -->
+    <section class="section_gallery" aria-label="Что дает подписка">
+      <div class="gallery_track" data-js="marquee">
+        <div class="gallery_set">
+          <figure class="gallery_card is-1">
+            <img class="gallery_img" src="https://s3.twcstorage.ru/asp-media/gallery_1_5a133151e1.jpg" alt="Психолог с ноутбуком слушает лекцию" loading="lazy" />
+            <figcaption class="gallery_label"><span>Библиотека курсов</span><span>и&nbsp;лекций</span></figcaption>
+          </figure>
+          <figure class="gallery_card is-2">
+            <img class="gallery_img" src="https://s3.twcstorage.ru/asp-media/gallery_2_b9d07ecd16.jpg" alt="Групповая видеовстреча на ноутбуке" loading="lazy" />
+            <figcaption class="gallery_label"><span>Супервизии и&nbsp;разборы</span><span>кейсов</span></figcaption>
+          </figure>
+          <figure class="gallery_card is-3">
+            <img class="gallery_img" src="https://s3.twcstorage.ru/asp-media/gallery_3_2af4ec2e1e.jpg" alt="Участница мероприятия у окна" loading="lazy" />
+            <figcaption class="gallery_label"><span>Закрытые</span><span>мероприятия</span></figcaption>
+          </figure>
+          <figure class="gallery_card is-4">
+            <img class="gallery_img" src="https://s3.twcstorage.ru/asp-media/gallery_4_723f59b67e.png" alt="Конспект и ручки на столе" loading="lazy" />
+            <figcaption class="gallery_label"><span>Факультативы</span><span>Академии</span></figcaption>
+          </figure>
+          <figure class="gallery_card is-5">
+            <img class="gallery_img" src="https://s3.twcstorage.ru/asp-media/gallery_5_7539887bf0.jpg" alt="Телефон с чатом сообщества" loading="lazy" />
+            <figcaption class="gallery_label"><span>Сообщество</span><span>психологов</span></figcaption>
+          </figure>
+          <figure class="gallery_card is-6">
+            <img class="gallery_img" src="https://s3.twcstorage.ru/asp-media/gallery_6_c945309d73.jpg" alt="Рука с банковской картой" loading="lazy" />
+            <figcaption class="gallery_label"><span>Специальные условия</span><span>на&nbsp;обучение</span></figcaption>
+          </figure>
+        </div>
+        <!-- Копию ленты для зацикливания добавляет скрипт -->
+      </div>
+    </section>
+
+    <!-- ================================================================
+         ТРУДНОСТИ · фото + белая карточка со списком
+         ================================================================ -->
+    <section class="section_difficulties padding-global">
+      <div class="container-xlarge">
+        <div class="difficulties_layout">
+          <div class="difficulties_photo">
+            <img src="https://s3.twcstorage.ru/asp-media/difficulties_ae6a69f7cf.jpg" alt="Психолог с чашкой у окна" loading="lazy" />
+          </div>
+          <div class="difficulties_card">
+            <h2 class="difficulties_title">После обучения психологи часто сталкиваются <strong>с&nbsp;похожими трудностями</strong></h2>
+            <ul class="difficulties_list">
+              <li class="difficulties_item">
+                <h3>Не&nbsp;хватает практики</h3>
+                <p>Теория есть, но&nbsp;без&nbsp;практики и&nbsp;обратной связи сложно чувствовать себя уверенно.</p>
+              </li>
+              <li class="difficulties_item">
+                <h3>Постоянно учиться&nbsp;— дорого</h3>
+                <p>Для&nbsp;каждой новой темы приходится покупать отдельный курс.</p>
+              </li>
+              <li class="difficulties_item">
+                <h3>Не&nbsp;с&nbsp;кем обсудить сложный случай</h3>
+                <p>Когда терапия заходит в&nbsp;тупик, нужен взгляд коллег со&nbsp;стороны.</p>
+              </li>
+              <li class="difficulties_item">
+                <h3>Не&nbsp;хватает профессионального окружения</h3>
+                <p>В&nbsp;частной практике не&nbsp;хватает общения и&nbsp;обмена опытом с&nbsp;коллегами.</p>
+              </li>
+            </ul>
+            <a class="cta-button" href="#popup:mezhdu-sessiy">Стать участником</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         ЧТО ВХОДИТ В ПОДПИСКУ · 3 + 2 ячейки с разделителями
+         ================================================================ -->
+    <section class="section_subscription padding-global" id="subscription">
+      <div class="container-xlarge">
+        <div class="subscription_card">
+          <h2 class="section-title">Что&nbsp;входит в&nbsp;подписку</h2>
+          <div class="subscription_grid">
+            <div class="subscription_row is-three">
+              <article class="subscription_item">
+                <span class="subscription_icon"><span class="icon is-documentation"></span></span>
+                <h3>Библиотека знаний</h3>
+                <p>Мини-курсы и&nbsp;лекции от&nbsp;опытных преподавателей&nbsp;— доступ ко&nbsp;всему сразу, без&nbsp;отдельной оплаты. Каждый месяц обновляем материалы.</p>
+              </article>
+              <article class="subscription_item">
+                <span class="subscription_icon"><span class="icon is-bookmark"></span></span>
+                <h3>Практические встречи</h3>
+                <p>Несколько онлайн-встреч в&nbsp;месяц с&nbsp;преподавателями АСП по&nbsp;темам, которых нет в&nbsp;основных программах. Не&nbsp;смогли прийти&nbsp;— запись остается в&nbsp;библиотеке.</p>
+              </article>
+              <article class="subscription_item">
+                <span class="subscription_icon"><span class="icon is-design"></span></span>
+                <h3>Полимодальные разборы случаев</h3>
+                <p>Обсуждение кейса через профессиональную оптику, поддержка и&nbsp;практический материал для&nbsp;дальнейшей работы. Разборы проходят раз в&nbsp;две недели.</p>
+              </article>
+            </div>
+            <div class="subscription_row is-two">
+              <article class="subscription_item">
+                <span class="subscription_icon"><span class="icon is-learning"></span></span>
+                <h3>Факультативы Академии</h3>
+                <p>Несколько факультативных программ, обычно доступных только студентам АСП. Новая программа открывается раз в&nbsp;месяц.</p>
+              </article>
+              <article class="subscription_item">
+                <span class="subscription_icon"><span class="icon is-users"></span></span>
+                <h3>Сообщество для&nbsp;практикующих коллег</h3>
+                <p>Оперативное обсуждение клиентских запросов, рекомендация проверенных смежных специалистов и&nbsp;профессиональный обмен опытом.</p>
+              </article>
+            </div>
+          </div>
+          <div class="subscription_action">
+            <a class="cta-button" href="#popup:mezhdu-sessiy">Стать участником</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         СРАВНЕНИЕ ЦЕН · по отдельности vs в подписке
+         🟢 Позиции и цены можно править прямо здесь
+         ================================================================ -->
+    <section class="section_compare padding-global" id="compare">
+      <div class="container-xlarge">
+        <div class="compare_card">
+          <div class="compare_intro">
+            <h2 class="section-title">Сколько это стоит по&nbsp;отдельности</h2>
+            <p class="compare_lead">Если покупать то&nbsp;же самое отдельными продуктами, за&nbsp;месяц набегает заметно больше.</p>
+          </div>
+          <div class="compare_body">
+            <ul class="compare_list">
+              <li class="compare_row">
+                <span class="compare_name">Одна индивидуальная супервизия</span>
+                <span class="compare_price">4&nbsp;000&nbsp;₽</span>
+              </li>
+              <li class="compare_row">
+                <span class="compare_name">Тренинг навыков</span>
+                <span class="compare_price">15&nbsp;000&nbsp;₽</span>
+              </li>
+              <li class="compare_row">
+                <span class="compare_name">Лекции в&nbsp;записи</span>
+                <span class="compare_price">5&nbsp;000&nbsp;₽</span>
+              </li>
+              <li class="compare_row is-total">
+                <span class="compare_name">Итого по&nbsp;отдельности</span>
+                <span class="compare_price"><s>24&nbsp;000&nbsp;₽</s></span>
+              </li>
+            </ul>
+            <div class="compare_result">
+              <p class="compare_result-label">В&nbsp;подписке «Между сессий» всё это</p>
+              <p class="compare_result-price"><strong>2&nbsp;990&nbsp;₽</strong> <span>в&nbsp;месяц</span></p>
+              <a class="cta-button" href="#popup:mezhdu-sessiy">Стать участником</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         НАКОПИТЕЛЬНАЯ СКИДКА · четыре ступени по стажу в клубе
+         🟢 Проценты и сроки правятся прямо здесь
+         ================================================================ -->
+    <section class="section_discount padding-global" id="discount">
+      <div class="container-xlarge">
+        <div class="discount_card">
+          <div class="discount_intro">
+            <h2 class="section-title">Дополнительная накопительная скидка на&nbsp;программы обучения в&nbsp;Академии</h2>
+            <p class="discount_lead">Чем дольше вы&nbsp;в&nbsp;клубе, тем больше будет скидка.</p>
+          </div>
+          <ul class="discount_steps">
+            <li class="discount_step">
+              <span class="discount_value">5%</span>
+              <span class="discount_term">1–3 месяца в&nbsp;клубе</span>
+            </li>
+            <li class="discount_step">
+              <span class="discount_value">10%</span>
+              <span class="discount_term">3–6 месяцев в&nbsp;клубе</span>
+            </li>
+            <li class="discount_step">
+              <span class="discount_value">15%</span>
+              <span class="discount_term">6–12 месяцев в&nbsp;клубе</span>
+            </li>
+            <li class="discount_step is-max">
+              <span class="discount_value">20%</span>
+              <span class="discount_term">от&nbsp;12 месяцев в&nbsp;клубе</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         КОМУ БУДЕТ ПОЛЕЗНО · тёмная полоса, три карточки
+         ================================================================ -->
+    <section class="section_audience is-dark padding-global" id="audience">
+      <div class="container-xlarge">
+        <h2 class="section-title is-on-dark">Кому будет полезно</h2>
+        <div class="audience_grid">
+          <article class="audience_card">
+            <span class="icon is-sparkle audience_icon"></span>
+            <h3>Начинающим психологам</h3>
+            <p class="audience_lead">Безопасный старт без&nbsp;страха остаться один на&nbsp;один с&nbsp;клиентом.</p>
+            <p class="audience_text">Поможем справиться с&nbsp;тревогой первых сессий, выстроить границы и&nbsp;разобрать сложные случаи на&nbsp;супервизиях. Это&nbsp;возможность получать экспертную обратную связь по&nbsp;вашей практике без&nbsp;покупки новых дорогостоящих курсов.</p>
+          </article>
+          <article class="audience_card">
+            <span class="icon is-sparkle audience_icon"></span>
+            <h3>Практикующим специалистам</h3>
+            <p class="audience_lead">Глубокая экспертиза и&nbsp;профилактика одиночества терапевта.</p>
+            <p class="audience_text">Пространство для&nbsp;сверки часов в&nbsp;сложных клинических случаях. Доступ к&nbsp;узкопрофильным лекциям, разборам нестандартных кейсов и&nbsp;профессиональной среде, где можно обсудить то, что&nbsp;не&nbsp;вынесешь за&nbsp;пределы кабинета.</p>
+          </article>
+          <article class="audience_card">
+            <span class="icon is-sparkle audience_icon"></span>
+            <h3>Студентам АСП</h3>
+            <p class="audience_lead">Непрерывный контекст между модулями</p>
+            <p class="audience_text">Поддерживайте обучающий тонус между крупными программами. Подписка позволяет не&nbsp;выпадать из&nbsp;профессионального ритма, пользоваться библиотекой знаний и&nbsp;оставаться в&nbsp;профессиональном чате.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         ЧТО ВАС ЖДЁТ В КЛУБЕ · четыре пункта + пример расписания
+         🟢 Расписание правится прямо здесь: дата и время, формат встречи,
+            название, одна фраза о том, что будет происходить
+         ================================================================ -->
+    <section class="section_week padding-global" id="week">
+      <div class="container-xlarge">
+        <h2 class="section-title week_title">Что вас ждет в&nbsp;клубе</h2>
+        <div class="week_layout">
+        <ul class="week_grid">
+          <li class="week_item">
+            <h3>Учимся</h3>
+            <p>Библиотека по&nbsp;психологии: курсы и&nbsp;мини-курсы, записи лекций и&nbsp;вебинаров, методические материалы.</p>
+          </li>
+          <li class="week_item">
+            <h3>Практикуемся</h3>
+            <p>Регулярные супервизии и&nbsp;разборы кейсов. Обсуждаем работу со&nbsp;сложными клиентами, получаем ответы преподавателей.</p>
+          </li>
+          <li class="week_item">
+            <h3>Обсуждаем</h3>
+            <p>Дискуссионный клуб и&nbsp;круглые столы по&nbsp;сложным и&nbsp;неоднозначным вопросам практики.</p>
+          </li>
+          <li class="week_item">
+            <h3>Общаемся</h3>
+            <p>Знакомимся с&nbsp;коллегами, обмениваемся опытом в&nbsp;закрытом чате и&nbsp;на&nbsp;мероприятиях.</p>
+          </li>
+        </ul>
+
+        <div class="schedule_card">
+          <h3 class="schedule_title">Встречи в&nbsp;клубе</h3>
+          <p class="schedule_lead">Пример программы на&nbsp;сентябрь. Актуальное расписание доступно участникам клуба.</p>
+          <ul class="schedule_list">
+            <li class="schedule_row">
+              <span class="schedule_when">15&nbsp;сентября&nbsp;·&nbsp;19:00</span>
+              <span class="schedule_body">
+                <span class="schedule_format">Супервизия</span>
+                <span class="schedule_name">Полимодальная супервизия</span>
+                <span class="schedule_desc">Разбираем случаи из&nbsp;практики и&nbsp;обсуждаем возможные подходы к&nbsp;работе.</span>
+              </span>
+            </li>
+            <li class="schedule_row">
+              <span class="schedule_when">18&nbsp;сентября&nbsp;·&nbsp;19:00</span>
+              <span class="schedule_body">
+                <span class="schedule_format">Тренинг</span>
+                <span class="schedule_name">Тренинг ненасильственного общения</span>
+                <span class="schedule_desc">Практикуемся говорить о&nbsp;своих потребностях и&nbsp;слышать собеседника.</span>
+              </span>
+            </li>
+            <li class="schedule_row">
+              <span class="schedule_when">22&nbsp;сентября&nbsp;·&nbsp;19:00</span>
+              <span class="schedule_body">
+                <span class="schedule_format">Практикум</span>
+                <span class="schedule_name">Разбор исследований по&nbsp;АСТ</span>
+                <span class="schedule_desc">Обсуждаем исследования и&nbsp;то, как применять их&nbsp;выводы в&nbsp;практике.</span>
+              </span>
+            </li>
+            <li class="schedule_row">
+              <span class="schedule_when">30&nbsp;сентября&nbsp;·&nbsp;19:00</span>
+              <span class="schedule_body">
+                <span class="schedule_format">Факультатив</span>
+                <span class="schedule_name">Факультатив АСП</span>
+                <span class="schedule_desc">Групповая работа по&nbsp;одной из&nbsp;факультативных программ Академии.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         КТО ВЕДЁТ ВСТРЕЧИ · карточки, био появляется на фото по наведению
+         🟢 Фото лежат на S3, 800×1000 webp; параграф .experts_bio должен остаться внутри .experts_photo
+         ================================================================ -->
+    <section class="section_experts padding-global" id="experts">
+      <div class="container-xlarge">
+        <h2 class="section-title">Кто ведёт встречи в&nbsp;клубе</h2>
+        <p class="experts_lead">Практикующие специалисты и&nbsp;преподаватели Академии.</p>
+
+        <div class="experts_cards" data-js="experts-cards">
+          <article class="experts_card" tabindex="0">
+            <div class="experts_photo">
+              <img src="https://s3.twcstorage.ru/asp-media/expert_gevorkyan_3a47313446.webp" alt="Елена Геворкян" width="800" height="1000" loading="lazy" />
+              <p class="experts_bio">Клинический психолог, ACT-, FAP-терапевт, член АКПН и&nbsp;ACBS. Супервизор и&nbsp;исследовательница в&nbsp;области поведенческой науки.</p>
+            </div>
+            <div class="experts_card_text">
+              <h3 class="experts_name">Елена Геворкян</h3>
+              <span class="experts_role">Ведущая разборов исследований в&nbsp;АСТ</span>
+            </div>
+          </article>
+
+          <article class="experts_card" tabindex="0">
+            <div class="experts_photo">
+              <img src="https://s3.twcstorage.ru/asp-media/expert_zenkova_4c4b1a0bbf.webp" alt="Аня Зенкова" width="800" height="1000" loading="lazy" />
+              <p class="experts_bio">Клинический психолог, КПТ-, АСТ-терапевтка, ведущая групп навыков по&nbsp;поведенческой активации для людей с&nbsp;депрессией.</p>
+            </div>
+            <div class="experts_card_text">
+              <h3 class="experts_name">Аня Зенкова</h3>
+              <span class="experts_role">Ведущая тренинга по&nbsp;поведенческой активации</span>
+            </div>
+          </article>
+
+          <article class="experts_card" tabindex="0">
+            <div class="experts_photo">
+              <img src="https://s3.twcstorage.ru/asp-media/expert_sotnikova_663685063d.webp" alt="Екатерина Сотникова" width="800" height="1000" loading="lazy" />
+              <p class="experts_bio">Преподаватель английского языка и&nbsp;методики преподавания, методист Академии Современной Психологии.</p>
+            </div>
+            <div class="experts_card_text">
+              <h3 class="experts_name">Екатерина Сотникова</h3>
+              <span class="experts_role">Ведущая разговорного клуба</span>
+            </div>
+          </article>
+
+          <article class="experts_card" tabindex="0">
+            <div class="experts_photo">
+              <img src="https://s3.twcstorage.ru/asp-media/expert_kruglova_aa67f028d0.webp" alt="Екатерина Круглова" width="800" height="1000" loading="lazy" />
+              <p class="experts_bio">Клинический психолог, практикующий КПТ-, АСТ-терапевт.</p>
+            </div>
+            <div class="experts_card_text">
+              <h3 class="experts_name">Екатерина Круглова</h3>
+              <span class="experts_role">Ведущая тренинга навыков ненасильственного общения</span>
+            </div>
+          </article>
+
+          <article class="experts_card" tabindex="0">
+            <div class="experts_photo">
+              <img src="https://s3.twcstorage.ru/asp-media/expert_pilavidu_d3f646f407.webp" alt="Элени Пилавиду" width="800" height="1000" loading="lazy" />
+              <p class="experts_bio">Клинический психолог и&nbsp;супервизор, преподаватель, ACT- и&nbsp;схема-терапевт. Член ACBS, ISST и&nbsp;АКПН.</p>
+            </div>
+            <div class="experts_card_text">
+              <h3 class="experts_name">Элени Пилавиду</h3>
+              <span class="experts_role">Ведущая полимодальных супервизий</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         КАК ПОПАСТЬ В КЛУБ · тёмная полоса, шаги + карточка цены
+         ================================================================ -->
+    <section class="section_join is-dark padding-global" id="join">
+      <div class="container-xlarge is-join">
+        <div class="join_intro">
+          <h2 class="section-title is-on-dark">Как&nbsp;попасть в&nbsp;клуб</h2>
+          <p class="join_lead">Мы знакомимся с&nbsp;каждым участником до&nbsp;оплаты. В&nbsp;супервизионных группах должны собираться коллеги близкого уровня, а&nbsp;в&nbsp;чате&nbsp;— люди, при&nbsp;которых не&nbsp;страшно рассказать о&nbsp;сложном клиенте.</p>
+        </div>
+        <div class="join_layout">
+          <div class="join_steps-col">
+            <ol class="join_steps">
+              <li class="join_step">
+                <span class="join_num">01</span>
+                <div><h3>Оставьте заявку</h3><p>Заполните форму на&nbsp;сайте, чтобы мы могли с&nbsp;вами связаться</p></div>
+              </li>
+              <li class="join_step">
+                <span class="join_num">02</span>
+                <div><h3>Оплатите участие</h3><p>После оплаты вы сразу попадаете на&nbsp;обучающую платформу и&nbsp;в&nbsp;чат с&nbsp;участниками клуба</p></div>
+              </li>
+              <li class="join_step">
+                <span class="join_num">03</span>
+                <div><h3>Оцените первый месяц</h3><p>На&nbsp;почту приходит вход в&nbsp;личный кабинет, в&nbsp;мессенджер&nbsp;— приглашение в&nbsp;закрытый чат. Ближайшая супервизия обычно уже&nbsp;на&nbsp;этой неделе: расписание вы получите в&nbsp;чате.</p></div>
+              </li>
+              <li class="join_step">
+                <span class="join_num">04</span>
+                <div><h3>Продлите подписку</h3><p>Отказаться можно в&nbsp;любой момент, без&nbsp;звонков и&nbsp;объяснений: доступ сохраняется до&nbsp;конца оплаченного периода.</p></div>
+              </li>
+            </ol>
+            <img class="join_logo" src="https://s3.twcstorage.ru/asp-media/Logo_8894ede159.svg" alt="" width="143" height="46" loading="lazy" />
+          </div>
+
+          <aside class="price-card" aria-label="Стоимость подписки">
+            <p class="price-card_price"><strong>2&nbsp;990&nbsp;₽</strong> <span>в&nbsp;месяц</span></p>
+            <hr class="price-card_divider" />
+            <p class="price-card_caption">В&nbsp;подписку входит</p>
+            <ul class="price-card_list">
+              <li><span class="icon is-check-round"></span>Библиотека курсов и&nbsp;лекций</li>
+              <li><span class="icon is-check-round"></span>Супервизии</li>
+              <li><span class="icon is-check-round"></span>Закрытые лекции</li>
+              <li><span class="icon is-check-round"></span>Факультативы</li>
+              <li><span class="icon is-check-round"></span>Сообщество</li>
+              <li><span class="icon is-check-round"></span>Специальные предложения Академии</li>
+            </ul>
+            <div class="price-card_action">
+              <a class="cta-button is-full" href="#popup:mezhdu-sessiy">Стать участником</a>
+              <p class="price-card_note">После оплаты вы сразу попадаете на&nbsp;обучающую платформу и&nbsp;в&nbsp;чат с&nbsp;участниками клуба</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         FAQ · все закрыты, раскрытие с анимацией, скрипт в page.js
+         ================================================================ -->
+    <section class="section_faq padding-global" id="faq">
+      <div class="container-xlarge">
+        <h2 class="section-title">Ответы на&nbsp;частые вопросы</h2>
+        <div class="faq_list" data-js="faq">
+          <details class="faq_item">
+            <summary class="faq_question">Клуб проходит онлайн?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Да, полностью. Супервизии, лекции и&nbsp;встречи проходят в&nbsp;видеоформате, чат&nbsp;— в&nbsp;мессенджере. Участвовать можно из&nbsp;любого города и&nbsp;страны, часовой пояс мы учитываем при&nbsp;выборе времени встреч.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Как&nbsp;проходят супервизии?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Раз в&nbsp;неделю группа собирается на&nbsp;видеовстречу с&nbsp;супервизором. Кто-то&nbsp;приносит случай, остальные участвуют в&nbsp;разборе. Можно приносить свой случай на&nbsp;разбор или&nbsp;приходить просто слушать.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Записываются ли&nbsp;супервизии?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Нет, разборы клиентских случаев не&nbsp;записываются, участники подписывают соглашение о&nbsp;конфиденциальности при&nbsp;вступлении. Записи лекций и&nbsp;открытых встреч остаются в&nbsp;библиотеке.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Сколько времени это&nbsp;занимает?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>От&nbsp;полутора часов в&nbsp;неделю, если ходить только на&nbsp;супервизию. Все остальное&nbsp;— библиотека, лекции, факультативы&nbsp;— в&nbsp;своем темпе: пропущенное не&nbsp;сгорает, записи остаются в&nbsp;доступе, пока вы участник.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Нужно ли&nbsp;учиться в&nbsp;АСП, чтобы вступить?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Нет. Клуб открыт для&nbsp;практикующих психологов независимо от&nbsp;того, где вы получали образование. Студенты и&nbsp;выпускники Академии приходят чаще других, но&nbsp;это&nbsp;не&nbsp;требование.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Как&nbsp;отменить подписку?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Написать куратору или&nbsp;отменить в&nbsp;личном кабинете&nbsp;— без&nbsp;звонков, объяснений и&nbsp;удержания. Доступ к&nbsp;материалам и&nbsp;чату сохраняется до&nbsp;конца оплаченного месяца.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Можно ли&nbsp;вернуть деньги, если не&nbsp;подойдет?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Да, в&nbsp;течение 7&nbsp;дней с&nbsp;момента оплаты, если вы не&nbsp;участвовали во&nbsp;встречах&nbsp;— вернем полностью.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Подходит ли&nbsp;новичкам?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Да, если вы уже&nbsp;работаете с&nbsp;клиентами или&nbsp;начинаете. Новичкам обычно нужнее всего супервизии и&nbsp;чат: возможность спросить о&nbsp;том, что&nbsp;неловко выносить в&nbsp;открытые профессиональные группы.</p></div>
+          </details>
+          <details class="faq_item">
+            <summary class="faq_question">Выдаете ли&nbsp;документ об&nbsp;обучении?<span class="icon is-plus faq_icon"></span></summary>
+            <div class="faq_answer"><p>Нет. Клуб&nbsp;— это&nbsp;профессиональная поддержка и&nbsp;практика, а&nbsp;не&nbsp;образовательная программа с&nbsp;итоговым документом. Документы выдаются по&nbsp;программам Академии, на&nbsp;которые участники клуба получают скидку 20%</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================================================================
+       ПОДВАЛ
+       ⚠️ Адреса документов уточнить: пока по образцу других лендингов АСП
+       ================================================================ -->
+  <footer class="site-footer padding-global">
+    <div class="container-xlarge">
+      <div class="site-footer_columns">
+        <div class="site-footer_col">
+          <div class="site-footer_contacts">
+            <p><a class="site-footer_contact" href="tel:+78124435189">+7&nbsp;812&nbsp;443-51-89</a><span>Отдел продаж</span></p>
+            <p><a class="site-footer_contact" href="mailto:info@modern-psy.ru">info@modern-psy.ru</a><span>По&nbsp;всем вопросам</span></p>
+          </div>
+          <div class="site-footer_requisites">
+            <p>197198, г. Санкт-Петербург, вн.тер.г. Муниципальный Округ Введенский, пр-т Большой П.с., д. 7/4, литера А, помещ. 2-Н</p>
+            <p>ОГРН 1217800102783</p>
+            <p>ИНН/КПП 7839141929/781301001</p>
+          </div>
+        </div>
+        <div class="site-footer_col">
+          <p class="site-footer_heading">Правовая информация</p>
+          <ul class="site-footer_links">
+            <li><a href="/oferta">Публичная оферта</a></li>
+            <li><a href="/privacy">Политика конфиденциальности</a></li>
+            <li><a href="/soglasie">Согласие на&nbsp;обработку персональных данных</a></li>
+            <li><a href="/svedeniya">Сведения об&nbsp;образовательной организации</a></li>
+            <li><a href="/licenziya">Образовательная лицензия</a></li>
+            <li><a href="/documents">Документы</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+      </div>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

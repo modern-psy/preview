@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Проверка FAQ Academy</title>
+    <link rel="stylesheet" href="../components.css">
+    <style>
+      body { margin: 0; background: #f5f5f5; }
+      .fixture_controls { position: sticky; top: 0; z-index: 10; padding: 1rem; background: white; }
+      .fixture_button { min-height: 44px; padding: 0.5rem 1rem; cursor: pointer; }
+      .fixture_result { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+      .fixture_main { display: grid; gap: 4rem; max-width: 79rem; margin: auto; padding: 2rem 1.25rem; }
+      .fixture_note { padding: 1rem; }
+    </style>
+  </head>
+  <body>
+    <div class="fixture_controls">
+      <button class="fixture_button" id="run" type="button" disabled>Проверить состояния FAQ</button>
+      <output class="fixture_result" id="result">Загрузка</output>
+    </div>
+    <main class="academy-page fixture_main"></main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const noJs = params.get('js') === 'off';
+      const reduce = params.get('motion') === 'reduce';
+      const nativeMatchMedia = window.matchMedia.bind(window);
+      if (reduce) window.matchMedia = query => {
+        const result = nativeMatchMedia(query);
+        if (query === '(prefers-reduced-motion: reduce)') Object.defineProperty(result, 'matches', {value: true});
+        return result;
+      };
+      const result = document.querySelector('#result');
+      const loadBehavior = () => new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = '../components.js'; script.onload = resolve; script.onerror = reject;
+        document.body.append(script);
+      });
+      const parts = id => [...document.querySelectorAll('#' + id + ' details')];
+      const trigger = item => item.querySelector('summary').click();
+      // Wait for finish events, after the component's own state synchronization.
+      const settle = () => Promise.all(document.getAnimations().map(animation => new Promise(resolve => {
+        if (animation.playState === 'finished' || animation.playState === 'idle') { resolve(); return; }
+        animation.addEventListener('finish', resolve, {once: true});
+        animation.addEventListener('cancel', resolve, {once: true});
+      })));
+      const state = item => ({open: item.open, state: item.dataset.accordionState, expanded: item.querySelector('summary').getAttribute('aria-expanded')});
+
+      (async () => {
+        const html = await (await fetch('../faq.html')).text();
+        for (const [id, title] of [['single','Один открытый ответ'], ['multiple','Несколько открытых ответов'], ['initial','Начальное открытое состояние']]) {
+          const source = new DOMParser().parseFromString(html, 'text/html');
+          const section = source.querySelector('.faq_component');
+          section.id = id;
+          section.setAttribute('aria-labelledby', id + '-heading');
+          const heading = section.querySelector('.faq_heading');
+          heading.id = id + '-heading'; heading.textContent = title;
+          if (id === 'multiple') section.querySelector('[data-accordion]').removeAttribute('data-accordion-single');
+          if (id === 'initial') section.querySelector('details').open = true;
+          document.querySelector('main').append(section);
+        }
+        if (!noJs) await loadBehavior();
+        document.querySelector('#run').disabled = noJs;
+        result.textContent = noJs ? 'Без JavaScript компонента: проверьте вопросы через Enter и Space.' : 'Готово';
+      })().catch(error => { result.textContent = String(error); });
+
+      document.querySelector('#run').addEventListener('click', async () => {
+        const checks = {};
+        try {
+          const single = parts('single'); const multiple = parts('multiple');
+          checks.initial = single.every(item => !item.open) && parts('initial')[0].open;
+          trigger(single[0]);
+          checks.opening = single[0].dataset.accordionState === (reduce ? 'open' : 'opening');
+          const animation = single[0].querySelector('[data-accordion-panel]').getAnimations()[0];
+          checks.duration = reduce ? !animation : animation?.effect.getTiming().duration === 300;
+          checks.easing = reduce || animation?.effect.getTiming().easing === 'cubic-bezier(0.22, 1, 0.36, 1)';
+          await settle();
+          checks.open = single[0].open && single[0].dataset.accordionState === 'open';
+          trigger(single[1]);
+          checks.closing = single[0].dataset.accordionState === (reduce ? 'closed' : 'closing');
+          await settle();
+          checks.single = !single[0].open && single[1].open;
+          trigger(single[0]); trigger(single[0]); trigger(single[0]);
+          await settle();
+          checks.rapid = single[0].open && !single[1].open;
+          trigger(multiple[0]); trigger(multiple[1]); await settle();
+          checks.independent = multiple.every(item => item.open) && single[0].open && !single[1].open;
+          const before = [...document.querySelectorAll('details')].map(item => item.open);
+          await loadBehavior();
+          checks.reinitialize = [...document.querySelectorAll('details')].every((item, index) => item.open === before[index]);
+          trigger(single[0]); await settle();
+          checks.noDuplicateListeners = !single[0].open;
+          checks.aria = [...document.querySelectorAll('details')].every(item => item.querySelector('summary').getAttribute('aria-expanded') === String(item.open));
+          checks.naturalHeight = multiple.every(item => !item.querySelector('[data-accordion-panel]').style.height);
+          result.textContent = JSON.stringify({passed: Object.values(checks).every(Boolean), reduce, checks, single: single.map(state), multiple: multiple.map(state)});
+        } catch (error) {
+          result.textContent = JSON.stringify({passed: false, checks, error: String(error)});
+        }
+      });
+    </script>
+  </body>
+</html>

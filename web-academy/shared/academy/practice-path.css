@@ -1,0 +1,74 @@
+/* Full learning-to-practice composition, including both illustration cards. */
+.practice-path_component {
+  --practice-path-media-width: 10.625rem;
+  --practice-path-card-padding: var(--card-padding, 0.75rem);
+  --practice-path-call-background: #484845;
+  --practice-path-call-end: #4cd730;
+}
+.practice-path_intro { align-self: center; }
+.practice-path_layout,
+.practice-path_list { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap, 0.75rem); }
+.card_component.practice-path_card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 17.125rem;
+  align-items: start;
+  gap: 0.625rem;
+  padding: var(--practice-path-card-padding);
+  border-radius: var(--radius-card, 1rem);
+}
+.practice-path_call,
+.practice-path_diploma { width: min(100%, var(--practice-path-media-width)); min-width: 0; justify-self: center; }
+.practice-path_call { display: flex; flex-direction: column; gap: 0.25rem; align-self: center; }
+.practice-path_call-image { display: block; width: 100%; height: auto; aspect-ratio: 170 / 132; object-fit: cover; border-radius: 0.5rem; }
+.practice-path_call-bar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.25rem; }
+.practice-path_call-indicator { display: flex; min-height: 1.875rem; align-items: center; justify-content: center; border-radius: 0.5rem; background: var(--practice-path-call-background); }
+.practice-path_call-indicator.is-end { background: var(--practice-path-call-end); }
+.practice-path_call-icon { display: block; width: 1.25rem; height: 1.25rem; }
+.practice-path_call-icon.is-small { width: 1rem; height: 1rem; }
+.practice-path_diploma { position: relative; min-height: 0; aspect-ratio: 170 / 160; align-self: end; margin-bottom: calc(-1 * var(--practice-path-card-padding)); overflow: clip; }
+.practice-path_diploma-image { position: absolute; top: 0; left: 0; display: block; width: 100%; height: auto; }
+.card_component.practice-path_format {
+  --content-prominent-size: 2rem;
+  --content-heading-line-height: 1;
+  --content-heading-gap: 0.75rem;
+  display: flex;
+  min-height: 26rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.25rem 1rem;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  text-align: center;
+}
+.practice-path_format-copy { align-items: center; color: var(--color-text-on-dark-muted); }
+.practice-path_format-description { color: var(--color-program-muted, #bdb7b7); font-size: 1.125rem; line-height: 1.1; }
+.practice-path_format-image { display: block; width: min(100%, 15.625rem); height: auto; }
+.practice-path_button { width: 100%; }
+@media (min-width: 32.5625rem) {
+  .card_component.practice-path_card {
+    min-height: 11.875rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--practice-path-media-width));
+    column-gap: clamp(1rem, 10.667vw, 4rem);
+  }
+  .practice-path_call, .practice-path_diploma { justify-self: end; }
+  .practice-path_diploma { aspect-ratio: 170 / 178; }
+  .card_component.practice-path_format { min-height: 27.875rem; padding: 1.5rem 1.25rem; }
+  .practice-path_format-image { width: min(100%, 17.4375rem); }
+}
+@media (min-width: 48rem) {
+  .practice-path_component { --practice-path-media-width: 12.5rem; }
+  .card_component.practice-path_card { min-height: 14.25rem; column-gap: clamp(1rem, 11vw, 6.5rem); }
+  .practice-path_call-image { aspect-ratio: 200 / 162; }
+  .practice-path_diploma { aspect-ratio: 200 / 212; }
+  .card_component.practice-path_format { min-height: 29.5rem; padding: 1.5rem; }
+  .practice-path_format-description { font-size: 1.25rem; }
+  .practice-path_button { width: auto; }
+}
+@media (min-width: 64.0625rem) {
+  .practice-path_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card_component.practice-path_card { column-gap: clamp(1rem, 2.857vw, 3rem); }
+  .card_component.practice-path_format { --content-prominent-size: 2.25rem; }
+  .practice-path_format-description { font-size: 1.375rem; }
+}

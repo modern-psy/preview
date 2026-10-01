@@ -1,0 +1,238 @@
+<!-- ОБЩИЕ СТИЛИ 3/3. Один раз на странице, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<style>
+/* === rodbt/page.css === */
+/* Тема лендинга «Первый уровень РО ДБТ» и его проектные блоки.
+   Общие компоненты Академии приходят из web-academy/shared/academy при сборке (node rodbt/build.mjs)
+   и лежат выше этого файла в style.css. Здесь только переменные темы на .rodbt-lvl1-page
+   и блоки без готового компонента: strategy, feature-split, highlights, modules, documents, reasons. */
+
+.rodbt-lvl1-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-page-background: #f5f5f5;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-text: #644ab2;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  --color-text-secondary-large: #747476;
+  --color-text-on-dark-muted: #e6e5eb;
+  --hero-subtitle-color: #dedede;
+  --hero-note-color: #53ee34;
+  --color-program-tag: #4d3d5f;
+  --color-program-text: #ededed;
+  --color-program-muted: #bdb7b7;
+  --content-heading-gap: 0.75rem;
+  --text-body-line-height: 1.2;
+  --stat-card-label-size: 1.125rem;
+  --hero-section-offset: 2rem;
+  --page-padding: 1rem;
+  --hero-section-end: var(--section-space);
+  --hero-section-end-desktop: var(--section-space);
+  --hero-panel-min-height: 43.75rem;
+  --hero-image-position: 62% center;
+  --hero-image-position-desktop: center 35%;
+  --course-audience-image-position: center 30%;
+  overflow: visible;
+}
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page { --hero-section-offset: 3rem; --page-padding: 1.5rem; }
+}
+@media (min-width: 75rem) {
+  .rodbt-lvl1-page { --page-padding: 5rem; }
+}
+@media (max-width: 32.5rem) {
+  .rodbt-lvl1-page { --button-width: 100%; }
+}
+
+.rodbt-lvl1-page :where(a, button) { cursor: pointer; }
+.rodbt-lvl1-page .screen-reader-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Цена: внешняя карточка pricing-promo_card приходит из общего pricing-promo.css. */
+
+/* Тёмные поверхности отвечают за контраст: текст CTA и подписи формы, как в эталоне. */
+.rodbt-lvl1-page .cta_content { --section-subtitle-color: var(--color-text-on-dark-muted); color: var(--color-text-on-dark-muted); }
+.rodbt-lvl1-page .lead-form_component { --section-subtitle-color: var(--color-form-muted); }
+.rodbt-lvl1-page .cta_comet-layer { display: none; }
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl1-page .cta_comet-layer { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rodbt-lvl1-page .button_component,
+  .rodbt-lvl1-page .cta_button { transition: none; }
+}
+
+/* Точечная защита цветов от глобальных правил Тильды (только эти варианты, с их состояниями). */
+.rodbt-lvl1-page a.button_component.is-light,
+.rodbt-lvl1-page a.button_component.is-light:hover,
+.rodbt-lvl1-page a.button_component.is-light:focus-visible { color: var(--color-text-primary) !important; }
+.rodbt-lvl1-page a.button_component.is-accent,
+.rodbt-lvl1-page a.button_component.is-accent:hover,
+.rodbt-lvl1-page a.button_component.is-accent:focus-visible { color: var(--color-text-on-dark) !important; }
+.rodbt-lvl1-page .cta_button,
+.rodbt-lvl1-page .cta_button:hover,
+.rodbt-lvl1-page .cta_button:focus-visible { color: var(--color-surface-dark) !important; }
+.rodbt-lvl1-page .pricing-promo_tab { color: var(--pricing-promo-muted) !important; }
+.rodbt-lvl1-page .pricing-promo_tab[aria-selected="true"],
+.rodbt-lvl1-page .pricing-promo_tab:hover,
+.rodbt-lvl1-page .pricing-promo_tab:focus-visible { color: var(--color-text-on-dark) !important; }
+
+/* Общий список «иконка + текст» проектных блоков (feature-split, highlights). */
+.rodbt-lvl1-page .feature-list_component { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.rodbt-lvl1-page .feature-list_item { display: flex; min-width: 0; align-items: start; gap: 0.5rem; }
+.rodbt-lvl1-page .feature-list_icon { display: block; flex: none; width: 1.5rem; height: 1.5rem; margin-top: -0.0625rem; }
+.rodbt-lvl1-page .feature-list_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.25rem; overflow-wrap: anywhere; }
+.rodbt-lvl1-page .feature-list_text { --body-text-color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) {
+  .rodbt-lvl1-page .feature-list_component { gap: 0.75rem; }
+}
+
+/* Проектный блок feature-split: текст с группами списков и фото рядом (секции «уровень» и «инструктор»). */
+.rodbt-lvl1-page .feature-split_component { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 1.25rem 1rem; --feature-split-media-height: 18.75rem; }
+.rodbt-lvl1-page .feature-split_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
+.rodbt-lvl1-page .feature-split_intro { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+.rodbt-lvl1-page .feature-split_lead { --body-text-color: var(--color-text-primary); }
+.rodbt-lvl1-page .feature-split_groups { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
+.rodbt-lvl1-page .feature-split_group { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.rodbt-lvl1-page .feature-split_note { overflow-wrap: anywhere; }
+.rodbt-lvl1-page .feature-split_media { position: relative; min-width: 0; min-height: var(--feature-split-media-height); overflow: clip; border-radius: var(--radius-card, 1rem); }
+.rodbt-lvl1-page .feature-split_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--feature-split-image-position, center); }
+@media (min-width: 32.5625rem) {
+  .rodbt-lvl1-page .feature-split_component { --feature-split-media-height: 21.875rem; row-gap: 1.5rem; }
+  .rodbt-lvl1-page .feature-split_copy { gap: 1.5rem; }
+  .rodbt-lvl1-page .feature-split_intro { gap: 1rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page .feature-split_component { --feature-split-media-height: 25rem; row-gap: 2rem; }
+  .rodbt-lvl1-page .feature-split_groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--card-grid-gap); }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl1-page .feature-split_component { grid-template-columns: minmax(0, 1fr) minmax(0, 0.75fr); column-gap: 2rem; }
+  .rodbt-lvl1-page .feature-split_copy { gap: 2rem; }
+  .rodbt-lvl1-page .feature-split_groups { display: flex; flex-direction: column; gap: var(--card-grid-gap); }
+}
+
+/* Проектный блок strategy: три карточки с фото, заголовком и текстом. */
+.rodbt-lvl1-page .strategy_card { gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-lvl1-page .strategy_media { width: 100%; min-width: 0; aspect-ratio: 537 / 375; overflow: clip; border-radius: calc(var(--radius-card, 1rem) - 0.25rem); }
+.rodbt-lvl1-page .strategy_image { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rodbt-lvl1-page .strategy_card .content-header_component { --content-heading-gap: 0.5rem; }
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page .strategy_card { gap: 1.25rem; }
+  .rodbt-lvl1-page .strategy_card .content-header_component { --content-heading-gap: 0.75rem; }
+}
+
+/* Проектный блок highlights: список особенностей слева, карточка практики со списком справа. */
+.rodbt-lvl1-page .highlights_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); align-items: stretch; }
+.rodbt-lvl1-page .highlights_list { display: grid; min-width: 0; gap: var(--card-grid-gap); }
+.rodbt-lvl1-page .highlights_card { gap: 0.5rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-lvl1-page .highlights_practice { --body-text-color: var(--color-program-muted); align-self: stretch; justify-content: flex-start; gap: 1.25rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.rodbt-lvl1-page .highlights_practice .feature-list_text { --body-text-color: var(--color-text-on-dark); }
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page .highlights_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rodbt-lvl1-page .highlights_card { gap: 0.75rem; }
+  .rodbt-lvl1-page .highlights_practice { gap: 1.5rem; }
+}
+
+/* Заметка после форматов обучения: важное условие курса. */
+.rodbt-lvl1-page .learning-note_component { --body-text-color: var(--color-text-on-dark); display: flex; width: 100%; max-width: 63rem; min-width: 0; align-items: start; gap: 0.75rem; margin-inline: auto; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-text-primary); }
+.rodbt-lvl1-page .learning-note_icon { flex: none; font-size: 1.25rem; line-height: 1.3; }
+.rodbt-lvl1-page .learning-note_text { min-width: 0; overflow-wrap: anywhere; }
+
+/* Проектный блок modules: программа курса модулями с длительностью, вводной и списком тем. */
+.rodbt-lvl1-page .modules_body { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--card-grid-gap); }
+.rodbt-lvl1-page .modules_list { display: grid; width: 100%; min-width: 0; margin: 0; padding: 0; list-style: none; gap: var(--card-grid-gap); }
+.rodbt-lvl1-page .modules_card { gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-lvl1-page .modules_header { display: flex; width: 100%; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+.rodbt-lvl1-page .modules_badge { display: inline-flex; flex: none; max-width: 100%; align-items: center; padding: 0.375rem 0.75rem; border-radius: 0.5rem; background: var(--color-text-primary); color: var(--color-text-on-dark); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; }
+.rodbt-lvl1-page .modules_heading { flex: 1; }
+.rodbt-lvl1-page .modules_copy { display: flex; width: 100%; max-width: 56.1875rem; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.rodbt-lvl1-page .modules_lead { --body-text-color: var(--color-text-primary); }
+.rodbt-lvl1-page .modules_points { display: flex; min-width: 0; flex-direction: column; gap: 0.375rem; margin: 0; padding: 0 0 0 1.25rem; list-style: disc; }
+.rodbt-lvl1-page .modules_points li::marker { color: var(--color-accent-primary); }
+.rodbt-lvl1-page .modules_literature { gap: 0.75rem; }
+.rodbt-lvl1-page .modules_literature-note { --body-text-color: var(--color-text-secondary-large); }
+@media (min-width: 32.5625rem) {
+  .rodbt-lvl1-page .modules_badge { font-size: 1rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page .modules_card { gap: 1.25rem; }
+  .rodbt-lvl1-page .modules_header { flex-direction: row; align-items: center; }
+  .rodbt-lvl1-page .modules_copy { gap: 0.75rem; }
+}
+
+/* Проектный блок documents: две карточки документов с логотипом выдающей организации и изображением. */
+.rodbt-lvl1-page .documents_card { gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-lvl1-page .documents_logo { display: block; height: 1.875rem; width: auto; max-width: 100%; }
+.rodbt-lvl1-page .documents_copy { --content-heading-gap: 0.5rem; }
+.rodbt-lvl1-page .documents_image { display: block; width: 100%; max-width: 25rem; height: auto; margin-top: auto; border-radius: 0.5rem; }
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page .documents_card { gap: 1.25rem; }
+  .rodbt-lvl1-page .documents_copy { --content-heading-gap: 0.75rem; }
+}
+
+/* Проектный блок reasons: пять карточек «заголовок + текст» в три колонки. */
+.rodbt-lvl1-page .reasons_card { gap: 0.5rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page .reasons_card { gap: 0.75rem; }
+}
+
+/* Проектный блок program-tabs: программа по лейауту «Психосоматики». Тёмный контейнер, слева
+   колонка модулей-кнопок (метка с номером и длительностью, название), справа белая панель
+   выбранного модуля: вводная, «Основные темы», список. До 1025px колонки складываются. */
+.rodbt-lvl1-page .program-tabs_component { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--space-section-content); }
+.rodbt-lvl1-page .program-tabs_component { padding: var(--section-inset-space) var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.rodbt-lvl1-page .program-tabs_component .section-title_component { color: var(--color-text-on-dark); }
+.rodbt-lvl1-page .program-tabs_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.rodbt-lvl1-page .program-tabs_nav { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.rodbt-lvl1-page .program-tabs_tab { display: flex; min-width: 0; flex-direction: column; gap: 0.375rem; padding: 1rem var(--card-padding); border: 0; border-radius: var(--radius-card, 1rem); background: #3a2f48; color: var(--color-text-on-dark); font-family: inherit; text-align: left; cursor: pointer; transition: background-color var(--transition-site); }
+.rodbt-lvl1-page .program-tabs_tab[aria-selected="true"] { background: var(--color-accent-primary); }
+.rodbt-lvl1-page .program-tabs_tab:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 2px; }
+.rodbt-lvl1-page .program-tabs_tab-label { color: var(--color-accent-soft); font-size: 0.9375rem; font-weight: 500; line-height: 1.2; }
+.rodbt-lvl1-page .program-tabs_tab[aria-selected="true"] .program-tabs_tab-label { color: rgb(255 255 255 / 75%); }
+.rodbt-lvl1-page .program-tabs_tab-title { font-size: 1rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; text-wrap: pretty; }
+.rodbt-lvl1-page .program-tabs_panels { display: grid; min-width: 0; }
+.rodbt-lvl1-page .program-tabs_literature { gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); color: var(--color-text-primary); }
+.rodbt-lvl1-page .program-tabs_literature-note { --body-text-color: var(--color-text-secondary-large); }
+.rodbt-lvl1-page .program-tabs_panel { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); color: var(--color-text-primary); }
+.rodbt-lvl1-page .program-tabs_panel[hidden] { display: none; }
+.rodbt-lvl1-page .program-tabs_panel.is-entering { animation: rodbt-program-slide-in 320ms var(--motion-easing); }
+@keyframes rodbt-program-slide-in { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: none; } }
+.rodbt-lvl1-page .program-tabs_panel-copy { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.rodbt-lvl1-page .program-tabs_lead { --body-text-color: var(--color-text-secondary-large); }
+.rodbt-lvl1-page .program-tabs_list-title { color: var(--color-accent-text); font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.rodbt-lvl1-page .program-tabs_topics { display: grid; gap: 0.625rem; }
+.rodbt-lvl1-page .program-tabs_topic { --body-text-color: var(--color-text-primary); position: relative; padding-left: 1.25rem; }
+.rodbt-lvl1-page .program-tabs_topic::before { position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
+/* Без скрипта видны все модули друг под другом, кнопки-табы скрыты. */
+.rodbt-lvl1-page [data-program-tabs]:not([data-ready]) .program-tabs_nav { display: none; }
+.rodbt-lvl1-page [data-program-tabs]:not([data-ready]) .program-tabs_panels { display: grid; gap: var(--card-grid-gap); }
+@media (min-width: 32.5625rem) {
+  .rodbt-lvl1-page .program-tabs_tab-title { font-size: 1.125rem; }
+  .rodbt-lvl1-page .program-tabs_list-title { font-size: 1.125rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-lvl1-page .program-tabs_component { padding-inline: 1.5rem; }
+  .rodbt-lvl1-page .program-tabs_panel { padding: 1.5rem; gap: 1.5rem; }
+  .rodbt-lvl1-page .program-tabs_tab { padding: 1.125rem 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl1-page .program-tabs_component { padding-inline: 2.5rem; }
+  /* Панель тянется на высоту колонки модулей; сама колонка остаётся sticky. */
+  .rodbt-lvl1-page .program-tabs_layout { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: stretch; }
+  .rodbt-lvl1-page .program-tabs_nav { position: sticky; top: 2rem; align-self: start; }
+  .rodbt-lvl1-page .program-tabs_panel { padding: 2.5rem; }
+  .rodbt-lvl1-page .program-tabs_tab-title { font-size: 1.25rem; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .rodbt-lvl1-page .program-tabs_tab:not([aria-selected="true"]):hover { background: #463a56; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rodbt-lvl1-page .program-tabs_panel.is-entering { animation: none; }
+  .rodbt-lvl1-page .program-tabs_tab { transition: none; }
+}
+/* Обёртки отдельных секций не должны получать высоту целого экрана. */
+.academy-page[data-rodbt-lvl1-part] { min-height: 0; height: auto; }
+</style>

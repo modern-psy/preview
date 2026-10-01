@@ -1,0 +1,51 @@
+/* Shared timeline; keep the established two/three-column layout at every width. */
+.learning-timeline_component { --content-heading-size: 1.25rem; display: flex; min-width: 0; flex-direction: column; align-items: center; gap: 1.5rem; }
+.learning-timeline_list { position: relative; display: flex; width: 100%; max-width: var(--learning-timeline-max-width, 63rem); min-width: 0; margin: 0; padding: 0; list-style: none; flex-direction: column; gap: 1.25rem; isolation: isolate; }
+.learning-timeline_list::before { position: absolute; z-index: 0; top: 1.25rem; bottom: 0; left: calc(1.25rem - 1px); width: 2px; background: var(--learning-timeline-line, linear-gradient(#000, transparent)) center / 100% 100% no-repeat; transform: scaleY(var(--timeline-progress, 1)); transform-origin: top; content: ""; }
+.learning-timeline_step { position: relative; z-index: 1; display: grid; min-width: 0; grid-template-columns: 2.5rem minmax(0, 1fr); align-items: start; gap: 0.75rem 1rem; }
+.learning-timeline_label { grid-column: 2; padding-top: max(0px, calc(1.25rem - 0.5lh)); overflow-wrap: anywhere; }
+.learning-timeline_marker { display: flex; grid-column: 1; grid-row: 1 / span 2; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--color-text-primary); color: var(--color-text-on-dark); font-size: 1rem; font-weight: 400; line-height: 1; letter-spacing: -0.01em; }
+.learning-timeline_icon { display: block; width: 1.25rem; height: 1.25rem; }
+.learning-timeline_card { grid-column: 2; }
+.card_component.is-learning { --content-heading-gap: 0.75rem; --body-text-color: var(--color-text-secondary-large); align-items: stretch; gap: var(--content-heading-gap); padding: var(--card-padding, 0.75rem); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.learning-timeline_marker.is-expert { background: var(--color-accent-primary); }
+.card_component.is-learning.is-expert { --body-text-color: var(--color-program-muted); background: var(--color-text-primary); color: var(--color-text-on-dark-muted); }
+.learning-timeline_action { width: min(100%, 22.5rem); }
+@media (min-width: 32.5625rem) {
+  .learning-timeline_component { --content-heading-size: 1.375rem; }
+}
+@media (min-width: 32.5625rem) and (max-width: 47.999rem) {
+  .card_component.is-learning { --content-heading-gap: 0.5rem; }
+}
+@media (min-width: 48rem) {
+  .learning-timeline_component { --content-heading-size: 1.5rem; }
+  .learning-timeline_marker { font-size: 1.125rem; line-height: 1.444444; }
+  .learning-timeline_list { --timeline-label-width: max(11rem, calc((100% - 4.5rem) / 5)); }
+  .learning-timeline_step { grid-template-columns: var(--timeline-label-width) 2.5rem minmax(0, 1fr); gap: 1rem; }
+  .learning-timeline_label { grid-column: 1; text-align: right; }
+  .learning-timeline_marker { grid-column: 2; grid-row: 1; }
+  .learning-timeline_card { grid-column: 3; }
+  .learning-timeline_list::before { left: calc(var(--timeline-label-width) + 2.25rem - 1px); }
+}
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .learning-timeline_list { --timeline-label-width: clamp(14rem, 28vw, 16.375rem); }
+}
+@media (max-width: 32.5rem) {
+  .learning-timeline_step { column-gap: 0.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .learning-timeline_step.is-expert .learning-timeline_label { width: 16.375rem; justify-self: end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .learning-timeline_list::before { transform: none; }
+}
+
+/* Course program: the complete stage card sits beside the existing numbered line. */
+.learning-timeline_intro { max-width: 54.75rem; }
+.learning-timeline_component.is-program .learning-timeline_step { grid-template-columns: 2.5rem minmax(0, 1fr); }
+.learning-timeline_component.is-program .learning-timeline_marker { grid-column: 1; grid-row: 1; }
+.learning-timeline_component.is-program .learning-timeline_list::before { left: calc(1.25rem - 1px); }
+.learning-timeline_component.is-program .learning-timeline_action { width: min(100%, 25rem); }
+@media (max-width: 47.999rem) {
+  .learning-timeline_component.is-program .learning-timeline_action { width: 100%; }
+}

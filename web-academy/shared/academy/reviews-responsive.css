@@ -1,0 +1,49 @@
+/* All review types share the first card's geometry in each supplied adaptive. */
+.review-list_component.is-responsive, .reviews_component.is-responsive { --slider-gap: 0.75rem; --review-slide-width: min(100%, 18rem); }
+.reviews_component.is-responsive .reviews_header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+.reviews_component.is-responsive .reviews_controls { display: flex; }
+.reviews_component.is-responsive .reviews_slider.is-initialized .reviews_list { display: flex; gap: 0; }
+.reviews_component.is-responsive .reviews_slider.is-initialized .reviews_slide { width: var(--review-slide-width); }
+.reviews_component.is-responsive .reviews_track { overflow: hidden; }
+.review-card_component.is-responsive {
+  --review-text-size: 0.9375rem;
+  --review-media-height: 18.75rem;
+  --review-content-inset: 0.5rem;
+  --review-panel-padding: 0.5rem;
+  --review-control-size: 2.75rem;
+  gap: 0.875rem;
+}
+.review-card_component.is-responsive .review-card_caption { font-size: var(--review-text-size); }
+.review-card_component.is-responsive .review-card_image { height: var(--review-media-height); aspect-ratio: auto; }
+.review-card_component.is-responsive[data-ready] .review-card_media { height: var(--review-media-height); aspect-ratio: auto; }
+.review-card_component.is-responsive[data-ready] .review-card_image { height: 100%; }
+.review-card_component.is-responsive.is-quote .review-card_image { height: 100%; }
+.review-card_component.is-responsive .review-card_content { padding: var(--review-content-inset); }
+.review-card_component.is-responsive[data-ready] .review-card_content { inset: var(--review-content-inset); padding: 0; }
+.review-card_component.is-responsive .review-panel_component { padding: var(--review-panel-padding); font-size: var(--review-text-size); }
+.review-card_component.is-responsive .review-panel_header { --content-heading-size: 1.25rem; }
+.review-card_component.is-responsive .review-panel_role { font-size: 0.75rem; }
+.review-card_component.is-responsive[data-ready] .review-panel_component { max-height: calc(100% - var(--review-control-size) - 0.5rem); }
+.review-card_component.is-responsive[data-ready][data-open] .review-panel_component { height: calc(100% - var(--review-control-size) - 0.5rem); }
+.review-card_component.is-responsive .review-toggle_component { min-height: var(--review-control-size); font-size: var(--review-text-size); }
+.review-card_component.is-responsive .review-toggle_component[aria-expanded="true"] { width: var(--review-control-size); height: var(--review-control-size); }
+.review-card_component.is-responsive .review-card_play { width: var(--review-control-size); height: var(--review-control-size); top: var(--review-content-inset); right: var(--review-content-inset); }
+@media (max-width: 47.999rem) {
+  .reviews_component.is-responsive .reviews_slider.is-initialized .reviews_track { max-width: var(--review-slide-width); }
+}
+@media (min-width: 32.5625rem) {
+  .review-list_component.is-responsive, .reviews_component.is-responsive { --review-slide-width: min(100%, 20.375rem); }
+  .review-card_component.is-responsive { --review-text-size: 1rem; --review-media-height: 21.25rem; --review-content-inset: 0.75rem; --review-panel-padding: 0.75rem; }
+  .review-card_component.is-responsive .review-panel_header { --content-heading-size: 1.375rem; }
+  .review-card_component.is-responsive .review-panel_role { font-size: 0.875rem; }
+}
+@media (min-width: 48rem) {
+  .review-list_component.is-responsive, .reviews_component.is-responsive { --slider-gap: 1rem; --review-slide-width: min(100%, 24rem); }
+  .reviews_component.is-responsive .reviews_header { flex-direction: row; align-items: flex-end; }
+  .review-card_component.is-responsive { --review-text-size: 1.125rem; --review-media-height: 25rem; --review-content-inset: 1rem; gap: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .review-list_component.is-responsive, .reviews_component.is-responsive { --review-slide-width: clamp(18rem, calc((100% - 3rem) / 4), 23rem); }
+  .review-card_component.is-responsive { --review-media-height: 28.125rem; }
+  .review-card_component.is-responsive .review-panel_role { font-size: 0.9375rem; }
+}

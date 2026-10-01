@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ХУДЕТЬ СНОВА МОДНО»  →  адрес /hudet-snova-modno
+  ============================================================================
+
+  Бесплатный вебинар «Худеть снова модно: GLP-1, Голливуд, культура
+  болезненной худобы и РПП». 15 октября, 18:00 МСК.
+  Спикеры — Ольга Тумсэк и Анжела Макарова.
+
+  О ЧЁМ ВЕБИНАР
+    Препараты для снижения веса стали использоваться не только
+    по медицинским показаниям, а вместе с ними возвращается культ худобы.
+    Ядро РПП — сверхценность фигуры, веса и контроля за ними, поэтому такие
+    препараты могут не помогать в лечении РПП, а усиливать течение болезни.
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Страница — копия /klinicheskaya-dlya-praktikov: та же сетка, те же
+    блоки и скрипты (контейнер 1520px, боковые поля до 80px, брейкпоинты
+    480 / 768 / 992). Страница самодостаточная: все стили в page.css,
+    скрипт в page.js. Отличие одно: спикеров двое, поэтому в блоке
+    «Кто проведёт вебинар» две компактные карточки (стили — в самом конце
+    page.css).
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАК РАБОТАЕТ ЗАПИСЬ
+    Полей на странице нет. В блоке записи стоит виджет BotHelp: человек
+    видит кнопки мессенджеров и нажимает одну. Скрипт page.js перехватывает
+    нажатие, кладёт служебные значения (ClientID Метрики и UTM-метки)
+    в скрытую форму Тильды и отправляет её — оттуда данные уходят в AmoCRM.
+    Как только Тильда ответила, скрипт возвращает нажатие виджету.
+    На превью формы Тильды нет, поэтому шаг с ней пропускается.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 виджет BotHelp этого вебинара — временно стоит виджет прошлого
+      (id 29). Заменить до запуска, иначе записи уйдут на другой вебинар;
+    · 🟡 имя формы Тильды (data-tilda-form-name) — поставлено условное;
+    · 🟡 фото первого экрана и фон блока «Что получите» — с прошлых страниц;
+    · 🟡 фото спикеров — маленькие аватарки с лендинга курса по РПП;
+    · 🟢 реплики, «для кого», «что получите» и ответы на вопросы написаны
+      по анонсу — сверить со спикерами;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Худеть снова модно: GLP-1, Голливуд, культура болезненной худобы и РПП — бесплатный вебинар</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный вебинар 15 октября в 18:00 МСК. Как препараты для снижения веса и возвращение культа худобы влияют на пищевое поведение, чем это опасно при РПП и как быть специалистам." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Худеть снова модно: GLP-1, Голливуд, культура болезненной худобы и РПП" />
+  <meta property="og:description" content="Бесплатный вебинар для психологов. 15 октября, 18:00 МСК." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Загрузчик виджета BotHelp. На боевой странице он подключается
+       в настройках Тильды — здесь нужен, чтобы форму можно было проверить. -->
+  <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
+
+  <!-- 🔴 Скрипт страницы: FAQ, меню и связка «кнопка BotHelp → форма Тильды» -->
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
+<div class="page-wrapper clinic-page">
+
+<!-- ==========================================================================
+     ШАПКА
+     ==========================================================================
+     Белая полоса во всю ширину экрана. Не липкая — как на прошлых страницах.
+     На мобильном дата уезжает в меню, кнопка растягивается на всю ширину.
+     ========================================================================== -->
+<header class="site-header_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+
+        <!-- 🟡 Логотип ведёт на главную сайта -->
+        <a class="site-header_logo" href="/" aria-label="Академия современной психологии">
+          <img src="https://s3.twcstorage.ru/asp-media/logo_asp_fec13e6c96.svg" alt="" width="102" height="34" />
+        </a>
+
+        <!-- 🟢 Дата и время вебинара -->
+        <p class="site-header_date">15&nbsp;октября, 18:00&nbsp;МСК</p>
+
+        <!-- 🟡 Кнопка ведёт на блок с формой в конце страницы -->
+        <a class="button is-accent site-header_cta" href="#reg">Записаться на&nbsp;вебинар</a>
+
+        <!-- 🔴 Кнопка меню. Видна только на узких экранах. -->
+        <button class="site-header_burger" type="button"
+                aria-expanded="false" aria-controls="site-menu"
+                aria-label="Разделы страницы" data-menu-toggle>
+          <span class="site-header_burger-icon" aria-hidden="true"></span>
+        </button>
+
+        <!-- 🟢 Меню разделов. Ссылки ведут на блоки этой же страницы. -->
+        <nav class="site-header_menu" id="site-menu" aria-label="Разделы страницы" hidden>
+          <p class="site-header_menu-date">15 октября, 18:00 МСК</p>
+          <a href="#problema">О&nbsp;вебинаре</a>
+          <a href="#komu">Для&nbsp;кого</a>
+          <a href="#programma">Программа</a>
+          <a href="#spiker">Спикеры</a>
+          <a href="#voprosy">Вопросы</a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки с датой,
+       заголовок, подводка и кнопка. Сделан так же, как на /pochemu-kpt-v2.
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟡 Фотография первого экрана. Без loading="lazy": она видна сразу.
+                 Если будете менять — берите кадр с пропорциями около 2,3:1
+                 и оставляйте героя в правой половине: слева на десктопе
+                 ложится текст. -->
+            <img class="hero_image" src="https://s3.twcstorage.ru/asp-media/hero_474f848684.webp"
+                 alt="Психолог в кабинете у окна"
+                 width="1920" height="824" />
+
+            <!-- 🟢 Плашки с датой и форматом -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_bla_9bf3d3c717.svg" alt="" width="20" height="20" />
+                15 октября, 18:00 МСК
+              </li>
+              <li class="meta-pill_component is-accent">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_earth_white_a41613d615.svg" alt="" width="20" height="20" />
+                Онлайн
+              </li>
+              <li class="meta-pill_component">Бесплатно</li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <!-- 🟢 Заголовок из двух частей: название крупно, подзаголовок
+                     помельче. Оба куска — внутри одного <h1>. -->
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">Худеть снова модно</span>
+                  <span class="hero_heading-sub">GLP-1, Голливуд, культура болезненной худобы и&nbsp;РПП</span>
+                </h1>
+                <p class="hero_description">
+                  Бесплатный вебинар для психологов: как препараты для снижения
+                  веса и&nbsp;возвращение культа худобы влияют на&nbsp;пищевое
+                  поведение&nbsp;— и&nbsp;что с&nbsp;этим делать специалисту.
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🟡 Кнопка ведёт на блок с формой -->
+                <a class="button is-light is-full-width" href="#reg">Записаться на&nbsp;вебинар</a>
+                <p class="hero_start-note">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_whi_486d69a1a5.svg" alt="" width="22" height="22" />
+                  Участие бесплатное, нужна только регистрация
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. «МАЯТНИК КАЧНУЛСЯ СНОВА» — С ЧЕМ ПРИХОДЯТ КЛИЕНТЫ
+       ======================================================================
+       Три реплики оформлены как сообщения из чата.
+       🟢 Реплики написаны по анонсу вебинара — сверьте со спикерами.
+       ====================================================================== -->
+  <section class="section_voices" id="problema">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="voices_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Маятник качнулся снова</p>
+            <h2 class="section-intro_heading">
+              Возвращается культ не&nbsp;просто худобы, а&nbsp;практически истощения
+            </h2>
+            <p class="section-intro_description">
+              Только мы&nbsp;начали привыкать к&nbsp;тому, что вес 60&nbsp;кг&nbsp;—
+              это не&nbsp;ожирение, как всё изменилось: препараты для снижения
+              веса стали использоваться не&nbsp;только по&nbsp;медицинским
+              показаниям. И&nbsp;это уже слышно в&nbsp;кабинете.
+            </p>
+          </div>
+
+          <ul class="voices_list">
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Все вокруг худеют на&nbsp;уколах. Может, и&nbsp;мне попросить рецепт?»
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Клиентка с&nbsp;ограничительным питанием
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Мне назначили препарат для снижения веса, а&nbsp;про приступы переедания никто не&nbsp;спросил».
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Клиент с&nbsp;перееданием
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Клиентка пришла уже на&nbsp;препарате. Не&nbsp;понимаю, как теперь строить работу».
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Психолог, 2&nbsp;года в&nbsp;практике
+              </p>
+            </li>
+          </ul>
+
+          <p class="summary_component">
+            <img class="summary_icon" src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" />
+            <span>
+              <b>Ядро РПП&nbsp;— сверхценность фигуры, веса и&nbsp;контроля
+              за&nbsp;ними.</b> Поэтому такие препараты способны не&nbsp;только
+              не&nbsp;помогать в&nbsp;лечении РПП, но&nbsp;и&nbsp;усиливать
+              течение болезни.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  
+  <!-- ======================================================================
+       3. «СОЮЗНИК И ПРОТИВНИК» — ЧЕТЫРЕ СТОРОНЫ ТЕМЫ
+       ======================================================================
+       Тёмная плашка с четырьмя карточками.
+       ====================================================================== -->
+  <section class="section_risks" id="riski">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="risks_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component is-on-dark">Союзник и&nbsp;противник</p>
+            <h2 class="section-intro_heading is-on-dark">
+              В&nbsp;лечении ожирения появился союзник. В&nbsp;работе с&nbsp;РПП&nbsp;— серьёзный противник
+            </h2>
+            <p class="section-intro_description is-on-dark">
+              Специалисту важно видеть обе стороны. На&nbsp;вебинаре посмотрим
+              на&nbsp;тему с&nbsp;четырёх точек.
+            </p>
+          </div>
+
+          <ul class="risks_list">
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_alert_light_51fb436b1d.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Культура болезненной худобы</h3>
+                <p class="card_description is-on-dark">
+                  Почему идеал истощённого тела вернулся и&nbsp;при чём здесь Голливуд и&nbsp;GLP-1.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_help_light_4426b15a34.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Пищевое поведение</h3>
+                <p class="card_description is-on-dark">
+                  Что меняется в&nbsp;отношениях с&nbsp;едой, когда вес снижают препаратами.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_shield_light_3056d874e8.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Риски при РПП</h3>
+                <p class="card_description is-on-dark">
+                  С&nbsp;чем могут столкнуться люди с&nbsp;расстройствами пищевого поведения.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_scale_light_dd7ffa4f3b.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Ожирение и&nbsp;РПП</h3>
+                <p class="card_description is-on-dark">
+                  Что происходит там, где лечение ожирения пересекается с&nbsp;лечением РПП.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. «ДЛЯ КОГО ЭТОТ ВЕБИНАР»
+       ======================================================================
+       Два портрета в сетке карточек.
+       🟢 Написано по анонсу — сверьте со спикерами.
+       ====================================================================== -->
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Для специалистов</p>
+            <h2 class="section-intro_heading">Для кого этот вебинар</h2>
+            <p class="section-intro_description">
+              Для тех, кто работает с&nbsp;людьми и&nbsp;всё чаще слышит
+              в&nbsp;кабинете про вес, препараты и&nbsp;недовольство телом.
+            </p>
+          </div>
+
+          <ul class="card-grid_component is-stack-tablet audience_list">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_users_c9fd595244.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Психологи и&nbsp;психотерапевты</h3>
+                <p class="card_description">
+                  Если к&nbsp;вам приходят клиенты с&nbsp;запросами про еду, вес и&nbsp;отношения с&nbsp;телом.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_trending_85d5942254.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Кто работает с&nbsp;РПП или хочет начать</h3>
+                <p class="card_description">
+                  Если уже ведёте клиентов с&nbsp;расстройствами пищевого поведения или рассматриваете это направление.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. «ЧТО ПОЛУЧИТЕ ПОСЛЕ ВЕБИНАРА»
+       ======================================================================
+       Четыре результата на фотографии: снимок лежит фоном, поверх него
+       заголовок и стеклянные карточки.
+       🟢 Написано по анонсу — сверьте со спикерами.
+       ====================================================================== -->
+  <section class="section_shifts" id="traektorii">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="shifts_component">
+
+          <div class="shifts_media">
+
+            <!-- 🟡 ВРЕМЕННАЯ ФОТОГРАФИЯ. Стоит снимок с прошлых лендингов,
+                 чтобы блок можно было посмотреть. Замените на свою:
+                 нужен горизонтальный кадр, примерно 2,3:1, без важных
+                 деталей по центру — там ложится заголовок. -->
+            <img class="shifts_image" src="https://s3.twcstorage.ru/asp-media/case_room_2837ee1f3f.webp"
+                 alt="Психолог и клиентка на консультации в кабинете"
+                 width="2400" height="1030" loading="lazy" />
+
+            <h2 class="shifts_heading">Что получите после вебинара</h2>
+
+            <ul class="shifts_list">
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Понимание контекста</h3>
+                  <p class="card_description is-on-media">
+                    Почему культ худобы вернулся и&nbsp;как с&nbsp;ним связаны препараты для снижения веса.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Карту рисков</h3>
+                  <p class="card_description is-on-media">
+                    С&nbsp;чем могут столкнуться клиенты с&nbsp;РПП&nbsp;— и&nbsp;на&nbsp;что обращать внимание в&nbsp;работе.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Ясность на&nbsp;пересечении</h3>
+                  <p class="card_description is-on-media">
+                    Как соотносятся лечение ожирения и&nbsp;лечение РПП и&nbsp;где они расходятся.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Профессиональную позицию</h3>
+                  <p class="card_description is-on-media">
+                    Как быть специалисту, когда один и&nbsp;тот&nbsp;же препарат&nbsp;— и&nbsp;союзник, и&nbsp;противник.
+                  </p>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       6. «О ЧЁМ ПОГОВОРИМ»
+       ======================================================================
+       Слева заголовок, справа лента из четырёх пунктов. Ниже 992px заголовок
+       встаёт над лентой.
+       ====================================================================== -->
+  <section class="section_agenda" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="agenda_component">
+
+          <div class="agenda_intro">
+            <p class="eyebrow_component">Программа эфира</p>
+            <h2 class="agenda_heading">О&nbsp;чём поговорим на&nbsp;вебинаре</h2>
+            <p class="agenda_description">
+              Четыре вопроса о&nbsp;том, что происходит с&nbsp;пищевым поведением,
+              когда худеть снова модно.
+            </p>
+          </div>
+
+          <ol class="agenda_list">
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">01</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Как препараты для снижения веса и&nbsp;возвращение культа худобы влияют на&nbsp;пищевое поведение</h3>
+                <p class="agenda_description">
+                  От&nbsp;медицинских показаний&nbsp;— к&nbsp;моде на&nbsp;истощение.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">02</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">С&nbsp;какими рисками могут столкнуться люди с&nbsp;расстройствами пищевого поведения</h3>
+                <p class="agenda_description">
+                  Почему препараты способны усиливать течение болезни.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">03</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Что происходит на&nbsp;пересечении лечения ожирения и&nbsp;лечения РПП</h3>
+                <p class="agenda_description">
+                  Где задачи совпадают, а&nbsp;где противоречат друг другу.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">04</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Как быть нам, специалистам</h3>
+                <p class="agenda_description">
+                  Когда появился вроде&nbsp;как союзник в&nbsp;лечении ожирения, но&nbsp;и&nbsp;серьёзный противник, если дело касается РПП. В&nbsp;конце&nbsp;— ответы на&nbsp;вопросы из&nbsp;чата.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       7. СПИКЕРЫ
+       ======================================================================
+       Заголовок по центру, ниже — две карточки: круглая фотография и текст.
+       На десктопе карточки стоят рядом, на планшете и телефоне — друг
+       под другом. Описания взяты с лендинга курса по РПП (/rpp).
+       🟡 Фотографии — маленькие аватарки с того же лендинга. Если появятся
+          крупные портреты, просто замените адрес в src.
+       ====================================================================== -->
+  <section class="section_speaker" id="spiker">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="speaker_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Ваши спикеры</p>
+            <h2 class="section-intro_heading">Кто проведёт вебинар</h2>
+          </div>
+
+          <ul class="speaker_list">
+            <li class="speaker_card is-compact">
+              <div class="speaker_media">
+                <!-- 🟡 Фотография спикера -->
+                <img class="speaker_image" src="https://static.tildacdn.com/tild3538-3132-4261-a531-336363373835/Avatar-1.png"
+                     alt="Ольга Тумсэк, специалист по расстройствам пищевого поведения"
+                     width="520" height="520" loading="lazy" />
+              </div>
+              <div class="speaker_copy">
+                <h3 class="speaker_name">Ольга Тумсэк</h3>
+                <p class="speaker_description">
+                  Магистр психологии, специалист по&nbsp;расстройствам пищевого поведения (МГУ, МИП). Консультант по&nbsp;питанию. Член Ассоциации контекстуально-поведенческой науки. Эксперт в&nbsp;СМИ.
+                </p>
+              </div>
+            </li>
+            <li class="speaker_card is-compact">
+              <div class="speaker_media">
+                <!-- 🟡 Фотография спикера -->
+                <img class="speaker_image" src="https://static.tildacdn.com/tild3464-3032-4835-b466-323865393562/Avatar.png"
+                     alt="Анжела Макарова, клинический психолог"
+                     width="300" height="300" loading="lazy" />
+              </div>
+              <div class="speaker_copy">
+                <h3 class="speaker_name">Анжела Макарова</h3>
+                <p class="speaker_description">
+                  Клинический психолог, специалистка по&nbsp;расстройствам пищевого поведения. Член Ассоциации контекстуально-поведенческой науки. Член Ассоциации специалистов, информированных о&nbsp;расстройствах пищевого поведения.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       8. ОТЗЫВЫ  —  макет из Фигмы, кадр 470-2077
+       ======================================================================
+       Слева тёмная карточка с процентом и плашками, справа три белые
+       карточки с оценками независимых площадок.
+       🟢 Оценки площадок меняются со временем — сверяйтесь перед запуском.
+       ====================================================================== -->
+  <section class="section_reviews" id="otzyvy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="reviews_component">
+
+          <div class="reviews_grid">
+
+            <div class="reviews_headline">
+              <p class="reviews_percent">98% студентов</p>
+              <p class="reviews_lead">
+                рекомендуют обучение<br />
+                в&nbsp;Академии Современной Психологии
+              </p>
+
+              <ul class="reviews_tags">
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Практика
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Преподаватели
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Поддержка
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Комьюнити
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Качество
+                </li>
+              </ul>
+
+              <!-- 🔴 Декоративная молния с макета -->
+              <img class="reviews_zap" src="https://s3.twcstorage.ru/asp-media/icon_zap_a064f3db0f.svg" alt="" width="100" height="100" aria-hidden="true" />
+            </div>
+
+            <ul class="reviews_scores">
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.45
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_tutortop_cc004891ad.svg" alt="tutortop" width="126" height="28" loading="lazy" />
+              </li>
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.82
+                </p>
+                <!-- 🔴 Логотип «Сравни» на макете состоит из двух частей:
+                     цветного кружка (растр) и надписи (вектор). -->
+                <span class="reviews_logo-group">
+                  <img class="reviews_logo-mark" src="https://s3.twcstorage.ru/asp-media/logo_sravni_mark_4e1f6ca088.png" alt="" width="84" height="72" loading="lazy" />
+                  <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_sravni_33a4ab5059.svg" alt="Сравни" width="113" height="22" loading="lazy" />
+                </span>
+              </li>
+              <li class="reviews_score is-wide">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.9
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_otzovik_786226e74e.svg" alt="Отзовик" width="134" height="28" loading="lazy" />
+              </li>
+            </ul>
+
+          </div>
+
+          <p class="reviews_note">* По&nbsp;данным отзывов на&nbsp;независимых площадках</p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       13. АКАДЕМИЯ  —  макет из Фигмы, кадр 470-752
+       ======================================================================
+       Плитка из четырёх карточек: зал, сообщество, выпускники, преподаватели.
+       ====================================================================== -->
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Мы&nbsp;растем на&nbsp;обратной связи от&nbsp;наших студентов, поэтому
+            каждый новый поток&nbsp;— это улучшенный предыдущий
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+
+              <div class="academy-showcase_teachers-media">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="496"
+                  height="550"
+                  alt="Участники открытого разбора Академии"
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="academy-showcase_teachers-controls" aria-hidden="true">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       14. «УЧАСТИЕ БЕСПЛАТНОЕ» + ФОРМА
+       ======================================================================
+       Тёмная плашка. Слева — как записаться и чек-лист в подарок, справа —
+       белая карточка с кнопками мессенджеров.
+       ====================================================================== -->
+  <section class="section_signup" id="reg">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">Участие бесплатное</h2>
+            <p class="signup_description">
+              Один вечер&nbsp;— и&nbsp;вы&nbsp;понимаете, что происходит
+              с&nbsp;пищевым поведением на&nbsp;фоне моды на&nbsp;худобу
+              и&nbsp;как выстраивать работу с&nbsp;клиентами.
+            </p>
+
+            <ol class="signup_steps">
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">01</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Выберите мессенджер</h3>
+                  <p class="signup_step-description">
+                    Одно нажатие&nbsp;— без анкет и&nbsp;лишних полей
+                  </p>
+                </div>
+              </li>
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">02</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Доступ придёт в&nbsp;мессенджер</h3>
+                  <p class="signup_step-description">
+                    Ссылка на&nbsp;эфир придёт в&nbsp;Telegram или MAX. Напомним
+                    за&nbsp;час до&nbsp;начала
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <!-- 🟢 Подарок участникам: чек-лист. Название рабочее —
+                 сверьте со спикерами. -->
+            <div class="gift_component">
+              <div class="gift_copy">
+                <p class="gift_label">Бонус для участников вебинара</p>
+                <h3 class="gift_heading">
+                  Чек-лист: как заметить риск РПП у&nbsp;клиента, который снижает вес
+                </h3>
+              </div>
+              <!-- 🟡 Обложки чек-листа пока нет. Когда появится — вставьте сюда:
+                   <img class="gift_image" src="адрес картинки" alt="Обложка чек-листа"
+                        width="541" height="477" loading="lazy" /> -->
+            </div>
+
+          </div>
+
+          <!-- 🔴 РЕГИСТРАЦИЯ ЧЕРЕЗ BOTHELP.
+               На странице нет ни одного поля и ни одной своей кнопки:
+               человек видит только кнопки мессенджеров, которые рисует виджет
+               BotHelp. По нажатию на любую из них скрипт:
+
+                 1) перехватывает нажатие, чтобы BotHelp не увёл со страницы
+                    раньше времени;
+                 2) кладёт служебные значения (ClientID Метрики и UTM-метки)
+                    в скрытую форму Тильды и отправляет её — дальше данные
+                    уходят в AmoCRM штатной интеграцией Тильды;
+                 3) и только после ответа Тильды возвращает нажатие виджету.
+
+               🟡 data-tilda-form-name — имя формы в настройках Тильды.
+                  Должно совпадать с ним буква в букву.
+               🟡 data-metrika-id — номер счётчика Метрики. Можно оставить
+                  пустым: скрипт сам найдёт счётчик на странице.
+               🔴 ВАЖНО: атрибуты data-bh-widget-id и data-bh-customer-id
+                  должны стоять ТОЛЬКО на пустом контейнере
+                  #bh-widget-button-root ниже. -->
+          <div class="lead-form_component" data-signup data-state="idle"
+               data-tilda-form-name="hudet-snova-modno"
+               data-metrika-id="">
+
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Зарегистрироваться на&nbsp;вебинар</h3>
+              <p class="lead-form_date">15 октября, 18:00 МСК</p>
+            </div>
+
+            <p class="lead-form_hint">
+              Выберите мессенджер&nbsp;— пришлём ссылку на&nbsp;эфир туда
+              и&nbsp;напомним за&nbsp;час до&nbsp;начала.
+            </p>
+
+            <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
+                 Пока виджет не пришёл, на этом месте стоит серый скелет. -->
+            <!-- 🟡 ВРЕМЕННЫЙ ВИДЖЕТ: data-bh-widget-id="29" — от прошлого вебинара.
+                 Когда пришлют виджет этого вебинара, поменяйте номер ниже. -->
+            <div class="lead-form_widget" data-bh-mount data-bh-state="loading">
+              <div class="lead-form_widget-skeleton" data-bh-skeleton aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+
+              <div class="lead-form_bh" id="bh-widget-button-root"
+                   data-bh-widget-id="29" data-bh-customer-id="278875"></div>
+
+              <p class="lead-form_note" data-bh-error hidden>
+                Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу&nbsp;—
+                или напишите нам, и&nbsp;мы&nbsp;пришлём ссылку на&nbsp;эфир вручную.
+              </p>
+            </div>
+
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <!-- 🔴 Запасной выход. Показывается, только если переход
+                 в мессенджер не сработал. Адрес подставляет скрипт. -->
+            <p class="lead-form_manual" data-lead-manual hidden>
+              Мессенджер не&nbsp;открылся?
+              <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
+            </p>
+
+            <p class="lead-form_note">
+              Запись эфира будет доступна зарегистрированным участникам.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       11. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       Обычный аккордеон на <details>. Без скрипта он тоже работает —
+       скрипт нужен только для плавного раскрытия.
+       🟢 Ответы написаны по анонсу — сверьте со спикерами. Особенно про запись
+          эфира и про курс, о котором расскажут в конце.
+       ====================================================================== -->
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+            <!-- 🟡 Ссылка ведёт в Telegram-бот приёмной комиссии -->
+            <p class="faq_support">
+              Не&nbsp;нашли ответа на&nbsp;свой вопрос?
+              <a href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener">Напишите нам</a>
+            </p>
+          </div>
+
+          <div class="faq_list accordion_component" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько стоит участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Участие бесплатное&nbsp;— нужна только регистрация. Ссылка на&nbsp;эфир придёт в&nbsp;выбранный мессенджер, напомним за&nbsp;час до&nbsp;начала.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;не&nbsp;работаю с&nbsp;РПП. Мне будет полезно?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Да. Клиент с&nbsp;вопросами про вес, еду и&nbsp;препараты может прийти к&nbsp;любому психологу&nbsp;— и&nbsp;часто с&nbsp;совсем другим запросом. Вебинар поможет понимать, что за&nbsp;этим стоит и&nbsp;когда нужен профильный специалист.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Вы&nbsp;будете рекомендовать препараты или отговаривать от&nbsp;них?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет. Назначает и&nbsp;отменяет препараты врач. Мы&nbsp;говорим о&nbsp;другом: как они и&nbsp;мода на&nbsp;худобу влияют на&nbsp;пищевое поведение и&nbsp;что с&nbsp;этим делать психологу.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Нужно&nbsp;ли медицинское образование, чтобы всё понять?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет. Вебинар рассчитан на&nbsp;психологов, термины объясняем по&nbsp;ходу. Вопросы можно задавать прямо на&nbsp;эфире.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Где проходит вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Вебинар проходит онлайн, достаточно будет перейти по&nbsp;ссылке из&nbsp;мессенджера.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Будет&nbsp;ли запись?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Да, запись будет доступна зарегистрированным участникам. Но&nbsp;живое участие даёт больше: можно задать вопрос спикерам и&nbsp;сразу получить ответ.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Выдаётся&nbsp;ли сертификат за&nbsp;участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет, за&nbsp;вебинар сертификат не&nbsp;выдаётся. Документы установленного образца&nbsp;— только по&nbsp;итогам обучающих программ Академии.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Это продающий вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Скажем честно: в&nbsp;конце коротко расскажем про курс «Консультирование расстройств пищевого поведения»&nbsp;— это несколько минут. Всё остальное время&nbsp;— разбор темы и&nbsp;ответы на&nbsp;ваши вопросы.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ==========================================================================
+     ПОДВАЛ
+     ==========================================================================
+     Контакты и реквизиты — те же, что на прошлых вебинарах.
+     ========================================================================== -->
+<footer class="site-footer_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+
+      <h2 class="site-footer_heading">Контакты</h2>
+
+      <div class="site-footer_grid">
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Отдел продаж</p>
+          <p class="site-footer_line"><a href="tel:+78124702901">+7&nbsp;812&nbsp;470-29-01</a></p>
+          <p class="site-footer_line"><a href="mailto:info@modern-psy.ru">info@modern-psy.ru</a></p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Адрес</p>
+          <p class="site-footer_line">
+            197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ
+            Введенский, пр-т&nbsp;Большой&nbsp;П.с., д.&nbsp;7/4, литера&nbsp;А,
+            помещ.&nbsp;2-Н
+          </p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Правовая информация</p>
+          <!-- 🟡 Адреса документов подставьте с боевого сайта -->
+          <p class="site-footer_line"><a href="/oferta">Публичная оферта</a></p>
+          <p class="site-footer_line"><a href="/privacy">Политика конфиденциальности</a></p>
+          <p class="site-footer_line"><a href="/documents">Сведения об&nbsp;образовательной организации</a></p>
+        </div>
+
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+        <p>ОГРН 1217800102783<br />ИНН/КПП 7839141929/781301001</p>
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>
+          Доступ к&nbsp;мессенджеру Telegram и&nbsp;видеохостингу YouTube
+          в&nbsp;РФ ограничен в&nbsp;связи с&nbsp;применяемыми техническими мерами
+          и&nbsp;требованиями российского законодательства; работоспособность
+          сервисов может быть нестабильной.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>

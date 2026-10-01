@@ -1,0 +1,164 @@
+{
+  "project": "psychologist-consultant",
+  "scope": "projects/psychologist-consultant custom lead form and native Tilda bridge",
+  "status": "published; form operation confirmed by user",
+  "updated_at": "2026-09-11",
+  "source": "User explicitly requested reuse of the complete ready form with all Tilda integrations from trauma-therapy.",
+  "canonical_path": "projects/psychologist-consultant/data/form-contract.json",
+  "purpose": "Collect a course lead in the custom UI and deliver it through the native Tilda form to its configured receivers and CRM.",
+  "links": {
+    "component_contract": "shared/academy/lead-form.md",
+    "general_bridge_rule": "rules/engineering/tilda-form-bridges.md",
+    "implementation": "shared/academy/lead-form.js",
+    "operator_guide": "projects/psychologist-consultant/tilda/README.md"
+  },
+  "custom_form": {
+    "selector": "[data-academy-lead-form]",
+    "form_name_attribute": "data-tilda-form-name=trauma-therapy",
+    "fields": [
+      {
+        "name": "name",
+        "label": "Имя",
+        "required": true,
+        "native_field": "Name",
+        "format": "trimmed text"
+      },
+      {
+        "name": "email",
+        "label": "Почта",
+        "required": true,
+        "native_field": "email",
+        "format": "ASCII email with a dotted domain"
+      },
+      {
+        "name": "phone",
+        "label": "Контактный телефон",
+        "required": true,
+        "native_field": "Phone",
+        "format": "valid intl-tel-input number; native result keeps the complete Tilda mask"
+      },
+      {
+        "name": "messenger",
+        "label": "Где вам удобнее общаться?",
+        "required": true,
+        "native_field": "messenger-type",
+        "format": "max or telegram"
+      },
+      {
+        "name": "maxContact",
+        "label": "Телефон в MAX",
+        "required_when": "messenger=max",
+        "native_field": "messenger-id",
+        "format": "valid intl-tel-input number; native result keeps the complete Tilda mask"
+      },
+      {
+        "name": "telegramContact",
+        "label": "Имя пользователя с @",
+        "required_when": "messenger=telegram",
+        "native_field": "messenger-id",
+        "format": "^@[A-Za-z0-9_]{3,32}$"
+      }
+    ],
+    "submit_initial_state": "disabled",
+    "submit_enabled_when": "every active required field is valid",
+    "error_visibility": "show field errors on blur after input; submit validates all active fields"
+  },
+  "personal_data": {
+    "collected": [
+      "name",
+      "email",
+      "primary phone",
+      "preferred messenger",
+      "active messenger contact"
+    ],
+    "agreement_url": "https://modern-psy.ru/agreement",
+    "privacy_url": "https://modern-psy.ru/privacy"
+  },
+  "native_tilda_form": {
+    "reference_url": "https://modern-psy.ru/page187059909.html",
+    "discovery": {
+      "field": "tildaspec-formname",
+      "value": "trauma-therapy"
+    },
+    "container_to_hide": ".t-rec containing the matching native form",
+    "required_field_names": [
+      "Name",
+      "email",
+      "Phone",
+      "messenger-type",
+      "messenger-id"
+    ],
+    "submission_method": "requestSubmit() through the native submit control",
+    "receivers": "Tilda-owned configured receivers and CRM",
+    "must_remain_in_dom": true
+  },
+  "transport_and_storage": {
+    "validated_client_event": "academy-lead-form:validated with the normalized formData payload",
+    "direct_project_network_request": false,
+    "project_browser_storage": false,
+    "authoritative_transport": "native Tilda form requestSubmit()",
+    "authoritative_destination": "Tilda-owned configured receivers and CRM"
+  },
+  "messenger_mapping": [
+    {
+      "custom_value": "max",
+      "native_type_slot": "whatsapp",
+      "submitted_native_type": "max",
+      "contact_source": "maxContact",
+      "native_contact_field": "messenger-id",
+      "inactive_contact": "telegramContact must be cleared"
+    },
+    {
+      "custom_value": "telegram",
+      "native_type_slot": "telegram",
+      "submitted_native_type": "telegram",
+      "contact_source": "telegramContact",
+      "native_contact_field": "messenger-id",
+      "inactive_contact": "MAX phone fields and result fields must be cleared"
+    }
+  ],
+  "lifecycle": {
+    "busy_starts": "after custom validation passes and before native synchronization",
+    "success_event": "matching tildaform:aftersuccess from the submitted native form",
+    "error_event": "matching tildaform:aftererror, native validation failure, missing native contract, or synchronization exception",
+    "captcha": "neutral in-flight Tilda state; remain busy until the native success or error event",
+    "success_view": "hide editable content and show Заявка отправлена only after the matching success event",
+    "timeout_is_success": false,
+    "preserve_values_on_error": true
+  },
+  "production_verification": {
+    "requires_user_approved_test_data": true,
+    "scenarios": [
+      "max",
+      "telegram"
+    ],
+    "preflight": [
+      "all five required native field names exist in the published DOM",
+      "custom values are mirrored into the matching native form",
+      "inactive messenger contact fields are empty",
+      "Phone and phone-based messenger-id contain complete Tilda mask values"
+    ],
+    "success_requires": [
+      "matching native tildaform:aftersuccess",
+      "custom success view",
+      "the corresponding lead visible in the configured CRM"
+    ],
+    "user_confirmation": {
+      "date": "2026-09-11",
+      "source": "User message: «Форма радотает»",
+      "scope": "Form operation on the published landing; no independent submission or receiver verification by the agent"
+    }
+  },
+  "reuse": {
+    "source_project": "trauma-therapy",
+    "native_marker_policy": "Retain trauma-therapy so the existing native Tilda form block can be duplicated unchanged with its field names, masks and configured receivers. It is a discovery key, not a destination URL.",
+    "destination_page": "https://modern-psy.ru/psyeducation",
+    "native_block_delivery": "Duplicate the existing configured native form block in Tilda and keep it between BODY and FOOTER. The project does not export or replace Tilda-owned transport/CRM scripts.",
+    "local_differences": [
+      "Project-owned HTML copy and native marker; shared component source",
+      "academy-lead-form:validated and __academyLeadFormCleanup shared API",
+      "Success/error requires an identified matching submitted form"
+    ]
+  },
+  "shared_component": "shared/academy/lead-form.md"
+}

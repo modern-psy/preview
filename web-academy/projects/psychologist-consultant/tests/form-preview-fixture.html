@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проверка состояний формы в Tilda preview</title>
+<style>body{margin:0}#results{display:block;padding:16px;white-space:pre-wrap}iframe{width:100%;height:800px;border:0}</style>
+<output id="results">Проверка…</output>
+<iframe title="Форма в готовом Tilda preview" src="../tilda/preview.html#application"></iframe>
+<script>
+const frame = document.querySelector('iframe');
+const results = document.querySelector('#results');
+const lines = [];
+const check = (ok, label) => { lines.push(`${ok ? 'PASS' : 'FAIL'} ${label}`); results.textContent = lines.join('\n'); if (!ok) throw new Error(label); };
+frame.addEventListener('load', async () => {
+  try {
+    const win = frame.contentWindow;
+    const doc = frame.contentDocument;
+    const form = doc.querySelector('[data-academy-lead-form]');
+    const input = name => form.querySelector(`[name="${name}"]`);
+    const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const until = async predicate => { for (let i=0;i<100;i++) { if (predicate()) return; await pause(100); } throw new Error('Timeout'); };
+    await until(() => doc.querySelectorAll('.iti__selected-dial-code').length === 2);
+    await Promise.all(['phone', 'maxContact'].map(name => win.intlTelInput.getInstance(input(name)).promise));
+    const visible = node => win.getComputedStyle(node).display !== 'none';
+    check([...form.querySelectorAll('.lead-form_state-icon')].every(node => !visible(node)), 'Idle: all validation icons hidden');
+    check([...doc.querySelectorAll('.iti__selected-dial-code')].every(node => win.getComputedStyle(node).color !== 'rgb(255, 0, 0)'), 'Country codes resist Tilda red button rule');
+    const edit = async (name, value) => {
+      const field = input(name);
+      if (field.type === 'tel') win.intlTelInput.getInstance(field).setNumber(value);
+      else field.value = value;
+      field.dispatchEvent(new win.Event('input', {bubbles:true}));
+      field.dispatchEvent(new win.Event('blur'));
+      await pause(100);
+    };
+    const state = name => input(name).closest('[data-lead-field]');
+    await edit('email', 'invalid');
+    check(state('email').dataset.state === 'invalid' && input('email').getAttribute('aria-invalid') === 'true', 'Invalid email rejected');
+    check(visible(state('email').querySelector('.is-error')) && !visible(state('email').querySelector('.is-success')), 'Only error icon shown');
+    await edit('phone', '+7123');
+    check(state('phone').dataset.state === 'invalid', 'Incomplete phone rejected');
+    await edit('name', 'Тест');
+    await edit('email', 'fixture@example.com');
+    await edit('phone', '+79123456789');
+    await edit('maxContact', '+79123456789');
+    await until(() => !form.querySelector('[data-lead-submit]').disabled);
+    check(['name','email','phone','maxContact'].every(name => state(name).dataset.state === 'valid'), 'Valid active fields accepted, submit enabled');
+    check(visible(state('email').querySelector('.is-success')) && !visible(state('email').querySelector('.is-error')), 'Only success icon shown after correction');
+    const telegram = form.querySelector('[name="messenger"][value="telegram"]');
+    telegram.checked = true;
+    telegram.dispatchEvent(new win.Event('change', {bubbles:true}));
+    await pause(100);
+    check(input('maxContact').disabled && !input('telegramContact').disabled && form.querySelector('[data-lead-submit]').disabled, 'Messenger switch excludes MAX and requires Telegram');
+    await edit('telegramContact', 'invalid');
+    check(state('telegramContact').dataset.state === 'invalid', 'Invalid Telegram rejected');
+    await edit('telegramContact', '@fixture_test');
+    await until(() => !form.querySelector('[data-lead-submit]').disabled);
+    check(state('telegramContact').dataset.state === 'valid', 'Valid Telegram accepted');
+    results.textContent += '\n10 checks passed. No submission or network lead request performed.';
+  } catch (error) { results.textContent += '\nERROR ' + error.message; }
+});
+</script>
+</html>

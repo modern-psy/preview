@@ -1,0 +1,392 @@
+<script>
+(() => {
+const start = () => {
+(() => {
+  window.AcademySliderControls = {
+    motion(slider) {
+      const style = getComputedStyle(slider);
+      const token = style.getPropertyValue('--slider-duration').trim() || style.getPropertyValue('--motion-duration').trim();
+      return {
+        speed: token ? parseFloat(token) * (token.endsWith('ms') ? 1 : 1000) : 650,
+        easing: style.getPropertyValue('--motion-easing').trim() || 'cubic-bezier(0.25, 1, 0.5, 1)',
+        reducedMotion: {speed: 0, rewindSpeed: 0, autoplay: 'pause'},
+      };
+    },
+    bind(slider, component, getInstance, previousButton, nextButton) {
+      let wheelDistance = 0;
+      let wheelIdleTimer = 0;
+      let wheelLastMoveAt = Number.NEGATIVE_INFINITY;
+      let wheelLastDirection = 0;
+      let wheelPreviousMagnitude = 0;
+      let wheelAwaitingFreshImpulse = false;
+
+      const getEnd = () => {
+        const splide = getInstance();
+        if (!splide) return 0;
+        let end = splide.Components.Controller.getEnd();
+        const move = splide.Components.Move;
+        while (end > 0 && Math.abs(move.toPosition(end, true) - move.toPosition(end - 1, true)) < 1) end -= 1;
+        return end;
+      };
+      const updateControls = () => {
+        const splide = getInstance();
+        const endIndex = getEnd();
+
+        if (previousButton) previousButton.disabled = !splide || splide.index <= 0;
+        if (nextButton) nextButton.disabled = !splide || splide.index >= endIndex;
+      };
+
+      const showPrevious = () => {
+        const splide = getInstance();
+        if (splide) splide.go(splide.index > getEnd() ? Math.max(0, getEnd() - 1) : '<');
+      };
+      const showNext = () => { const splide = getInstance(); if (splide && splide.index < getEnd()) splide.go('>'); };
+
+      const resetWheelGesture = () => {
+        wheelDistance = 0;
+        wheelIdleTimer = 0;
+        wheelLastDirection = 0;
+        wheelPreviousMagnitude = 0;
+        wheelAwaitingFreshImpulse = false;
+      };
+
+      const handleWheel = (event) => {
+        const splide = getInstance();
+        if (!splide || event.defaultPrevented || event.ctrlKey || event.metaKey) return;
+        const protectedTarget = event.target.closest('[data-slider-no-drag], input, textarea, select, [contenteditable]');
+        if (protectedTarget && !(protectedTarget.matches('[data-review-video]') && !protectedTarget.controls)) return;
+
+        const horizontalDistance = Math.abs(event.deltaX);
+        const verticalDistance = Math.abs(event.deltaY);
+        if (horizontalDistance < 1 || horizontalDistance <= verticalDistance) return;
+        const delta = event.deltaX;
+
+        const endIndex = getEnd();
+        if ((delta < 0 && splide.index <= 0) || (delta > 0 && splide.index >= endIndex)) {
+          window.clearTimeout(wheelIdleTimer);
+          resetWheelGesture();
+          return;
+        }
+
+        event.preventDefault();
+        window.clearTimeout(wheelIdleTimer);
+        wheelIdleTimer = window.setTimeout(resetWheelGesture, 140);
+
+        const deltaMultiplier =
+          event.deltaMode === WheelEvent.DOM_DELTA_LINE
+            ? 16
+            : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+              ? window.innerWidth
+              : 1;
+        const normalizedDelta = delta * deltaMultiplier;
+        const normalizedMagnitude = Math.abs(normalizedDelta);
+        const normalizedDirection = Math.sign(normalizedDelta);
+        const eventTime = event.timeStamp;
+
+        if (wheelAwaitingFreshImpulse) {
+          const impulseDelayElapsed = eventTime - wheelLastMoveAt >= 96;
+          const directionChanged = normalizedDirection !== wheelLastDirection;
+          const magnitudeIncreased =
+            normalizedMagnitude >= 4 &&
+            normalizedMagnitude >= wheelPreviousMagnitude * 1.35;
+
+          wheelPreviousMagnitude = normalizedMagnitude;
+
+          if (!impulseDelayElapsed || (!directionChanged && !magnitudeIncreased)) {
+            return;
+          }
+
+          wheelDistance = 0;
+          wheelAwaitingFreshImpulse = false;
+        }
+
+        if (wheelDistance !== 0 && Math.sign(wheelDistance) !== normalizedDirection) {
+          wheelDistance = 0;
+        }
+
+        wheelDistance += normalizedDelta;
+        wheelPreviousMagnitude = normalizedMagnitude;
+
+        if (Math.abs(wheelDistance) < 36) return;
+
+        wheelDistance = 0;
+        wheelLastMoveAt = eventTime;
+        wheelLastDirection = normalizedDirection;
+        wheelAwaitingFreshImpulse = true;
+
+        if (normalizedDirection > 0) showNext();
+        else showPrevious();
+      };
+
+      const handleKeydown = (event) => {
+        const splide = getInstance();
+        if (
+          !splide ||
+          event.target.closest('[data-slider-no-drag], input, textarea, select, [contenteditable]') ||
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey
+        ) {
+          return;
+        }
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showPrevious();
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showNext();
+        }
+      };
+
+      const focusSlider = (event) => {
+        if (!event.target.closest('button, a, input, textarea, select, [contenteditable], [data-slider-no-drag]')) slider.focus({ preventScroll: true });
+      };
+
+
+      previousButton?.addEventListener('click', showPrevious);
+      nextButton?.addEventListener('click', showNext);
+      slider.addEventListener('wheel', handleWheel, {passive: false});
+      slider.addEventListener('pointerdown', focusSlider);
+      component.addEventListener('keydown', handleKeydown);
+      return {
+        update: updateControls,
+        destroy() {
+          previousButton?.removeEventListener('click', showPrevious);
+          nextButton?.removeEventListener('click', showNext);
+          slider.removeEventListener('wheel', handleWheel);
+          slider.removeEventListener('pointerdown', focusSlider);
+          component.removeEventListener('keydown', handleKeydown);
+          window.clearTimeout(wheelIdleTimer);
+        },
+      };
+    },
+  };
+})();
+
+/* Shared static card renderer for build-time and Tilda data refresh. */
+(() => {
+  const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
+  const text = (value) => escape(value).replace(/\u00a0/g, ' ').replace(/(^|[\s(])([АаВвИиКкОоСсУуЯя]|во|до|за|из|на|не|ни|но|об|от|по|со|без|для|над|под|при|про) /g, '$1$2&nbsp;').replace(/ (—|бы|же|ли)(?=\s|[,.!?]|$)/g, '&nbsp;$1');
+  const photoUrl = (value) => {
+    if (value == null || value === '') return '';
+    if (typeof value !== 'string') throw new Error('photo должна быть ссылкой или null.');
+    if (/^teacher:[a-z0-9-]+$/.test(value) || /^assets\/images\/teachers\/[a-z0-9-]+\.webp$/.test(value)) return value;
+    let url;
+    try { url = new URL(value); } catch { throw new Error('Некорректная ссылка photo.'); }
+    if (url.protocol !== 'https:' || url.username || url.password) throw new Error('Для photo нужна ссылка HTTPS.');
+    return url.href;
+  };
+  function validate(data) {
+    if (!Array.isArray(data) || !data.length) throw new Error('Нужен непустой список преподавателей.');
+    const ids = new Set();
+    return data.map((item) => {
+      if (!item || !/^[a-z][a-z0-9-]*$/.test(item.id) || ids.has(item.id)) throw new Error('У каждого преподавателя должен быть уникальный id латиницей.');
+      ids.add(item.id);
+      for (const key of ['name', 'description']) if (typeof item[key] !== 'string' || !item[key].trim()) throw new Error(`Заполните ${key}: ${item.id}.`);
+      if (item.tag != null && typeof item.tag !== 'string') throw new Error(`Тег должен быть текстом: ${item.id}.`);
+      const crop = item.crop;
+      if (crop && (!Array.isArray(crop) || crop.length !== 4 || !crop.every(Number.isFinite) || crop[0] <= 0 || crop[1] <= 0)) throw new Error(`Некорректная обрезка: ${item.id}.`);
+      const width = Number.isInteger(item.width) && item.width > 0 ? item.width : undefined;
+      const height = Number.isInteger(item.height) && item.height > 0 ? item.height : undefined;
+      return {id: item.id, name: item.name.trim(), tag: (item.tag || '').trim(), description: item.description.trim(), photo: photoUrl(item.photo), crop, width, height};
+    });
+  }
+  function render(record, {headingLevel = 3} = {}) {
+    if (![2, 3, 4, 5, 6].includes(headingLevel)) throw new Error('Invalid teacher heading level.');
+    const teacher = validate([record])[0];
+    const assetKey = teacher.photo.startsWith('teacher:') ? teacher.photo.slice(8) : '';
+    const source = assetKey ? 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' : teacher.photo;
+    const crop = teacher.crop ? ` style="--teacher-image-width:${teacher.crop[0]}%;--teacher-image-height:${teacher.crop[1]}%;--teacher-image-left:${teacher.crop[2]}%;--teacher-image-top:${teacher.crop[3]}%"` : '';
+    const media = source
+      ? `<img class="teacher-card_image" src="${escape(source)}"${assetKey ? ` data-teacher-asset="${assetKey}"` : ''}${teacher.width && teacher.height ? ` width="${teacher.width}" height="${teacher.height}"` : ''} alt="${escape(teacher.name)} — преподаватель курса" loading="lazy" decoding="async" draggable="false">`
+      : `<span class="teacher-card_initials" aria-hidden="true">${escape(teacher.name.split(/\s+/).map(part => part[0]).slice(0, 2).join(''))}</span>`;
+    return `<article class="teacher-card_component"><div class="teacher-card_media"${crop}>${media}${teacher.tag ? `<span class="teacher-card_tag">${text(teacher.tag)}</span>` : ''}</div><div class="content-header_component teacher-card_copy"><h${headingLevel} class="content-heading_component is-profile teacher-card_name">${text(teacher.name)}</h${headingLevel}><p class="body-text_component is-reading is-profile teacher-card_description">${text(teacher.description)}</p></div></article>`;
+
+  }
+  globalThis.AcademyTeacherCard = {render, validate, text};
+})();
+
+/* One shared layout for server rendering and editable Tilda data. */
+(() => {
+  const {validate, text} = globalThis.AcademyTeacherCard;
+  const escape = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+  function render(data, prefix = 'academy-teachers', labels = {}) {
+    if (!/^[a-z][a-z0-9-]*$/.test(prefix)) throw new Error('Некорректный id секции.');
+    const teachers = validate(data);
+    const links = teachers.map((teacher) => `<a class="teachers_tab" href="#${prefix}-${teacher.id}" data-js="teacher-tab" data-teacher-id="${teacher.id}">${text(teacher.name)}</a>`);
+    const rowCount = links.length > 8 ? 3 : 1;
+    const split = Math.ceil(links.length / rowCount);
+    const tabs = Array.from({length: rowCount}, (_, index) => links.slice(index * split, (index + 1) * split)).filter(row => row.length).map(row => `<div class="teachers_tab-row">${row.join('\n')}</div>`).join('\n');
+    const slides = teachers.map(teacher => `<li class="teachers_slide splide__slide" id="${prefix}-${teacher.id}" data-teacher-id="${teacher.id}">${globalThis.AcademyTeacherCard.render(teacher)}</li>`).join('\n');
+    return `<div class="teachers_layout"><div class="teachers_navigation" data-js="teacher-navigation"><div class="teachers_tabs" data-js="teacher-tabs" aria-label="${escape(labels.tabsLabel || 'Выбрать преподавателя')}">${tabs}</div></div><div class="teachers_slider splide" data-js="teacher-slider" id="${prefix}-slider" aria-label="${escape(labels.sliderLabel || 'Преподаватели курса')}"><div class="teachers_track splide__track"><ul class="teachers_list splide__list">${slides}</ul></div></div></div>`;
+  }
+  globalThis.AcademyTeacherTemplate = {render, validate};
+})();
+
+(() => {
+  if (customElements.get('academy-teachers')) return;
+  class AcademyTeachers extends HTMLElement {
+    connectedCallback() {
+      if (this.slider) return;
+      this.connect();
+    }
+    disconnectedCallback() { this.disconnect(); }
+    connect() {
+      const module = this.ownerDocument.getElementById(this.dataset.config);
+      if (module && globalThis.AcademyTeacherTemplate) {
+        try {
+          const layout = globalThis.AcademyTeacherTemplate.render(JSON.parse(module.textContent), this.id, {tabsLabel: this.dataset.tabsLabel, sliderLabel: this.dataset.sliderLabel});
+          this.querySelector('.teachers_layout').outerHTML = layout;
+        } catch (error) {
+          console.warn('Преподаватели: сохранена предыдущая разметка.', error.message);
+        }
+      }
+      // Tilda keeps bundled local photos in HEAD; user-provided URLs need no map.
+      const photoModule = this.dataset.assets ? this.ownerDocument.getElementById(this.dataset.assets) : null;
+      if (photoModule) {
+        try {
+          const photos = JSON.parse(photoModule.textContent);
+          this.querySelectorAll('[data-teacher-asset]').forEach((image) => {
+            const source = photos[image.dataset.teacherAsset];
+            if (typeof source === 'string' && /^data:image\/webp;base64,[A-Za-z0-9+/=]+$/.test(source)) image.src = source;
+          });
+        } catch (error) { console.warn('Преподаватели: не удалось прочитать фотографии.', error.message); }
+      }
+      if (typeof window.Splide !== 'function' || !window.AcademySliderControls) return;
+      const root = this.querySelector('[data-js="teacher-slider"]');
+      this.tabs = Array.from(this.querySelectorAll('[data-js="teacher-tab"]'));
+      this.tablist = this.querySelector('[data-js="teacher-tabs"]');
+      this.navigation = this.querySelector('[data-js="teacher-navigation"]');
+      this.controls = this.querySelector('[data-js="teacher-controls"]');
+      this.previous = this.querySelector('[data-js="teacher-previous"]');
+      this.next = this.querySelector('[data-js="teacher-next"]');
+      if (!root || !this.tabs.length || !this.tablist) return;
+      this.previous?.setAttribute('aria-controls', root.id);
+      this.next?.setAttribute('aria-controls', root.id);
+      this.listeners = new AbortController();
+      const signal = this.listeners.signal;
+      root.tabIndex = 0;
+      this.slider = new window.Splide(root, {
+        type: 'slide', role: 'group', autoWidth: true, perMove: 1,
+        focus: 0, trimSpace: true, arrows: false, pagination: false,
+        ...window.AcademySliderControls.motion(root), gap: '1rem', breakpoints: {767: {gap: '0.75rem'}}, rewind: false,
+        keyboard: false, drag: true, autoplay: false, waitForTransition: false,
+        wheel: false, snap: true, noDrag: '[data-slider-no-drag], button, a',
+        start: Math.max(0, this.tabs.findIndex(tab => tab.dataset.teacherId === this.selectedId)),
+        reducedMotion: {speed: 0, rewindSpeed: 0, autoplay: 'pause'},
+        i18n: {carousel: 'Преподаватели', slide: 'Преподаватель', slideLabel: '%s из %s', select: 'Выбрать преподавателя %s'},
+      });
+      this.tablist.setAttribute('role', 'tablist');
+      this.tabs.forEach((tab, index) => {
+        tab.setAttribute('role', 'tab');
+        tab.id = `${this.id}-tab-${tab.dataset.teacherId}`;
+        tab.setAttribute('aria-controls', tab.getAttribute('href').slice(1));
+        tab.addEventListener('click', (event) => { event.preventDefault(); this.slider.go(index); }, {signal});
+        tab.addEventListener('keydown', (event) => {
+          const vertical = this.tablist.getAttribute('aria-orientation') === 'vertical';
+          const previousKey = vertical ? 'ArrowUp' : 'ArrowLeft';
+          const nextKey = vertical ? 'ArrowDown' : 'ArrowRight';
+          let target;
+          if (event.key === previousKey) target = (index - 1 + this.tabs.length) % this.tabs.length;
+          if (event.key === nextKey) target = (index + 1) % this.tabs.length;
+          if (event.key === 'Home') target = 0;
+          if (event.key === 'End') target = this.tabs.length - 1;
+          if (event.key === ' ') { event.preventDefault(); this.slider.go(index); }
+          if (target === undefined) return;
+          event.preventDefault();
+          this.tabs[target].focus({preventScroll: true});
+          this.slider.go(target);
+        }, {signal});
+      });
+      this.sliderControls = window.AcademySliderControls.bind(root, this, () => this.slider, this.previous, this.next);
+      this.tablist.addEventListener('scroll', () => this.updateOverflow(), {signal, passive: true});
+      this.slider.on('mounted moved updated resized', () => this.update());
+      this.slider.on('move', index => this.updateSelection(index));
+      this.slider.mount();
+      this.slider.refresh();
+      root.querySelectorAll('.teachers_slide').forEach((slide, index) => {
+        this.tabs[index].setAttribute('aria-controls', slide.id);
+        slide.setAttribute('role', 'tabpanel');
+        slide.setAttribute('aria-labelledby', this.tabs[index].id);
+        slide.removeAttribute('aria-roledescription');
+        slide.removeAttribute('aria-label');
+      });
+      if (this.controls) this.controls.hidden = this.tabs.length < 2;
+      this.observer = new ResizeObserver(() => this.update());
+      const photo = this.querySelector('.teacher-card_media');
+      if (photo) this.observer.observe(photo);
+      this.observer.observe(this.tablist);
+      this.update();
+    }
+    update() {
+      if (!this.slider) return;
+      this.arrangeTabs();
+      const vertical = getComputedStyle(this.querySelector('.teachers_tab-row')).display === 'contents';
+      this.tablist.setAttribute('aria-orientation', vertical ? 'vertical' : 'horizontal');
+      const height = this.querySelector('.teacher-card_media')?.getBoundingClientRect().height;
+      if (height) this.style.setProperty('--teachers-media-height', `${height}px`);
+      this.updateSelection(this.slider.index);
+    }
+    arrangeTabs() {
+      const desktop = window.matchMedia('(min-width: 64.0625rem)').matches;
+      const tablet = window.matchMedia('(min-width: 48rem)').matches;
+      const count = this.tabs.length > 8 && !desktop ? (tablet ? 2 : 3) : 1;
+      if (this.tablist.children.length === count) return;
+      const rows = document.createDocumentFragment();
+      const size = Math.ceil(this.tabs.length / count);
+      for (let index = 0; index < count; index += 1) {
+        const row = document.createElement('div');
+        row.className = 'teachers_tab-row';
+        row.append(...this.tabs.slice(index * size, (index + 1) * size));
+        rows.append(row);
+      }
+      this.tablist.replaceChildren(rows);
+    }
+    updateSelection(index) {
+      this.tabs.forEach((tab, position) => {
+        tab.setAttribute('aria-selected', String(index === position));
+        tab.tabIndex = index === position ? 0 : -1;
+      });
+      this.selectedId = this.tabs[index]?.dataset.teacherId;
+      this.sliderControls?.update();
+      const tab = this.tabs[index];
+      if (tab) {
+        const frame = this.tablist.getBoundingClientRect();
+        const selected = tab.getBoundingClientRect();
+        // Scroll only the list; scrollIntoView would also move the landing.
+        if (this.tablist.getAttribute('aria-orientation') === 'vertical' && selected.top < frame.top + 16) this.tablist.scrollTop += selected.top - frame.top - 16;
+        else if (this.tablist.getAttribute('aria-orientation') === 'vertical') {
+          const inset = Math.min(120, frame.height * 0.25) + 16;
+          if (selected.bottom > frame.bottom - inset) this.tablist.scrollTop += selected.bottom - frame.bottom + inset;
+        }
+        if (selected.left < frame.left + 16) this.tablist.scrollLeft += selected.left - frame.left - 16;
+        else if (selected.right > frame.right - 16) this.tablist.scrollLeft += selected.right - frame.right + 16;
+      }
+      this.updateOverflow();
+    }
+    updateOverflow() {
+      this.navigation.dataset.overflow = String(this.tablist.scrollHeight - this.tablist.clientHeight - this.tablist.scrollTop > 2);
+    }
+    disconnect() {
+      this.observer?.disconnect();
+      this.listeners?.abort();
+      this.sliderControls?.destroy();
+      this.slider?.destroy(true);
+      this.slider = null;
+      this.controls?.setAttribute('hidden', '');
+      this.tablist?.removeAttribute('role');
+      this.tablist?.removeAttribute('aria-orientation');
+      this.tabs?.forEach(tab => ['role', 'aria-selected', 'aria-controls', 'tabindex'].forEach(name => tab.removeAttribute(name)));
+    }
+    refresh() { this.disconnect(); this.connect(); }
+  }
+  customElements.define('academy-teachers', AcademyTeachers);
+})();
+
+};
+if (typeof window.Splide === 'function') start();
+else { const script = document.createElement('script'); script.src = 'https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js'; script.onload = start; document.head.append(script); }
+})();
+</script>

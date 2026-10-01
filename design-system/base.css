@@ -1,0 +1,386 @@
+/* ============================================================================
+   БАЗА И СТРУКТУРА · Client-first v2
+   ============================================================================
+
+   Сброс браузерных стилей, глобальная структура страницы, утилиты отступов,
+   правила для картинок и фонов, доступность.
+
+   Порядок подключения на любой странице:
+     <link rel="stylesheet" href="/design-system/tokens.css">
+     <link rel="stylesheet" href="/design-system/base.css">
+     <link rel="stylesheet" href="/design-system/typography.css">
+     <link rel="stylesheet" href="/design-system/components.css">
+     <link rel="stylesheet" href="page.css">   <- стили конкретной страницы
+   ============================================================================ */
+
+
+/* ==========================================================================
+   1. СБРОС
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+
+  /* ЯКОРИ. При переходе по якорной ссылке содержимое не должно приклеиваться
+     к верхней границе экрана — оставляем 32px воздуха.
+     Работает для всех якорей сразу, ничего дополнительно размечать не нужно. */
+  scroll-padding-top: var(--anchor-offset);
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  overflow-x: hidden;   /* страховка от горизонтального скролла */
+}
+
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+ul, ol { margin: 0; padding: 0; }
+p { margin: 0; }
+
+/* Запасной вариант для якорей: если у элемента задан свой отступ сверху,
+   scroll-margin перебивает scroll-padding и работает точнее. */
+[id] { scroll-margin-top: var(--anchor-offset); }
+
+
+/* ==========================================================================
+   2. МАСШТАБИРОВАНИЕ УЗКИХ ЭКРАНОВ · 340–375px
+   ==========================================================================
+   ЗАЧЕМ. Ниже 375px резиновая вёрстка перестаёт работать: блоки текста
+   вытягиваются в вертикальные простыни, кнопки и цены начинают переноситься.
+   Поэтому ниже 375px мы не тянем макет, а ПРОПОРЦИОНАЛЬНО УМЕНЬШАЕМ его.
+
+   КАК РАБОТАЕТ. Уменьшаем корневой размер шрифта пропорционально ширине
+   экрана. Поскольку вся система построена на rem, вместе с ним уменьшается
+   ВСЁ: шрифты, отступы, радиусы, размеры блоков и иконок.
+
+   ПОЭТОМУ px В ВЁРСТКЕ ЗАПРЕЩЕНЫ. Значение в px не масштабируется
+   и на 340px вылезет за пределы блока. Исключение — границы в 1px.
+
+   Нижняя граница поддержки — 340px.
+   ========================================================================== */
+@media (max-width: 23.4375rem) {   /* 375px */
+  html { font-size: calc(100vw / 23.4375); }
+}
+/* Примечание: rem внутри @media всегда считается от 16px и НЕ зависит
+   от того, что мы задали в html { font-size }. Поэтому брейкпоинты
+   не «съезжают» из-за масштабирования. Это поведение по спецификации. */
+
+
+/* ==========================================================================
+   3. ГЛОБАЛЬНАЯ СТРУКТУРА СТРАНИЦЫ · Client-first v2
+   ==========================================================================
+   <div class="page-wrapper">
+     <header>…</header>
+     <main class="main-wrapper">
+       <section class="section_hero" id="hero">
+         <div class="padding-global">
+           <div class="container-large">
+             <div class="padding-section-large">
+               …содержимое…
+             </div>
+           </div>
+         </div>
+       </section>
+     </main>
+     <footer>…</footer>
+   </div>
+
+   Эти пять классов не переименовывать и не пропускать.
+   ========================================================================== */
+
+.page-wrapper { position: relative; }
+.main-wrapper { display: block; }
+
+/* Боковые поля страницы. МИНИМУМ 16px на мобильном — меньше нельзя нигде. */
+.padding-global {
+  padding-left: var(--padding-global);
+  padding-right: var(--padding-global);
+}
+
+/* Максимальная ширина контента */
+.container-small  { width: 100%; max-width: var(--container-small);  margin-inline: auto; }
+.container-medium { width: 100%; max-width: var(--container-medium); margin-inline: auto; }
+.container-large  { width: 100%; max-width: var(--container-large);  margin-inline: auto; }
+
+/* Вертикальные отступы секции. Растут плавно вместе с шириной экрана:
+   минимум 64px на мобильном, максимум 200px на большом десктопе.
+   Отдельных медиазапросов не нужно — уменьшение на мобилке уже внутри. */
+.padding-section-small  { padding-top: var(--section-small);  padding-bottom: var(--section-small); }
+.padding-section-medium { padding-top: var(--section-medium); padding-bottom: var(--section-medium); }
+.padding-section-large  { padding-top: var(--section-large);  padding-bottom: var(--section-large); }
+
+/* Блок во всю ширину экрана — ставится ВМЕСТО container-*, не вместе с ним. */
+.full-bleed { width: 100%; }
+
+
+/* ==========================================================================
+   4. ОТСТУПЫ · утилитарные классы Client-first v2
+   ==========================================================================
+   Отступ задаётся ДВУМЯ классами: направление + размер.
+
+     <div class="margin-bottom margin-medium">     отступ снизу 32px
+     <div class="padding-vertical padding-small">  отступы сверху и снизу 16px
+
+   Класс направления обнуляет остальные стороны — штатное поведение
+   Client-first, защищает от случайных отступов «с трёх сторон».
+   ========================================================================== */
+
+/* --- направление --- */
+.margin-top        { margin-right: 0 !important; margin-bottom: 0 !important; margin-left: 0 !important; }
+.margin-bottom     { margin-top: 0 !important; margin-right: 0 !important; margin-left: 0 !important; }
+.margin-left       { margin-top: 0 !important; margin-right: 0 !important; margin-bottom: 0 !important; }
+.margin-right      { margin-top: 0 !important; margin-bottom: 0 !important; margin-left: 0 !important; }
+.margin-vertical   { margin-right: 0 !important; margin-left: 0 !important; }
+.margin-horizontal { margin-top: 0 !important; margin-bottom: 0 !important; }
+
+.padding-top        { padding-right: 0 !important; padding-bottom: 0 !important; padding-left: 0 !important; }
+.padding-bottom     { padding-top: 0 !important; padding-right: 0 !important; padding-left: 0 !important; }
+.padding-left       { padding-top: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; }
+.padding-right      { padding-top: 0 !important; padding-bottom: 0 !important; padding-left: 0 !important; }
+.padding-vertical   { padding-right: 0 !important; padding-left: 0 !important; }
+.padding-horizontal { padding-top: 0 !important; padding-bottom: 0 !important; }
+
+/* --- размер --- */
+.margin-0       { margin: var(--space-0); }
+.margin-tiny    { margin: var(--space-tiny); }
+.margin-xxsmall { margin: var(--space-xxsmall); }
+.margin-xsmall  { margin: var(--space-xsmall); }
+.margin-small   { margin: var(--space-small); }
+.margin-medium  { margin: var(--space-medium); }
+.margin-large   { margin: var(--space-large); }
+.margin-xlarge  { margin: var(--space-xlarge); }
+.margin-xxlarge { margin: var(--space-xxlarge); }
+.margin-huge    { margin: var(--space-huge); }
+.margin-xhuge   { margin: var(--space-xhuge); }
+.margin-xxhuge  { margin: var(--space-xxhuge); }
+
+.padding-0       { padding: var(--space-0); }
+.padding-tiny    { padding: var(--space-tiny); }
+.padding-xxsmall { padding: var(--space-xxsmall); }
+.padding-xsmall  { padding: var(--space-xsmall); }
+.padding-small   { padding: var(--space-small); }
+.padding-medium  { padding: var(--space-medium); }
+.padding-large   { padding: var(--space-large); }
+.padding-xlarge  { padding: var(--space-xlarge); }
+.padding-xxlarge { padding: var(--space-xxlarge); }
+.padding-huge    { padding: var(--space-huge); }
+.padding-xhuge   { padding: var(--space-xhuge); }
+.padding-xxhuge  { padding: var(--space-xxhuge); }
+
+
+/* ==========================================================================
+   5. ФОНЫ · background-color-[имя]
+   ==========================================================================
+   Напоминание: 70–90 % макета — серая гамма. Фиолетовый идёт в акценты.
+   Тёмный блок делается ФИОЛЕТОВЫМ (background-color-inverse), а не серым:
+   сайт светлый, поэтому тёмный блок сам по себе акцентный.
+   ========================================================================== */
+.background-color-page        { background-color: var(--bg-page); }
+.background-color-surface     { background-color: var(--bg-surface); }
+.background-color-hover       { background-color: var(--bg-hover); }
+.background-color-accent-soft { background-color: var(--bg-accent-soft); }
+.background-color-accent      { background-color: var(--accent);     color: var(--text-inverse); }
+.background-color-inverse     { background-color: var(--bg-inverse); color: var(--text-on-inverse); }
+
+/* Внутри тёмного блока заголовки белые, а основной текст — violet-300.
+   Так тёмный блок читается мягко, а не «выжигает» глаза белым. */
+.background-color-inverse h1,
+.background-color-inverse h2,
+.background-color-inverse h3,
+.background-color-inverse h4,
+.background-color-inverse h5,
+.background-color-inverse h6 { color: var(--text-inverse); }
+
+
+/* ==========================================================================
+   6. ИЗОБРАЖЕНИЯ
+   ==========================================================================
+   ДВА СПОСОБА, И ОНИ НЕ ВЗАИМОЗАМЕНЯЕМЫ.
+
+   1. СОДЕРЖАТЕЛЬНАЯ КАРТИНКА — тег <img> с осмысленным alt.
+      Фото преподавателя, обложка курса, скриншот документа.
+      Такую картинку читает поисковик и озвучивает скринридер.
+
+        <img class="teacher_photo" src="/img/ivanova.webp"
+             alt="Ирина Иванова, преподаватель курса КПТ"
+             width="480" height="480" loading="lazy">
+
+      width и height ставим всегда — из них браузер считает пропорции
+      и не даёт странице прыгать во время загрузки.
+
+   2. ДЕКОРАТИВНЫЙ ФОН — background-image в CSS.
+      Текстура, градиент, картинка под текстом. Такое изображение
+      не несёт смысла, поисковику и скринридеру оно не нужно.
+
+        .hero_component {
+          background-image: url("/img/hero-bg.webp");
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+
+   ПУТАТЬ НЕЛЬЗЯ. Содержательная картинка, засунутая в background —
+   это потерянный alt и потерянный трафик из поиска по картинкам.
+   Декоративная картинка тегом <img> — лишний мусор для скринридера.
+   ========================================================================== */
+
+img, svg, video { display: block; max-width: 100%; height: auto; }
+
+/* Картинка заполняет отведённый ей блок, не искажая пропорции */
+.image-cover    { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.image-contain  { width: 100%; height: 100%; object-fit: contain; }
+
+/* Готовые пропорции для блока с картинкой.
+   ОБЯЗАТЕЛЬНО задавать пропорцию — иначе вёрстка прыгает при загрузке. */
+.ratio-1x1  { aspect-ratio: 1 / 1; }
+.ratio-4x3  { aspect-ratio: 4 / 3; }
+.ratio-3x2  { aspect-ratio: 3 / 2; }
+.ratio-16x9 { aspect-ratio: 16 / 9; }
+
+/* Базовые правила фоновой картинки. Дальше url задаётся в стилях блока. */
+.background-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Затемнение поверх фона, чтобы текст читался.
+   Использовать, только если контраст текста иначе не вытягивает. */
+.background-image.is-dimmed { position: relative; }
+.background-image.is-dimmed::before {
+  content: ""; position: absolute; inset: 0;
+  background: rgba(29, 21, 53, .45);
+}
+.background-image.is-dimmed > * { position: relative; }
+
+
+/* ==========================================================================
+   7. ИКОНКИ
+   ==========================================================================
+   ПРАВИЛО ПРОЕКТА: иконка подключается ПО ССЫЛКЕ на svg-файл
+   и красится маской. Соотношение сторон всегда 1:1, менять его нельзя.
+
+   КАК ЭТО РАБОТАЕТ. mask-image вырезает форму из svg-файла, а цвет даёт
+   background-color. Поэтому одну и ту же иконку можно перекрашивать
+   под любое состояние — она наследует currentColor от родителя.
+
+     <span class="icon is-md" style="--icon-url: url('/icons/calendar.svg')"></span>
+
+   ┌────────────────────────────────────────────────────────────────────────┐
+   │ ПУТЬ ТОЛЬКО АБСОЛЮТНЫЙ — начинается со слеша: /icons/calendar.svg      │
+   │                                                                        │
+   │ Относительный путь ("icons/calendar.svg") сломается. Причина неочевидная│
+   │ и стоила нам получаса: относительная ссылка внутри CSS-переменной       │
+   │ считается НЕ от html-страницы, а от того css-файла, где переменная      │
+   │ используется. Используется она здесь, в design-system/base.css, —       │
+   │ значит браузер пойдёт искать design-system/icons/calendar.svg.          │
+   │                                                                        │
+   │ Абсолютный путь от корня сайта такой проблемы не имеет никогда.         │
+   └────────────────────────────────────────────────────────────────────────┘
+
+   ТРИ ОГРАНИЧЕНИЯ:
+
+   1. Маска превращает иконку в ОДНОЦВЕТНЫЙ СИЛУЭТ. Для многоцветных
+      картинок — логотипов, иллюстраций — маска не подходит: там обычный
+      <img> с alt.
+
+   2. Файл маски должен лежать НА НАШЕМ ДОМЕНЕ. Иконка с чужого домена
+      не загрузится.
+
+   3. Не работает при открытии страницы двойным кликом (протокол file://) —
+      браузер блокирует такие запросы. Это не ошибка вёрстки: на сайте,
+      открытом по http/https, всё работает. Чтобы посмотреть локально,
+      нужен локальный сервер.
+
+   ТРЕБОВАНИЕ К САМИМ ФАЙЛАМ ИКОНОК: внутри svg должен быть сплошной цвет
+   (например #000), а не currentColor — маску интересует только форма,
+   и currentColor во внешнем файле не резолвится предсказуемо.
+   Все иконки рисуются в квадрате 24×24 с одинаковой толщиной линии.
+   ========================================================================== */
+.icon {
+  display: inline-block;
+  flex: none;
+
+  /* 1:1 — жёстко. Ширина и высота берутся из одного значения. */
+  width: var(--icon-size, var(--icon-md));
+  height: var(--icon-size, var(--icon-md));
+  aspect-ratio: 1 / 1;
+
+  /* Цвет наследуется от родителя — иконка меняется вместе с текстом */
+  background-color: currentColor;
+
+  -webkit-mask-image: var(--icon-url);
+          mask-image: var(--icon-url);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+}
+.icon.is-xs { --icon-size: var(--icon-xs); }
+.icon.is-sm { --icon-size: var(--icon-sm); }
+.icon.is-md { --icon-size: var(--icon-md); }
+.icon.is-lg { --icon-size: var(--icon-lg); }
+.icon.is-xl { --icon-size: var(--icon-xl); }
+
+
+/* ==========================================================================
+   8. ВИДИМОСТЬ ПО БРЕЙКПОИНТАМ
+   ==========================================================================
+   ⚠️ Использовать ТОЛЬКО когда блок физически не может быть один и тот же.
+      Дублировать контент в двух вариантах и прятать один — запрещено:
+      двойной текст для поисковика и двойная привязка к CMS.
+   ========================================================================== */
+.hide { display: none !important; }
+
+@media (max-width: 32.5rem)    { .hide-mobile           { display: none !important; } }  /* ≤520px */
+@media (max-width: 48rem)      { .hide-mobile-landscape { display: none !important; } }  /* ≤768px */
+@media (max-width: 64rem)      { .hide-tablet           { display: none !important; } }  /* ≤1024px */
+@media (min-width: 64.0625rem) { .hide-desktop          { display: none !important; } }  /* ≥1025px */
+
+
+/* ==========================================================================
+   9. ДОСТУПНОСТЬ
+   ========================================================================== */
+
+/* Фокус с клавиатуры виден всегда. Убирать обводку без замены запрещено. */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* На тёмном фоне обводка светлая */
+.background-color-inverse :focus-visible,
+.is-inverse:focus-visible { outline-color: var(--border-inverse); }
+
+/* Текст только для скринридеров */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Ссылка «перейти к содержимому» — первый элемент страницы */
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: var(--z-toast);
+  background: var(--bg-surface); padding: var(--space-xsmall) var(--space-small);
+  border-radius: var(--radius-xl);
+}
+.skip-link:focus { left: var(--space-small); top: var(--space-small); }
+
+/* Уважаем системную настройку «уменьшить движение».
+   Плавную прокрутку к якорю тоже отключаем — она вызывает укачивание. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

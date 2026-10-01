@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «СПОРТИВНАЯ ПСИХОЛОГИЯ: НОВАЯ ТОЧКА РОСТА»  →  адрес /sport-psy-start
+  ============================================================================
+
+  Новая версия страницы https://modern-psy.ru/sport-psy-start.
+  Тема вебинара та же, дата новая — 17 сентября, 18:00 МСК. Смыслы
+  и структура страницы изменились: добавлены блоки из новой презентации
+  спикера (клиент изменился, масштаб рынка, мифы и реальность, шесть
+  сегментов клиентов, два кейса, пять отличий, кому подходит профессия,
+  почему сейчас), блок отзывов и блок про Академию.
+
+  ЧТО ВЗЯТО ЗА ОСНОВУ
+    Сетка, имена классов, кнопки, карточки, аккордеон, форма записи через
+    BotHelp и адаптив — со страниц /klinicheskaya-baza
+    и /seksologiya-dlya-psihologov (то есть в конечном счёте
+    с /trauma-therapy): контейнер 1520px, боковые поля до 80px,
+    брейкпоинты 480 / 768 / 992.
+    Страница самодостаточная: все стили в page.css, скрипт в page.js.
+    Фото, логотипы и часть общих иконок лежат на S3 (блок Академии —
+    на CDN Тильды). Иконки этой страницы вшиты в page.css как data-URI
+    и вставляются так же, как в «Между сессий»:
+    <span class="icon is-check"></span> — форма из CSS, цвет из CSS.
+    Локальных файлов у страницы нет.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАК РАБОТАЕТ ЗАПИСЬ
+    Полей на странице нет. В блоке записи стоит виджет BotHelp: человек
+    видит кнопки мессенджеров и нажимает одну. Скрипт page.js перехватывает
+    нажатие, кладёт служебные значения (ClientID Метрики и UTM-метки)
+    в скрытую форму Тильды и отправляет её — оттуда данные уходят в AmoCRM.
+    Как только Тильда ответила, скрипт возвращает нажатие виджету.
+    На превью формы Тильды нет, поэтому шаг с ней пропускается.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 идентификаторы виджета BotHelp (data-bh-widget-id) скопированы
+      со страницы клинической базы — подставьте виджет этого вебинара;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Спортивная психология: новая точка роста на рынке психотерапии — бесплатный вебинар</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный вебинар 17 сентября в 18:00 МСК. Разбираемся, как растущий рынок спорта и фитнеса открывает психологу новую нишу, с какими запросами приходят клиенты из спорта и как войти в нишу, пока конкуренция минимальна." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Спортивная психология: новая точка роста на рынке психотерапии" />
+  <meta property="og:description" content="Бесплатный вебинар для психологов и специалистов сферы спорта. 17 сентября, 18:00 МСК." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Загрузчик виджета BotHelp. На боевой странице он подключается
+       в настройках Тильды — здесь нужен, чтобы форму можно было проверить. -->
+  <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
+
+  <!-- 🔴 Скрипт страницы: FAQ, меню и связка «кнопка BotHelp → форма Тильды» -->
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
+<div class="page-wrapper sport-page">
+
+<!-- ==========================================================================
+     ШАПКА
+     ==========================================================================
+     Белая полоса во всю ширину экрана. Не липкая — как на прошлых страницах.
+     На мобильном дата уезжает в меню, кнопка растягивается на всю ширину.
+     ========================================================================== -->
+<header class="site-header_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+
+        <!-- 🟡 Логотип ведёт на главную сайта -->
+        <a class="site-header_logo" href="/" aria-label="Академия современной психологии">
+          <img src="https://s3.twcstorage.ru/asp-media/logo_asp_fec13e6c96.svg" alt="" width="102" height="34" />
+        </a>
+
+        <!-- 🟢 Дата и время вебинара -->
+        <p class="site-header_date">17&nbsp;сентября, 18:00&nbsp;МСК</p>
+
+        <!-- 🟡 Кнопка ведёт на блок с формой в конце страницы -->
+        <a class="button is-accent site-header_cta" href="#reg">Записаться на&nbsp;вебинар</a>
+
+        <!-- 🔴 Кнопка меню. Видна только на узких экранах. -->
+        <button class="site-header_burger" type="button"
+                aria-expanded="false" aria-controls="site-menu"
+                aria-label="Разделы страницы" data-menu-toggle>
+          <span class="site-header_burger-icon" aria-hidden="true"></span>
+        </button>
+
+        <!-- 🟢 Меню разделов. Ссылки ведут на блоки этой же страницы. -->
+        <nav class="site-header_menu" id="site-menu" aria-label="Разделы страницы" hidden>
+          <p class="site-header_menu-date">17 сентября, 18:00 МСК</p>
+          <a href="#rynok">О&nbsp;вебинаре</a>
+          <a href="#keisy">Кейсы</a>
+          <a href="#komu">Для&nbsp;кого</a>
+          <a href="#programma">Программа</a>
+          <a href="#spiker">Спикер</a>
+          <a href="#voprosy">Вопросы</a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки с датой,
+       заголовок, подводка и кнопка. Сделан так же, как на /klinicheskaya-baza.
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟡 Фотография первого экрана. Без loading="lazy": она видна сразу.
+                 Если будете менять — берите кадр с пропорциями около 2,3:1
+                 и оставляйте героев в правой половине: слева на десктопе
+                 ложится текст. -->
+            <img class="hero_image" src="https://s3.twcstorage.ru/asp-media/hero_32c53d685a.webp"
+                 alt="Две спортсменки радуются победе с кубком в руках"
+                 width="2400" height="1030" />
+
+            <!-- 🟢 Плашки с датой и форматом -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_bla_9bf3d3c717.svg" alt="" width="20" height="20" />
+                17 сентября, 18:00 МСК
+              </li>
+              <li class="meta-pill_component is-accent">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_earth_white_a41613d615.svg" alt="" width="20" height="20" />
+                Онлайн
+              </li>
+              <li class="meta-pill_component">Бесплатно</li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <!-- 🟢 Заголовок из двух частей: название крупно, подзаголовок
+                     помельче. Оба куска — внутри одного <h1>. -->
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">Спортивная психология</span>
+                  <span class="hero_heading-sub">новая точка роста на&nbsp;рынке психотерапии</span>
+                </h1>
+                <p class="hero_description">
+                  Разбираемся, как растущий рынок спорта и&nbsp;фитнеса открывает
+                  психологу новую нишу&nbsp;— пока конкуренция в&nbsp;ней минимальна.
+                  Покажем, с&nbsp;какими запросами приходят клиенты из&nbsp;спорта,
+                  разберём два кейса и&nbsp;честно ответим, кому эта ниша подходит.
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🟡 Кнопка ведёт на блок с формой -->
+                <a class="button is-light is-full-width" href="#reg">Записаться на&nbsp;вебинар</a>
+                <p class="hero_start-note">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_clock_alert_whi_486d69a1a5.svg" alt="" width="22" height="22" />
+                  Участие бесплатное, нужна только регистрация
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. «ЧТО ЗВУЧИТ В ЧАТАХ КОЛЛЕГ» — РЕПЛИКИ
+       ======================================================================
+       Три реплики со старой страницы, оформлены как сообщения из чата.
+       ====================================================================== -->
+  <section class="section_voices" id="problema">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="voices_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Что звучит в&nbsp;чатах коллег</p>
+            <h2 class="section-intro_heading">
+              Клиенты из&nbsp;спорта уже приходят&nbsp;— а&nbsp;ниши будто не&nbsp;существует
+            </h2>
+            <p class="section-intro_description">
+              Такие вопросы звучат всё чаще&nbsp;— и&nbsp;у&nbsp;начинающих,
+              и&nbsp;у&nbsp;опытных. Запросы, связанные со&nbsp;здоровьем
+              и&nbsp;спортивным опытом, уже доходят до&nbsp;«обычных» психологов,
+              но&nbsp;многие чувствуют растерянность и&nbsp;не&nbsp;готовы их&nbsp;принять.
+            </p>
+          </div>
+
+          <ul class="voices_list">
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Пришёл марафонец с&nbsp;выгоранием от&nbsp;тренировок&nbsp;— это
+                вообще ко&nbsp;мне или к&nbsp;тренеру?»
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Анна, психолог-консультант
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Спортивная психология&nbsp;— это отдельная ниша или просто
+                модное слово?»
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Михаил, КПТ-терапевт, 4&nbsp;года в&nbsp;практике
+              </p>
+            </li>
+            <li class="voice_component">
+              <p class="voice_quote">
+                «Клиентка&nbsp;— любитель фитнеса, но&nbsp;запрос на&nbsp;грани
+                РПП. Я&nbsp;потяну?»
+              </p>
+              <p class="voice_author">
+                <img src="https://s3.twcstorage.ru/asp-media/icon_user_4890f317f3.svg" alt="" width="20" height="20" />
+                Екатерина, клинический психолог
+              </p>
+            </li>
+          </ul>
+
+          <p class="summary_component">
+            <span class="summary_icon icon is-activity" aria-hidden="true"></span>
+            <span>
+              <b>Спрос на&nbsp;спортивную психологию уже есть, специалистов&nbsp;— единицы.</b>
+              Дарья Батищева покажет, с&nbsp;какими запросами приходят клиенты
+              из&nbsp;спорта и&nbsp;как войти в&nbsp;нишу, пока в&nbsp;ней свободно.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       3. «КЛИЕНТ ИЗМЕНИЛСЯ» — ДВЕ КОЛОНКИ
+       ======================================================================
+       Слева светлая колонка с классическими запросами, справа тёмная —
+       с новым типом запроса. Компонент fit_* с /klinicheskaya-baza.
+       ====================================================================== -->
+  <section class="section_fit" id="rynok">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="fit_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Рынок психологических услуг</p>
+            <h2 class="section-intro_heading">Клиент изменился&nbsp;— и&nbsp;запросы тоже</h2>
+            <p class="section-intro_description">
+              Классические темы никуда не&nbsp;делись, но&nbsp;современный клиент
+              стал более информированным и&nbsp;«требовательным»: он&nbsp;хочет
+              не&nbsp;просто выговориться, а&nbsp;получить конкретный, измеримый
+              результат.
+            </p>
+          </div>
+
+          <div class="fit_columns">
+            <div class="fit_column">
+              <p class="fit_label">Классические запросы</p>
+              <h3 class="fit_heading">Остались и&nbsp;никуда не&nbsp;денутся</h3>
+              <ul class="fit_list">
+                <li class="fit_item">
+                  <span class="fit_marker is-dash" aria-hidden="true"></span>
+                  Тревога и&nbsp;панические состояния
+                </li>
+                <li class="fit_item">
+                  <span class="fit_marker is-dash" aria-hidden="true"></span>
+                  Депрессивные состояния и&nbsp;апатия
+                </li>
+                <li class="fit_item">
+                  <span class="fit_marker is-dash" aria-hidden="true"></span>
+                  Отношения, самооценка, выгорание на&nbsp;работе
+                </li>
+              </ul>
+            </div>
+
+            <div class="fit_column is-dark">
+              <p class="fit_label">Новый тип запроса</p>
+              <h3 class="fit_heading">Здоровье и&nbsp;спортивный опыт</h3>
+              <ul class="fit_list">
+                <li class="fit_item">
+                  <span class="fit_marker icon is-check" aria-hidden="true"></span>
+                  Последствия травм и&nbsp;страх вернуться к&nbsp;нагрузкам
+                </li>
+                <li class="fit_item">
+                  <span class="fit_marker icon is-check" aria-hidden="true"></span>
+                  Выгорание от&nbsp;тренировок и&nbsp;перетренированность
+                </li>
+                <li class="fit_item">
+                  <span class="fit_marker icon is-check" aria-hidden="true"></span>
+                  Снижение мотивации и&nbsp;срывы дисциплины
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="summary_component">
+            <span class="summary_icon icon is-help" aria-hidden="true"></span>
+            <span>
+              <b>Эти клиенты уже приходят к&nbsp;«обычным» психологам.</b>
+              Но&nbsp;многие специалисты чувствуют растерянность и&nbsp;не&nbsp;готовы
+              их&nbsp;принять&nbsp;— и&nbsp;упускают возможность для роста.
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. «МАСШТАБ РЫНКА» — ТРИ КАРТОЧКИ
+       ======================================================================
+       Три тезиса про тренды. Третья карточка — светло-сиреневая: это итог.
+       ====================================================================== -->
+  <section class="section_optics" id="spros">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="optics_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Масштаб рынка</p>
+            <h2 class="section-intro_heading">
+              Современные тренды изменили количество психологических запросов
+            </h2>
+            <p class="section-intro_description">
+              Это рынок, который нельзя игнорировать: он&nbsp;растёт во&nbsp;всех
+              возрастных группах и&nbsp;формирует новый спрос на&nbsp;психолога.
+            </p>
+          </div>
+
+          <ul class="optics_list">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><span class="icon is-trending" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading">Рост любительского спорта</h3>
+                <p class="card_description">
+                  Интерес к&nbsp;бегу, триатлону и&nbsp;фитнесу стабильно растёт
+                  во&nbsp;всех возрастных группах&nbsp;— от&nbsp;20 до&nbsp;55+.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><span class="icon is-heart" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading">Спорт как идентичность</h3>
+                <p class="card_description">
+                  Спорт перестал быть только про медали и&nbsp;результат. Теперь
+                  это про самочувствие, эмоции и&nbsp;самоощущение.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious is-accent">
+              <span class="card_icon"><span class="icon is-users" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading">Итог&nbsp;— устойчивый спрос</h3>
+                <p class="card_description">
+                  Формируется растущий и&nbsp;стабильный спрос
+                  на&nbsp;психологическую поддержку именно в&nbsp;спортивном
+                  контексте.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. «МИФЫ И РЕАЛЬНОСТЬ»
+       ======================================================================
+       Четыре строки-пары: слева белая ячейка с мифом, справа сиреневая
+       с тем, как на самом деле. Новый компонент этой страницы.
+       ====================================================================== -->
+  <section class="section_myths" id="mify">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="myths_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Мифы и&nbsp;реальность</p>
+            <h2 class="section-intro_heading">
+              Что останавливает психологов от&nbsp;входа в&nbsp;нишу
+            </h2>
+            <p class="section-intro_description">
+              Главное ограничивающее убеждение&nbsp;— «это не&nbsp;для меня».
+              Сравним, как кажется и&nbsp;как на&nbsp;самом деле.
+            </p>
+          </div>
+
+          <!-- 🟢 Формулировки мифов и ответов — сверьте со спикером -->
+          <ul class="myths_list">
+            <li class="myth_row">
+              <div class="myth_cell is-myth">
+                <p class="myth_label">
+                  <span class="icon is-x" aria-hidden="true"></span>
+                  Миф
+                </p>
+                <p class="myth_text">
+                  «Спортивная психология&nbsp;— только для профессиональных
+                  спортсменов и&nbsp;сборных»
+                </p>
+              </div>
+              <div class="myth_cell is-fact">
+                <p class="myth_label">
+                  <span class="icon is-check" aria-hidden="true"></span>
+                  На&nbsp;самом деле
+                </p>
+                <p class="myth_text">
+                  Самый массовый сегмент&nbsp;— любители: фитнес, бег, триатлон.
+                  Профессиональные спортсмены&nbsp;— лишь малая часть клиентов.
+                </p>
+              </div>
+            </li>
+            <li class="myth_row">
+              <div class="myth_cell is-myth">
+                <p class="myth_label">
+                  <span class="icon is-x" aria-hidden="true"></span>
+                  Миф
+                </p>
+                <p class="myth_text">
+                  «Нужно самому быть спортсменом или тренером»
+                </p>
+              </div>
+              <div class="myth_cell is-fact">
+                <p class="myth_label">
+                  <span class="icon is-check" aria-hidden="true"></span>
+                  На&nbsp;самом деле
+                </p>
+                <p class="myth_text">
+                  Нужны навыки психолога и&nbsp;понимание языка спорта.
+                  Собственный спортивный опыт&nbsp;— плюс, но&nbsp;не&nbsp;условие
+                  входа.
+                </p>
+              </div>
+            </li>
+            <li class="myth_row">
+              <div class="myth_cell is-myth">
+                <p class="myth_label">
+                  <span class="icon is-x" aria-hidden="true"></span>
+                  Миф
+                </p>
+                <p class="myth_text">
+                  «Это про мотивационные речи, а&nbsp;не&nbsp;про терапию»
+                </p>
+              </div>
+              <div class="myth_cell is-fact">
+                <p class="myth_label">
+                  <span class="icon is-check" aria-hidden="true"></span>
+                  На&nbsp;самом деле
+                </p>
+                <p class="myth_text">
+                  Это работа с&nbsp;тревогой, выгоранием, РПП и&nbsp;страхом
+                  травмы&nbsp;— теми&nbsp;же доказательными методами, только
+                  в&nbsp;спортивном контексте.
+                </p>
+              </div>
+            </li>
+            <li class="myth_row">
+              <div class="myth_cell is-myth">
+                <p class="myth_label">
+                  <span class="icon is-x" aria-hidden="true"></span>
+                  Миф
+                </p>
+                <p class="myth_text">
+                  «Такие клиенты приходят один раз и&nbsp;не&nbsp;готовы
+                  работать всерьёз»
+                </p>
+              </div>
+              <div class="myth_cell is-fact">
+                <p class="myth_label">
+                  <span class="icon is-check" aria-hidden="true"></span>
+                  На&nbsp;самом деле
+                </p>
+                <p class="myth_text">
+                  У&nbsp;спортивного клиента высокая мотивация и&nbsp;конкретный
+                  запрос: он&nbsp;готов работать на&nbsp;результат и&nbsp;ценит
+                  измеримый прогресс.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       6. «С КЕМ РАБОТАЕТ СПОРТИВНЫЙ ПСИХОЛОГ» — ШЕСТЬ СЕГМЕНТОВ НА ФОТО
+       ======================================================================
+       Снимок лежит фоном, поверх него заголовок и стеклянные карточки.
+       Так же устроены блоки на /klinicheskaya-baza и /seksologiya-dlya-psihologov.
+       ====================================================================== -->
+  <section class="section_shifts" id="klienty">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="shifts_component">
+
+          <div class="shifts_media">
+
+            <!-- 🟡 Фотография блока. Если будете менять — берите горизонтальный
+                 кадр, примерно 16:9 или шире, без важных деталей по центру:
+                 там ложится заголовок. -->
+            <img class="shifts_image" src="https://s3.twcstorage.ru/asp-media/segments_4d392c1c31.webp"
+                 alt="Спортивный психолог на консультации со спортсменкой"
+                 width="2400" height="1350" loading="lazy" />
+
+            <h2 class="shifts_heading">С&nbsp;кем работает спортивный психолог</h2>
+
+            <ul class="shifts_list is-three">
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Профессиональные спортсмены</h3>
+                  <p class="card_description is-on-media">
+                    Работа с&nbsp;пиком формы и&nbsp;давлением результата.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Любители фитнеса и&nbsp;триатлона</h3>
+                  <p class="card_description is-on-media">
+                    Самый массовый сегмент: мотивация, дисциплина, последствия
+                    спортивного прошлого.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Посетители фитнес-клубов</h3>
+                  <p class="card_description is-on-media">
+                    Терапия образа жизни, работа с&nbsp;привычками и&nbsp;самооценкой.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Спортсмены после травм</h3>
+                  <p class="card_description is-on-media">
+                    Психологическое восстановление, работа со&nbsp;страхом
+                    повторной травмы.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Дети и&nbsp;подростки в&nbsp;секциях</h3>
+                  <p class="card_description is-on-media">
+                    Работа с&nbsp;системой «родители&nbsp;— тренер», профилактика
+                    буллинга.
+                  </p>
+                </div>
+              </li>
+              <li class="card_component is-on-media">
+                <div class="card_content">
+                  <h3 class="card_heading is-on-media">Спортсмены с&nbsp;РПП</h3>
+                  <p class="card_description is-on-media">
+                    Восстановление питания и&nbsp;образа тела.
+                  </p>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       7. «ДВА КЕЙСА» — РАЗБОР НА ЭФИРЕ
+       ======================================================================
+       Две большие карточки: номер, название запроса, кто клиент и плашка
+       «что разберём». Новый компонент этой страницы.
+       ====================================================================== -->
+  <section class="section_duo" id="keisy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="duo_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Разбор на&nbsp;эфире</p>
+            <h2 class="section-intro_heading">Два кейса с&nbsp;типичными запросами</h2>
+            <p class="section-intro_description">
+              Покажем, как выглядит работа спортивного психолога на&nbsp;практике:
+              с&nbsp;чего начать, что важно заметить на&nbsp;первой встрече
+              и&nbsp;какие ошибки чаще всего совершают «обычные» психологи.
+            </p>
+          </div>
+
+          <ol class="duo_list">
+            <li class="duo_card">
+              <p class="duo_label">Кейс 1</p>
+              <h3 class="duo_heading">«Предстартовая паника и&nbsp;бессонница»</h3>
+              <p class="duo_client">
+                <span class="icon is-users" aria-hidden="true"></span>
+                <span>
+                  Юная фигуристка готовится к&nbsp;крупному соревнованию через
+                  10&nbsp;дней. Тревога растёт, сон пропал, тренировки
+                  идут хуже.
+                </span>
+              </p>
+              <!-- 🟢 Плашка «что разберём» — сверьте со спикером -->
+              <p class="duo_note">
+                <b>Разберём:</b> как работать с&nbsp;предстартовой тревогой, когда
+                до&nbsp;старта считаные дни, и&nbsp;на&nbsp;что опереться, чтобы
+                вернуть сон.
+              </p>
+            </li>
+            <li class="duo_card">
+              <p class="duo_label">Кейс 2</p>
+              <h3 class="duo_heading">«Страх возвращения после травмы»</h3>
+              <p class="duo_client">
+                <span class="icon is-activity" aria-hidden="true"></span>
+                <span>
+                  Бегун. Врач дал добро на&nbsp;нагрузки после разрыва связок,
+                  но&nbsp;клиент не&nbsp;может выйти на&nbsp;улицу.
+                </span>
+              </p>
+              <!-- 🟢 Плашка «что разберём» — сверьте со спикером -->
+              <p class="duo_note">
+                <b>Разберём:</b> почему «врач разрешил» не&nbsp;снимает страх
+                и&nbsp;как выстроить возвращение к&nbsp;тренировкам шаг за&nbsp;шагом.
+              </p>
+            </li>
+          </ol>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       8. «ПЯТЬ ОТЛИЧИЙ» — ЛЕНТА С ГОРИЗОНТАЛЬНЫМ СКРОЛЛОМ
+       ======================================================================
+       Карточки с кружками-номерами листаются пальцем или стрелками.
+       Устроено так же, как лента «7 систем организма» на /psihosomatika:
+       стрелки — в шапке справа, скрипт в page.js.
+       ====================================================================== -->
+  <section class="section_diff" id="otlichiya">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="diff_component">
+
+          <div class="diff_intro">
+            <div class="section-intro_component is-start">
+              <p class="eyebrow_component">Чем отличается</p>
+              <h2 class="section-intro_heading">
+                Спортивная психология&nbsp;— не&nbsp;«обычная» психология
+              </h2>
+              <p class="section-intro_description">
+                Из&nbsp;кейсов видно: формат работы, темп и&nbsp;язык здесь другие.
+                Пять отличий, которые важно понимать до&nbsp;входа в&nbsp;нишу.
+              </p>
+            </div>
+            <!-- 🔴 Стрелки листают ленту, скрипт в page.js -->
+            <div class="slider_controls" data-slider-controls="diff">
+              <button class="slider_arrow" type="button" data-slider-prev aria-label="Назад">
+                <span class="slider_arrow-icon is-prev" aria-hidden="true"></span>
+              </button>
+              <button class="slider_arrow is-accent" type="button" data-slider-next aria-label="Вперёд">
+                <span class="slider_arrow-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 🟢 Названия отличий — от спикера, пояснения под ними — черновик -->
+          <ol class="diff_track" data-slider-track="diff" tabindex="0"
+              aria-label="Пять отличий спортивной психологии — лента карточек">
+            <li class="diff_item">
+              <!-- 🟡 Картинка карточки, кадр горизонтальный 3:2 -->
+              <div class="diff_media"><img src="https://s3.twcstorage.ru/asp-media/01_planner_c_640337fd67.webp" alt="Ежедневник с расписанием тренировок" width="1240" height="824" loading="lazy" /></div>
+              <div class="diff_copy">
+                <span class="agenda_badge" aria-hidden="true">01</span>
+                <div class="card_content">
+                  <h3 class="card_heading">Разносрочный формат</h3>
+                  <p class="card_description">
+                    От&nbsp;одной встречи перед стартом до&nbsp;сопровождения
+                    на&nbsp;весь сезон.
+                  </p>
+                </div>
+              </div>
+            </li>
+            <li class="diff_item">
+              <div class="diff_media"><img src="https://s3.twcstorage.ru/asp-media/02_motivation_laces_a_4b11eee615.webp" alt="Спортсмен завязывает шнурки перед тренировкой" width="1240" height="824" loading="lazy" /></div>
+              <div class="diff_copy">
+                <span class="agenda_badge" aria-hidden="true">02</span>
+                <div class="card_content">
+                  <h3 class="card_heading">Высокая мотивация</h3>
+                  <p class="card_description">
+                    Клиент приходит с&nbsp;конкретной целью и&nbsp;готов работать
+                    между встречами.
+                  </p>
+                </div>
+              </div>
+            </li>
+            <li class="diff_item">
+              <div class="diff_media"><img src="https://s3.twcstorage.ru/asp-media/03_behavior_startline_a_8dbbdcdf90.webp" alt="Линия старта на беговой дорожке" width="1240" height="824" loading="lazy" /></div>
+              <div class="diff_copy">
+                <span class="agenda_badge" aria-hidden="true">03</span>
+                <div class="card_content">
+                  <h3 class="card_heading">Поведенческий акцент</h3>
+                  <p class="card_description">
+                    Меньше «поговорить», больше навыков, которые применяются
+                    на&nbsp;тренировке и&nbsp;на&nbsp;старте.
+                  </p>
+                </div>
+              </div>
+            </li>
+            <li class="diff_item">
+              <div class="diff_media"><img src="https://s3.twcstorage.ru/asp-media/04_language_stopwatch_c_2cac21e979.webp" alt="Секундомер в руке тренера" width="1240" height="824" loading="lazy" /></div>
+              <div class="diff_copy">
+                <span class="agenda_badge" aria-hidden="true">04</span>
+                <div class="card_content">
+                  <h3 class="card_heading">Язык спорта</h3>
+                  <p class="card_description">
+                    Психолог говорит с&nbsp;клиентом на&nbsp;языке тренировок,
+                    нагрузок и&nbsp;результатов.
+                  </p>
+                </div>
+              </div>
+            </li>
+            <li class="diff_item">
+              <div class="diff_media"><img src="https://s3.twcstorage.ru/asp-media/05_system_sideline_a_dbaaa36939.webp" alt="Тренер и спортсмены у кромки поля" width="1240" height="824" loading="lazy" /></div>
+              <div class="diff_copy">
+                <span class="agenda_badge" aria-hidden="true">05</span>
+                <div class="card_content">
+                  <h3 class="card_heading">Системная работа</h3>
+                  <p class="card_description">
+                    Рядом с&nbsp;клиентом&nbsp;— тренер, врач, родители. Психолог
+                    работает со&nbsp;всей системой.
+                  </p>
+                </div>
+              </div>
+            </li>
+          </ol>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       9. «КОМУ ПОДХОДИТ ПРОФЕССИЯ»
+       ======================================================================
+       Пять портретов: три в первом ряду, два во втором.
+       ====================================================================== -->
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Пять портретов</p>
+            <h2 class="section-intro_heading">Кому подходит профессия спортивного психолога</h2>
+            <p class="section-intro_description">
+              Не&nbsp;только тем, кто уже в&nbsp;спорте. Возможно, вы&nbsp;узнаете себя.
+            </p>
+          </div>
+
+          <ul class="audience_list is-flow">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><span class="icon is-flame" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading">Специалист по&nbsp;мотивации и&nbsp;выгоранию</h3>
+                <p class="card_description">
+                  Ваши темы напрямую переносятся в&nbsp;спортивный контекст:
+                  перетренированность, потеря интереса, срывы.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><span class="icon is-users" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading">Люди помогающих профессий и&nbsp;сферы спорта</h3>
+                <p class="card_description">
+                  Тренеры, спортсмены, учителя физической культуры,
+                  педагоги-психологи и&nbsp;сотрудники сферы здорового образа жизни.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_brain_db80eae5ed.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Психолог, работающий с&nbsp;телом, тревогой и&nbsp;паникой</h3>
+                <p class="card_description">
+                  Телесные и&nbsp;тревожные запросы&nbsp;— ядро спортивной
+                  психологии: предстартовая паника, страх травмы.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><span class="icon is-help" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading">Терапевт, уставший от&nbsp;клиентов без запроса</h3>
+                <p class="card_description">
+                  Спортивный клиент приходит с&nbsp;конкретной целью
+                  и&nbsp;ждёт измеримого результата.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><span class="icon is-activity" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading">Психолог, который сам увлекается спортом</h3>
+                <p class="card_description">
+                  Ваш опыт становится профессиональным преимуществом:
+                  вы&nbsp;понимаете клиента изнутри.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       10. «ПОЧЕМУ СЕЙЧАС» — ТЁМНЫЙ БЛОК
+       ======================================================================
+       Тёмная плашка с четырьмя причинами. Компонент risks_* с /klinicheskaya-baza.
+       ====================================================================== -->
+  <section class="section_risks" id="pochemu-seychas">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="risks_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component is-on-dark">Почему сейчас</p>
+            <h2 class="section-intro_heading is-on-dark">
+              Окно возможностей открыто
+            </h2>
+            <p class="section-intro_description is-on-dark">
+              Четыре причины входить в&nbsp;нишу именно сейчас&nbsp;— пока
+              конкуренция в&nbsp;ней минимальна.
+            </p>
+          </div>
+
+          <ul class="risks_list">
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><span class="icon is-trending" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Рост любительских стартов</h3>
+                <p class="card_description is-on-dark">
+                  Марафоны, забеги, триатлон и&nbsp;фитнес-соревнования
+                  собирают всё больше участников&nbsp;— и&nbsp;у&nbsp;каждого
+                  есть запрос на&nbsp;психологическую опору.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><span class="icon is-users" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Дефицит кадров</h3>
+                <p class="card_description is-on-dark">
+                  Спрос уже есть, а&nbsp;специалистов, готовых работать
+                  со&nbsp;спортивным контекстом,&nbsp;— единицы.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><img src="https://s3.twcstorage.ru/asp-media/icon_shield_light_3056d874e8.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Профилактика выгорания самого психолога</h3>
+                <p class="card_description is-on-dark">
+                  Мотивированные клиенты с&nbsp;ясным запросом и&nbsp;видимым
+                  результатом&nbsp;— это ресурс, а&nbsp;не&nbsp;истощение.
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-on-dark">
+              <span class="card_icon"><span class="icon is-door" aria-hidden="true"></span></span>
+              <div class="card_content">
+                <h3 class="card_heading is-on-dark">Окно возможностей для не&nbsp;психологов</h3>
+                <p class="card_description is-on-dark">
+                  Тренерам и&nbsp;специалистам сферы спорта проще войти
+                  в&nbsp;профессию через знакомый контекст.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       11. «ЧТО РАЗБЕРЁМ ПО ПУНКТАМ»
+       ======================================================================
+       Слева заголовок, справа лента из шести пунктов. Ниже 992px заголовок
+       встаёт над лентой.
+       ====================================================================== -->
+  <section class="section_agenda" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <!-- 🔴 Обёртка-плашка: тёмно-фиолетовый фон вокруг всего блока,
+             чтобы программа не терялась между тёмным блоком и спикером -->
+        <div class="agenda_panel">
+        <div class="agenda_component">
+
+          <div class="agenda_intro">
+            <p class="eyebrow_component">Программа эфира</p>
+            <h2 class="agenda_heading">Что разберём по&nbsp;пунктам</h2>
+            <p class="agenda_description">
+              Основная задача&nbsp;— за&nbsp;один вечер понять, что изменилось
+              на&nbsp;рынке, кто эти новые клиенты и&nbsp;как психологу войти
+              в&nbsp;нишу спортивной психологии.
+            </p>
+          </div>
+
+          <ol class="agenda_list">
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">01</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Как изменился клиент</h3>
+                <p class="agenda_description">
+                  Почему классических запросов уже недостаточно и&nbsp;откуда
+                  берётся новый тип клиента.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">02</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Масштаб рынка</h3>
+                <p class="agenda_description">
+                  Рост любительского спорта, спорт как идентичность
+                  и&nbsp;устойчивый спрос на&nbsp;психолога.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">03</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Мифы и&nbsp;реальность</h3>
+                <p class="agenda_description">
+                  Разбираем убеждения, которые мешают психологам войти
+                  в&nbsp;нишу.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">04</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Кто эти клиенты</h3>
+                <p class="agenda_description">
+                  Шесть сегментов: от&nbsp;профессиональных спортсменов
+                  до&nbsp;детей в&nbsp;секциях.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">05</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Два кейса из&nbsp;практики</h3>
+                <p class="agenda_description">
+                  «Предстартовая паника и&nbsp;бессонница» и&nbsp;«Страх
+                  возвращения после травмы»: разбор шаг за&nbsp;шагом.
+                </p>
+              </div>
+            </li>
+            <li class="agenda_item">
+              <span class="agenda_badge" aria-hidden="true">06</span>
+              <div class="agenda_content">
+                <h3 class="agenda_title">Чем отличается и&nbsp;кому подходит</h3>
+                <p class="agenda_description">
+                  Пять отличий спортивной психологии от&nbsp;обычной, кому
+                  подходит профессия и&nbsp;почему входить сейчас.
+                  В&nbsp;конце&nbsp;— ответы на&nbsp;вопросы из&nbsp;чата.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       12. СПИКЕР
+       ======================================================================
+       Заголовок по центру, ниже — фотография и текст в две колонки,
+       ещё ниже — цитата из чата коллег со старой страницы.
+       ====================================================================== -->
+  <section class="section_speaker" id="spiker">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="speaker_component">
+
+          <div class="section-intro_component">
+            <p class="eyebrow_component">Ваш спикер</p>
+            <h2 class="section-intro_heading">Кто проведёт вебинар</h2>
+          </div>
+
+          <div class="speaker_card">
+            <div class="speaker_media">
+              <!-- 🟡 Фотография спикера -->
+              <img class="speaker_image" src="https://s3.twcstorage.ru/asp-media/speaker_batishcheva_1916f2e390.webp"
+                   alt="Дарья Батищева, спортивный психолог"
+                   width="758" height="948" loading="lazy" />
+            </div>
+
+            <div class="speaker_copy">
+              <h3 class="speaker_name">Дарья Батищева</h3>
+              <p class="speaker_description">
+                Знает спорт изнутри: за&nbsp;плечами 13&nbsp;лет спортивных бальных
+                танцев, пауэрлифтинг (КМС), фитнес-аэробика и&nbsp;12&nbsp;лет
+                тренерской работы. Совмещает психотерапевтическую практику
+                с&nbsp;пониманием спортивной среды на&nbsp;уровне и&nbsp;спортсмена,
+                и&nbsp;тренера.
+              </p>
+
+              <!-- 🟢 Регалии. Плашки переносятся по мере нехватки места. -->
+              <ul class="speaker_credentials">
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Психолог, КПТ-, АСТ-терапевт
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Спортивный психолог
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Специалист по&nbsp;работе с&nbsp;РПП
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Член правления АРППС
+                </li>
+                <li class="speaker_credential">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_astroid_ffdf56e8cf.svg" alt="" width="20" height="20" />
+                  Член Ассоциации спортивных психологов
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <figure class="speaker_quote">
+            <blockquote>
+              «Коллеги, спрос уже есть&nbsp;— а&nbsp;специалистов почти нет.
+              Это и&nbsp;есть точка входа»
+            </blockquote>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       13. ОТЗЫВЫ  —  макет из Фигмы, кадр 470-2077
+       ======================================================================
+       Слева тёмная карточка с процентом и плашками, справа три белые
+       карточки с оценками независимых площадок.
+       🟢 Оценки площадок меняются со временем — сверяйтесь перед запуском.
+       ====================================================================== -->
+  <section class="section_reviews" id="otzyvy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="reviews_component">
+
+          <div class="reviews_grid">
+
+            <div class="reviews_headline">
+              <p class="reviews_percent">98% студентов</p>
+              <p class="reviews_lead">
+                рекомендуют обучение<br />
+                в&nbsp;Академии Современной Психологии
+              </p>
+
+              <ul class="reviews_tags">
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Практика
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Преподаватели
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Поддержка
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Комьюнити
+                </li>
+                <li class="reviews_tag">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_thumbs_up_fbe6e136d4.svg" alt="" width="14" height="14" />Качество
+                </li>
+              </ul>
+
+              <!-- 🔴 Декоративная молния с макета -->
+              <img class="reviews_zap" src="https://s3.twcstorage.ru/asp-media/icon_zap_a064f3db0f.svg" alt="" width="100" height="100" aria-hidden="true" />
+            </div>
+
+            <ul class="reviews_scores">
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.45
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_tutortop_cc004891ad.svg" alt="tutortop" width="126" height="28" loading="lazy" />
+              </li>
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.82
+                </p>
+                <!-- 🔴 Логотип «Сравни» на макете состоит из двух частей:
+                     цветного кружка (растр) и надписи (вектор). -->
+                <span class="reviews_logo-group">
+                  <img class="reviews_logo-mark" src="https://s3.twcstorage.ru/asp-media/logo_sravni_mark_4e1f6ca088.png" alt="" width="84" height="72" loading="lazy" />
+                  <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_sravni_33a4ab5059.svg" alt="Сравни" width="113" height="22" loading="lazy" />
+                </span>
+              </li>
+              <li class="reviews_score is-wide">
+                <p class="reviews_rating">
+                  <img src="https://s3.twcstorage.ru/asp-media/icon_star_9c0e64b86a.svg" alt="" width="24" height="24" />4.9
+                </p>
+                <img class="reviews_logo" src="https://s3.twcstorage.ru/asp-media/logo_otzovik_786226e74e.svg" alt="Отзовик" width="134" height="28" loading="lazy" />
+              </li>
+            </ul>
+
+          </div>
+
+          <p class="reviews_note">* По&nbsp;данным отзывов на&nbsp;независимых площадках</p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       14. АКАДЕМИЯ  —  макет из Фигмы, кадр 470-752
+       ======================================================================
+       Плитка из четырёх карточек: зал, сообщество, выпускники, преподаватели.
+       Перенесено без изменений с /klinicheskaya-baza.
+       ====================================================================== -->
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Мы&nbsp;растем на&nbsp;обратной связи от&nbsp;наших студентов, поэтому
+            каждый новый поток&nbsp;— это улучшенный предыдущий
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+
+              <div class="academy-showcase_teachers-media">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="496"
+                  height="550"
+                  alt="Участники открытого разбора Академии"
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="academy-showcase_teachers-controls" aria-hidden="true">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       15. «УЧАСТИЕ БЕСПЛАТНОЕ» + ФОРМА
+       ======================================================================
+       Тёмная плашка. Слева — что будет и чек-лист в подарок, справа —
+       белая карточка с кнопками мессенджеров.
+       ====================================================================== -->
+  <section class="section_signup" id="reg">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">Участие бесплатное</h2>
+            <p class="signup_description">
+              Один вечер&nbsp;— и&nbsp;у&nbsp;вас появляется понимание новой ниши
+              и&nbsp;первых шагов в&nbsp;неё. Плюс полезный артефакт, который
+              останется с&nbsp;вами после вебинара.
+            </p>
+
+            <ol class="signup_steps">
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">01</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Выберите мессенджер</h3>
+                  <p class="signup_step-description">
+                    Одно нажатие&nbsp;— без анкет и&nbsp;лишних полей
+                  </p>
+                </div>
+              </li>
+              <li class="signup_step">
+                <span class="agenda_badge is-inverse" aria-hidden="true">02</span>
+                <div class="signup_step-content">
+                  <h3 class="signup_step-title">Доступ придёт в&nbsp;мессенджер</h3>
+                  <p class="signup_step-description">
+                    Ссылка на&nbsp;эфир придёт в&nbsp;Telegram или MAX. Напомним
+                    за&nbsp;час до&nbsp;начала
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <!-- 🟢 Подарок участникам: чек-лист -->
+            <div class="gift_component">
+              <div class="gift_copy">
+                <p class="gift_label">Бонус для участников вебинара</p>
+                <h3 class="gift_heading">
+                  Чек-лист «Спортивный клиент: с&nbsp;чего начать работу»
+                </h3>
+                <p class="gift_description">
+                  Базовые запросы и&nbsp;точки входа в&nbsp;нишу&nbsp;— пришлём
+                  после вебинара.
+                </p>
+              </div>
+              <!-- 🟡 Обложка чек-листа -->
+              <img class="gift_image" src="https://s3.twcstorage.ru/asp-media/gift_checklist_af68693f48.webp"
+                   alt="Обложка чек-листа «Запросы спортивных клиентов»"
+                   width="700" height="825" loading="lazy" />
+            </div>
+          </div>
+
+          <!-- 🔴 РЕГИСТРАЦИЯ ЧЕРЕЗ BOTHELP.
+               На странице нет ни одного поля и ни одной своей кнопки:
+               человек видит только кнопки мессенджеров, которые рисует виджет
+               BotHelp. По нажатию на любую из них скрипт:
+
+                 1) перехватывает нажатие, чтобы BotHelp не увёл со страницы
+                    раньше времени;
+                 2) кладёт служебные значения (ClientID Метрики и UTM-метки)
+                    в скрытую форму Тильды и отправляет её — дальше данные
+                    уходят в AmoCRM штатной интеграцией Тильды;
+                 3) и только после ответа Тильды возвращает нажатие виджету.
+
+               🟡 data-tilda-form-name — имя формы в настройках Тильды.
+                  Должно совпадать с ним буква в букву.
+               🟡 data-metrika-id — номер счётчика Метрики. Можно оставить
+                  пустым: скрипт сам найдёт счётчик на странице.
+               🔴 ВАЖНО: атрибуты data-bh-widget-id и data-bh-customer-id
+                  должны стоять ТОЛЬКО на пустом контейнере
+                  #bh-widget-button-root ниже.
+               🟡 Идентификаторы виджета скопированы со страницы клинической
+                  базы — подставьте виджет этого вебинара. -->
+          <div class="lead-form_component" data-signup data-state="idle"
+               data-tilda-form-name="sport-psy-start"
+               data-metrika-id="">
+
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Зарегистрироваться на&nbsp;вебинар</h3>
+              <p class="lead-form_date">17 сентября, 18:00 МСК</p>
+            </div>
+
+            <p class="lead-form_hint">
+              Выберите мессенджер&nbsp;— пришлём ссылку на&nbsp;эфир туда
+              и&nbsp;напомним за&nbsp;час до&nbsp;начала.
+            </p>
+
+            <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
+                 Пока виджет не пришёл, на этом месте стоит серый скелет. -->
+            <div class="lead-form_widget" data-bh-mount data-bh-state="loading">
+              <div class="lead-form_widget-skeleton" data-bh-skeleton aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+
+              <div class="lead-form_bh" id="bh-widget-button-root"
+                   data-bh-widget-id="29" data-bh-customer-id="278875"></div>
+
+              <p class="lead-form_note" data-bh-error hidden>
+                Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу&nbsp;—
+                или напишите нам, и&nbsp;мы&nbsp;пришлём ссылку на&nbsp;эфир вручную.
+              </p>
+            </div>
+
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <!-- 🔴 Запасной выход. Показывается, только если переход
+                 в мессенджер не сработал. Адрес подставляет скрипт. -->
+            <p class="lead-form_manual" data-lead-manual hidden>
+              Мессенджер не&nbsp;открылся?
+              <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
+            </p>
+
+            <p class="lead-form_note">
+              Запись эфира будет доступна зарегистрированным участникам.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       16. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       Обычный аккордеон на <details>. Без скрипта он тоже работает —
+       скрипт нужен только для плавного раскрытия.
+       🟢 На старой странице FAQ не было — вопросы и ответы написаны
+          заново по образцу прошлых вебинаров, сверьте формулировки.
+       ====================================================================== -->
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+            <!-- 🟡 Ссылка ведёт в Telegram-бот приёмной комиссии -->
+            <p class="faq_support">
+              Не&nbsp;нашли ответа на&nbsp;свой вопрос?
+              <a href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener">Напишите нам</a>
+            </p>
+          </div>
+
+          <div class="faq_list accordion_component" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Сколько стоит участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Участие бесплатное&nbsp;— нужна только регистрация. Ссылка
+                    на&nbsp;эфир придёт в&nbsp;выбранный мессенджер, напомним
+                    за&nbsp;час до&nbsp;начала.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;никак не&nbsp;связан со&nbsp;спортом. Мне будет полезно?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Да. Большинство клиентов спортивного психолога&nbsp;—
+                    не&nbsp;профессионалы, а&nbsp;любители фитнеса, бега
+                    и&nbsp;триатлона. Их&nbsp;запросы&nbsp;— тревога, выгорание,
+                    мотивация, образ тела&nbsp;— уже знакомы практикующему
+                    психологу. Вебинар как раз о&nbsp;том, как перенести
+                    эти навыки в&nbsp;спортивный контекст.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Нужно ли самому быть спортсменом или тренером?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет. Собственный спортивный опыт помогает быстрее
+                    заговорить с&nbsp;клиентом на&nbsp;одном языке, но&nbsp;не&nbsp;является
+                    условием. На&nbsp;эфире разберём, что именно нужно знать
+                    о&nbsp;спортивной среде психологу.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;работаю в&nbsp;КПТ (ACT, схема-терапии). Придётся менять подход?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет. Спортивная психология опирается на&nbsp;те&nbsp;же
+                    доказательные методы. Меняется контекст, формат и&nbsp;язык
+                    работы&nbsp;— именно об&nbsp;этих отличиях и&nbsp;пойдёт речь.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Я&nbsp;тренер, а&nbsp;не&nbsp;психолог. Вебинар для меня?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Да. Отдельный блок посвящён тому, кому подходит профессия
+                    спортивного психолога и&nbsp;как в&nbsp;неё входят специалисты
+                    сферы спорта и&nbsp;здорового образа жизни.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Где проходит вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Вебинар проходит онлайн, достаточно будет перейти
+                    по&nbsp;ссылке из&nbsp;мессенджера.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Будет ли запись?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Да, запись будет доступна зарегистрированным участникам.
+                    Но&nbsp;живое участие даёт больше: можно задать вопрос спикеру
+                    и&nbsp;сразу получить ответ.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Выдаётся ли сертификат за&nbsp;участие?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Нет, за&nbsp;вебинар сертификат не&nbsp;выдаётся. Документы
+                    установленного образца&nbsp;— только по&nbsp;итогам обучающих
+                    программ Академии.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="faq_question accordion_summary" data-accordion-trigger>
+                <h3 class="faq_question-heading">Это продающий вебинар?</h3>
+                <span class="accordion_icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq_answer accordion_panel" data-accordion-panel>
+                <div class="faq_answer-inner accordion_panel-inner">
+                  <p>
+                    Скажем честно: в&nbsp;конце коротко расскажем про программу
+                    «Спортивная психология» и&nbsp;пригласим на&nbsp;бесплатную
+                    консультацию&nbsp;— это несколько минут. Всё остальное
+                    время&nbsp;— разбор темы и&nbsp;двух кейсов из&nbsp;практики.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ==========================================================================
+     ПОДВАЛ
+     ==========================================================================
+     Контакты и реквизиты — те же, что на боевых страницах.
+     ========================================================================== -->
+<footer class="site-footer_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+
+      <h2 class="site-footer_heading">Контакты</h2>
+
+      <div class="site-footer_grid">
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Отдел продаж</p>
+          <p class="site-footer_line"><a href="tel:+78124702901">+7&nbsp;812&nbsp;470-29-01</a></p>
+          <p class="site-footer_line"><a href="mailto:info@modern-psy.ru">info@modern-psy.ru</a></p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Адрес</p>
+          <p class="site-footer_line">
+            197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ
+            Введенский, пр-т&nbsp;Большой&nbsp;П.с., д.&nbsp;7/4, литера&nbsp;А,
+            помещ.&nbsp;2-Н
+          </p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Правовая информация</p>
+          <!-- 🟡 Адреса документов подставьте с боевого сайта -->
+          <p class="site-footer_line"><a href="/oferta">Публичная оферта</a></p>
+          <p class="site-footer_line"><a href="/privacy">Политика конфиденциальности</a></p>
+          <p class="site-footer_line"><a href="/documents">Сведения об&nbsp;образовательной организации</a></p>
+        </div>
+
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+        <p>ОГРН 1217800102783<br />ИНН/КПП 7839141929/781301001</p>
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>
+          Доступ к&nbsp;мессенджеру Telegram и&nbsp;видеохостингу YouTube
+          в&nbsp;РФ ограничен в&nbsp;связи с&nbsp;применяемыми техническими мерами
+          и&nbsp;требованиями российского законодательства; работоспособность
+          сервисов может быть нестабильной.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>

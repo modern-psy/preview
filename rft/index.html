@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «RFT: ТЕОРИЯ РЕЛЯЦИОННЫХ ФРЕЙМОВ»  →  адрес /rft
+  ============================================================================
+
+  Новая вёрстка страницы https://modern-psy.ru/rft. Весь текст — с живой
+  страницы, без правок. Дизайн — как у /psihosomatika (макет большого курса
+  «Психолог-консультант» из Фигмы): контейнер 1520px, боковые поля до 80px,
+  брейкпоинты 480 / 768 / 992. Карточка преподавателя — широкая, как на /ifs.
+  Страница самодостаточная: все стили в page.css, скрипт в page.js.
+
+  ЧТО ВЗЯТО ИЗ /psihosomatika ЦЕЛИКОМ
+    · первый экран с плиткой фактов;
+    · программа с раскрытием вбок;
+    · «98% студентов», «Академия», документы, тёмный блок с ценой и формой,
+      аккордеон «Ответы на популярные вопросы».
+  Блок «Почему выбирают нас» с живой страницы заменён общим блоком
+  «Академия», «Гибкие условия оплаты» — вошли в блок с ценой.
+
+  ЦЕНА, ДАТА СТАРТА И РАСПИСАНИЕ — ИЗ CMS
+    Скрипт page.js спрашивает Public API (адрес в <meta name="public-api-url">)
+    курс со слагом «rft» (data-course на обёртке) и подставляет значения
+    в метки data-cms="price" / "start-date" / "schedule". Текст в метках —
+    «запаска» на случай, если API не ответил.
+
+  ХЕДЕРА И ФУТЕРА ЗДЕСЬ НЕТ — по задаче они не верстаются:
+  на боевой странице их даёт сама Тильда.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАРТИНКИ
+    Все картинки — прямые ссылки на CDN Тильды с живой страницы /rft.
+    🟡 Фотография первого экрана — абстрактная «сеть» с живой страницы,
+       она невысокого разрешения (904×430). Когда будет фото — подставьте
+       адрес в src картинки .hero_image.
+
+  КНОПКИ «ОСТАВИТЬ ЗАЯВКУ»
+    🟡 Ведут на всплывающее окно Тильды: в href стоит «#popup:zayavka».
+    Замените «zayavka» на имя попапа из настроек блока Тильды.
+
+  ФОРМА ВНИЗУ СТРАНИЦЫ
+    Своя вёрстка полей + скрытая форма Тильды. Скрипт page.js переносит
+    значения в форму Тильды и отправляет её (см. комментарий в page.js).
+    🟡 Имя формы Тильды указывается в data-tilda-form-name.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 адрес «согласия» под формой (политика — https://modern-psy.ru/privacy);
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>RFT: Теория реляционных фреймов — курс повышения квалификации Академии</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Курс для психологов, которые хотят понимать не только что делать в сессии, но и почему это работает — и что конкретно происходит с реляционной сетью клиента, когда вы задаёте вопрос." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="RFT: Теория реляционных фреймов" />
+  <meta property="og:description" content="Курс повышения квалификации: теория реляционных фреймов для практикующих психологов. 18 академических часов, удостоверение." />
+
+  <!-- 🔴 Адрес Public API CMS: отсюда берутся цена, дата старта и расписание.
+       Слаг курса задаётся в data-course на обёртке страницы ниже. -->
+  <meta name="public-api-url" content="https://modern-psy-asp-prod-8ceb.twc1.net" />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили и поведение только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css.
+     data-course — слаг курса в CMS. -->
+<div class="page-wrapper psy-page rft-page" data-course="rft">
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая картинка со скруглением, поверх неё — плашки с форматом,
+       заголовок, подводка, кнопки и карточка «18 часов» в правом нижнем углу.
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟡 Картинка первого экрана. Без loading="lazy": она видна сразу. -->
+            <img class="hero_image" src="https://static.tildacdn.com/tild3732-3538-4337-b063-353434303437/plast_2.jpg"
+                 alt=""
+                 width="904" height="430" />
+
+            <!-- 🟢 Плашки с форматом и стартом. Дата подставляется из CMS. -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component is-accent">Онлайн</li>
+              <li class="meta-pill_component">Повышение квалификации</li>
+              <li class="meta-pill_component">Старт&nbsp;— <span data-cms="start-date">19&nbsp;января</span></li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">RFT: Теория реляционных фреймов</span>
+                </h1>
+                <p class="hero_description">
+                  Курс для психологов, которые хотят понимать не&nbsp;только
+                  что делать в&nbsp;сессии, но&nbsp;и&nbsp;почему это
+                  работает&nbsp;— и&nbsp;что конкретно происходит
+                  с&nbsp;реляционной сетью клиента, когда вы&nbsp;задаёте вопрос.
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🔴 Первая кнопка ведёт на блок программы на этой же странице.
+                     🟡 Вторая — на всплывающее окно Тильды: замените имя попапа. -->
+                <a class="button is-light is-full-width" href="#programma">Изучить программу</a>
+                <a class="button is-outline-light is-full-width" href="#popup:zayavka">Оставить заявку</a>
+              </div>
+            </div>
+
+            <!-- 🟢 Карточка с часами -->
+            <div class="hero_stat" aria-label="18 академических часов обучения">
+              <p class="hero_stat-value">18</p>
+              <p class="hero_stat-label">академических часов обучения</p>
+            </div>
+          </div>
+
+          <!-- ------------------------------------------------------------------
+               Плитка под первым экраном: формат и удостоверение.
+               ------------------------------------------------------------------ -->
+          <ul class="hero-facts_list">
+            <li class="hero-facts_card">
+              <h2 class="hero-facts_heading">4&nbsp;занятия по&nbsp;2&nbsp;часа</h2>
+              <p class="hero-facts_description">
+                Вебинары, учебный чат, отработка навыков. Занятия проходят
+                <span data-cms="schedule">по&nbsp;вторникам 12:00–14:00</span>
+              </p>
+            </li>
+            <li class="hero-facts_card is-dark is-documents">
+              <div class="hero-facts_copy">
+                <h2 class="hero-facts_heading">Удостоверение о&nbsp;повышении квалификации</h2>
+                <p class="hero-facts_description">
+                  Выдаём документ установленного образца на&nbsp;основании
+                  государственной образовательной лицензии
+                </p>
+              </div>
+              <!-- Удостоверение стоит под углом и выходит за край карточки —
+                   лишнее срезает сама карточка. 🟡 Заменить картинку: src ниже. -->
+              <div class="hero-facts_media" aria-hidden="true">
+                <div class="hero-facts_illustration">
+                  <img src="https://static.tildacdn.com/tild6465-6337-4538-b464-326237366337/2e2414b9-f789-4669-a.png" alt="" width="1660" height="1184" loading="lazy" />
+                </div>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. ЧТО ТАКОЕ ТЕОРИЯ РЕЛЯЦИОННЫХ ФРЕЙМОВ
+       ======================================================================
+       Заголовок, белая карточка с определением и тёмная плашка про АСТ.
+       ====================================================================== -->
+  <section class="section_about" id="o-metode">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="about_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Что такое <span class="accent-word">Теория реляционных фреймов</span>
+            </h2>
+          </div>
+
+          <div class="about_grid" data-reveal-group>
+            <div class="about_card" data-reveal>
+              <p class="about_label">Relational Frame Theory, RFT</p>
+              <p class="about_text">
+                Сложная и&nbsp;уникальная теория, охватывающая обширный спектр
+                психологических явлений. Она была создана с&nbsp;целью
+                объединить различные аспекты психологии в&nbsp;единую теорию,
+                основанную на&nbsp;контекстных связях.
+              </p>
+            </div>
+            <div class="about_card is-dark" data-reveal>
+              <p class="about_label">Зачем это практику</p>
+              <p class="about_text">
+                Данный курс позволит получить более глубокое понимание
+                Терапии Принятия и&nbsp;Ответственности (АСТ), которая
+                базируется на&nbsp;теории реляционных фреймов.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       3. «КУРС ДЛЯ ТЕХ, КТО УЖЕ ПРАКТИКУЕТ»
+       ======================================================================
+       Пять светлых карточек «этот курс для вас, если вы…».
+       ====================================================================== -->
+  <section class="section_audience" id="komu">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="audience_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Курс для тех, кто уже практикует&nbsp;—
+              <span class="accent-word">и&nbsp;хочет понимать глубже</span>
+            </h2>
+            <p class="section-intro_description">Этот курс для вас, если вы:</p>
+          </div>
+
+          <ul class="card-grid_component is-stack-tablet audience_list">
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="icons/icon-brain.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Практикуете ACT</h3>
+                <p class="card_description">
+                  И&nbsp;хотите понять теоретический механизм за&nbsp;техниками
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="icons/icon-user.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Работаете в&nbsp;рамках контекстуально-поведенческих наук</h3>
+                <p class="card_description">
+                  И&nbsp;хотите давать глубину
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="icons/icon-zap-outline.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Чувствуете, что репертуар ограничен</h3>
+                <p class="card_description">
+                  Ваш репертуар интервенций ограничен несколькими
+                  привычными ходами
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="icons/icon-search.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Хотите осознанно выбирать тип вопроса</h3>
+                <p class="card_description">
+                  Для конкретного клиента и&nbsp;конкретной ситуации в&nbsp;сессии
+                </p>
+              </div>
+            </li>
+            <li class="card_component is-spacious">
+              <span class="card_icon"><img src="icons/icon-check.svg" alt="" width="24" height="24" /></span>
+              <div class="card_content">
+                <h3 class="card_heading">Готовы не&nbsp;просто слушать</h3>
+                <p class="card_description">
+                  А&nbsp;думать, анализировать и&nbsp;пробовать
+                  на&nbsp;своих сессиях
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. КАК УСТРОЕН КУРС И ЧТО ВЫ ПОЛУЧИТЕ
+       ======================================================================
+       Три карточки с крупной цифрой: занятия, формулировки, материалы.
+       ====================================================================== -->
+  <section class="section_gains" id="format">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="gains_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Как устроен курс <span class="accent-word">и&nbsp;что вы&nbsp;получите</span>
+            </h2>
+          </div>
+
+          <ul class="gains_list" data-reveal-group>
+            <li class="gain_card is-accent" data-reveal>
+              <p class="gain_value">4</p>
+              <h3 class="gain_heading">занятия по&nbsp;2&nbsp;часа</h3>
+              <p class="gain_text">
+                Каждое&nbsp;— лекция с&nbsp;демонстрациями, работа в&nbsp;малых
+                группах, разбор кейсов и&nbsp;домашнее задание на&nbsp;реальных
+                сессиях.
+              </p>
+            </li>
+            <li class="gain_card" data-reveal>
+              <p class="gain_value">80+</p>
+              <h3 class="gain_heading">конкретных формулировок</h3>
+              <p class="gain_text">
+                Терапевтических вопросов с&nbsp;указанием фрейма
+                и&nbsp;ожидаемого эффекта.
+              </p>
+            </li>
+            <li class="gain_card" data-reveal>
+              <p class="gain_value">6</p>
+              <h3 class="gain_heading">раздаточных материалов</h3>
+              <p class="gain_text">
+                Шпаргалка по&nbsp;фреймам, транскрипты сессий, виньетки,
+                таблица Crel, бланк домашнего задания.
+              </p>
+            </li>
+          </ul>
+
+          <!-- 🟡 Кнопка ведёт на всплывающее окно Тильды: замените имя попапа -->
+          <div class="gains_action">
+            <a class="button is-accent" href="#popup:zayavka">Записаться на обучение</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. ПРОГРАММА ОБУЧЕНИЯ — РАСКРЫТИЕ ВБОК
+       ======================================================================
+       Слева список занятий, справа — содержимое выбранного занятия.
+       На узких экранах панель встаёт под список. Переключение — page.js;
+       без скрипта видно первое занятие.
+       ====================================================================== -->
+  <section class="section_program" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="program_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading is-on-dark">Программа обучения</h2>
+            <p class="section-intro_description is-on-dark">
+              4&nbsp;занятия по&nbsp;2&nbsp;часа. Занятия проходят
+              <span data-cms="schedule">по&nbsp;вторникам 12:00–14:00</span>
+            </p>
+          </div>
+
+          <div class="program_layout" data-program>
+
+            <!-- 🔴 Список занятий. aria-controls связывает кнопку с панелью. -->
+            <div class="program_nav" role="tablist" aria-label="Занятия курса">
+              <button class="program_tab" type="button" role="tab" id="program-tab-1"
+                      aria-controls="program-panel-1" aria-selected="true" data-program-tab>
+                <span class="program_tab-label">Занятие 1 · 2 часа</span>
+                <span class="program_tab-title">Функциональный контекстуализм и&nbsp;теория реляционных фреймов</span>
+              </button>
+              <button class="program_tab" type="button" role="tab" id="program-tab-2"
+                      aria-controls="program-panel-2" aria-selected="false" data-program-tab>
+                <span class="program_tab-label">Занятие 2 · 2 часа</span>
+                <span class="program_tab-title">Контекстуальная чувствительность, когерентность, гибкость</span>
+              </button>
+              <button class="program_tab" type="button" role="tab" id="program-tab-3"
+                      aria-controls="program-panel-3" aria-selected="false" data-program-tab>
+                <span class="program_tab-label">Занятие 3 · 2 часа</span>
+                <span class="program_tab-title">Какими бывают фреймы и&nbsp;как их использовать</span>
+              </button>
+              <button class="program_tab" type="button" role="tab" id="program-tab-4"
+                      aria-controls="program-panel-4" aria-selected="false" data-program-tab>
+                <span class="program_tab-label">Занятие 4 · 2 часа</span>
+                <span class="program_tab-title">Ценности в&nbsp;ТРФ и&nbsp;реляционные сети</span>
+              </button>
+            </div>
+
+            <!-- Панели занятий -->
+            <div class="program_panels">
+
+              <div class="program_panel" role="tabpanel" id="program-panel-1"
+                   aria-labelledby="program-tab-1" data-program-panel>
+                <h3 class="program_panel-heading">
+                  Функциональный контекстуализм и&nbsp;теория реляционных фреймов
+                </h3>
+                <p class="program_panel-lead">
+                  Разберётесь в&nbsp;ключевых принципах теории реляционных
+                  фреймов и&nbsp;поймёте, почему привычные способы работы
+                  с&nbsp;мыслями не&nbsp;всегда помогают клиенту. Научитесь
+                  анализировать, как слова и&nbsp;контекст влияют
+                  на&nbsp;поведение, и&nbsp;использовать эти знания
+                  в&nbsp;работе с&nbsp;реальными случаями.
+                </p>
+              </div>
+
+              <div class="program_panel" role="tabpanel" id="program-panel-2"
+                   aria-labelledby="program-tab-2" data-program-panel hidden>
+                <h3 class="program_panel-heading">
+                  Контекстуальная чувствительность, когерентность, гибкость
+                </h3>
+                <p class="program_panel-lead">
+                  Научитесь замечать, какие процессы происходят с&nbsp;клиентом
+                  в&nbsp;разных контекстах, определять, что поддерживает
+                  проблему, а&nbsp;что способствует изменениям. Освоите
+                  практические стратегии для анализа случаев и&nbsp;выбора
+                  терапевтической тактики.
+                </p>
+              </div>
+
+              <div class="program_panel" role="tabpanel" id="program-panel-3"
+                   aria-labelledby="program-tab-3" data-program-panel hidden>
+                <h3 class="program_panel-heading">
+                  Какими бывают фреймы и&nbsp;как их использовать
+                </h3>
+                <!-- 🟢 На живой странице описание третьего занятия совпадает
+                     со вторым — перенесено как есть. -->
+                <p class="program_panel-lead">
+                  Научитесь замечать, какие процессы происходят с&nbsp;клиентом
+                  в&nbsp;разных контекстах, определять, что поддерживает
+                  проблему, а&nbsp;что способствует изменениям. Освоите
+                  практические стратегии для анализа случаев и&nbsp;выбора
+                  терапевтической тактики.
+                </p>
+              </div>
+
+              <div class="program_panel" role="tabpanel" id="program-panel-4"
+                   aria-labelledby="program-tab-4" data-program-panel hidden>
+                <h3 class="program_panel-heading">
+                  Ценности в&nbsp;ТРФ и&nbsp;реляционные сети
+                </h3>
+                <p class="program_panel-lead">
+                  Научитесь работать с&nbsp;ценностями глубже, чем через
+                  стандартные упражнения. Разберёте типичные трудности
+                  при работе с&nbsp;ценностями, научитесь их распознавать
+                  и&nbsp;выбирать подходящие способы работы, а&nbsp;также
+                  объедините все инструменты курса в&nbsp;единую систему.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       6. ПРЕПОДАВАТЕЛЬ
+       ======================================================================
+       Одна широкая белая карточка, как на /ifs: слева фото, справа имя,
+       плашки с регалиями и факты биографии.
+       ====================================================================== -->
+  <section class="section_teacher" id="prepodavatel">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="teacher-card_component">
+
+          <div class="section-intro_component">
+            <h2 class="section-intro_heading">
+              Вас будут обучать <span class="accent-word">практики</span>
+            </h2>
+            <p class="section-intro_description">
+              Наши преподаватели совмещают психологическую практику
+              с&nbsp;преподаванием, поэтому материал всегда будет актуален.
+            </p>
+          </div>
+
+          <article class="teacher_card">
+            <div class="teacher_portrait">
+              <!-- 🟡 Фотография преподавателя -->
+              <img src="https://static.tildacdn.com/tild6338-3035-4763-a463-376466643334/Frame_427318957.jpg"
+                   alt="Ксения Белова" width="1090" height="884" loading="lazy" />
+            </div>
+
+            <div class="teacher_body">
+              <div class="teacher_intro">
+                <h3 class="teacher_name">Ксения Белова</h3>
+                <p class="teacher_role">Клинический психолог</p>
+                <!-- 🟢 Регалии плашками -->
+                <ul class="teacher_tags">
+                  <li class="teacher_tag">Супервизор</li>
+                  <li class="teacher_tag">ACT-тренер</li>
+                  <li class="teacher_tag">Спикер конференций</li>
+                </ul>
+              </div>
+
+              <!-- 🟢 Факты биографии -->
+              <ul class="teacher_facts">
+                <li class="teacher_fact">
+                  Член правления Ассоциации специалистов в&nbsp;области
+                  контекстуально-поведенческой науки.
+                </li>
+                <li class="teacher_fact">
+                  Преподаватель, официальный представитель института
+                  РО&nbsp;ДБТ Линча в&nbsp;России.
+                </li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       7. «98% СТУДЕНТОВ» — ОЦЕНКИ ПЛОЩАДОК
+       ======================================================================
+       Блок перенесён из /psihosomatika без изменений.
+       ====================================================================== -->
+  <section class="section_reviews" id="otzyvy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="reviews_component">
+
+          <div class="reviews_grid">
+
+            <div class="reviews_headline">
+              <p class="reviews_percent">98% студентов</p>
+              <p class="reviews_lead">
+                рекомендуют обучение<br />
+                в&nbsp;Академии Современной Психологии
+              </p>
+
+              <ul class="reviews_tags">
+                <li class="reviews_tag">
+                  <img src="icons/icon-thumbs-up.svg" alt="" width="14" height="14" />Практика
+                </li>
+                <li class="reviews_tag">
+                  <img src="icons/icon-thumbs-up.svg" alt="" width="14" height="14" />Преподаватели
+                </li>
+                <li class="reviews_tag">
+                  <img src="icons/icon-thumbs-up.svg" alt="" width="14" height="14" />Поддержка
+                </li>
+                <li class="reviews_tag">
+                  <img src="icons/icon-thumbs-up.svg" alt="" width="14" height="14" />Комьюнити
+                </li>
+                <li class="reviews_tag">
+                  <img src="icons/icon-thumbs-up.svg" alt="" width="14" height="14" />Качество
+                </li>
+              </ul>
+
+              <!-- 🔴 Декоративная молния с макета -->
+              <img class="reviews_zap" src="icons/icon-zap.svg" alt="" width="100" height="100" aria-hidden="true" />
+            </div>
+
+            <ul class="reviews_scores">
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="icons/icon-star.svg" alt="" width="24" height="24" />4.45
+                </p>
+                <img class="reviews_logo" src="icons/logo-tutortop.svg" alt="tutortop" width="126" height="28" loading="lazy" />
+              </li>
+              <li class="reviews_score">
+                <p class="reviews_rating">
+                  <img src="icons/icon-star.svg" alt="" width="24" height="24" />4.82
+                </p>
+                <!-- 🔴 Логотип «Сравни» состоит из двух частей: кружок + надпись -->
+                <span class="reviews_logo-group">
+                  <img class="reviews_logo-mark" src="icons/logo-sravni-mark.png" alt="" width="84" height="72" loading="lazy" />
+                  <img class="reviews_logo" src="icons/logo-sravni.svg" alt="Сравни" width="113" height="22" loading="lazy" />
+                </span>
+              </li>
+              <li class="reviews_score is-wide">
+                <p class="reviews_rating">
+                  <img src="icons/icon-star.svg" alt="" width="24" height="24" />4.9
+                </p>
+                <img class="reviews_logo" src="icons/logo-otzovik.svg" alt="Отзовик" width="134" height="28" loading="lazy" />
+              </li>
+            </ul>
+
+          </div>
+
+          <p class="reviews_note">* По&nbsp;данным отзывов на&nbsp;независимых площадках</p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       8. АКАДЕМИЯ
+       ======================================================================
+       Плитка из четырёх карточек. Перенесена из /psihosomatika.
+       Картинки лежат на CDN Тильды.
+       ====================================================================== -->
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Академия Современной Психологии&nbsp;—
+            <span class="accent-word">от&nbsp;интереса к&nbsp;практике</span>
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+              <div class="academy-showcase_teachers-media" aria-hidden="true">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="480"
+                  height="328"
+                  alt=""
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <!-- 🟡 Полоса под фотографией — декоративная, как на макете -->
+                <div class="academy-showcase_teachers-controls">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status"><span></span><span></span><span></span></span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       9. ДОКУМЕНТ ОБ ОКОНЧАНИИ
+       ======================================================================
+       Слева текст с условиями, справа — удостоверение.
+       ====================================================================== -->
+  <section class="section_document" id="dokument">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="document_component">
+
+          <div class="document_copy">
+            <h2 class="document_heading">
+              Выдаём удостоверение
+              <span class="accent-word">о&nbsp;повышении квалификации</span>
+            </h2>
+            <p class="document_description">
+              Документ установленного образца выдаётся на&nbsp;основании
+              государственной лицензии об&nbsp;образовании.
+              Чтобы получить удостоверение, необходимо:
+            </p>
+
+            <ul class="document_terms">
+              <li class="document_term">
+                <img src="icons/icon-check.svg" alt="" width="20" height="20" />
+                Посетить более 80% занятий с&nbsp;включённой камерой
+                и&nbsp;активным участием
+              </li>
+            </ul>
+
+            <p class="document_license">
+              Образовательная лицензия Л035–01271–78/00176689,<br />
+              Распоряжение от&nbsp;31.03.2022 №&nbsp;631-р
+            </p>
+          </div>
+
+          <div class="document_media">
+            <!-- 🟡 Фото с сертификатом — то же, что на /psihosomatika (S3) -->
+            <img src="https://s3.twcstorage.ru/asp-media/document_certificate_d7f8d2f8a1.webp" alt="Выпускница с сертификатом Академии" width="1200" height="1200" loading="lazy" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       10. СТОИМОСТЬ И ФОРМА ЗАЯВКИ
+       ======================================================================
+       Один тёмный блок: слева цена по этапам, скидки и условия оплаты
+       (с живой страницы), справа поля. Отправка идёт через скрытую форму
+       Тильды — скрипт page.js переносит значения и отправляет её.
+       На превью формы Тильды нет: скрипт покажет успешное состояние.
+
+       🟡 data-tilda-form-name — имя формы в настройках Тильды.
+       Текущая цена подставляется из CMS (data-cms="price").
+       ====================================================================== -->
+  <section class="section_signup" id="zayavka">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component" data-lead-form data-tilda-form-name="rft-kurs">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">
+              Оплатите заранее&nbsp;—
+              <span class="accent-word is-on-dark">и&nbsp;сэкономьте</span>
+            </h2>
+            <p class="signup_description">
+              Стоимость курса ниже, если оплатить до&nbsp;старта потока.
+              Занятия начнутся <span data-cms="start-date">19&nbsp;января</span>.
+            </p>
+
+            <!-- 🟢 Этапы цены. Текущая цена приходит из CMS, следующая — руками. -->
+            <ul class="signup_tiers">
+              <li class="signup_tier is-current">
+                <p class="signup_tier-label">Цена сейчас</p>
+                <p class="signup_tier-value" data-cms="price">20&nbsp;000&nbsp;₽</p>
+              </li>
+              <li class="signup_tier">
+                <p class="signup_tier-label">С&nbsp;24&nbsp;сентября</p>
+                <p class="signup_tier-value">22&nbsp;000&nbsp;₽</p>
+              </li>
+            </ul>
+
+            <ul class="signup_perks">
+              <li class="signup_perk">
+                <p class="signup_perk-value">−10%</p>
+                <p class="signup_perk-text">новым студентам</p>
+              </li>
+              <li class="signup_perk">
+                <p class="signup_perk-value">−20%</p>
+                <p class="signup_perk-text">нашему студенту и&nbsp;коллеге, который у&nbsp;нас впервые</p>
+              </li>
+              <li class="signup_perk">
+                <p class="signup_perk-value">до&nbsp;−20%</p>
+                <p class="signup_perk-text">нашим выпускникам за&nbsp;отзыв</p>
+              </li>
+            </ul>
+
+            <p class="signup_perks-note">
+              Суммируйте скидки для большей выгоды. Рассрочка
+              от&nbsp;Академии до&nbsp;4&nbsp;месяцев&nbsp;— разделим платёж
+              на&nbsp;равные части, платите в&nbsp;процессе обучения. Рассрочка
+              от&nbsp;банков-партнёров до&nbsp;24&nbsp;месяцев. Мы&nbsp;подробно
+              расскажем, как оформить документы, чтобы получить налоговый
+              вычет&nbsp;13%.
+            </p>
+          </div>
+
+          <form class="lead-form_component" novalidate>
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Записаться на&nbsp;обучение</h3>
+              <p class="lead-form_lead">
+                Оставьте свои данные в&nbsp;форме, и&nbsp;мы&nbsp;свяжемся
+                с&nbsp;вами в&nbsp;рабочее время. Ответим на&nbsp;все вопросы,
+                поможем определиться с&nbsp;направлением и&nbsp;способом оплаты.
+              </p>
+            </div>
+
+            <label class="lead-form_field">
+              <span class="lead-form_field-label screen-reader-only">Имя</span>
+              <input class="lead-form_input" type="text" name="Name"
+                     placeholder="Как к вам обращаться? *" autocomplete="name" required />
+            </label>
+
+            <label class="lead-form_field">
+              <span class="lead-form_field-label screen-reader-only">Электронная почта</span>
+              <input class="lead-form_input" type="email" name="Email"
+                     placeholder="Электронная почта" autocomplete="email" />
+            </label>
+
+            <label class="lead-form_field">
+              <span class="lead-form_field-label screen-reader-only">Телефон</span>
+              <input class="lead-form_input" type="tel" name="Phone"
+                     placeholder="Ваш телефон *" autocomplete="tel" required />
+            </label>
+
+            <fieldset class="lead-form_messengers">
+              <legend class="lead-form_messengers-label">Где вам удобнее общаться?</legend>
+              <div class="lead-form_messenger-row" role="group">
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="Telegram" checked />
+                  <span>Telegram</span>
+                </label>
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="WhatsApp" />
+                  <span>WhatsApp</span>
+                </label>
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="MAX" />
+                  <span>MAX</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <button class="button is-accent is-full-width lead-form_submit" type="submit">
+              Отправить
+            </button>
+
+            <!-- 🔴 Статус отправки, заполняет page.js -->
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <p class="lead-form_consent">
+              <!-- 🟡 Подставьте адрес согласия с боевого сайта -->
+              Нажимая на&nbsp;кнопку «Отправить», я&nbsp;даю
+              <a href="#">согласие</a> на&nbsp;обработку моих персональных данных
+              в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy">политикой обработки
+              персональных данных</a>
+            </p>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       11. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       На живой странице /rft блока с вопросами нет — аккордеон и ответы
+       общие для курсов Академии, перенесены из /psihosomatika.
+       ====================================================================== -->
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+          </div>
+
+          <div class="faq_list" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Можно приобрести курс в&nbsp;рассрочку?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Да, вы&nbsp;можете приобрести курс в&nbsp;рассрочку.
+                    На&nbsp;выбор несколько вариантов: от&nbsp;банков
+                    и&nbsp;Академии. Условия не&nbsp;отличаются: стоимость
+                    делится на&nbsp;равные части, проценты не&nbsp;начисляются.
+                    Разница только в&nbsp;длительности рассрочки.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Это живые лекции или всё в&nbsp;записи?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Преподаватель проводит лекции (теоретическую часть)
+                    на&nbsp;платформе Контур.Толк. Там вы&nbsp;сможете задать
+                    вопросы в&nbsp;режиме реального времени. Практика также
+                    проходит онлайн, со&nbsp;включёнными камерой и&nbsp;микрофоном.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Кому я&nbsp;смогу задать вопросы о&nbsp;процессе обучения?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    За&nbsp;каждым курсом закреплён куратор. Вы&nbsp;можете
+                    задать все вопросы ему.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Вы&nbsp;заключаете договор со&nbsp;студентами?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Оказание услуг на&nbsp;образовательную деятельность
+                    осуществляется по&nbsp;договору оферты. В&nbsp;индивидуальных
+                    случаях мы&nbsp;можем предложить формирование договора для
+                    студента лично. Однако оба этих договора имеют одинаковую
+                    юридическую силу.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">У&nbsp;вас есть лицензия на&nbsp;обучение?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Наша лицензия на&nbsp;осуществление образовательной
+                    деятельности: Л035–01271–78/00176689, Распоряжение
+                    от&nbsp;31.03.2022 №&nbsp;631-р.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Я&nbsp;смогу вернуть деньги за&nbsp;курс, если мне не&nbsp;понравится?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Можно вернуть деньги за&nbsp;непройденный материал. Однако
+                    в&nbsp;этом случае вы&nbsp;не&nbsp;сможете получить документ
+                    о&nbsp;повышении квалификации или профессиональной
+                    переподготовке.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Можно перевестись на&nbsp;другой курс, если я&nbsp;передумаю?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Перевод на&nbsp;другой курс возможен только на&nbsp;старте
+                    обучения и&nbsp;при условии соответствия всем требованиям
+                    для зачисления на&nbsp;другую программу. В&nbsp;этом случае
+                    вам будет пересчитана стоимость обучения.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</div>
+
+</body>
+</html>

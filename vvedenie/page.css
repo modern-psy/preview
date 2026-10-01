@@ -1,0 +1,858 @@
+/* ============================================================================
+   СТИЛИ СТРАНИЦЫ «ВВЕДЕНИЕ В КЛИНИЧЕСКУЮ ПСИХОЛОГИЮ»
+   ============================================================================
+
+   Это стили ТОЛЬКО этой страницы. Общие вещи (кнопки, чипы, карточки, размеры
+   текста, отступы) лежат в /design-system и здесь не повторяются.
+
+   Как читать файл: он поделён на пронумерованные разделы, каждый начинается
+   с большой рамки. Самое интересное — раздел 9: там сделано наслаивание
+   блоков по скроллу.
+
+   Правило гайда: в вёрстке используются только «смысловые» переменные
+   (--accent, --bg-inverse и т.п.), а не сами цвета. Единственное место, где
+   цвет написан числом, — раздел 0 ниже: там мы говорим, ЧЕМУ РАВНЫ смысловые
+   переменные на этой странице.
+   ============================================================================ */
+
+
+/* ############################################################################
+   0. ЦВЕТА ЭТОЙ СТРАНИЦЫ
+   ############################################################################
+
+   ЗАЧЕМ ЭТОТ РАЗДЕЛ. В макете три цвета отличаются от UI-кита АСП:
+
+     тёмные блоки  #2B2334   (в ките тёмный — фиолетовый violet-800 #35275F)
+     жёлтый бейдж  #FBBF24   (в ките такого сигнального жёлтого нет)
+     акцент        #7F56D9   (в ките акцент — violet-600 #644AB2)
+
+   Договорились: страницу делаем как в макете, но цвета подставляем через
+   те же смысловые переменные. Поэтому кнопки, ссылки, чипы и тёмные блоки
+   автоматически становятся «макетными», а вся остальная вёрстка остаётся
+   системной — и в любой момент одна правка здесь вернёт страницу к киту.
+
+   ⚠️ ВОПРОС К ДИЗАЙНУ: свести эти три цвета с UI-китом или добавить их
+      в палитру насовсем (открытый вопрос №1 в AGENTS.md).
+   ############################################################################ */
+
+.page-wrapper {
+  --accent:        #7F56D9;   /* заливка кнопок, активные элементы */
+  --accent-hover:  #6C46C4;   /* то же, но чуть темнее — при наведении */
+  --accent-press:  #5A38A0;   /* и ещё темнее — в момент нажатия */
+  --accent-bright: #977EE2;   /* выделенные слова в заголовках */
+  --text-accent:   #6C46C4;   /* ссылки и текст на светлом фоне */
+
+  --bg-inverse:    #2B2334;   /* тёмные блоки: цитата, «как устроена», призыв */
+
+  /* ЦВЕТА ТЕКСТА ИЗ МАКЕТА */
+  --hero-heading:    #332F41;  /* заголовок первого экрана — он чуть мягче */
+  --text-heading:    #171717;  /* все остальные заголовки */
+  --text-primary:    #374151;  /* выделенная часть абзаца */
+  --text-secondary:  #525252;  /* обычный текст абзаца */
+  --text-on-inverse: #E6E5EB;  /* весь текст на тёмном блоке */
+
+  /* ЧИП ИЗ МАКЕТА: сиреневая заливка, почти белая обводка, тёмно-фиолетовый текст */
+  --status-brand-bg:     #D6BBFB;
+  --status-brand-text:   #42307D;
+  --status-brand-border: #F5F5F5;
+  --chip-border:         #F5F5F5;
+  --pill-ghost-bg:       #E9D7FE;   /* бледная пилюля-«тень» под чипом */
+
+  /* Жёлтая плашка гранта */
+  --grant-bg:      #FBBF24;
+  --grant-text:    #2B2334;
+
+  /* Высота белой полосы-шапки. Нужна в двух местах, поэтому переменной. */
+  --header-height: 4.5rem;
+}
+
+@media (min-width: 48.0625rem) {
+  .page-wrapper { --header-height: 6rem; }
+}
+
+
+/* ############################################################################
+   0.2 ТИПОГРАФИКА СТРАНИЦЫ · цвета заголовков
+   ############################################################################
+
+   ГДЕ РАЗМЕРЫ. Сами размеры, начертания и трекинг переехали в дизайн-систему:
+   design-system/typography.css, раздел «Шкала промо-страниц». Там же написано,
+   чем она отличается от каталожной и когда какую брать. Здесь остаётся только
+   то, что относится к этой конкретной странице, — цвет.
+
+   ПОЧЕМУ ЦВЕТ ЗДЕСЬ. По правилу Client-first размер и цвет — разные классы,
+   и шкала цвет не задаёт. На этой странице заголовки почти везде одного цвета,
+   поэтому проще назначить его один раз тут, чем ставить text-color-* на каждый
+   заголовок в разметке.
+   ############################################################################ */
+
+.text-size-hero { color: var(--hero-heading); }
+
+.text-size-section-title,
+.text-size-card-title,
+.text-size-block-title { color: var(--text-heading); }
+
+/* На тёмном блоке заголовки светлеют */
+.background-color-inverse .text-size-section-title,
+.background-color-inverse .text-size-block-title,
+.background-color-inverse .text-size-card-title { color: var(--text-on-inverse); }
+
+/* ЧИП — размеры и цвета из макета целиком.
+   Поля неровные (сверху 4, снизу 8) — так в макете, это не опечатка. */
+.page-wrapper .chip {
+  padding: .25rem .8125rem .5rem;
+  border-radius: 2.6875rem;
+  border: 1px solid var(--chip-border);
+  font-size: clamp(1rem, calc(.3756vw + .9119rem), 1.25rem);
+  line-height: 1.1em;
+  letter-spacing: -.04em;
+  font-weight: var(--weight-emphasis);
+}
+
+
+/* ############################################################################
+   0.1 ТЕХНИЧЕСКАЯ СТРАХОВКА ДЛЯ «ПРИЛИПАНИЯ»
+   ############################################################################
+   В base.css у body стоит overflow-x: hidden — защита от горизонтального
+   скролла. Побочный эффект: браузер начинает считать body отдельной областью
+   прокрутки, и position: sticky внутри перестаёт работать.
+
+   overflow-x: clip обрезает точно так же, но областью прокрутки не становится.
+   Поэтому наслаивание блоков работает, а защита от скролла остаётся.
+   ############################################################################ */
+body { overflow-x: clip; }
+
+
+/* ############################################################################
+   1. ШАПКА
+   ############################################################################
+   Белая полоса лежит ПОВЕРХ фоновой картинки первого экрана, поэтому она
+   вынута из потока (position: absolute). Нижние углы скруглены — как в макете.
+   Не липкая: при прокрутке уезжает вверх вместе со страницей.
+   ############################################################################ */
+
+.site-header_component {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  display: flex;
+  justify-content: center;
+  padding-left: var(--padding-global);
+  padding-right: var(--padding-global);
+  pointer-events: none;          /* чтобы прозрачные поля по бокам не ловили клики */
+}
+
+.site-header_bar {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 85rem;              /* 1360px — контейнер 1280 плюс поля по 40 */
+  min-height: var(--header-height);
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+  padding: var(--space-xsmall) var(--space-small);
+  background-color: var(--bg-surface);
+  border-radius: 0 0 var(--radius-3xl) var(--radius-3xl);
+}
+
+@media (min-width: 48.0625rem) {
+  .site-header_bar { padding: var(--space-xsmall) var(--space-medium); }
+}
+
+.site-header_logo {
+  font-size: 1.5rem;             /* логотип — не текст страницы, это знак */
+  line-height: 1;
+  font-weight: var(--weight-heading);
+  letter-spacing: .02em;
+  color: var(--text-heading);
+  text-decoration: none;
+}
+
+@media (min-width: 48.0625rem) {
+  .site-header_logo { font-size: 2rem; }
+}
+
+/* Плашка про грант стоит по центру полосы */
+.site-header_promo { margin-left: auto; margin-right: auto; }
+
+/* На узком экране плашка не помещается рядом с логотипом и кнопкой.
+   Прячем именно её, а не дублируем разметку: тот же текст есть в блоке
+   призыва внизу страницы. */
+@media (max-width: 48rem) {
+  .site-header_promo { display: none; }
+  .site-header_cta   { margin-left: auto; }
+}
+
+
+/* ############################################################################
+   2. ПЕРВЫЙ ЭКРАН
+   ############################################################################
+   Фоновая картинка — декоративная, поэтому подключена фоном, а не тегом <img>
+   (правило гайда, раздел 11). Снизу она плавно растворяется в фоне страницы.
+   ############################################################################ */
+
+.section_hero {
+  position: relative;
+  background-color: var(--bg-page);
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 55%, var(--bg-page) 100%),
+    url("/vvedenie/img/hero-bg.webp");
+  background-size: cover, cover;
+  background-position: center top, center top;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.hero_inner {
+  /* Пустое место сверху, чтобы иллюстрация была видна: 12rem на телефоне,
+     25rem на большом экране. Плюс высота шапки, которая лежит поверх. */
+  --hero-art-space: clamp(12rem, 22vw, 25rem);
+  padding-top: calc(var(--header-height) + var(--hero-art-space));
+  padding-bottom: var(--section-medium);
+}
+
+/* На телефоне — один столбик, на планшете и шире — два */
+.hero_inner {
+  display: grid;
+  gap: var(--space-medium);
+}
+
+@media (min-width: 48.0625rem) {
+  .hero_inner {
+    grid-template-columns: 1fr 1fr;
+    /* В макете обе колонки заканчиваются на одной линии: последняя строка
+       заголовка и нижний край кнопки. Поэтому выравнивание по низу. */
+    align-items: end;
+    gap: var(--space-large);
+  }
+}
+
+.hero_right { max-width: 30rem; }
+
+
+/* ############################################################################
+   3. ТЁМНАЯ ВРЕЗКА С ВОПРОСОМ
+   ############################################################################ */
+
+.section_quote { padding-bottom: var(--section-small); }
+
+.quote_component {
+  max-width: 58rem;              /* 928px — как в макете */
+  margin-inline: auto;
+  padding: var(--space-medium) var(--space-small);
+  border-radius: var(--radius-3xl);
+}
+
+@media (min-width: 48.0625rem) {
+  .quote_component { padding: var(--space-large) var(--space-medium); }
+}
+
+
+/* ############################################################################
+   4. ДЕКОРАТИВНАЯ «СТОПКА» ПИЛЮЛЬ ПОД ЧИПОМ
+   ############################################################################
+   В макете из-под чипа выглядывают ещё две такие же пилюли — как будто
+   карточек несколько и они сложены стопкой. Это чистое украшение, поэтому
+   пустые <span> помечены aria-hidden: скринридер их не читает.
+
+   По умолчанию пилюли выглядывают справа; класс is-left переносит их влево.
+   ############################################################################ */
+
+.pill-stack_component {
+  /* Насколько каждая следующая пилюля выглядывает из-под предыдущей.
+     В макете 15 px; на узком экране чуть меньше, вместе с самим чипом. */
+  --pill-step: clamp(.75rem, calc(.2817vw + .684rem), .9375rem);
+
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;                 /* слои считаются внутри стопки */
+
+  /* Место под «тени» слева и справа. Числа приходят из разметки:
+     --before — сколько чипов идёт ДО этого, --after — сколько ПОСЛЕ. */
+  padding-left:  calc(var(--before, 0) * var(--pill-step));
+  padding-right: calc(var(--after, 0) * var(--pill-step));
+
+  /* Стопка должна быть шириной ровно по себе, а не на всю колонку */
+  align-self: flex-start;
+  justify-self: start;
+}
+
+.pill-stack_main { position: relative; z-index: 20; }
+
+/* «Тень» — такая же пилюля, только без текста и бледнее. По умолчанию она
+   лежит ровно под активным чипом, а дальше сдвигается на N шагов. */
+.pill-stack_ghost {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left:  calc(var(--before, 0) * var(--pill-step));
+  right: calc(var(--after, 0) * var(--pill-step));
+  border: 1px solid var(--chip-border);
+  border-radius: 2.6875rem;
+  background-color: var(--pill-ghost-bg);
+  /* Чем дальше тень от активного чипа, тем ниже она лежит */
+  z-index: calc(20 - var(--n));
+}
+
+.pill-stack_ghost.is-before { transform: translateX(calc(var(--n) * var(--pill-step) * -1)); }
+.pill-stack_ghost.is-after  { transform: translateX(calc(var(--n) * var(--pill-step))); }
+
+
+/* ############################################################################
+   5. ТРИ КАРТОЧКИ-ПРЕИМУЩЕСТВА
+   ############################################################################
+   Сами карточки описаны здесь, а «наслаивание» по скроллу — общее, оно
+   в разделе 9.
+   ############################################################################ */
+
+.benefit_card {
+  --benefit-pad: var(--space-medium);
+  /* Обрезаем всё, что вылезает за карточку: «тени» под чипом на узком
+     экране иначе выталкивали бы страницу вбок. */
+  overflow: hidden;
+  display: grid;
+  gap: var(--space-medium);
+  padding: var(--benefit-pad);
+  border-radius: var(--radius-3xl);
+  /* Карточка обязана быть непрозрачной: следующая наезжает на неё сверху,
+     и сквозь неё ничего не должно просвечивать. */
+  background-color: var(--bg-surface);
+}
+
+/* Средняя карточка в макете серая */
+.benefit_card.is-alt { background-color: var(--bg-hover); }
+
+.benefit_actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+  margin-top: var(--space-medium);
+}
+
+.benefit_media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-small);
+  border-radius: var(--radius-2xl);
+  background-color: var(--bg-page);
+}
+
+.benefit_card.is-alt .benefit_media { background-color: var(--bg-surface); }
+
+.benefit_media img { max-height: 100%; }
+
+@media (min-width: 48.0625rem) {
+  .benefit_card {
+    --benefit-pad: var(--space-large);
+    grid-template-columns: minmax(0, 1fr) 44%;
+    align-items: stretch;
+  }
+  /* Текст прижат к верху, кнопки — к низу, как в макете */
+  .benefit_text {
+    display: flex;
+    flex-direction: column;
+  }
+  .benefit_actions { margin-top: auto; }
+}
+
+
+/* ############################################################################
+   6. КАК УСТРОЕНА ПРОГРАММА (тёмный блок)
+   ############################################################################ */
+
+.section_how { padding-block: var(--section-small); }
+
+.how_component {
+  padding: var(--space-medium) var(--space-small);
+  border-radius: var(--radius-3xl);
+}
+
+@media (min-width: 48.0625rem) {
+  .how_component { padding: var(--space-large); }
+}
+
+.how_list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-medium);
+  margin-top: var(--space-large);
+}
+
+@media (min-width: 48.0625rem) {
+  .how_list { grid-template-columns: repeat(3, 1fr); gap: var(--space-large); }
+}
+
+/* Иконка берёт цвет от родителя — красим не иконку, а строку */
+.how_icon {
+  color: var(--accent-bright);
+  margin-bottom: var(--space-small);
+}
+
+
+/* ############################################################################
+   7. КОМУ ПОДОЙДЁТ МИНИ-КУРС
+   ############################################################################
+   На телефоне — один столбик. На десктопе крупная карточка слева занимает
+   две строки, три остальные выстраиваются справа. Разметка одна, меняется
+   только сетка.
+   ############################################################################ */
+
+.audience_grid {
+  display: grid;
+  gap: var(--space-small);
+}
+
+.audience_card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-medium);
+  border-radius: var(--radius-2xl);
+}
+
+.audience_media {
+  margin-top: var(--space-medium);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background-color: var(--bg-page);
+}
+
+/* Крупная карточка тянется на всю высоту колонки, картинка прижата к низу */
+.audience_card.is-featured .audience_media { margin-top: auto; padding-top: var(--space-medium); }
+
+@media (min-width: 48.0625rem) {
+  .audience_grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .audience_card.is-featured { grid-row: 1 / span 3; }
+}
+
+
+/* ############################################################################
+   8. ПРОГРАММА МИНИ-КУРСА
+   ############################################################################
+   Разметка: .lessons_stack → .lessons_group (один преподаватель) →
+             сначала .lessons_photo (слой с фото), затем .lesson_card (уроки).
+
+   ВАЖНО ПРО ФОТОГРАФИЮ. На телефоне это просто верхняя часть карточки
+   первого урока. На широком экране — отдельный прозрачный слой поверх
+   карточек «своего» преподавателя (см. раздел 9).
+   ############################################################################ */
+
+.lessons_group {
+  /* Модуль — это только «обёртка смысла»: он задаёт цвет своих уроков
+     и держит их рядом. Сам он ничего не рисует и никуда не прилипает. */
+  --lesson-bg: var(--bg-surface);
+  --lesson-pad: var(--space-medium);
+  display: contents;
+}
+
+.lessons_group.is-alt { --lesson-bg: var(--bg-hover); }
+
+.lesson_card {
+  padding: var(--lesson-pad);
+  overflow: hidden;               /* см. комментарий у .benefit_card */
+}
+
+/* Высота карточки — по её содержимому. Пустого места внизу быть не должно:
+   описание просто становится под фотографию (на телефоне) или рядом с ней
+   (на широком экране). Единственный «пол» высоты — сама фотография, и он
+   задан ниже, в разделе 9, невидимой распоркой в правой колонке. */
+
+.lesson_head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-small);
+}
+
+.lesson_list {
+  list-style: decimal;
+  padding-left: 1.25rem;
+  margin-top: var(--space-small);
+}
+
+.lesson_list li + li { margin-top: var(--space-xsmall); }
+
+/* --- ФОТОГРАФИЯ ПРЕПОДАВАТЕЛЯ · отдельный слой --------------------------------
+
+   ЗАЧЕМ ОТДЕЛЬНЫМ СЛОЕМ. Преподаватель может вести два урока подряд. Нужно,
+   чтобы его фотография была ВЫШЕ обеих его карточек (второй урок подъезжает
+   под фото), но НИЖЕ карточки следующего преподавателя — иначе фото осталось бы
+   висеть поверх чужого блока.
+
+   Номер слоя приходит из разметки (--photo-z). Карточки уроков пронумерованы
+   через десяток: 10, 20, 30 … — чтобы между ними помещались слои фотографий.
+   Например, у Дарьи Зюзиной уроки 10 и 20, её фото 25: выше обоих, но ниже
+   урока 30. У Ионы Гусаченко уроки 50 и 60, фото 65 — выше обоих, а дальше
+   уроков уже нет.
+   ---------------------------------------------------------------------------- */
+
+.lessons_photo_frame {
+  position: relative;
+  margin: 0;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+.lessons_photo_frame img { position: absolute; inset: 0; }
+
+/* ЗАТЕМНЕНИЕ. В макете это отдельная фигура поверх фотографии: полоса
+   в нижней трети кадра, чёрная, от полной прозрачности сверху до 60 % снизу. */
+.lessons_photo_frame::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .6) 100%);
+}
+
+.lessons_photo_name {
+  position: absolute;
+  z-index: 1;                    /* выше затемнения */
+  left: var(--space-small);
+  right: var(--space-small);
+  bottom: var(--space-small);
+  color: var(--text-inverse);
+  font-size: 1.125rem;
+  line-height: 1.2em;
+  font-weight: var(--weight-emphasis);
+}
+
+/* СЛОЙ С ФОТОГРАФИЕЙ состоит из двух частей:
+     .lessons_photo       — невидимый прилипающий слой; его высота нужна
+                            только для того, чтобы фото отпустилось ровно
+                            вместе с последней карточкой преподавателя
+                            (подробности в разделе 9);
+     .lessons_photo_inner — то, что видно: сама фотография и фон под ней.
+
+   НА ТЕЛЕФОНЕ это верхняя полоса модуля: тот же фон, скруглены только
+   верхние углы, описание урока идёт прямо под ней. Полоса остаётся на
+   месте, пока идут уроки «своего» преподавателя, — карточки подъезжают
+   ПОД неё, как и на широком экране. */
+.lessons_photo {
+  position: sticky;
+  top: var(--stack-top);        /* точную точку остановки поставит page.js */
+  z-index: var(--photo-z, 1);
+  overflow: hidden;             /* фото не выйдет за габарит слоя */
+  pointer-events: none;         /* клики проходят к карточке урока */
+}
+
+.lessons_photo_inner {
+  background-color: var(--lesson-bg);
+  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  padding: var(--lesson-pad) var(--lesson-pad) 0;
+}
+
+.lessons_group .lesson_card:first-of-type { border-radius: 0 0 var(--radius-3xl) var(--radius-3xl); }
+
+/* ############################################################################
+   9. НАСЛАИВАНИЕ БЛОКОВ ПО СКРОЛЛУ
+   ############################################################################
+
+   ЧТО ПРОИСХОДИТ. Карточка доезжает до верха экрана и «прилипает» к нему.
+   Следующая карточка продолжает ехать вверх и наезжает на предыдущую.
+   Получается стопка, как на лендинге Clay. Никакого JavaScript: всё делает
+   одно свойство position: sticky.
+
+   ПОЧЕМУ ТОЛЬКО ОТ ПЛАНШЕТА. На телефоне карточка выше экрана, прилипать
+   ей некуда — приём разваливается. Поэтому на узких экранах карточки просто
+   идут столбиком с отступами.
+
+   ПРО СЛОИ (z-index). Чтобы карточка наезжала на предыдущую, у каждой
+   следующей номер слоя должен быть больше. Номер задаётся прямо в разметке
+   переменной --lesson-index / порядком в стопке.
+
+   ФОКУС С ФОТОГРАФИЕЙ ПРЕПОДАВАТЕЛЯ. Один преподаватель ведёт два урока
+   подряд. Хочется, чтобы его фото стояло на месте, пока идут «его» уроки,
+   а карточки уроков подъезжали ПОД фото.
+
+   Как сделано:
+     · карточки уроков пронумерованы через десяток: 10, 20, 30 … 60;
+     · фотография — отдельный прозрачный слой с номером между «своими»
+       и «чужой» карточкой: у Дарьи Зюзиной 25 (выше уроков 10 и 20,
+       но ниже урока 30), у Ионы Гусаченко 65 (выше уроков 50 и 60);
+     · слой повторяет габарит карточки, поэтому прилипает и отпускается
+       ровно вместе с ней и не может уехать за пределы модуля;
+     · места в потоке слой не занимает: карточка первого урока подтянута
+       наверх отрицательным отступом на его высоту.
+   ############################################################################ */
+
+/* --- общая механика: работает и на телефоне, и на десктопе --- */
+
+.stack_component,
+.lessons_stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;                          /* карточки в стопке лежат впритык */
+  /* Насколько ниже верха экрана останавливается прилипшая карточка. */
+  --stack-top: 1rem;
+}
+
+@media (min-width: 48.0625rem) {
+  .stack_component,
+  .lessons_stack { --stack-top: 2rem; }
+}
+
+/* Карточки преимуществ: каждая следующая лежит выше предыдущей */
+.stack_item {
+  position: sticky;
+  top: var(--stack-top);
+  min-height: 30rem;               /* запасное значение, точное посчитает page.js */
+}
+.stack_component > .stack_item:nth-child(1) { z-index: 1; }
+.stack_component > .stack_item:nth-child(2) { z-index: 2; }
+.stack_component > .stack_item:nth-child(3) { z-index: 3; }
+.stack_component > .stack_item:nth-child(4) { z-index: 4; }
+.stack_component > .stack_item:nth-child(5) { z-index: 5; }
+
+/* --- ПРОГРАММА. Прилипает КАЖДЫЙ УРОК — и на телефоне, и на десктопе.
+   Урок 2 наезжает на урок 1, урок 6 на урок 5 и так далее: перелистывается
+   вся программа, а не только переходы между преподавателями.
+   Фотография лежит внутри карточки своего урока и уезжает вместе с ней. --- */
+
+.lesson_card {
+  /* колонка нужна, чтобы фотография могла встать НАД текстом (order: -1) */
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: var(--stack-top);
+  z-index: var(--card-z, 1);
+  background-color: var(--lesson-bg);
+  border-radius: var(--radius-3xl);
+}
+
+@media (min-width: 48.0625rem) {
+  /* Две колонки: слева текст урока, справа место под фотографию.
+     Ширина правой колонки — та же, что у слоя с фото (44 %). */
+  .lesson_card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44%;
+    column-gap: var(--space-medium);
+    align-content: start;
+  }
+
+  /* Невидимая распорка в правой колонке. Она той же формы, что фотография
+     (3:2), поэтому карточка не может быть ниже фото — но и лишней пустоты
+     не набирает: высота берётся по самому высокому из двух столбцов. */
+  .lesson_card::after {
+    content: "";
+    grid-column: 2;
+    grid-row: 1;
+    aspect-ratio: 3 / 2;
+  }
+
+  /* НА ШИРОКОМ ЭКРАНЕ слой с фотографией — прозрачный двойник карточки:
+     та же высота, те же поля, тот же верхний упор. Внутри него только фото,
+     прижатое к правому верхнему углу.
+
+     ЗАЧЕМ ДВОЙНИК, А НЕ ПУСТОЙ СЛОЙ. Прилипший элемент отпускают границы
+     его родителя: он может ехать вниз, пока его нижний край не дойдёт до
+     низа списка. Если у слоя нулевая высота, «нижний край» — это его верх,
+     и фотография успевает уехать ниже последней карточки (так она и
+     убегала у Ионы Гусаченко). Когда высота слоя равна высоте ПОСЛЕДНЕЙ
+     карточки модуля, слой отпускается ровно вместе с ней — фото никогда
+     не выходит за пределы своего преподавателя.
+
+     Место в потоке слой не занимает: карточка первого урока подтянута
+     наверх отрицательным отступом ровно на его высоту (ставит page.js). */
+  .lessons_photo {
+    flex: none;
+    height: 24rem;                          /* запасное, точное поставит page.js */
+  }
+
+  .lessons_photo_inner {
+    padding: var(--lesson-pad);
+    background-color: transparent;
+    border-radius: 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .lessons_photo_frame { width: 44%; }
+
+  /* Карточка первого урока снова со всеми скруглениями, и она же
+     компенсирует высоту слоя с фотографией. */
+  .lessons_group .lesson_card:first-of-type {
+    border-radius: var(--radius-3xl);
+    margin-top: -24rem;                     /* запасное, точное поставит page.js */
+  }
+}
+
+/* Кому «уменьшить движение» — тем без прилипания: стопка на месте
+   ощущается как рывок. */
+@media (prefers-reduced-motion: reduce) {
+  .stack_item,
+  .lesson_card {
+    position: static;
+    min-height: 0;
+  }
+  .stack_component,
+  .lessons_stack { gap: var(--space-small); }
+
+  /* Место под фотографию в правой колонке больше не нужно: фото стоит
+     обычной картинкой над описанием урока. */
+  .lesson_card { grid-template-columns: minmax(0, 1fr); }
+  .lesson_card::after { content: none; }
+
+  /* Без наслаивания фотографии незачем висеть отдельным слоем: она снова
+     становится верхней частью карточки своего модуля. */
+  .lessons_photo {
+    position: static;
+    height: auto;
+  }
+  .lessons_photo_inner {
+    padding: var(--lesson-pad) var(--lesson-pad) 0;
+    background-color: var(--lesson-bg);
+    border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+    display: block;
+  }
+  .lessons_photo_frame { width: auto; }
+  .lessons_group .lesson_card:first-of-type {
+    margin-top: 0;
+    border-radius: 0 0 var(--radius-3xl) var(--radius-3xl);
+  }
+}
+
+
+/* ############################################################################
+   10. ПРИЗЫВ ЗАПИСАТЬСЯ
+   ############################################################################
+   Тёмная карточка стоит на светлой фоновой картинке-волне.
+   ############################################################################ */
+
+.section_cta {
+  padding-block: var(--section-medium);
+  background-color: var(--bg-page);
+  background-image: url("/vvedenie/img/cta-bg.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cta_component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 58rem;
+  margin-inline: auto;
+  padding: var(--space-medium) var(--space-small);
+  border-radius: var(--radius-3xl);
+}
+
+@media (min-width: 48.0625rem) {
+  .cta_component { padding: var(--space-large) var(--space-medium); }
+}
+
+
+/* ############################################################################
+   11. ЖЁЛТАЯ ПЛАШКА ГРАНТА
+   ############################################################################
+   Форма и размеры — от общего компонента .chip из дизайн-системы,
+   здесь только цвет, которого в системе пока нет.
+   ############################################################################ */
+
+.chip.is-grant {
+  background-color: var(--grant-bg);
+  color: var(--grant-text);
+  border-color: var(--grant-bg);
+}
+
+
+
+/* ############################################################################
+   12. ОТВЕТЫ НА ПОПУЛЯРНЫЕ ВОПРОСЫ
+   ############################################################################
+   Аккордеон на теге <details>: браузер сам открывает и закрывает,
+   сам объявляет состояние скринридеру. JavaScript не нужен.
+   ############################################################################ */
+
+/* Белая коробка появляется, только когда внутри есть хотя бы один вопрос.
+   Пока список пуст, на странице не будет висеть пустая полоска. */
+.faq_list:has(.faq_item) {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.faq_item + .faq_item { border-top: 1px solid var(--border-default); }
+
+.faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-small);
+  padding: var(--space-medium);
+  min-height: var(--tap-target-min);
+  cursor: pointer;
+  list-style: none;                /* убираем стандартный треугольник */
+}
+
+.faq_question::-webkit-details-marker { display: none; }
+
+/* Плюс превращается в минус, когда вопрос открыт. Рисуем двумя чёрточками,
+   отдельная иконка тут не нужна. */
+.faq_sign {
+  position: relative;
+  flex: none;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  color: var(--text-secondary);
+}
+.faq_sign::before,
+.faq_sign::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transform: translateY(-50%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.faq_sign::after { transform: translateY(-50%) rotate(90deg); }
+.faq_item[open] .faq_sign::after { transform: translateY(-50%) rotate(0deg); }
+
+.faq_answer { padding: 0 var(--space-medium) var(--space-medium); }
+.faq_answer p + p { margin-top: var(--space-small); }
+
+
+/* ############################################################################
+   13. ПОДВАЛ
+   ############################################################################ */
+
+.site-footer_component {
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-default);
+  padding-block: var(--section-small);
+}
+
+.site-footer_inner {
+  display: grid;
+  gap: var(--space-large);
+}
+
+@media (min-width: 48.0625rem) {
+  .site-footer_inner { grid-template-columns: 1fr 1fr; }
+}
+
+/* Черта под «Правовой информацией» идёт ровно по ширине надписи,
+   как в макете, — поэтому inline-block, а не блок во всю колонку. */
+.site-footer_title {
+  display: inline-block;
+  padding-bottom: var(--space-xsmall);
+  border-bottom: 1px solid var(--border-default);
+  margin-bottom: var(--space-small);
+}
+
+.site-footer_links { list-style: none; }
+.site-footer_links li + li { margin-top: var(--space-small); }

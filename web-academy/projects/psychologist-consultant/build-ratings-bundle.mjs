@@ -1,0 +1,15 @@
+import fs from 'node:fs/promises';
+import {ratingsSection} from './render-ratings.mjs';
+const root = new URL('./', import.meta.url);
+const shared = new URL('../../shared/academy/', root);
+const styles = await Promise.all(['components', 'ratings', 'section-spacing', 'section-heading'].map(name => fs.readFile(new URL(`${name}.css`, shared), 'utf8')));
+const theme = `.ratings-page{min-height:0;--page-padding:1rem}@media(min-width:48rem){.ratings-page{--page-padding:1.5rem}}@media(max-width:74.999rem){.ratings-page .column-grid_content{grid-column:1/-1}}@media(min-width:75rem){.ratings-page{--page-padding:5rem}}`;
+const head = `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500&amp;display=swap">\n<style>\n${styles.join('\n')}\n${theme}\n</style>\n`;
+const section = ratingsSection.replace('section_ratings section-spacing_component', 'section_ratings section-spacing_component academy-page ratings-page');
+if (section.length >= 65000 || /(?:src|href)="(?:\.\.?\/|assets\/)/.test(section)) throw new Error('Ratings T123 must be self-contained and under 65,000 characters.');
+const output = new URL('ratings/tilda/', root);
+await fs.mkdir(output, {recursive: true});
+await fs.writeFile(new URL('head.html', output), head);
+await fs.writeFile(new URL('section.html', output), section);
+await fs.writeFile(new URL('preview.html', output), `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Рейтинги — автономный компонент</title>${head}</head><body>${section}</body></html>`);
+console.log(`Ratings T123: ${section.length} characters; no JavaScript required.`);

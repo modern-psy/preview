@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="icon" href="data:,">
+    <title>Hero, CTA и Академия — shared компоненты</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500&amp;display=swap">
+    <link rel="stylesheet" href="../components.css?v=complete-components-1">
+    <link rel="stylesheet" href="../card-spacing.css"><link rel="stylesheet" href="../hero.css">
+    <link rel="stylesheet" href="../benefits.css">
+    <link rel="stylesheet" href="../button.css">
+    <style>
+      body { margin: 0; }
+      .fixture_main { display: grid; gap: 4rem; padding: 1rem; }
+      .fixture_slot { width: 100%; max-width: 95rem; min-width: 0; margin-inline: auto; }
+      .fixture_ctas { display: grid; gap: 2rem; }
+      .fixture_status { margin: 0; padding: 1rem; font: 1rem/1.4 sans-serif; }
+    </style>
+  </head>
+  <body>
+    <p class="fixture_status" role="status">Загрузка HTML-шаблонов…</p>
+    <main class="academy-page fixture_main">
+      <section class="fixture_slot" data-template="hero" aria-label="Hero"></section>
+      <section class="fixture_slot fixture_ctas" data-template="cta" aria-label="Три CTA"></section>
+      <section class="fixture_slot" data-template="academy-showcase" aria-label="Академия"></section>
+    </main>
+    <script>
+      // The harness loads authored HTML; ?js=off skips component behavior only.
+      const params = new URLSearchParams(location.search);
+      const nativeMatchMedia = window.matchMedia.bind(window);
+      window.matchMedia = query => {
+        const result = nativeMatchMedia(query);
+        let forced;
+        if (query === '(prefers-reduced-motion: reduce)' && params.get('motion') === 'reduce') forced = true;
+        if (params.get('input') === 'touch') {
+          if (query === '(hover: hover) and (pointer: fine)') forced = false;
+          if (query === '(hover: none), (pointer: coarse)') forced = true;
+        }
+        if (forced !== undefined) Object.defineProperty(result, 'matches', {value: forced});
+        return result;
+      };
+      const loadBehavior = () => new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = '../components.js'; script.onload = resolve; script.onerror = reject;
+        document.body.append(script);
+      });
+      (async () => {
+        for (const slot of document.querySelectorAll('[data-template]')) {
+          const response = await fetch('../' + slot.dataset.template + '.html');
+          if (!response.ok) throw new Error('Template failed: ' + slot.dataset.template);
+          slot.innerHTML = await response.text();
+          for (const img of slot.querySelectorAll('img[src^="assets/"]')) img.setAttribute('src', '../' + img.getAttribute('src'));
+        }
+        if (params.get('js') !== 'off') {
+          await loadBehavior();
+          if (params.get('init') === 'twice') await loadBehavior();
+        }
+        document.querySelector('[role=status]').textContent = 'Готово. Используются только shared HTML/CSS/JS; кнопки без назначений.';
+      })().catch(error => { document.querySelector('[role=status]').textContent = String(error); });
+    </script>
+  </body>
+</html>

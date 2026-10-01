@@ -1,0 +1,721 @@
+/* ============================================================================
+   КОМПОНЕНТЫ · кнопки, ссылки, чипы, поля
+   ============================================================================
+
+   Именование по Client-first v2:
+     базовый класс без подчёркивания   → .button, .text-link, .chip
+     вариант через комбо-класс is-     → .button.is-secondary
+     части составного блока с подчёркиванием → .button_icon, .form_label
+
+   Цвета — только из слоя назначения tokens.css. Значения там взяты
+   из UI-кита АСП, тех же, что импортируются в переменные Figma.
+   ============================================================================ */
+
+
+/* ############################################################################
+   1. КНОПКИ
+   ############################################################################
+
+   ТРИ ИЗМЕРЕНИЯ, КОТОРЫЕ КОМБИНИРУЮТСЯ.
+
+     РАЗМЕР  .is-lg · .is-md (по умолчанию) · .is-sm
+     ВИД     основная · .is-secondary · .is-ghost · .is-link · .is-danger
+     ФОН     светлый · .is-inverse (на тёмном блоке)
+
+   Плюс иконки: .button_icon внутри, .is-icon-only для кнопки без текста.
+
+   ПРИМЕРЫ:
+     <a class="button is-lg" href="#">Записаться</a>
+     <button class="button is-md is-secondary">Подробнее</button>
+     <button class="button is-sm is-ghost">Фильтры</button>
+     <button class="button is-md is-link">Все курсы</button>
+     <a class="button is-lg is-inverse" href="#">Записаться</a>
+
+   ССЫЛКА ИЛИ КНОПКА. Ведёт на другую страницу → <a class="button">.
+   Делает что-то на текущей → <button class="button">.
+   <div> вместо кнопки запрещён: он не фокусируется с клавиатуры.
+   ############################################################################ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xsmall);
+
+  /* размер по умолчанию — средний */
+  min-height: var(--button-height-md);
+  padding: var(--button-padding-y-md) var(--button-padding-x-md);
+
+  border: 1px solid transparent;
+  border-radius: var(--button-radius);   /* 16px — один на все размеры */
+
+  /* текст: Action Md */
+  font-size: 1rem;
+  line-height: 1.3em;
+  font-weight: var(--weight-action);
+  text-align: center;
+  text-decoration: none;
+
+  /* При нехватке места надпись переносится как обычный текст: по пробелам.
+     break-word, а не anywhere — anywhere рвёт слова посреди буквы
+     («Записатьс / я»), а нам нужен перенос по словам. */
+  white-space: normal;
+  overflow-wrap: break-word;
+
+  background-color: var(--accent);
+  color: var(--text-inverse);
+
+  /* --- ОБЪЁМ. Ровная заливка без градиента, без обводки, без бликов.
+         Кнопку отделяет от фона одна мягкая тень — и всё.
+         Подробнее в tokens.css, раздел «Тень кнопок и полей». --- */
+  box-shadow: var(--shadow-button);
+
+  transition: background-color var(--duration-fast) var(--ease-out),
+              border-color     var(--duration-fast) var(--ease-out),
+              box-shadow       var(--duration-fast) var(--ease-out),
+              color            var(--duration-fast) var(--ease-out);
+}
+
+/* Наведение — ТОЛЬКО на устройствах с настоящей мышью.
+   Без этого условия на телефоне эффект «залипает» после нажатия. */
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    background-color: var(--accent-hover);
+    box-shadow: var(--shadow-button-hover);
+  }
+}
+
+/* Нажатие: тень становится меньше и плотнее — кнопка опускается
+   ближе к странице. Внутрь ничего не «вдавливается». */
+.button:active {
+  background-color: var(--accent-press);
+  box-shadow: var(--shadow-button-press);
+}
+
+
+/* ==========================================================================
+   1.1 РАЗМЕРЫ
+   ==========================================================================
+   Горизонтальные поля — минимум 16px у малой, 24px у средней и крупной.
+   ========================================================================== */
+
+.button.is-lg {
+  min-height: var(--button-height-lg);                              /* 56px */
+  padding: var(--button-padding-y-lg) var(--button-padding-x-lg);   /* 24px по бокам */
+  font-size: 1.125rem;                                              /* Action Lg */
+}
+.button.is-md {
+  min-height: var(--button-height-md);                              /* 48px */
+  padding: var(--button-padding-y-md) var(--button-padding-x-md);   /* 24px */
+  font-size: 1rem;                                                  /* Action Md */
+}
+.button.is-sm {
+  min-height: var(--button-height-sm);                              /* 36px */
+  padding: var(--button-padding-y-sm) var(--button-padding-x-sm);   /* 16px */
+  font-size: .875rem;                                               /* Action Sm */
+}
+
+/* Малая кнопка визуально 36px, но палец должен попадать в 44px.
+   Невидимая область вокруг добирает недостающее, внешний вид не меняется. */
+.button.is-sm { position: relative; }
+.button.is-sm::before {
+  content: "";
+  position: absolute;
+  inset: calc((var(--tap-target-min) - var(--button-height-sm)) / -2) 0;
+}
+
+
+/* ==========================================================================
+   1.2 ВИД: вторичная — мягкая фирменная заливка
+   ==========================================================================
+   Из UI-кита: фон violet-50, текст violet-700, граница violet-200.
+   ========================================================================== */
+.button.is-secondary {
+  background-color: var(--bg-accent-soft);
+  color: var(--text-accent);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-control);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.is-secondary:hover {
+    background-color: var(--violet-100);
+    border-color: var(--accent);
+    color: var(--accent-hover);
+    box-shadow: var(--shadow-button);
+  }
+}
+.button.is-secondary:active {
+  background-color: var(--violet-100);
+  color: var(--accent-press);
+  border-color: var(--accent-press);
+  box-shadow: var(--shadow-button-press);
+}
+
+
+/* ==========================================================================
+   1.3 ВИД: призрачная — нейтральная обводка
+   ==========================================================================
+   Из UI-кита: прозрачный фон, текст violet-700, граница gray-300.
+   Для действий, которые не должны спорить с основной кнопкой.
+   ========================================================================== */
+.button.is-ghost {
+  background-color: var(--bg-surface);
+  color: var(--text-accent);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-control);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.is-ghost:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-strong);
+    color: var(--accent-hover);
+    box-shadow: var(--shadow-button);
+  }
+}
+.button.is-ghost:active {
+  background-color: var(--bg-hover);
+  color: var(--accent-press);
+  box-shadow: var(--shadow-button-press);
+}
+
+
+/* ==========================================================================
+   1.4 ВИД: кнопка-ссылка — без фона и без обводки
+   ==========================================================================
+   Тот же размер текста и та же логика, что у обычной кнопки, но без подложки.
+   Боковые поля убраны: у текста без фона они сбивают выравнивание по краю.
+   ========================================================================== */
+.button.is-link {
+  background-color: transparent;
+  border-color: transparent;   /* у кнопки-ссылки нет подложки — значит нет и тени */
+  box-shadow: none;
+  color: var(--text-accent);
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 0;
+  position: relative;
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.is-link:hover {
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--accent-press);
+    text-decoration: underline;
+    text-underline-offset: .15em;
+  }
+}
+.button.is-link:active { background-color: transparent; box-shadow: none; color: var(--accent-press); }
+
+/* Кнопка-ссылка в плотной вёрстке всё равно должна иметь 44px для пальца */
+.button.is-link::before {
+  content: ""; position: absolute; left: 0; right: 0;
+  top: calc((var(--tap-target-min) - 100%) / -2);
+  bottom: calc((var(--tap-target-min) - 100%) / -2);
+  min-height: var(--tap-target-min);
+}
+
+
+/* ==========================================================================
+   1.5 ВИД: опасное действие
+   ==========================================================================
+   Только для действий, которые что-то удаляют или отменяют безвозвратно.
+   Красным нельзя выделять «просто важное» — правило одного акцента.
+   ========================================================================== */
+.button.is-danger { background-color: var(--error); color: var(--text-inverse); }
+@media (hover: hover) and (pointer: fine) {
+  .button.is-danger:hover { background-color: var(--error-text); }
+}
+.button.is-danger:active { background-color: var(--error-text); }
+/* Тень наследуется от .button. Заливка ровная, поэтому контраст считается
+   прямо по цвету: белый на --error 4.79:1, AA. */
+
+
+/* ==========================================================================
+   1.6 ФОН: инверсия — кнопки на тёмном блоке
+   ==========================================================================
+   Тёмные блоки у нас фиолетовые (violet-800), а не серые: сайт светлый,
+   поэтому тёмный блок сам по себе акцентный.
+
+     <a class="button is-lg is-inverse">
+     <a class="button is-md is-secondary is-inverse">
+     <a class="button is-sm is-link is-inverse">
+   ========================================================================== */
+
+/* Основная на тёмном: светлая подложка, тёмный текст */
+.button.is-inverse {
+  background-color: var(--accent-inverse);
+  color: var(--text-heading);
+  /* Кнопка светлая, а блок под ней тёмный, поэтому тень чуть заметнее
+     обычной — иначе белое на тёмном выглядит наклейкой. */
+  box-shadow: var(--shadow-button-inverse);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.is-inverse:hover { background-color: var(--accent-inverse-hover); }
+}
+.button.is-inverse:active {
+  background-color: var(--accent-inverse-press);
+  box-shadow: var(--shadow-button-press);
+}
+
+/* Вторичная и призрачная на тёмном: прозрачные, светлая обводка */
+.button.is-secondary.is-inverse,
+.button.is-ghost.is-inverse {
+  background-color: transparent;
+  box-shadow: none;         /* подложки нет — тень не нужна */
+  color: var(--text-inverse);
+  border-color: var(--border-inverse);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.is-secondary.is-inverse:hover,
+  .button.is-ghost.is-inverse:hover {
+    background-color: rgba(255, 255, 255, .14);
+    box-shadow: none;
+    color: var(--text-inverse);
+    border-color: var(--border-inverse);
+  }
+}
+.button.is-secondary.is-inverse:active,
+.button.is-ghost.is-inverse:active { background-color: rgba(255, 255, 255, .24); box-shadow: none; }
+
+/* Призрачная на тёмном — обводка мягче, чтобы не спорить с основной */
+.button.is-ghost.is-inverse { border-color: rgba(255, 255, 255, .4); }
+
+/* Ссылка на тёмном */
+.button.is-link.is-inverse {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--text-inverse);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.is-link.is-inverse:hover { color: var(--accent-inverse-press); background-color: transparent; }
+}
+.button.is-link.is-inverse:active { color: var(--accent-inverse-press); background-color: transparent; }
+
+
+/* ==========================================================================
+   1.7 ИКОНКИ В КНОПКАХ
+   ==========================================================================
+   Иконка — <span class="icon"> с маской (см. base.css, раздел 7).
+   Цвет берёт от кнопки автоматически, красить отдельно не нужно.
+
+   Слева (lead) — уточняет действие:
+     <button class="button is-md">
+       <span class="icon button_icon" style="--icon-url:url('/icons/calendar.svg')"></span>
+       Выбрать дату
+     </button>
+
+   Справа (trail) — показывает направление, «дальше», «наружу»:
+     <a class="button is-md">
+       Программа курса
+       <span class="icon button_icon" style="--icon-url:url('/icons/arrow-right.svg')"></span>
+     </a>
+
+   Только иконка (only) — ОБЯЗАТЕЛЬНО с aria-label, иначе кнопка
+   для скринридера безымянная:
+     <button class="button is-md is-icon-only" aria-label="Закрыть">
+       <span class="icon button_icon" style="--icon-url:url('/icons/close.svg')"></span>
+     </button>
+   ========================================================================== */
+
+.button_icon { --icon-size: var(--icon-md); }
+.button.is-sm .button_icon { --icon-size: var(--icon-sm); }
+
+.button.is-icon-only {
+  padding-left: 0;
+  padding-right: 0;
+  width: var(--button-height-md);
+  min-width: var(--button-height-md);
+}
+.button.is-lg.is-icon-only { width: var(--button-height-lg); min-width: var(--button-height-lg); }
+.button.is-sm.is-icon-only { width: var(--button-height-sm); min-width: var(--button-height-sm); }
+
+
+/* ==========================================================================
+   1.8 СОСТОЯНИЯ
+   ========================================================================== */
+
+/* Выключена. Из UI-кита: фон gray-100, текст gray-400, граница gray-200. */
+.button:disabled,
+.button.is-disabled {
+  background-color: var(--bg-disabled);
+  color: var(--text-disabled);
+  border-color: var(--border-default);
+  /* Выключенная кнопка совсем плоская: даже тени нет. Тень читается
+     как «сюда можно нажать» — а нажать нельзя. */
+  box-shadow: none;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Загрузка. Ширина кнопки НЕ меняется: текст остаётся на месте
+   и становится прозрачным, поверх крутится индикатор. */
+.button.is-loading { color: transparent !important; pointer-events: none; position: relative; }
+.button.is-loading::after {
+  content: "";
+  position: absolute;
+  width: var(--icon-md); height: var(--icon-md);
+  /* Цвет индикатора отдельной переменной: на светлых видах кнопки
+     белый индикатор был бы не виден. currentColor тут не работает —
+     текст выше принудительно сделан прозрачным. */
+  border: 2px solid var(--spinner-color, var(--text-inverse));
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: button-spin .6s linear infinite;
+}
+.button.is-secondary.is-loading,
+.button.is-ghost.is-loading,
+.button.is-inverse.is-loading { --spinner-color: var(--accent); }
+@keyframes button-spin { to { transform: rotate(360deg); } }
+
+.button.is-full { width: 100%; }
+
+
+/* ############################################################################
+   2. ССЫЛКИ В ТЕКСТЕ
+   ############################################################################
+   Ссылка внутри абзаца и кнопка-ссылка (.button.is-link) — разные вещи:
+   у первой размер окружающего текста, у второй — размер кнопки.
+   Ссылка в тексте ВСЕГДА подчёркнута: цвета одного мало, чтобы её заметить.
+   ############################################################################ */
+
+.text-link {
+  color: var(--text-accent);
+  text-decoration: underline;
+  text-underline-offset: .15em;
+  text-decoration-thickness: 1px;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .text-link:hover { color: var(--accent-press); text-decoration-thickness: 2px; }
+}
+.text-link:active  { color: var(--accent-press); }
+.text-link:visited { color: var(--text-accent); }
+/* ⚠️ НЕТ ДАННЫХ: отдельный цвет посещённой ссылки не задан. */
+
+/* Без подчёркивания — только в меню, шапке и подвале.
+   В сплошном тексте использовать запрещено. */
+.text-link.is-subtle { color: inherit; text-decoration: none; }
+@media (hover: hover) and (pointer: fine) {
+  .text-link.is-subtle:hover { color: var(--text-accent); }
+}
+
+/* Текущая страница или раздел */
+.text-link.is-current {
+  color: var(--text-accent);
+  font-weight: var(--weight-strong);
+  text-decoration: none;
+  cursor: default;
+}
+
+/* На тёмном фоне */
+.text-link.is-inverse { color: var(--text-inverse); }
+@media (hover: hover) and (pointer: fine) {
+  .text-link.is-inverse:hover { color: var(--accent-inverse-press); }
+}
+
+/* Кликабельная карточка целиком.
+   Внутри такой ссылки нельзя размещать другую ссылку или кнопку. */
+.link-block { display: block; color: inherit; text-decoration: none; }
+
+
+/* ############################################################################
+   3. ЧИПЫ И ТЕГИ · маленькие подписи-пилюли
+   ############################################################################
+   Приём из UI-кита: пилюля с заливкой, границей и текстом одного семейства.
+
+   ОДНА ФОРМА, ДВА НАЗНАЧЕНИЯ. Раньше чипы были пилюлями, а теги —
+   прямоугольниками, и рядом в карточке они выглядели разнокалиберными.
+   Теперь форма, размер, поля, кегль и иконка у них общие — различает их
+   только цвет.
+
+     .chip — СТАТУС. Что сейчас происходит с курсом: идёт набор, закрыт,
+             оплачено. Цвет несёт смысл, поэтому у чипа цветная граница.
+
+     .tag  — ХАРАКТЕРИСТИКА. Неизменный факт: 12 дней, 750 ч, диплом.
+             Всегда фирменного тона, границы не видно.
+
+   Высота у обоих одинаковая: у тега граница есть, но прозрачная —
+   иначе он был бы на 2px ниже чипа и строка «поехала» бы.
+
+     <span class="chip is-open">Идёт набор</span>
+     <span class="chip is-warn">Последний шанс</span>
+     <span class="tag">750 ч</span>
+   ############################################################################ */
+
+/* --- общая основа: всё, что у чипа и тега одинаково --- */
+.chip,
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  padding: var(--space-xxsmall) var(--space-xsmall);   /* 4px сверху и снизу, 8px по бокам */
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);                   /* пилюля */
+  font-size: .75rem;
+  line-height: 1.2em;
+  font-weight: var(--weight-caption);
+  white-space: nowrap;
+}
+
+/* 14px: рядом с текстом 12px иконка 16px перевешивает буквы */
+.chip .icon,
+.tag .icon { --icon-size: var(--icon-xs); }
+
+
+/* --- ЧИПЫ: цвет несёт статус, граница видна --- */
+.chip.is-open   { background-color: var(--status-open-bg);   color: var(--status-open-text);   border-color: var(--status-open-border); }
+.chip.is-warn   { background-color: var(--status-warn-bg);   color: var(--status-warn-text);   border-color: var(--status-warn-border); }
+.chip.is-done   { background-color: var(--status-done-bg);   color: var(--status-done-text);   border-color: var(--status-done-border); }
+.chip.is-error  { background-color: var(--status-error-bg);  color: var(--status-error-text);  border-color: var(--status-error-border); }
+.chip.is-brand  { background-color: var(--status-brand-bg);  color: var(--status-brand-text);  border-color: var(--status-brand-border); }
+
+/* Нейтральный чип — когда статус не несёт оценки */
+.chip.is-neutral { background-color: var(--bg-hover); color: var(--text-secondary); border-color: var(--border-default); }
+
+/* Лист ожидания — тот же тон, что «идёт набор», но приглушённый */
+.chip.is-waitlist { background-color: var(--status-open-bg); color: var(--status-open-text); border-color: var(--status-open-border); opacity: .75; }
+
+
+/* --- ТЕГИ: всегда фирменный тон, граница прозрачная --- */
+.tag {
+  background-color: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+
+/* Старое имя класса оставлено, чтобы не ломать существующую вёрстку.
+   В новом коде использовать .chip. */
+.status-tag { }
+
+
+/* ############################################################################
+   5. ТАБЫ
+   ############################################################################ */
+.tabs_component {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  gap: var(--space-xsmall);
+  align-items: center;
+  background-color: var(--bg-page);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.tabs_component::-webkit-scrollbar { display: none; }
+
+.tabs_item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-target-min);
+  padding: var(--space-xxsmall) var(--space-small);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-control);
+  color: var(--text-accent);
+  font-size: 1rem;                      /* Action Md */
+  font-weight: var(--weight-action);
+  white-space: nowrap;
+  text-decoration: none;
+  scroll-snap-align: start;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tabs_item:hover { background-color: var(--bg-accent-soft); border-color: var(--border-accent); }
+}
+.tabs_item.is-active {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-button);
+  color: var(--text-inverse);
+}
+
+
+/* ############################################################################
+   6. ГОРИЗОНТАЛЬНАЯ ЛЕНТА КАРТОЧЕК
+   ############################################################################
+   ВАЖНО. Лента рассчитана на то, что лежит ВНУТРИ блока с классом
+   padding-global. Она «отматывает» его боковые поля отрицательным margin
+   и добавляет их обратно как padding. В блоке с другими боковыми полями
+   лента вылезет за край экрана и появится горизонтальный скролл страницы.
+   ############################################################################ */
+.scroll-row {
+  display: flex;
+  gap: var(--space-xsmall);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+
+  margin-left: calc(var(--padding-global) * -1);
+  margin-right: calc(var(--padding-global) * -1);
+  padding-left: var(--padding-global);
+  padding-right: var(--padding-global);
+}
+.scroll-row::-webkit-scrollbar { display: none; }
+.scroll-row > * { flex: none; scroll-snap-align: start; }
+
+
+/* ############################################################################
+   7. КАРТОЧКА
+   ############################################################################
+   Из UI-кита: белая поверхность, граница gray-200, мягкая тень.
+   ############################################################################ */
+.card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+}
+
+
+/* ############################################################################
+   8. ВРЕЗКИ И УВЕДОМЛЕНИЯ
+   ############################################################################
+   Приём из UI-кита: цветная полоса слева, мягкий фон, тёмный текст статуса.
+
+     <div class="alert is-warn">
+       <b class="alert_title">Важно</b>
+       <p class="alert_text">…</p>
+     </div>
+   ############################################################################ */
+.alert {
+  border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+  border-left: 4px solid transparent;
+  padding: var(--space-xsmall) var(--space-small);
+}
+.alert_title { display: block; font-size: .875rem; font-weight: var(--weight-strong); }
+.alert_text  { font-size: .875rem; line-height: 1.45em; color: var(--text-primary); margin-top: var(--space-tiny); }
+
+.alert.is-error { background-color: var(--error-bg);   border-left-color: var(--error); }
+.alert.is-error .alert_title { color: var(--error-text); }
+.alert.is-warn  { background-color: var(--warning-bg); border-left-color: var(--warning-border); }
+.alert.is-warn  .alert_title { color: var(--warning-text); }
+.alert.is-done  { background-color: var(--success-bg); border-left-color: var(--success-border); }
+.alert.is-done  .alert_title { color: var(--success-text); }
+.alert.is-info  { background-color: var(--info-bg);    border-left-color: var(--info-border); }
+.alert.is-info  .alert_title { color: var(--info-text); }
+.alert.is-brand { background-color: var(--bg-accent-soft); border-left-color: var(--accent); }
+.alert.is-brand .alert_title { color: var(--text-accent); }
+
+
+/* ############################################################################
+   9. ФОРМЫ
+   ############################################################################
+   ⚠️ Макетов полей нет. Стили собраны по компонентам UI-кита: поле —
+      белое, граница gray-300, в фокусе граница violet-400 плюс мягкое кольцо.
+
+   Разметка одного поля:
+     <div class="form_field">
+       <label class="form_label" for="phone">Телефон</label>
+       <input class="form_input" id="phone" name="phone" type="tel"
+              inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00">
+       <p class="form_error" hidden>Введите номер телефона</p>
+     </div>
+
+   Плейсхолдер НЕ заменяет подпись поля: он исчезает при вводе,
+   и человек забывает, что тут заполняет.
+   ############################################################################ */
+
+.form_field { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+
+.form_label {
+  font-size: .875rem;
+  line-height: 1.45em;
+  font-weight: var(--weight-strong);
+  color: var(--text-primary);
+}
+
+.form_input,
+.form_select,
+.form_textarea {
+  width: 100%;
+  min-height: var(--tap-target-min);
+  padding: var(--space-xsmall) var(--space-small);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.3em;
+  box-shadow: var(--shadow-control);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow   var(--duration-fast) var(--ease-out);
+}
+.form_textarea { min-height: 6rem; resize: vertical; }
+
+.form_input::placeholder,
+.form_textarea::placeholder { color: var(--text-disabled); }
+
+@media (hover: hover) and (pointer: fine) {
+  .form_input:hover,
+  .form_select:hover,
+  .form_textarea:hover { border-color: var(--border-focus); }
+}
+
+/* Фокус: граница + мягкое кольцо. Приём из UI-кита. */
+.form_input:focus,
+.form_select:focus,
+.form_textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--focus-ring);
+}
+
+.form_input:disabled,
+.form_select:disabled,
+.form_textarea:disabled {
+  background-color: var(--bg-disabled);
+  color: var(--text-disabled);
+  border-color: var(--border-default);
+  cursor: not-allowed;
+}
+
+.form_field.is-error .form_input,
+.form_field.is-error .form_select,
+.form_field.is-error .form_textarea { border-color: var(--error); }
+
+.form_error { font-size: .75rem; line-height: 1.3em; color: var(--error-text); }
+.form_hint  { font-size: .75rem; line-height: 1.3em; color: var(--text-muted); }
+
+.form_checkbox { display: flex; align-items: flex-start; gap: var(--space-xsmall); }
+.form_checkbox input {
+  flex: none;
+  width: 1.0625rem; height: 1.0625rem;
+  margin: .15rem 0 0;
+  accent-color: var(--accent);
+}
+.form_checkbox label { font-size: .875rem; line-height: 1.45em; color: var(--text-primary); }
+
+
+/* ############################################################################
+   10. СОСТОЯНИЯ ЗАГРУЗКИ ДАННЫХ ИЗ CMS
+   ############################################################################
+   Пока данные не пришли, на месте значения стоит скелетон ТОЙ ЖЕ ВЫСОТЫ,
+   что и будущий текст. Иначе страница дёргается.
+
+     <span class="skeleton" data-cms-price style="width: 7rem">&nbsp;</span>
+   ############################################################################ */
+.skeleton {
+  display: inline-block;
+  min-width: 3rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg,
+              var(--gray-200) 25%,
+              var(--gray-100) 37%,
+              var(--gray-200) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+  color: transparent !important;
+  user-select: none;
+}
+@keyframes skeleton-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+/* Блок, который прячется, если данных нет вообще */
+[data-cms-empty="hide"]:empty { display: none; }

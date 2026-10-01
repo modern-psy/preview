@@ -1,0 +1,80 @@
+/* Composition only. Card geometry belongs to review-card + reviews-responsive. */
+.section_practice-stories {
+  --section-inset-space: 3.75rem;
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+  --review-caption-color: var(--color-text-on-dark);
+  --review-caption-muted: var(--practice-stories-muted, var(--color-text-on-dark-muted));
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark-muted);
+}
+@media (min-width: 32.5625rem) {
+  .section_practice-stories { --section-inset-space: 5rem; }
+}
+@media (min-width: 48rem) {
+  .section_practice-stories { --section-inset-space: 6.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section_practice-stories { --section-inset-space: 7.5rem; --practice-stories-inset-top: 6.25rem; }
+}
+.practice-stories_component { display: block; position: relative; min-width: 0; }
+.practice-stories_sticky.section-spacing_component.is-inset {
+  padding-block: var(--practice-stories-inset-top, var(--section-inset-space)) var(--section-inset-space);
+  justify-content: flex-start;
+}
+.practice-stories_description { max-width: 43rem; }
+.practice-stories_viewport {
+  --stories-gutter: max(var(--page-padding), calc((100% - var(--container-xlarge)) / 2));
+  padding-inline: var(--stories-gutter);
+  padding-bottom: 0.75rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--stories-gutter);
+  scrollbar-width: thin;
+  scrollbar-color: var(--review-caption-muted) transparent;
+}
+.practice-stories_viewport:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: -2px; }
+.practice-stories_track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--review-slide-width);
+  align-items: start;
+  gap: var(--slider-gap);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.practice-stories_item { min-width: 0; scroll-snap-align: start; }
+.practice-stories_item:last-child { box-sizing: content-box; width: 100%; padding-inline-end: var(--stories-gutter); }
+.practice-stories_component.is-scroll-driven { height: var(--stories-shell-height); }
+.practice-stories_component.is-scroll-driven .practice-stories_sticky { position: sticky; top: var(--stories-sticky-top, 0px); height: 100svh; min-height: 0; }
+.practice-stories_component.is-scroll-driven .practice-stories_viewport { display: flex; flex: 1 1 0; min-height: 0; overflow: hidden; scroll-snap-type: none; }
+.practice-stories_component.is-scroll-driven .practice-stories_track { height: 100%; align-items: stretch; transform: translate3d(calc(-1 * var(--stories-offset, 0px)), 0, 0); will-change: transform; }
+.practice-stories_component.is-scroll-driven .practice-stories_item,
+.practice-stories_component.is-scroll-driven .review-card_component { height: 100%; }
+.practice-stories_component.is-scroll-driven .review-card_component.is-quote .review-card_media {
+  height: var(--stories-media-height);
+  flex: 0 0 var(--stories-media-height);
+  min-height: 0;
+}
+@media (prefers-reduced-motion: reduce), (max-width: 47.999rem), (hover: none), (pointer: coarse) {
+  .practice-stories_component.is-scroll-driven { height: auto; }
+  .practice-stories_component.is-scroll-driven .practice-stories_sticky { position: static; height: auto; min-height: 0; }
+  .practice-stories_component.is-scroll-driven .practice-stories_viewport { overflow-x: auto; }
+  .practice-stories_component.is-scroll-driven .practice-stories_track { transform: none; will-change: auto; }
+}
+/* The 521–767px band is Academy's horizontal-phone layout in Tilda. */
+@media (max-width: 47.999rem) {
+  .practice-stories_viewport { overflow: visible; padding-bottom: 0; scroll-snap-type: none; }
+  .practice-stories_track { grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 2rem; }
+  .practice-stories_item { width: 100%; }
+  .practice-stories_item:last-child { box-sizing: border-box; padding-inline-end: 0; }
+}
+@media (min-width: 32.5625rem) and (max-width: 47.999rem) {
+  .practice-stories_track { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; }
+  .practice-stories_item:last-child { grid-column: 1 / -1; width: calc((100% - 1rem) / 2); justify-self: center; }
+}
+@media (max-width: 32.5rem) {
+  .practice-stories_item { max-width: 23rem; }
+}

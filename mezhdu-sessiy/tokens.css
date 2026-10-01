@@ -1,0 +1,239 @@
+/* ============================================================================
+   ТОКЕНЫ ДИЗАЙН-СИСТЕМЫ «МЕЖДУ СЕССИЙ»
+   ============================================================================
+
+   Источник — экспорт переменных из Figma «Между сессий UI» (папка /tokens,
+   формат DTCG). Здесь оставлено только то, что нужно продукту: бренд, нейтраль,
+   статусные цвета, семантика текста/фона/рамок, тени, шрифт, радиусы, отступы.
+   Декоративные градиенты, utility-палитры и токены дашборд-компонентов
+   (тултипы, тогглы, слайдеры) намеренно не перенесены.
+
+   Имена повторяют имена из Figma, чтобы макет и код читались одинаково:
+     Figma  Colors/Brand/600            →  --color-brand-600
+     Figma  Colors/Text/text-primary    →  --text-primary
+     Figma  Colors/Background/bg-brand-solid → --bg-brand-solid
+     Figma  spacing-md                  →  --spacing-md
+
+   🟢 Можно править: значения справа, если дизайн-система обновилась.
+   🔴 Нельзя: переименовывать переменные — на них завязаны ui-kit.css и page.css.
+   ============================================================================ */
+
+:root {
+  /* -------------------------------------------------------------------------
+     1. ПРИМИТИВЫ · цвет
+     ------------------------------------------------------------------------- */
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Бренд — лаймовый (Tailwind lime) */
+  --color-brand-50: #f7fee7;
+  --color-brand-100: #ecfccb;
+  --color-brand-200: #d9f99d;
+  --color-brand-300: #bef264;
+  --color-brand-400: #a3e635;
+  --color-brand-500: #84cc16;
+  --color-brand-600: #65a30d;
+  --color-brand-700: #4d7c0f;
+  --color-brand-800: #3f6212;
+  --color-brand-900: #365314;
+  --color-brand-950: #1a2e05;
+
+  /* Нейтраль — свой, чуть тёплый серо-зелёный */
+  --color-neutral-50: #fdfefd;
+  --color-neutral-100: #e8e9e8;
+  --color-neutral-200: #d8dad9;
+  --color-neutral-300: #cbcdcc;
+  --color-neutral-400: #b1b4b2;
+  --color-neutral-500: #979b99;
+  --color-neutral-600: #7d827f;
+  --color-neutral-700: #646866;
+  --color-neutral-800: #4b4e4c;
+  --color-neutral-900: #323433;
+  --color-neutral-950: #181b19;
+
+  /* Ошибка */
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-300: #fca5a5;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+
+  /* Предупреждение */
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #ca8a04;
+
+  /* Успех */
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+
+  /* -------------------------------------------------------------------------
+     2. СЕМАНТИКА · текст
+     ------------------------------------------------------------------------- */
+
+  --text-primary: var(--color-neutral-950);          /* заголовки, введённый текст */
+  --text-secondary: var(--color-neutral-700);        /* основной текст, подписи полей */
+  --text-secondary-hover: var(--color-neutral-800);
+  --text-tertiary: var(--color-neutral-600);         /* подсказки, вторичные надписи */
+  --text-tertiary-hover: var(--color-neutral-700);
+  --text-quaternary: var(--color-neutral-500);
+  --text-placeholder: var(--color-neutral-500);
+  --text-white: var(--color-white);
+  --text-brand-primary: var(--color-brand-900);
+  --text-brand-secondary: var(--color-brand-700);
+  --text-brand-secondary-hover: var(--color-brand-800);
+  --text-brand-tertiary: var(--color-brand-600);
+  --text-error-primary: var(--color-red-600);
+  --text-error-primary-hover: var(--color-red-700);
+  --text-warning-primary: var(--color-yellow-600);
+  --text-success-primary: var(--color-green-600);
+
+  /* -------------------------------------------------------------------------
+     3. СЕМАНТИКА · фон
+     ------------------------------------------------------------------------- */
+
+  --bg-primary: var(--color-white);
+  --bg-primary-hover: var(--color-neutral-50);
+  --bg-primary-solid: var(--color-neutral-950);      /* тёмные плашки, тултипы */
+  --bg-secondary: var(--color-neutral-50);
+  --bg-secondary-hover: var(--color-neutral-100);
+  --bg-secondary-solid: var(--color-neutral-600);
+  --bg-tertiary: var(--color-neutral-100);
+  --bg-quaternary: var(--color-neutral-200);
+  --bg-overlay: var(--color-neutral-950);
+  --bg-brand-primary: var(--color-brand-50);
+  --bg-brand-secondary: var(--color-brand-100);
+  --bg-brand-solid: var(--color-brand-400);          /* галочки чекбоксов, радио */
+  --bg-brand-solid-hover: var(--color-brand-600);
+  --bg-brand-section: var(--color-brand-600);
+  --bg-error-primary: var(--color-red-50);
+  --bg-error-secondary: var(--color-red-100);
+  --bg-error-solid: var(--color-red-600);
+  --bg-error-solid-hover: var(--color-red-700);
+  --bg-warning-primary: var(--color-yellow-50);
+  --bg-success-primary: var(--color-green-50);
+
+  /* -------------------------------------------------------------------------
+     4. СЕМАНТИКА · рамки и иконки
+     ------------------------------------------------------------------------- */
+
+  --border-primary: var(--color-neutral-600);
+  --border-secondary: var(--color-neutral-200);
+  --border-tertiary: var(--color-neutral-100);
+  --border-input: var(--color-neutral-300);          /* в Figma: fg-tertiary (600) на инпутах */
+  --border-brand: var(--color-brand-500);
+  --border-brand-alt: var(--color-brand-600);
+  --border-error: var(--color-red-500);
+  --border-error-subtle: var(--color-red-300);
+
+  --fg-primary: var(--color-neutral-950);
+  --fg-secondary: var(--color-neutral-700);
+  --fg-tertiary: var(--color-neutral-600);
+  --fg-quaternary: var(--color-neutral-400);
+  --fg-white: var(--color-white);
+  --fg-brand-primary: var(--color-brand-600);
+  --fg-brand-secondary: var(--color-brand-500);
+  --fg-error-primary: var(--color-red-600);
+  --fg-success-primary: var(--color-green-600);
+
+  /* -------------------------------------------------------------------------
+     5. ЭФФЕКТЫ · тени и фокус
+     ------------------------------------------------------------------------- */
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 16px -4px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 2px 2px -1px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 24px -4px rgba(0, 0, 0, 0.08), 0 8px 8px -4px rgba(0, 0, 0, 0.03);
+
+  /* Объёмные кнопки (destructive и вторичные утилити) */
+  --shadow-skeuomorphic-inner: inset 0 0 0 1px rgba(0, 0, 0, 0.18), inset 0 -2px 0 0 rgba(0, 0, 0, 0.05);
+
+  /* Кольцо фокуса: 2px белого зазора + 4px бренда */
+  --focus-ring-color: var(--color-brand-500);
+  --focus-ring: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--focus-ring-color);
+  --focus-ring-error: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--color-red-500);
+
+  /* -------------------------------------------------------------------------
+     6. ТИПОГРАФИКА
+     Размеры фиксированные, как в Figma. Интерлиньяж в компонентах — 1.2.
+     ------------------------------------------------------------------------- */
+
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+  --font-family-display: "Wix Madefor Text", Arial, sans-serif;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --font-size-text-xs: 0.75rem;      /* 12 */
+  --font-size-text-sm: 0.875rem;     /* 14 */
+  --font-size-text-md: 1rem;         /* 16 */
+  --font-size-text-lg: 1.125rem;     /* 18 */
+  --font-size-text-xl: 1.25rem;      /* 20 */
+  --font-size-display-xs: 1.5rem;    /* 24 */
+  --font-size-display-sm: 1.875rem;  /* 30 */
+  --font-size-display-md: 2.25rem;   /* 36 */
+  --font-size-display-lg: 3rem;      /* 48 */
+  --font-size-display-xl: 3.75rem;   /* 60 */
+  --font-size-display-2xl: 4.5rem;   /* 72 */
+
+  --line-height-text-xs: 1.125rem;
+  --line-height-text-sm: 1.25rem;
+  --line-height-text-md: 1.5rem;
+  --line-height-text-lg: 1.75rem;
+  --line-height-text-xl: 1.875rem;
+  --line-height-display-xs: 2rem;
+  --line-height-display-sm: 2.375rem;
+  --line-height-display-md: 2.75rem;
+  --line-height-display-lg: 3.75rem;
+  --line-height-display-xl: 4.5rem;
+  --line-height-display-2xl: 5.625rem;
+
+  /* -------------------------------------------------------------------------
+     7. ОТСТУПЫ И РАДИУСЫ
+     ------------------------------------------------------------------------- */
+
+  --spacing-none: 0;
+  --spacing-xxs: 0.125rem;  /* 2 */
+  --spacing-xs: 0.25rem;    /* 4 */
+  --spacing-sm: 0.5rem;     /* 8 */
+  --spacing-md: 0.75rem;    /* 12 */
+  --spacing-lg: 1rem;       /* 16 */
+  --spacing-xl: 1.5rem;     /* 24 */
+  --spacing-2xl: 2rem;      /* 32 */
+  --spacing-3xl: 2.5rem;    /* 40 */
+  --spacing-4xl: 3rem;      /* 48 */
+  --spacing-5xl: 4rem;      /* 64 */
+  --spacing-6xl: 5rem;      /* 80 */
+  --spacing-7xl: 6rem;      /* 96 */
+  --spacing-8xl: 8rem;      /* 128 */
+  --spacing-9xl: 10rem;     /* 160 */
+
+  --radius-none: 0;
+  --radius-xxs: 0.125rem;   /* 2 */
+  --radius-xs: 0.25rem;     /* 4 */
+  --radius-sm: 0.375rem;    /* 6 */
+  --radius-md: 0.5rem;      /* 8 */
+  --radius-lg: 0.625rem;    /* 10 */
+  --radius-xl: 0.75rem;     /* 12 */
+  --radius-2xl: 1rem;       /* 16 */
+  --radius-3xl: 1.25rem;    /* 20 */
+  --radius-4xl: 1.5rem;     /* 24 */
+  --radius-full: 9999px;
+
+  /* Прозрачности для наложений */
+  --alpha-white-10: rgba(255, 255, 255, 0.1);
+  --alpha-white-50: rgba(255, 255, 255, 0.5);
+  --alpha-white-90: rgba(255, 255, 255, 0.9);
+  --alpha-black-10: rgba(0, 0, 0, 0.1);
+  --alpha-black-50: rgba(0, 0, 0, 0.5);
+
+  --transition-site: 180ms ease;
+}

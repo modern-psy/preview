@@ -1,0 +1,446 @@
+/* ============================================================================
+   СТИЛИ ЛИЧНОГО КАБИНЕТА  ·  /lk
+   ============================================================================
+
+   Здесь только раскладка: где что стоит и как это перестраивается на телефоне.
+   Цвета, размеры текста, радиусы, тени и сами компоненты (карточка, кнопка,
+   чип, ссылка) приходят из дизайн-системы — тут они не переопределяются.
+
+   Ни одного hex-кода, ни одного размера в px и ни одного градиента:
+   всё через токены из design-system/tokens.css.
+   ============================================================================ */
+
+
+/* ############################################################################
+   1. КАРКАС СТРАНИЦЫ
+   ############################################################################
+
+   Две колонки: слева навигация, справа содержимое.
+   Ширина левой колонки фиксированная, правая забирает остаток.
+   minmax(0, 1fr) вместо 1fr — иначе длинное название материала растянет
+   колонку шире экрана: это известное поведение grid.
+   ############################################################################ */
+
+.lk_layout {
+  display: grid;
+  gap: var(--space-small);
+  align-items: start;   /* колонки не растягиваются друг под друга */
+}
+
+/* Планшет: колонка навигации 240px */
+@media (min-width: 48.0625rem) {
+  .lk_layout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: var(--space-medium);
+  }
+}
+
+/* Десктоп: колонка навигации 280px, воздуха между колонками больше */
+@media (min-width: 64.0625rem) {
+  .lk_layout {
+    grid-template-columns: 17.5rem minmax(0, 1fr);
+    column-gap: var(--space-large);
+  }
+}
+
+
+/* ############################################################################
+   2. ЛЕВАЯ КОЛОНКА
+   ############################################################################
+   Порядок сверху вниз: логотип → подписка → меню → поддержка.
+   Он же порядок по важности, поэтому переставлять блоки не нужно.
+   ############################################################################ */
+
+.lk_sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+}
+
+/* Колонка едет вместе со страницей до верхней кромки и там останавливается:
+   меню остаётся под рукой, пока человек листает материалы. */
+@media (min-width: 48.0625rem) {
+  .lk_sidebar {
+    position: sticky;
+    top: var(--space-medium);
+    z-index: var(--z-sticky);
+  }
+}
+
+
+/* ==========================================================================
+   2.1 Логотип и название клуба
+   ========================================================================== */
+.lk_brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  padding-left: var(--space-xsmall);   /* в одну линию с надписями меню */
+  color: var(--text-heading);
+}
+
+.lk_brand_logo {
+  width: 4.5rem;      /* 72px, пропорция логотипа сохраняется */
+  height: auto;
+  flex: none;
+}
+
+/* Подпись «Личный кабинет участника» — со своей строки */
+.lk_brand_name span { display: block; }
+
+
+/* ==========================================================================
+   2.2 Подписка
+   ==========================================================================
+   Маленькая карточка сразу под логотипом. Отвечает на один вопрос:
+   сколько ещё осталось и что нажать, чтобы не закончилось.
+   Радиус на ступень меньше, чем у карточек материалов справа, — так видно,
+   что это служебный блок, а не содержимое.
+   ========================================================================== */
+.lk_sub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  padding: var(--space-small);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.lk_sub_value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xxsmall);
+}
+
+/* Полоса остатка. Заливка ровная, без градиента. */
+.lk_sub_bar {
+  height: var(--space-xxsmall);
+  border-radius: var(--radius-full);
+  background-color: var(--bg-accent-soft);
+  overflow: hidden;
+}
+.lk_sub_bar i {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--accent);
+}
+
+
+/* ==========================================================================
+   2.3 Меню разделов
+   ==========================================================================
+   Единственный список ссылок на странице. В содержимом справа он
+   не повторяется — см. комментарий в index.html.
+   ========================================================================== */
+.lk_nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tiny);
+}
+
+.lk_nav_item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xsmall);
+  min-height: var(--tap-target-min);   /* 44px под палец */
+  padding: 0 var(--space-xsmall);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+/* Иконка спокойнее текста, пока пункт не выбран */
+.lk_nav_icon { color: var(--text-muted); }
+
+@media (hover: hover) and (pointer: fine) {
+  .lk_nav_item:hover { background-color: var(--bg-hover); }
+  .lk_nav_item:hover .lk_nav_icon { color: var(--text-secondary); }
+}
+
+/* Текущий раздел */
+.lk_nav_item.is-current {
+  background-color: var(--bg-accent-soft);
+  border-color: var(--border-accent);
+  color: var(--text-accent);
+  font-weight: var(--weight-strong);
+  cursor: default;
+}
+.lk_nav_item.is-current .lk_nav_icon { color: inherit; }
+
+/* Плашка «Новое» прижимается к правому краю пункта */
+.lk_nav_chip { margin-left: auto; }
+
+
+/* ==========================================================================
+   2.4 Техподдержка
+   ==========================================================================
+   Самый маленький блок страницы и самый нижний. Поддержка нужна редко,
+   но всегда на одном и том же месте — искать её не приходится.
+   ========================================================================== */
+.lk_support {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxsmall);
+  padding: var(--space-small) var(--space-xsmall) 0;
+  border-top: 1px solid var(--border-default);
+}
+
+/* Ссылка «Написать в поддержку» — своей строкой, а не в конце абзаца */
+.lk_support .text-link { align-self: flex-start; }
+
+
+/* ############################################################################
+   3. ПРАВАЯ КОЛОНКА · содержимое
+   ############################################################################ */
+
+.lk_main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  min-width: 0;   /* защита от растягивания колонки длинным словом */
+}
+
+
+/* ==========================================================================
+   3.1 Шапка содержимого
+   ========================================================================== */
+.lk_head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-small);
+}
+
+.lk_head_text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxsmall);
+  min-width: 0;
+}
+
+.lk_head_note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+}
+.lk_head_note .icon { color: var(--text-muted); }
+
+/* Инициалы участника. Заливка ровная, без градиента. */
+.lk_avatar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
+  border-radius: var(--radius-full);
+  background-color: var(--accent);
+  color: var(--text-inverse);
+  font-weight: var(--weight-strong);
+}
+
+
+/* ==========================================================================
+   3.2 Раздел
+   ========================================================================== */
+.lk_section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+}
+
+.lk_section_head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xsmall);
+}
+
+
+/* ==========================================================================
+   3.3 Квадрат с иконкой в карточке
+   ========================================================================== */
+.lk_icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+.lk_icon.is-lg {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-2xl);
+}
+
+
+/* ==========================================================================
+   3.4 Первый материал — вводный
+   ==========================================================================
+   Шире остальных и с кнопкой: человеку, который зашёл впервые, не нужно
+   выбирать, с чего начать. Это единственная выделенная карточка на странице —
+   если выделить несколько, выделенных не останется.
+   ========================================================================== */
+.lk_start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+  padding: var(--space-small);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.lk_start_body {
+  flex: 1 1 12rem;   /* уже 12rem — кнопка переезжает на свою строку */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxsmall);
+  min-width: 0;
+}
+
+.lk_start_action { flex: none; }
+
+
+/* ==========================================================================
+   3.5 Остальные материалы
+   ========================================================================== */
+.lk_materials {
+  display: grid;
+  gap: var(--space-small);
+}
+
+/* Планшет — две колонки, десктоп — три */
+@media (min-width: 48.0625rem) {
+  .lk_materials { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .lk_materials { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.lk_material {
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+/* Ссылка занимает карточку целиком: нажимается всё, а не одно название */
+.lk_material_link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxsmall);
+  height: 100%;
+  padding: var(--space-small);
+}
+
+/* Между иконкой и названием воздуха больше, чем между названием и описанием */
+.lk_material_link .lk_icon { margin-bottom: var(--space-xsmall); }
+
+.lk_title { display: block; }
+.lk_title .chip {
+  vertical-align: middle;
+  margin-left: var(--space-xxsmall);
+}
+
+
+/* ==========================================================================
+   3.6 Наведение и фокус на карточках
+   ==========================================================================
+   Тень при наведении дизайном не задана (AGENTS.md, раздел 17), поэтому
+   карточка отзывается тем же приёмом, что и таб в дизайн-системе:
+   меняется цвет границы. Ничего не двигается и не увеличивается.
+   ========================================================================== */
+@media (hover: hover) and (pointer: fine) {
+  .lk_start:hover,
+  .lk_material:hover { border-color: var(--border-accent); }
+
+  .lk_start:hover .lk_title,
+  .lk_material:hover .lk_title { color: var(--text-accent); }
+}
+
+/* То же самое при переходе по Tab */
+.lk_start:focus-within,
+.lk_material:focus-within { border-color: var(--border-accent); }
+
+
+/* ############################################################################
+   4. ТЕЛЕФОН · другая композиция
+   ############################################################################
+
+   ⚠️ Здесь max-width, а не min-width, — исключение из mobile-first.
+   Причина в разделе 7 AGENTS.md: на узком экране блок имеет ПРИНЦИПИАЛЬНО
+   другую композицию, и описывать её через «отменить десктоп» длиннее
+   и запутаннее, чем описать прямо.
+
+   Что происходит: колонки нет, страница разворачивается в одну ленту —
+   логотип, подписка, меню строкой, содержимое и только в самом конце
+   поддержка. Разметка при этом та же самая: display: contents делает
+   <aside> «прозрачным», и его части встают в общую сетку страницы,
+   после чего порядок задаётся через order. Второго варианта блока
+   в HTML нет и быть не должно.
+   ############################################################################ */
+
+@media (max-width: 48rem) {
+
+  .lk_sidebar { display: contents; }
+
+  .lk_brand   { order: 1; }
+  .lk_sub     { order: 2; }
+  .lk_nav     { order: 3; }
+  .lk_main    { order: 4; }
+  .lk_support { order: 5; }
+
+  /* Логотип и подписка встают в одну строку: сверху экрана и так тесно */
+  .lk_brand {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-xsmall);
+    padding-left: 0;
+  }
+
+  .lk_sub {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xsmall);
+  }
+  .lk_sub_label { width: 100%; }
+  .lk_sub_value { flex: 1 1 auto; }
+  /* Полоса на телефоне не нужна: цифра рядом и так всё говорит */
+  .lk_sub_bar { display: none; }
+  /* Кнопка встаёт справа от числа. Во всю ширину экрана она была бы
+     самым крупным элементом страницы — а это всего лишь продление доступа. */
+  .lk_sub .button.is-full { width: auto; }
+
+  /* Меню — строкой с горизонтальной прокруткой, как табы в расписании */
+  .lk_nav {
+    flex-direction: row;
+    gap: var(--space-xxsmall);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .lk_nav::-webkit-scrollbar { display: none; }
+
+  .lk_nav_item {
+    flex: none;
+    padding: 0 var(--space-small);
+    border-color: var(--border-default);
+    background-color: var(--bg-surface);
+    box-shadow: var(--shadow-control);
+    scroll-snap-align: start;
+  }
+
+  /* Плашка «Новое» в строке меню прижимать некуда */
+  .lk_nav_chip { margin-left: 0; }
+
+  .lk_support { padding-left: 0; padding-right: 0; }
+}

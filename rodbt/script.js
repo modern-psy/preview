@@ -1,0 +1,2227 @@
+/* Сгенерировано: node rodbt/build.mjs. Общие скрипты Академии в порядке зависимостей. Руками не править. */
+
+/* === web-academy/shared/academy/components.js === */
+// academy-slider-controls:start
+(() => {
+  window.AcademySliderControls = {
+    motion(slider) {
+      const style = getComputedStyle(slider);
+      const token = style.getPropertyValue('--slider-duration').trim() || style.getPropertyValue('--motion-duration').trim();
+      return {
+        speed: token ? parseFloat(token) * (token.endsWith('ms') ? 1 : 1000) : 650,
+        easing: style.getPropertyValue('--motion-easing').trim() || 'cubic-bezier(0.25, 1, 0.5, 1)',
+        reducedMotion: {speed: 0, rewindSpeed: 0, autoplay: 'pause'},
+      };
+    },
+    bind(slider, component, getInstance, previousButton, nextButton) {
+      let wheelDistance = 0;
+      let wheelIdleTimer = 0;
+      let wheelLastMoveAt = Number.NEGATIVE_INFINITY;
+      let wheelLastDirection = 0;
+      let wheelPreviousMagnitude = 0;
+      let wheelAwaitingFreshImpulse = false;
+
+      const getEnd = () => {
+        const splide = getInstance();
+        if (!splide) return 0;
+        let end = splide.Components.Controller.getEnd();
+        const move = splide.Components.Move;
+        while (end > 0 && Math.abs(move.toPosition(end, true) - move.toPosition(end - 1, true)) < 1) end -= 1;
+        return end;
+      };
+      const updateControls = () => {
+        const splide = getInstance();
+        const endIndex = getEnd();
+
+        if (previousButton) previousButton.disabled = !splide || splide.index <= 0;
+        if (nextButton) nextButton.disabled = !splide || splide.index >= endIndex;
+      };
+
+      const showPrevious = () => {
+        const splide = getInstance();
+        if (splide) splide.go(splide.index > getEnd() ? Math.max(0, getEnd() - 1) : '<');
+      };
+      const showNext = () => { const splide = getInstance(); if (splide && splide.index < getEnd()) splide.go('>'); };
+
+      const resetWheelGesture = () => {
+        wheelDistance = 0;
+        wheelIdleTimer = 0;
+        wheelLastDirection = 0;
+        wheelPreviousMagnitude = 0;
+        wheelAwaitingFreshImpulse = false;
+      };
+
+      const handleWheel = (event) => {
+        const splide = getInstance();
+        if (!splide || event.defaultPrevented || event.ctrlKey || event.metaKey) return;
+        const protectedTarget = event.target.closest('[data-slider-no-drag], input, textarea, select, [contenteditable]');
+        if (protectedTarget && !(protectedTarget.matches('[data-review-video]') && !protectedTarget.controls)) return;
+
+        const horizontalDistance = Math.abs(event.deltaX);
+        const verticalDistance = Math.abs(event.deltaY);
+        if (horizontalDistance < 1 || horizontalDistance <= verticalDistance) return;
+        const delta = event.deltaX;
+
+        const endIndex = getEnd();
+        if ((delta < 0 && splide.index <= 0) || (delta > 0 && splide.index >= endIndex)) {
+          window.clearTimeout(wheelIdleTimer);
+          resetWheelGesture();
+          return;
+        }
+
+        event.preventDefault();
+        window.clearTimeout(wheelIdleTimer);
+        wheelIdleTimer = window.setTimeout(resetWheelGesture, 140);
+
+        const deltaMultiplier =
+          event.deltaMode === WheelEvent.DOM_DELTA_LINE
+            ? 16
+            : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+              ? window.innerWidth
+              : 1;
+        const normalizedDelta = delta * deltaMultiplier;
+        const normalizedMagnitude = Math.abs(normalizedDelta);
+        const normalizedDirection = Math.sign(normalizedDelta);
+        const eventTime = event.timeStamp;
+
+        if (wheelAwaitingFreshImpulse) {
+          const impulseDelayElapsed = eventTime - wheelLastMoveAt >= 96;
+          const directionChanged = normalizedDirection !== wheelLastDirection;
+          const magnitudeIncreased =
+            normalizedMagnitude >= 4 &&
+            normalizedMagnitude >= wheelPreviousMagnitude * 1.35;
+
+          wheelPreviousMagnitude = normalizedMagnitude;
+
+          if (!impulseDelayElapsed || (!directionChanged && !magnitudeIncreased)) {
+            return;
+          }
+
+          wheelDistance = 0;
+          wheelAwaitingFreshImpulse = false;
+        }
+
+        if (wheelDistance !== 0 && Math.sign(wheelDistance) !== normalizedDirection) {
+          wheelDistance = 0;
+        }
+
+        wheelDistance += normalizedDelta;
+        wheelPreviousMagnitude = normalizedMagnitude;
+
+        if (Math.abs(wheelDistance) < 36) return;
+
+        wheelDistance = 0;
+        wheelLastMoveAt = eventTime;
+        wheelLastDirection = normalizedDirection;
+        wheelAwaitingFreshImpulse = true;
+
+        if (normalizedDirection > 0) showNext();
+        else showPrevious();
+      };
+
+      const handleKeydown = (event) => {
+        const splide = getInstance();
+        if (
+          !splide ||
+          event.target.closest('[data-slider-no-drag], input, textarea, select, [contenteditable]') ||
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey
+        ) {
+          return;
+        }
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showPrevious();
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showNext();
+        }
+      };
+
+      const focusSlider = (event) => {
+        if (!event.target.closest('button, a, input, textarea, select, [contenteditable], [data-slider-no-drag]')) slider.focus({ preventScroll: true });
+      };
+
+
+      previousButton?.addEventListener('click', showPrevious);
+      nextButton?.addEventListener('click', showNext);
+      slider.addEventListener('wheel', handleWheel, {passive: false});
+      slider.addEventListener('pointerdown', focusSlider);
+      component.addEventListener('keydown', handleKeydown);
+      return {
+        update: updateControls,
+        destroy() {
+          previousButton?.removeEventListener('click', showPrevious);
+          nextButton?.removeEventListener('click', showNext);
+          slider.removeEventListener('wheel', handleWheel);
+          slider.removeEventListener('pointerdown', focusSlider);
+          component.removeEventListener('keydown', handleKeydown);
+          window.clearTimeout(wheelIdleTimer);
+        },
+      };
+    },
+  };
+})();
+// academy-slider-controls:end
+
+(() => {
+  if (typeof window.__academyComponentsCleanup === "function") {
+    window.__academyComponentsCleanup();
+  }
+
+  const pages = [...document.querySelectorAll(".academy-page")]
+    .filter(page => !page.parentElement?.closest(".academy-page"));
+  if (!pages.length) return;
+  const pageCleanups = [];
+  pages.forEach(page => {
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const finePointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const touchPointerQuery = window.matchMedia("(hover: none), (pointer: coarse)");
+  const componentCleanups = [];
+  const motionStyle = getComputedStyle(page);
+  const motionDuration = parseFloat(motionStyle.getPropertyValue("--motion-duration")) || 300;
+  const motionEasing = motionStyle.getPropertyValue("--motion-easing").trim();
+  const touchHighlightTones = ["is-bright", "is-medium", "is-muted", "is-medium"];
+  const neighborOffsets = [
+    { column: -1, row: 0 },
+    { column: 1, row: 0 },
+    { column: 0, row: -1 },
+    { column: 0, row: 1 },
+  ];
+  const neighborDelays = { medium: 70, muted: 130 };
+  const defaultCometOrigins = [
+    { x: 382, y: 164, size: 16 },
+    { x: 282, y: 264, size: 12 },
+    { x: 1082, y: 164, size: 20 },
+    { x: 982, y: 64, size: 10 },
+  ];
+  const cometDirections = [
+    { name: "right", x: 1, y: 0, angle: 0 },
+    { name: "down", x: 0, y: 1, angle: 90 },
+    { name: "left", x: -1, y: 0, angle: 180 },
+    { name: "up", x: 0, y: -1, angle: 270 },
+  ];
+
+  page.querySelectorAll("[data-cta-grid]").forEach((component) => {
+    const stage = component.querySelector("[data-cta-grid-stage]");
+    const highlightLayer = component.querySelector("[data-cta-grid-highlights]");
+    const cometLayer = component.querySelector("[data-cta-comet-layer]");
+
+    if (!stage || !highlightLayer) return;
+
+    component.dataset.interactiveGridInitialized = "true";
+
+    const cells = new Map();
+    const gridCellSize = Number.parseFloat(stage.dataset.gridCellSize || "100");
+    const gridOrigin = {
+      x: Number.parseFloat(stage.dataset.gridOriginX || "82"),
+      y: Number.parseFloat(stage.dataset.gridOriginY || "64"),
+    };
+    const gridColumns = {
+      min: Number.parseInt(stage.dataset.gridColumnMin || "-1", 10),
+      max: Number.parseInt(stage.dataset.gridColumnMax || "11", 10),
+    };
+    const gridRows = {
+      min: Number.parseInt(stage.dataset.gridRowMin || "-1", 10),
+      max: Number.parseInt(stage.dataset.gridRowMax || "2", 10),
+    };
+    let activeCellKey = "";
+    let pointerFrame = 0;
+    let resizeFrame = 0;
+    let latestPointer = null;
+    let isInViewport = false;
+    let cometTimer = 0;
+    let isDestroyed = false;
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const isTouchGridMode = () =>
+      touchPointerQuery.matches || !finePointerQuery.matches;
+
+    const clearHighlights = () => {
+      cells.forEach((cell) => {
+        cell.classList.remove(
+          "is-muted",
+          "is-medium",
+          "is-bright",
+          "is-touch-static",
+        );
+      });
+      activeCellKey = "";
+    };
+
+    const buildCells = () => {
+      clearHighlights();
+      highlightLayer.replaceChildren();
+      cells.clear();
+
+      for (let row = gridRows.min; row <= gridRows.max; row += 1) {
+        for (let column = gridColumns.min; column <= gridColumns.max; column += 1) {
+          const cell = document.createElement("span");
+          const key = `${column}:${row}`;
+
+          cell.className = "interactive-grid_cell";
+          cell.style.setProperty(
+            "--grid-cell-x",
+            `${gridOrigin.x + column * gridCellSize}px`,
+          );
+          cell.style.setProperty(
+            "--grid-cell-y",
+            `${gridOrigin.y + row * gridCellSize}px`,
+          );
+          cell.style.setProperty("--grid-cell-size", `${gridCellSize}px`);
+          highlightLayer.append(cell);
+          cells.set(key, cell);
+        }
+      }
+    };
+
+    const setHighlight = (column, row, className, delay = 0) => {
+      const cell = cells.get(`${column}:${row}`);
+
+      if (!cell) return;
+
+      cell.style.setProperty("--grid-cell-delay", `${delay}ms`);
+      cell.classList.add(className);
+    };
+
+    const shuffle = (items) => {
+      const shuffled = [...items];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+      }
+
+      return shuffled;
+    };
+
+    const getTouchHighlightCandidates = () => {
+      const componentRect = component.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      const visibleBounds = {
+        top: Math.max(componentRect.top, stageRect.top),
+        right: Math.min(componentRect.right, stageRect.right),
+        bottom: Math.min(componentRect.bottom, stageRect.bottom),
+        left: Math.max(componentRect.left, stageRect.left),
+      };
+      const visibleWidth = Math.max(0, visibleBounds.right - visibleBounds.left);
+      const visibleHeight = Math.max(0, visibleBounds.bottom - visibleBounds.top);
+      const insetX = Math.min(gridCellSize * 0.6, visibleWidth * 0.18);
+      const insetY = Math.min(gridCellSize * 0.45, visibleHeight * 0.16);
+
+      const collectCandidates = (candidateInsetX, candidateInsetY) => {
+        const candidates = [];
+
+        for (let row = gridRows.min; row <= gridRows.max; row += 1) {
+          for (let column = gridColumns.min; column <= gridColumns.max; column += 1) {
+            const centerX =
+              stageRect.left + gridOrigin.x + column * gridCellSize + gridCellSize / 2;
+            const centerY =
+              stageRect.top + gridOrigin.y + row * gridCellSize + gridCellSize / 2;
+
+            if (
+              centerX >= visibleBounds.left + candidateInsetX &&
+              centerX <= visibleBounds.right - candidateInsetX &&
+              centerY >= visibleBounds.top + candidateInsetY &&
+              centerY <= visibleBounds.bottom - candidateInsetY
+            ) {
+              candidates.push({ column, row, x: centerX, y: centerY });
+            }
+          }
+        }
+
+        return candidates;
+      };
+      const insetCandidates = collectCandidates(insetX, insetY);
+
+      return insetCandidates.length >= 4 ? insetCandidates : collectCandidates(0, 0);
+    };
+
+    const applyTouchHighlights = () => {
+      clearHighlights();
+
+      if (!isTouchGridMode() || reducedMotionQuery.matches) {
+        component.dataset.gridInputMode = reducedMotionQuery.matches
+          ? "reduced-motion"
+          : "fine";
+        return;
+      }
+
+      component.dataset.gridInputMode = "touch-static";
+
+      const candidates = getTouchHighlightCandidates();
+
+      if (!candidates.length) return;
+
+      const bounds = candidates.reduce(
+        (result, candidate) => ({
+          minX: Math.min(result.minX, candidate.x),
+          maxX: Math.max(result.maxX, candidate.x),
+          minY: Math.min(result.minY, candidate.y),
+          maxY: Math.max(result.maxY, candidate.y),
+        }),
+        { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity },
+      );
+      const midpoint = {
+        x: (bounds.minX + bounds.maxX) / 2,
+        y: (bounds.minY + bounds.maxY) / 2,
+      };
+      const quadrantChecks = [
+        (candidate) => candidate.x <= midpoint.x && candidate.y <= midpoint.y,
+        (candidate) => candidate.x > midpoint.x && candidate.y <= midpoint.y,
+        (candidate) => candidate.x <= midpoint.x && candidate.y > midpoint.y,
+        (candidate) => candidate.x > midpoint.x && candidate.y > midpoint.y,
+      ];
+      const selected = [];
+
+      quadrantChecks.forEach((isInQuadrant) => {
+        const options = candidates.filter(
+          (candidate) =>
+            isInQuadrant(candidate) &&
+            !selected.some(
+              (selectedCandidate) =>
+                selectedCandidate.column === candidate.column &&
+                selectedCandidate.row === candidate.row,
+            ),
+        );
+
+        if (options.length) {
+          selected.push(options[Math.floor(Math.random() * options.length)]);
+        }
+      });
+
+      shuffle(candidates).forEach((candidate) => {
+        if (selected.length >= 4) return;
+        if (
+          selected.some(
+            (selectedCandidate) =>
+              selectedCandidate.column === candidate.column &&
+              selectedCandidate.row === candidate.row,
+          )
+        ) {
+          return;
+        }
+
+        selected.push(candidate);
+      });
+
+      selected.slice(0, 4).forEach((candidate, index) => {
+        const cell = cells.get(`${candidate.column}:${candidate.row}`);
+
+        if (!cell) return;
+
+        setHighlight(candidate.column, candidate.row, touchHighlightTones[index]);
+        cell.classList.add("is-touch-static");
+      });
+    };
+
+    const updateGrid = (clientX, clientY) => {
+      if (isTouchGridMode() || reducedMotionQuery.matches) return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const column = clamp(
+        Math.floor((clientX - stageRect.left - gridOrigin.x) / gridCellSize),
+        gridColumns.min,
+        gridColumns.max,
+      );
+      const row = clamp(
+        Math.floor((clientY - stageRect.top - gridOrigin.y) / gridCellSize),
+        gridRows.min,
+        gridRows.max,
+      );
+      const nextCellKey = `${column}:${row}`;
+
+      if (activeCellKey === nextCellKey) return;
+
+      clearHighlights();
+      setHighlight(column, row, "is-bright");
+
+      const availableOffsets = neighborOffsets.filter(
+        (offset) =>
+          column + offset.column >= gridColumns.min &&
+          column + offset.column <= gridColumns.max &&
+          row + offset.row >= gridRows.min &&
+          row + offset.row <= gridRows.max,
+      );
+      const cornerPairs = [];
+
+      for (let firstIndex = 0; firstIndex < availableOffsets.length; firstIndex += 1) {
+        for (
+          let secondIndex = firstIndex + 1;
+          secondIndex < availableOffsets.length;
+          secondIndex += 1
+        ) {
+          const first = availableOffsets[firstIndex];
+          const second = availableOffsets[secondIndex];
+          const dotProduct = first.column * second.column + first.row * second.row;
+
+          if (dotProduct === 0) cornerPairs.push([first, second]);
+        }
+      }
+
+      const selectedPair =
+        cornerPairs[Math.floor(Math.random() * cornerPairs.length)] || [];
+      const [mediumOffset, mutedOffset] = selectedPair;
+
+      if (mediumOffset) {
+        setHighlight(
+          column + mediumOffset.column,
+          row + mediumOffset.row,
+          "is-medium",
+          neighborDelays.medium,
+        );
+      }
+
+      if (mutedOffset) {
+        setHighlight(
+          column + mutedOffset.column,
+          row + mutedOffset.row,
+          "is-muted",
+          neighborDelays.muted,
+        );
+      }
+
+      activeCellKey = nextCellKey;
+    };
+
+    const handlePointerPosition = (event) => {
+      if (isTouchGridMode() || reducedMotionQuery.matches) return;
+
+      latestPointer = { x: event.clientX, y: event.clientY };
+
+      if (pointerFrame) return;
+
+      pointerFrame = window.requestAnimationFrame(() => {
+        pointerFrame = 0;
+        if (latestPointer) updateGrid(latestPointer.x, latestPointer.y);
+      });
+    };
+
+    const handlePointerLeave = () => {
+      latestPointer = null;
+      window.cancelAnimationFrame(pointerFrame);
+      pointerFrame = 0;
+
+      if (!isTouchGridMode()) clearHighlights();
+    };
+
+    const requestCellBuild = () => {
+      if (!isTouchGridMode() || resizeFrame) return;
+
+      resizeFrame = window.requestAnimationFrame(() => {
+        resizeFrame = 0;
+        applyTouchHighlights();
+      });
+    };
+
+    const syncGridInputMode = () => {
+      latestPointer = null;
+      window.cancelAnimationFrame(pointerFrame);
+      pointerFrame = 0;
+
+      if ((isTouchGridMode() || reducedMotionQuery.matches) && cometLayer) {
+        cometLayer.replaceChildren();
+      }
+
+      applyTouchHighlights();
+    };
+
+    const spawnComet = () => {
+      if (
+        isDestroyed ||
+        !isInViewport ||
+        document.hidden ||
+        reducedMotionQuery.matches ||
+        isTouchGridMode() ||
+        !cometLayer
+      ) {
+        return;
+      }
+
+      const origin =
+        defaultCometOrigins[Math.floor(Math.random() * defaultCometOrigins.length)];
+      const direction =
+        cometDirections[Math.floor(Math.random() * cometDirections.length)];
+      const startGap = origin.size / 2 + 4;
+      const distance = 32 + Math.random() * 28;
+      const startX = origin.x + direction.x * startGap;
+      const startY = origin.y + direction.y * startGap;
+      const offsetX = direction.x * distance;
+      const offsetY = direction.y * distance;
+      const comet = document.createElement("span");
+
+      comet.className = "cta_comet";
+      comet.dataset.direction = direction.name;
+      comet.style.left = `${startX}px`;
+      comet.style.top = `${startY}px`;
+      cometLayer.append(comet);
+
+      if (typeof comet.animate !== "function") {
+        comet.remove();
+        return;
+      }
+
+      const animation = comet.animate(
+        [
+          {
+            opacity: 0,
+            transform: `translate3d(0, 0, 0) rotate(${direction.angle}deg)`,
+          },
+          { opacity: 0.38, offset: 0.24 },
+          {
+            opacity: 0,
+            transform: `translate3d(${offsetX}px, ${offsetY}px, 0) rotate(${direction.angle}deg)`,
+          },
+        ],
+        {
+          duration: motionDuration,
+          easing: motionEasing || "cubic-bezier(0.4, 0, 0.2, 1)",
+        },
+      );
+
+      animation.addEventListener("finish", () => comet.remove(), { once: true });
+      animation.addEventListener("cancel", () => comet.remove(), { once: true });
+    };
+
+    const scheduleComet = () => {
+      window.clearTimeout(cometTimer);
+
+      if (isDestroyed || reducedMotionQuery.matches || isTouchGridMode()) return;
+
+      cometTimer = window.setTimeout(() => {
+        spawnComet();
+        scheduleComet();
+      }, 4200 + Math.random() * 4200);
+    };
+
+    const observer =
+      "IntersectionObserver" in window
+        ? new IntersectionObserver(
+            (entries) => {
+              isInViewport = entries.some((entry) => entry.isIntersecting);
+            },
+            { threshold: 0.15 },
+          )
+        : null;
+    const resizeObserver =
+      "ResizeObserver" in window ? new ResizeObserver(requestCellBuild) : null;
+
+    buildCells();
+    applyTouchHighlights();
+    component.addEventListener("pointerenter", handlePointerPosition);
+    component.addEventListener("pointermove", handlePointerPosition);
+    component.addEventListener("pointerleave", handlePointerLeave);
+    resizeObserver?.observe(component);
+    observer?.observe(component);
+    finePointerQuery.addEventListener("change", syncGridInputMode);
+    touchPointerQuery.addEventListener("change", syncGridInputMode);
+    reducedMotionQuery.addEventListener("change", syncGridInputMode);
+
+    if (!observer) isInViewport = true;
+    scheduleComet();
+
+    componentCleanups.push(() => {
+      isDestroyed = true;
+      window.clearTimeout(cometTimer);
+      window.cancelAnimationFrame(pointerFrame);
+      window.cancelAnimationFrame(resizeFrame);
+      resizeObserver?.disconnect();
+      observer?.disconnect();
+      component.removeEventListener("pointerenter", handlePointerPosition);
+      component.removeEventListener("pointermove", handlePointerPosition);
+      component.removeEventListener("pointerleave", handlePointerLeave);
+      finePointerQuery.removeEventListener("change", syncGridInputMode);
+      touchPointerQuery.removeEventListener("change", syncGridInputMode);
+      reducedMotionQuery.removeEventListener("change", syncGridInputMode);
+      highlightLayer.replaceChildren();
+      cometLayer?.replaceChildren();
+      delete component.dataset.interactiveGridInitialized;
+      delete component.dataset.gridInputMode;
+    });
+  });
+
+  page.querySelectorAll("[data-accordion]").forEach((accordion) => {
+    const accordionToken = getComputedStyle(accordion).getPropertyValue('--accordion-duration').trim();
+    const accordionDuration = accordionToken ? parseFloat(accordionToken) * (accordionToken.endsWith('ms') ? 1 : 1000) : motionDuration;
+    const items = Array.from(accordion.querySelectorAll("[data-accordion-item]"));
+    const itemAnimations = new Map();
+    const listeners = [];
+    const singleOpen = accordion.hasAttribute("data-accordion-single");
+
+    const getParts = (item) => ({
+      summary: item.querySelector("[data-accordion-trigger]"),
+      panel: item.querySelector("[data-accordion-panel]"),
+    });
+
+    const syncState = (item, isOpen) => {
+      const { summary } = getParts(item);
+
+      summary?.setAttribute("aria-expanded", String(isOpen));
+      item.dataset.accordionState = isOpen ? "open" : "closed";
+    };
+
+    const setOpen = (item, shouldOpen, shouldAnimate = true) => {
+      const { summary, panel } = getParts(item);
+
+      if (!summary || !panel) return;
+
+      itemAnimations.get(item)?.cancel();
+      itemAnimations.delete(item);
+
+      if (
+        !shouldAnimate ||
+        reducedMotionQuery.matches ||
+        typeof panel.animate !== "function"
+      ) {
+        item.open = shouldOpen;
+        syncState(item, shouldOpen);
+        return;
+      }
+
+      summary.setAttribute("aria-expanded", String(shouldOpen));
+
+      if (shouldOpen) {
+        item.open = true;
+        item.dataset.accordionState = "opening";
+
+        const targetHeight = panel.scrollHeight;
+        const animation = panel.animate(
+          [
+            { height: "0px", opacity: 0 },
+            { height: `${targetHeight}px`, opacity: 1 },
+          ],
+          {
+            duration: accordionDuration,
+            easing: motionEasing || "cubic-bezier(0.22, 1, 0.36, 1)",
+          },
+        );
+
+        itemAnimations.set(item, animation);
+        animation.addEventListener(
+          "finish",
+          () => {
+            itemAnimations.delete(item);
+            syncState(item, true);
+          },
+          { once: true },
+        );
+        return;
+      }
+
+      if (!item.open) {
+        syncState(item, false);
+        return;
+      }
+
+      item.dataset.accordionState = "closing";
+
+      const startHeight = panel.getBoundingClientRect().height;
+      const animation = panel.animate(
+        [
+          { height: `${startHeight}px`, opacity: 1 },
+          { height: "0px", opacity: 0 },
+        ],
+        {
+          duration: accordionDuration,
+          easing: motionEasing || "cubic-bezier(0.22, 1, 0.36, 1)",
+        },
+      );
+
+      itemAnimations.set(item, animation);
+      animation.addEventListener(
+        "finish",
+        () => {
+          itemAnimations.delete(item);
+          item.open = false;
+          syncState(item, false);
+        },
+        { once: true },
+      );
+    };
+
+    items.forEach((item) => {
+      const { summary } = getParts(item);
+
+      if (!summary) return;
+
+      syncState(item, item.open);
+
+      const handleSummaryClick = (event) => {
+        event.preventDefault();
+
+        const shouldOpen =
+          !item.open || item.dataset.accordionState === "closing";
+
+        if (shouldOpen && singleOpen) {
+          items.forEach((otherItem) => {
+            if (otherItem !== item) setOpen(otherItem, false);
+          });
+        }
+
+        setOpen(item, shouldOpen);
+      };
+
+      summary.addEventListener("click", handleSummaryClick);
+      listeners.push(() => summary.removeEventListener("click", handleSummaryClick));
+    });
+
+    accordion.dataset.accordionInitialized = "true";
+
+    componentCleanups.push(() => {
+      listeners.splice(0).forEach((removeListener) => removeListener());
+      itemAnimations.forEach((animation) => animation.cancel());
+      itemAnimations.clear();
+      items.forEach((item) => {
+        delete item.dataset.accordionState;
+      });
+      delete accordion.dataset.accordionInitialized;
+    });
+  });
+
+  page.querySelectorAll("[data-academy-slider]").forEach((slider) => {
+    const component = slider.closest("[data-slider-component]") || slider;
+    const previousButton = component.querySelector("[data-slider-previous]");
+    const nextButton = component.querySelector("[data-slider-next]");
+    const sliderQuery = window.matchMedia(slider.hasAttribute("data-slider-all-widths") ? "(min-width: 0px)" : "(min-width: 32.5625rem)");
+    let splide = null;
+    const controls = window.AcademySliderControls.bind(slider, component, () => splide, previousButton, nextButton);
+    const updateControls = controls.update;
+
+    const destroySlider = () => {
+      if (!splide) return;
+
+      splide.destroy(true);
+      splide = null;
+      delete slider.dataset.splideInitialized;
+      updateControls();
+    };
+
+    const mountSlider = () => {
+      if (
+        splide ||
+        !sliderQuery.matches ||
+        typeof window.Splide !== "function"
+      ) {
+        updateControls();
+        return;
+      }
+
+      splide = new window.Splide(slider, {
+        type: "slide",
+        autoWidth: true,
+        gap: "var(--slider-gap, 1rem)",
+        arrows: false,
+        pagination: false,
+        drag: true,
+        keyboard: false,
+        wheel: false,
+        snap: true,
+        rewind: false,
+        waitForTransition: false,
+        perMove: 1,
+        ...window.AcademySliderControls.motion(slider),
+        noDrag: '[data-slider-no-drag], button, a',
+        focusableNodes: 'a, button, textarea, input, select, iframe',
+        reducedMotion: {
+          speed: 0,
+          rewindSpeed: 0,
+          autoplay: "pause",
+        },
+        i18n: {
+          prev: "Предыдущие преподаватели",
+          next: "Следующие преподаватели",
+          first: "Перейти к первому преподавателю",
+          last: "Перейти к последнему преподавателю",
+          slideX: "Перейти к слайду %s",
+          pageX: "Перейти на страницу %s",
+          carousel: slider.dataset.sliderLabel || "Преподаватели курса",
+          select: "Выберите слайд",
+          slide: "Слайд",
+          slideLabel: "%s из %s",
+        },
+      });
+
+      splide.on("mounted move moved updated resized", updateControls);
+      splide.on("visible hidden", ({slide}) => {
+        slide.querySelectorAll('[data-review-full]').forEach(panel => {
+          panel.tabIndex = !panel.hidden && slide.getAttribute('aria-hidden') !== 'true' ? 0 : -1;
+        });
+      });
+      splide.mount();
+      // Enhancement switches the authored grid to a flex track. Re-measure it
+      // after .is-initialized is applied so omitEnd uses actual slide geometry.
+      splide.refresh();
+      slider.dataset.splideInitialized = "true";
+    };
+
+    const syncSliderMode = () => {
+      if (sliderQuery.matches) mountSlider();
+      else destroySlider();
+    };
+
+    sliderQuery.addEventListener("change", syncSliderMode);
+    syncSliderMode();
+
+    componentCleanups.push(() => {
+      controls.destroy();
+      sliderQuery.removeEventListener("change", syncSliderMode);
+      destroySlider();
+    });
+  });
+
+  pageCleanups.push(() => {
+    componentCleanups.splice(0).forEach((componentCleanup) => componentCleanup());
+  });
+  });
+
+  const cleanup = () => {
+    pageCleanups.splice(0).forEach(pageCleanup => pageCleanup());
+    window.removeEventListener("pagehide", cleanup);
+
+    if (window.__academyComponentsCleanup === cleanup) {
+      delete window.__academyComponentsCleanup;
+    }
+  };
+
+  window.__academyComponentsCleanup = cleanup;
+  window.addEventListener("pagehide", cleanup, { once: true });
+})();
+
+/* === web-academy/shared/academy/anchor-scroll.js === */
+(() => {
+  window.__academyAnchorScrollCleanup?.();
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const interruptEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown', 'popstate', 'hashchange'];
+  let frame = 0;
+  let finish = null;
+  let releaseFocus = null;
+
+  const cancel = () => {
+    window.cancelAnimationFrame(frame);
+    frame = 0;
+    finish = null;
+    interruptEvents.forEach(name => window.removeEventListener(name, cancel));
+  };
+
+  const focusTarget = target => {
+    releaseFocus?.();
+    if (!target.hasAttribute('tabindex') && target.tabIndex < 0) {
+      target.setAttribute('tabindex', '-1');
+      releaseFocus = () => {
+        if (target.getAttribute('tabindex') === '-1') target.removeAttribute('tabindex');
+        target.removeEventListener('blur', releaseFocus);
+        releaseFocus = null;
+      };
+      target.addEventListener('blur', releaseFocus);
+    }
+    target.focus({ preventScroll: true });
+  };
+
+  const handleClick = event => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey ||
+        event.ctrlKey || event.shiftKey || event.altKey || !(event.target instanceof Element)) return;
+    const link = event.target.closest('a[href^="#"]');
+    const root = link?.closest('[data-academy-anchor-scroll]');
+    const hash = link?.getAttribute('href');
+    if (!root || !hash || hash === '#' ||
+        link.matches('.skip-link, [data-anchor-scroll-ignore], [aria-disabled="true"], [download]') ||
+        link.hasAttribute("data-tilda-popup-link") ||
+        (link.target && link.target.toLowerCase() !== '_self')) return;
+
+    let id;
+    try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!(target instanceof HTMLElement) || !target.getClientRects().length) return;
+
+    event.preventDefault();
+    cancel();
+    releaseFocus?.();
+    const startY = window.scrollY;
+    const scrollMarginTop = parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
+    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const targetY = Math.min(maxY, Math.max(0, target.getBoundingClientRect().top + startY - scrollMarginTop));
+    const distance = targetY - startY;
+    const left = window.scrollX;
+    const scroll = top => window.scrollTo({ left, top, behavior: 'instant' });
+
+    if (window.location.hash === hash) {
+      window.history.replaceState(window.history.state, '', hash);
+    } else {
+      window.history.pushState(window.history.state, '', hash);
+    }
+
+    finish = () => {
+      cancel();
+      if (!target.isConnected || !root.isConnected) return;
+      scroll(targetY);
+      focusTarget(target);
+    };
+    if (reducedMotion.matches || Math.abs(distance) < 1) {
+      finish();
+      return;
+    }
+
+    const duration = Math.min(900, Math.max(480, Math.abs(distance) * 0.28));
+    const startTime = performance.now();
+    interruptEvents.forEach(name => window.addEventListener(name, cancel, { passive: true }));
+    const render = currentTime => {
+      if (!target.isConnected || !root.isConnected) { cancel(); return; }
+      const progress = Math.min(1, Math.max(0, (currentTime - startTime) / duration));
+      if (progress === 1) { finish(); return; }
+      scroll(startY + distance * (1 - (1 - progress) ** 3));
+      frame = window.requestAnimationFrame(render);
+    };
+    frame = window.requestAnimationFrame(render);
+  };
+
+  const handleMotionChange = () => { if (reducedMotion.matches) finish?.(); };
+  document.addEventListener('click', handleClick);
+  reducedMotion.addEventListener('change', handleMotionChange);
+  window.__academyAnchorScrollCleanup = () => {
+    cancel();
+    releaseFocus?.();
+    document.removeEventListener('click', handleClick);
+    reducedMotion.removeEventListener('change', handleMotionChange);
+  };
+})();
+
+/* === web-academy/shared/academy/pricing.js === */
+(() => {
+  if (customElements.get('academy-pricing')) return;
+
+  class AcademyPricing extends HTMLElement {
+    static observedAttributes = ['selected-stream'];
+
+    connectedCallback() {
+      this.initialize();
+      if (!this.controls) {
+        this.observer = new MutationObserver(() => this.initialize());
+        this.observer.observe(this, { childList: true, subtree: true });
+      }
+    }
+
+    initialize() {
+      if (this.controls) return;
+      const tablist = this.querySelector('[data-pricing-tabs]');
+      const panel = this.querySelector('[data-pricing-panel]');
+      const tabs = [...this.querySelectorAll('[data-pricing-tab]')];
+      if (!tablist || !panel || !tabs.length) return;
+      this.observer?.disconnect();
+      this.controls = { tablist, panel, tabs };
+      this.abort = new AbortController();
+      this.animations = [];
+      this.motion = matchMedia('(prefers-reduced-motion: reduce)');
+      this.columns = matchMedia('(min-width: 768px)');
+      this.columns.addEventListener('change', () => this.orderPlans(), { signal: this.abort.signal });
+      this.orderPlans();
+      this.motion.addEventListener('change', () => this.cancelAnimations(), { signal: this.abort.signal });
+      tablist.hidden = tabs.length < 2;
+      tablist.addEventListener('click', (event) => {
+        const tab = event.target.closest('[data-pricing-tab]');
+        if (tabs.includes(tab)) this.select(tab.dataset.pricingTab);
+      }, { signal: this.abort.signal });
+      tablist.addEventListener('keydown', (event) => {
+        const current = tabs.indexOf(event.target);
+        if (current < 0) return;
+        const offsets = { ArrowLeft: -1, ArrowRight: 1, Home: -current, End: tabs.length - 1 - current };
+        if (!(event.key in offsets)) return;
+        event.preventDefault();
+        const next = tabs[(current + offsets[event.key] + tabs.length) % tabs.length];
+        this.select(next.dataset.pricingTab);
+        next.focus();
+      }, { signal: this.abort.signal });
+      this.select(this.getAttribute('selected-stream') || tabs[0].dataset.pricingTab, false);
+      this.setAttribute('data-ready', '');
+    }
+
+    attributeChangedCallback() {
+      if (this.controls) this.select(this.getAttribute('selected-stream'));
+    }
+
+    select(stream, animate = true) {
+      const { tabs, panel } = this.controls;
+      const index = Math.max(0, tabs.findIndex(tab => tab.dataset.pricingTab === stream));
+      const selected = tabs[index].dataset.pricingTab;
+      if (this.getAttribute('selected-stream') !== selected) {
+        // The attribute is the public source of truth; the nested callback renders it once.
+        this.setAttribute('selected-stream', selected);
+        return;
+      }
+      const changed = this.currentStream !== selected;
+      this.currentStream = selected;
+      this.cancelAnimations();
+      tabs.forEach((tab, i) => {
+        tab.setAttribute('aria-selected', String(i === index));
+        tab.tabIndex = i === index ? 0 : -1;
+      });
+      panel.setAttribute('aria-labelledby', tabs[index].id);
+      const visible = [];
+      this.querySelectorAll('[data-pricing-stream]').forEach(value => {
+        value.hidden = value.dataset.pricingStream !== selected;
+        if (!value.hidden) visible.push(value);
+      });
+      if (changed && animate && this.hasAttribute('data-ready') && !this.motion.matches) {
+        const style = getComputedStyle(this);
+        const duration = parseFloat(style.getPropertyValue('--motion-duration')) || 250;
+        const easing = style.getPropertyValue('--motion-easing').trim() || 'linear';
+        visible.forEach(value => {
+          if (typeof value.animate === 'function') this.animations.push(value.animate([{ opacity: 0.5 }, { opacity: 1 }], { duration, easing }));
+        });
+      }
+      if (changed && this.hasAttribute('data-ready')) {
+        this.dispatchEvent(new CustomEvent('academy-pricing:change', { bubbles: true, detail: { stream: selected } }));
+      }
+    }
+
+    cancelAnimations() {
+      this.animations?.forEach(animation => animation.cancel());
+      this.animations = [];
+    }
+
+    orderPlans() {
+      const grid = this.querySelector('.pricing_grid');
+      if (!grid) return;
+      const current = [...grid.children];
+      const ordered = [...current].sort((a, b) => {
+        const featured = this.columns.matches ? 0 : Number(b.hasAttribute('data-pricing-featured')) - Number(a.hasAttribute('data-pricing-featured'));
+        return featured || Number(a.dataset.pricingOrder) - Number(b.dataset.pricingOrder);
+      });
+      if (ordered.every((plan, index) => plan === current[index])) return;
+      const active = document.activeElement;
+      ordered.forEach(plan => grid.append(plan));
+      if (this.contains(active)) active.focus({ preventScroll: true });
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.observer?.disconnect();
+      this.cancelAnimations();
+      this.controls = null;
+      this.removeAttribute('data-ready');
+      this.querySelectorAll('[data-pricing-stream]').forEach(value => { value.hidden = false; });
+      const tabs = this.querySelector('[data-pricing-tabs]');
+      if (tabs) tabs.hidden = true;
+    }
+  }
+
+  customElements.define('academy-pricing', AcademyPricing);
+})();
+
+/* === web-academy/shared/academy/pricing-promo-render.js === */
+/* Промо-блок цены: одна функция строит разметку и при сборке (Node, запаска), и в браузере (из ответа Public API).
+   Режим выбирается по данным курса, ничего не задаётся руками:
+     • лист ожидания (нет открытых потоков, есть «Лист ожидания»): заголовок «Запишитесь в лист ожидания»,
+       без дат и потоков, одна строка «Забронировать место» с ценой брони;
+     • один поток без тарифов: одна цена на подсвеченном фоне;
+     • два потока без тарифов: строки потоков без табов;
+     • тарифы: строки тарифов, табы потоков при двух и более потоках; рекомендуемый тариф самый дорогой;
+     • три и более потока без тарифов: табы и одна цена на поток.
+   Цены по docs/tilda-pricing-block.md: крупно цена продажи, рассрочка строкой, зачёркнутая только при акции,
+   повышение одной строкой «Цена с {дата} — {цена}». Нет зависимостей: чистые строки, Intl. */
+(function (global) {
+  'use strict';
+  var OPEN = ['Идет набор', 'Последний шанс', 'Старт в любое время'];
+  var WAITLIST = 'Лист ожидания';
+  var MSK = 'Europe/Moscow';
+  var CAPTION = 'body-text_component is-caption is-regular is-statement';
+
+  function escape(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function copy(value) {
+    return escape(value)
+      .replace(/(^|[^\p{L}\p{N}])(а|в|и|к|о|с|у|я|во|до|за|из|на|не|ни|но|об|от|по|со|без|для|над|под|при|про) /giu, '$1$2&nbsp;')
+      .replace(/ (бы|же|ли)(?=[\s?.,!]|$)/giu, '&nbsp;$1')
+      .replace(/ (—)/g, '&nbsp;$1')
+      .replace(/(\d) (?=\d{3}(?:\D|$)|₽)/g, '$1&nbsp;');
+  }
+  function rub(v) {
+    if (v == null || isNaN(Number(v))) return null;
+    if (Number(v) === 0) return 'Бесплатно';
+    return new Intl.NumberFormat('ru-RU').format(Number(v)).replace(/\s/g, '&nbsp;') + '&nbsp;₽';
+  }
+  function day(iso, shiftMs) {
+    if (!iso) return null;
+    var d = new Date(new Date(iso).getTime() + (shiftMs || 0));
+    if (isNaN(d.getTime())) return null;
+    var opts = { day: 'numeric', month: 'long', timeZone: MSK };
+    if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
+    return new Intl.DateTimeFormat('ru-RU', opts).format(d).replace(/\s/g, '&nbsp;');
+  }
+  function salePrice(o) {
+    if (!o) return null;
+    if (o.fullPaymentPrice != null) return o.fullPaymentPrice;
+    if (o.currentPrice != null) return o.currentPrice;
+    return o.price != null ? o.price : null;
+  }
+  function salePriceBefore(o) {
+    if (!o) return null;
+    if (o.fullPaymentPrice != null) return o.fullPaymentPriceBeforeDiscount != null ? o.fullPaymentPriceBeforeDiscount : null;
+    return o.priceBeforeDiscount != null ? o.priceBeforeDiscount : null;
+  }
+  function nextChange(o) {
+    var n = o && o.nextPriceChange;
+    if (!n || !n.at) return null;
+    return { at: n.at, price: n.fullPaymentPrice != null ? n.fullPaymentPrice : n.price };
+  }
+  function byStart(a, b) { return new Date(a.startDate || 0) - new Date(b.startDate || 0); }
+
+  /* Ответ /api/public/course/:slug → конфиг блока. Открытые потоки отменяют лист ожидания. */
+  function fromApi(course, options) {
+    options = options || {};
+    var all = course.streams || [];
+    var open = all.filter(function (s) { return OPEN.indexOf(s.status) !== -1; }).sort(byStart);
+    var waiting = all.filter(function (s) { return s.status === WAITLIST; });
+    var streams = open;
+    var waitlist = null;
+    if (!open.length && waiting.length) waitlist = waiting[0];
+    else if (!open.length && course.nearestStream) streams = [course.nearestStream];
+    return {
+      id: options.id || 'pricing',
+      course: { name: course.title || '', description: course.description || '' },
+      promo: course.promo || null,
+      streams: streams.map(function (s, i) {
+        return { id: 's' + (i + 1), label: s.label || day(s.startDate) || 'Поток', startDate: s.startDate || null, pricing: s.pricing || {} };
+      }),
+      waitlist: waitlist ? { bookingPrice: waitlist.pricing ? waitlist.pricing.bookingPrice : null } : null,
+    };
+  }
+
+  /* Одна ячейка цены: цена продажи, зачёркнутая при акции, рассрочка, следующее повышение. */
+  function cost(money, size) {
+    var sale = salePrice(money), before = salePriceBefore(money), next = nextChange(money);
+    var out = '<p class="pricing-promo_amount' + (size ? ' ' + size : '') + '">';
+    if (sale == null) return out + '<span class="pricing-promo_unconfirmed">Стоимость уточняется</span></p>';
+    if (before != null && before > sale) out += '<s class="pricing-promo_old">' + rub(before) + '</s>';
+    out += '<span class="pricing-promo_number">' + rub(sale) + '</span></p>';
+    if (money.installmentPerMonth != null) {
+      out += '<p class="pricing-promo_terms ' + CAPTION + '">или ' + rub(money.installmentPerMonth) + '/мес в&nbsp;рассрочку' + (money.installmentMonths ? ' (' + money.installmentMonths + '&nbsp;мес.)' : '') + '</p>';
+    }
+    if (next && next.price != null) {
+      out += '<p class="pricing-promo_increase-next ' + CAPTION + '">Цена с&nbsp;' + day(next.at) + '&nbsp;— ' + rub(next.price) + '</p>';
+    }
+    return out;
+  }
+  function promoLine(promo) {
+    if (!promo || !promo.active) return '';
+    var until = day(promo.until);
+    return '<p class="pricing-promo_discount ' + CAPTION + '">' + copy(promo.label || 'Курс месяца') + '&nbsp;— скидка ' + escape(promo.discountPercent) + '%' + (until ? ' до&nbsp;' + until : '') + '</p>';
+  }
+
+  function render(config) {
+    var id = config.id;
+    var streams = config.streams || [];
+    var waitlist = config.waitlist;
+    var hasTariffs = streams.some(function (s) { return s.pricing && s.pricing.hasTariffs && (s.pricing.tariffs || []).length; });
+    var tabbed = !waitlist && streams.length >= 2 && (hasTariffs || streams.length >= 3);
+    var mode = waitlist ? 'waitlist' : hasTariffs ? 'plans' : streams.length >= 3 ? 'tabs-single' : streams.length === 2 ? 'streams' : 'single';
+    var heading = mode === 'waitlist' ? 'Запишитесь в лист ожидания' : 'Стоимость обучения';
+
+    var perStream = function (attr) { return tabbed ? ' data-pricing-stream="' + attr + '"' : ''; };
+    var pill = function (s) {
+      if (!s.startDate) return '';
+      return '<span class="meta-pill_component is-responsive pricing-promo_start"' + perStream(s.id) + '><img class="meta-pill_icon" src="' + escape(config.clockIcon || render.clockIcon) + '" width="20" height="20" alt="" aria-hidden="true" draggable="false">Старт&nbsp;<time datetime="' + escape(s.startDate) + '">' + day(s.startDate) + '</time></span>';
+    };
+    var pills = mode === 'waitlist' || mode === 'streams' ? '' : streams.map(pill).join('');
+    var intro = '<div class="pricing-promo_intro">' + (pills ? '<p class="pricing-promo_start-list">' + pills + '</p>' : '')
+      + '<div class="pricing-promo_copy"><p class="pricing-promo_course content-heading_component is-profile">' + copy(config.course.name) + '</p>'
+      + (config.course.description ? '<p class="pricing-promo_description body-text_component is-regular is-reading">' + copy(config.course.description) + '</p>' : '')
+      + promoLine(config.promo) + '</div></div>';
+
+    var tabs = tabbed ? '<div class="pricing-promo_tabs" role="tablist" aria-label="Поток обучения" data-pricing-tabs hidden>' + streams.map(function (s, i) {
+      return '<button class="pricing-promo_tab" type="button" role="tab" id="' + id + '-tab-' + s.id + '" aria-controls="' + id + '-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-pricing-tab="' + s.id + '">' + copy(s.label) + '</button>';
+    }).join('') + '</div>' : '';
+
+    var offer;
+    if (mode === 'waitlist') {
+      var booking = waitlist.bookingPrice;
+      offer = '<div class="pricing-promo_price"><ul class="pricing-promo_rows" role="list"><li class="pricing-promo_row is-featured"><div class="pricing-promo_row-copy"><h3 class="pricing-promo_row-name content-heading_component is-card">Забронировать место</h3><p class="pricing-promo_row-note ' + CAPTION + '">Место в&nbsp;ближайшем потоке за&nbsp;вами, о&nbsp;дате старта сообщим первыми</p></div><div class="pricing-promo_row-cost"><p class="pricing-promo_amount is-row"><span class="pricing-promo_number">' + (booking != null ? rub(booking) : 'Цена откроется позже') + '</span></p></div></li></ul></div>';
+    } else if (mode === 'single' || mode === 'tabs-single') {
+      offer = streams.map(function (s) {
+        return '<div class="pricing-promo_price is-single"' + perStream(s.id) + '>' + cost(s.pricing) + '</div>';
+      }).join('');
+    } else if (mode === 'streams') {
+      offer = '<div class="pricing-promo_price"><ul class="pricing-promo_rows" role="list">' + streams.map(function (s) {
+        return '<li class="pricing-promo_row"><div class="pricing-promo_row-copy"><h3 class="pricing-promo_row-name content-heading_component is-card" id="' + id + '-' + s.id + '">' + copy(s.label) + '</h3>' + (s.startDate ? '<p class="pricing-promo_row-note ' + CAPTION + '">Старт&nbsp;<time datetime="' + escape(s.startDate) + '">' + day(s.startDate) + '</time></p>' : '') + '</div><div class="pricing-promo_row-cost">' + cost(s.pricing, 'is-row') + '</div></li>';
+      }).join('') + '</ul></div>';
+    } else {
+      // Строки тарифов: порядок и состав из первого потока, в остальных потоках тариф ищется по названию.
+      var first = streams[0].pricing.tariffs || [];
+      var norm = function (v) { return String(v || '').trim().toLowerCase(); };
+      var featured = first.reduce(function (best, t) { var p = salePrice(t); return p != null && (best == null || p > salePrice(best)) ? t : best; }, null);
+      offer = '<div class="pricing-promo_price"><ul class="pricing-promo_rows" role="list">' + first.map(function (t, i) {
+        var costs = streams.map(function (s) {
+          var own = (s.pricing.tariffs || []).filter(function (x) { return norm(x.title) === norm(t.title); })[0];
+          return '<div class="pricing-promo_row-cost"' + perStream(s.id) + '>' + (tabbed ? '<span class="pricing-promo_stream-label ' + CAPTION + '">' + copy(s.label) + '</span>' : '') + (own ? cost(own, 'is-row') : '<p class="pricing-promo_amount is-row"><span class="pricing-promo_unconfirmed">Стоимость уточняется</span></p>') + '</div>';
+        }).join('');
+        return '<li class="pricing-promo_row' + (t === featured ? ' is-featured' : '') + '"><div class="pricing-promo_row-copy"><h3 class="pricing-promo_row-name content-heading_component is-card" id="' + id + '-plan-' + (i + 1) + '">' + copy(t.title) + '</h3>' + (t.description ? '<p class="pricing-promo_row-note ' + CAPTION + '">' + copy(t.description) + '</p>' : '') + '</div>' + costs + '</li>';
+      }).join('') + '</ul></div>';
+    }
+
+    var panel = '<div class="pricing-promo_panel"' + (tabbed ? ' id="' + id + '-panel" role="tabpanel" aria-labelledby="' + id + '-tab-' + streams[0].id + '" tabindex="0" data-pricing-panel' : '') + '>' + intro + offer + '</div>';
+    var title = '<h2 class="pricing-promo_heading section-title_component is-responsive" id="' + id + '-heading">' + copy(heading) + '</h2>';
+    return tabbed
+      ? '<academy-pricing class="pricing-promo_component is-tabbed" data-mode="' + mode + '" selected-stream="' + streams[0].id + '">' + title + tabs + panel + '</academy-pricing>'
+      : '<div class="pricing-promo_component" data-mode="' + mode + '">' + title + panel + '</div>';
+  }
+  render.clockIcon = 'https://static.tildacdn.com/tild3661-3930-4334-a631-643062633834/icon-clock-alert-bla.svg';
+
+  global.PricingPromo = { fromApi: fromApi, render: render, OPEN: OPEN, WAITLIST: WAITLIST };
+})(typeof globalThis !== 'undefined' ? globalThis : window);
+
+/* === web-academy/shared/academy/pricing-promo.js === */
+/* Живой блок цены: запрашивает курс в Public API (docs/tilda-pricing-block.md, раздел 2) и перерисовывает блок
+   через PricingPromo.render, который сам выбирает раскладку по потокам, тарифам, повышениям и листу ожидания.
+   До ответа и при ошибке остаётся запаска, собранная при вёрстке. Корень: [data-price-block][data-course][data-api]. */
+(function () {
+  'use strict';
+  var TIMEOUT_MS = 8000;
+  var cache = (window.__aspCourseCache = window.__aspCourseCache || {});
+
+  function load(api, slug) {
+    var key = api + '|' + slug;
+    if (cache[key]) return cache[key];
+    var ctrl = new AbortController();
+    var timer = setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS);
+    cache[key] = fetch(api + '/api/public/course/' + encodeURIComponent(slug), {
+      headers: { Accept: 'application/json' }, signal: ctrl.signal
+    }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .finally(function () { clearTimeout(timer); });
+    return cache[key];
+  }
+
+  function init() {
+    if (!window.PricingPromo) return console.warn('[price-block] нет PricingPromo — показываю запаски.');
+    document.querySelectorAll('[data-price-block]').forEach(function (root) {
+      if (root.__priceBlockDone) return;
+      root.__priceBlockDone = true;
+      var api = (root.getAttribute('data-api') || '').replace(/\/+$/, '');
+      var slug = (root.getAttribute('data-course') || '').trim();
+      if (!api || !slug) return console.warn('[price-block] нет data-api или data-course — показываю запаски.');
+      root.setAttribute('data-cms-state', 'loading');
+      load(api, slug).then(function (course) {
+        if (course.error) throw new Error(course.error);
+        var html = window.PricingPromo.render(window.PricingPromo.fromApi(course, { id: root.getAttribute('data-block-id') || slug }));
+        if (root.innerHTML.trim() !== html) root.innerHTML = html;
+        root.setAttribute('data-cms-state', 'ready');
+      }).catch(function (err) {
+        console.error('[price-block] курс «' + slug + '» не загружен — остаётся запаска.', err);
+        root.setAttribute('data-cms-state', 'error');
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+/* === web-academy/shared/academy/lead-form.js === */
+// Academy lead form: opt-in UI and Tilda bridge. Integration: lead-form.md.
+(() => {
+  if (typeof window.__academyLeadFormCleanup === "function") {
+    window.__academyLeadFormCleanup();
+  }
+
+  const forms = [...document.querySelectorAll(".academy-page [data-academy-lead-form]")];
+  if (!forms.length) return;
+
+  const INTL_TEL_INPUT_UTILS_URL =
+    "https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/utils.js";
+  const ASCII_EMAIL_PATTERN =
+    /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
+  const TELEGRAM_USERNAME_PATTERN = /^@[A-Za-z0-9_]{3,32}$/;
+  const formControllers = [];
+  const observedTildaFormNames = new Set();
+
+  const normalizePhoneToE164 = (value, defaultCallingCode = "7") => {
+    const rawValue = String(value || "").trim();
+    let digits = rawValue.replace(/\D/g, "");
+
+    if (!digits) {
+      return "";
+    }
+
+    if (digits.startsWith("00")) {
+      return `+${digits.slice(2, 17)}`;
+    }
+
+    if (rawValue.startsWith("+")) {
+      return `+${digits.slice(0, 15)}`;
+    }
+
+    if (defaultCallingCode === "7") {
+      if (digits.length === 11 && digits.startsWith("8")) {
+        digits = `7${digits.slice(1)}`;
+      } else if (digits.length === 10) {
+        digits = `7${digits}`;
+      } else if (!digits.startsWith("7")) {
+        digits = `7${digits}`;
+      }
+    } else if (!digits.startsWith(defaultCallingCode)) {
+      digits = `${defaultCallingCode}${digits}`;
+    }
+
+    return `+${digits.slice(0, 15)}`;
+  };
+
+  const isPlausibleInternationalPhone = (value) => {
+    const digits = String(value || "").replace(/\D/g, "");
+
+    return digits.length >= 8 && digits.length <= 15;
+  };
+
+  const getTildaPhoneValue = (value) => {
+    const e164Value = normalizePhoneToE164(value);
+    const digits = e164Value.replace(/\D/g, "");
+
+    if (!digits) {
+      return "";
+    }
+
+    return digits.startsWith("7") ? digits.slice(1, 11) : `+${digits}`;
+  };
+
+  const dispatchNativeInputEvents = (input) => {
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  const setNativeInputValue = (input, value) => {
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+
+    if (valueSetter) {
+      valueSetter.call(input, value);
+    } else {
+      input.value = value;
+    }
+
+    dispatchNativeInputEvents(input);
+  };
+
+  const findTildaForm = (formName) =>
+    (formName && [...document.querySelectorAll("form.t-form")].find(
+      (form) =>
+        form.querySelector('input[name="tildaspec-formname"]')?.value ===
+        formName,
+    )) || null;
+
+  const hideTildaFormRecord = (formName) => {
+    const nativeForm = findTildaForm(formName);
+
+    if (!(nativeForm instanceof HTMLFormElement)) {
+      return null;
+    }
+
+    const record = nativeForm.closest(".t-rec") || nativeForm;
+
+    record.hidden = true;
+    record.setAttribute("aria-hidden", "true");
+    record.setAttribute("data-academy-native-form-record", "");
+
+    return nativeForm;
+  };
+
+  const hideKnownTildaForms = () => {
+    observedTildaFormNames.forEach(hideTildaFormRecord);
+    if (observedTildaFormNames.size && [...observedTildaFormNames].every(findTildaForm)) {
+      tildaFormObserver.disconnect();
+      clearTimeout(discoveryTimer);
+    }
+  };
+
+  const tildaFormObserver = new MutationObserver(hideKnownTildaForms);
+  const discoveryTimer = setTimeout(() => tildaFormObserver.disconnect(), 10000);
+
+  tildaFormObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  const initializePhoneInput = (input) => {
+    let utilsReady = false;
+    let instance = null;
+    let ready = Promise.resolve();
+
+    if (
+      input instanceof HTMLInputElement &&
+      typeof window.intlTelInput === "function"
+    ) {
+      instance = window.intlTelInput(input, {
+        countryNameLocale: "ru",
+        countryOrder: ["ru", "kz", "by", "uz"],
+        countrySearch: true,
+        countrySelectorMode: "AUTO",
+        dropdownParent: document.body,
+        formatAsYouType: true,
+        initialCountry: "ru",
+        loadUtils: () => import(INTL_TEL_INPUT_UTILS_URL),
+        numberDisplayFormat: "INTERNATIONAL",
+        placeholderNumberPolicy: "AGGRESSIVE",
+        separateDialCode: true,
+        strictMode: true,
+        uiTranslations: {
+          selectedCountryAriaLabel:
+            "Изменить страну номера, выбрана ${countryName} (${dialCode})",
+          noCountrySelected: "Выбрать страну номера телефона",
+          countryListAriaLabel: "Список стран",
+          searchPlaceholder: "Поиск страны или кода",
+          clearSearchAriaLabel: "Очистить поиск",
+          searchEmptyState: "Страна не найдена",
+          searchSummaryAria(count) {
+            return `Найдено стран: ${count}`;
+          },
+        },
+      });
+      ready = instance.promise
+        .then(() => {
+          utilsReady = true;
+        })
+        .catch(() => {
+          utilsReady = false;
+        });
+    }
+
+    return {
+      destroy() {
+        instance?.destroy();
+        instance = null;
+      },
+      getCountryCallingCode() {
+        return instance?.getSelectedCountry?.()?.dialCode || "7";
+      },
+      getNumber() {
+        if (utilsReady && instance?.isValidNumber()) {
+          return instance.getNumber();
+        }
+
+        return normalizePhoneToE164(
+          input.value,
+          instance?.getSelectedCountry?.()?.dialCode || "7",
+        );
+      },
+      isValid() {
+        const normalized = normalizePhoneToE164(
+          input.value,
+          instance?.getSelectedCountry?.()?.dialCode || "7",
+        );
+
+        return utilsReady && instance
+          ? instance.isValidNumber()
+          : isPlausibleInternationalPhone(normalized);
+      },
+      ready,
+    };
+  };
+
+  const fillTildaPhoneGroup = (group, e164Phone, resultName) => {
+    if (!(group instanceof HTMLElement)) {
+      return;
+    }
+
+    const visibleInputs = [
+      ...group.querySelectorAll(
+        'input.t-input-phonemask:not([type="hidden"])',
+      ),
+    ];
+
+    const tildaControlsPhoneMask =
+      typeof window.t_form_phonemask__setValue === "function";
+
+    if (tildaControlsPhoneMask) {
+      window.t_form_phonemask__setValue(group, e164Phone, undefined, {
+        noFocus: true,
+      });
+    } else {
+      visibleInputs.forEach((input) => {
+        setNativeInputValue(input, getTildaPhoneValue(e164Phone));
+      });
+    }
+
+    const visibleInput = visibleInputs[0];
+    const visiblePhone =
+      visibleInput?.dataset.phonemaskCurrent || visibleInput?.value || "";
+    const dialCode = visibleInput?.dataset.phonemaskCode || "";
+    const formattedPhone = visiblePhone.startsWith("+")
+      ? visiblePhone
+      : `${dialCode} ${visiblePhone}`.trim();
+
+    group
+      .querySelectorAll(`input.js-phonemask-result[name="${resultName}"]`)
+      .forEach((input) => {
+        setNativeInputValue(input, formattedPhone || e164Phone);
+      });
+
+    group
+      .querySelectorAll('input.js-phonemask-result-iso')
+      .forEach((input) => {
+        setNativeInputValue(
+          input,
+          visibleInput?.dataset.phonemaskIso || input.value || "ru",
+        );
+      });
+  };
+
+  const selectTildaMessenger = (group, messenger) => {
+    const radios = [
+      ...group.querySelectorAll('input[type="radio"][name="messenger-type"]'),
+    ];
+    const telegramRadio = radios.find((radio) => radio.value === "telegram");
+    const maxRadio =
+      radios.find((radio) => radio.value === "max") ||
+      radios.find((radio) => radio.value === "whatsapp") ||
+      radios[0];
+
+    if (maxRadio && !maxRadio.dataset.academyOriginalValue) {
+      maxRadio.dataset.academyOriginalValue = maxRadio.value;
+    }
+
+    if (maxRadio?.dataset.academyOriginalValue) {
+      maxRadio.value = maxRadio.dataset.academyOriginalValue;
+    }
+
+    const selectedRadio = messenger === "telegram" ? telegramRadio : maxRadio;
+
+    if (!(selectedRadio instanceof HTMLInputElement)) {
+      return;
+    }
+
+    selectedRadio.checked = true;
+    selectedRadio.dispatchEvent(new Event("input", { bubbles: true }));
+    selectedRadio.dispatchEvent(new Event("change", { bubbles: true }));
+
+    if (messenger === "max" && selectedRadio.value === "whatsapp") {
+      selectedRadio.value = "max";
+    }
+  };
+
+  const syncTildaForm = async (nativeForm, formData) => {
+    const nameInput = nativeForm.querySelector(
+      'input[data-tilda-rule="name"], input[name="Name"]',
+    );
+    const emailInput = nativeForm.querySelector(
+      'input[data-tilda-rule="email"], input[name="email"], input[name="Email"]',
+    );
+    const phoneGroup = [...nativeForm.querySelectorAll(".t-input-group_ph")].find(
+      (group) => !group.closest(".t-input-group_contact_method"),
+    );
+    const messengerGroup = nativeForm.querySelector(
+      ".t-input-group_contact_method",
+    );
+
+    if (
+      !(nameInput instanceof HTMLInputElement) ||
+      !(emailInput instanceof HTMLInputElement) ||
+      !(phoneGroup instanceof HTMLElement) ||
+      !(messengerGroup instanceof HTMLElement)
+    ) {
+      throw new Error("Required Tilda form fields were not found");
+    }
+
+    setNativeInputValue(nameInput, formData.name);
+    setNativeInputValue(emailInput, formData.email);
+    fillTildaPhoneGroup(phoneGroup, formData.phone, "Phone");
+    selectTildaMessenger(messengerGroup, formData.messenger);
+
+    await new Promise((resolve) => window.requestAnimationFrame(resolve));
+
+    messengerGroup
+      .querySelectorAll(
+        'input[name="messenger-id"], input[name="tildaspec-phone-part[]"], input[name="tildaspec-phone-part[]-iso"]',
+      )
+      .forEach((input) => {
+        setNativeInputValue(input, "");
+      });
+
+    if (formData.messenger === "telegram") {
+      const telegramInput = messengerGroup.querySelector(
+        'input[name="messenger-id"]:not([type="hidden"]):not(:disabled)',
+      );
+
+      if (!(telegramInput instanceof HTMLInputElement)) {
+        throw new Error("Active Tilda Telegram field was not found");
+      }
+
+      setNativeInputValue(telegramInput, formData.messengerContact);
+    } else {
+      const activeMessengerPhoneInput = messengerGroup.querySelector(
+        'input.t-input-phonemask:not([type="hidden"]):not(:disabled)',
+      );
+      const activeMessengerPhoneGroup =
+        activeMessengerPhoneInput?.closest(".t-phonemask-input-group") || null;
+
+      if (!(activeMessengerPhoneGroup instanceof HTMLElement)) {
+        throw new Error("Active Tilda MAX field was not found");
+      }
+
+      fillTildaPhoneGroup(
+        activeMessengerPhoneGroup,
+        formData.messengerContact,
+        "messenger-id",
+      );
+    }
+  };
+
+  const setupLeadForm = (form) => {
+    const formName = form.dataset.tildaFormName?.trim() || "";
+    const inputs = [...form.querySelectorAll("[data-lead-input]")];
+    const messengerInputs = [
+      ...form.querySelectorAll('input[name="messenger"]'),
+    ];
+    const mainPhoneInput = form.querySelector("[data-lead-phone]");
+    const maxContactInput = form.querySelector("[data-lead-max-contact]");
+    const telegramContactInput = form.querySelector(
+      "[data-lead-telegram-contact]",
+    );
+    const maxContactField = maxContactInput?.closest("[data-lead-field]");
+    const telegramContactField = form.querySelector(
+      "[data-lead-telegram-field]",
+    );
+    const submit = form.querySelector("[data-lead-submit]");
+    const submitLabel = form.querySelector("[data-lead-submit-label]");
+    const status = form.querySelector("[data-lead-status]");
+    const contentParts = [...form.querySelectorAll("[data-lead-content]")];
+    const successView = form.querySelector("[data-lead-success]");
+    const section = form.closest("section[aria-labelledby]");
+    const listeners = [];
+    const phoneControllers = new Map();
+    let disposed = false;
+    let busy = false;
+    let formIsValid = false;
+    let validityRevision = 0;
+    let submittedTildaForm = null;
+
+    if (formName) observedTildaFormNames.add(formName);
+    hideTildaFormRecord(formName);
+
+    [mainPhoneInput, maxContactInput].forEach((input) => {
+      if (input instanceof HTMLInputElement) {
+        phoneControllers.set(input, initializePhoneInput(input));
+      }
+    });
+
+    const listen = (target, eventName, handler, options) => {
+      target?.addEventListener(eventName, handler, options);
+      listeners.push(() => target?.removeEventListener(eventName, handler, options));
+    };
+
+    const setStatus = (message = "", state = "idle") => {
+      if (!status) {
+        return;
+      }
+
+      status.textContent = message;
+      status.dataset.state = state;
+    };
+
+    const renderSubmitState = () => {
+      if (submit instanceof HTMLButtonElement) {
+        submit.disabled = busy || !formIsValid;
+        submit.setAttribute("aria-disabled", String(submit.disabled));
+        submit.setAttribute("aria-busy", String(busy));
+        submit.dataset.state = busy
+          ? "loading"
+          : formIsValid
+            ? "ready"
+            : "disabled";
+      }
+
+      if (submitLabel) {
+        submitLabel.textContent = busy ? "Отправляем заявку…" : "Отправить заявку";
+      }
+    };
+
+    const setBusy = (isBusy) => {
+      busy = isBusy;
+      renderSubmitState();
+    };
+
+    const getFieldParts = (input) => {
+      const field = input.closest("[data-lead-field]");
+      const error = field?.querySelector("[data-lead-error]");
+
+      return { field, error };
+    };
+
+    const updateHasValue = (input) => {
+      const { field } = getFieldParts(input);
+
+      if (field) {
+        field.dataset.hasValue = String(Boolean(input.value.trim()));
+      }
+    };
+
+    const setFieldState = (input, message = "", isValid = false) => {
+      const { field, error } = getFieldParts(input);
+
+      input.setCustomValidity(message);
+      input.setAttribute("aria-invalid", String(Boolean(message)));
+
+      if (field) {
+        field.dataset.state = message ? "invalid" : isValid ? "valid" : "idle";
+      }
+
+      if (error) {
+        error.textContent = message;
+      }
+
+      updateHasValue(input);
+    };
+
+    const getInputValidationMessage = async (input) => {
+      if (!(input instanceof HTMLInputElement) || input.disabled || input.hidden) {
+        return "";
+      }
+
+      const value = input.value.trim();
+      let message = "";
+
+      if (input.name === "name") {
+        message = value ? "" : "Имя не может быть пустым";
+      } else if (input.name === "email") {
+        message = ASCII_EMAIL_PATTERN.test(value)
+          ? ""
+          : "Введите корректный e-mail";
+      } else if (input.name === "telegramContact") {
+        message = TELEGRAM_USERNAME_PATTERN.test(value)
+          ? ""
+          : "Введите имя пользователя, начиная с @";
+      } else if (phoneControllers.has(input)) {
+        const phoneController = phoneControllers.get(input);
+
+        await phoneController.ready;
+        message = phoneController.isValid()
+          ? ""
+          : "Введите корректный номер телефона";
+      } else if (!value) {
+        message = "Поле не может быть пустым";
+      }
+
+      return message;
+    };
+
+    const validateInput = async (input) => {
+      const message = await getInputValidationMessage(input);
+      if (disposed) return false;
+      const value = input.value.trim();
+
+      setFieldState(input, message, !message && Boolean(value));
+
+      return !message;
+    };
+
+    const getActiveInputs = () =>
+      inputs.filter((input) => !input.disabled && !input.hidden);
+
+    const updateSubmitAvailability = async () => {
+      const revision = ++validityRevision;
+      const activeInputs = getActiveInputs();
+      const messages = await Promise.all(
+        activeInputs.map((input) => getInputValidationMessage(input)),
+      );
+
+      if (disposed || revision !== validityRevision) {
+        return;
+      }
+
+      formIsValid =
+        activeInputs.length > 0 && messages.every((message) => !message);
+      renderSubmitState();
+    };
+
+    const clearEditedState = (input) => {
+      setFieldState(input);
+      setStatus();
+    };
+
+    const renderMessengerField = () => {
+      const selectedMessenger = messengerInputs.find((input) => input.checked)?.value;
+      const isTelegram = selectedMessenger === "telegram";
+
+      if (maxContactField instanceof HTMLElement && maxContactInput) {
+        maxContactField.hidden = isTelegram;
+        maxContactInput.disabled = isTelegram;
+        setFieldState(maxContactInput);
+      }
+
+      if (telegramContactField instanceof HTMLElement && telegramContactInput) {
+        telegramContactField.hidden = !isTelegram;
+        telegramContactInput.disabled = !isTelegram;
+        setFieldState(telegramContactInput);
+      }
+
+      setStatus();
+    };
+
+    inputs.forEach((input) => {
+      updateHasValue(input);
+      listen(input, "input", () => {
+        input.dataset.dirty = "true";
+        clearEditedState(input);
+        void updateSubmitAvailability();
+      });
+      listen(input, "blur", () => {
+        if (input.dataset.dirty === "true") {
+          void validateInput(input).then(updateSubmitAvailability);
+        }
+      });
+      listen(input, "countrychange", () => {
+        clearEditedState(input);
+        void updateSubmitAvailability();
+      });
+    });
+
+    messengerInputs.forEach((input) => {
+      listen(input, "change", () => {
+        renderMessengerField();
+        void updateSubmitAvailability();
+      });
+    });
+
+    const getTildaEventForm = (event, eventForm) =>
+        eventForm instanceof HTMLFormElement
+          ? eventForm
+          : event?.detail?.form instanceof HTMLFormElement
+            ? event.detail.form
+            : event?.target instanceof HTMLFormElement
+              ? event.target
+              : null;
+
+    const showSuccess = () => {
+      setBusy(false);
+      setStatus();
+      contentParts.forEach((part) => {
+        part.hidden = true;
+      });
+
+      if (successView instanceof HTMLElement) {
+        successView.hidden = false;
+      }
+
+      form.dataset.state = "success";
+
+      if (section instanceof HTMLElement) {
+        const headingId = successView?.querySelector("[data-lead-success-heading]")?.id;
+        if (headingId) section.setAttribute("aria-labelledby", headingId);
+      }
+
+      window.requestAnimationFrame(() => {
+        successView?.focus({ preventScroll: true });
+      });
+      submittedTildaForm = null;
+    };
+
+    const showTildaError = (message) => {
+      submittedTildaForm = null;
+      setBusy(false);
+      setStatus(message, "error");
+    };
+
+    const handleTildaSuccess = (event, eventForm) => {
+      const successfulForm = getTildaEventForm(event, eventForm);
+
+      if (successfulForm !== submittedTildaForm) {
+        return;
+      }
+
+      if (!submittedTildaForm) {
+        return;
+      }
+
+      showSuccess();
+    };
+
+    const handleTildaError = (event, eventForm) => {
+      const failedForm = getTildaEventForm(event, eventForm);
+
+      if (failedForm !== submittedTildaForm) {
+        return;
+      }
+
+      if (!submittedTildaForm) {
+        return;
+      }
+
+      showTildaError(
+        "Не удалось отправить заявку. Проверьте соединение и попробуйте ещё раз.",
+      );
+    };
+
+    listen(document, "tildaform:aftersuccess", handleTildaSuccess);
+    listen(document, "tildaform:aftererror", handleTildaError);
+
+    const jquerySuccessHandler = (event, eventForm) => {
+      handleTildaSuccess(event, eventForm);
+    };
+
+    const jqueryErrorHandler = (event, eventForm) => {
+      handleTildaError(event, eventForm);
+    };
+
+    if (typeof window.jQuery === "function") {
+      window.jQuery(document).on(
+        "tildaform:aftersuccess.academyLeadForm",
+        jquerySuccessHandler,
+      );
+      window.jQuery(document).on(
+        "tildaform:aftererror.academyLeadForm",
+        jqueryErrorHandler,
+      );
+    }
+
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      if (busy) {
+        return;
+      }
+
+      const activeInputs = getActiveInputs();
+      const validationResults = await Promise.all(
+        activeInputs.map((input) => validateInput(input)),
+      );
+      if (disposed) return;
+      const firstInvalidIndex = validationResults.findIndex((result) => !result);
+
+      if (firstInvalidIndex !== -1) {
+        formIsValid = false;
+        renderSubmitState();
+        activeInputs[firstInvalidIndex].focus();
+        setStatus("Проверьте выделенные поля.", "error");
+        return;
+      }
+
+      setBusy(true);
+      setStatus("Отправляем заявку…", "loading");
+
+      const selectedMessenger =
+        messengerInputs.find((input) => input.checked)?.value || "max";
+      const phoneController = phoneControllers.get(mainPhoneInput);
+      const maxContactController = phoneControllers.get(maxContactInput);
+      const formData = {
+        email: form.elements.email.value.trim(),
+        messenger: selectedMessenger,
+        messengerContact:
+          selectedMessenger === "telegram"
+            ? telegramContactInput.value.trim()
+            : maxContactController.getNumber(),
+        name: form.elements.name.value.trim(),
+        phone: phoneController.getNumber(),
+      };
+      const nativeForm = hideTildaFormRecord(formName);
+
+      form.dispatchEvent(
+        new CustomEvent("academy-lead-form:validated", {
+          bubbles: true,
+          detail: { formData },
+        }),
+      );
+
+      if (!(nativeForm instanceof HTMLFormElement)) {
+        setBusy(false);
+        setStatus(
+          "Отправка заявки временно недоступна. Пожалуйста, попробуйте позже.",
+          "error",
+        );
+        return;
+      }
+
+      try {
+        await syncTildaForm(nativeForm, formData);
+        if (disposed) return;
+        submittedTildaForm = nativeForm;
+        const nativeSubmit = nativeForm.querySelector(
+          'button[type="submit"], input[type="submit"]',
+        );
+
+        if (nativeSubmit instanceof HTMLElement) {
+          nativeForm.requestSubmit(nativeSubmit);
+        } else {
+          nativeForm.requestSubmit();
+        }
+
+        await new Promise((resolve) => window.requestAnimationFrame(resolve));
+
+        if (
+          submittedTildaForm === nativeForm &&
+          nativeForm.querySelector(".js-error-control-box")
+        ) {
+          showTildaError(
+            "Не удалось отправить заявку. Проверьте заполненные поля и попробуйте ещё раз.",
+          );
+        }
+      } catch (error) {
+        showTildaError(
+          "Не удалось передать заявку. Обновите страницу и попробуйте ещё раз.",
+        );
+      }
+    };
+
+    listen(form, "submit", handleSubmit);
+    renderMessengerField();
+    void updateSubmitAvailability();
+
+    return {
+      cleanup() {
+        disposed = true;
+        validityRevision++;
+        submittedTildaForm = null;
+        listeners.forEach((removeListener) => removeListener());
+        phoneControllers.forEach((controller) => controller.destroy());
+
+        if (typeof window.jQuery === "function") {
+          window.jQuery(document).off(
+            "tildaform:aftersuccess.academyLeadForm",
+            jquerySuccessHandler,
+          );
+          window.jQuery(document).off(
+            "tildaform:aftererror.academyLeadForm",
+            jqueryErrorHandler,
+          );
+        }
+      },
+    };
+  };
+
+  forms.forEach((form) => {
+    formControllers.push(setupLeadForm(form));
+  });
+  hideKnownTildaForms();
+
+  window.__academyLeadFormCleanup = () => {
+    tildaFormObserver.disconnect();
+    clearTimeout(discoveryTimer);
+    formControllers.forEach((controller) => controller.cleanup());
+  };
+})();
+
+/* === web-academy/shared/academy/learning-timeline.js === */
+(() => {
+  window.__academyLearningTimelineCleanup?.();
+  const timelines = [...document.querySelectorAll('[data-learning-timeline]')];
+  if (!timelines.length) return;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const controller = new AbortController();
+  const options = { passive: true, signal: controller.signal };
+  let frame = 0;
+  let active = true;
+  let visible = new Set(timelines);
+
+  const update = () => {
+    frame = 0;
+    if (!active) return;
+    // Read geometry before writing styles. Text and markers never animate.
+    const positions = timelines.filter(el => visible.has(el)).map(el => {
+      const bounds = el.getBoundingClientRect();
+      const origin = parseFloat(getComputedStyle(el, '::before').top) || 0;
+      const length = Math.max(1, bounds.height - origin);
+      // Keep the growing tip 10% above the viewport bottom on every screen.
+      const progress = reduced.matches ? 1 : Math.max(0, Math.min(1, (innerHeight * 0.9 - bounds.top - origin) / length));
+      return [el, progress];
+    });
+    positions.forEach(([el, progress]) => el.style.setProperty('--timeline-progress', String(progress)));
+  };
+  const schedule = () => { if (!frame && active) frame = requestAnimationFrame(update); };
+  const observer = typeof IntersectionObserver === 'function' ? new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) visible.add(entry.target);
+      else {
+        visible.delete(entry.target);
+        entry.target.style.setProperty('--timeline-progress', reduced.matches || entry.boundingClientRect.bottom < 0 ? '1' : '0');
+      }
+    });
+    schedule();
+  }, { rootMargin: '20% 0px' }) : null;
+  timelines.forEach(el => observer?.observe(el));
+  const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(schedule) : null;
+  resize?.observe(document.body);
+  window.addEventListener('scroll', schedule, options);
+  window.addEventListener('resize', schedule, options);
+  reduced.addEventListener('change', schedule, { signal: controller.signal });
+  update();
+
+  window.__academyLearningTimelineCleanup = () => {
+    active = false;
+    controller.abort();
+    observer?.disconnect();
+    resize?.disconnect();
+    cancelAnimationFrame(frame);
+    timelines.forEach(el => el.style.removeProperty('--timeline-progress'));
+    visible.clear();
+  };
+})();
+
+/* === rodbt/page.js === */
+/* Проектный скрипт лендинга: табы программы курса (блок program-tabs по лейауту «Психосоматики»).
+   Кнопки слева связаны с панелями через aria-controls; стрелки ходят по списку; при переключении панель
+   коротко выезжает сбоку, при reduced motion переключение мгновенное. Повторный запуск снимает прошлые
+   обработчики (Tilda editor перезапускает скрипты). */
+(() => {
+  window.__rodbtProgramTabsCleanup?.();
+  const controller = new AbortController();
+  const {signal} = controller;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const blocks = [...document.querySelectorAll('[data-program-tabs]')];
+  if (!blocks.length) return;
+
+  blocks.forEach((block) => {
+    const tabs = [...block.querySelectorAll('[data-program-tab]')];
+    const panels = [...block.querySelectorAll('[data-program-panel]')];
+    if (!tabs.length || !panels.length) return;
+    block.setAttribute('data-ready', '');
+
+    const select = (tab) => {
+      tabs.forEach((item) => {
+        const selected = item === tab;
+        item.setAttribute('aria-selected', String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      const targetId = tab.getAttribute('aria-controls');
+      panels.forEach((panel) => {
+        const isTarget = panel.id === targetId;
+        panel.hidden = !isTarget;
+        panel.classList.remove('is-entering');
+        if (isTarget && !reducedMotion.matches) {
+          void panel.offsetWidth;
+          panel.classList.add('is-entering');
+        }
+      });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => select(tab), {signal});
+      tab.addEventListener('keydown', (event) => {
+        const delta = {ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1}[event.key];
+        const jump = {Home: 0, End: tabs.length - 1}[event.key];
+        if (delta === undefined && jump === undefined) return;
+        event.preventDefault();
+        const next = tabs[jump ?? (index + delta + tabs.length) % tabs.length];
+        next.focus();
+        select(next);
+      }, {signal});
+    });
+    select(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true') || tabs[0]);
+  });
+
+  window.__rodbtProgramTabsCleanup = () => {
+    controller.abort();
+    blocks.forEach((block) => {
+      block.removeAttribute('data-ready');
+      block.querySelectorAll('[data-program-panel]').forEach((panel) => { panel.hidden = false; panel.classList.remove('is-entering'); });
+    });
+    delete window.__rodbtProgramTabsCleanup;
+  };
+})();

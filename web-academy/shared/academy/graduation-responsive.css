@@ -1,0 +1,28 @@
+/* Four-layout composition. Existing graduation consumers opt in explicitly. */
+.graduation_component.is-responsive { --graduation-media-height: 18.75rem; }
+.graduation_component.is-responsive .graduation_mark { width: 3.125rem; height: 3.125rem; }
+.graduation_component.is-responsive .graduation_mark-detail { width: 36.6667%; height: 36.6667%; }
+.graduation_component.is-responsive .graduation_media { gap: 0.75rem; }
+.graduation_component.is-responsive .graduation_image-frame { height: var(--graduation-media-height); aspect-ratio: auto; }
+.graduation_component.is-responsive .graduation_image { object-position: var(--graduation-image-position, center); }
+.graduation_component.is-responsive .graduation_cards { gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.graduation_card { justify-content: flex-start; padding: 0.75rem; text-align: left; }
+@media (min-width: 32.5625rem) {
+  .graduation_component.is-responsive { --graduation-media-height: 28.125rem; }
+  .graduation_component.is-responsive .graduation_cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 48rem) {
+  .graduation_component.is-responsive { --graduation-media-height: 43.75rem; }
+  .graduation_component.is-responsive .graduation_mark { width: 3.75rem; height: 3.75rem; }
+  .graduation_component.is-responsive .graduation_media { position: relative; display: flex; min-height: var(--graduation-media-height); align-items: flex-end; justify-content: center; padding: 2rem; overflow: hidden; border-radius: var(--radius-card); background: var(--color-surface-dark); }
+  .graduation_component.is-responsive .graduation_image-frame { position: absolute; inset: 0; height: auto; border-radius: 0; }
+  .graduation_component.is-responsive .graduation_cards { position: relative; z-index: 2; max-width: 63rem; gap: 1rem; }
+  .card_component.graduation_card { min-height: 5.25rem; justify-content: center; padding: 1rem 1.5rem; border: 1px solid rgb(239 242 249 / 80%); background: rgb(51 47 65 / 25%); color: var(--color-text-on-dark-muted); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); text-align: center; }
+}
+@media (min-width: 64.0625rem) {
+  .graduation_component.is-responsive { --graduation-media-height: 50rem; }
+  .graduation_component.is-responsive .graduation_media { padding: 3rem; }
+}
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .card_component.graduation_card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

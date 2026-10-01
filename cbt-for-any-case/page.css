@@ -1,0 +1,1067 @@
+/* ############################################################################
+   СТИЛИ СТРАНИЦЫ «ПОЧЕМУ КПТ ПОДХОДИТ ПОЧТИ ПОД ЛЮБОЙ ЗАПРОС»
+   ############################################################################
+
+   ЧТО ЗДЕСЬ ЛЕЖИТ
+   Только то, что относится к этой одной странице. Всё общее — цвета, размеры
+   текста, кнопки, чипы, карточки — приходит из папки /design-system.
+   Файлы дизайн-системы править нельзя, они общие для всего сайта.
+
+   ПРАВИЛА, ПО КОТОРЫМ НАПИСАН ЭТОТ ФАЙЛ (гайд AGENTS.md):
+   · все размеры в rem, не в px — иначе на узких телефонах страница сломается;
+   · цвета берём только «по назначению» (--accent, --bg-surface), а не
+     номерами из палитры и тем более не кодами вида #7C5CDB;
+   · сначала пишем правила для телефона, потом добавляем экраны пошире
+     через @media (min-width: …) — это называется mobile-first;
+   · размеры шрифта здесь не задаём вообще: за них отвечают классы
+     text-size-* из дизайн-системы.
+
+   ОГЛАВЛЕНИЕ
+     0. Мелочи для всей страницы
+     1. Шапка
+     2. Первый экран
+     3. «Почему КПТ востребована сейчас» — три карточки
+     4. «Каждая сессия идёт по понятным блокам» — тёмный блок
+     5. Пять уровней освоения КПТ (раскрываются по прокрутке)
+     6. Программа вебинара — лента шагов
+     7. «Кому будет полезно»
+     8. Спикер
+     9. Академия
+    10. Вопросы и ответы
+    11. Финальный блок «Участие бесплатное»
+    12. Подвал
+   ############################################################################ */
+
+
+/* ============================================================================
+   0. МЕЛОЧИ ДЛЯ ВСЕЙ СТРАНИЦЫ
+   ============================================================================ */
+
+.page-wrapper {
+  /* ⚠️ ДЕКОРАТИВНЫЕ ПЯТНА ПЕРВОГО ЭКРАНА.
+     В дизайн-системе нет токенов для больших цветных кругов, а на старой
+     странице один круг был голубым — голубого в палитре Академии нет вообще.
+     Поэтому оба круга сделаны из фирменного фиолетового: он разбавлен белым
+     прямо в браузере (color-mix), никаких «своих» цветов в коде нет.
+     🟡 ЖДЁМ ДИЗАЙН: подтвердить, что оба пятна фиолетовые. */
+  --hero-glow-strong: color-mix(in srgb, var(--accent-bright) 22%, white);
+  --hero-glow-soft:   color-mix(in srgb, var(--accent) 16%, white);
+
+  background-color: var(--bg-page);
+
+  /* Шапка липкая, поэтому переход по якорю должен оставлять место под неё:
+     высота полосы (6rem) + положенные по гайду 32px сверху. */
+  --anchor-offset: 8rem;
+}
+
+/* Подводка под заголовком секции: узкая колонка по центру. */
+.section_lead {
+  max-width: 42rem;
+  margin: var(--space-small) auto 0;
+}
+
+/* Заголовки секций на этой странице — фиолетовые, как в макете. */
+.main-wrapper h2,
+.main-wrapper h3 {
+  color: var(--text-heading);
+}
+
+/* Воздух под заголовком секции.
+   ⚠️ ЛОВУШКА, на которой я уже один раз попалась: отступ сверху у списков
+   нельзя задавать здесь одним общим правилом. Ниже в файле у каждого списка
+   стоит короткая запись `margin: 0 auto`, а она стирает всё, что задано
+   выше, — включая margin-top. Поэтому отступ сверху вписан прямо
+   в `margin` каждого блока (разделы 3, 4, 5, 7, 8, 9). */
+.main-wrapper h2 { margin-bottom: var(--space-small); }
+
+
+/* ============================================================================
+   1. ШАПКА
+   ============================================================================
+   Белая полоса со скруглёнными углами. Она «висит» поверх первого экрана
+   (position: absolute), поэтому у первого экрана сверху оставлено место.
+   Шапка НЕ липкая — как на старой странице. */
+
+.site-header_component {
+  /* Липкая: при прокрутке остаётся наверху экрана, чтобы кнопка
+     «Записаться на вебинар» всегда была под рукой.
+     sticky = «едет вместе со страницей, пока не упрётся в верх окна». */
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  padding-top: var(--space-small);
+  padding-bottom: var(--space-small);
+  /* Фона у полосы НЕТ — только белая плашка внутри. Так круги первого
+     экрана проходят под шапкой, а не обрезаются об неё.
+     Фон первого экрана поднят под шапку в разделе 2 (.hero_bg). */
+}
+
+.site-header_bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+  padding: var(--space-xsmall) var(--space-xsmall) var(--space-xsmall) var(--space-small);
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+}
+
+/* Логотип. Пока просто буквы — файла логотипа в репозитории нет. */
+.site-header_logo {
+  flex: none;
+  margin-right: auto;          /* отталкивает всё остальное вправо */
+  font-size: 1.375rem;         /* 22px — это логотип, а не текст, поэтому размер тут */
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--text-heading);
+  text-decoration: none;
+}
+
+/* Дата и меню на телефоне не помещаются — показываем их с планшета (см. ниже) */
+.site-header_date,
+.site-header_nav {
+  display: none;
+}
+
+.site-header_nav {
+  gap: var(--space-small);
+}
+
+/* На узком экране надпись на кнопке слишком длинная — делаем её компактнее */
+.site-header_cta {
+  flex: none;
+}
+
+@media (min-width: 48.0625rem) {   /* 769px — планшет и шире */
+  .site-header_bar {
+    gap: var(--space-medium);
+    padding-left: var(--space-medium);
+    padding-right: var(--space-xsmall);
+  }
+  .site-header_date { display: block; }
+  .site-header_nav  { display: flex; }
+}
+
+
+/* ============================================================================
+   2. ПЕРВЫЙ ЭКРАН
+   ============================================================================
+   Светло-фиолетовая подложка с дугой понизу и двумя большими кругами,
+   которые очень медленно плывут по орбите против часовой стрелки.
+
+   ГЛАВНОЕ УСТРОЙСТВО: фон — это ОТДЕЛЬНЫЙ слой (.hero_bg), лежащий под
+   содержимым. Дуга и обрезка кругов применяются только к нему, поэтому
+   заголовок, подводка и кнопка ничем не обрезаются, даже если дуга
+   поднимется высоко.
+
+   Круги — чистая декорация, поэтому нарисованы в CSS, а не картинками
+   (гайд, раздел 11). Двигается только transform — как требует гайд. */
+
+.section_hero {
+  position: relative;
+  text-align: center;
+  /* Запас снизу, чтобы содержимое не подходило вплотную к дуге */
+  padding-bottom: var(--space-large);
+}
+
+/* --- слой фона --- */
+
+.hero_bg {
+  position: absolute;
+  /* Верх поднят на высоту шапки (96px = 6rem), чтобы фон и круги
+     заходили ПОД неё, а не обрезались об её нижний край. */
+  top: -6rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;                    /* круги не вылезают за фон */
+  background-color: var(--bg-accent-soft);
+
+  /* Дуга понизу. Запись «50% / 14%» означает: скругление по горизонтали
+     во всю половину ширины, а по вертикали всего на 14% высоты —
+     получается пологая дуга, а не полукруг колесом. */
+  border-bottom-left-radius: 50% 14%;
+  border-bottom-right-radius: 50% 14%;
+}
+
+/* --- два круга на ОДНОЙ орбите, как стрелки часов -----------------------
+   У обоих кругов общий центр вращения — середина первого экрана, общая
+   траектория и ОДИНАКОВАЯ скорость: круг за 130 секунд. Они стоят
+   на противоположных концах одного диаметра и так и едут — расстояние
+   между ними не меняется. Разводит их отрицательная задержка
+   ровно в половину цикла.
+
+   ⚠️ ВАЖНО ПРО РАЗМЕР ОРБИТЫ. Радиус орбиты (26rem) заметно БОЛЬШЕ радиуса
+   самого круга (18rem) — так и задумано: круги ходят широко, вокруг текста,
+   задевая углы экрана, а середина остаётся чистой и текст хорошо читается.
+   Пробовали наоборот, орбиту меньше круга (11rem) — тогда круги всё время
+   лежали под текстом, и движение выглядело как «дышащее пятно». Забраковано.
+
+   Скорость держим около 20 пикселей в секунду: чем шире орбита, тем длиннее
+   круг, поэтому и время оборота больше. Если менять радиус — пересчитайте
+   и длительность, иначе движение станет заметно быстрее или медленнее.
+
+   Запись transform: rotate(угол) translateX(радиус) читается так —
+   «повернуть систему координат и отойти от центра на радиус».
+   Когда угол плавно меняется от 0 до −360°, круг обходит окружность
+   против часовой стрелки.
+
+   🟢 ЕСЛИ ХОЧЕТСЯ ИНАЧЕ: меньше секунд — быстрее; --orbit-r — размах.
+
+   ⚠️ Сначала стояло 120 секунд и радиус 5rem: круг проходил всего
+   4 пикселя в секунду, и казалось, что анимация не работает вообще. */
+
+.hero_bg::before,
+.hero_bg::after {
+  content: "";
+  position: absolute;
+
+  /* Общий центр орбиты — середина фонового слоя */
+  top: 50%;
+  left: 50%;
+  width: 36rem;
+  height: 36rem;
+  margin: -18rem 0 0 -18rem;           /* сдвигаем круг его же половиной,
+                                          чтобы его центр попал в центр слоя */
+  border-radius: var(--radius-full);
+  pointer-events: none;                /* по кругу нельзя случайно кликнуть */
+
+  --orbit-r: 26rem;                    /* радиус общей орбиты */
+  animation: hero-orbit linear infinite;
+}
+
+/* Светлый круг */
+.hero_bg::before {
+  background-color: var(--hero-glow-soft);
+  animation-duration: 130s;
+}
+
+/* Насыщенный круг — та же скорость, но на противоположной стороне
+   орбиты: задержка в половину цикла сдвигает его на 180°. */
+.hero_bg::after {
+  background-color: var(--hero-glow-strong);
+  animation-duration: 130s;
+  animation-delay: -65s;
+}
+
+@keyframes hero-orbit {
+  from { transform: rotate(0deg)    translateX(var(--orbit-r)); }
+  to   { transform: rotate(-360deg) translateX(var(--orbit-r)); }
+}
+
+/* На телефоне круги диаметром 36rem закрывают весь экран, а орбита
+   в 20rem уводит их далеко за край. Поэтому там всё меньше. */
+@media (max-width: 48rem) {
+  .hero_bg::before,
+  .hero_bg::after {
+    width: 22rem;
+    height: 22rem;
+    margin: -11rem 0 0 -11rem;
+    --orbit-r: 9rem;
+    /* Орбита короче, поэтому и оборот быстрее — иначе движение
+       на телефоне стало бы почти незаметным. */
+    animation-duration: 45s;
+  }
+  .hero_bg::after { animation-delay: -22.5s; }
+}
+
+/* Кому движение мешает — круги просто стоят на месте */
+@media (prefers-reduced-motion: reduce) {
+  .hero_bg::before,
+  .hero_bg::after { animation: none; }
+  .hero_bg::before { transform: translateX(-26rem); }
+  .hero_bg::after  { transform: translateX(26rem); }
+}
+
+/* --- содержимое первого экрана --- */
+
+.hero_inner {
+  position: relative;
+  z-index: 1;                          /* поверх фонового слоя */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Плашка «Бесплатный вебинар для психологов» */
+.hero_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xsmall);
+  padding: var(--space-xxsmall) var(--space-small) var(--space-xxsmall) var(--space-xxsmall);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-medium);
+}
+
+.hero_badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+
+.hero_title {
+  max-width: 20ch;
+  margin-bottom: var(--space-small);
+}
+
+.hero_lead {
+  max-width: 46rem;
+  margin-bottom: var(--space-medium);
+}
+
+
+/* ============================================================================
+   3. «ПОЧЕМУ КПТ ВОСТРЕБОВАНА СЕЙЧАС» — ТРИ КАРТОЧКИ
+   ============================================================================
+   На телефоне карточки идут друг под другом. На большом экране — в три
+   колонки, и средняя опущена вниз «ступенькой», как в макете. */
+
+.reasons_list {
+  list-style: none;
+  margin: var(--space-large) 0 0;   /* отступ от заголовка секции */
+  padding: 0;
+  display: grid;
+  gap: var(--space-small);
+}
+
+.reasons_card {
+  padding: var(--space-medium);
+}
+
+/* Квадратик с иконкой над заголовком */
+.reasons_icon,
+.audience_icon,
+.triangle_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: var(--space-small);
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+
+.reasons_card h3,
+.audience_card h3,
+.triangle_item h3 {
+  margin-bottom: var(--space-xsmall);
+}
+
+@media (min-width: 64.0625rem) {   /* 1025px — десктоп */
+  .reasons_list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-medium);
+    align-items: start;
+  }
+  /* «Ступенька»: средняя карточка ниже соседних */
+  .reasons_list > li:nth-child(2) {
+    margin-top: var(--space-large);
+  }
+}
+
+
+/* ============================================================================
+   4. КАЖДАЯ СЕССИЯ ИДЁТ ПО ПОНЯТНЫМ БЛОКАМ  ·  тёмный блок
+   ============================================================================
+   Тёмная плашка со скруглёнными углами внутри обычной ширины страницы —
+   ровно так же сделан блок «Как устроена программа» на лендинге
+   «Введение в клиническую психологию».
+
+   Внутри — три колонки без своих карточек: иконка, подзаголовок, текст.
+   Класс background-color-inverse из дизайн-системы даёт и тёмный фон,
+   и светлый цвет текста разом. */
+
+.section_stages { padding-block: var(--section-small); }
+
+.stages_component {
+  padding: var(--space-medium) var(--space-small);
+  border-radius: var(--radius-3xl);
+}
+
+/* Общее правило «заголовки фиолетовые» из раздела 0 здесь не годится:
+   на тёмном фоне заголовки светлые. Селектор длиннее, поэтому побеждает. */
+.main-wrapper .stages_component h2,
+.main-wrapper .stages_component h3 {
+  color: var(--text-inverse);
+}
+
+.stages_list {
+  list-style: none;
+  margin: var(--space-large) 0 0;   /* отступ от заголовка секции */
+  padding: 0;
+  display: grid;
+  gap: var(--space-medium);
+}
+
+/* Иконка берёт цвет от родителя — красим не иконку, а строку */
+.stages_icon {
+  color: var(--accent-bright);
+  margin-bottom: var(--space-small);
+}
+
+@media (min-width: 48.0625rem) {   /* 769px — планшет и шире */
+  .stages_component { padding: var(--space-large); }
+  .stages_list { grid-template-columns: repeat(3, 1fr); gap: var(--space-large); }
+}
+
+
+/* ============================================================================
+   5. ПЯТЬ УРОВНЕЙ ОСВОЕНИЯ КПТ  ·  стопка, которая раскрывается по прокрутке
+   ============================================================================
+
+   КАК ЭТО УСТРОЕНО, ПРОСТЫМИ СЛОВАМИ
+   Пять карточек лежат стопкой, как колода. Раскрытая карточка занимает всю
+   ширину и показывает заголовок. Свёрнутая — низкая полоска, которая
+   выглядывает из-под соседки сверху и показывает только номер уровня.
+
+   По умолчанию (и если скрипт не загрузился) ВСЕ карточки раскрыты.
+   Скрипт page.js вешает на список класс is-scroll-reveal — и тогда все
+   карточки, кроме тех, что он уже пометил классом is-open, сворачиваются.
+   Так страница остаётся рабочей без скрипта.
+
+   ⚠️ ОТСТУПЛЕНИЕ ОТ ГАЙДА (раздел 15): гайд просит анимировать только
+   transform и opacity, а здесь меняются ещё ширина и высота — иначе эффекта
+   «раскрывается» не получится. Карточек всего пять, поэтому нагрузки нет.
+   🟡 ЖДЁМ ДИЗАЙН: узаконить такое исключение для промо-схем или запретить. */
+
+.levels_list {
+  list-style: none;
+  margin: var(--space-large) auto 0;   /* отступ от заголовка секции */
+  padding: 0;
+  max-width: 60rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;                 /* все карточки по центру колонки */
+  gap: var(--space-xsmall);
+}
+
+.levels_item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-xxsmall);
+  padding: var(--space-small) var(--space-medium);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+  /* Ширина меняется, а карточка стоит по центру — поэтому она
+     раскрывается сразу в обе стороны, а не тянется вправо. */
+  /* Плавность раскрытия: вдвое дольше самого длинного шага из системы
+     и с разгоном-торможением (ease-in-out), а не резким стартом. */
+  transition: width   calc(var(--duration-slow) * 2) var(--ease-in-out),
+              padding calc(var(--duration-slow) * 2) var(--ease-in-out);
+}
+
+/* Номер уровня — мелкая подпись капслоком фирменного цвета */
+.levels_num {
+  font-size: .75rem;                   /* 12px — служебная подпись внутри схемы */
+  font-weight: var(--weight-caption);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+/* Обёртка вокруг заголовка. Приём: сетка из одной строки, высота которой
+   переключается с 0fr на 1fr — так строка плавно «выезжает» и, что важно,
+   в свёрнутом виде НЕ занимает место. Просто спрятать текст было мало:
+   он оставался в вёрстке и карточка не становилась ниже. */
+.levels_reveal {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows calc(var(--duration-slow) * 2) var(--ease-in-out),
+              opacity var(--duration-slow) var(--ease-in-out);
+}
+
+.levels_title {
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  color: var(--text-heading);
+}
+
+/* --- СВЁРНУТОЕ состояние: включается, только когда работает скрипт ---
+   Свёрнутая карточка — низкая пилюля с одним номером уровня.
+   Чем дальше она от последней раскрытой, тем уже: скрипт проставляет
+   каждой её «глубину» (--depth = 1, 2, 3…), а ширина считается из неё.
+   Так стопка выглядит как веер, а не как лесенка в одну сторону. */
+.levels_list.is-scroll-reveal .levels_item {
+  width: calc(66% - (var(--depth, 1) - 1) * 9%);
+  padding-top: var(--space-xsmall);
+  padding-bottom: var(--space-xsmall);
+}
+
+.levels_list.is-scroll-reveal .levels_reveal {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+/* --- РАСКРЫТОЕ состояние: скрипт добавляет is-open --- */
+.levels_list.is-scroll-reveal .levels_item.is-open {
+  width: 100%;
+  padding-top: var(--space-small);
+  padding-bottom: var(--space-small);
+}
+
+.levels_list.is-scroll-reveal .levels_item.is-open .levels_reveal {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+@media (max-width: 48rem) {
+  .levels_item { padding-left: var(--space-small); padding-right: var(--space-small); }
+  /* На телефоне сужение мельче, иначе дальние пилюли становятся совсем
+     узкими и номер в них не помещается. */
+  .levels_list.is-scroll-reveal .levels_item {
+    width: calc(80% - (var(--depth, 1) - 1) * 6%);
+  }
+}
+
+/* Кому анимация мешает — показываем всё сразу, без движения */
+@media (prefers-reduced-motion: reduce) {
+  .levels_item,
+  .levels_reveal { transition: none; }
+  .levels_list.is-scroll-reveal .levels_item {
+    width: 100%;
+    padding-top: var(--space-small);
+    padding-bottom: var(--space-small);
+  }
+  .levels_list.is-scroll-reveal .levels_reveal { grid-template-rows: 1fr; opacity: 1; }
+}
+
+.levels_note {
+  max-width: 46rem;
+  margin: var(--space-large) auto 0;
+  text-align: center;
+}
+
+.levels_cta {
+  margin: var(--space-medium) 0 0;
+  text-align: center;
+}
+
+
+/* ============================================================================
+   6. ПРОГРАММА ВЕБИНАРА  ·  лента шагов
+   ============================================================================
+   Слева колонка с номерами, они нанизаны на одну вертикальную линию —
+   так видно, что это последовательность, а не просто список.
+   Справа карточка: заголовок шага и короткое пояснение.
+   Раскладка одна и та же на всех экранах, меняются только отступы. */
+
+.agenda_list {
+  list-style: none;
+  margin: var(--space-large) auto 0;   /* отступ от заголовка секции */
+  padding: 0;
+  max-width: 46rem;
+  display: grid;
+  gap: var(--space-small);
+}
+
+.agenda_step {
+  position: relative;
+  padding-left: 3.75rem;               /* место под колонку с номерами */
+}
+
+/* Линия, на которую нанизаны номера. Она нарисована НЕ одной чертой на весь
+   список, а отрезком у каждого шага: от его середины вниз, через просвет
+   между карточками, до середины следующей. Так линия начинается ровно
+   в первом кружке и обрывается в последнем — без хвостов сверху и снизу.
+
+   ⚠️ Одной чертой на весь список не получится: карточки разной высоты,
+   и CSS не знает, где именно окажутся центры первого и последнего кружка. */
+.agenda_step::before {
+  content: "";
+  position: absolute;
+  left: 1.25rem;                       /* середина кружка */
+  top: 0;
+  bottom: calc(-1 * var(--space-small));   /* дотягиваемся через просвет */
+  width: 1px;
+  background-color: var(--border-accent);
+}
+
+/* У первого шага линия начинается от середины кружка, а не от верха карточки */
+.agenda_step:first-child::before { top: 50%; }
+
+/* У последнего — заканчивается в середине кружка и не свисает вниз */
+.agenda_step:last-child::before { bottom: 50%; }
+
+/* Кружок с номером шага. Стоит по центру своей карточки. */
+.agenda_num {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;                          /* поверх линии, иначе она просвечивает */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-accent-soft);
+  border: 1px solid var(--border-accent);
+  color: var(--text-accent);
+  font-size: .875rem;                  /* 14px — служебная нумерация */
+  font-weight: var(--weight-caption);
+  font-variant-numeric: tabular-nums;  /* цифры одной ширины, столбик ровный */
+}
+
+.agenda_card {
+  padding: var(--space-medium);
+}
+
+.agenda_title { margin-bottom: var(--space-xsmall); }
+.agenda_text  { margin: 0; }
+
+/* Кнопка под программой вебинара */
+.agenda_cta {
+  margin: var(--space-medium) 0 0;
+  text-align: center;
+}
+
+@media (max-width: 32.5rem) {   /* ≤520px — на телефоне колонка уже */
+  .agenda_step { padding-left: 3rem; }
+  .agenda_num  { width: 2rem; height: 2rem; font-size: .75rem; }
+  .agenda_step::before { left: 1rem; }
+  .agenda_card { padding-left: var(--space-small); padding-right: var(--space-small); }
+}
+
+
+/* ============================================================================
+   7. «КОМУ БУДЕТ ПОЛЕЗНО»
+   ============================================================================ */
+
+.audience_list {
+  list-style: none;
+  margin: var(--space-large) 0 0;   /* отступ от заголовка секции */
+  padding: 0;
+  display: grid;
+  gap: var(--space-small);
+}
+
+.audience_card {
+  padding: var(--space-medium);
+}
+
+@media (min-width: 64.0625rem) {   /* 1025px */
+  .audience_list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-medium);
+  }
+}
+
+
+/* ============================================================================
+   8. СПИКЕР
+   ============================================================================
+   На телефоне фото сверху, текст под ним. На планшете и шире — фото слева. */
+
+.speaker_inner {
+  max-width: 52rem;
+  margin: var(--space-large) auto 0;   /* отступ от заголовка секции */
+  display: grid;
+  gap: var(--space-medium);
+  justify-items: center;
+}
+
+.speaker_photo {
+  width: 100%;
+  max-width: 17.5rem;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background-color: var(--bg-hover);   /* серый прямоугольник, пока фото грузится */
+
+  /* Портретная пропорция 4:5. В квадрате 1:1 фотографию обрезало сверху
+     и снизу — макушка не помещалась. Системных классов пропорций для
+     вертикальных фото нет, поэтому пропорция задана здесь.
+     🟡 ЖДЁМ ДИЗАЙН: нужен ли системный класс ratio-4x5. */
+  aspect-ratio: 4 / 5;
+}
+
+.speaker_text {
+  width: 100%;
+}
+
+.speaker_text h3 { margin-bottom: var(--space-xsmall); }
+
+.speaker_facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xsmall);
+}
+
+/* Галочка в пилюле — фирменного цвета и не сжимается.
+   ⚠️ Раньше этот стиль лежал в блоке списка программы вебинара, а когда
+   тот блок переделали в ленту шагов, правило пропало — и галочки стали
+   серыми, хотя класс в разметке остался. Теперь стиль живёт здесь,
+   рядом с самими пилюлями. */
+.pill_icon {
+  flex: none;
+  color: var(--text-accent);
+}
+
+/* Строка «где учился» — маленькая белая пилюля */
+.speaker_fact,
+.academy_pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  padding: var(--space-xxsmall) var(--space-xsmall);
+  border-radius: var(--radius-full);
+}
+
+@media (min-width: 48.0625rem) {   /* 769px */
+  .speaker_inner {
+    grid-template-columns: 17.5rem 1fr;
+    gap: var(--space-large);
+    align-items: center;
+    justify-items: stretch;
+  }
+}
+
+
+/* ============================================================================
+   9. АКАДЕМИЯ
+   ============================================================================ */
+
+.academy_inner {
+  max-width: 64rem;
+  margin: var(--space-large) auto 0;   /* отступ от заголовка секции */
+  display: grid;
+  gap: var(--space-medium);
+}
+
+.academy_group-title {
+  margin-bottom: var(--space-small);
+}
+
+.academy_pills {
+  list-style: none;
+  margin: 0 0 var(--space-medium);
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xsmall);
+}
+
+/* Последняя группа — без нижнего отступа, его задаёт сама секция */
+.academy_pills:last-child { margin-bottom: 0; }
+
+.academy_photo {
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background-color: var(--bg-hover);
+  /* ⚠️ В дизайн-системе есть классы пропорций 1:1, 4:3, 3:2 и 16:9,
+     а фотография вертикальная. Пропорция задана здесь.
+     🟡 ЖДЁМ ДИЗАЙН: нужен ли системный класс для вертикальных фото. */
+  aspect-ratio: 4 / 5;
+}
+
+.academy_photo img,
+.speaker_photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Портрет обрезаем не по центру, а ближе к верху: так лицо целиком
+   в кадре, даже если снимок выше, чем рамка. */
+.speaker_photo img { object-position: 50% 22%; }
+
+@media (min-width: 48.0625rem) {   /* 769px */
+  .academy_inner {
+    grid-template-columns: 1fr 20rem;
+    gap: var(--space-large);
+    align-items: start;
+  }
+}
+
+
+/* ============================================================================
+   10. ВОПРОСЫ И ОТВЕТЫ
+   ============================================================================
+   Аккордеон на теге <details>: браузер сам открывает и закрывает, сам
+   объявляет состояние программе чтения с экрана. JavaScript не нужен.
+   Приём тот же, что на лендинге «Введение в клиническую психологию». */
+
+.faq_list {
+  max-width: 60rem;
+  margin: var(--space-large) auto 0;   /* отступ от заголовка секции */
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;                    /* скругление не режется вопросами */
+}
+
+.faq_item + .faq_item { border-top: 1px solid var(--border-default); }
+
+.faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-small);
+  padding: var(--space-medium);
+  min-height: var(--tap-target-min);
+  cursor: pointer;
+  list-style: none;                    /* убираем стандартный треугольник */
+  color: var(--text-heading);
+}
+
+.faq_question::-webkit-details-marker { display: none; }
+
+/* Плюс превращается в минус, когда вопрос открыт. Рисуем двумя чёрточками —
+   отдельная иконка тут не нужна. */
+.faq_sign {
+  position: relative;
+  flex: none;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  color: var(--text-accent);
+}
+
+.faq_sign::before,
+.faq_sign::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transform: translateY(-50%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.faq_sign::after { transform: translateY(-50%) rotate(90deg); }
+.faq_item[open] .faq_sign::after { transform: translateY(-50%) rotate(0deg); }
+
+.faq_answer { padding: 0 var(--space-medium) var(--space-medium); }
+.faq_answer p { margin: 0; }
+.faq_answer p + p { margin-top: var(--space-small); }
+
+@media (max-width: 32.5rem) {   /* ≤520px */
+  .faq_question { padding: var(--space-small); }
+  .faq_answer   { padding: 0 var(--space-small) var(--space-small); }
+}
+
+
+/* ============================================================================
+   11. ФИНАЛЬНЫЙ БЛОК «УЧАСТИЕ БЕСПЛАТНОЕ»
+   ============================================================================
+   Тёмная плашка — такая же, как у блока про этапы сессии: тот же класс
+   background-color-inverse и тот же радиус. Слева текст и кнопка,
+   справа подарок — чек-лист из нескольких страниц.
+
+   Чек-лист нарисован вёрсткой, а не картинкой: текст в нём можно править,
+   он читается поисковиком и не размывается на экранах с высокой чёткостью. */
+
+.section_cta { padding-block: var(--section-medium); }
+
+.cta_card {
+  padding: var(--space-medium) var(--space-small);
+  border-radius: var(--radius-3xl);
+  display: grid;
+  gap: var(--space-large);
+}
+
+/* Заголовок на тёмном — светлый. Перебивает общее правило из раздела 0. */
+.main-wrapper .cta_card h2 { color: var(--text-inverse); }
+
+/* Описание не должно растягиваться на всю ширину плашки:
+   длинная строка на десктопе читается плохо. */
+.cta_lead {
+  max-width: 34rem;
+  margin: var(--space-small) 0;
+}
+
+.cta_date {
+  margin: 0 0 var(--space-medium);
+  color: var(--text-inverse);
+}
+
+@media (min-width: 64.0625rem) {   /* 1025px — десктоп */
+  .cta_card {
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    gap: var(--space-xlarge);
+    align-items: center;
+    padding: var(--space-large);
+  }
+}
+
+
+/* --- ПОДАРОК: ЧЕК-ЛИСТ ИЗ НЕСКОЛЬКИХ СТРАНИЦ ---------------------------- */
+
+.cta_gift {
+  max-width: 21rem;
+  margin: 0 auto;
+  padding-top: var(--space-medium);   /* запас под страницы и плашку сверху */
+}
+
+/* Стопка страниц. Первая страница лежит поверх, две другие выглядывают
+   из-под неё сверху — так видно, что в чек-листе не один лист. */
+.checklist_stack { position: relative; }
+
+.checklist_page {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: -1.25rem;
+  height: 4rem;
+  border-radius: var(--radius-2xl);
+  background-color: var(--bg-surface);
+  /* Тонкая рамка цветом тёмного фона отделяет страницы друг от друга —
+     без неё они сливаются в одну серую полосу. */
+  box-shadow: 0 0 0 .125rem var(--bg-inverse);
+  opacity: .6;
+}
+
+.checklist_page.is-third {
+  left: 2.5rem;
+  right: 2.5rem;
+  top: -2.5rem;
+  opacity: .33;
+}
+
+/* Сама первая страница */
+.checklist_sheet {
+  position: relative;
+  z-index: 1;                        /* поверх выглядывающих страниц */
+  padding: var(--space-medium) var(--space-small) var(--space-small);
+  border-radius: var(--radius-2xl);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-overlay);
+}
+
+.checklist_title {
+  margin: var(--space-xsmall) 0 var(--space-small);
+  color: var(--text-heading);
+}
+
+.checklist_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-xsmall);
+}
+
+.checklist_item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xsmall);
+  color: var(--text-primary);
+}
+
+/* Квадратик-галочка — то, что и делает список чек-листом */
+.checklist_box {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: .0625rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--accent);
+  color: var(--text-inverse);
+}
+
+/* Круглая плашка «В подарок» в верхнем углу стопки */
+.checklist_badge {
+  position: absolute;
+  z-index: 2;
+  top: -2.25rem;
+  right: -0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--accent-bright);
+  color: var(--text-inverse);
+  font-size: .8125rem;               /* 13px — надпись внутри декоративной плашки */
+  font-weight: var(--weight-caption);
+  text-align: center;
+  box-shadow: var(--shadow-button-inverse);
+}
+
+.cta_gift-note {
+  margin: var(--space-medium) 0 0;
+  text-align: center;
+}
+
+/* На узком экране плашка «В подарок» не должна вылезать за края блока */
+@media (max-width: 32.5rem) {
+  .checklist_badge { width: 4.5rem; height: 4.5rem; top: -1.75rem; right: 0; }
+}
+
+
+/* ============================================================================
+   12. ПОДВАЛ
+   ============================================================================ */
+
+.site-footer_component {
+  background-color: var(--bg-surface);
+  padding-top: var(--space-large);
+  padding-bottom: var(--space-medium);
+}
+
+.site-footer_inner {
+  display: grid;
+  gap: var(--space-large);
+}
+
+/* Черта под заголовком «Правовая информация» — по ширине надписи */
+.site-footer_title {
+  display: inline-block;
+  padding-bottom: var(--space-xsmall);
+  border-bottom: 1px solid var(--border-default);
+  margin: 0 0 var(--space-small);
+  color: var(--text-heading);
+  font-weight: var(--weight-semibold);
+}
+
+.site-footer_links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-small);
+}
+
+.site-footer_note {
+  margin: var(--space-medium) 0 0;
+  max-width: 34rem;
+}
+
+.site-footer_copy {
+  margin: var(--space-medium) 0 0;
+  padding-top: var(--space-small);
+  border-top: 1px solid var(--border-default);
+}
+
+@media (min-width: 48.0625rem) {   /* 769px */
+  .site-footer_inner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xlarge);
+  }
+}

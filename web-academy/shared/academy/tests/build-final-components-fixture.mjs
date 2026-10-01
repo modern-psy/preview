@@ -1,0 +1,14 @@
+import fs from 'node:fs/promises';
+import {renderDiploma} from '../diploma-render.mjs';
+import {renderGraduation} from '../graduation-render.mjs';
+import {renderLeadFormSection} from '../lead-form-render.mjs';
+const project=new URL('../../../projects/psychologist-consultant/',import.meta.url);
+const data=async name=>JSON.parse(await fs.readFile(new URL(`data/${name}.json`,project),'utf8'));
+const diploma=await data('diploma'), graduation=await data('graduation'), form=await data('lead-form'), contract=await data('form-contract');
+Object.assign(form,{nativeMarker:contract.native_tilda_form.discovery.value,agreementUrl:contract.personal_data.agreement_url,privacyUrl:contract.personal_data.privacy_url});
+const theme=(await fs.readFile(new URL('styles.css',project),'utf8')).match(/\.psychologist-consultant-page \{[\s\S]*?\n\}/)[0].replace('.psychologist-consultant-page','.academy-page');
+const css=['components','card-spacing','body-text','button','section-spacing','section-heading','diploma','graduation','graduation-responsive','lead-form','lead-form-responsive'];
+const markup=renderDiploma(diploma)+renderDiploma({...diploma,requirements:null,note:null,license:null},{id:'minimal-diploma'})+renderGraduation(graduation)+renderGraduation({...graduation,mark:null,items:['Более длинный заголовок карточки для проверки свободного переноса и высоты содержимого',...graduation.items]},{id:'other-graduation'})+renderLeadFormSection(form);
+const html=`<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../../../projects/psychologist-consultant/"><title>Independent final components</title><link rel="icon" href="data:,">${css.map(n=>`<link rel="stylesheet" href="../../shared/academy/${n}.css">`).join('')}<style>${theme}\nhtml{font-size:16px}body{margin:0}.padding-global{padding-inline:1rem}.container-xlarge{max-width:95rem;margin:auto}.column-grid_component{display:block}.fixture_text-large{font-size:32px}</style><body><main class="academy-page">${markup}</main></body></html>`.replace(/^[\t ]+$/gm, '');
+await fs.writeFile(new URL('final-components-fixture.html',import.meta.url),html);
+await fs.writeFile(new URL('final-components-large-text-fixture.html',import.meta.url),html.replace('<html lang="ru">','<html lang="ru" class="fixture_text-large">'));

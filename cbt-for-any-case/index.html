@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ПОЧЕМУ КПТ ПОДХОДИТ ПОЧТИ ПОД ЛЮБОЙ ЗАПРОС»  →  адрес /cbt-for-any-case
+  ============================================================================
+
+  Это ПЕРЕВЁРСТАННАЯ версия страницы https://modern-psy.ru/cbt-for-any-case.
+  Старая страница собрана в Тильде по другим правилам, эта — по гайду AGENTS.md:
+  классы Client-first v2, размеры текста и цвета из дизайн-системы
+  (папка /design-system), промо-шкала типографики (та же, что на /vvedenie).
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки, сейчас там заглушки;
+    🔴 всё остальное (class=…, id=…, <style>, <script>) — «шестерёнки»,
+       их трогать не надо: на них держится вёрстка.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём решения):
+    · кнопки «Записаться» ведут на якорь #reg (последний блок страницы).
+      Настоящей формы регистрации нет — её место помечено 🟡;
+    · фотографии подключены ссылками на старый сайт (tildacdn). Когда будут
+      свои файлы — заменить на /img/… в этой же папке;
+    · дата вебинара «29 июля» взята со старой страницы, она уже прошла.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Почему КПТ подходит почти под любой запрос — бесплатный вебинар</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатный вебинар для психологов: разбираем на живом кейсе, как мыслит КПТ-терапевт, как устроена сессия и какие ошибки чаще всего делают новички." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер.
+       ⚠️ og:image не задан — картинки 1200×630 для соцсетей ещё не нарисованы.
+       ⚠️ canonical появится, когда страница переедет на боевой домен. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Почему КПТ подходит почти под любой запрос" />
+  <meta property="og:description" content="Бесплатный вебинар для психологов: живой кейс, разбор демо-сессии и базовые техники." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 ДИЗАЙН-СИСТЕМА. Порядок подключения менять нельзя.
+       Файлы — копии из design-system/ в корне репозитория, правятся ТОЛЬКО там. -->
+  <link rel="stylesheet" href="/design-system/tokens.css" />
+  <link rel="stylesheet" href="/design-system/base.css" />
+  <link rel="stylesheet" href="/design-system/typography.css" />
+  <link rel="stylesheet" href="/design-system/components.css" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Скрипт раскрывает уровни КПТ по мере прокрутки.
+       Без него страница работает, просто все уровни видны сразу. -->
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+
+  <!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+  <a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+
+  <!-- ==========================================================================
+       ШАПКА
+       ==========================================================================
+       Белая полоса со скруглёнными углами, лежит поверх фона первого экрана.
+       Не липкая — как на старой странице.
+       ========================================================================== -->
+  <header class="site-header_component">
+    <div class="padding-global">
+      <div class="container-large">
+        <div class="site-header_bar">
+
+          <!-- 🟢 Логотип. Пока текстом: файла логотипа в репозитории ещё нет. -->
+          <a class="site-header_logo" href="/">АСП</a>
+
+          <!-- 🟢 Дата и время вебинара -->
+          <p class="site-header_date text-size-note text-color-secondary">29&nbsp;июля, 17:00&nbsp;МСК</p>
+
+          <!-- 🔴 Меню-якори. Каждая ссылка ведёт на секцию ниже. -->
+          <nav class="site-header_nav" aria-label="Разделы страницы">
+            <a class="text-link is-subtle text-size-note" href="#about">О&nbsp;вебинаре</a>
+            <a class="text-link is-subtle text-size-note" href="#speaker">Спикер</a>
+            <a class="text-link is-subtle text-size-note" href="#academy">Академия</a>
+          </nav>
+
+          <!-- 🟡 Кнопка ведёт на последний блок страницы. Подставьте адрес формы. -->
+          <a class="button is-md site-header_cta" href="#reg">Записаться на&nbsp;вебинар</a>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <main class="main-wrapper" id="soderzhimoe">
+
+    <!-- ======================================================================
+         1. ПЕРВЫЙ ЭКРАН
+         ======================================================================
+         Два больших круга по бокам — декорация, поэтому они нарисованы в CSS
+         (page.css, раздел 2), а не картинками. Так правильно по гайду, раздел 11.
+         ====================================================================== -->
+    <section class="section_hero" id="top">
+
+      <!-- 🔴 Фон первого экрана вынесен отдельным слоем.
+           Он лежит ПОД содержимым, поэтому дуга снизу и круги обрезают
+           только фон — заголовок, текст и кнопка остаются целыми. -->
+      <div class="hero_bg" aria-hidden="true"></div>
+
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-large">
+            <div class="hero_inner">
+
+              <!-- 🟢 Плашка над заголовком -->
+              <p class="hero_badge card">
+                <span class="hero_badge-icon">
+                  <span class="icon is-sm" style="--icon-url: url('/icons/info.svg')" aria-hidden="true"></span>
+                </span>
+                <span class="text-size-note text-color-primary">Бесплатный вебинар для&nbsp;психологов</span>
+              </p>
+
+              <!-- 🟢 Главный заголовок страницы. На странице он один — это важно для поиска. -->
+              <h1 class="text-size-hero hero_title">
+                Почему КПТ подходит<br>
+                <span class="text-color-accent">почти под любой запрос</span>
+              </h1>
+
+              <!-- 🟢 Подводка -->
+              <p class="text-size-lead text-color-secondary hero_lead">
+                Покажем, как мыслит КПТ-терапевт: на&nbsp;реальном кейсе разберем,
+                как специалист понимает проблему клиента, принимает решения в&nbsp;ходе
+                сессии и&nbsp;выстраивает терапию. А&nbsp;также обсудим, почему именно эти
+                навыки делают КПТ одним из&nbsp;самых востребованных методов психотерапии.
+              </p>
+
+              <!-- 🟡 Главная кнопка первого экрана -->
+              <a class="button is-lg" href="#reg">Записаться на&nbsp;вебинар</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         2. ПОЧЕМУ КПТ ВОСТРЕБОВАНА СЕЙЧАС
+         ======================================================================
+         Три карточки. На десктопе средняя опущена вниз «ступенькой» —
+         так же, как на старой странице. На телефоне ступенька пропадает.
+         ====================================================================== -->
+    <section class="section_reasons" id="about">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">Почему КПТ востребована сейчас</h2>
+            <p class="text-size-lead text-color-secondary text-align-center section_lead">
+              У&nbsp;популярности метода есть три понятные причины&nbsp;— и&nbsp;они&nbsp;же
+              объясняют, почему он&nbsp;подходит почти под любой запрос.
+            </p>
+
+            <ul class="reasons_list">
+
+              <li class="reasons_card card">
+                <span class="reasons_icon">
+                  <span class="icon is-md" style="--icon-url: url('/icons/shield-check.svg')" aria-hidden="true"></span>
+                </span>
+                <!-- 🟢 Заголовок и текст карточки -->
+                <h3 class="text-size-block-title">Доказательная база</h3>
+                <p class="text-size-body text-color-secondary">
+                  За&nbsp;каждым клиническим решением в&nbsp;КПТ стоят десятилетия исследований.
+                </p>
+              </li>
+
+              <li class="reasons_card card">
+                <span class="reasons_icon">
+                  <span class="icon is-md" style="--icon-url: url('/icons/message-circle.svg')" aria-hidden="true"></span>
+                </span>
+                <h3 class="text-size-block-title">Топ-запросы</h3>
+                <p class="text-size-body text-color-secondary">
+                  Тревога, депрессия и&nbsp;многие другие запросы, с&nbsp;которыми
+                  вы&nbsp;сталкиваетесь каждый день.
+                </p>
+              </li>
+
+              <li class="reasons_card card">
+                <span class="reasons_icon">
+                  <span class="icon is-md" style="--icon-url: url('/icons/bolt.svg')" aria-hidden="true"></span>
+                </span>
+                <h3 class="text-size-block-title">Скорость и результат</h3>
+                <p class="text-size-body text-color-secondary">
+                  За&nbsp;10&nbsp;сессий клиент получает видимый результат.
+                </p>
+              </li>
+
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         3. КАЖДАЯ СЕССИЯ ИДЁТ ПО ПОНЯТНЫМ БЛОКАМ  (тёмный блок)
+         ======================================================================
+         Такой же тёмный блок со скруглёнными углами, как «Как устроена
+         программа» на лендинге «Введение в клиническую психологию».
+
+         🔴 Иконки подключаются по ссылке на svg-файл и красятся маской.
+            Путь всегда начинается со слеша — см. AGENTS.md, раздел 10.
+            Кружок закрашен на треть, на две трети и целиком — это показывает,
+            сколько сессии пройдено.
+         ====================================================================== -->
+    <section class="section_stages">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="stages_component background-color-inverse">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Каждая сессия идет по&nbsp;понятным блокам
+            </h2>
+
+            <ol class="stages_list">
+              <li class="stages_item">
+                <span class="icon is-lg stages_icon" style="--icon-url: url('/icons/progress-1.svg')" aria-hidden="true"></span>
+                <!-- 🟢 Подзаголовок и текст -->
+                <h3 class="text-size-block-title">Начало сессии</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Оценка настроения, события за&nbsp;интервал, обсуждение плана, составление повестки.
+                </p>
+              </li>
+              <li class="stages_item">
+                <span class="icon is-lg stages_icon" style="--icon-url: url('/icons/progress-2.svg')" aria-hidden="true"></span>
+                <!-- 🟢 Подзаголовок и текст -->
+                <h3 class="text-size-block-title">Середина сессии</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Работа над повесткой, фокус на&nbsp;ключевых когнициях, выбор стратегии изменений, применение техник.
+                </p>
+              </li>
+              <li class="stages_item">
+                <span class="icon is-lg stages_icon" style="--icon-url: url('/icons/progress-3.svg')" aria-hidden="true"></span>
+                <!-- 🟢 Подзаголовок и текст -->
+                <h3 class="text-size-block-title">Завершение сессии</h3>
+                <p class="text-size-body text-color-on-inverse margin-top margin-xsmall">
+                  Составление плана на&nbsp;интервал, резюме, обратная связь.
+                </p>
+              </li>
+            </ol>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         4. ПЯТЬ УРОВНЕЙ ОСВОЕНИЯ КПТ
+         ======================================================================
+         Стопка карточек. Сначала раскрыт только первый уровень, остальные
+         лежат под ним свёрнутыми и выглядывают краешком. По мере прокрутки
+         каждый следующий уровень выезжает и раскрывается — и остаётся
+         раскрытым. Всё, что уже открылось, обратно не закрывается.
+
+         🔴 ВАЖНО: если скрипт page.js не загрузится, все уровни просто
+         показаны сразу. Страница не ломается, теряется только анимация.
+         ====================================================================== -->
+    <section class="section_levels">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Освоить КПТ&nbsp;— значит больше, чем выучить техники
+            </h2>
+
+            <!-- 🔴 data-levels — метка для скрипта. Не удалять и не переименовывать. -->
+            <ol class="levels_list" data-levels>
+              <!-- 🟢 Уровни. Чтобы поменять текст — правьте только строчки
+                   внутри <span> и <p>. Порядок карточек = порядок в списке. -->
+              <li class="levels_item">
+                <span class="levels_num">1 уровень</span>
+                <span class="levels_reveal"><span class="text-size-block-title levels_title">Понимать модель КПТ</span></span>
+              </li>
+              <li class="levels_item">
+                <span class="levels_num">2 уровень</span>
+                <span class="levels_reveal"><span class="text-size-block-title levels_title">Освоить отдельные техники</span></span>
+              </li>
+              <li class="levels_item">
+                <span class="levels_num">3 уровень</span>
+                <span class="levels_reveal"><span class="text-size-block-title levels_title">Научиться видеть механизм проблемы клиента</span></span>
+              </li>
+              <li class="levels_item">
+                <span class="levels_num">4 уровень</span>
+                <span class="levels_reveal"><span class="text-size-block-title levels_title">Принимать клинические решения во&nbsp;время сессии</span></span>
+              </li>
+              <li class="levels_item">
+                <span class="levels_num">5 уровень</span>
+                <span class="levels_reveal"><span class="text-size-block-title levels_title">Выстраивать терапию как систему</span></span>
+              </li>
+            </ol>
+
+            <!-- 🟢 Подпись под схемой -->
+            <p class="text-size-body text-color-secondary levels_note">
+              На&nbsp;вебинаре вы&nbsp;познакомитесь с&nbsp;логикой метода и&nbsp;увидите,
+              почему профессиональная КПТ&nbsp;— это гораздо больше, чем набор техник.
+            </p>
+
+            <!-- 🟡 Кнопка -->
+            <p class="levels_cta">
+              <a class="button is-lg" href="#reg">Забронировать место</a>
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         6. КОМУ БУДЕТ ПОЛЕЗНО
+         ====================================================================== -->
+    <section class="section_audience">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">Кому будет полезно</h2>
+
+            <ul class="audience_list">
+
+              <li class="audience_card card">
+                <span class="audience_icon">
+                  <span class="icon is-md" style="--icon-url: url('/icons/compass.svg')" aria-hidden="true"></span>
+                </span>
+                <h3 class="text-size-block-title">Тем, кто выбирает метод</h3>
+                <p class="text-size-body text-color-secondary">
+                  Хотите понять, почему КПТ подходит почти под любой запрос
+                  и&nbsp;стоит&nbsp;ли его осваивать.
+                </p>
+              </li>
+
+              <li class="audience_card card">
+                <span class="audience_icon">
+                  <span class="icon is-md" style="--icon-url: url('/icons/book.svg')" aria-hidden="true"></span>
+                </span>
+                <h3 class="text-size-block-title">Начинающим в&nbsp;КПТ</h3>
+                <p class="text-size-body text-color-secondary">
+                  Уже знакомитесь с&nbsp;методом и&nbsp;хотите увидеть структуру сессии
+                  и&nbsp;типичные ошибки на&nbsp;практике.
+                </p>
+              </li>
+
+              <li class="audience_card card">
+                <span class="audience_icon">
+                  <span class="icon is-md" style="--icon-url: url('/icons/users.svg')" aria-hidden="true"></span>
+                </span>
+                <h3 class="text-size-block-title">Специалистам других подходов</h3>
+                <p class="text-size-body text-color-secondary">
+                  Хотите разобраться, как устроен КПТ и&nbsp;что можно взять
+                  в&nbsp;свою работу.
+                </p>
+              </li>
+
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         7. КАК ПРОЙДЁТ ВЕБИНАР
+         ======================================================================
+         Тот же список-пилюли, что и в блоке «Каждая сессия идёт по блокам».
+         ====================================================================== -->
+    <section class="section_agenda">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">Как пройдет вебинар</h2>
+            <p class="text-size-lead text-color-secondary text-align-center section_lead">
+              От&nbsp;теории&nbsp;— к&nbsp;живому кейсу и&nbsp;разбору демо-сессии.
+            </p>
+
+            <!-- Лента шагов: слева номера на общей линии, справа карточки.
+                 Чтобы добавить пункт — скопируйте один <li> целиком
+                 и поменяйте номер, заголовок и пояснение. -->
+            <ol class="agenda_list">
+              <li class="agenda_step">
+                <span class="agenda_num">01</span>
+                <div class="agenda_card card">
+                  <!-- 🟢 Заголовок пункта -->
+                  <h3 class="text-size-block-title agenda_title">Почему КПТ&nbsp;— один из&nbsp;самых востребованных подходов</h3>
+                  <!-- 🟢 Пояснение под заголовком -->
+                  <p class="text-size-note text-color-secondary agenda_text">Коротко о&nbsp;доказательной базе метода и&nbsp;о&nbsp;том, с&nbsp;какими запросами он&nbsp;работает чаще всего.</p>
+                </div>
+              </li>
+              <li class="agenda_step">
+                <span class="agenda_num">02</span>
+                <div class="agenda_card card">
+                  <!-- 🟢 Заголовок пункта -->
+                  <h3 class="text-size-block-title agenda_title">Почему техники без&nbsp;концептуализации не&nbsp;работают</h3>
+                  <!-- 🟢 Пояснение под заголовком -->
+                  <p class="text-size-note text-color-secondary agenda_text">Что происходит, когда упражнение подобрано верно, а&nbsp;понимания проблемы клиента еще&nbsp;нет.</p>
+                </div>
+              </li>
+              <li class="agenda_step">
+                <span class="agenda_num">03</span>
+                <div class="agenda_card card">
+                  <!-- 🟢 Заголовок пункта -->
+                  <h3 class="text-size-block-title agenda_title">Как в&nbsp;реальности строится КПТ-процесс</h3>
+                  <!-- 🟢 Пояснение под заголовком -->
+                  <p class="text-size-note text-color-secondary agenda_text">Из&nbsp;чего складывается план терапии и&nbsp;как он&nbsp;меняется от&nbsp;встречи к&nbsp;встрече.</p>
+                </div>
+              </li>
+              <li class="agenda_step">
+                <span class="agenda_num">04</span>
+                <div class="agenda_card card">
+                  <!-- 🟢 Заголовок пункта -->
+                  <h3 class="text-size-block-title agenda_title">Демо-фрагмент сессии</h3>
+                  <!-- 🟢 Пояснение под заголовком -->
+                  <p class="text-size-note text-color-secondary agenda_text">Смотрим фрагмент работы с&nbsp;запросом про&nbsp;тревогу целиком, а&nbsp;не&nbsp;пересказ.</p>
+                </div>
+              </li>
+              <li class="agenda_step">
+                <span class="agenda_num">05</span>
+                <div class="agenda_card card">
+                  <!-- 🟢 Заголовок пункта -->
+                  <h3 class="text-size-block-title agenda_title">Подробный разбор демо-сессии: что и&nbsp;зачем делает терапевт</h3>
+                  <!-- 🟢 Пояснение под заголовком -->
+                  <p class="text-size-note text-color-secondary agenda_text">Останавливаемся на&nbsp;ключевых репликах и&nbsp;объясняем, какое решение стоит за&nbsp;каждой.</p>
+                </div>
+              </li>
+              <li class="agenda_step">
+                <span class="agenda_num">06</span>
+                <div class="agenda_card card">
+                  <!-- 🟢 Заголовок пункта -->
+                  <h3 class="text-size-block-title agenda_title">Типичные ошибки новичка</h3>
+                  <!-- 🟢 Пояснение под заголовком -->
+                  <p class="text-size-note text-color-secondary agenda_text">Что чаще всего сбивает начинающего специалиста и&nbsp;как заметить это у&nbsp;себя.</p>
+                </div>
+              </li>
+            </ol>
+
+            <!-- 🟡 Кнопка под программой -->
+            <p class="agenda_cta">
+              <a class="button is-lg" href="#reg">Зарегистрироваться на&nbsp;вебинар</a>
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         8. КТО ПРОВЕДЁТ ВЕБИНАР
+         ====================================================================== -->
+    <section class="section_speaker" id="speaker">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">Кто проведет вебинар</h2>
+
+            <div class="speaker_inner">
+
+              <!-- 🟡 Фотография пока подключена ссылкой на старый сайт.
+                   Когда будет свой файл — положите его в папку img/ рядом
+                   с этой страницей и поменяйте адрес на /cbt-for-any-case/img/… -->
+              <div class="speaker_photo">
+                <img src="https://optim.tildacdn.com/tild3936-3461-4162-a631-396432313332/-/format/webp/photo.png.webp"
+                     alt="Александр Шакиров, психолог-консультант, ведущий вебинара"
+                     loading="lazy" />
+              </div>
+
+              <div class="speaker_text">
+                <!-- 🟢 Имя и описание спикера -->
+                <h3 class="text-size-block-title">Александр Шакиров</h3>
+                <p class="text-size-body text-color-secondary margin-bottom margin-small">
+                  Психолог-консультант, магистр психологии по&nbsp;направлению
+                  «консультативная психология». Работает в&nbsp;подходах CBT,
+                  схема-терапии и&nbsp;ACT.
+                </p>
+
+                <!-- 🟢 Где учился. Чтобы добавить строку — скопируйте один <li>. -->
+                <ul class="speaker_facts">
+                  <li class="speaker_fact card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Институт Бека, США</span>
+                  </li>
+                  <li class="speaker_fact card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Оксфордский центр КПТ</span>
+                  </li>
+                  <li class="speaker_fact card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Ассоциация КПТ</span>
+                  </li>
+                  <li class="speaker_fact card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Институт Б.&nbsp;Д.&nbsp;Карвасарского</span>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         9. АКАДЕМИЯ КАК ПРОФЕССИОНАЛЬНАЯ СРЕДА
+         ====================================================================== -->
+    <section class="section_academy" id="academy">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Академия<br>как профессиональная среда
+            </h2>
+            <p class="text-size-lead text-color-secondary text-align-center section_lead">
+              Здесь обучение дополняется практикой, сообществом, профессиональными
+              событиями и&nbsp;возможностью развиваться дальше вместе с&nbsp;коллегами.
+            </p>
+
+            <div class="academy_inner">
+
+              <div class="academy_text">
+
+                <!-- 🟢 Первая группа -->
+                <h3 class="text-size-block-title academy_group-title">Принципы Академии</h3>
+                <ul class="academy_pills">
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Практика и&nbsp;работа в&nbsp;группах</span>
+                  </li>
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Человечность и&nbsp;открытость</span>
+                  </li>
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Много практики с&nbsp;реальными кейсами</span>
+                  </li>
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Международная экспертиза и&nbsp;обмен опытом</span>
+                  </li>
+                </ul>
+
+                <!-- 🟢 Вторая группа -->
+                <h3 class="text-size-block-title academy_group-title">Официальные документы</h3>
+                <ul class="academy_pills">
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Осуществляем деятельность на&nbsp;основе образовательной лицензии</span>
+                  </li>
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Выдаем документы установленного образца</span>
+                  </li>
+                </ul>
+
+                <!-- 🟢 Третья группа -->
+                <h3 class="text-size-block-title academy_group-title">Наши проекты</h3>
+                <ul class="academy_pills">
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Маркет-Фестиваль</span>
+                  </li>
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Онлайн-конференции</span>
+                  </li>
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Офлайн-конференции в&nbsp;Санкт-Петербурге</span>
+                  </li>
+                  <li class="academy_pill card">
+                    <span class="icon is-sm pill_icon" style="--icon-url: url('/icons/check-circle.svg')" aria-hidden="true"></span>
+                    <span class="text-size-note text-color-primary">Летний интенсив ACT Summer Camp</span>
+                  </li>
+                </ul>
+
+              </div>
+
+              <!-- 🟡 Фотография пока подключена ссылкой на старый сайт. -->
+              <div class="academy_photo">
+                <img src="https://optim.tildacdn.com/tild3661-6563-4564-b964-366630653265/-/format/webp/academy-community.png.webp"
+                     alt="Участники мероприятий Академии современной психологии"
+                     loading="lazy" />
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         10. ВОПРОСЫ И ОТВЕТЫ
+         ======================================================================
+         Аккордеон собран на теге <details>: браузер сам открывает и закрывает
+         его и сам объявляет состояние программе чтения с экрана.
+         Ни одной строчки JavaScript тут нет.
+
+         🟢 ЧТОБЫ ДОБАВИТЬ ВОПРОС: скопируйте один блок <details>…</details>
+            целиком и поменяйте вопрос и ответ.
+         🔴 ЕСЛИ МЕНЯЕТЕ ТЕКСТ — поправьте его и в микроразметке в самом низу
+            файла (блок FAQPage), иначе поисковик покажет старую версию.
+         ====================================================================== -->
+    <section class="section_faq" id="voprosy">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-small">
+
+            <h2 class="text-size-section-title text-align-center text-style-balance">
+              Вопросы и&nbsp;ответы
+            </h2>
+            <p class="text-size-body text-color-secondary section_lead text-align-center">
+              Не&nbsp;нашли ответа на&nbsp;свой вопрос?
+              <a class="text-link" href="mailto:info@modern-psy.ru">Напишите нам</a>
+            </p>
+
+            <div class="faq_list">
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Участие правда бесплатное?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Да. Нужна только регистрация: ссылка на&nbsp;вебинар и&nbsp;напоминание перед началом придут в&nbsp;выбранный вами мессенджер.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Сколько длится вебинар?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Около часа.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Будет&nbsp;ли запись, если я&nbsp;не&nbsp;смогу прийти вживую?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Запись будет. Но&nbsp;на&nbsp;самом вебинаре можно задать вопрос преподавателю и&nbsp;сразу получить ответ, а&nbsp;еще участники получают индивидуальные условия обучения&nbsp;— в&nbsp;записи этого уже не&nbsp;будет.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Где проходит вебинар?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>В&nbsp;Zoom или Контур Толк. Обе платформы открываются в&nbsp;России без VPN.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Нужен&nbsp;ли опыт в&nbsp;КПТ, чтобы участвовать?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Нет. Мы&nbsp;начинаем с&nbsp;логики метода и&nbsp;структуры сессии, поэтому будет понятно и&nbsp;тем, кто только присматривается к&nbsp;подходу.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Я&nbsp;работаю в&nbsp;другом подходе. Будет&nbsp;ли мне полезно?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Да. Вебинар о&nbsp;том, как КПТ-терапевт принимает решения в&nbsp;ходе сессии. Эту логику можно сопоставить со&nbsp;своей практикой, даже если переходить в&nbsp;КПТ вы&nbsp;не&nbsp;планируете.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Это обучение или презентация платного курса?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Основное время&nbsp;— разбор метода и&nbsp;демо-сессии. В&nbsp;конце коротко расскажем об&nbsp;обучающих программах Академии.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Демо-сессия&nbsp;— это реальный клиент?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Нет. Это демонстрационный фрагмент с&nbsp;учебным запросом. Данные реальных клиентов не&nbsp;используются.</p>
+                </div>
+              </details>
+              <details class="faq_item">
+                <summary class="faq_question">
+                  <span class="text-size-block-title">Дадут&nbsp;ли сертификат об&nbsp;участии?</span>
+                  <span class="faq_sign" aria-hidden="true"></span>
+                </summary>
+                <div class="faq_answer text-size-body text-color-secondary">
+                  <p>Нет, за&nbsp;участие в&nbsp;вебинаре сертификат не&nbsp;выдается. Документы установленного образца Академия выдает по&nbsp;итогам обучающих программ.</p>
+                </div>
+              </details>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         11. ФИНАЛЬНЫЙ БЛОК — УЧАСТИЕ БЕСПЛАТНОЕ
+         ======================================================================
+         Справа — «макет» чек-листа: это не картинка, а обычная вёрстка,
+         поэтому текст в нём можно менять.
+         ====================================================================== -->
+    <section class="section_cta" id="reg">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="padding-section-medium">
+
+            <div class="cta_card background-color-inverse">
+
+              <div class="cta_text">
+                <!-- 🟢 Заголовок и текст -->
+                <h2 class="text-size-section-title text-style-balance">Участие бесплатное</h2>
+                <p class="text-size-body text-color-on-inverse cta_lead">
+                  Живой кейс, разбор демо-сессии и&nbsp;базовые техники&nbsp;— чтобы увидеть,
+                  как КПТ работает почти с&nbsp;любым запросом.
+                </p>
+                <p class="text-size-body text-weight-medium cta_date">
+                  Старт вебинара: 29&nbsp;июля, 17:00&nbsp;МСК
+                </p>
+                <!-- 🟡 ЗДЕСЬ БУДЕТ ФОРМА РЕГИСТРАЦИИ.
+                     Пока это просто кнопка без адреса. Когда появится форма —
+                     либо подставьте её адрес в href, либо вставьте сюда виджет. -->
+                <a class="button is-lg is-inverse" href="#reg">Зарегистрироваться на&nbsp;вебинар</a>
+              </div>
+
+              <!-- Подарок за регистрацию: чек-лист из нескольких страниц.
+                   Это не картинка, а обычная вёрстка — текст внутри можно менять. -->
+              <div class="cta_gift">
+
+                <div class="checklist_stack">
+                  <!-- 🔴 Две страницы, выглядывающие из-под первой. Пустые:
+                       они только показывают, что в чек-листе несколько страниц. -->
+                  <span class="checklist_page is-third" aria-hidden="true"></span>
+                  <span class="checklist_page is-second" aria-hidden="true"></span>
+
+                  <!-- Круглая плашка в углу -->
+                  <span class="checklist_badge">В&nbsp;подарок</span>
+
+                  <article class="checklist_sheet">
+                    <span class="tag">Чек-лист</span>
+                    <!-- 🟢 Название чек-листа -->
+                    <p class="text-size-block-title checklist_title">
+                      Почему КПТ подходит почти под любой запрос
+                    </p>
+                    <!-- 🟢 Пункты чек-листа -->
+                    <ul class="checklist_list">
+                    <li class="checklist_item">
+                      <span class="checklist_box">
+                        <span class="icon is-sm" style="--icon-url: url('/icons/check.svg')" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-note">С&nbsp;чем работает КПТ</span>
+                    </li>
+                    <li class="checklist_item">
+                      <span class="checklist_box">
+                        <span class="icon is-sm" style="--icon-url: url('/icons/check.svg')" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-note">Доказательная база, структура и&nbsp;скорость результата</span>
+                    </li>
+                    <li class="checklist_item">
+                      <span class="checklist_box">
+                        <span class="icon is-sm" style="--icon-url: url('/icons/check.svg')" aria-hidden="true"></span>
+                      </span>
+                      <span class="text-size-note">Когда КПТ клиенту точно подойдет</span>
+                    </li>
+                    </ul>
+                  </article>
+                </div>
+
+                <p class="text-size-note text-color-on-inverse cta_gift-note">
+                  Присылаем на&nbsp;почту сразу после регистрации.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================================================
+       ПОДВАЛ
+       ========================================================================== -->
+  <footer class="site-footer_component">
+    <div class="padding-global">
+      <div class="container-large">
+        <div class="site-footer_inner">
+
+          <div class="site-footer_col">
+            <!-- 🟢 Контакты -->
+            <p class="text-size-body text-weight-semibold text-color-heading">
+              <a class="text-link is-subtle" href="tel:+78122504276">+7&nbsp;812&nbsp;250-42-76</a>
+            </p>
+            <p class="text-size-note text-color-secondary margin-bottom margin-small">Отдел продаж</p>
+
+            <p class="text-size-body text-weight-semibold text-color-heading margin-bottom margin-medium">
+              <a class="text-link is-subtle" href="mailto:info@modern-psy.ru">info@modern-psy.ru</a>
+            </p>
+
+            <p class="text-size-note text-color-secondary">
+              197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный округ Введенский,
+              пр-т Большой П.с., д.&nbsp;7/4, литера А, помещ.&nbsp;2-Н
+            </p>
+            <p class="text-size-note text-color-secondary margin-top margin-xsmall">ОГРН 1217800102783</p>
+            <p class="text-size-note text-color-secondary margin-top margin-xsmall">ИНН/КПП 7839141929/781301001</p>
+          </div>
+
+          <nav class="site-footer_col" aria-label="Правовая информация">
+            <p class="text-size-note text-color-secondary site-footer_title">Правовая информация</p>
+            <ul class="site-footer_links">
+              <!-- 🟢 Адреса взяты со старой страницы -->
+              <li><a class="text-link is-subtle text-size-note" href="/oferta">Публичная оферта</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="/privacy">Политика конфиденциальности</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="/agreement">Согласие на&nbsp;обработку персональных данных</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="/documents">Сведения об&nbsp;образовательной организации</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="https://islod.obrnadzor.gov.ru/rlic/details/da67f5b1-2fd3-daeb-9904-9e381afa5ee8/" target="_blank" rel="noopener">Образовательная лицензия</a></li>
+              <li><a class="text-link is-subtle text-size-note" href="/documents">Документы</a></li>
+            </ul>
+
+            <p class="text-size-note text-color-muted site-footer_note">
+              Доступ к&nbsp;мессенджеру Telegram и&nbsp;видеохостингу YouTube в&nbsp;РФ
+              ограничен в&nbsp;связи с&nbsp;применяемыми техническими мерами
+              и&nbsp;требованиями российского законодательства; работоспособность
+              сервисов может быть нестабильной.
+            </p>
+          </nav>
+
+        </div>
+
+        <p class="text-size-note text-color-muted site-footer_copy">© 2026 Академия современной психологии</p>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- 🔴 Микроразметка для поиска: бесплатный онлайн-вебинар.
+     ⚠️ Дата 29 июля уже прошла — при публикации поставить настоящую. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationEvent",
+  "name": "Почему КПТ подходит почти под любой запрос",
+  "description": "Бесплатный вебинар для психологов: живой кейс, разбор демо-сессии и базовые техники КПТ.",
+  "inLanguage": "ru",
+  "startDate": "2026-07-29T17:00:00+03:00",
+  "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "location": {
+    "@type": "VirtualLocation",
+    "url": "https://modern-psy.ru/cbt-for-any-case"
+  },
+  "organizer": {
+    "@type": "EducationalOrganization",
+    "name": "Академия современной психологии",
+    "url": "https://modern-psy.ru"
+  },
+  "performer": {
+    "@type": "Person",
+    "name": "Александр Шакиров"
+  },
+  "offers": {
+    "@type": "Offer",
+    "category": "Free",
+    "price": 0,
+    "priceCurrency": "RUB",
+    "availability": "https://schema.org/InStock",
+    "url": "https://modern-psy.ru/cbt-for-any-case"
+  }
+}
+</script>
+
+<!-- 🔴 Микроразметка вопросов и ответов: поисковик может показать их прямо
+     в выдаче. Текст здесь обязан совпадать с тем, что на странице. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Участие правда бесплатное?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Да. Нужна только регистрация: ссылка на вебинар и напоминание перед началом придут в выбранный вами мессенджер."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Сколько длится вебинар?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Около часа."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Будет ли запись, если я не смогу прийти вживую?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Запись будет. Но на самом вебинаре можно задать вопрос преподавателю и сразу получить ответ, а еще участники получают индивидуальные условия обучения — в записи этого уже не будет."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Где проходит вебинар?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "В Zoom или Контур Толк. Обе платформы открываются в России без VPN."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Нужен ли опыт в КПТ, чтобы участвовать?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Нет. Мы начинаем с логики метода и структуры сессии, поэтому будет понятно и тем, кто только присматривается к подходу."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Я работаю в другом подходе. Будет ли мне полезно?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Да. Вебинар о том, как КПТ-терапевт принимает решения в ходе сессии. Эту логику можно сопоставить со своей практикой, даже если переходить в КПТ вы не планируете."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Это обучение или презентация платного курса?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Основное время — разбор метода и демо-сессии. В конце коротко расскажем об обучающих программах Академии."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Демо-сессия — это реальный клиент?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Нет. Это демонстрационный фрагмент с учебным запросом. Данные реальных клиентов не используются."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Дадут ли сертификат об участии?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Нет, за участие в вебинаре сертификат не выдается. Документы установленного образца Академия выдает по итогам обучающих программ."
+      }
+    }
+  ]
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «ТЕРАПИЯ ВНУТРЕННИХ СЕМЕЙНЫХ СИСТЕМ (IFS)»  →  адрес /ifs
+  ============================================================================
+
+  Новая вёрстка страницы https://modern-psy.ru/ifs. Содержание и внешний
+  вид — те же, что на живой странице (светлый фон, белые и сиреневые
+  карточки, фиолетовые кнопки), сама страница собрана заново по правилам
+  этого репозитория: самодостаточные page.css и page.js, контейнер 1520px,
+  боковые поля до 80px, брейкпоинты 480 / 768 / 992.
+
+  ЧТО ИЗМЕНИЛОСЬ ПО СРАВНЕНИЮ С ЖИВОЙ СТРАНИЦЕЙ (задача от 11.09.2026)
+    · из преподавателей убрана Ирина Диянкова — остаётся Юлия Варлакова;
+    · карточка Юлии переделана: одна широкая карточка, фото слева,
+      регалии плашками, факты биографии в две колонки.
+
+  ХЕДЕРА И ФУТЕРА ЗДЕСЬ НЕТ — на боевой странице их даёт сама Тильда.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАРТИНКИ
+    Фото взяты с живой страницы /ifs — они лежат на CDN Тильды
+    (static.tildacdn.com). Чтобы заменить — подставьте новый адрес в src.
+    Иконки — локально в icons/.
+
+  ЦЕНЫ И ДАТЫ ИЗ CMS
+    Тарифы, дата старта и расписание подставляются из Public API
+    (курс со слагом «ifs», см. data-course на обёртке страницы и метки
+    data-cms / data-cms-tariff в разметке). Текст в этих метках — «запаска»
+    на случай, если API недоступен. Подробнее — в комментарии к блоку 12.
+
+  КНОПКА «ЗАПИСАТЬСЯ НА ОБУЧЕНИЕ»
+    Ведёт на форму заявки внизу этой же страницы (#zayavka).
+
+  ФОРМА ВНИЗУ СТРАНИЦЫ
+    Своя вёрстка полей + скрытая форма Тильды. Скрипт page.js переносит
+    значения в форму Тильды и отправляет её (см. комментарий в page.js).
+    🟡 Имя формы Тильды указывается в data-tilda-form-name.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 адреса «согласия» и «политики» под формой;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Терапия внутренних семейных систем (IFS) — курс повышения квалификации</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Курс повышения квалификации по IFS: базовый и продвинутый модули, 70 академических часов, много практики, IFS-медитации и демонстрационные сессии. Старт 7 сентября." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Терапия внутренних семейных систем (IFS)" />
+  <meta property="og:description" content="Курс повышения квалификации: базовый и продвинутый модули IFS, 70 академических часов, много практики. Старт 7 сентября." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text — тот же, что на сайте -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Адрес Public API: отсюда page.js берёт цены и даты курса «ifs».
+       Слаг курса задаётся в data-course на обёртке страницы ниже. -->
+  <meta name="public-api-url" content="https://modern-psy-asp-prod-8ceb.twc1.net" />
+
+  <!-- 🔴 Стили и поведение только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+  <script src="page.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
+<div class="page-wrapper ifs-page" data-course="ifs">
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ПЕРВЫЙ ЭКРАН
+       ======================================================================
+       Большая фотография со скруглением, поверх неё — плашки сверху,
+       заголовок и кнопки снизу, карточка «70 часов» в правом нижнем углу —
+       как на /psihosomatika и /seksologiya. Под фото — плитка из трёх фактов.
+       ====================================================================== -->
+  <section class="section_hero" id="hero">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="hero_component">
+
+          <div class="hero_media">
+            <!-- 🟡 Фотография первого экрана. Без loading="lazy": она видна сразу.
+                 Пропорции 21:9, герой в правой половине — слева ложится текст. -->
+            <img class="hero_image" src="https://s3.twcstorage.ru/asp-media/hero_21x9_nanobanana_shaded_018b573993.webp"
+                 alt="Психолог на консультации"
+                 width="2560" height="1086" />
+
+            <!-- 🟢 Плашки с форматом и стартом -->
+            <ul class="meta-pill_list">
+              <li class="meta-pill_component">Повышение квалификации</li>
+              <li class="meta-pill_component is-accent">Онлайн</li>
+              <!-- 🔴 Дата подставляется из CMS; текст внутри — запаска -->
+              <li class="meta-pill_component">Старт&nbsp;— <span data-cms="start-date">7&nbsp;сентября</span></li>
+            </ul>
+
+            <div class="hero_content">
+              <div class="hero_copy">
+                <h1 class="hero_heading">
+                  <span class="hero_heading-main">Терапия внутренних семейных систем (IFS)</span>
+                  <span class="hero_heading-sub">базовый или продвинутый модуль на&nbsp;выбор</span>
+                </h1>
+                <p class="hero_description">
+                  Разберётесь, как устроена психика с&nbsp;точки зрения модели IFS,
+                  познакомитесь с&nbsp;тремя основными протоколами и&nbsp;углубите
+                  связь с&nbsp;собственными внутренними частями&nbsp;— чтобы лучше
+                  понимать свои реакции на&nbsp;клиента.
+                </p>
+              </div>
+
+              <div class="hero_actions">
+                <!-- 🔴 Первая кнопка ведёт на форму заявки, вторая — на программу -->
+                <a class="button is-light is-full-width" href="#zayavka">Записаться на&nbsp;обучение</a>
+                <a class="button is-outline-light is-full-width" href="#programma">Программа курса</a>
+              </div>
+            </div>
+
+            <!-- 🟢 Карточка с часами — как «103 часа» на /psihosomatika -->
+            <div class="hero_stat" aria-label="70 академических часов обучения">
+              <p class="hero_stat-value">70</p>
+              <p class="hero_stat-label">академических часов обучения</p>
+            </div>
+          </div>
+
+          <!-- ------------------------------------------------------------------
+               Плитка фактов под первым экраном
+               ------------------------------------------------------------------ -->
+          <ul class="hero-facts_list">
+            <li class="hero-facts_card">
+              <h2 class="hero-facts_heading">Два модуля на&nbsp;выбор</h2>
+              <p class="hero-facts_description">Базовый и&nbsp;продвинутый&nbsp;— можно пройти оба или только один</p>
+            </li>
+            <li class="hero-facts_card">
+              <h2 class="hero-facts_heading">Много практики</h2>
+              <p class="hero-facts_description">
+                Вебинары, IFS-медитации, демонстрационные сессии, практика
+                в&nbsp;группах
+              </p>
+            </li>
+            <li class="hero-facts_card is-dark is-documents">
+              <div class="hero-facts_copy">
+                <h2 class="hero-facts_heading">Удостоверение о&nbsp;повышении квалификации</h2>
+                <p class="hero-facts_description">
+                  Выдаём документ установленного образца на&nbsp;основании
+                  государственной образовательной лицензии
+                </p>
+              </div>
+              <!-- Удостоверение стоит под углом и выходит за край карточки —
+                   лишнее срезает сама карточка. 🟡 Заменить картинку: src ниже. -->
+              <div class="hero-facts_media" aria-hidden="true">
+                <div class="hero-facts_illustration">
+                  <img src="https://static.tildacdn.com/tild6465-6337-4538-b464-326237366337/2e2414b9-f789-4669-a.png" alt="" width="1660" height="1184" loading="lazy" />
+                </div>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. КАК IFS РАБОТАЕТ НА ПРАКТИКЕ
+       ======================================================================
+       Три белые карточки с фотографией сверху.
+       ====================================================================== -->
+  <section class="section_method" id="metod">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="method_component">
+
+          <h2 class="section_heading">Как IFS работает на&nbsp;практике</h2>
+
+          <ul class="photo-card_list">
+            <li class="photo-card_component">
+              <div class="photo-card_media">
+                <!-- 🟡 Фотография карточки -->
+                <img src="https://static.tildacdn.com/tild3564-3530-4338-b963-376339633733/1.jpg" alt="" width="358" height="250" loading="lazy" />
+              </div>
+              <h3 class="photo-card_heading">Глубокая и&nbsp;экологичная модель работы</h3>
+              <p class="photo-card_description">
+                IFS помогает работать с&nbsp;внутренним конфликтом без насилия
+                над психикой&nbsp;— бережно, но&nbsp;эффективно.
+              </p>
+            </li>
+            <li class="photo-card_component">
+              <div class="photo-card_media">
+                <img src="https://static.tildacdn.com/tild6363-6537-4737-a261-323763346166/2.jpg" alt="" width="358" height="250" loading="lazy" />
+              </div>
+              <h3 class="photo-card_heading">Интеграция и&nbsp;универсальность</h3>
+              <p class="photo-card_description">
+                Тревога, выгорание, самооценка, зависимость, нарушение
+                границ&nbsp;— IFS даёт протокол для работы с&nbsp;большим
+                спектром запросов.
+              </p>
+            </li>
+            <li class="photo-card_component">
+              <div class="photo-card_media">
+                <img src="https://static.tildacdn.com/tild6466-6236-4037-a661-326661353732/3.jpg" alt="" width="358" height="250" loading="lazy" />
+              </div>
+              <h3 class="photo-card_heading">Научно-обоснованный подход</h3>
+              <p class="photo-card_description">
+                IFS-терапия включена в&nbsp;Национальный реестр
+                научно-обоснованных программ и&nbsp;практик Управления службами
+                по&nbsp;борьбе с&nbsp;зависимостями и&nbsp;психическим здоровьем
+                (SAMHSA) в&nbsp;США.
+              </p>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       3. МНОГО ПРАКТИКИ И ОТРАБОТКИ НАВЫКОВ
+       ======================================================================
+       Три пункта с галочкой в сиреневом квадратике, без карточек.
+       ====================================================================== -->
+  <section class="section_practice" id="praktika">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="practice_component">
+
+          <h2 class="section_heading">Много практики и&nbsp;отработки навыков</h2>
+
+          <ul class="feature-list_component">
+            <li class="feature-list_item">
+              <img class="feature-list_icon" src="icons/icon-check-box.svg" alt="" width="24" height="24" />
+              <div class="feature-list_content">
+                <h3 class="feature-list_heading">Работа в&nbsp;тройках и&nbsp;интервизии</h3>
+                <p class="feature-list_description">
+                  Отработка проходит в&nbsp;небольших группах, где можно
+                  получить обратную связь и&nbsp;обсудить кейсы.
+                </p>
+              </div>
+            </li>
+            <li class="feature-list_item">
+              <img class="feature-list_icon" src="icons/icon-check-box.svg" alt="" width="24" height="24" />
+              <div class="feature-list_content">
+                <h3 class="feature-list_heading">Демонстрационные сессии и&nbsp;домашние задания</h3>
+                <p class="feature-list_description">
+                  Показываем, как выглядит настоящая работа с&nbsp;частями&nbsp;—
+                  и&nbsp;помогаем применять это на&nbsp;практике.
+                </p>
+              </div>
+            </li>
+            <li class="feature-list_item">
+              <img class="feature-list_icon" src="icons/icon-check-box.svg" alt="" width="24" height="24" />
+              <div class="feature-list_content">
+                <h3 class="feature-list_heading">Поддержка и&nbsp;супервизия</h3>
+                <p class="feature-list_description">
+                  Преподаватель сопровождает участников на&nbsp;протяжении
+                  курса, отвечает на&nbsp;вопросы и&nbsp;помогает с&nbsp;трудными
+                  случаями.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       4. КАК ВЫ БУДЕТЕ УЧИТЬСЯ
+       ======================================================================
+       Белая карточка: слева шаги с сиреневой линией-таймлайном,
+       справа фотография.
+       ====================================================================== -->
+  <section class="section_process" id="process">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="process_component">
+
+          <h2 class="section_heading">Как вы будете учиться</h2>
+
+          <div class="process_layout">
+            <ol class="timeline_component">
+              <li class="timeline_step">
+                <h3 class="timeline_heading">Приходите на&nbsp;занятие</h3>
+                <p class="timeline_description">
+                  Встречаемся онлайн в&nbsp;Zoom, проходим теорию, делаем
+                  практические задания в&nbsp;группах.
+                </p>
+                <p class="timeline_note">
+                  <img src="icons/icon-video.svg" alt="" width="24" height="25" />
+                  Занятия проходят только онлайн&nbsp;— записей не&nbsp;будет.
+                </p>
+              </li>
+              <li class="timeline_step">
+                <h3 class="timeline_heading">Делаете домашние задания</h3>
+                <p class="timeline_description">
+                  Творческие домашние задания помогут вам глубоко освоить
+                  метод IFS для интеграции в&nbsp;свою практику.
+                </p>
+              </li>
+              <li class="timeline_step">
+                <h3 class="timeline_heading">Общаетесь в&nbsp;чате</h3>
+                <p class="timeline_description">
+                  Обсуждаете теорию, делитесь своими наблюдениями, просите
+                  поддержки, получаете комментарии от&nbsp;преподавателя
+                  и&nbsp;знакомитесь с&nbsp;другими специалистами&nbsp;— всё
+                  в&nbsp;одном тёплом пространстве.
+                </p>
+              </li>
+              <li class="timeline_step">
+                <h3 class="timeline_heading">Практикуете навыки</h3>
+                <p class="timeline_description">
+                  На&nbsp;занятиях вы пробуете техники на&nbsp;себе,
+                  отрабатываете их в&nbsp;мини-группах. Это не&nbsp;теория,
+                  а&nbsp;реальный опыт.
+                </p>
+              </li>
+              <li class="timeline_step">
+                <h3 class="timeline_heading">Погружаетесь в&nbsp;IFS-медитации</h3>
+                <p class="timeline_description">
+                  Научитесь проводить все этапы IFS-медитации, настраивать
+                  клиента и&nbsp;обеспечивать безопасную обстановку. Клиент
+                  освоит инструменты для самостоятельной работы между сессиями.
+                </p>
+              </li>
+            </ol>
+
+            <div class="process_media">
+              <!-- 🟡 Фотография справа -->
+              <img src="https://s3.twcstorage.ru/asp-media/how_you_learn_6f502eb6aa.webp"
+                   alt="Студентка занимается онлайн за ноутбуком"
+                   width="1400" height="1876" loading="lazy" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       5. ЧЕМУ ВЫ НАУЧИТЕСЬ НА КУРСЕ
+       ======================================================================
+       Сиреневая плашка с четырьмя белыми карточками.
+       ====================================================================== -->
+  <section class="section_skills" id="navyki">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="skills_component panel_component">
+
+          <h2 class="section_heading">Чему вы научитесь на&nbsp;курсе</h2>
+
+          <ul class="card-grid_component">
+            <li class="card_component">
+              <h3 class="card_heading">Освоите базовые концепции IFS</h3>
+              <p class="card_description">
+                Поймёте, как устроена система внутренних частей, научитесь
+                выявлять протекторов, раненые части и&nbsp;Селф.
+              </p>
+            </li>
+            <li class="card_component">
+              <h3 class="card_heading">Научитесь работать с&nbsp;частями клиента</h3>
+              <p class="card_description">
+                Будете использовать IFS как инструмент для эмоциональной
+                регуляции, самосострадания и&nbsp;безопасного контакта
+                с&nbsp;травмой.
+              </p>
+            </li>
+            <li class="card_component">
+              <h3 class="card_heading">Разовьёте навыки ведения сессии по&nbsp;IFS</h3>
+              <p class="card_description">
+                Сможете строить отношения с&nbsp;каждой частью клиента,
+                не&nbsp;вмешиваясь, а&nbsp;наблюдая и&nbsp;сопровождая процесс
+                из&nbsp;позиции Селф.
+              </p>
+            </li>
+            <li class="card_component">
+              <h3 class="card_heading">Углубите ваши собственные отношения с&nbsp;вашими внутренними частями</h3>
+              <p class="card_description">
+                Это поможет вам лучше понимать ваши собственные реакции
+                на&nbsp;клиента и&nbsp;тупики, которые могут возникать
+                в&nbsp;работе.
+              </p>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       6. АВТОР И ПРЕПОДАВАТЕЛЬ КУРСА
+       ======================================================================
+       Одна широкая белая карточка: слева фото, справа имя, плашки с регалиями
+       и факты биографии в две колонки.
+       ====================================================================== -->
+  <section class="section_teacher" id="prepodavatel">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="teacher_component">
+
+          <div class="section-intro_component">
+            <h2 class="section_heading">Автор и&nbsp;преподаватель курса</h2>
+            <p class="section_description">
+              Наши преподаватели совмещают психологическую практику
+              с&nbsp;научной работой, поэтому материал всегда будет актуален
+            </p>
+          </div>
+
+          <article class="teacher_card">
+            <div class="teacher_media">
+              <!-- 🟡 Фотография преподавателя -->
+              <img src="https://s3.twcstorage.ru/asp-media/varlakova_1200_252344399d.webp"
+                   alt="Юлия Варлакова" width="1200" height="1200" loading="lazy" />
+            </div>
+
+            <div class="teacher_body">
+              <div class="teacher_intro">
+                <h3 class="teacher_name">Юлия Варлакова</h3>
+                <p class="teacher_role">
+                  Практикующий семейный психолог, сертифицированный
+                  IFS-терапевт
+                </p>
+                <!-- 🟢 Регалии плашками -->
+                <ul class="teacher_tags">
+                  <li class="teacher_tag">IFS Level&nbsp;3 trained</li>
+                  <li class="teacher_tag">Сертификация IFS Institute</li>
+                  <li class="teacher_tag">Магистр семейного консультирования</li>
+                  <li class="teacher_tag">Автор книги и&nbsp;публикаций</li>
+                </ul>
+              </div>
+
+              <!-- 🟢 Факты биографии — в две колонки на широком экране -->
+              <ul class="teacher_facts">
+                <li class="teacher_fact">
+                  Психолог, преподаватель психологии, магистр по&nbsp;направлению
+                  «Семейное консультирование и&nbsp;психотерапия».
+                </li>
+                <li class="teacher_fact">
+                  Основной фокус профессиональных интересов&nbsp;— привязанность
+                  и&nbsp;травма.
+                </li>
+                <li class="teacher_fact">
+                  Автор книги для родителей, статей, публикаций, семинаров
+                  и&nbsp;тренингов для психологов и&nbsp;специалистов помогающих
+                  профессий.
+                </li>
+                <li class="teacher_fact">
+                  Обучалась и&nbsp;работала в&nbsp;подходах:
+                  телесно-ориентированная травма-терапия,
+                  эмоционально-фокусированная терапия, ССТ, нарративная терапия.
+                </li>
+                <li class="teacher_fact">
+                  Сейчас IFS&nbsp;— основной метод работы с&nbsp;клиентами,
+                  который интегрировал предыдущий профессиональный и&nbsp;личный
+                  опыт.
+                </li>
+                <li class="teacher_fact">
+                  Закончила все 3&nbsp;уровня обучения IFS и&nbsp;прошла
+                  международную сертификацию в&nbsp;IFS Institute.
+                </li>
+                <li class="teacher_fact">
+                  Ведёт IFS-семинары, воркшопы, группы практики и&nbsp;супервизии.
+                </li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       7. ПРОГРАММА ОБУЧЕНИЯ — РАСКРЫТИЕ ВБОК
+       ======================================================================
+       Дизайн — как на /psihosomatika: тёмная секция, слева кнопки-модули,
+       справа панель с занятиями выбранного модуля. Переключает page.js;
+       без скрипта виден первый модуль. Содержание — с живой страницы /ifs.
+       ====================================================================== -->
+  <section class="section_program" id="programma">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="program_component">
+
+          <div class="section-intro_component is-centered">
+            <h2 class="section_heading is-on-dark">Программа обучения</h2>
+            <!-- 🔴 Расписание подставляется из CMS; текст внутри — запаска -->
+            <p class="section_description is-on-dark">
+              Занятия проходят <span data-cms="schedule">по&nbsp;понедельникам с&nbsp;16:00 до&nbsp;19:00</span>
+            </p>
+          </div>
+
+          <div class="program_layout" data-program>
+
+            <!-- 🔴 Список модулей. aria-controls связывает кнопку с панелью. -->
+            <div class="program_nav" role="tablist" aria-label="Модули курса">
+              <button class="program_tab" type="button" role="tab" id="program-tab-1"
+                      aria-controls="program-panel-1" aria-selected="true" data-program-tab>
+                <span class="program_tab-label">Модуль 1 · 36&nbsp;академ. часов</span>
+                <span class="program_tab-title">Базовый IFS</span>
+              </button>
+              <button class="program_tab" type="button" role="tab" id="program-tab-2"
+                      aria-controls="program-panel-2" aria-selected="false" data-program-tab>
+                <span class="program_tab-label">Модуль 2 · 34&nbsp;академ. часа</span>
+                <span class="program_tab-title">Продвинутый IFS</span>
+              </button>
+            </div>
+
+            <!-- Панели модулей -->
+            <div class="program_panels">
+
+              <div class="program_panel" role="tabpanel" id="program-panel-1"
+                   aria-labelledby="program-tab-1" data-program-panel>
+                <h3 class="program_panel-heading">Базовый IFS</h3>
+                <p class="program_panel-lead">
+                  6&nbsp;занятий, 36&nbsp;академических часов. Основы модели,
+                  работа с&nbsp;защитными и&nbsp;уязвимыми частями,
+                  терапевтические отношения.
+                </p>
+                <ul class="program_lessons">
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">1&nbsp;занятие</span>
+                    <span class="program_lesson-date">7&nbsp;сентября</span>
+                  </p>
+                  <h4 class="program_lesson-heading">Основы IFS</h4>
+                  <ul class="program_topics">
+                    <li class="program_topic">Введение в&nbsp;IFS</li>
+                    <li class="program_topic">Основные понятия IFS</li>
+                    <li class="program_topic">Логика модели IFS</li>
+                  </ul>
+                </li>
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">2&nbsp;занятия</span>
+                    <span class="program_lesson-date">14 и&nbsp;21&nbsp;сентября</span>
+                  </p>
+                  <h4 class="program_lesson-heading">Работа с&nbsp;защитными частями</h4>
+                  <ul class="program_topics">
+                    <li class="program_topic">Проактивный Защитник (Менеджер)</li>
+                    <li class="program_topic">Реактивный Защитник (Пожарный)</li>
+                    <li class="program_topic">Внутренние конфликты (Поляризации)</li>
+                  </ul>
+                </li>
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">2&nbsp;занятия</span>
+                    <span class="program_lesson-date">28&nbsp;сентября и&nbsp;5&nbsp;октября</span>
+                  </p>
+                  <h4 class="program_lesson-heading">Работа с&nbsp;уязвимыми частями</h4>
+                  <ul class="program_topics">
+                    <li class="program_topic">Изгнанники, в&nbsp;том числе юные, необременённые</li>
+                    <li class="program_topic">Протокол «Шаги Исцеления и&nbsp;снятия бремени»</li>
+                  </ul>
+                </li>
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">1&nbsp;занятие</span>
+                    <span class="program_lesson-date">12&nbsp;октября</span>
+                  </p>
+                  <h4 class="program_lesson-heading">Терапевтические отношения</h4>
+                  <ul class="program_topics">
+                    <li class="program_topic">Роль терапевтических отношений в&nbsp;модели IFS</li>
+                    <li class="program_topic">Внутренние части терапевта</li>
+                  </ul>
+                </li>
+                </ul>
+              </div>
+
+              <div class="program_panel" role="tabpanel" id="program-panel-2"
+                   aria-labelledby="program-tab-2" data-program-panel hidden>
+                <h3 class="program_panel-heading">Продвинутый IFS</h3>
+                <p class="program_panel-lead">
+                  6&nbsp;занятий, 34&nbsp;академических часа. Прямой доступ,
+                  унаследованное бремя, экстернализация и&nbsp;практика
+                  с&nbsp;ассистентами.
+                </p>
+                <div class="program_result">
+                  <p class="program_list-title">Условие участия</p>
+                  <p class="program_result-text">
+                    Участвовать можно только после прохождения базового курса IFS.
+                  </p>
+                </div>
+                <ul class="program_lessons">
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">2&nbsp;занятия</span>
+                    <span class="program_lesson-date">2 и&nbsp;9&nbsp;ноября</span>
+                  </p>
+                  <h4 class="program_lesson-heading">Прямой доступ</h4>
+                  <ul class="program_topics">
+                    <li class="program_topic">Что такое прямой доступ, когда и&nbsp;для чего можно его использовать?</li>
+                    <li class="program_topic">Виды прямого доступа, протокол работы и&nbsp;демо</li>
+                  </ul>
+                </li>
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">2&nbsp;занятия</span>
+                    <span class="program_lesson-date">16 и&nbsp;23&nbsp;ноября</span>
+                  </p>
+                  <h4 class="program_lesson-heading">Унаследованное бремя</h4>
+                  <ul class="program_topics">
+                    <li class="program_topic">Понимание унаследованного бремени и&nbsp;его влияние на&nbsp;систему человека</li>
+                    <li class="program_topic">Протокол работы с&nbsp;унаследованным бременем</li>
+                  </ul>
+                </li>
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">1&nbsp;занятие</span>
+                    <span class="program_lesson-date">30&nbsp;ноября</span>
+                  </p>
+                  <h4 class="program_lesson-heading">Экстернализация</h4>
+                  <ul class="program_topics">
+                    <li class="program_topic">Различные способы экстернализации и&nbsp;её применение (в&nbsp;том числе и&nbsp;для сложных случаев)</li>
+                  </ul>
+                </li>
+                <li class="program_lesson">
+                  <p class="program_lesson-meta">
+                    <span class="program_lesson-count">1&nbsp;занятие</span>
+                    <span class="program_lesson-date">7&nbsp;декабря</span>
+                  </p>
+                  <!-- 🟢 У этого занятия на живой странице нет расшифровки -->
+                  <h4 class="program_lesson-heading">Практика с&nbsp;ассистентами и&nbsp;завершение</h4>
+                </li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       8. ПАКЕТ ИЗ ЧЕТЫРЁХ СУПЕРВИЗИЙ
+       ======================================================================
+       Сиреневая плашка: слева «Вас ждут», справа цена.
+       ====================================================================== -->
+  <section class="section_supervision" id="supervizii">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="supervision_component panel_component">
+
+          <div class="supervision_intro">
+            <h2 class="section_heading">Пакет из&nbsp;четырёх супервизий</h2>
+            <p class="section_description">
+              Фокус на&nbsp;работе с&nbsp;системой терапевта, клиентских
+              случаях и&nbsp;вопросах, которые возникают в&nbsp;практике
+              по&nbsp;мере применения IFS.
+            </p>
+          </div>
+
+          <!-- Одна белая карточка: слева что входит, справа сиреневая
+               врезка со стоимостью — цена читается как цена этого пакета -->
+          <div class="supervision_card">
+            <div class="supervision_content">
+              <h3 class="card_heading">Вас ждут:</h3>
+              <ul class="check-list_component is-compact">
+                <li class="check-list_item">Медитации и&nbsp;упражнения в&nbsp;группе</li>
+                <li class="check-list_item">Работа с&nbsp;реальным кейсом или возможность вынести свой случай</li>
+                <li class="check-list_item">Ответы на&nbsp;вопросы по&nbsp;клинической практике в&nbsp;IFS или мини-консультации</li>
+              </ul>
+            </div>
+            <aside class="supervision_offer" aria-label="Стоимость пакета супервизий">
+              <p class="supervision_offer-label">Стоимость пакета</p>
+              <!-- 🟢 Этой цены в CMS нет — меняется руками -->
+              <p class="supervision_price-value">10&nbsp;500&nbsp;₽</p>
+              <p class="supervision_offer-note">Доступен только вместе с&nbsp;базовым или продвинутым курсом IFS</p>
+              <p class="supervision_seats">Осталось 15&nbsp;мест</p>
+              <a class="button is-accent supervision_offer-button" href="#zayavka">Добавить к&nbsp;заявке</a>
+            </aside>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       9. УДОСТОВЕРЕНИЕ
+       ======================================================================
+       Слева текст, справа белая карточка с картинкой документа.
+       ====================================================================== -->
+  <section class="section_document" id="dokument">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="document_component">
+
+          <div class="document_copy">
+            <h2 class="section_heading">Выдаём удостоверение о&nbsp;повышении квалификации</h2>
+            <p class="section_description">
+              Чтобы получить удостоверение, необходимо посетить более 80%
+              занятий с&nbsp;включённой камерой и&nbsp;активным участием.
+            </p>
+            <p class="document_license">
+              Выданного на&nbsp;основании государственной лицензии
+              об&nbsp;образовании: Л035–01271–78/00176689, Распоряжение
+              от&nbsp;31.03.2022 №&nbsp;631-р
+            </p>
+          </div>
+
+          <div class="document_media">
+            <!-- 🟡 Фото с сертификатом — то же, что на /psihosomatika (S3) -->
+            <img src="https://s3.twcstorage.ru/asp-media/document_certificate_d7f8d2f8a1.webp"
+                 alt="Выпускница с сертификатом Академии"
+                 width="1200" height="1200" loading="lazy" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ======================================================================
+       10. АКАДЕМИЯ — общий блок всех лендингов
+       ======================================================================
+       Плитка из четырёх карточек, перенесена целиком из /psihosomatika
+       (туда — из /klinicheskaya-baza). Картинки лежат на CDN Тильды.
+       ====================================================================== -->
+  <section class="section_academy" id="akademiya" aria-labelledby="academy-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="academy_component">
+
+          <h2 class="academy_heading" id="academy-heading">
+            Академия Современной Психологии&nbsp;—
+            <span class="accent-word">от&nbsp;интереса к&nbsp;практике</span>
+          </h2>
+
+          <div class="academy-showcase_layout">
+            <div class="academy-showcase_grid">
+              <article class="academy-showcase_card is-practice">
+                <div class="academy-showcase_practice-frame">
+                  <img
+                    class="academy-showcase_practice-image"
+                    src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp"
+                    width="1401"
+                    height="1123"
+                    alt="Участники очного мероприятия Академии современной психологии"
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="academy-showcase_card-copy">
+                  <h3 class="academy-showcase_card-heading">
+                    Место, где знания применяют на&nbsp;практике
+                  </h3>
+                  <p class="academy-showcase_card-description">
+                    С&nbsp;2021&nbsp;года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории
+                  </p>
+                </div>
+              </article>
+
+              <div class="academy-showcase_side-grid">
+                <article class="academy-showcase_card is-community">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 7500&nbsp;участников сообщества
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Делаем первые шаги в&nbsp;профессии вместе: бесплатные вебинары, книжные клубы и&nbsp;поддержка начинающих
+                    </p>
+                  </div>
+                  <div class="academy-showcase_community-media">
+                    <span class="academy-showcase_community-glow" aria-hidden="true"></span>
+                    <img
+                      class="academy-showcase_community-image"
+                      src="https://static.tildacdn.com/tild6432-3065-4563-b535-383963633766/img-tg-channel.webp"
+                      width="1660"
+                      height="868"
+                      alt="Телеграм-канал сообщества Академии современной психологии"
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+
+                <article class="academy-showcase_card is-graduates">
+                  <div class="academy-showcase_card-copy">
+                    <h3 class="academy-showcase_card-heading">
+                      Более 4000&nbsp;выпускников
+                    </h3>
+                    <p class="academy-showcase_card-description">
+                      Продолжают развивать практику, обмениваются опытом и&nbsp;поддерживают друг друга
+                    </p>
+                  </div>
+                  <div class="academy-showcase_graduates-media" aria-hidden="true">
+                    <div class="academy-showcase_graduates-primary">
+                      <span class="academy-showcase_graduates-glow"></span>
+                      <img
+                        src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp"
+                        width="720"
+                        height="720"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <img
+                      class="academy-showcase_graduate-avatar is-small"
+                      src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp"
+                      width="324"
+                      height="324"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <img
+                      class="academy-showcase_graduate-avatar is-medium"
+                      src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp"
+                      width="440"
+                      height="440"
+                      alt=""
+                      draggable="false"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <article class="academy-showcase_card is-teachers">
+              <div class="academy-showcase_card-copy is-teachers">
+                <h3 class="academy-showcase_card-heading">Более 60&nbsp;преподавателей</h3>
+                <p class="academy-showcase_card-description">
+                  Практикующие специалисты разных направлений, которые ежедневно работают с&nbsp;клиентами и&nbsp;делятся знаниями и&nbsp;опытом
+                </p>
+              </div>
+              <div class="academy-showcase_teachers-media" aria-hidden="true">
+                <img
+                  class="academy-showcase_teachers-image"
+                  src="https://optim.tildacdn.com/tild6361-3432-4038-b163-383731393938/-/format/webp/img-psy.webp"
+                  width="480"
+                  height="328"
+                  alt=""
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <!-- 🟡 Полоса под фотографией — декоративная, как на макете -->
+                <div class="academy-showcase_teachers-controls">
+                  <span class="academy-showcase_teachers-control"></span>
+                  <span class="academy-showcase_teachers-status"><span></span><span></span><span></span></span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       11. ГИБКИЕ УСЛОВИЯ ОПЛАТЫ
+       ======================================================================
+       Три колонки текста без карточек.
+       ====================================================================== -->
+  <section class="section_payment" id="oplata">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="payment_component">
+
+          <h2 class="section_heading">Гибкие условия оплаты</h2>
+
+          <ul class="feature-list_component">
+            <li class="feature-list_item is-plain">
+              <div class="feature-list_content">
+                <h3 class="feature-list_heading">Рассрочка до&nbsp;24&nbsp;месяцев</h3>
+                <p class="feature-list_description">
+                  Можно оформить рассрочку от&nbsp;банков-партнёров или Академии
+                </p>
+              </div>
+            </li>
+            <li class="feature-list_item is-plain">
+              <div class="feature-list_content">
+                <h3 class="feature-list_heading">Акции и&nbsp;скидки</h3>
+                <p class="feature-list_description">
+                  Получите персональную скидку 10% на&nbsp;первое обучение.
+                  Если вы уже наш студент и&nbsp;приведёте коллегу, который
+                  у&nbsp;нас впервые,&nbsp;— оба получите скидку в&nbsp;20%.
+                </p>
+              </div>
+            </li>
+            <li class="feature-list_item is-plain">
+              <div class="feature-list_content">
+                <h3 class="feature-list_heading">Налоговый вычет</h3>
+                <p class="feature-list_description">
+                  Мы подробно расскажем, как правильно оформить документы,
+                  чтобы получить возврат 13% от&nbsp;суммы.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       12. МОДУЛИ, ЦЕНЫ И ФОРМА ЗАЯВКИ
+       ======================================================================
+       Один тёмный блок, как на /psihosomatika: слева заголовок, тарифы
+       строками и подводка, справа белая карточка с полями.
+
+       ЦЕНЫ И ДАТЫ ПРИХОДЯТ ИЗ CMS. Скрипт page.js спрашивает Public API
+       (адрес — в <meta name="public-api-url"> в шапке файла) курс «ifs»
+       и подставляет:
+         · data-cms-tariff="…"  — цену тарифа. В кавычках — название тарифа
+                                  так, как оно записано в админке CMS;
+         · data-cms="start-date" — дату старта ближайшего потока;
+         · data-cms="schedule"   — расписание ближайшего потока;
+         · data-cms="saving"     — выгоду пакета «все модули» (считается
+                                  как сумма модулей минус цена пакета).
+       🟢 Текст внутри меток — «запаска»: он виден, пока цены грузятся,
+       и остаётся, если CMS недоступна. Пакет супервизий в CMS не заведён,
+       поэтому его цена пишется руками.
+       ====================================================================== -->
+  <section class="section_signup" id="stoimost">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="signup_component" id="zayavka" data-lead-form data-tilda-form-name="ifs-kurs">
+
+          <div class="signup_copy">
+            <h2 class="signup_heading">
+              Модули можно приобрести
+              <span class="accent-word">по&nbsp;отдельности</span>
+            </h2>
+            <p class="signup_description">
+              Берите столько, сколько нужно, и&nbsp;не&nbsp;переплачивайте.
+              Просто сообщите о&nbsp;своём выборе нашему менеджеру.
+            </p>
+
+            <!-- 🔴 Тарифы. Цены подставляет page.js из CMS по названию тарифа -->
+            <ul class="tariff_list">
+              <li class="tariff_item">
+                <div class="tariff_copy">
+                  <p class="tariff_name">Базовый IFS курс</p>
+                  <p class="tariff_meta">36&nbsp;академ. часов</p>
+                </div>
+                <p class="tariff_price" data-cms-tariff="Базовый модуль">40&nbsp;000&nbsp;₽</p>
+              </li>
+              <li class="tariff_item">
+                <div class="tariff_copy">
+                  <p class="tariff_name">Продвинутый IFS курс</p>
+                  <p class="tariff_meta">34&nbsp;академ. часа · только после базового</p>
+                </div>
+                <p class="tariff_price" data-cms-tariff="Продвинутый модуль">40&nbsp;000&nbsp;₽</p>
+              </li>
+              <li class="tariff_item is-featured">
+                <div class="tariff_copy">
+                  <p class="tariff_name">Сразу все модули</p>
+                  <p class="tariff_meta">70&nbsp;академ. часов · <span data-cms="saving">выгода 15&nbsp;000&nbsp;₽</span></p>
+                </div>
+                <p class="tariff_price" data-cms-tariff="Оба модуля вместе">65&nbsp;000&nbsp;₽</p>
+              </li>
+              <li class="tariff_item">
+                <div class="tariff_copy">
+                  <p class="tariff_name">Пакет из&nbsp;четырёх супервизий</p>
+                  <p class="tariff_meta">Только вместе с&nbsp;курсом текущего потока</p>
+                </div>
+                <!-- 🟢 Этой цены в CMS нет — меняется руками -->
+                <p class="tariff_price">10&nbsp;500&nbsp;₽</p>
+              </li>
+            </ul>
+
+            <p class="signup_note">
+              Занятия начнутся <strong data-cms="start-date">7&nbsp;сентября</strong>.
+              Доступна рассрочка до&nbsp;24&nbsp;месяцев, скидка 10% на&nbsp;первое
+              обучение и&nbsp;налоговый вычет&nbsp;13%.
+            </p>
+          </div>
+
+          <form class="lead-form_component" novalidate>
+            <div class="lead-form_intro">
+              <h3 class="lead-form_heading">Оставьте заявку</h3>
+              <p class="lead-form_lead">
+                Мы свяжемся с&nbsp;вами в&nbsp;рабочее время: ответим
+                на&nbsp;все вопросы, поможем определиться с&nbsp;модулем
+                и&nbsp;способом оплаты.
+              </p>
+            </div>
+
+            <label class="lead-form_field">
+              <span class="lead-form_label">Как к&nbsp;вам обращаться?</span>
+              <input class="lead-form_input" type="text" name="Name"
+                     autocomplete="name" required />
+            </label>
+
+            <label class="lead-form_field">
+              <span class="lead-form_label">Ваш телефон</span>
+              <input class="lead-form_input" type="tel" name="Phone"
+                     placeholder="+7 (000) 000-00-00" autocomplete="tel" required />
+            </label>
+
+            <fieldset class="lead-form_messengers">
+              <legend class="lead-form_label">Где вам удобнее общаться?</legend>
+              <div class="lead-form_messenger-row" role="group">
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="Max" checked />
+                  <span>Max</span>
+                </label>
+                <label class="lead-form_messenger">
+                  <input type="radio" name="Messenger" value="Telegram" />
+                  <span>Telegram</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <button class="button is-accent is-full-width lead-form_submit" type="submit">Отправить</button>
+
+            <!-- 🔴 Статус отправки, заполняет page.js -->
+            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+            <p class="lead-form_consent">
+              <!-- 🟡 Подставьте адреса согласия и политики с боевого сайта -->
+              Нажимая на&nbsp;кнопку «Отправить», я&nbsp;даю
+              <a href="#">согласие</a> на&nbsp;обработку моих персональных данных
+              в&nbsp;соответствии с&nbsp;<a href="#">политикой обработки
+              персональных данных</a>
+            </p>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       13. ВОПРОСЫ И ОТВЕТЫ
+       ======================================================================
+       Аккордеон перенесён из /psihosomatika (белая карточка, плюсики),
+       вопросы и ответы — с живой страницы /ifs.
+       ====================================================================== -->
+  <section class="section_faq" id="voprosy">
+    <div class="padding-global">
+      <div class="container-xlarge is-narrow">
+        <div class="faq_component">
+
+          <div class="faq_header">
+            <h2 class="faq_heading">Ответы на&nbsp;популярные вопросы</h2>
+          </div>
+
+          <div class="faq_list" data-accordion>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Можно приобрести курс в&nbsp;рассрочку?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Да, вы&nbsp;можете приобрести курс в&nbsp;рассрочку.
+                    На&nbsp;выбор несколько вариантов: от&nbsp;банков
+                    и&nbsp;Академии. Условия не&nbsp;отличаются: стоимость
+                    делится на&nbsp;равные части, проценты не&nbsp;начисляются.
+                    Разница только в&nbsp;длительности рассрочки.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Кому я&nbsp;смогу задать вопросы о&nbsp;процессе обучения?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>За&nbsp;каждым курсом закреплён куратор. Вы можете задать все вопросы ему.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Вы заключаете договор со&nbsp;студентами?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Оказание услуг на&nbsp;образовательную деятельность
+                    осуществляется по&nbsp;договору оферты. В&nbsp;индивидуальных
+                    случаях мы можем предложить формирование договора для
+                    студента лично. Однако оба этих договора имеют одинаковую
+                    юридическую силу.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">У&nbsp;вас есть лицензия на&nbsp;обучение?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Наша лицензия на&nbsp;осуществление образовательной
+                    деятельности: Л035–01271–78/00176689, Распоряжение
+                    от&nbsp;31.03.2022 №&nbsp;631-р
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Я&nbsp;смогу вернуть деньги за&nbsp;курс, если мне не&nbsp;понравится?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Можно вернуть деньги за&nbsp;непройденный материал. Однако
+                    в&nbsp;этом случае вы не&nbsp;сможете получить документ
+                    о&nbsp;повышении квалификации или профессиональной
+                    переподготовке.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq_item accordion_item" data-accordion-item>
+              <summary class="accordion_summary" data-accordion-trigger>
+                <span class="faq_question">
+                  <span class="faq_question-heading">Можно перевестись на&nbsp;другой курс, если я&nbsp;передумаю?</span>
+                  <span class="accordion_icon" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="accordion_panel" data-accordion-panel>
+                <div class="faq_answer faq_answer-inner">
+                  <p>
+                    Перевод на&nbsp;другой курс возможен только на&nbsp;старте
+                    обучения и&nbsp;при условии соответствия всем требованиям
+                    для зачисления на&nbsp;другую программу. В&nbsp;этом случае
+                    вам будет пересчитана стоимость обучения.
+                  </p>
+                </div>
+              </div>
+            </details>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</div>
+
+</body>
+</html>

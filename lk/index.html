@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛИЧНЫЙ КАБИНЕТ УЧАСТНИКА КЛУБА  →  адрес /lk
+  ============================================================================
+
+  Черновик на согласование. Собран по гайду AGENTS.md: классы Client-first v2,
+  цвета, размеры и компоненты — только из дизайн-системы (папка /design-system).
+  Каталожная шкала типографики (display / paragraph / caption) — та же, что
+  в расписании: личный кабинет это интерфейс, а не промо-страница.
+
+  ЧТО ЗДЕСЬ ЗА КОМПОЗИЦИЯ (и почему именно такая):
+
+    СЛЕВА — одна колонка со всей навигацией. Сверху логотип, сразу под ним
+    маленькая карточка подписки, ниже меню разделов, в самом низу — крошечный
+    блок техподдержки. Всё, куда можно уйти со страницы, живёт в одном месте.
+
+    СПРАВА — только содержимое: приветствие и материалы клуба. Ссылки из меню
+    здесь НЕ повторяются: два одинаковых списка на одном экране заставляют
+    человека сравнивать их и выбирать, а выбирать не из чего.
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" — сейчас там заглушки «#», сюда подставят настоящие;
+    🔴 всё остальное (class=…, id=…, <style>, <script>) — «шестерёнки»,
+       их трогать не надо: на них держится вёрстка.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём решения):
+    · данные жёстко вписаны в страницу. Дни доступа, дата старта, список
+      материалов и имя участника придут из CMS — места помечены 🟢;
+    · имя в приветствии не подставлено: его пока негде взять;
+    · страница открывается только на локальном сервере — иконки подключены
+      маской и по протоколу file:// браузер их блокирует (AGENTS.md, раздел 10).
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать.
+       Личный кабинет в поиске не нужен и на боевом домене тоже. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки -->
+  <title>Личный кабинет — Мастерская профессионального контента</title>
+  <meta name="description" content="Личный кабинет участника клуба «Мастерская профессионального контента»: материалы клуба, чат, боты и подписка." />
+
+  <!-- 🔴 Шрифт Wix Madefor Text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 ДИЗАЙН-СИСТЕМА. Порядок подключения менять нельзя.
+       Файлы — копии из design-system/ в корне репозитория, правятся ТОЛЬКО там. -->
+  <link rel="stylesheet" href="/design-system/tokens.css" />
+  <link rel="stylesheet" href="/design-system/base.css" />
+  <link rel="stylesheet" href="/design-system/typography.css" />
+  <link rel="stylesheet" href="/design-system/components.css" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+</head>
+
+<body>
+<div class="page-wrapper">
+
+  <a class="skip-link" href="#content">Перейти к содержимому</a>
+
+  <div class="padding-global">
+    <div class="container-large">
+      <!-- 🔴 Каркас кабинета: слева навигация, справа содержимое.
+           На телефоне колонки разворачиваются в одну ленту, см. page.css. -->
+      <div class="lk_layout padding-vertical padding-medium">
+
+        <!-- ====================================================================
+             ЛЕВАЯ КОЛОНКА
+             ==================================================================== -->
+        <aside class="lk_sidebar">
+
+          <!-- ---------- 1. Логотип и название клуба ---------- -->
+          <div class="lk_brand">
+            <!-- 🔴 Логотип Академии. Цвет берётся от текста, красить отдельно не нужно. -->
+            <svg class="lk_brand_logo" viewBox="0 0 95 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Академия современной психологии">
+              <path d="M49.3529 32C44.7678 32 40.9968 30.4982 38.0397 27.4945C35.0495 24.457 33.5599 20.6265 33.5599 16.0028C33.5599 11.3792 35.055 7.5486 38.0397 4.51116C41.0023 1.50185 44.7678 0 49.3529 0C53.938 0 57.8088 1.51872 60.799 4.55054C61.3196 5.07928 61.8567 5.73176 62.4105 6.49675L58.4511 9.41044C57.9306 8.64546 57.4931 8.09984 57.1443 7.7736C55.1729 5.77114 52.6035 4.76991 49.4415 4.76991C46.2796 4.76991 43.7434 5.78801 41.7388 7.8186C39.6512 9.93918 38.6046 12.6673 38.6046 15.9972C38.6046 19.3271 39.6512 22.0552 41.7388 24.1758C43.7379 26.2064 46.3073 27.2245 49.4415 27.2245C52.5758 27.2245 55.4885 26.0601 57.842 23.7314L58.7114 22.7583L62.5434 25.4976C62.0505 26.1445 61.5411 26.752 61.0205 27.3088C57.9472 30.4307 54.0598 31.9944 49.3585 31.9944L49.3529 32Z"/>
+              <path d="M70.9333 0.761905H94.5778V32H89.7544V5.58305H75.7567V32H70.9333V0.761905Z"/>
+              <path d="M18.0133 0.761905H11.7329L0 32H5.11591L8.14572 23.7444H17.6435L15.8886 18.9728H9.9007L11.1038 15.692L11.1203 15.6977L14.829 5.6238L21.159 22.632L24.691 32H29.7462L18.0133 0.761905Z"/>
+            </svg>
+            <!-- 🟢 Название клуба и подпись под ним -->
+            <p class="lk_brand_name text-size-caption-md text-weight-semibold">
+              Мастерская профессионального контента
+              <span class="text-size-caption-sm text-weight-normal text-color-secondary">Личный кабинет участника</span>
+            </p>
+          </div>
+
+          <!-- ---------- 2. Подписка. Маленькая карточка сразу под логотипом ----------
+               Здесь только то, что человек проверяет взглядом за секунду:
+               сколько дней осталось и куда нажать, чтобы продлить. -->
+          <section class="lk_sub" aria-label="Ваша подписка">
+            <p class="lk_sub_label text-size-caption-sm text-color-secondary">Доступ к клубу</p>
+            <p class="lk_sub_value">
+              <!-- 🟢 Дни доступа. Придут из CMS -->
+              <span class="text-size-paragraph-xl text-weight-bold text-color-heading">5 дней</span>
+              <span class="text-size-caption-md text-color-secondary">осталось</span>
+            </p>
+            <!-- 🔴 Полоса — картинка того же числа. Ширина заливки = доля оставшихся дней.
+                 Для скринридера скрыта: он уже прочитал «5 дней осталось» строкой выше. -->
+            <div class="lk_sub_bar" aria-hidden="true"><i style="width: 17%"></i></div>
+            <!-- 🟡 Ссылка на оплату -->
+            <a class="button is-sm is-full" href="#">Продлить доступ</a>
+          </section>
+
+          <!-- ---------- 3. Меню разделов ----------
+               Единственное место со ссылками «наружу»: в содержимом справа
+               их нет, чтобы не было двух списков об одном и том же. -->
+          <nav class="lk_nav" aria-label="Разделы кабинета">
+            <a class="lk_nav_item is-current text-size-paragraph-sm" href="#" aria-current="page">
+              <span class="icon is-md lk_nav_icon" style="--icon-url: url('/icons/bolt.svg')"></span>
+              Главная
+            </a>
+            <a class="lk_nav_item text-size-paragraph-sm" href="#content">
+              <span class="icon is-md lk_nav_icon" style="--icon-url: url('/icons/book.svg')"></span>
+              Материалы клуба
+            </a>
+            <!-- 🟡 Ссылка на чат в Telegram -->
+            <a class="lk_nav_item text-size-paragraph-sm" href="#">
+              <span class="icon is-md lk_nav_icon" style="--icon-url: url('/icons/message-circle.svg')"></span>
+              Чат клуба
+            </a>
+            <!-- 🟡 Ссылка на клубного бота -->
+            <a class="lk_nav_item text-size-paragraph-sm" href="#">
+              <span class="icon is-md lk_nav_icon" style="--icon-url: url('/icons/clock.svg')"></span>
+              Клубный бот
+            </a>
+            <!-- 🟡 Ссылка на бота-помощника -->
+            <a class="lk_nav_item text-size-paragraph-sm" href="#">
+              <span class="icon is-md lk_nav_icon" style="--icon-url: url('/icons/send.svg')"></span>
+              Бот-помощник
+              <span class="chip is-brand lk_nav_chip">Новое</span>
+            </a>
+          </nav>
+
+          <!-- ---------- 4. Техподдержка. Самый маленький блок, в самом низу ----------
+               Поддержка нужна редко и в неудачный момент. Поэтому она не спорит
+               с меню размером, но всегда на одном и том же месте. -->
+          <section class="lk_support" aria-label="Техподдержка платформы">
+            <p class="text-size-caption-md text-weight-semibold text-color-heading">Техподдержка платформы</p>
+            <!-- 🟢 Часы работы -->
+            <p class="text-size-caption-md text-color-secondary">ПН–ПТ, 10:00–19:00 МСК. Отвечаем в течение 24 часов.</p>
+            <!-- 🟡 Ссылка на чат поддержки -->
+            <a class="text-link text-size-caption-md" href="#">Написать в поддержку</a>
+          </section>
+
+        </aside>
+
+        <!-- ====================================================================
+             ПРАВАЯ КОЛОНКА · только содержимое
+             ==================================================================== -->
+        <main class="lk_main main-wrapper" id="content">
+
+          <header class="lk_head">
+            <div class="lk_head_text">
+              <!-- 🟢 Приветствие. Когда появится имя участника, дописать через запятую:
+                   «С возвращением, Ирина» -->
+              <h1 class="text-size-display-md">С возвращением</h1>
+              <!-- 🟢 Дата старта клуба. Придёт из CMS -->
+              <p class="lk_head_note text-size-paragraph-sm text-color-secondary">
+                <span class="icon is-sm" style="--icon-url: url('/icons/calendar.svg')"></span>
+                Клуб стартует 10 сентября
+              </p>
+            </div>
+            <!-- 🟢 Инициалы участника -->
+            <span class="lk_avatar" aria-hidden="true">РД</span>
+          </header>
+
+          <section class="lk_section">
+            <div class="lk_section_head">
+              <h2 class="text-size-display-sm">Материалы клуба</h2>
+              <!-- 🟢 Счётчик -->
+              <p class="text-size-caption-md text-color-secondary">4 материала</p>
+            </div>
+
+            <!-- Первый материал — вводный, поэтому он шире остальных и с кнопкой:
+                 человеку, который зашёл впервые, не нужно выбирать, с чего начать. -->
+            <a class="link-block card lk_start" href="#">
+              <span class="lk_icon is-lg" aria-hidden="true">
+                <span class="icon is-lg" style="--icon-url: url('/icons/compass.svg')"></span>
+              </span>
+              <span class="lk_start_body">
+                <!-- 🟢 -->
+                <span class="lk_title text-size-paragraph-xl text-weight-semibold text-color-heading text-style-break">Навигатор по клубу</span>
+                <span class="text-size-paragraph-sm text-color-secondary">Вводный модуль о том, как устроен клуб, что в нём есть и с чего лучше начать.</span>
+              </span>
+              <span class="button is-sm lk_start_action">Начать</span>
+            </a>
+
+            <!-- Остальные материалы -->
+            <div class="lk_materials">
+
+              <article class="lk_material card">
+                <a class="link-block lk_material_link" href="#">
+                  <span class="lk_icon" aria-hidden="true">
+                    <span class="icon is-md" style="--icon-url: url('/icons/video.svg')"></span>
+                  </span>
+                  <!-- 🟢 -->
+                  <span class="lk_title text-size-paragraph-md text-weight-semibold text-color-heading text-style-break">
+                    Встреча «Название»
+                    <span class="chip is-brand">Новое</span>
+                  </span>
+                  <span class="text-size-caption-md text-color-secondary">Запись живого созвона группы: разбор работ, один приём в фокусе и обратная связь.</span>
+                </a>
+              </article>
+
+              <article class="lk_material card">
+                <a class="link-block lk_material_link" href="#">
+                  <span class="lk_icon" aria-hidden="true">
+                    <span class="icon is-md" style="--icon-url: url('/icons/users.svg')"></span>
+                  </span>
+                  <!-- 🟢 -->
+                  <span class="lk_title text-size-paragraph-md text-weight-semibold text-color-heading text-style-break">Разбор профиля</span>
+                  <span class="text-size-caption-md text-color-secondary">Как ваш блог выглядит со стороны потенциального клиента и что стоит усилить.</span>
+                </a>
+              </article>
+
+              <article class="lk_material card">
+                <a class="link-block lk_material_link" href="#">
+                  <span class="lk_icon" aria-hidden="true">
+                    <span class="icon is-md" style="--icon-url: url('/icons/lightbulb.svg')"></span>
+                  </span>
+                  <!-- 🟢 -->
+                  <span class="lk_title text-size-paragraph-md text-weight-semibold text-color-heading text-style-break">Таблица идей</span>
+                  <span class="text-size-caption-md text-color-secondary">Готовые темы и заготовки подписей, чтобы не придумывать всё с нуля.</span>
+                </a>
+              </article>
+
+            </div>
+          </section>
+
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

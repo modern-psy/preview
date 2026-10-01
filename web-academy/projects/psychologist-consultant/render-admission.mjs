@@ -1,0 +1,10 @@
+import fs from 'node:fs/promises';
+import {renderAdmission} from '../../shared/academy/admission-render.mjs';
+const root = new URL('./', import.meta.url);
+const data = JSON.parse(await fs.readFile(new URL('data/admission.json', root), 'utf8'));
+const source = new URL('index.html', root);
+const html = await fs.readFile(source, 'utf8');
+const region = /<!-- admission:start -->[\s\S]*?<!-- admission:end -->/;
+if (!region.test(html)) throw new Error('Admission generated markers are missing.');
+const next = html.replace(region, `<!-- admission:start -->\n${renderAdmission(data)}\n<!-- admission:end -->`);
+if (next !== html) await fs.writeFile(source, next);
