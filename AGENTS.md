@@ -25,6 +25,19 @@ Fetch `origin/main` before beginning a new landing task and inspect the selected
 remote directory: its source context may have been added by another collaborator
 and may not exist in an older local checkout.
 
+## Куда пушить вёрстку
+
+Вёрстка лендингов пушится **только** в репозиторий
+[modern-psy/preview](https://github.com/modern-psy/preview), ветка `main`.
+Папка `apps/preview/` — это и есть его рабочая копия (свой `.git`, `origin`
+смотрит на `modern-psy/preview`). Timeweb App Platform собирает превью
+прямо из этого репозитория.
+
+- Коммит и пуш делаются из папки `apps/preview/`, а не из корня `asp-deploy`.
+- Никуда больше вёрстку не пушить: ни в `asp-deploy`, ни в `ASP-Prod`,
+  ни в личные репозитории.
+- Видео (`*.mp4`) в репозиторий не кладём — они в `.gitignore`.
+
 ## Delivery boundary
 
 - A deployable preview remains a self-contained sibling directory
