@@ -54,12 +54,12 @@ function typeset(node, key) {
 const typesetVisibleLabels = data => ({...data, steps: data.steps?.map(step => ({...step, label: typography(step.label)})), action: data.action && {...data.action, label: typography(data.action.label)}});
 
 const image = (media, className, {lazy = true, decorative = false} = {}) => {
-  if (!/^https:\/\//.test(media.src) || ![media.width, media.height].every(n => Number.isInteger(n) && n > 0)) throw new Error(`Изображение без CDN-ссылки или размеров: ${media.src}`);
+  if (!/^(https:\/\/|assets\/)/.test(media.src) || ![media.width, media.height].every(n => Number.isInteger(n) && n > 0)) throw new Error(`Изображение без CDN-ссылки (или файла в assets/) или без размеров: ${media.src}`);
   if (!decorative && typeof media.alt !== 'string') throw new Error(`Нужен alt: ${media.src}`);
   return `<img class="${className}" src="${escapeHtml(media.src)}" width="${media.width}" height="${media.height}" alt="${decorative ? '' : escapeHtml(media.alt)}"${decorative ? ' aria-hidden="true"' : ''} draggable="false"${lazy ? ' loading="lazy" decoding="async"' : ''}>`;
 };
 const checkItem = (text, copy = '') => `<li class="feature-list_item"><img class="feature-list_icon" src="${CHECK_ICON}" width="24" height="24" alt="" draggable="false" loading="lazy">${copy || `<span class="body-text_component feature-list_text">${renderText(text)}</span>`}</li>`;
-const header = (id, heading, {align = 'center', subtitle = ''} = {}) => `<div class="section-header_component is-${align} is-responsive"><h2 class="section-title_component is-${align} is-responsive" id="${id}-heading">${renderText(heading)}</h2>${subtitle ? `<p class="section-subtitle_component">${renderText(subtitle)}</p>` : ''}</div>`;
+const header = (id, heading, {align = 'center', subtitle = '', note = ''} = {}) => `<div class="section-header_component is-${align} is-responsive">${note ? variantNote(note) : ''}<h2 class="section-title_component is-${align} is-responsive" id="${id}-heading">${renderText(heading)}</h2>${subtitle ? `<p class="section-subtitle_component">${renderText(subtitle)}</p>` : ''}</div>`;
 const section = (name, id, inner, {wide = false, extra = ''} = {}) => `<section class="section_${name} section-spacing_component${extra}" id="${sectionId(id)}" aria-labelledby="${id}-heading">
   <div class="padding-global"><div class="container-xlarge">${wide ? '<div class="column-grid_component"><div class="column-grid_content is-content-wide">' : ''}
     ${inner}
@@ -80,9 +80,19 @@ const portrait = (photo, className) => photo.src
 /* Проектный блок feature-split: копия с группами списков и фото; секция «уровень». */
 function renderFeatureSplit(name, data, id) {
   const groups = data.groups.map((group, index) => `<div class="feature-split_group"><h3 class="content-heading_component is-card" id="${id}-group-${index + 1}">${renderText(group.heading)}</h3>${group.intro ? `<p class="body-text_component">${renderText(group.intro)}</p>` : ''}<ul class="feature-list_component" aria-labelledby="${id}-group-${index + 1}">${group.items.map(item => checkItem(item)).join('')}</ul></div>`).join('\n');
-  const copy = `<div class="feature-split_copy"><div class="feature-split_intro">${header(id, data.heading, {align: 'left', subtitle: data.subtitle})}<p class="body-text_component is-summary is-emphasis feature-split_lead">${renderText(data.lead)}</p>${data.paragraphs.map(text => `<p class="body-text_component is-summary is-regular">${renderText(text)}</p>`).join('')}</div><div class="feature-split_groups">${groups}</div>${data.note ? `<p class="body-text_component is-fine-print feature-split_note">${renderText(data.note)}</p>` : ''}</div>`;
+  const copy = `<div class="feature-split_copy"><div class="feature-split_intro">${header(id, data.heading, {align: 'left', subtitle: data.subtitle, note: data.variantLabels?.[0]})}<p class="body-text_component is-summary is-emphasis feature-split_lead">${renderText(data.lead)}</p>${data.paragraphs.map(text => `<p class="body-text_component is-summary is-regular">${renderText(text)}</p>`).join('')}</div><div class="feature-split_groups">${groups}</div>${data.note ? `<p class="body-text_component is-fine-print feature-split_note">${renderText(data.note)}</p>` : ''}</div>`;
   const media = `<div class="feature-split_media"${data.image.position ? ` style="--feature-split-image-position: ${escapeHtml(data.image.position)}"` : ''}>${image(data.image, 'feature-split_image')}</div>`;
   return section(name, id, `<div class="feature-split_component">${copy}${media}</div>`);
+}
+
+/* «Первый уровень», вариант 2 (level-path): без фото. Слева тёмная карточка: шкала из трёх уровней
+   (первый выделен, цифры декоративные), главная мысль и вводные абзацы. Справа две белые карточки
+   со списками: что будет на уровне и что дальше. Сноска под блоком. Тексты те же, что в варианте 1. */
+function renderLevelPath(data, id) {
+  const groups = data.groups.map((group, index) => `<div class="card_component level-path_card"><h3 class="content-heading_component is-card" id="${id}-group-${index + 1}">${renderText(group.heading)}</h3>${group.intro ? `<p class="body-text_component">${renderText(group.intro)}</p>` : ''}<ul class="feature-list_component" aria-labelledby="${id}-group-${index + 1}">${group.items.map(item => checkItem(item)).join('')}</ul></div>`).join('\n');
+  const scale = `<div class="level-path_scale" aria-hidden="true">${[1, 2, 3].map(n => `<span class="level-path_step${n === 1 ? ' is-current' : ''}">${n}</span>`).join('<span class="level-path_line"></span>')}</div>`;
+  const intro = `<div class="level-path_intro">${scale}<div class="level-path_copy"><p class="level-path_lead">${renderText(data.lead)}</p>${data.paragraphs.map(text => `<p class="body-text_component is-summary is-regular">${renderText(text)}</p>`).join('')}</div></div>`;
+  return section('level-path', id, `<div class="section-layout_component is-responsive">${header(id, data.heading, {subtitle: data.subtitle, note: data.variantLabels[1]})}<div class="level-path_body"><div class="level-path_layout">${intro}${groups}</div>${data.note ? `<p class="body-text_component is-fine-print level-path_note">${renderText(data.note)}</p>` : ''}</div></div>`);
 }
 
 /* Проектный блок instructor: фото (или заглушка) и вводная, ниже разделы биографии аккордеоном Академии.
@@ -210,16 +220,9 @@ function renderProgramScenes(data, scenes, id) {
   return section('program-scenes', id, `<div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[2])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${scheduleNote(data.schedule)}</div><div class="program-scenes_layout" data-scene-tabs><div class="program-scenes_panel"><div class="program-scenes_tabs" role="tablist" aria-label="${escapeHtml(data.tabsLabel)}">${tabs}</div><div class="program-scenes_copy">${texts}</div></div><div class="program-scenes_stage">${panels}</div></div></div>`);
 }
 
-/* Документы: общий блок «Диплом» Академии (текст, условия, заметка, лицензия, фото), как на курсах
-   с удостоверением. Под фото добавлены два документа курса: удостоверение и международный сертификат. */
-function renderDocuments(data, id) {
-  const cards = data.cards.map(card => `<li class="documents_card">${image(card.logo, 'documents_logo', {decorative: true})}<h3 class="body-text_component is-callout documents_name">${renderText(card.heading)}</h3>${image(card.image, 'documents_image')}</li>`).join('');
-  const list = `<ul class="documents_list" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul>`;
-  const markup = renderDiploma(data, {id}).replace('class="section_diploma ', 'class="section_documents section_diploma ');
-  const media = /<div class="diploma_media">[\s\S]*?<\/div>/;
-  if (!media.test(markup)) throw new Error('Documents: не найден блок фото в разметке диплома');
-  return markup.replace(media, match => `<div class="documents_media">${match}${list}</div>`);
-}
+/* Документы: общий блок «Диплом» Академии (текст, условия, заметка, лицензия, одно изображение),
+   как на курсах с удостоверением. На изображении оба документа курса: удостоверение и сертификат. */
+const renderDocuments = (data, id) => renderDiploma(data, {id}).replace('class="section_diploma ', 'class="section_documents section_diploma ');
 
 /* Промо-блок цены. Запаска строится при сборке из data/course.json. Если задан CMS_SLUG, сборка сначала
    спрашивает курс у Public API, а в браузере блок перерисовывает pricing-promo.js. */
@@ -255,7 +258,15 @@ async function buildHtml() {
   hero.metadata.label = (await json('hero')).metadata.label;
   const context = {assets: await json('assets'), actions: await json('actions')};
   // Hero-renderer сохраняет только сущность &nbsp;, поэтому неразрывные пробелы передаём ей текстом.
-  const heroMarkup = renderHeroSection(JSON.parse(JSON.stringify(hero).replaceAll(NBSP, '&nbsp;')), context);
+  let heroMarkup = renderHeroSection(JSON.parse(JSON.stringify(hero).replaceAll(NBSP, '&nbsp;')), context);
+  // Картинка документа в первой плитке временно скрыта (решение пользователя 02.10.2026): в разметке она
+  // закомментирована, плитка становится обычной. Чтобы вернуть, поставить HIDE_BENEFIT_IMAGE = false.
+  const HIDE_BENEFIT_IMAGE = true;
+  if (HIDE_BENEFIT_IMAGE) {
+    const picture = /<img class="benefits_diploma"[^>]*>/;
+    if (!picture.test(heroMarkup)) throw new Error('Hero: не найдена картинка плитки с документом');
+    heroMarkup = heroMarkup.replace(picture, match => `<!-- Картинка документа временно скрыта: ${match} -->`).replace('benefits_card is-diploma', 'benefits_card');
+  }
 
   const learningData = typesetVisibleLabels(typeset(await json('learning')));
   // Заголовки с акцентом одной строкой (решение пользователя 17.09.2026): убираем принудительный <br> перед акцентом.
@@ -273,12 +284,14 @@ async function buildHtml() {
 
   const program = typeset(await json('program'));
   const audience = typeset(await json('audience'));
+  const level = typeset(await json('level'));
   const pricing = await renderPricing(`${SLUG}-pricing`);
   const sections = [
     heroMarkup,
     renderStrategy(typeset(await json('strategy')), `${SLUG}-strategy`),
     renderAudienceBento(audience, `${SLUG}-audience`),
-    renderFeatureSplit('level', typeset(await json('level')), `${SLUG}-level`),
+    renderFeatureSplit('level', level, `${SLUG}-level`),
+    renderLevelPath(level, `${SLUG}-level-path`),
     renderHighlights(typeset(await json('highlights')), `${SLUG}-highlights`),
     renderSkills(typeset(await json('skills')), `${SLUG}-skills`),
     renderInstructor(typeset(await json('instructor')), `${SLUG}-instructor`),
@@ -325,7 +338,12 @@ ${body}
   const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
   if (duplicates.length) throw new Error(`Повторяющиеся id: ${duplicates.join(', ')}`);
   for (const link of html.matchAll(/href="#([a-z][a-z0-9-]*)"/g)) if (!ids.includes(link[1])) throw new Error(`Якорь без цели: #${link[1]}`);
-  if (/src="assets\/|\.\.\/web-academy|localhost|127\.0\.0\.1/.test(html)) throw new Error('В index.html остались локальные ссылки');
+  if (/\.\.\/web-academy|localhost|127\.0\.0\.1/.test(html)) throw new Error('В index.html остались локальные ссылки');
+  // Локальные картинки допустимы только из папки assets лендинга; для Тильды им нужна ссылка на CDN (см. build-tilda.mjs).
+  for (const [, file] of html.matchAll(/src="(assets\/[^"]+)"/g)) {
+    await fs.access(new URL(file, root)).catch(() => { throw new Error(`Нет локального файла ${file}`); });
+    console.warn(`Локальная картинка ${file}: для Тильды нужна ссылка на CDN`);
+  }
   return {html, mode: pricing.mode};
 }
 

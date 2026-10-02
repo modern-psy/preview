@@ -30,8 +30,8 @@
   --hero-section-end: var(--section-space);
   --hero-section-end-desktop: var(--section-space);
   --hero-panel-min-height: 43.75rem;
-  --hero-image-position: 62% center;
-  --hero-image-position-desktop: center 35%;
+  --hero-image-position: 80% center;
+  --hero-image-position-desktop: 85% center;
   --course-audience-image-position: center 30%;
   overflow: visible;
 }
@@ -139,18 +139,7 @@
 .rodbt-live-page .learning-note_icon { flex: none; font-size: 1.25rem; line-height: 1.3; }
 .rodbt-live-page .learning-note_text { min-width: 0; overflow-wrap: anywhere; }
 
-/* Документы: общий блок «Диплом» Академии. Под фото добавлены два документа курса: логотип выдавшей
-   организации, название и изображение. Когда появятся крупные изображения, заменить ссылки в data/documents.json. */
-.rodbt-live-page .documents_media { display: flex; min-width: 0; flex-direction: column; gap: var(--card-grid-gap); }
-.rodbt-live-page .documents_media .diploma_media { flex: 1 1 auto; }
-.rodbt-live-page .documents_list { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
-.rodbt-live-page .documents_card { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); overflow-wrap: anywhere; }
-.rodbt-live-page .documents_logo { display: block; width: auto; max-width: 100%; height: 1.5rem; }
-.rodbt-live-page .documents_name { --body-text-color: var(--color-text-primary); }
-.rodbt-live-page .documents_image { display: block; width: 100%; height: auto; margin-top: auto; border-radius: 0.5rem; }
-@media (min-width: 32.5625rem) {
-  .rodbt-live-page .documents_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+/* Документы: общий блок «Диплом» Академии без проектных добавок; изображение одно (data/documents.json). */
 
 /* Фото человека. Пока фото нет, на его месте заглушка с инициалами того же размера: страница не прыгнет,
    когда фото появится (в data/*.json заполнить photo.src, width, height). */
@@ -430,4 +419,39 @@
 .rodbt-live-page .benefits_diploma { position: static; flex: none; align-self: flex-end; width: min(100%, var(--benefits-diploma-width)); height: auto; aspect-ratio: 201 / 142; margin: 0 calc(var(--benefits-padding) * -1) -2.5rem 0; }
 @media (min-width: 48rem) {
   .rodbt-live-page .benefits_card.is-diploma { --benefits-diploma-width: 16.25rem; }
+}
+
+/* «Первый уровень», вариант 2 (level-path): без фото. Тёмная карточка со шкалой уровней и вводной,
+   рядом две белые карточки со списками. Телефон: одна колонка. Планшет: вводная на всю ширину,
+   списки в две колонки. Desktop: три колонки в ряд. */
+.rodbt-live-page .level-path_body { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--card-grid-gap); }
+.rodbt-live-page .level-path_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.rodbt-live-page .level-path_intro { --body-text-color: var(--color-program-muted); display: flex; min-width: 0; flex-direction: column; justify-content: space-between; gap: 2rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); overflow-wrap: anywhere; }
+.rodbt-live-page .level-path_scale { display: flex; align-items: center; gap: 0.5rem; }
+.rodbt-live-page .level-path_step { display: grid; width: 2.5rem; height: 2.5rem; flex: none; place-items: center; border: 1px solid rgb(255 255 255 / 30%); border-radius: 50%; color: var(--color-program-muted); font-size: 1rem; font-weight: 500; line-height: 1; }
+.rodbt-live-page .level-path_step.is-current { border-color: var(--color-accent-primary); background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.rodbt-live-page .level-path_line { width: 1.5rem; height: 1px; flex: 0 1 auto; background: rgb(255 255 255 / 30%); }
+.rodbt-live-page .level-path_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+.rodbt-live-page .level-path_lead { color: var(--color-text-on-dark); font-size: 1.375rem; font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.rodbt-live-page .level-path_card { justify-content: flex-start; gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-live-page .level-path_note { max-width: 56rem; }
+@media (min-width: 32.5625rem) {
+  .rodbt-live-page .level-path_lead { font-size: 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-live-page .level-path_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rodbt-live-page .level-path_intro { grid-column: 1 / -1; padding: 1.5rem; }
+  .rodbt-live-page .level-path_lead { font-size: 1.75rem; }
+  .rodbt-live-page .level-path_card { gap: 1.25rem; padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .level-path_layout { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); }
+  .rodbt-live-page .level-path_intro { grid-column: auto; gap: 3rem; }
+  .rodbt-live-page .level-path_lead { font-size: 2rem; }
+}
+
+/* Фото первого экрана: героиня сидит в правой части кадра. На планшете общий компонент центрирует
+   фото и она уходила за край, поэтому от 768px кадр сдвинут к ней. */
+@media (min-width: 48rem) {
+  .rodbt-live-page .hero_component.is-dual-action .hero_image { object-position: var(--hero-image-position-desktop); }
 }

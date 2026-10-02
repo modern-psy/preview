@@ -18,6 +18,14 @@ const js = await read('script.js');
 // Секции верхнего уровня внутри <main>: разметка переносится дословно.
 const main = source.match(/<main[^>]*>([\s\S]*)<\/main>/);
 if (!main) throw new Error('index.html: не найден <main>');
+// Локальные картинки (assets/…) в Тильду не переносятся: каждой нужна ссылка на CDN в data/*.json.
+// Флаг --allow-local собирает пакет только для локальной проверки preview.html.
+const localImages = [...new Set([...source.matchAll(/src="(assets\/[^"]+)"/g)].map(m => m[1]))];
+const allowLocal = process.argv.includes('--allow-local');
+if (localImages.length) {
+  for (const file of localImages) console.warn(`⚠️  Нужна ссылка на CDN: ${file}`);
+  if (!allowLocal) throw new Error(`Локальных картинок: ${localImages.length}. Замените их ссылками на CDN или запустите с --allow-local (только для проверки, в Тильду такой пакет не вставлять).`);
+}
 const sections = [];
 const pattern = /<section\b[\s\S]*?<\/section>/g;
 for (const match of main[1].matchAll(pattern)) {
@@ -28,7 +36,8 @@ const titles = {
   hero: 'Первый экран и особенности программы',
   strategy: 'Когда нужна другая стратегия',
   'audience-bento': 'Кому подходит этот курс',
-  level: 'Это первый уровень RO DBT',
+  level: 'Это первый уровень RO DBT, вариант 1: с фото',
+  'level-path': 'Это первый уровень RO DBT, вариант 2: без фото',
   highlights: 'Что делает курс особенным',
   skills: 'Ваши навыки после курса',
   instructor: 'Ваш инструктор',
@@ -99,7 +108,7 @@ for (const [i, chunk] of jsChunks.entries()) {
 
 // Проверки: локальные ссылки, сохранность и уникальность id, целостность якорей.
 const all = blocks.join('\n');
-if (/\.\.\/web-academy|src="assets\/|url\((['"]?)(\.\/|assets\/)|localhost|127\.0\.0\.1/.test(all)) throw new Error('В блоках остались локальные ссылки');
+if (/\.\.\/web-academy|url\((['"]?)(\.\/|assets\/)|localhost|127\.0\.0\.1/.test(all)) throw new Error('В блоках остались локальные ссылки');
 const ids = text => [...text.matchAll(/(?<![\w-])id="([^"]+)"/g)].map(m => m[1]);
 const originalIds = ids(source);
 const exportIds = ids(blocks.filter(b => b.startsWith('<!-- СЕКЦИЯ')).join(''));
@@ -107,7 +116,8 @@ if (originalIds.sort().join() !== exportIds.sort().join()) throw new Error('На
 if (new Set(exportIds).size !== exportIds.length) throw new Error('Повторяющиеся id в блоках');
 for (const link of all.matchAll(/href="#([a-z][a-z0-9-]*)"/g)) if (!exportIds.includes(link[1])) throw new Error(`Якорь без цели: #${link[1]}`);
 
-const preview = `<!doctype html>\n<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>RO DBT, живой курс — проверка блоков T123</title></head><body><div id="allrecords">\n${blocks.map(block => `<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">\n${block}</div></div></div></div>\n`).join('')}</div></body></html>\n`;
+const previewBlocks = blocks.map(block => block.replaceAll('src="assets/', 'src="../assets/'));
+const preview = `<!doctype html>\n<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>RO DBT, живой курс — проверка блоков T123</title></head><body><div id="allrecords">\n${previewBlocks.map(block => `<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">\n${block}</div></div></div></div>\n`).join('')}</div></body></html>\n`;
 await fs.writeFile(new URL('preview.html', out), preview);
 await fs.writeFile(new URL('manifest.json', out), JSON.stringify(files, null, 2) + '\n');
 console.log(`Готово: ${sections.length} секций, ${cssChunks.length} блока стилей, ${jsChunks.length} блока скриптов; каждый T123 меньше ${LIMIT} символов.`);
