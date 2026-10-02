@@ -1,0 +1,433 @@
+/* Тема лендинга живого курса «RO DBT: Радикально открытая ДБТ» и его проектные блоки.
+   Общие компоненты Академии приходят из web-academy/shared/academy при сборке (node rodbt-live/build.mjs)
+   и лежат выше этого файла в style.css. Здесь только переменные темы на .rodbt-live-page
+   и блоки без готового компонента: strategy, feature-split, highlights, topic-tabs (навыки),
+   instructor, trainers, program-topics, documents. */
+
+.rodbt-live-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-page-background: #f5f5f5;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-text: #644ab2;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  --color-text-secondary-large: #747476;
+  --color-text-on-dark-muted: #e6e5eb;
+  --hero-subtitle-color: #dedede;
+  --hero-note-color: #53ee34;
+  --color-program-tag: #4d3d5f;
+  --color-program-text: #ededed;
+  --color-program-muted: #bdb7b7;
+  --content-heading-gap: 0.75rem;
+  --text-body-line-height: 1.2;
+  --stat-card-label-size: 1.125rem;
+  --hero-section-offset: 2rem;
+  --page-padding: 1rem;
+  --hero-section-end: var(--section-space);
+  --hero-section-end-desktop: var(--section-space);
+  --hero-panel-min-height: 43.75rem;
+  --hero-image-position: 62% center;
+  --hero-image-position-desktop: center 35%;
+  --course-audience-image-position: center 30%;
+  overflow: visible;
+}
+@media (min-width: 48rem) {
+  .rodbt-live-page { --hero-section-offset: 3rem; --page-padding: 1.5rem; }
+}
+@media (min-width: 75rem) {
+  .rodbt-live-page { --page-padding: 5rem; }
+}
+@media (max-width: 32.5rem) {
+  .rodbt-live-page { --button-width: 100%; }
+}
+
+.rodbt-live-page :where(a, button) { cursor: pointer; }
+.rodbt-live-page .screen-reader-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Цена: внешняя карточка pricing-promo_card приходит из общего pricing-promo.css. */
+
+/* Тёмные поверхности отвечают за контраст: текст CTA и подписи формы, как в эталоне. */
+.rodbt-live-page .cta_content { --section-subtitle-color: var(--color-text-on-dark-muted); color: var(--color-text-on-dark-muted); }
+.rodbt-live-page .lead-form_component { --section-subtitle-color: var(--color-form-muted); }
+.rodbt-live-page .cta_comet-layer { display: none; }
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .cta_comet-layer { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rodbt-live-page .button_component,
+  .rodbt-live-page .cta_button { transition: none; }
+}
+
+/* Точечная защита цветов от глобальных правил Тильды (только эти варианты, с их состояниями). */
+.rodbt-live-page a.button_component.is-light,
+.rodbt-live-page a.button_component.is-light:hover,
+.rodbt-live-page a.button_component.is-light:focus-visible { color: var(--color-text-primary) !important; }
+.rodbt-live-page a.button_component.is-accent,
+.rodbt-live-page a.button_component.is-accent:hover,
+.rodbt-live-page a.button_component.is-accent:focus-visible { color: var(--color-text-on-dark) !important; }
+.rodbt-live-page .cta_button,
+.rodbt-live-page .cta_button:hover,
+.rodbt-live-page .cta_button:focus-visible { color: var(--color-surface-dark) !important; }
+.rodbt-live-page .pricing-promo_tab { color: var(--pricing-promo-muted) !important; }
+.rodbt-live-page .pricing-promo_tab[aria-selected="true"],
+.rodbt-live-page .pricing-promo_tab:hover,
+.rodbt-live-page .pricing-promo_tab:focus-visible { color: var(--color-text-on-dark) !important; }
+
+/* Общий список «иконка + текст» проектных блоков (feature-split, highlights). */
+.rodbt-live-page .feature-list_component { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.rodbt-live-page .feature-list_item { display: flex; min-width: 0; align-items: start; gap: 0.5rem; }
+.rodbt-live-page .feature-list_icon { display: block; flex: none; width: 1.5rem; height: 1.5rem; margin-top: -0.0625rem; }
+.rodbt-live-page .feature-list_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.25rem; overflow-wrap: anywhere; }
+.rodbt-live-page .feature-list_text { --body-text-color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) {
+  .rodbt-live-page .feature-list_component { gap: 0.75rem; }
+}
+
+/* Проектный блок feature-split: текст с группами списков и фото рядом (секция «уровень»). */
+.rodbt-live-page .feature-split_component { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 1.25rem 1rem; --feature-split-media-height: 18.75rem; }
+.rodbt-live-page .feature-split_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
+.rodbt-live-page .feature-split_intro { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+.rodbt-live-page .feature-split_lead { --body-text-color: var(--color-text-primary); }
+.rodbt-live-page .feature-split_groups { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
+.rodbt-live-page .feature-split_group { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.rodbt-live-page .feature-split_note { overflow-wrap: anywhere; }
+.rodbt-live-page .feature-split_media { position: relative; min-width: 0; min-height: var(--feature-split-media-height); overflow: clip; border-radius: var(--radius-card, 1rem); }
+.rodbt-live-page .feature-split_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--feature-split-image-position, center); }
+@media (min-width: 32.5625rem) {
+  .rodbt-live-page .feature-split_component { --feature-split-media-height: 21.875rem; row-gap: 1.5rem; }
+  .rodbt-live-page .feature-split_copy { gap: 1.5rem; }
+  .rodbt-live-page .feature-split_intro { gap: 1rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-live-page .feature-split_component { --feature-split-media-height: 25rem; row-gap: 2rem; }
+  .rodbt-live-page .feature-split_groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--card-grid-gap); }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .feature-split_component { grid-template-columns: minmax(0, 1fr) minmax(0, 0.75fr); column-gap: 2rem; }
+  .rodbt-live-page .feature-split_copy { gap: 2rem; }
+  .rodbt-live-page .feature-split_groups { display: flex; flex-direction: column; gap: var(--card-grid-gap); }
+}
+
+/* Проектный блок strategy: три карточки с фото, заголовком и текстом. */
+.rodbt-live-page .strategy_card { gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-live-page .strategy_media { width: 100%; min-width: 0; aspect-ratio: 537 / 375; overflow: clip; border-radius: calc(var(--radius-card, 1rem) - 0.25rem); }
+.rodbt-live-page .strategy_image { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rodbt-live-page .strategy_card .content-header_component { --content-heading-gap: 0.5rem; }
+@media (min-width: 48rem) {
+  .rodbt-live-page .strategy_card { gap: 1.25rem; }
+  .rodbt-live-page .strategy_card .content-header_component { --content-heading-gap: 0.75rem; }
+}
+
+/* Проектный блок highlights: список особенностей слева, карточка практики со списком справа. */
+.rodbt-live-page .highlights_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); align-items: stretch; }
+.rodbt-live-page .highlights_list { display: grid; min-width: 0; gap: var(--card-grid-gap); }
+.rodbt-live-page .highlights_card { gap: 0.5rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-live-page .highlights_practice { --body-text-color: var(--color-program-muted); align-self: stretch; justify-content: flex-start; gap: 1.25rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.rodbt-live-page .highlights_practice .feature-list_text { --body-text-color: var(--color-text-on-dark); }
+@media (min-width: 48rem) {
+  .rodbt-live-page .highlights_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rodbt-live-page .highlights_card { gap: 0.75rem; }
+  .rodbt-live-page .highlights_practice { gap: 1.5rem; }
+}
+
+/* Тёмная заметка с иконкой (сейчас не используется, оставлена для предупреждений). */
+.rodbt-live-page .learning-note_component { --body-text-color: var(--color-text-on-dark); display: flex; width: 100%; max-width: 63rem; min-width: 0; align-items: start; gap: 0.75rem; margin-inline: auto; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-text-primary); }
+.rodbt-live-page .learning-note_icon { flex: none; font-size: 1.25rem; line-height: 1.3; }
+.rodbt-live-page .learning-note_text { min-width: 0; overflow-wrap: anywhere; }
+
+/* Документы: общий блок «Диплом» Академии. Под фото добавлены два документа курса: логотип выдавшей
+   организации, название и изображение. Когда появятся крупные изображения, заменить ссылки в data/documents.json. */
+.rodbt-live-page .documents_media { display: flex; min-width: 0; flex-direction: column; gap: var(--card-grid-gap); }
+.rodbt-live-page .documents_media .diploma_media { flex: 1 1 auto; }
+.rodbt-live-page .documents_list { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.rodbt-live-page .documents_card { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); overflow-wrap: anywhere; }
+.rodbt-live-page .documents_logo { display: block; width: auto; max-width: 100%; height: 1.5rem; }
+.rodbt-live-page .documents_name { --body-text-color: var(--color-text-primary); }
+.rodbt-live-page .documents_image { display: block; width: 100%; height: auto; margin-top: auto; border-radius: 0.5rem; }
+@media (min-width: 32.5625rem) {
+  .rodbt-live-page .documents_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Фото человека. Пока фото нет, на его месте заглушка с инициалами того же размера: страница не прыгнет,
+   когда фото появится (в data/*.json заполнить photo.src, width, height). */
+.rodbt-live-page .portrait_image { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rodbt-live-page .portrait_placeholder { display: grid; place-items: center; background: var(--color-accent-soft); color: var(--color-accent-text); }
+.rodbt-live-page .portrait_initials { font-size: var(--portrait-initials-size, 1.25rem); font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+
+/* Проектный блок instructor: слева фото, справа вводная и разделы биографии аккордеоном Академии.
+   На мобильном фото сверху, разделы свёрнуты (кроме первого), чтобы длинная биография не растягивала экран. */
+.rodbt-live-page .instructor_component { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 1.25rem 2rem; }
+.rodbt-live-page .instructor_media { min-width: 0; }
+.rodbt-live-page .instructor_photo { --portrait-initials-size: 2.5rem; width: 100%; max-width: 13.75rem; aspect-ratio: 4 / 5; overflow: clip; border-radius: var(--radius-card, 1rem); }
+.rodbt-live-page .instructor_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
+.rodbt-live-page .instructor_intro { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+.rodbt-live-page .instructor_list { --accordion-item-gap: 0.5rem; }
+.rodbt-live-page .instructor_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.rodbt-live-page .instructor_summary { display: grid; min-height: 2.75rem; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: var(--card-padding); }
+.rodbt-live-page .instructor_panel { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; padding: 0 var(--card-padding) var(--card-padding); overflow-wrap: anywhere; }
+.rodbt-live-page .instructor_panel .body-text_component { --body-text-color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) {
+  .rodbt-live-page .instructor_component { row-gap: 1.5rem; }
+  .rodbt-live-page .instructor_copy { gap: 1.5rem; }
+  .rodbt-live-page .instructor_intro { gap: 1rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-live-page .instructor_component { grid-template-columns: minmax(0, 0.6fr) minmax(0, 1fr); align-items: start; }
+  .rodbt-live-page .instructor_photo { --portrait-initials-size: 4rem; max-width: none; }
+  .rodbt-live-page .instructor_list { --accordion-item-gap: 0.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .instructor_component { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr); }
+  .rodbt-live-page .instructor_media { position: sticky; top: 2rem; }
+  .rodbt-live-page .instructor_copy { gap: 2rem; }
+}
+
+/* Проектный блок trainers: две карточки дополнительных тренеров и пояснение их роли. */
+.rodbt-live-page .trainers_body { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--card-grid-gap); }
+.rodbt-live-page .trainers_card { justify-content: flex-start; gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-live-page .trainers_person { display: flex; min-width: 0; align-items: center; gap: 0.75rem; }
+.rodbt-live-page .trainers_photo { flex: none; width: 4rem; height: 4rem; overflow: clip; border-radius: 50%; }
+.rodbt-live-page .trainers_role { --body-text-color: var(--color-text-primary); }
+.rodbt-live-page .trainers_note { --body-text-color: var(--color-text-secondary-large); }
+@media (min-width: 48rem) {
+  .rodbt-live-page .trainers_card { gap: 1.25rem; }
+  .rodbt-live-page .trainers_person { gap: 1rem; }
+  .rodbt-live-page .trainers_photo { --portrait-initials-size: 1.5rem; width: 5rem; height: 5rem; }
+}
+
+/* Проектный блок program-topics: плашка с датами занятий в шапке и нумерованные карточки тем. */
+.rodbt-live-page .program-topics_schedule { display: inline-flex; max-width: 100%; flex-wrap: wrap; justify-content: center; gap: 0.25rem 0.75rem; padding: 0.625rem 1rem; border-radius: 0.75rem; background: var(--color-accent-soft); color: var(--color-text-primary); font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.rodbt-live-page .program-topics_time { color: var(--color-accent-text); }
+.rodbt-live-page .program-topics_list { margin: 0; padding: 0; list-style: none; }
+.rodbt-live-page .program-topics_card { justify-content: flex-start; gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-live-page .program-topics_number { color: var(--color-accent-text); font-size: 1rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+@media (min-width: 48rem) {
+  .rodbt-live-page .program-topics_schedule { font-size: 1.125rem; }
+  .rodbt-live-page .program-topics_card { gap: 1.25rem; }
+  .rodbt-live-page .program-topics_number { font-size: 1.125rem; }
+}
+
+/* Проектный блок topic-tabs: навыки после курса в тёмном контейнере (лейаут программы «Психосоматики»).
+   Разметка одна: кнопка раздела и сразу за ней его панель. До 1025px это аккордеон, панель раскрывается
+   под своей кнопкой. От 1025px кнопки стоят колонкой слева, открытая панель занимает правую колонку. */
+.rodbt-live-page .topic-tabs_component { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--space-section-content); padding: var(--section-inset-space) var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.rodbt-live-page .topic-tabs_component .section-title_component { color: var(--color-text-on-dark); }
+.rodbt-live-page .topic-tabs_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+.rodbt-live-page .topic-tabs_heading { min-width: 0; margin: 0; font: inherit; scroll-margin-top: 1rem; }
+.rodbt-live-page .topic-tabs_tab { display: flex; width: 100%; min-width: 0; min-height: 2.75rem; align-items: baseline; gap: 0.75rem; padding: 1rem var(--card-padding); border: 0; border-radius: var(--radius-card, 1rem); background: #3a2f48; color: var(--color-text-on-dark); font-family: inherit; text-align: left; cursor: pointer; transition: background-color var(--transition-site); }
+.rodbt-live-page .topic-tabs_tab[aria-expanded="true"] { background: var(--color-accent-primary); }
+.rodbt-live-page .topic-tabs_tab:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 2px; }
+.rodbt-live-page .topic-tabs_tab-label { flex: none; color: var(--color-accent-soft); font-size: 0.9375rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.rodbt-live-page .topic-tabs_tab[aria-expanded="true"] .topic-tabs_tab-label { color: rgb(255 255 255 / 75%); }
+.rodbt-live-page .topic-tabs_tab-title { min-width: 0; font-size: 1.125rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; text-wrap: pretty; }
+.rodbt-live-page .topic-tabs_panel { min-width: 0; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); color: var(--color-text-primary); overflow-wrap: anywhere; }
+.rodbt-live-page .topic-tabs_panel[hidden] { display: none; }
+.rodbt-live-page .topic-tabs_panel.is-entering { animation: rodbt-live-topic-in 300ms var(--motion-easing); }
+@keyframes rodbt-live-topic-in { from { opacity: 0; transform: translateY(-0.5rem); } to { opacity: 1; transform: none; } }
+@media (min-width: 48rem) {
+  .rodbt-live-page .topic-tabs_component { padding-inline: 1.5rem; }
+  .rodbt-live-page .topic-tabs_panel { padding: 1.5rem; }
+  .rodbt-live-page .topic-tabs_tab { padding: 1.125rem 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .topic-tabs_component { padding-inline: 2.5rem; }
+  /* Последняя строка сетки забирает лишнюю высоту, поэтому кнопки не растягиваются под высокую панель. */
+  .rodbt-live-page .topic-tabs_layout[data-ready] { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); grid-template-rows: repeat(var(--topic-count), auto) 1fr; gap: 0.5rem var(--card-grid-gap); }
+  .rodbt-live-page .topic-tabs_layout[data-ready] .topic-tabs_heading { grid-column: 1; grid-row: var(--topic-index); }
+  .rodbt-live-page .topic-tabs_layout[data-ready] .topic-tabs_panel { grid-column: 2; grid-row: 1 / -1; padding: 2.5rem; }
+  .rodbt-live-page .topic-tabs_tab-title { font-size: 1.25rem; }
+  @keyframes rodbt-live-topic-in { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: none; } }
+}
+@media (hover: hover) and (pointer: fine) {
+  .rodbt-live-page .topic-tabs_tab:not([aria-expanded="true"]):hover { background: #463a56; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rodbt-live-page .topic-tabs_panel.is-entering { animation: none; }
+  .rodbt-live-page .topic-tabs_tab { transition: none; }
+}
+
+/* Сетки проектных карточек. Общий card-grid на мобильном ставит две колонки, а от 1025px три:
+   здесь число колонок задано под содержимое, чтобы на телефоне карточки шли по одной. */
+.rodbt-live-page :is(.strategy_list, .trainers_list, .program-topics_list) { grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+@media (min-width: 32.5625rem) {
+  .rodbt-live-page .program-topics_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 48rem) {
+  .rodbt-live-page .trainers_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rodbt-live-page .strategy_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .program-topics_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Начертания. В Академии заголовки карточек набраны Medium 500, текст 444, а выделение is-emphasis 600.
+   На этой странице выделений много (вводные, пункты списков), и 600 давал лишнюю «жирность»:
+   выделение приведено к Medium 500, как заголовки карточек. */
+.rodbt-live-page .body-text_component.is-emphasis { font-weight: 500; }
+
+/* Плитки под первым экраном. Четыре пункта: от 1025px в один ряд. Ниже 1025px обычная плитка
+   сжимается по высоте до своего текста; минимальная высота остаётся только у плитки с картинкой документа. */
+.rodbt-live-page .benefits_card:not(.is-diploma) { min-height: 0; }
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .benefits_component { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .rodbt-live-page .benefits_card { grid-column: auto; }
+  .rodbt-live-page .benefits_card:not(.is-diploma) { min-height: var(--benefits-height); }
+}
+
+/* Временная подпись варианта программы (три варианта одного блока на выбор). Убрать вместе с лишними вариантами. */
+.rodbt-live-page .variant-note_component { display: inline-flex; max-width: 100%; padding: 0.25rem 0.625rem; border: 1px dashed var(--color-accent-primary); border-radius: 0.5rem; color: var(--color-accent-text); font-size: 0.875rem; font-weight: 444; line-height: 1.3; }
+
+/* Светлый вид topic-tabs (второй вариант программы): без тёмного контейнера, кнопки и панель белые. */
+.rodbt-live-page .topic-tabs_component.is-light { padding: 0; background: none; color: var(--color-text-primary); }
+.rodbt-live-page .topic-tabs_component.is-light .section-title_component { color: var(--color-text-primary); }
+.rodbt-live-page .topic-tabs_component.is-light .topic-tabs_tab { background: var(--color-surface-primary); color: var(--color-text-primary); }
+.rodbt-live-page .topic-tabs_component.is-light .topic-tabs_tab-label { color: var(--color-accent-text); }
+.rodbt-live-page .topic-tabs_component.is-light .topic-tabs_tab[aria-expanded="true"] { background: var(--color-text-primary); color: var(--color-text-on-dark); }
+.rodbt-live-page .topic-tabs_component.is-light .topic-tabs_tab[aria-expanded="true"] .topic-tabs_tab-label { color: var(--color-accent-soft); }
+.rodbt-live-page .topic-tabs_component.is-light .topic-tabs_panel { display: flex; flex-direction: column; gap: 1.25rem; }
+.rodbt-live-page .topic-tabs_component.is-light .topic-tabs_panel[hidden] { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .rodbt-live-page .topic-tabs_component.is-light .topic-tabs_tab:not([aria-expanded="true"]):hover { background: var(--color-accent-soft); }
+}
+
+/* Описание темы программы: вводные абзацы, подпись «Основные темы» и список с точкой акцентного цвета. */
+.rodbt-live-page .program-module_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.rodbt-live-page .program-module_lead { --body-text-color: var(--color-text-secondary-large); }
+.rodbt-live-page .program-module_label { color: var(--color-accent-text); font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.rodbt-live-page .program-module_points { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.rodbt-live-page .program-module_point { --body-text-color: var(--color-text-primary); position: relative; padding-left: 1.25rem; }
+.rodbt-live-page .program-module_point::before { position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
+
+/* Третий вариант программы: слева белая карточка с вкладками тем и описанием, справа тёмная сцена со схемой.
+   До 1025px колонки складываются, до 768px вкладки идут лентой с горизонтальной прокруткой:
+   шесть плашек в столбик заняли бы пол-экрана. */
+.rodbt-live-page .program-scenes_layout { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.rodbt-live-page .program-scenes_panel { --program-scenes-padding: var(--card-padding); display: flex; min-width: 0; flex-direction: column; justify-content: space-between; gap: 1.5rem; padding: var(--program-scenes-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.rodbt-live-page .program-scenes_tabs { display: flex; flex-wrap: nowrap; gap: 0.5rem; margin-inline: calc(var(--program-scenes-padding) * -1); padding: 0.125rem var(--program-scenes-padding); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding: 0 var(--program-scenes-padding); scrollbar-width: none; overscroll-behavior-x: contain; }
+.rodbt-live-page .program-scenes_tabs::-webkit-scrollbar { display: none; }
+.rodbt-live-page .program-scenes_tab { position: relative; flex: none; padding: 0.75rem 0.875rem; border: 0; border-radius: 0.75rem; background: var(--color-page-background); color: var(--color-text-primary); font-family: inherit; font-size: 1rem; font-weight: 400; line-height: 1; letter-spacing: -0.02em; text-align: left; white-space: nowrap; scroll-snap-align: start; cursor: pointer; transition: background-color var(--transition-site), color var(--transition-site); }
+.rodbt-live-page .program-scenes_tab::after { position: absolute; inset: 50% 0 auto; height: 2.75rem; transform: translateY(-50%); content: ""; }
+.rodbt-live-page .program-scenes_tab[aria-selected="true"] { background: var(--color-text-primary); color: var(--color-text-on-dark); }
+.rodbt-live-page .program-scenes_tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.rodbt-live-page .program-scenes_text { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; overflow-wrap: anywhere; }
+.rodbt-live-page .program-scenes_text[hidden] { display: none; }
+.rodbt-live-page .program-scenes_text.is-entering { animation: rodbt-live-topic-text-in 300ms var(--motion-easing); }
+@keyframes rodbt-live-topic-text-in { from { opacity: 0; transform: translateY(0.5rem); } to { opacity: 1; transform: none; } }
+.rodbt-live-page .program-scenes_stage { display: flex; min-width: 0; align-items: center; justify-content: center; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); }
+.rodbt-live-page .scene_panel { width: min(100%, 41.25rem); aspect-ratio: 520 / 340; overflow: clip; border-radius: var(--radius-card, 1rem); background: #4c3c5e; }
+.rodbt-live-page .scene_panel[hidden] { display: none; }
+.rodbt-live-page .scene { display: block; width: 100%; height: 100%; font-family: inherit; }
+@media (min-width: 48rem) {
+  .rodbt-live-page .program-scenes_panel { --program-scenes-padding: 1.5rem; gap: 2rem; }
+  .rodbt-live-page .program-scenes_tabs { flex-wrap: wrap; margin-inline: 0; padding: 0; overflow: visible; }
+  .rodbt-live-page .program-scenes_stage { padding: 1.5rem; }
+  .rodbt-live-page .program-scenes_tab { font-size: 1.125rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .program-scenes_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .rodbt-live-page .program-scenes_tab:not([aria-selected="true"]):hover { background: var(--color-accent-soft); }
+}
+
+/* Элементы схем. Размеры в единицах viewBox, не в rem: схема масштабируется целиком вместе с плашкой. */
+.rodbt-live-page .scene_card { fill: #e3dffc; }
+.rodbt-live-page .scene_card.is-accent { fill: #654ddd; }
+.rodbt-live-page .scene_chip { fill: #c8c2e8; }
+.rodbt-live-page .scene_chip-text { fill: #4c3c5e; font-size: 9px; letter-spacing: -0.02em; }
+.rodbt-live-page .scene_title { fill: #4c3c5e; font-size: 13px; font-weight: 500; letter-spacing: -0.02em; }
+.rodbt-live-page .scene_title.is-on-accent { fill: #ffffff; }
+.rodbt-live-page .scene_dot.is-light { fill: #e3dffc; }
+.rodbt-live-page .scene_line { fill: none; stroke: #e3dffc; stroke-width: 2; }
+.rodbt-live-page .scene_line.is-dashed { stroke-dasharray: 0.03 0.03; }
+
+/* Анимация схем. Один цикл 9 секунд у всех элементов сцены. Элемент получает «слот» (sk-in-1 … sk-in-10):
+   в свой момент появляется, держится до конца цикла, гаснет, и всё начинается заново. Линии рисуются от
+   начала к концу (sk-draw-N). Скрытая сцена не анимируется, при показе цикл стартует с начала. */
+.rodbt-live-page .scene [class*="sk-in-"],
+.rodbt-live-page .scene [class*="sk-draw-"] { animation-duration: 9000ms; animation-timing-function: cubic-bezier(0.34, 1.45, 0.64, 1); animation-iteration-count: infinite; animation-fill-mode: both; transform-box: fill-box; transform-origin: left center; }
+.rodbt-live-page .scene .is-from-right { --sk-dx: 18px; transform-origin: right center; }
+.rodbt-live-page .scene .is-pop { --sk-dx: 0px; transform-origin: center; }
+.rodbt-live-page .scene [class*="sk-draw-"] { stroke-dasharray: 1; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+.rodbt-live-page .scene .is-dashed[class*="sk-draw-"] { stroke-dasharray: 0.03 0.03; }
+.rodbt-live-page .scene .sk-in-1 { animation-name: rodbt-sk-in-1; }
+.rodbt-live-page .scene .sk-in-2 { animation-name: rodbt-sk-in-2; }
+.rodbt-live-page .scene .sk-in-3 { animation-name: rodbt-sk-in-3; }
+.rodbt-live-page .scene .sk-in-4 { animation-name: rodbt-sk-in-4; }
+.rodbt-live-page .scene .sk-in-5 { animation-name: rodbt-sk-in-5; }
+.rodbt-live-page .scene .sk-in-6 { animation-name: rodbt-sk-in-6; }
+.rodbt-live-page .scene .sk-in-7 { animation-name: rodbt-sk-in-7; }
+.rodbt-live-page .scene .sk-in-8 { animation-name: rodbt-sk-in-8; }
+.rodbt-live-page .scene .sk-in-9 { animation-name: rodbt-sk-in-9; }
+.rodbt-live-page .scene .sk-in-10 { animation-name: rodbt-sk-in-10; }
+.rodbt-live-page .scene .sk-draw-2 { animation-name: rodbt-sk-draw-2; }
+.rodbt-live-page .scene .sk-draw-3 { animation-name: rodbt-sk-draw-3; }
+.rodbt-live-page .scene .sk-draw-4 { animation-name: rodbt-sk-draw-4; }
+.rodbt-live-page .scene .sk-draw-5 { animation-name: rodbt-sk-draw-5; }
+.rodbt-live-page .scene .sk-draw-6 { animation-name: rodbt-sk-draw-6; }
+.rodbt-live-page .scene .sk-draw-7 { animation-name: rodbt-sk-draw-7; }
+.rodbt-live-page .scene .sk-pulse > .scene_dot { animation: rodbt-sk-pulse 1800ms cubic-bezier(0.45, 0, 0.55, 1) infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes rodbt-sk-in-1 { 0%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 8%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-2 { 0%, 6%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 14%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-3 { 0%, 12%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 20%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-4 { 0%, 18%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 26%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-5 { 0%, 24%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 32%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-6 { 0%, 30%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 38%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-7 { 0%, 36%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 44%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-8 { 0%, 42%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 50%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-9 { 0%, 48%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 56%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-in-10 { 0%, 54%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 62%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
+@keyframes rodbt-sk-draw-2 { 0%, 7%, 100% { stroke-dashoffset: 1; opacity: 0; } 8% { opacity: 1; } 16%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-sk-draw-3 { 0%, 13%, 100% { stroke-dashoffset: 1; opacity: 0; } 14% { opacity: 1; } 22%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-sk-draw-4 { 0%, 19%, 100% { stroke-dashoffset: 1; opacity: 0; } 20% { opacity: 1; } 28%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-sk-draw-5 { 0%, 25%, 100% { stroke-dashoffset: 1; opacity: 0; } 26% { opacity: 1; } 34%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-sk-draw-6 { 0%, 31%, 100% { stroke-dashoffset: 1; opacity: 0; } 32% { opacity: 1; } 40%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-sk-draw-7 { 0%, 37%, 100% { stroke-dashoffset: 1; opacity: 0; } 38% { opacity: 1; } 46%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-sk-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.6; } }
+/* При отключённой анимации схема показана целиком и неподвижна. */
+@media (prefers-reduced-motion: reduce) {
+  .rodbt-live-page .scene [class*="sk-in-"],
+  .rodbt-live-page .scene [class*="sk-draw-"],
+  .rodbt-live-page .scene .sk-pulse > .scene_dot,
+  .rodbt-live-page .program-scenes_text.is-entering { animation: none; }
+  .rodbt-live-page .scene .is-dashed[class*="sk-draw-"] { stroke-dasharray: 0.03 0.03; }
+  .rodbt-live-page .scene [class*="sk-draw-"]:not(.is-dashed) { stroke-dasharray: none; }
+  .rodbt-live-page .program-scenes_tab { transition: none; }
+}
+
+/* «Кому подходит» (audience-bento). Заголовок и абзац в каждой карточке отдельно, без нумерации.
+   Телефон: одна колонка, фото после карточек. Планшет: карточки 2×2, фото под ними на всю ширину.
+   Desktop: три колонки, фото в центре на высоту двух рядов, карточки по две слева и справа. */
+.rodbt-live-page .audience-bento_list { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.rodbt-live-page .audience-bento_card { justify-content: flex-start; gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+.rodbt-live-page .audience-bento_media { position: relative; min-width: 0; min-height: 18.75rem; overflow: clip; border-radius: var(--radius-card, 1rem); }
+.rodbt-live-page .audience-bento_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+@media (min-width: 48rem) {
+  .rodbt-live-page .audience-bento_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rodbt-live-page .audience-bento_media { grid-column: 1 / -1; min-height: 21.875rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-live-page .audience-bento_list { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr); grid-template-rows: repeat(2, auto); }
+  .rodbt-live-page .audience-bento_card { padding: 1.5rem; }
+  .rodbt-live-page .audience-bento_card:nth-child(1) { grid-area: 1 / 1; }
+  .rodbt-live-page .audience-bento_card:nth-child(2) { grid-area: 1 / 3; }
+  .rodbt-live-page .audience-bento_card:nth-child(3) { grid-area: 2 / 1; }
+  .rodbt-live-page .audience-bento_card:nth-child(4) { grid-area: 2 / 3; }
+  .rodbt-live-page .audience-bento_media { grid-area: 1 / 2 / 3 / 3; min-height: 0; }
+}
+
+/* Плитка «Удостоверение и сертификат». В общем компоненте картинка лежит поверх плитки и на узких
+   ширинах закрывала текст. Здесь она стоит в потоке под текстом, поэтому перекрыть его не может,
+   и сделана крупнее: сюда встанут изображения удостоверения и сертификата. Картинка прижата
+   к правому краю и чуть уходит за нижний край плитки, как в исходном компоненте.
+   Размер картинки: --benefits-diploma-width. */
+.rodbt-live-page .benefits_card.is-diploma { --benefits-diploma-width: 15rem; justify-content: space-between; gap: 1.25rem; padding-bottom: 0; }
+.rodbt-live-page .benefits_card.is-diploma .card_content { max-width: none; }
+.rodbt-live-page .benefits_diploma { position: static; flex: none; align-self: flex-end; width: min(100%, var(--benefits-diploma-width)); height: auto; aspect-ratio: 201 / 142; margin: 0 calc(var(--benefits-padding) * -1) -2.5rem 0; }
+@media (min-width: 48rem) {
+  .rodbt-live-page .benefits_card.is-diploma { --benefits-diploma-width: 16.25rem; }
+}
