@@ -82,26 +82,12 @@ function renderAboutSteps(data, id) {
   return section('about', id, `<div class="about-steps_component">${header(id, data, {align: 'left'})}<ol class="about-steps_list" aria-label="${escapeHtml(data.listLabel)}">${steps}</ol></div>`);
 }
 
-/* Проектный блок use-cases: «Где можно применять нарративный подход», шесть ситуаций с анимированными схемами
-   (scenes.mjs). Три варианта на выбор (плашка variant-note над заголовком), остаться должен один:
-   лишние убрать из sections и из titles в build-tilda.mjs.
-   cards — сетка карточек, схема сверху; tabs — список ситуаций слева, большая схема и текст справа;
-   rows  — одна белая панель, ситуации строками, схема справа от текста. */
-const variantNote = text => `<p class="variant-note_component">${renderText(text)}</p>`;
-const useCasesHead = (data, id, index) => `<div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[index])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2></div>`;
-const useCaseCopy = card => `<div class="content-header_component"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div>`;
-function renderUseCasesCards(data, id) {
-  const cards = data.cards.map(card => `<li class="card_component use-cases_card"><div class="use-cases_stage">${renderScene(card.scene)}</div>${useCaseCopy(card)}</li>`).join('\n');
-  return section('use-cases-cards', id, `<div class="section-layout_component is-responsive">${useCasesHead(data, id, 0)}<ul class="use-cases_grid" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul></div>`);
-}
-function renderUseCasesTabs(data, id) {
-  const tabs = data.cards.map((card, i) => `<button class="use-cases_tab" type="button" role="tab" id="${id}-tab-${i + 1}" aria-selected="${i === 0}" aria-controls="${id}-panel-${i + 1}" tabindex="${i === 0 ? 0 : -1}" data-use-case-tab><span class="use-cases_tab-number" aria-hidden="true">${number(i)}</span><span>${renderText(card.heading)}</span></button>`).join('');
-  const panels = data.cards.map((card, i) => `<div class="use-cases_panel" role="tabpanel" id="${id}-panel-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-use-case-panel><div class="use-cases_stage is-large">${renderScene(card.scene)}</div>${useCaseCopy(card)}</div>`).join('');
-  return section('use-cases-tabs', id, `<div class="section-layout_component is-responsive">${useCasesHead(data, id, 1)}<div class="use-cases_tabs-layout" data-use-case-tabs><div class="use-cases_tablist" role="tablist" aria-label="${escapeHtml(data.tabsLabel)}">${tabs}</div><div class="use-cases_panels">${panels}</div></div></div>`);
-}
-function renderUseCasesRows(data, id) {
-  const rows = data.cards.map((card, i) => `<li class="use-cases_row"><span class="use-cases_row-number" aria-hidden="true">${number(i)}</span>${useCaseCopy(card)}<div class="use-cases_stage is-row">${renderScene(card.scene)}</div></li>`).join('\n');
-  return section('use-cases-rows', id, `<div class="section-layout_component is-responsive">${useCasesHead(data, id, 2)}<ol class="use-cases_rows" aria-label="${escapeHtml(data.listLabel)}">${rows}</ol></div>`);
+/* Проектный блок use-cases: «Где можно применять нарративный подход» (выбран вариант 3 из трёх, 05.10.2026,
+   нумерация убрана по просьбе пользователя). Одна белая панель, шесть ситуаций строками через тонкую линию;
+   справа от текста анимированная схема ситуации (scenes.mjs). На телефоне схема под текстом. */
+function renderUseCases(data, id) {
+  const rows = data.cards.map(card => `<li class="use-cases_row"><div class="content-header_component"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div><div class="use-cases_stage">${renderScene(card.scene)}</div></li>`).join('\n');
+  return section('use-cases', id, `<div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2></div><ul class="use-cases_rows" aria-label="${escapeHtml(data.listLabel)}">${rows}</ul></div>`);
 }
 
 /* Проектный блок practice: три карточки форматов практики и фото группы рядом. */
@@ -204,16 +190,12 @@ async function buildHtml() {
   const form = renderLeadFormSection(leadForm, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
 
   const pricing = await renderPricing(`${SLUG}-pricing`);
-  const useCases = typeset(await json('use-cases'));
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
     renderAboutSteps(typeset(await json('about')), `${SLUG}-about`),
     renderCardSet('principles', typeset(await json('principles')), `${SLUG}-principles`),
-    // Три варианта блока «Где можно применять» (05.10.2026), остаться должен один.
-    renderUseCasesCards(useCases, `${SLUG}-use-cases-cards`),
-    renderUseCasesTabs(useCases, `${SLUG}-use-cases-tabs`),
-    renderUseCasesRows(useCases, `${SLUG}-use-cases-rows`),
+    renderUseCases(typeset(await json('use-cases')), `${SLUG}-use-cases`),
     // «Для кого»: общий блок Академии course-audience — вводная фраза внутри абзаца, справа общее фото Академии.
     // Ширина как у образца (trauma-ptsd «После курса вы сможете»): колонка is-content-wide вместо узкой is-content-medium.
     renderCourseAudience(typeset(await json('audience')), {id: `${SLUG}-audience`}).replace('column-grid_content is-content-medium', 'column-grid_content is-content-wide'),
