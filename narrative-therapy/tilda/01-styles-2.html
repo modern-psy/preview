@@ -754,6 +754,232 @@ body > .iti--detached-country-selector .iti__no-results {
 @media (min-width: 48rem) { .pricing-promo_card { padding-inline: 1.5rem; } }
 @media (min-width: 64.0625rem) { .pricing-promo_card { padding-inline: 2.5rem; } }
 
+/* === web-academy/shared/academy/pricing.css === */
+/* Opt-in course pricing; content and palette belong to the consuming landing. */
+.pricing_component {
+  --pricing-surface: var(--color-surface-dark);
+  --pricing-text: var(--color-text-on-dark-muted);
+  --pricing-muted: #bdb7b7;
+  --pricing-excluded: #99929f;
+  --pricing-card-top: #4d3d5f;
+  --pricing-featured-top: #543c9b;
+  --pricing-tabs-surface: #4c3c5e;
+  --pricing-tab-active: var(--color-accent-primary);
+  --content-prominent-size: 1.5rem;
+  --content-heading-line-height: 1;
+  --content-heading-gap: 0.5rem;
+  --section-heading-description-size: 1rem;
+  --section-subtitle-tracking: 0;
+  --pricing-badge-space: 2.125rem;
+  --pricing-icon-size: 1rem;
+  --section-subtitle-color: var(--pricing-text);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--pricing-text);
+}
+
+.pricing_tabs {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(max-content, 1fr);
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  align-self: center;
+  isolation: isolate;
+  padding: 0.3125rem;
+  border-radius: 6rem;
+  background: var(--pricing-tabs-surface);
+}
+
+.pricing_tabs[hidden],
+.pricing_component [hidden] {
+  display: none;
+}
+
+.pricing_tab {
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--pricing-muted);
+  font: 400 1rem / 1.2 var(--font-family-body);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  cursor: pointer;
+  transition: color var(--transition-site, 250ms linear), background-color var(--transition-site, 250ms linear);
+}
+
+.pricing_tab[aria-selected="true"],
+.pricing_tab:hover {
+  color: var(--color-text-on-dark);
+}
+
+.pricing_tab:hover { background-color: rgb(255 255 255 / 6%); }
+.pricing_tab[aria-selected="true"] { background-color: var(--pricing-tab-active); }
+.pricing_tab:focus-visible,
+.pricing_panel:focus-visible { outline: 2px solid var(--color-text-on-dark); outline-offset: 3px; }
+.pricing_tab:focus-visible { outline-offset: -3px; }
+
+.pricing_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem 1rem;
+  align-items: start;
+}
+
+/* A single offer stays centered instead of stretching across the section. */
+.pricing_grid.is-single {
+  --pricing-name-max-width: 19.375rem;
+  width: 100%;
+  max-width: var(--pricing-single-max-width, 31rem);
+  align-self: center;
+}
+.pricing_card .content-heading_component { max-width: var(--pricing-name-max-width, none); }
+
+.pricing_plan {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pricing_offer { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+
+.pricing_highlight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0;
+  border-radius: var(--radius-card);
+  background: linear-gradient(to bottom, var(--color-accent-primary) 28.108%, transparent);
+}
+
+.pricing_badge { display: flex; align-items: center; justify-content: center; gap: 0.25rem; color: var(--color-text-on-dark); font-size: 0.875rem; font-weight: 600; line-height: 1.2; }
+.pricing_badge-icon { display: block; flex: none; width: var(--pricing-icon-size); height: var(--pricing-icon-size); }
+
+.pricing_card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 20rem;
+  gap: 2.5rem;
+  padding: 1rem;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--pricing-card-top);
+  color: var(--color-text-on-dark);
+}
+
+.pricing_card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, var(--pricing-card-top), var(--pricing-surface) var(--pricing-gradient-end, 110.47%));
+  content: "";
+  pointer-events: none;
+  transition: opacity var(--transition-site, 250ms linear);
+}
+
+.pricing_card.is-featured {
+  --pricing-card-top: var(--pricing-featured-top);
+  --pricing-gradient-end: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pricing_card:hover::before { opacity: 0; }
+}
+
+.pricing_description { --body-text-color: var(--pricing-text); }
+.pricing_costs { display: flex; flex-direction: column; gap: 1rem; }
+.pricing_cost { display: flex; flex-direction: column; gap: 0.5rem; }
+.pricing_amount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem; font-size: 1rem; line-height: 1; letter-spacing: -0.05em; }
+.pricing_number { font-size: 2.5rem; font-weight: 600; letter-spacing: -0.03em; overflow-wrap: anywhere; }
+.pricing_terms { --body-text-color: var(--pricing-muted); }
+/* Optional price-increase ladder; without `increase` in the data nothing here renders. */
+.pricing_increase { display: flex; flex-direction: column; gap: 0.25rem; color: var(--pricing-muted); }
+.pricing_increase-until { --body-text-color: var(--pricing-muted); }
+.pricing_increase-next { --body-text-color: var(--pricing-excluded); }
+.pricing_unconfirmed { font-size: 1.375rem; line-height: 1.2; }
+.pricing_component[data-ready] .pricing_stream-label { display: none; }
+.pricing_start { display: block; }
+.pricing_sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.pricing_features { --body-text-color: var(--pricing-text); --body-text-max: 1.125rem; display: flex; flex-direction: column; gap: 0.25rem; list-style: none; }
+.pricing_feature { display: flex; align-items: flex-start; gap: 0.5rem; padding-inline: 0; }
+.pricing_plan.is-featured .pricing_features { --body-text-color: var(--color-text-on-dark); }
+.pricing_feature.is-excluded { --body-text-color: var(--pricing-excluded); }
+.pricing_feature-icon { flex: none; display: block; width: var(--pricing-icon-size); height: var(--pricing-icon-size); margin-top: 0.125rem; }
+
+@media (min-width: 32.5625rem) {
+  .pricing_component { --pricing-icon-size: 1.125rem; --content-prominent-size: 1.75rem; --section-heading-description-size: 1.125rem; }
+  .pricing_tab { font-size: 1.125rem; }
+  .pricing_grid { row-gap: 2rem; }
+  .pricing_card { padding: 1.25rem; }
+  .pricing_amount { font-size: 1.125rem; }
+  .pricing_number { font-size: 2.75rem; }
+  .pricing_features { gap: 0.5rem; }
+}
+
+@media (min-width: 48rem) {
+  .pricing_component { --content-prominent-size: 2rem; --content-heading-gap: 0.75rem; --section-heading-description-size: 1.25rem; gap: 1.75rem; }
+  .pricing_tab { font-size: 1.25rem; }
+  .pricing_card { padding: 1.5rem; }
+  .pricing_plan { gap: 1.75rem; }
+  .pricing_feature { padding-inline: 0.75rem; }
+  .pricing_increase { margin-top: 0.25rem; }
+  .pricing_grid { grid-template-columns: repeat(var(--pricing-columns, 2), minmax(0, 1fr)); }
+  .pricing_plan {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    align-self: stretch;
+  }
+  .pricing_offer {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+  }
+  .pricing_highlight .pricing_card { flex: 1; }
+  .pricing_grid:has(.pricing_highlight) .pricing_card:not(.is-featured) { margin-top: var(--pricing-badge-space); }
+}
+
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .pricing_card { min-height: 17rem; }
+  .pricing_grid.is-three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pricing_grid.is-three .pricing_plan:last-child { grid-column: 1 / -1; width: calc((100% - 1rem) / 2); justify-self: center; }
+}
+
+@media (max-width: 47.999rem) {
+  .pricing_card { min-height: 0; gap: 3rem; justify-content: flex-start; }
+  .pricing_tabs { padding: 0.125rem; }
+  .pricing_tab { padding: 0.25rem 0.75rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  .pricing_component { --content-prominent-size: 2.25rem; --section-heading-description-size: 1.375rem; --pricing-badge-space: 2.375rem; gap: 2rem; }
+  .pricing_tab { font-size: 1.375rem; }
+  .pricing_highlight { gap: 0.625rem; padding-top: 0.625rem; }
+  .pricing_number { font-size: 3rem; }
+  .pricing_amount { font-size: 1.25rem; }
+  .pricing_feature { padding-inline: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing_component { --transition-site: 0s linear; }
+}
+
 /* === web-academy/shared/academy/course-audience.css === */
 /* Course audience: content and semantic colors inherit Academy components. */
 .course-audience_component {

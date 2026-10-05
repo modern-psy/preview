@@ -11,6 +11,7 @@ import {renderFaq} from '../web-academy/shared/academy/faq-render.mjs';
 import {renderCourseAudience} from '../web-academy/shared/academy/course-audience-render.mjs';
 import {escapeHtml, renderText, sectionId} from '../web-academy/shared/academy/html-render.mjs';
 import {loadPricingPromo} from '../web-academy/shared/academy/pricing-promo-tilda.mjs';
+import {renderPricing as renderAcademyPricing} from '../web-academy/shared/academy/pricing-render.mjs';
 import {assertMotionContract} from '../web-academy/shared/academy/motion-contract.mjs';
 import {assertResponsiveContract} from '../web-academy/shared/academy/responsive.mjs';
 import {renderScene} from './scenes.mjs';
@@ -175,6 +176,42 @@ async function renderPricing(id) {
   };
 }
 
+/* Временная подпись варианта блока: на странице несколько вариантов одного блока, остаться должен один. */
+const variantNote = text => `<p class="variant-note_component">${renderText(text)}</p>`;
+const rub = value => `${new Intl.NumberFormat('ru-RU').format(value).replace(/\s/g, NBSP)}${NBSP}₽`;
+
+/* Цена, вариант 2: общий блок тарифов Академии (pricing-render, «Психолог-консультант»): карточки тарифов,
+   у полного курса фиолетовая подсветка и плашка «Популярный тариф» с огоньком, список «входит / не входит».
+   Общий блок показывает цену в месяц в рассрочку, а у нас подтверждены только полные цены, поэтому строка цены
+   после сборки заменяется: полная цена и «Можно оплатить в рассрочку» (из ответа FAQ). */
+function renderPricingPlans(data, id) {
+  const config = {id, title: data.title, streams: [{id: 'january', label: 'Поток 26 января', start: data.start}], icons: {...data.icons, highlight: data.icons.check},
+    plans: data.plans.map(plan => ({id: plan.id, name: plan.name, description: plan.description, featured: plan.featured, prices: {january: {monthly: plan.total, total: plan.total, months: 1}}, action: 'enroll', actionLabel: data.actionLabel, href: data.href, features: plan.features.map(([text, included]) => ({text, included}))}))};
+  let markup = renderAcademyPricing(config);
+  // Та же запись суммы, что в pricing-render.mjs: строки меняются точной подстановкой, без регулярных выражений.
+  const money = value => new Intl.NumberFormat('ru-RU').format(value).replaceAll('\u00a0', '&nbsp;') + '&nbsp;₽';
+  for (const plan of data.plans) {
+    const from = `<p class="pricing_amount"><span class="pricing_number">${money(plan.total)}</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;1&nbsp;месяца или ${money(plan.total)} одним платежом</p>`;
+    if (markup.split(from).length !== 2) throw new Error(`Pricing plans: не найдена строка цены ${plan.id}`);
+    markup = markup.replace(from, `<p class="pricing_amount"><span class="pricing_number">${money(plan.total)}</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">${renderText(typography(data.installmentNote))}</p>`);
+  }
+  markup = markup.replace(/<h2 class="section-title_component is-center" id="/, `${variantNote(data.variantLabels[1])}<h2 class="section-title_component is-center" id="`);
+  return `<section class="section_pricing-plans section-spacing_component" id="${sectionId(id)}" aria-labelledby="${id}-heading">
+  <div class="padding-global"><div class="container-xlarge column-grid_component"><div class="column-grid_content is-content-wide"><div class="pricing-promo_card pricing-plans_card">${markup}</div></div></div></div>
+</section>`;
+}
+
+/* Цена, вариант 3: таблица сравнения тарифов в белой карточке. Строки — что входит, столбцы — тарифы; столбец
+   полного курса подсвечен. Внизу цены и кнопка к форме заявки. На телефоне таблица остаётся таблицей
+   (три узкие колонки), подписи строк переносятся. */
+function renderPricingCompare(data, id) {
+  const mark = value => value === true ? `<img class="pricing-compare_icon" src="${escapeHtml(data.icons.check)}" width="20" height="20" alt="Входит" draggable="false" loading="lazy">` : value === false ? `<span class="pricing-compare_none" aria-label="Не входит">—</span>` : renderText(typography(value));
+  const head = `<tr><th scope="col" class="pricing-compare_corner"><span class="screen-reader-only">Что входит</span></th>${data.plans.map(plan => `<th scope="col" class="pricing-compare_plan${plan.featured ? ' is-featured' : ''}">${renderText(plan.name)}</th>`).join('')}</tr>`;
+  const rows = data.compare.rows.map(row => `<tr><th scope="row" class="pricing-compare_label">${renderText(typography(row.label))}</th>${row.values.map((value, i) => `<td class="pricing-compare_value${data.plans[i].featured ? ' is-featured' : ''}">${mark(value)}</td>`).join('')}</tr>`).join('');
+  const prices = `<tr class="pricing-compare_prices"><th scope="row" class="pricing-compare_label">Стоимость</th>${data.plans.map(plan => `<td class="pricing-compare_value pricing-compare_price${plan.featured ? ' is-featured' : ''}">${rub(plan.total).replaceAll(NBSP, '&nbsp;')}</td>`).join('')}</tr>`;
+  return section('pricing-compare', id, `<div class="card_component pricing-compare_component"><div class="section-header_component is-left is-responsive">${variantNote(data.variantLabels[2])}<h2 class="section-title_component is-left is-responsive" id="${id}-heading">${renderText(data.title)}</h2><p class="body-text_component is-summary is-regular">${renderText(typography(data.start))}. ${renderText(typography(data.installmentNote))}.</p></div><div class="pricing-compare_scroll"><table class="pricing-compare_table"><thead>${head}</thead><tbody>${rows}${prices}</tbody></table></div><a class="button button_component is-accent pricing-compare_action" href="${escapeHtml(data.href)}">${renderText(data.actionLabel)}</a></div>`);
+}
+
 async function buildHtml() {
   const seo = await json('seo');
   const hero = typeset(await json('hero'));
@@ -190,6 +227,7 @@ async function buildHtml() {
   const form = renderLeadFormSection(leadForm, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
 
   const pricing = await renderPricing(`${SLUG}-pricing`);
+  const pricingVariants = await json('pricing-variants');
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
@@ -206,7 +244,10 @@ async function buildHtml() {
     renderInstructor(typeset(await json('instructor')), `${SLUG}-instructor`),
     renderDocuments(typeset(await json('documents')), `${SLUG}-documents`),
     renderCardSet('why-us', typeset(await json('why-us')), `${SLUG}-why-us`),
-    pricing.html,
+    // Три варианта блока цены (05.10.2026), остаться должен один.
+    pricing.html.replace('<div class="pricing-promo_card">', `${variantNote(pricingVariants.variantLabels[0])}<div class="pricing-promo_card">`),
+    renderPricingPlans(pricingVariants, `${SLUG}-pricing-plans`),
+    renderPricingCompare(pricingVariants, `${SLUG}-pricing-compare`),
     form,
     renderFaq(typeset(await json('faq')), {id: `${SLUG}-faq`}),
   ];
@@ -253,7 +294,7 @@ ${body}
 }
 
 async function buildCss() {
-  const order = ['components.css', 'card-spacing.css', 'hero.css', 'benefits.css', 'section-spacing.css', 'body-text.css', 'button.css', 'toggle-icon.css', 'faq-responsive.css', 'lead-form.css', 'lead-form-responsive.css', 'pricing-promo.css', 'course-audience.css', 'section-heading.css', 'anchor-scroll.css'];
+  const order = ['components.css', 'card-spacing.css', 'hero.css', 'benefits.css', 'section-spacing.css', 'body-text.css', 'button.css', 'toggle-icon.css', 'faq-responsive.css', 'lead-form.css', 'lead-form-responsive.css', 'pricing-promo.css', 'pricing.css', 'course-audience.css', 'section-heading.css', 'anchor-scroll.css'];
   const parts = [];
   for (const name of order) {
     let css = await read(shared, name);
@@ -271,7 +312,7 @@ async function buildCss() {
 
 async function buildJs() {
   // Скрипты цены нужны только при живой привязке к CMS: без неё блок цены статичен.
-  const order = ['components.js', 'anchor-scroll.js', ...(CMS_SLUG ? ['pricing.js', 'pricing-promo-render.js', 'pricing-promo.js'] : []), 'lead-form.js'];
+  const order = ['components.js', 'anchor-scroll.js', 'pricing.js', ...(CMS_SLUG ? ['pricing-promo-render.js', 'pricing-promo.js'] : []), 'lead-form.js'];
   const parts = [];
   for (const name of order) parts.push(`/* === web-academy/shared/academy/${name} === */\n${(await read(shared, name)).trim()}`);
   parts.push(`/* === narrative-therapy/page.js === */\n${(await read(root, 'page.js')).trim()}`);
