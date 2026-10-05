@@ -4,6 +4,7 @@
       Без скрипта анимации просто идут всегда.
    2. Вкладки второго варианта блока: выбранная ситуация показывает свою схему и текст справа.
       Стрелки влево/вправо (и вверх/вниз), Home и End переключают вкладки с клавиатуры.
+   3. Программа обучения: модули слева, темы выбранного модуля справа (до 1025px аккордеон).
    Повторный запуск снимает прошлые обработчики (Tilda может перезапускать скрипты). */
 (() => {
   window.__narrativeTherapyCleanup?.();
@@ -65,10 +66,49 @@
     select(0, {animate: false});
   });
 
+
+  /* 3. Программа обучения (topic-tabs). Кнопка модуля связана со своей панелью через aria-controls и aria-expanded;
+     открыт всегда один модуль. До 1025px это аккордеон: панель раскрывается под кнопкой, и если кнопка уехала
+     выше экрана, страница подкручивается к ней. От 1025px те же кнопки работают как вкладки слева от панели.
+     Без скрипта видны все панели. */
+  const topicBlocks = [...document.querySelectorAll('[data-topic-tabs]')];
+  topicBlocks.forEach((block) => {
+    const tabs = [...block.querySelectorAll('[data-topic-tab]')];
+    const panels = [...block.querySelectorAll('[data-topic-panel]')];
+    if (!tabs.length || tabs.length !== panels.length) return;
+    block.setAttribute('data-ready', '');
+
+    const select = (tab, {animate = true} = {}) => {
+      const targetId = tab.getAttribute('aria-controls');
+      tabs.forEach((item) => item.setAttribute('aria-expanded', String(item === tab)));
+      panels.forEach((panel) => {
+        const isTarget = panel.id === targetId;
+        panel.hidden = !isTarget;
+        panel.classList.remove('is-entering');
+        if (isTarget && animate && !reducedMotion.matches) {
+          void panel.offsetWidth;
+          panel.classList.add('is-entering');
+        }
+      });
+      if (animate && tab.getBoundingClientRect().top < 0) tab.parentElement.scrollIntoView({block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth'});
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        if (tab.getAttribute('aria-expanded') !== 'true') select(tab);
+      }, {signal});
+    });
+    select(tabs.find((tab) => tab.getAttribute('aria-expanded') === 'true') || tabs[0], {animate: false});
+  });
+
   window.__narrativeTherapyCleanup = () => {
     controller.abort();
     observer?.disconnect();
     scenes.forEach((scene) => scene.removeAttribute('data-scene-observed'));
+    topicBlocks.forEach((block) => {
+      block.removeAttribute('data-ready');
+      block.querySelectorAll('[data-topic-panel]').forEach((panel) => { panel.hidden = false; panel.classList.remove('is-entering'); });
+    });
     blocks.forEach((block) => block.querySelectorAll('[data-use-case-panel]').forEach((panel) => { panel.hidden = false; panel.classList.remove('is-entering'); }));
     delete window.__narrativeTherapyCleanup;
   };

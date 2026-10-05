@@ -3437,7 +3437,7 @@ body > .iti--detached-country-selector .iti__no-results {
 /* Тема лендинга курса «Основы нарративной практики» (основа: rodbt-record) и его проектные блоки.
    Общие компоненты Академии приходят из web-academy/shared/academy при сборке (node narrative-therapy/build.mjs)
    и лежат выше этого файла в style.css. Здесь только переменные темы на .narrative-therapy-page
-   и блоки без готового компонента: card-set, program-modules, practice, evidence, instructor.
+   и блоки без готового компонента: about-steps, card-set, use-cases, topic-tabs (программа), practice, evidence, instructor.
    Цвета и размеры менять здесь, тексты — в data/*.json. */
 
 .narrative-therapy-page {
@@ -3562,29 +3562,64 @@ body > .iti--detached-country-selector .iti__no-results {
   .narrative-therapy-page .card-set_component.is-dark { padding-inline: 2.5rem; }
 }
 
-/* Проектный блок program-modules: плашка расписания в шапке и карточки модулей со списком тем.
-   Телефон: одна колонка; от 768px две; от 1025px три. */
+/* Плашка расписания, метка тарифа и список тем программы (используются внутри topic-tabs). */
 .narrative-therapy-page .program-schedule_component { display: flex; max-width: 100%; flex-direction: column; gap: 0.5rem; margin: 0 auto; padding: 0.75rem 1rem; border-radius: 0.75rem; background: var(--color-accent-soft); color: var(--color-text-primary); font-size: 1rem; font-weight: 500; line-height: 1.3; list-style: none; text-align: center; }
 .narrative-therapy-page .program-schedule_item { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 0.375rem; }
 .narrative-therapy-page .program-schedule_time { color: var(--color-accent-text); }
-.narrative-therapy-page .program-modules_list { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
-.narrative-therapy-page .program-modules_card { justify-content: flex-start; gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
-.narrative-therapy-page .program-modules_head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.narrative-therapy-page .program-modules_number { color: var(--color-accent-text); font-size: 1rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .narrative-therapy-page .program-modules_label { padding: 0.25rem 0.625rem; border-radius: 0.5rem; background: var(--color-accent-soft); color: var(--color-accent-text); font-size: 0.875rem; font-weight: 500; line-height: 1.3; }
 .narrative-therapy-page .program-modules_points { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
 .narrative-therapy-page .program-modules_point { --body-text-color: var(--color-text-primary); position: relative; padding-left: 1rem; }
 .narrative-therapy-page .program-modules_point::before { content: ""; position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); }
 @media (min-width: 48rem) {
   .narrative-therapy-page .program-schedule_component { padding: 1rem 1.5rem; font-size: 1.125rem; }
-  .narrative-therapy-page .program-modules_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .narrative-therapy-page .program-modules_card { gap: 1.25rem; padding: 1.5rem; }
-  .narrative-therapy-page .program-modules_number { font-size: 1.125rem; }
-  .narrative-therapy-page .program-modules_card.is-final { grid-column: 1 / -1; }
+}
+
+/* Проектный блок topic-tabs: программа обучения в тёмном контейнере (перенесён из rodbt-record, лейаут программы «Психосоматики»).
+   Разметка одна: кнопка раздела и сразу за ней его панель. До 1025px это аккордеон, панель раскрывается
+   под своей кнопкой. От 1025px кнопки стоят колонкой слева, открытая панель занимает правую колонку. */
+.narrative-therapy-page .topic-tabs_component { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--space-section-content); padding: var(--section-inset-space) var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.narrative-therapy-page .topic-tabs_component .section-title_component { color: var(--color-text-on-dark); }
+.narrative-therapy-page .topic-tabs_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+.narrative-therapy-page .topic-tabs_heading { min-width: 0; margin: 0; font: inherit; scroll-margin-top: 1rem; }
+.narrative-therapy-page .topic-tabs_tab { display: flex; width: 100%; min-width: 0; min-height: 2.75rem; align-items: baseline; gap: 0.75rem; padding: 1rem var(--card-padding); border: 0; border-radius: var(--radius-card, 1rem); background: #3a2f48; color: var(--color-text-on-dark); font-family: inherit; text-align: left; cursor: pointer; transition: background-color var(--transition-site); }
+.narrative-therapy-page .topic-tabs_tab[aria-expanded="true"] { background: var(--color-accent-primary); }
+.narrative-therapy-page .topic-tabs_tab:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 2px; }
+.narrative-therapy-page .topic-tabs_tab-label { flex: none; color: var(--color-accent-soft); font-size: 0.9375rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.narrative-therapy-page .topic-tabs_tab[aria-expanded="true"] .topic-tabs_tab-label { color: rgb(255 255 255 / 75%); }
+.narrative-therapy-page .topic-tabs_tab-title { min-width: 0; font-size: 1.125rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; text-wrap: pretty; }
+.narrative-therapy-page .topic-tabs_panel { min-width: 0; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); color: var(--color-text-primary); overflow-wrap: anywhere; }
+.narrative-therapy-page .topic-tabs_panel[hidden] { display: none; }
+.narrative-therapy-page .topic-tabs_panel.is-entering { animation: nt-topic-in 300ms var(--motion-easing); }
+@keyframes nt-topic-in { from { opacity: 0; transform: translateY(-0.5rem); } to { opacity: 1; transform: none; } }
+@media (min-width: 48rem) {
+  .narrative-therapy-page .topic-tabs_component { padding-inline: 1.5rem; }
+  .narrative-therapy-page .topic-tabs_panel { padding: 1.5rem; }
+  .narrative-therapy-page .topic-tabs_tab { padding: 1.125rem 1.25rem; }
 }
 @media (min-width: 64.0625rem) {
-  .narrative-therapy-page .program-modules_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .narrative-therapy-page .program-modules_card.is-final { grid-column: span 2; }
+  .narrative-therapy-page .topic-tabs_component { padding-inline: 2.5rem; }
+  /* Последняя строка сетки забирает лишнюю высоту, поэтому кнопки не растягиваются под высокую панель. */
+  .narrative-therapy-page .topic-tabs_layout[data-ready] { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); grid-template-rows: repeat(var(--topic-count), auto) 1fr; gap: 0.5rem var(--card-grid-gap); }
+  .narrative-therapy-page .topic-tabs_layout[data-ready] .topic-tabs_heading { grid-column: 1; grid-row: var(--topic-index); }
+  .narrative-therapy-page .topic-tabs_layout[data-ready] .topic-tabs_panel { grid-column: 2; grid-row: 1 / -1; padding: 2.5rem; }
+  .narrative-therapy-page .topic-tabs_tab-title { font-size: 1.25rem; }
+  @keyframes nt-topic-in { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: none; } }
+}
+@media (hover: hover) and (pointer: fine) {
+  .narrative-therapy-page .topic-tabs_tab:not([aria-expanded="true"]):hover { background: #463a56; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .narrative-therapy-page .topic-tabs_panel.is-entering { animation: none; }
+  .narrative-therapy-page .topic-tabs_tab { transition: none; }
+}
+
+/* Шапка программы: плашка расписания под заголовком на тёмном фоне. Содержимое панели модуля:
+   метка тарифа (у модуля 4), список тем с точкой акцентного цвета. */
+.narrative-therapy-page .topic-tabs_component .program-schedule_component { background: rgb(255 255 255 / 8%); color: var(--color-text-on-dark); }
+.narrative-therapy-page .topic-tabs_component .program-schedule_time { color: var(--color-accent-soft); }
+.narrative-therapy-page .program-panel_copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1rem; }
+@media (min-width: 64.0625rem) {
+  .narrative-therapy-page .program-panel_copy { gap: 1.5rem; }
 }
 
 /* Проектный блок practice: три карточки форматов практики и фото группы.
@@ -3878,11 +3913,16 @@ body > .iti--detached-country-selector .iti__no-results {
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="program" data-academy-anchor-scroll>
 <section class="section_program section-spacing_component" id="narrative-therapy-program" aria-labelledby="narrative-therapy-program-heading">
   <div class="padding-global"><div class="container-xlarge">
-    <div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="narrative-therapy-program-heading">Программа обучения</h2><ul class="program-schedule_component" aria-label="Расписание занятий"><li class="program-schedule_item"><span>Основные практические занятия</span><span class="program-schedule_time">по&nbsp;вторникам с&nbsp;14:00&nbsp;до&nbsp;16:30</span></li><li class="program-schedule_item"><span>Самостоятельная отработка навыков</span><span class="program-schedule_time">по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;19:00</span></li></ul></div><ol class="program-modules_list" aria-label="Модули курса"><li class="card_component program-modules_card"><div class="program-modules_head"><span class="program-modules_number" aria-hidden="true">01</span></div><h3 class="content-heading_component is-card" id="narrative-therapy-program-module-1">Модуль 1. Основы нарративной практики</h3><ul class="program-modules_points" aria-labelledby="narrative-therapy-program-module-1"><li class="body-text_component program-modules_point">Приветственная встреча</li><li class="body-text_component program-modules_point">Философские основы нарративной практики. Культурные нормы и&nbsp;дискурсы</li><li class="body-text_component program-modules_point">Позиция и&nbsp;этика нарративного терапевта</li></ul></li>
-<li class="card_component program-modules_card"><div class="program-modules_head"><span class="program-modules_number" aria-hidden="true">02</span></div><h3 class="content-heading_component is-card" id="narrative-therapy-program-module-2">Модуль 2. Карты нарративной практики</h3><ul class="program-modules_points" aria-labelledby="narrative-therapy-program-module-2"><li class="body-text_component program-modules_point">Знакомство с&nbsp;нарративными «картами»</li><li class="body-text_component program-modules_point">Экстернализация</li><li class="body-text_component program-modules_point">Деконструкция</li><li class="body-text_component program-modules_point">Пересочинение (re-authoring)</li><li class="body-text_component program-modules_point">Восстановление участия (re-membering)</li><li class="body-text_component program-modules_point">«Карта карт»: интеграция инструментов</li></ul></li>
-<li class="card_component program-modules_card"><div class="program-modules_head"><span class="program-modules_number" aria-hidden="true">03</span></div><h3 class="content-heading_component is-card" id="narrative-therapy-program-module-3">Модуль 3. Профессиональные инструменты нарративного практика</h3><ul class="program-modules_points" aria-labelledby="narrative-therapy-program-module-3"><li class="body-text_component program-modules_point">Хороший вопрос как инструмент</li><li class="body-text_component program-modules_point">Терапевтические документы</li></ul></li>
-<li class="card_component program-modules_card"><div class="program-modules_head"><span class="program-modules_number" aria-hidden="true">04</span><span class="program-modules_label">Входит в&nbsp;полный курс</span></div><h3 class="content-heading_component is-card" id="narrative-therapy-program-module-4">Модуль 4. Дополнительный модуль. Расширение нарративной практики</h3><ul class="program-modules_points" aria-labelledby="narrative-therapy-program-module-4"><li class="body-text_component program-modules_point">Нарративная практика при&nbsp;работе с&nbsp;депрессивными состояниями</li><li class="body-text_component program-modules_point">Нарративная практика при&nbsp;горе</li><li class="body-text_component program-modules_point">Нарративная практика при&nbsp;работе с&nbsp;травмой</li><li class="body-text_component program-modules_point">Работа с&nbsp;группами</li></ul></li>
-<li class="card_component program-modules_card is-final"><h3 class="content-heading_component is-card" id="narrative-therapy-program-module-5">Итоговое оценивание</h3><ul class="program-modules_points" aria-labelledby="narrative-therapy-program-module-5"><li class="body-text_component program-modules_point">Написание терапевтического письма или сертификата и&nbsp;тестирование по&nbsp;курсу</li></ul></li></ol></div>
+    <div class="topic-tabs_component"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="narrative-therapy-program-heading">Программа обучения</h2><ul class="program-schedule_component" aria-label="Расписание занятий"><li class="program-schedule_item"><span>Основные практические занятия</span><span class="program-schedule_time">по&nbsp;вторникам с&nbsp;14:00&nbsp;до&nbsp;16:30</span></li><li class="program-schedule_item"><span>Самостоятельная отработка навыков</span><span class="program-schedule_time">по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;19:00</span></li></ul></div><div class="topic-tabs_layout" style="--topic-count: 5" data-topic-tabs><h3 class="topic-tabs_heading" style="--topic-index: 1"><button class="topic-tabs_tab" type="button" id="narrative-therapy-program-tab-1" aria-controls="narrative-therapy-program-panel-1" aria-expanded="true" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">01</span><span class="topic-tabs_tab-title">Модуль 1. Основы нарративной практики</span></button></h3>
+<div class="topic-tabs_panel" role="region" id="narrative-therapy-program-panel-1" aria-labelledby="narrative-therapy-program-tab-1" data-topic-panel><div class="program-panel_copy"><ul class="program-modules_points"><li class="body-text_component is-detailed program-modules_point">Приветственная встреча</li><li class="body-text_component is-detailed program-modules_point">Философские основы нарративной практики. Культурные нормы и&nbsp;дискурсы</li><li class="body-text_component is-detailed program-modules_point">Позиция и&nbsp;этика нарративного терапевта</li></ul></div></div>
+<h3 class="topic-tabs_heading" style="--topic-index: 2"><button class="topic-tabs_tab" type="button" id="narrative-therapy-program-tab-2" aria-controls="narrative-therapy-program-panel-2" aria-expanded="false" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">02</span><span class="topic-tabs_tab-title">Модуль 2. Карты нарративной практики</span></button></h3>
+<div class="topic-tabs_panel" role="region" id="narrative-therapy-program-panel-2" aria-labelledby="narrative-therapy-program-tab-2" data-topic-panel><div class="program-panel_copy"><ul class="program-modules_points"><li class="body-text_component is-detailed program-modules_point">Знакомство с&nbsp;нарративными «картами»</li><li class="body-text_component is-detailed program-modules_point">Экстернализация</li><li class="body-text_component is-detailed program-modules_point">Деконструкция</li><li class="body-text_component is-detailed program-modules_point">Пересочинение (re-authoring)</li><li class="body-text_component is-detailed program-modules_point">Восстановление участия (re-membering)</li><li class="body-text_component is-detailed program-modules_point">«Карта карт»: интеграция инструментов</li></ul></div></div>
+<h3 class="topic-tabs_heading" style="--topic-index: 3"><button class="topic-tabs_tab" type="button" id="narrative-therapy-program-tab-3" aria-controls="narrative-therapy-program-panel-3" aria-expanded="false" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">03</span><span class="topic-tabs_tab-title">Модуль 3. Профессиональные инструменты нарративного практика</span></button></h3>
+<div class="topic-tabs_panel" role="region" id="narrative-therapy-program-panel-3" aria-labelledby="narrative-therapy-program-tab-3" data-topic-panel><div class="program-panel_copy"><ul class="program-modules_points"><li class="body-text_component is-detailed program-modules_point">Хороший вопрос как инструмент</li><li class="body-text_component is-detailed program-modules_point">Терапевтические документы</li></ul></div></div>
+<h3 class="topic-tabs_heading" style="--topic-index: 4"><button class="topic-tabs_tab" type="button" id="narrative-therapy-program-tab-4" aria-controls="narrative-therapy-program-panel-4" aria-expanded="false" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">04</span><span class="topic-tabs_tab-title">Модуль 4. Дополнительный модуль. Расширение нарративной практики</span></button></h3>
+<div class="topic-tabs_panel" role="region" id="narrative-therapy-program-panel-4" aria-labelledby="narrative-therapy-program-tab-4" data-topic-panel><div class="program-panel_copy"><span class="program-modules_label">Входит в&nbsp;полный курс</span><ul class="program-modules_points"><li class="body-text_component is-detailed program-modules_point">Нарративная практика при&nbsp;работе с&nbsp;депрессивными состояниями</li><li class="body-text_component is-detailed program-modules_point">Нарративная практика при&nbsp;горе</li><li class="body-text_component is-detailed program-modules_point">Нарративная практика при&nbsp;работе с&nbsp;травмой</li><li class="body-text_component is-detailed program-modules_point">Работа с&nbsp;группами</li></ul></div></div>
+<h3 class="topic-tabs_heading" style="--topic-index: 5"><button class="topic-tabs_tab" type="button" id="narrative-therapy-program-tab-5" aria-controls="narrative-therapy-program-panel-5" aria-expanded="false" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">—</span><span class="topic-tabs_tab-title">Итоговое оценивание</span></button></h3>
+<div class="topic-tabs_panel" role="region" id="narrative-therapy-program-panel-5" aria-labelledby="narrative-therapy-program-tab-5" data-topic-panel><div class="program-panel_copy"><ul class="program-modules_points"><li class="body-text_component is-detailed program-modules_point">Написание терапевтического письма или сертификата и&nbsp;тестирование по&nbsp;курсу</li></ul></div></div></div></div>
   </div></div>
 </section>
 </div>
@@ -5814,6 +5854,7 @@ const initialize = () => {
       Без скрипта анимации просто идут всегда.
    2. Вкладки второго варианта блока: выбранная ситуация показывает свою схему и текст справа.
       Стрелки влево/вправо (и вверх/вниз), Home и End переключают вкладки с клавиатуры.
+   3. Программа обучения: модули слева, темы выбранного модуля справа (до 1025px аккордеон).
    Повторный запуск снимает прошлые обработчики (Tilda может перезапускать скрипты). */
 (() => {
   window.__narrativeTherapyCleanup?.();
@@ -5875,10 +5916,49 @@ const initialize = () => {
     select(0, {animate: false});
   });
 
+
+  /* 3. Программа обучения (topic-tabs). Кнопка модуля связана со своей панелью через aria-controls и aria-expanded;
+     открыт всегда один модуль. До 1025px это аккордеон: панель раскрывается под кнопкой, и если кнопка уехала
+     выше экрана, страница подкручивается к ней. От 1025px те же кнопки работают как вкладки слева от панели.
+     Без скрипта видны все панели. */
+  const topicBlocks = [...document.querySelectorAll('[data-topic-tabs]')];
+  topicBlocks.forEach((block) => {
+    const tabs = [...block.querySelectorAll('[data-topic-tab]')];
+    const panels = [...block.querySelectorAll('[data-topic-panel]')];
+    if (!tabs.length || tabs.length !== panels.length) return;
+    block.setAttribute('data-ready', '');
+
+    const select = (tab, {animate = true} = {}) => {
+      const targetId = tab.getAttribute('aria-controls');
+      tabs.forEach((item) => item.setAttribute('aria-expanded', String(item === tab)));
+      panels.forEach((panel) => {
+        const isTarget = panel.id === targetId;
+        panel.hidden = !isTarget;
+        panel.classList.remove('is-entering');
+        if (isTarget && animate && !reducedMotion.matches) {
+          void panel.offsetWidth;
+          panel.classList.add('is-entering');
+        }
+      });
+      if (animate && tab.getBoundingClientRect().top < 0) tab.parentElement.scrollIntoView({block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth'});
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        if (tab.getAttribute('aria-expanded') !== 'true') select(tab);
+      }, {signal});
+    });
+    select(tabs.find((tab) => tab.getAttribute('aria-expanded') === 'true') || tabs[0], {animate: false});
+  });
+
   window.__narrativeTherapyCleanup = () => {
     controller.abort();
     observer?.disconnect();
     scenes.forEach((scene) => scene.removeAttribute('data-scene-observed'));
+    topicBlocks.forEach((block) => {
+      block.removeAttribute('data-ready');
+      block.querySelectorAll('[data-topic-panel]').forEach((panel) => { panel.hidden = false; panel.classList.remove('is-entering'); });
+    });
     blocks.forEach((block) => block.querySelectorAll('[data-use-case-panel]').forEach((panel) => { panel.hidden = false; panel.classList.remove('is-entering'); }));
     delete window.__narrativeTherapyCleanup;
   };

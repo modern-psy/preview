@@ -118,13 +118,17 @@ function renderEvidence(data, id) {
   return section('evidence', id, `<div class="section-layout_component is-responsive">${header(id, data)}<ul class="evidence_list" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul></div>`);
 }
 
-/* Проектный блок program-modules: плашка расписания и модули с темами. Модуль 4 помечен меткой
-   «Входит в полный курс»: в тариф «Первые три модуля» он не входит. */
+/* Программа обучения: проектный блок topic-tabs (перенесён из rodbt-record, лейаут программы «Психосоматики»).
+   Тёмный контейнер, слева кнопки модулей, справа белая карточка с темами выбранного модуля.
+   Одна разметка на все ширины: кнопка модуля и сразу за ней его панель. До 1025px это аккордеон
+   (панель раскрывается под кнопкой), от 1025px кнопки стоят колонкой слева, открытая панель справа.
+   Открыт всегда один модуль; без скрипта видны все панели. Модуль 4 помечен «Входит в полный курс»,
+   итоговое оценивание идёт последней вкладкой без номера. */
 function renderProgram(data, id) {
   const schedule = `<ul class="program-schedule_component" aria-label="Расписание занятий">${data.schedule.map(item => `<li class="program-schedule_item"><span>${renderText(item.label)}</span><span class="program-schedule_time">${renderText(item.detail)}</span></li>`).join('')}</ul>`;
-  // Итоговое оценивание (final) не модуль: без номера, карточка растягивается на свободные колонки ряда.
-  const modules = data.modules.map((module, i) => `<li class="card_component program-modules_card${module.final ? ' is-final' : ''}">${module.final ? '' : `<div class="program-modules_head"><span class="program-modules_number" aria-hidden="true">${number(i)}</span>${module.label ? `<span class="program-modules_label">${renderText(module.label)}</span>` : ''}</div>`}<h3 class="content-heading_component is-card" id="${id}-module-${i + 1}">${renderText(module.heading)}</h3><ul class="program-modules_points" aria-labelledby="${id}-module-${i + 1}">${module.points.map(text => `<li class="body-text_component program-modules_point">${renderText(text)}</li>`).join('')}</ul></li>`).join('\n');
-  return section('program', id, `<div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${schedule}</div><ol class="program-modules_list" aria-label="Модули курса">${modules}</ol></div>`);
+  const items = data.modules.map((module, i) => `<h3 class="topic-tabs_heading" style="--topic-index: ${i + 1}"><button class="topic-tabs_tab" type="button" id="${id}-tab-${i + 1}" aria-controls="${id}-panel-${i + 1}" aria-expanded="${i === 0}" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">${module.final ? '—' : number(i)}</span><span class="topic-tabs_tab-title">${renderText(module.heading)}</span></button></h3>
+<div class="topic-tabs_panel" role="region" id="${id}-panel-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-topic-panel><div class="program-panel_copy">${module.label ? `<span class="program-modules_label">${renderText(module.label)}</span>` : ''}<ul class="program-modules_points">${module.points.map(text => `<li class="body-text_component is-detailed program-modules_point">${renderText(text)}</li>`).join('')}</ul></div></div>`).join('\n');
+  return section('program', id, `<div class="topic-tabs_component"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${schedule}</div><div class="topic-tabs_layout" style="--topic-count: ${data.modules.length}" data-topic-tabs>${items}</div></div>`);
 }
 
 /* Проектный блок instructor: фото слева, имя и описание справа. */
