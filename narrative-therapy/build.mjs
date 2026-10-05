@@ -110,36 +110,15 @@ function renderPractice(data, id) {
   return section('practice', id, `<div class="section-layout_component is-responsive">${header(id, data)}<div class="practice_layout"><ul class="practice_list" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul><div class="practice_media">${image(data.image, 'practice_image')}</div></div></div>`);
 }
 
-/* Проектный блок evidence: «Доказательная база подхода», три варианта на выбор (05.10.2026), во всех на первом
-   плане текст: вывод исследования, пояснение, источник. Остаться должен один: лишние убрать из sections и из titles
-   в build-tilda.mjs. Картинки декоративные (смысл передаёт текст).
-   zigzag   — исследования строками, текст и картинка чередуются сторонами (Z-паттерн), картинка меньше текста;
-   explorer — слева список выводов, справа карточка выбранного исследования: пояснение, источник, под ними картинка (светлый topic-tabs,
-              до 1025px аккордеон);
-   compact  — текстовые карточки, картинка маленьким кружком рядом с источником. */
-const evidenceHead = (data, id, index) => `<div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[index])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${paragraphs(data.paragraphs)}</div>`;
 const evidenceSource = card => `<p class="body-text_component is-fine-print evidence_source">${renderText(card.source)}</p>`;
-function renderEvidenceZigzag(data, id) {
-  const rows = data.cards.map(card => `<li class="evidence-zigzag_row"><div class="evidence-zigzag_copy"><h3 class="content-heading_component is-profile">${renderText(card.heading)}</h3><p class="body-text_component is-summary is-regular">${renderText(card.text)}</p>${evidenceSource(card)}</div><div class="evidence-zigzag_media">${image(card.image, 'evidence-zigzag_image', {decorative: true})}</div></li>`).join('\n');
-  return section('evidence-zigzag', id, `<div class="section-layout_component is-responsive">${evidenceHead(data, id, 0)}<ol class="evidence-zigzag_list" aria-label="${escapeHtml(data.listLabel)}">${rows}</ol></div>`);
-}
-function renderEvidenceExplorer(data, id) {
-  const items = data.cards.map((card, i) => `<h3 class="topic-tabs_heading" style="--topic-index: ${i + 1}"><button class="topic-tabs_tab" type="button" id="${id}-tab-${i + 1}" aria-controls="${id}-panel-${i + 1}" aria-expanded="${i === 0}" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">${number(i)}</span><span class="topic-tabs_tab-title">${renderText(card.heading)}</span></button></h3>
-<div class="topic-tabs_panel" role="region" id="${id}-panel-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-topic-panel><p class="body-text_component is-summary is-regular">${renderText(card.text)}</p>${evidenceSource(card)}<div class="evidence-explorer_media">${image(card.image, 'evidence-explorer_image', {decorative: true})}</div></div>`).join('\n');
-  return section('evidence-explorer', id, `<div class="topic-tabs_component is-light">${evidenceHead(data, id, 1)}<div class="topic-tabs_layout" style="--topic-count: ${data.cards.length}" data-topic-tabs>${items}</div></div>`);
-}
-function renderEvidenceCompact(data, id) {
-  const cards = data.cards.map(card => `<li class="card_component evidence-compact_card"><div class="content-header_component"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div><div class="evidence-compact_footer">${image(card.image, 'evidence-compact_thumb', {decorative: true})}${evidenceSource(card)}</div></li>`).join('\n');
-  return section('evidence-compact', id, `<div class="section-layout_component is-responsive">${evidenceHead(data, id, 2)}<ul class="evidence-compact_list" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul></div>`);
-}
 
-/* «Доказательная база», вариант 4 (carousel): лента карточек со стрелками, перенесена из «Психосоматики»
+/* «Доказательная база»: лента карточек со стрелками (выбран вариант 4 из четырёх, 05.10.2026), перенесена из «Психосоматики»
    (блок «7 систем организма»). Слева заголовок и описание, справа стрелки; лента уходит за правый край экрана,
    листается пальцем, колесом и стрелками (page.js). Карточка: картинка 3:2, вывод, пояснение, источник. */
 function renderEvidenceCarousel(data, id) {
   const cards = data.cards.map(card => `<li class="evidence-carousel_card"><div class="evidence-carousel_media">${image(card.image, 'evidence-carousel_image', {decorative: true})}</div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p>${evidenceSource(card)}</div></li>`).join('\n');
   const controls = `<div class="slider_controls" data-slider-controls="${id}"><button class="slider_arrow" type="button" data-slider-prev aria-label="Назад"><span class="slider_arrow-icon is-prev" aria-hidden="true"></span></button><button class="slider_arrow is-accent" type="button" data-slider-next aria-label="Вперёд"><span class="slider_arrow-icon" aria-hidden="true"></span></button></div>`;
-  return section('evidence-carousel', id, `<div class="evidence-carousel_component"><div class="evidence-carousel_intro"><div class="section-header_component is-left is-responsive">${variantNote(data.variantLabels[3])}<h2 class="section-title_component is-left is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${paragraphs(data.paragraphs)}</div>${controls}</div><ul class="evidence-carousel_track" data-slider-track="${id}" tabindex="0" aria-label="${escapeHtml(data.listLabel)}: лента карточек">${cards}</ul></div>`);
+  return section('evidence-carousel', id, `<div class="evidence-carousel_component"><div class="evidence-carousel_intro"><div class="section-header_component is-left is-responsive"><h2 class="section-title_component is-left is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${paragraphs(data.paragraphs)}</div>${controls}</div><ul class="evidence-carousel_track" data-slider-track="${id}" tabindex="0" aria-label="${escapeHtml(data.listLabel)}: лента карточек">${cards}</ul></div>`);
 }
 
 /* Программа обучения: проектный блок topic-tabs (перенесён из rodbt-record, лейаут программы «Психосоматики»).
@@ -226,7 +205,6 @@ async function buildHtml() {
 
   const pricing = await renderPricing(`${SLUG}-pricing`);
   const useCases = typeset(await json('use-cases'));
-  const evidence = typeset(await json('evidence'));
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
@@ -242,11 +220,7 @@ async function buildHtml() {
     renderProgram(typeset(await json('program')), `${SLUG}-program`),
     renderCardSet('skills', typeset(await json('skills')), `${SLUG}-skills`),
     renderPractice(typeset(await json('practice')), `${SLUG}-practice`),
-    // Четыре варианта «Доказательной базы» (05.10.2026), остаться должен один.
-    renderEvidenceZigzag(evidence, `${SLUG}-evidence-zigzag`),
-    renderEvidenceExplorer(evidence, `${SLUG}-evidence-explorer`),
-    renderEvidenceCompact(evidence, `${SLUG}-evidence-compact`),
-    renderEvidenceCarousel(evidence, `${SLUG}-evidence-carousel`),
+    renderEvidenceCarousel(typeset(await json('evidence')), `${SLUG}-evidence`),
     renderInstructor(typeset(await json('instructor')), `${SLUG}-instructor`),
     renderDocuments(typeset(await json('documents')), `${SLUG}-documents`),
     renderCardSet('why-us', typeset(await json('why-us')), `${SLUG}-why-us`),
