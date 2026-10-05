@@ -100,6 +100,16 @@ function renderInstructor(data, id) {
   return section('instructor', id, `<div class="instructor_component"><div class="instructor_media">${image(data.photo, 'instructor_photo')}</div><div class="instructor_copy">${header(id, {heading: data.heading}, {align: 'left'})}<p class="content-heading_component is-profile instructor_name">${renderText(data.name)}</p>${paragraphs(data.paragraphs)}</div></div>`);
 }
 
+/* Плитка тарифов под первым экраном. Общий компонент benefits умеет только «заголовок + текст», поэтому
+   первую плитку сборка заменяет своей разметкой: два тарифа рядом через тонкую линию — название тарифа,
+   часы крупно, недели под ними. Заголовок плитки («Длительность обучения») остаётся для скринридера. */
+function withTariffCard(markup, card) {
+  const tile = `<li class="card_component benefits_card">${'<div class="card_content">'}<h2 class="card_heading">${card.heading.replaceAll(NBSP, '&nbsp;')}</h2></div></li>`;
+  if (markup.split(tile).length !== 2) throw new Error('Hero: не найдена плитка тарифов');
+  const items = card.tariffs.map(t => `<li class="tariff-tile_item"><span class="tariff-tile_label">${renderText(t.label)}</span><span class="tariff-tile_value"><span class="tariff-tile_hours">${renderText(t.hours)}</span><span class="tariff-tile_weeks">${renderText(t.weeks)}</span></span></li>`).join('');
+  return markup.replace(tile, `<li class="card_component benefits_card tariff-tile_component"><h2 class="screen-reader-only">${renderText(card.heading)}</h2><ul class="tariff-tile_list">${items}</ul></li>`).replaceAll(NBSP, '&nbsp;');
+}
+
 /* Документы: общий блок «Диплом» Академии (текст, лицензия, изображение удостоверения). */
 const renderDocuments = (data, id) => renderDiploma(data, {id}).replace('class="section_diploma ', 'class="section_documents section_diploma ');
 
@@ -137,7 +147,8 @@ async function buildHtml() {
   hero.metadata.label = (await json('hero')).metadata.label;
   const context = {assets: await json('assets'), actions: await json('actions')};
   // Hero-renderer сохраняет только сущность &nbsp;, поэтому неразрывные пробелы передаём ей текстом.
-  const heroMarkup = renderHeroSection(JSON.parse(JSON.stringify(hero).replaceAll(NBSP, '&nbsp;')), context);
+  let heroMarkup = renderHeroSection(JSON.parse(JSON.stringify(hero).replaceAll(NBSP, '&nbsp;')), context);
+  heroMarkup = withTariffCard(heroMarkup, hero.benefits.cards[0]);
 
   const leadForm = typeset(await json('lead-form'));
   leadForm.errorIcon = await dataUrl(consultant, 'assets/icons/form-error.svg');
