@@ -10,7 +10,6 @@ import {renderLeadFormSection} from '../web-academy/shared/academy/lead-form-ren
 import {renderFaq} from '../web-academy/shared/academy/faq-render.mjs';
 import {renderCourseAudience} from '../web-academy/shared/academy/course-audience-render.mjs';
 import {escapeHtml, renderText, sectionId} from '../web-academy/shared/academy/html-render.mjs';
-import {loadPricingPromo} from '../web-academy/shared/academy/pricing-promo-tilda.mjs';
 import {renderPricing as renderAcademyPricing} from '../web-academy/shared/academy/pricing-render.mjs';
 import {assertMotionContract} from '../web-academy/shared/academy/motion-contract.mjs';
 import {assertResponsiveContract} from '../web-academy/shared/academy/responsive.mjs';
@@ -24,10 +23,6 @@ const json = async name => JSON.parse(await read(root, `data/${name}.json`));
 const dataUrl = async (base, name) => `data:image/svg+xml;base64,${Buffer.from(await read(base, name), 'utf8').toString('base64')}`;
 
 const SLUG = 'narrative-therapy';
-const API = 'https://modern-psy-asp-prod-8ceb.twc1.net';
-// Слаг курса в CMS. Пока null: цена берётся из data/course.json и в браузере не перерисовывается.
-// В CMS курс narrative-therapy есть, но без тарифов (одна цена 45 000 ₽), а по ТЗ тарифов два.
-const CMS_SLUG = null;
 const CHECK_ICON = 'https://static.tildacdn.com/tild3564-3264-4839-a534-613766326230/Frame_1131.svg';
 const NBSP = '\u00a0';
 
@@ -148,68 +143,29 @@ function renderDocuments(data, id) {
   return section('documents', id, `<div class="document_component"><div class="document_copy"><h2 class="section-title_component is-left is-responsive document_heading" id="${id}-heading">${renderText(data.heading)} <span class="section-title_accent">${renderText(data.headingAccent)}</span></h2><p class="body-text_component is-summary is-regular">${renderText(data.description)}</p><ul class="document_terms">${terms}</ul><p class="body-text_component is-fine-print document_license">${data.license.map(renderText).join('<br>')}</p></div><div class="document_media">${image(data.image, 'document_image')}</div></div>`);
 }
 
-/* Промо-блок цены. Запаска строится при сборке из data/course.json (два тарифа, режим plans). Если задан
-   CMS_SLUG, сборка сначала спрашивает курс у Public API, а в браузере блок перерисовывает pricing-promo.js. */
-async function renderPricing(id) {
-  let course = await json('course');
-  if (CMS_SLUG) {
-    try {
-      const response = await fetch(`${API}/api/public/course/${CMS_SLUG}`, {headers: {Accept: 'application/json'}, signal: AbortSignal.timeout(8000)});
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const fresh = await response.json();
-      if (fresh.error) throw new Error(fresh.error);
-      course = fresh;
-      await fs.writeFile(new URL('data/course.json', root), JSON.stringify(course, null, 2) + '\n');
-    } catch (error) {
-      console.warn(`API недоступен (${error.message}), запаска цены из data/course.json`);
-    }
-  }
-  const PricingPromo = await loadPricingPromo();
-  const markup = PricingPromo.render(PricingPromo.fromApi(course, {id}));
-  const live = CMS_SLUG ? ` data-price-block data-course="${CMS_SLUG}" data-api="${API}" data-block-id="${id}"` : '';
-  return {
-    // Внешняя карточка pricing-promo_card из pricing-promo.css: колонка формы, поля и скругление контейнера программы.
-    html: `<section class="section_pricing section-spacing_component" id="${sectionId(id)}" aria-labelledby="${id}-heading">
-  <div class="padding-global"><div class="container-xlarge column-grid_component"><div class="column-grid_content is-content-wide"><div class="pricing-promo_card"><div class="pricing-promo"${live}>${markup}</div></div></div></div></div>
-</section>`,
-    mode: markup.match(/data-mode="([a-z-]+)"/)[1],
-  };
-}
-
-/* Временная подпись варианта блока: на странице несколько вариантов одного блока, остаться должен один. */
-const variantNote = text => `<p class="variant-note_component">${renderText(text)}</p>`;
 const rub = value => `${new Intl.NumberFormat('ru-RU').format(value).replace(/\s/g, NBSP)}${NBSP}₽`;
 
-/* Цена, вариант 2: общий блок тарифов Академии (pricing-render, «Психолог-консультант»): карточки тарифов,
+/* Цена (выбран вариант 2 из трёх, 05.10.2026): общий блок тарифов Академии (pricing-render, «Психолог-консультант»): карточки тарифов,
    у полного курса фиолетовая подсветка и плашка «Популярный тариф» с огоньком, список «входит / не входит».
    Общий блок показывает цену в месяц в рассрочку, а у нас подтверждены только полные цены, поэтому строка цены
-   после сборки заменяется: полная цена и «Можно оплатить в рассрочку» (из ответа FAQ). */
+   после сборки заменяется на полную цену. Строка «Можно оплатить в рассрочку» (из ответа FAQ) пока закомментирована
+   в HTML по просьбе пользователя: чтобы вернуть, поставить SHOW_INSTALLMENT = true. */
+const SHOW_INSTALLMENT = false;
 function renderPricingPlans(data, id) {
   const config = {id, title: data.title, streams: [{id: 'january', label: 'Поток 26 января', start: data.start}], icons: {...data.icons, highlight: data.icons.check},
     plans: data.plans.map(plan => ({id: plan.id, name: plan.name, description: plan.description, featured: plan.featured, prices: {january: {monthly: plan.total, total: plan.total, months: 1}}, action: 'enroll', actionLabel: data.actionLabel, href: data.href, features: plan.features.map(([text, included]) => ({text, included}))}))};
   let markup = renderAcademyPricing(config);
   // Та же запись суммы, что в pricing-render.mjs: строки меняются точной подстановкой, без регулярных выражений.
   const money = value => new Intl.NumberFormat('ru-RU').format(value).replaceAll('\u00a0', '&nbsp;') + '&nbsp;₽';
+  const installment = `<p class="pricing_terms body-text_component is-caption is-regular is-statement">${renderText(typography(data.installmentNote))}</p>`;
   for (const plan of data.plans) {
     const from = `<p class="pricing_amount"><span class="pricing_number">${money(plan.total)}</span><span>/ мес</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">На&nbsp;1&nbsp;месяца или ${money(plan.total)} одним платежом</p>`;
     if (markup.split(from).length !== 2) throw new Error(`Pricing plans: не найдена строка цены ${plan.id}`);
-    markup = markup.replace(from, `<p class="pricing_amount"><span class="pricing_number">${money(plan.total)}</span></p><p class="pricing_terms body-text_component is-caption is-regular is-statement">${renderText(typography(data.installmentNote))}</p>`);
+    markup = markup.replace(from, `<p class="pricing_amount"><span class="pricing_number">${money(plan.total)}</span></p>${SHOW_INSTALLMENT ? installment : `<!-- ${installment} -->`}`);
   }
-  markup = markup.replace(/<h2 class="section-title_component is-center" id="/, `${variantNote(data.variantLabels[1])}<h2 class="section-title_component is-center" id="`);
   return `<section class="section_pricing-plans section-spacing_component" id="${sectionId(id)}" aria-labelledby="${id}-heading">
   <div class="padding-global"><div class="container-xlarge column-grid_component"><div class="column-grid_content is-content-wide"><div class="pricing-promo_card pricing-plans_card">${markup}</div></div></div></div>
 </section>`;
-}
-
-/* Цена, вариант 3: таблица сравнения тарифов в белой карточке. Строки — что входит, столбцы — тарифы; столбец
-   полного курса подсвечен. Внизу цены и кнопка к форме заявки. На телефоне таблица остаётся таблицей
-   (три узкие колонки), подписи строк переносятся. */
-function renderPricingCompare(data, id) {
-  const mark = value => value === true ? `<img class="pricing-compare_icon" src="${escapeHtml(data.icons.check)}" width="20" height="20" alt="Входит" draggable="false" loading="lazy">` : value === false ? `<span class="pricing-compare_none" aria-label="Не входит">—</span>` : renderText(typography(value));
-  const head = `<tr><th scope="col" class="pricing-compare_corner"><span class="screen-reader-only">Что входит</span></th>${data.plans.map(plan => `<th scope="col" class="pricing-compare_plan${plan.featured ? ' is-featured' : ''}">${renderText(plan.name)}</th>`).join('')}</tr>`;
-  const rows = data.compare.rows.map(row => `<tr><th scope="row" class="pricing-compare_label">${renderText(typography(row.label))}</th>${row.values.map((value, i) => `<td class="pricing-compare_value${data.plans[i].featured ? ' is-featured' : ''}">${mark(value)}</td>`).join('')}</tr>`).join('');
-  const prices = `<tr class="pricing-compare_prices"><th scope="row" class="pricing-compare_label">Стоимость</th>${data.plans.map(plan => `<td class="pricing-compare_value pricing-compare_price${plan.featured ? ' is-featured' : ''}">${rub(plan.total).replaceAll(NBSP, '&nbsp;')}</td>`).join('')}</tr>`;
-  return section('pricing-compare', id, `<div class="card_component pricing-compare_component"><div class="section-header_component is-left is-responsive">${variantNote(data.variantLabels[2])}<h2 class="section-title_component is-left is-responsive" id="${id}-heading">${renderText(data.title)}</h2><p class="body-text_component is-summary is-regular">${renderText(typography(data.start))}. ${renderText(typography(data.installmentNote))}.</p></div><div class="pricing-compare_scroll"><table class="pricing-compare_table"><thead>${head}</thead><tbody>${rows}${prices}</tbody></table></div><a class="button button_component is-accent pricing-compare_action" href="${escapeHtml(data.href)}">${renderText(data.actionLabel)}</a></div>`);
 }
 
 async function buildHtml() {
@@ -226,8 +182,7 @@ async function buildHtml() {
   leadForm.successIcon = await dataUrl(consultant, 'assets/icons/form-success.svg');
   const form = renderLeadFormSection(leadForm, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
 
-  const pricing = await renderPricing(`${SLUG}-pricing`);
-  const pricingVariants = await json('pricing-variants');
+  const pricingVariants = await json('pricing');
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
@@ -244,10 +199,7 @@ async function buildHtml() {
     renderInstructor(typeset(await json('instructor')), `${SLUG}-instructor`),
     renderDocuments(typeset(await json('documents')), `${SLUG}-documents`),
     renderCardSet('why-us', typeset(await json('why-us')), `${SLUG}-why-us`),
-    // Три варианта блока цены (05.10.2026), остаться должен один.
-    pricing.html.replace('<div class="pricing-promo_card">', `${variantNote(pricingVariants.variantLabels[0])}<div class="pricing-promo_card">`),
-    renderPricingPlans(pricingVariants, `${SLUG}-pricing-plans`),
-    renderPricingCompare(pricingVariants, `${SLUG}-pricing-compare`),
+    renderPricingPlans(pricingVariants, `${SLUG}-pricing`),
     form,
     renderFaq(typeset(await json('faq')), {id: `${SLUG}-faq`}),
   ];
@@ -290,7 +242,7 @@ ${body}
     await fs.access(new URL(file, root)).catch(() => { throw new Error(`Нет локального файла ${file}`); });
     console.warn(`Локальная картинка ${file}: для Тильды нужна ссылка на CDN`);
   }
-  return {html, mode: pricing.mode};
+  return html;
 }
 
 async function buildCss() {
@@ -311,8 +263,8 @@ async function buildCss() {
 }
 
 async function buildJs() {
-  // Скрипты цены нужны только при живой привязке к CMS: без неё блок цены статичен.
-  const order = ['components.js', 'anchor-scroll.js', 'pricing.js', ...(CMS_SLUG ? ['pricing-promo-render.js', 'pricing-promo.js'] : []), 'lead-form.js'];
+  // pricing.js — поведение общего блока тарифов (порядок карточек на телефоне).
+  const order = ['components.js', 'anchor-scroll.js', 'pricing.js', 'lead-form.js'];
   const parts = [];
   for (const name of order) parts.push(`/* === web-academy/shared/academy/${name} === */\n${(await read(shared, name)).trim()}`);
   parts.push(`/* === narrative-therapy/page.js === */\n${(await read(root, 'page.js')).trim()}`);
@@ -321,8 +273,8 @@ async function buildJs() {
   return js;
 }
 
-const {html, mode} = await buildHtml();
+const html = await buildHtml();
 await fs.writeFile(new URL('index.html', root), html);
 await fs.writeFile(new URL('style.css', root), await buildCss());
 await fs.writeFile(new URL('script.js', root), await buildJs());
-console.log(`narrative-therapy: index.html ${html.length} символов, блок цены в режиме ${mode}`);
+console.log(`narrative-therapy: index.html ${html.length} символов`);
