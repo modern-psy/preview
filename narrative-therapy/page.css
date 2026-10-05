@@ -203,65 +203,24 @@
   .narrative-therapy-page .instructor_copy { gap: 1.5rem; }
 }
 
-/* Временная подпись варианта блока (несколько вариантов одного блока на выбор). Убрать вместе с лишними вариантами. */
-.narrative-therapy-page .variant-note_component { display: inline-flex; max-width: 100%; padding: 0.25rem 0.625rem; border: 1px dashed var(--color-accent-primary); border-radius: 0.5rem; color: var(--color-accent-text); font-size: 0.875rem; font-weight: 444; line-height: 1.3; }
-
-/* Проектный блок about-steps: «Как работает специалист», четыре шага одной цепочкой. Общая часть всех вариантов:
-   номер шага в кружке и вертикальная линия от кружка к следующему шагу (так шаги идут на телефоне). */
+/* Проектный блок about-steps: «Как работает специалист», четыре шага одной цепочкой (выбран вариант 2).
+   Номер шага в кружке, от кружка к следующему шагу идёт вертикальная линия. Шаги лежат в одной белой панели.
+   От 1025px заголовок и описание слева (остаются на месте при прокрутке), панель с шагами справа. */
 .narrative-therapy-page .about-steps_component { --about-marker: 2.5rem; display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--space-section-content); }
-.narrative-therapy-page .about-steps_list { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); margin: 0; padding: 0; list-style: none; }
+.narrative-therapy-page .about-steps_list { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); margin: 0; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); list-style: none; }
 .narrative-therapy-page .about-steps_item { position: relative; display: grid; min-width: 0; grid-template-columns: var(--about-marker) minmax(0, 1fr); gap: 1rem; padding-bottom: 1.5rem; overflow-wrap: anywhere; }
 .narrative-therapy-page .about-steps_item:last-child { padding-bottom: 0; }
+.narrative-therapy-page .about-steps_item:not(:last-child)::before { content: ""; position: absolute; top: var(--about-marker); bottom: 0; left: calc(var(--about-marker) / 2 - 1px); width: 2px; background: var(--color-accent-soft); }
 .narrative-therapy-page .about-steps_marker { position: relative; z-index: 1; display: grid; width: var(--about-marker); height: var(--about-marker); place-items: center; border-radius: 50%; background: var(--color-accent-primary); color: var(--color-text-on-dark); font-size: 1rem; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; }
 .narrative-therapy-page .about-steps_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; padding-top: 0.5rem; }
 .narrative-therapy-page .about-steps_copy .body-text_component { --body-text-color: var(--color-text-secondary-large); }
-/* Линия: от низа кружка до верха следующего кружка. */
-.narrative-therapy-page :is(.is-line, .is-split) .about-steps_item:not(:last-child)::before { content: ""; position: absolute; top: var(--about-marker); bottom: 0; left: calc(var(--about-marker) / 2 - 1px); width: 2px; background: var(--color-accent-soft); }
-
-/* Вариант 1 (line): одна белая панель на все шаги. От 1025px шаги в ряд, линия горизонтальная через кружки. */
-.narrative-therapy-page .is-line .about-steps_list { padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
 @media (min-width: 48rem) {
-  .narrative-therapy-page .is-line .about-steps_list { padding: 1.5rem; }
+  .narrative-therapy-page .about-steps_list { padding: 1.5rem; }
+  .narrative-therapy-page .about-steps_item { padding-bottom: 2rem; }
+  .narrative-therapy-page .about-steps_item:last-child { padding-bottom: 0; }
 }
 @media (min-width: 64.0625rem) {
-  .narrative-therapy-page .is-line .about-steps_list { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 2.5rem; }
-  .narrative-therapy-page .is-line .about-steps_item { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding: 0 1.5rem 0 0; }
-  .narrative-therapy-page .is-line .about-steps_item:last-child { padding-right: 0; }
-  .narrative-therapy-page .is-line .about-steps_item:not(:last-child)::before { top: calc(var(--about-marker) / 2 - 1px); bottom: auto; left: var(--about-marker); right: 0; width: auto; height: 2px; }
-  .narrative-therapy-page .is-line .about-steps_copy { padding-top: 0; }
-}
-
-/* Вариант 2 (split): от 1025px заголовок и описание слева, шаги справа в белой панели по вертикальной линии. */
-.narrative-therapy-page .is-split .about-steps_list { padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
-@media (min-width: 48rem) {
-  .narrative-therapy-page .is-split .about-steps_list { padding: 1.5rem; }
-  .narrative-therapy-page .is-split .about-steps_item { padding-bottom: 2rem; }
-  .narrative-therapy-page .is-split .about-steps_item:last-child { padding-bottom: 0; }
-}
-@media (min-width: 64.0625rem) {
-  .narrative-therapy-page .about-steps_component.is-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: start; gap: 4rem; }
-  .narrative-therapy-page .is-split .section-header_component { position: sticky; top: 2rem; }
-  .narrative-therapy-page .is-split .about-steps_list { padding: 2.5rem; }
-}
-
-/* Вариант 3 (flow): весь блок в тёмной панели, шаги — полупрозрачные ячейки, между ними стрелки.
-   На телефоне и планшете шаги друг под другом и стрелка вниз, от 1025px в ряд и стрелка вправо. */
-.narrative-therapy-page .about-steps_component.is-flow { --body-text-color: var(--color-program-muted); padding: var(--section-inset-space) var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
-.narrative-therapy-page .is-flow .section-title_component,
-.narrative-therapy-page .is-flow .content-heading_component { color: var(--color-text-on-dark); }
-.narrative-therapy-page .is-flow .variant-note_component { border-color: var(--color-accent-soft); color: var(--color-accent-soft); }
-.narrative-therapy-page .is-flow .about-steps_list { gap: 2.25rem; }
-.narrative-therapy-page .is-flow .about-steps_item { padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: rgb(255 255 255 / 8%); }
-.narrative-therapy-page .is-flow .about-steps_copy .body-text_component { --body-text-color: var(--color-program-muted); }
-.narrative-therapy-page .is-flow .about-steps_item:not(:last-child)::after { content: ""; position: absolute; bottom: -1.5rem; left: 50%; width: 0.75rem; height: 0.75rem; border-right: 2px solid var(--color-accent-soft); border-bottom: 2px solid var(--color-accent-soft); transform: translateX(-50%) rotate(45deg); }
-@media (min-width: 48rem) {
-  .narrative-therapy-page .about-steps_component.is-flow { padding-inline: 1.5rem; }
-  .narrative-therapy-page .is-flow .about-steps_item { padding: 1.5rem; }
-}
-@media (min-width: 64.0625rem) {
-  .narrative-therapy-page .about-steps_component.is-flow { padding-inline: 2.5rem; }
-  .narrative-therapy-page .is-flow .about-steps_list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.5rem; }
-  .narrative-therapy-page .is-flow .about-steps_item { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; align-content: start; }
-  .narrative-therapy-page .is-flow .about-steps_copy { padding-top: 0; }
-  .narrative-therapy-page .is-flow .about-steps_item:not(:last-child)::after { top: calc(1.5rem + var(--about-marker) / 2); right: -1.5rem; bottom: auto; left: auto; transform: translate(0, -50%) rotate(-45deg); }
+  .narrative-therapy-page .about-steps_component { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: start; gap: 4rem; }
+  .narrative-therapy-page .about-steps_component .section-header_component { position: sticky; top: 2rem; }
+  .narrative-therapy-page .about-steps_list { padding: 2.5rem; }
 }
