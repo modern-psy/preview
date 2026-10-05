@@ -78,10 +78,14 @@ const portrait = (photo, className) => photo.src
   ? image(photo, `${className} portrait_image`)
   : `<div class="${className} portrait_placeholder" role="img" aria-label="${escapeHtml(photo.alt)}. Фото появится позже"><span class="portrait_initials" aria-hidden="true">${escapeHtml(photo.initials)}</span></div>`;
 
-/* Проектный блок feature-split: копия с группами списков и фото; секция «уровень». */
+/* Проектный блок feature-split, секция «уровень». Иерархия (решение пользователя 05.10.2026):
+   заголовок, под ним одна короткая вводная обычным текстом; главная карточка — что будет на уровне;
+   «Что дальше» ниже, мельче и без карточки, как справка, вместе со сноской про три уровня. */
 function renderFeatureSplit(name, data, id) {
-  const groups = data.groups.map((group, index) => `<div class="feature-split_group"><h3 class="content-heading_component is-card" id="${id}-group-${index + 1}">${renderText(group.heading)}</h3>${group.intro ? `<p class="body-text_component">${renderText(group.intro)}</p>` : ''}<ul class="feature-list_component" aria-labelledby="${id}-group-${index + 1}">${group.items.map(item => checkItem(item)).join('')}</ul></div>`).join('\n');
-  const copy = `<div class="feature-split_copy"><div class="feature-split_intro">${header(id, data.heading, {align: 'left', subtitle: data.subtitle})}<p class="body-text_component is-summary is-emphasis feature-split_lead">${renderText(data.lead)}</p>${data.paragraphs.map(text => `<p class="body-text_component is-summary is-regular">${renderText(text)}</p>`).join('')}</div><div class="feature-split_groups">${groups}</div>${data.note ? `<p class="body-text_component is-fine-print feature-split_note">${renderText(data.note)}</p>` : ''}</div>`;
+  const [main, next] = data.groups;
+  const primary = `<div class="feature-split_group"><h3 class="content-heading_component is-card" id="${id}-group-1">${renderText(main.heading)}</h3><ul class="feature-list_component" aria-labelledby="${id}-group-1">${main.items.map(item => checkItem(item)).join('')}</ul></div>`;
+  const secondary = `<div class="feature-split_aside"><h3 class="body-text_component is-emphasis feature-split_aside-heading" id="${id}-group-2">${renderText(next.heading)}</h3>${next.intro ? `<p class="body-text_component is-detailed feature-split_aside-text">${renderText(next.intro)}</p>` : ''}<ul class="feature-split_aside-list" aria-labelledby="${id}-group-2">${next.items.map(item => `<li class="body-text_component is-detailed feature-split_aside-item">${renderText(item)}</li>`).join('')}</ul>${data.note ? `<p class="body-text_component is-fine-print feature-split_note">${renderText(data.note)}</p>` : ''}</div>`;
+  const copy = `<div class="feature-split_copy"><div class="feature-split_intro">${header(id, data.heading, {align: 'left'})}<p class="body-text_component feature-split_summary">${renderText(data.summary)}</p></div>${primary}${secondary}</div>`;
   const media = `<div class="feature-split_media"${data.image.position ? ` style="--feature-split-image-position: ${escapeHtml(data.image.position)}"` : ''}>${image(data.image, 'feature-split_image')}</div>`;
   return section(name, id, `<div class="feature-split_component">${copy}${media}</div>`);
 }

@@ -3697,14 +3697,23 @@ body > .iti--detached-country-selector .iti__no-results {
   .rodbt-record-page .feature-list_component { gap: 0.75rem; }
 }
 
-/* Проектный блок feature-split: текст с группами списков и фото рядом (секция «уровень»). */
+/* Проектный блок feature-split: секция «уровень», текст и фото рядом.
+   Иерархия: заголовок → короткая вводная обычным текстом (как в плитках под первым экраном) → главная карточка
+   «Что будет на этом уровне» → справка «Что дальше» мельче, без карточки, отделена линией, со сноской. */
 .rodbt-record-page .feature-split_component { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 1.25rem 1rem; --feature-split-media-height: 18.75rem; }
 .rodbt-record-page .feature-split_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
 .rodbt-record-page .feature-split_intro { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+/* Вводная инструктора по-прежнему использует feature-split_lead. */
 .rodbt-record-page .feature-split_lead { --body-text-color: var(--color-text-primary); }
-.rodbt-record-page .feature-split_groups { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
+.rodbt-record-page .feature-split_summary { --body-text-color: var(--color-text-secondary-large); max-width: 40rem; font-weight: 444; }
 .rodbt-record-page .feature-split_group { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
-.rodbt-record-page .feature-split_note { overflow-wrap: anywhere; }
+.rodbt-record-page .feature-split_aside { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; padding-top: 1.25rem; border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 12%, transparent); }
+.rodbt-record-page .feature-split_aside-heading { --body-text-color: var(--color-text-primary); font-weight: 500; }
+.rodbt-record-page .feature-split_aside-text { --body-text-color: var(--color-text-secondary-large); }
+.rodbt-record-page .feature-split_aside-list { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+.rodbt-record-page .feature-split_aside-item { --body-text-color: var(--color-text-primary); position: relative; padding-left: 1.25rem; }
+.rodbt-record-page .feature-split_aside-item::before { position: absolute; top: 0.6em; left: 0.25rem; width: 0.3125rem; height: 0.3125rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
+.rodbt-record-page .feature-split_note { margin-top: 0.5rem; overflow-wrap: anywhere; }
 .rodbt-record-page .feature-split_media { position: relative; min-width: 0; min-height: var(--feature-split-media-height); overflow: clip; border-radius: var(--radius-card, 1rem); }
 .rodbt-record-page .feature-split_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--feature-split-image-position, center); }
 @media (min-width: 32.5625rem) {
@@ -3714,12 +3723,10 @@ body > .iti--detached-country-selector .iti__no-results {
 }
 @media (min-width: 48rem) {
   .rodbt-record-page .feature-split_component { --feature-split-media-height: 25rem; row-gap: 2rem; }
-  .rodbt-record-page .feature-split_groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--card-grid-gap); }
 }
 @media (min-width: 64.0625rem) {
   .rodbt-record-page .feature-split_component { grid-template-columns: minmax(0, 1fr) minmax(0, 0.75fr); column-gap: 2rem; }
   .rodbt-record-page .feature-split_copy { gap: 2rem; }
-  .rodbt-record-page .feature-split_groups { display: flex; flex-direction: column; gap: var(--card-grid-gap); }
 }
 
 /* Проектный блок strategy: три карточки с фото, заголовком и текстом. */
@@ -3854,11 +3861,11 @@ body > .iti--detached-country-selector .iti__no-results {
    выделение приведено к Medium 500, как заголовки карточек. */
 .rodbt-record-page .body-text_component.is-emphasis { font-weight: 500; }
 
-/* Плитки под первым экраном. Шесть пунктов: от 1025px два ряда по три. Ниже 1025px обычная плитка
+/* Плитки под первым экраном. Четыре пункта: от 1025px в один ряд. Ниже 1025px обычная плитка
    сжимается по высоте до своего текста; минимальная высота остаётся только у плитки с картинкой документа. */
 .rodbt-record-page .benefits_card:not(.is-diploma) { min-height: 0; }
 @media (min-width: 64.0625rem) {
-  .rodbt-record-page .benefits_component { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rodbt-record-page .benefits_component { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .rodbt-record-page .benefits_card { grid-column: auto; }
   .rodbt-record-page .benefits_card:not(.is-diploma) { min-height: var(--benefits-height); }
 }
@@ -3900,6 +3907,19 @@ body > .iti--detached-country-selector .iti__no-results {
    фото и она уходила за край, поэтому от 768px кадр сдвинут к ней. */
 @media (min-width: 48rem) {
   .rodbt-record-page .hero_component.is-dual-action .hero_image { object-position: var(--hero-image-position-desktop); }
+}
+
+/* Первый экран на телефоне (до 768px; решение пользователя 05.10.2026). Текст выровнен по левому краю, как от 768px.
+   Низ фото затемнён плавным переходом: на телефоне текст лежит на светлом свитере и без затемнения бледнеет.
+   От 768px текст стоит слева на тёмной части кадра, там остаётся обычная лёгкая вуаль компонента. */
+.rodbt-record-page .hero_component.is-dual-action .meta-pill_list { align-items: flex-start; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+.rodbt-record-page .hero_component.is-dual-action .meta-pill_component.is-accent { order: 0; }
+.rodbt-record-page .hero_component.is-dual-action .hero_content { align-items: flex-start; text-align: left; }
+.rodbt-record-page .hero_component.is-dual-action .hero_copy { align-items: flex-start; }
+.rodbt-record-page .hero_component.is-dual-action .hero_start-note { justify-content: flex-start; }
+.rodbt-record-page .hero_component.is-dual-action .hero_media::after { background: linear-gradient(to bottom, rgb(0 0 0 / 15%) 25%, rgb(0 0 0 / 75%) 85%); }
+@media (min-width: 48rem) {
+  .rodbt-record-page .hero_component.is-dual-action .hero_media::after { background: rgb(0 0 0 / 15%); }
 }
 
 /* Длительность модуля в карточке программы и карточка литературы под программой (список с точками). */
