@@ -137,7 +137,7 @@
   .rodbt-record-page .highlights_practice { gap: 1.5rem; }
 }
 
-/* Тёмная заметка с иконкой (сейчас не используется, оставлена для предупреждений). */
+/* Тёмная заметка с иконкой: про учебники под шагами обучения. */
 .rodbt-record-page .learning-note_component { --body-text-color: var(--color-text-on-dark); display: flex; width: 100%; max-width: 63rem; min-width: 0; align-items: start; gap: 0.75rem; margin-inline: auto; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-text-primary); }
 .rodbt-record-page .learning-note_icon { flex: none; font-size: 1.25rem; line-height: 1.3; }
 .rodbt-record-page .learning-note_text { min-width: 0; overflow-wrap: anywhere; }
@@ -256,127 +256,6 @@
   .rodbt-record-page .benefits_card:not(.is-diploma) { min-height: var(--benefits-height); }
 }
 
-/* Временная подпись варианта программы (три варианта одного блока на выбор). Убрать вместе с лишними вариантами. */
-.rodbt-record-page .variant-note_component { display: inline-flex; max-width: 100%; padding: 0.25rem 0.625rem; border: 1px dashed var(--color-accent-primary); border-radius: 0.5rem; color: var(--color-accent-text); font-size: 0.875rem; font-weight: 444; line-height: 1.3; }
-
-/* Светлый вид topic-tabs (второй вариант программы): без тёмного контейнера, кнопки и панель белые. */
-.rodbt-record-page .topic-tabs_component.is-light { padding: 0; background: none; color: var(--color-text-primary); }
-.rodbt-record-page .topic-tabs_component.is-light .section-title_component { color: var(--color-text-primary); }
-.rodbt-record-page .topic-tabs_component.is-light .topic-tabs_tab { background: var(--color-surface-primary); color: var(--color-text-primary); }
-.rodbt-record-page .topic-tabs_component.is-light .topic-tabs_tab-label { color: var(--color-accent-text); }
-.rodbt-record-page .topic-tabs_component.is-light .topic-tabs_tab[aria-expanded="true"] { background: var(--color-text-primary); color: var(--color-text-on-dark); }
-.rodbt-record-page .topic-tabs_component.is-light .topic-tabs_tab[aria-expanded="true"] .topic-tabs_tab-label { color: var(--color-accent-soft); }
-.rodbt-record-page .topic-tabs_component.is-light .topic-tabs_panel { display: flex; flex-direction: column; gap: 1.25rem; }
-.rodbt-record-page .topic-tabs_component.is-light .topic-tabs_panel[hidden] { display: none; }
-@media (hover: hover) and (pointer: fine) {
-  .rodbt-record-page .topic-tabs_component.is-light .topic-tabs_tab:not([aria-expanded="true"]):hover { background: var(--color-accent-soft); }
-}
-
-/* Описание темы программы: вводные абзацы, подпись «Основные темы» и список с точкой акцентного цвета. */
-.rodbt-record-page .program-module_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
-.rodbt-record-page .program-module_lead { --body-text-color: var(--color-text-secondary-large); }
-.rodbt-record-page .program-module_label { color: var(--color-accent-text); font-size: 1rem; font-weight: 500; line-height: 1.3; }
-.rodbt-record-page .program-module_points { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
-.rodbt-record-page .program-module_point { --body-text-color: var(--color-text-primary); position: relative; padding-left: 1.25rem; }
-.rodbt-record-page .program-module_point::before { position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
-
-/* Третий вариант программы: слева белая карточка с вкладками тем и описанием, справа тёмная сцена со схемой.
-   До 1025px колонки складываются, до 768px вкладки идут лентой с горизонтальной прокруткой:
-   шесть плашек в столбик заняли бы пол-экрана. */
-.rodbt-record-page .program-scenes_layout { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
-.rodbt-record-page .program-scenes_panel { --program-scenes-padding: var(--card-padding); display: flex; min-width: 0; flex-direction: column; justify-content: space-between; gap: 1.5rem; padding: var(--program-scenes-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
-.rodbt-record-page .program-scenes_tabs { display: flex; flex-wrap: nowrap; gap: 0.5rem; margin-inline: calc(var(--program-scenes-padding) * -1); padding: 0.125rem var(--program-scenes-padding); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding: 0 var(--program-scenes-padding); scrollbar-width: none; overscroll-behavior-x: contain; }
-.rodbt-record-page .program-scenes_tabs::-webkit-scrollbar { display: none; }
-.rodbt-record-page .program-scenes_tab { position: relative; flex: none; padding: 0.75rem 0.875rem; border: 0; border-radius: 0.75rem; background: var(--color-page-background); color: var(--color-text-primary); font-family: inherit; font-size: 1rem; font-weight: 400; line-height: 1; letter-spacing: -0.02em; text-align: left; white-space: nowrap; scroll-snap-align: start; cursor: pointer; transition: background-color var(--transition-site), color var(--transition-site); }
-.rodbt-record-page .program-scenes_tab::after { position: absolute; inset: 50% 0 auto; height: 2.75rem; transform: translateY(-50%); content: ""; }
-.rodbt-record-page .program-scenes_tab[aria-selected="true"] { background: var(--color-text-primary); color: var(--color-text-on-dark); }
-.rodbt-record-page .program-scenes_tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.rodbt-record-page .program-scenes_text { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; overflow-wrap: anywhere; }
-.rodbt-record-page .program-scenes_text[hidden] { display: none; }
-.rodbt-record-page .program-scenes_text.is-entering { animation: rodbt-record-topic-text-in 300ms var(--motion-easing); }
-@keyframes rodbt-record-topic-text-in { from { opacity: 0; transform: translateY(0.5rem); } to { opacity: 1; transform: none; } }
-.rodbt-record-page .program-scenes_stage { display: flex; min-width: 0; align-items: center; justify-content: center; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); }
-.rodbt-record-page .scene_panel { width: min(100%, 41.25rem); aspect-ratio: 520 / 340; overflow: clip; border-radius: var(--radius-card, 1rem); background: #4c3c5e; }
-.rodbt-record-page .scene_panel[hidden] { display: none; }
-.rodbt-record-page .scene { display: block; width: 100%; height: 100%; font-family: inherit; }
-@media (min-width: 48rem) {
-  .rodbt-record-page .program-scenes_panel { --program-scenes-padding: 1.5rem; gap: 2rem; }
-  .rodbt-record-page .program-scenes_tabs { flex-wrap: wrap; margin-inline: 0; padding: 0; overflow: visible; }
-  .rodbt-record-page .program-scenes_stage { padding: 1.5rem; }
-  .rodbt-record-page .program-scenes_tab { font-size: 1.125rem; }
-}
-@media (min-width: 64.0625rem) {
-  .rodbt-record-page .program-scenes_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (hover: hover) and (pointer: fine) {
-  .rodbt-record-page .program-scenes_tab:not([aria-selected="true"]):hover { background: var(--color-accent-soft); }
-}
-
-/* Элементы схем. Размеры в единицах viewBox, не в rem: схема масштабируется целиком вместе с плашкой. */
-.rodbt-record-page .scene_card { fill: #e3dffc; }
-.rodbt-record-page .scene_card.is-accent { fill: #654ddd; }
-.rodbt-record-page .scene_chip { fill: #c8c2e8; }
-.rodbt-record-page .scene_chip-text { fill: #4c3c5e; font-size: 9px; letter-spacing: -0.02em; }
-.rodbt-record-page .scene_title { fill: #4c3c5e; font-size: 13px; font-weight: 500; letter-spacing: -0.02em; }
-.rodbt-record-page .scene_title.is-on-accent { fill: #ffffff; }
-.rodbt-record-page .scene_dot.is-light { fill: #e3dffc; }
-.rodbt-record-page .scene_line { fill: none; stroke: #e3dffc; stroke-width: 2; }
-.rodbt-record-page .scene_line.is-dashed { stroke-dasharray: 0.03 0.03; }
-
-/* Анимация схем. Один цикл 9 секунд у всех элементов сцены. Элемент получает «слот» (sk-in-1 … sk-in-10):
-   в свой момент появляется, держится до конца цикла, гаснет, и всё начинается заново. Линии рисуются от
-   начала к концу (sk-draw-N). Скрытая сцена не анимируется, при показе цикл стартует с начала. */
-.rodbt-record-page .scene [class*="sk-in-"],
-.rodbt-record-page .scene [class*="sk-draw-"] { animation-duration: 9000ms; animation-timing-function: cubic-bezier(0.34, 1.45, 0.64, 1); animation-iteration-count: infinite; animation-fill-mode: both; transform-box: fill-box; transform-origin: left center; }
-.rodbt-record-page .scene .is-from-right { --sk-dx: 18px; transform-origin: right center; }
-.rodbt-record-page .scene .is-pop { --sk-dx: 0px; transform-origin: center; }
-.rodbt-record-page .scene [class*="sk-draw-"] { stroke-dasharray: 1; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
-.rodbt-record-page .scene .is-dashed[class*="sk-draw-"] { stroke-dasharray: 0.03 0.03; }
-.rodbt-record-page .scene .sk-in-1 { animation-name: rodbt-sk-in-1; }
-.rodbt-record-page .scene .sk-in-2 { animation-name: rodbt-sk-in-2; }
-.rodbt-record-page .scene .sk-in-3 { animation-name: rodbt-sk-in-3; }
-.rodbt-record-page .scene .sk-in-4 { animation-name: rodbt-sk-in-4; }
-.rodbt-record-page .scene .sk-in-5 { animation-name: rodbt-sk-in-5; }
-.rodbt-record-page .scene .sk-in-6 { animation-name: rodbt-sk-in-6; }
-.rodbt-record-page .scene .sk-in-7 { animation-name: rodbt-sk-in-7; }
-.rodbt-record-page .scene .sk-in-8 { animation-name: rodbt-sk-in-8; }
-.rodbt-record-page .scene .sk-in-9 { animation-name: rodbt-sk-in-9; }
-.rodbt-record-page .scene .sk-in-10 { animation-name: rodbt-sk-in-10; }
-.rodbt-record-page .scene .sk-draw-2 { animation-name: rodbt-sk-draw-2; }
-.rodbt-record-page .scene .sk-draw-3 { animation-name: rodbt-sk-draw-3; }
-.rodbt-record-page .scene .sk-draw-4 { animation-name: rodbt-sk-draw-4; }
-.rodbt-record-page .scene .sk-draw-5 { animation-name: rodbt-sk-draw-5; }
-.rodbt-record-page .scene .sk-draw-6 { animation-name: rodbt-sk-draw-6; }
-.rodbt-record-page .scene .sk-draw-7 { animation-name: rodbt-sk-draw-7; }
-.rodbt-record-page .scene .sk-pulse > .scene_dot { animation: rodbt-sk-pulse 1800ms cubic-bezier(0.45, 0, 0.55, 1) infinite; transform-box: fill-box; transform-origin: center; }
-@keyframes rodbt-sk-in-1 { 0%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 8%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-2 { 0%, 6%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 14%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-3 { 0%, 12%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 20%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-4 { 0%, 18%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 26%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-5 { 0%, 24%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 32%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-6 { 0%, 30%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 38%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-7 { 0%, 36%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 44%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-8 { 0%, 42%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 50%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-9 { 0%, 48%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 56%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-in-10 { 0%, 54%, 100% { opacity: 0; transform: translateX(var(--sk-dx, -18px)) scale(0.96); } 62%, 86% { opacity: 1; transform: none; } 92% { opacity: 0; transform: none; } }
-@keyframes rodbt-sk-draw-2 { 0%, 7%, 100% { stroke-dashoffset: 1; opacity: 0; } 8% { opacity: 1; } 16%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
-@keyframes rodbt-sk-draw-3 { 0%, 13%, 100% { stroke-dashoffset: 1; opacity: 0; } 14% { opacity: 1; } 22%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
-@keyframes rodbt-sk-draw-4 { 0%, 19%, 100% { stroke-dashoffset: 1; opacity: 0; } 20% { opacity: 1; } 28%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
-@keyframes rodbt-sk-draw-5 { 0%, 25%, 100% { stroke-dashoffset: 1; opacity: 0; } 26% { opacity: 1; } 34%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
-@keyframes rodbt-sk-draw-6 { 0%, 31%, 100% { stroke-dashoffset: 1; opacity: 0; } 32% { opacity: 1; } 40%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
-@keyframes rodbt-sk-draw-7 { 0%, 37%, 100% { stroke-dashoffset: 1; opacity: 0; } 38% { opacity: 1; } 46%, 86% { stroke-dashoffset: 0; opacity: 1; } 92% { stroke-dashoffset: 0; opacity: 0; } }
-@keyframes rodbt-sk-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.6; } }
-/* При отключённой анимации схема показана целиком и неподвижна. */
-@media (prefers-reduced-motion: reduce) {
-  .rodbt-record-page .scene [class*="sk-in-"],
-  .rodbt-record-page .scene [class*="sk-draw-"],
-  .rodbt-record-page .scene .sk-pulse > .scene_dot,
-  .rodbt-record-page .program-scenes_text.is-entering { animation: none; }
-  .rodbt-record-page .scene .is-dashed[class*="sk-draw-"] { stroke-dasharray: 0.03 0.03; }
-  .rodbt-record-page .scene [class*="sk-draw-"]:not(.is-dashed) { stroke-dasharray: none; }
-  .rodbt-record-page .program-scenes_tab { transition: none; }
-}
-
 /* «Кому подходит» (audience-bento). Заголовок и абзац в каждой карточке отдельно, без нумерации.
    Телефон: одна колонка, фото после карточек. Планшет: карточки 2×2, фото под ними на всю ширину.
    Desktop: три колонки, фото в центре на высоту двух рядов, карточки по две слева и справа. */
@@ -410,50 +289,19 @@
   .rodbt-record-page .benefits_card.is-diploma { --benefits-diploma-width: 16.25rem; }
 }
 
-/* «Первый уровень», вариант 2 (level-path): без фото. Тёмная карточка со шкалой уровней и вводной,
-   рядом две белые карточки со списками. Телефон: одна колонка. Планшет: вводная на всю ширину,
-   списки в две колонки. Desktop: три колонки в ряд. */
-.rodbt-record-page .level-path_body { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--card-grid-gap); }
-.rodbt-record-page .level-path_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
-.rodbt-record-page .level-path_intro { --body-text-color: var(--color-program-muted); display: flex; min-width: 0; flex-direction: column; justify-content: space-between; gap: 2rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); overflow-wrap: anywhere; }
-.rodbt-record-page .level-path_scale { display: flex; align-items: center; gap: 0.5rem; }
-.rodbt-record-page .level-path_step { display: grid; width: 2.5rem; height: 2.5rem; flex: none; place-items: center; border: 1px solid rgb(255 255 255 / 30%); border-radius: 50%; color: var(--color-program-muted); font-size: 1rem; font-weight: 500; line-height: 1; }
-.rodbt-record-page .level-path_step.is-current { border-color: var(--color-accent-primary); background: var(--color-accent-primary); color: var(--color-text-on-dark); }
-.rodbt-record-page .level-path_line { width: 1.5rem; height: 1px; flex: 0 1 auto; background: rgb(255 255 255 / 30%); }
-.rodbt-record-page .level-path_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
-.rodbt-record-page .level-path_lead { color: var(--color-text-on-dark); font-size: 1.375rem; font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
-.rodbt-record-page .level-path_card { justify-content: flex-start; gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
-.rodbt-record-page .level-path_note { max-width: 56rem; }
-@media (min-width: 32.5625rem) {
-  .rodbt-record-page .level-path_lead { font-size: 1.5rem; }
-}
-@media (min-width: 48rem) {
-  .rodbt-record-page .level-path_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .rodbt-record-page .level-path_intro { grid-column: 1 / -1; padding: 1.5rem; }
-  .rodbt-record-page .level-path_lead { font-size: 1.75rem; }
-  .rodbt-record-page .level-path_card { gap: 1.25rem; padding: 1.5rem; }
-}
-@media (min-width: 64.0625rem) {
-  .rodbt-record-page .level-path_layout { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); }
-  .rodbt-record-page .level-path_intro { grid-column: auto; gap: 3rem; }
-  .rodbt-record-page .level-path_lead { font-size: 2rem; }
-}
-
 /* Фото первого экрана: героиня сидит в правой части кадра. На планшете общий компонент центрирует
    фото и она уходила за край, поэтому от 768px кадр сдвинут к ней. */
 @media (min-width: 48rem) {
   .rodbt-record-page .hero_component.is-dual-action .hero_image { object-position: var(--hero-image-position-desktop); }
 }
 
-/* Заметка про учебники под шагами обучения (перенесена из rodbt/). */
-.rodbt-record-page .learning-note_component { --body-text-color: var(--color-text-on-dark); display: flex; width: 100%; max-width: 63rem; min-width: 0; align-items: start; gap: 0.75rem; margin-inline: auto; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-text-primary); }
-.rodbt-record-page .learning-note_icon { flex: none; font-size: 1.25rem; line-height: 1.3; }
-.rodbt-record-page .learning-note_text { min-width: 0; overflow-wrap: anywhere; }
-
-/* Длительность модуля в карточке программы и карточка литературы под программой. */
+/* Длительность модуля в карточке программы и карточка литературы под программой (список с точками). */
 .rodbt-record-page .program-topics_duration { --body-text-color: var(--color-text-secondary-large); margin-top: auto; }
 .rodbt-record-page .program-literature_component { width: 100%; gap: 0.75rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); color: var(--color-text-primary); overflow-wrap: anywhere; }
 .rodbt-record-page .program-literature_note { --body-text-color: var(--color-text-secondary-large); }
+.rodbt-record-page .program-literature_list { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.rodbt-record-page .program-literature_item { --body-text-color: var(--color-text-primary); position: relative; padding-left: 1.25rem; }
+.rodbt-record-page .program-literature_item::before { position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
 /* Обёртки отдельных секций не должны получать высоту целого экрана. */
 .academy-page[data-rodbt-record-part] { min-height: 0; height: auto; }
 </style>

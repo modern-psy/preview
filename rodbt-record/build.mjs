@@ -60,7 +60,7 @@ const image = (media, className, {lazy = true, decorative = false} = {}) => {
   return `<img class="${className}" src="${escapeHtml(media.src)}" width="${media.width}" height="${media.height}" alt="${decorative ? '' : escapeHtml(media.alt)}"${decorative ? ' aria-hidden="true"' : ''} draggable="false"${lazy ? ' loading="lazy" decoding="async"' : ''}>`;
 };
 const checkItem = (text, copy = '') => `<li class="feature-list_item"><img class="feature-list_icon" src="${CHECK_ICON}" width="24" height="24" alt="" draggable="false" loading="lazy">${copy || `<span class="body-text_component feature-list_text">${renderText(text)}</span>`}</li>`;
-const header = (id, heading, {align = 'center', subtitle = '', note = ''} = {}) => `<div class="section-header_component is-${align} is-responsive">${note ? variantNote(note) : ''}<h2 class="section-title_component is-${align} is-responsive" id="${id}-heading">${renderText(heading)}</h2>${subtitle ? `<p class="section-subtitle_component">${renderText(subtitle)}</p>` : ''}</div>`;
+const header = (id, heading, {align = 'center', subtitle = ''} = {}) => `<div class="section-header_component is-${align} is-responsive"><h2 class="section-title_component is-${align} is-responsive" id="${id}-heading">${renderText(heading)}</h2>${subtitle ? `<p class="section-subtitle_component">${renderText(subtitle)}</p>` : ''}</div>`;
 const section = (name, id, inner, {wide = false, extra = ''} = {}) => `<section class="section_${name} section-spacing_component${extra}" id="${sectionId(id)}" aria-labelledby="${id}-heading">
   <div class="padding-global"><div class="container-xlarge">${wide ? '<div class="column-grid_component"><div class="column-grid_content is-content-wide">' : ''}
     ${inner}
@@ -81,19 +81,9 @@ const portrait = (photo, className) => photo.src
 /* Проектный блок feature-split: копия с группами списков и фото; секция «уровень». */
 function renderFeatureSplit(name, data, id) {
   const groups = data.groups.map((group, index) => `<div class="feature-split_group"><h3 class="content-heading_component is-card" id="${id}-group-${index + 1}">${renderText(group.heading)}</h3>${group.intro ? `<p class="body-text_component">${renderText(group.intro)}</p>` : ''}<ul class="feature-list_component" aria-labelledby="${id}-group-${index + 1}">${group.items.map(item => checkItem(item)).join('')}</ul></div>`).join('\n');
-  const copy = `<div class="feature-split_copy"><div class="feature-split_intro">${header(id, data.heading, {align: 'left', subtitle: data.subtitle, note: data.variantLabels?.[0]})}<p class="body-text_component is-summary is-emphasis feature-split_lead">${renderText(data.lead)}</p>${data.paragraphs.map(text => `<p class="body-text_component is-summary is-regular">${renderText(text)}</p>`).join('')}</div><div class="feature-split_groups">${groups}</div>${data.note ? `<p class="body-text_component is-fine-print feature-split_note">${renderText(data.note)}</p>` : ''}</div>`;
+  const copy = `<div class="feature-split_copy"><div class="feature-split_intro">${header(id, data.heading, {align: 'left', subtitle: data.subtitle})}<p class="body-text_component is-summary is-emphasis feature-split_lead">${renderText(data.lead)}</p>${data.paragraphs.map(text => `<p class="body-text_component is-summary is-regular">${renderText(text)}</p>`).join('')}</div><div class="feature-split_groups">${groups}</div>${data.note ? `<p class="body-text_component is-fine-print feature-split_note">${renderText(data.note)}</p>` : ''}</div>`;
   const media = `<div class="feature-split_media"${data.image.position ? ` style="--feature-split-image-position: ${escapeHtml(data.image.position)}"` : ''}>${image(data.image, 'feature-split_image')}</div>`;
   return section(name, id, `<div class="feature-split_component">${copy}${media}</div>`);
-}
-
-/* «Первый уровень», вариант 2 (level-path): без фото. Слева тёмная карточка: шкала из трёх уровней
-   (первый выделен, цифры декоративные), главная мысль и вводные абзацы. Справа две белые карточки
-   со списками: что будет на уровне и что дальше. Сноска под блоком. Тексты те же, что в варианте 1. */
-function renderLevelPath(data, id) {
-  const groups = data.groups.map((group, index) => `<div class="card_component level-path_card"><h3 class="content-heading_component is-card" id="${id}-group-${index + 1}">${renderText(group.heading)}</h3>${group.intro ? `<p class="body-text_component">${renderText(group.intro)}</p>` : ''}<ul class="feature-list_component" aria-labelledby="${id}-group-${index + 1}">${group.items.map(item => checkItem(item)).join('')}</ul></div>`).join('\n');
-  const scale = `<div class="level-path_scale" aria-hidden="true">${[1, 2, 3].map(n => `<span class="level-path_step${n === 1 ? ' is-current' : ''}">${n}</span>`).join('<span class="level-path_line"></span>')}</div>`;
-  const intro = `<div class="level-path_intro">${scale}<div class="level-path_copy"><p class="level-path_lead">${renderText(data.lead)}</p>${data.paragraphs.map(text => `<p class="body-text_component is-summary is-regular">${renderText(text)}</p>`).join('')}</div></div>`;
-  return section('level-path', id, `<div class="section-layout_component is-responsive">${header(id, data.heading, {subtitle: data.subtitle, note: data.variantLabels[1]})}<div class="level-path_body"><div class="level-path_layout">${intro}${groups}</div>${data.note ? `<p class="body-text_component is-fine-print level-path_note">${renderText(data.note)}</p>` : ''}</div></div>`);
 }
 
 /* Проектный блок instructor: фото (или заглушка) и вводная, ниже разделы биографии аккордеоном Академии.
@@ -129,93 +119,23 @@ function renderHighlights(data, id) {
 /* Проектный блок topic-tabs. Одна разметка на все ширины: кнопка раздела и сразу за ней его панель.
    До 1025px это аккордеон (панель раскрывается под кнопкой), от 1025px кнопки стоят колонкой слева,
    а открытая панель справа. Открыт всегда один раздел; без скрипта видны все панели.
-   Используется дважды: навыки (тёмный контейнер) и второй вариант программы (светлый, is-light). */
-function renderTopicTabs(name, id, {heading, variantLabel, after = '', below = '', light = false, groups}) {
+   Сейчас один потребитель: навыки (тёмный контейнер). */
+function renderTopicTabs(name, id, {heading, light = false, groups}) {
   const items = groups.map((group, i) => `<h3 class="topic-tabs_heading" style="--topic-index: ${i + 1}"><button class="topic-tabs_tab" type="button" id="${id}-tab-${i + 1}" aria-controls="${id}-panel-${i + 1}" aria-expanded="${i === 0}" data-topic-tab><span class="topic-tabs_tab-label" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="topic-tabs_tab-title">${renderText(group.heading)}</span></button></h3>
 <div class="topic-tabs_panel" role="region" id="${id}-panel-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-topic-panel>${group.body}</div>`).join('\n');
-  return section(name, id, `<div class="topic-tabs_component${light ? ' is-light' : ''}"><div class="section-header_component is-center is-responsive">${variantLabel ? variantNote(variantLabel) : ''}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(heading)}</h2>${after}</div><div class="topic-tabs_layout" style="--topic-count: ${groups.length}" data-topic-tabs>${items}</div>${below}</div>`);
+  return section(name, id, `<div class="topic-tabs_component${light ? ' is-light' : ''}"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(heading)}</h2></div><div class="topic-tabs_layout" style="--topic-count: ${groups.length}" data-topic-tabs>${items}</div></div>`);
 }
 const renderSkills = (data, id) => renderTopicTabs('skills', id, {heading: data.heading, groups: data.groups.map(group => ({heading: group.heading, body: `<ul class="feature-list_component">${group.items.map(item => checkItem(item)).join('')}</ul>`}))});
 
-/* Временная подпись варианта программы: на странице три варианта одного блока, остаться должен один. */
-const variantNote = text => `<p class="variant-note_component">${renderText(text)}</p>`;
-const moduleLead = module => module.lead.map(text => `<p class="body-text_component is-detailed program-module_lead">${renderText(text)}</p>`).join('');
 const scheduleNote = schedule => `<p class="program-topics_schedule"><span>${renderText(schedule.label)}</span><span class="program-topics_time">${renderText(schedule.detail)}</span></p>`;
-const moduleDuration = module => `<p class="program-module_label">${renderText(module.duration)}</p>`;
-/* Рекомендуемая литература и переводчики материалов: карточка под программой, повторяется в каждом варианте. */
-const literature = (data, id) => `<div class="card_component program-literature_component"><h3 class="content-heading_component is-card" id="${id}-literature">${renderText(data.literature.heading)}</h3><ul class="program-module_points" aria-labelledby="${id}-literature">${data.literature.items.map(text => `<li class="body-text_component is-detailed program-module_point">${renderText(text)}</li>`).join('')}</ul><p class="body-text_component program-literature_note">${renderText(data.literature.note)}</p></div>`;
+/* Рекомендуемая литература и переводчики материалов: карточка под программой. */
+const literature = (data, id) => `<div class="card_component program-literature_component"><h3 class="content-heading_component is-card" id="${id}-literature">${renderText(data.literature.heading)}</h3><ul class="program-literature_list" aria-labelledby="${id}-literature">${data.literature.items.map(text => `<li class="body-text_component is-detailed program-literature_item">${renderText(text)}</li>`).join('')}</ul><p class="body-text_component program-literature_note">${renderText(data.literature.note)}</p></div>`;
 
-/* Программа, вариант 1: плашка формата и нумерованные карточки модулей с длительностью. */
+/* Программа: плашка формата и нумерованные карточки модулей с длительностью (выбрана пользователем 05.10.2026
+   из трёх вариантов, разделы с описаниями и вкладки со схемами сняты). */
 function renderProgram(data, id) {
   const topics = data.modules.map((module, i) => `<li class="card_component program-topics_card"><span class="program-topics_number" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><h3 class="content-heading_component is-card">${renderText(module.heading)}</h3><p class="body-text_component program-topics_duration">${renderText(module.duration)}</p></li>`).join('\n');
-  return section('program', id, `<div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[0])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${scheduleNote(data.schedule)}</div><ol class="card-grid_component is-triple program-topics_list" aria-label="${escapeHtml(data.listLabel)}">${topics}</ol>${literature(data, id)}</div>`);
-}
-
-/* Программа, вариант 2: те же разделы, что в навыках, но в светлом виде и с описанием каждой темы. */
-const renderProgramTabs = (data, id) => renderTopicTabs('program-tabs', id, {heading: data.heading, variantLabel: data.variantLabels[1], after: scheduleNote(data.schedule), light: true, below: literature(data, id), groups: data.modules.map(module => ({heading: module.heading, body: `<div class="program-module_copy">${moduleDuration(module)}${moduleLead(module)}</div><div class="program-module_copy"><p class="program-module_label">${renderText(data.topicsLabel)}</p><ul class="program-module_points">${module.points.map(text => `<li class="body-text_component is-detailed program-module_point">${renderText(text)}</li>`).join('')}</ul></div>`}))});
-
-/* Схемы третьего варианта программы. Рисуются в единицах viewBox 520×340 из короткого описания в
-   data/program.json (scene). Три раскладки: flow (слева → центр → справа), radial (центр и окружение),
-   chain (ступени). Каждый элемент получает «слот» sk-in-N / sk-draw-N: по нему CSS показывает элементы
-   по очереди и зацикливает сцену (приём лендинга «Психосоматика»). */
-const SCENE = {width: 520, height: 340};
-const sceneCardHeight = item => (item.chip ? 30 : 14) + item.title.length * 14 + 10;
-function sceneCard(item, {x, y, w, slot, accent = false, right = false, pop = false, pulse = false}) {
-  const h = sceneCardHeight(item);
-  const lines = item.title.map((line, i) => i ? `<tspan x="12" dy="14">${escapeHtml(line)}</tspan>` : escapeHtml(line)).join('');
-  const chip = item.chip ? `<rect class="scene_chip" x="12" y="9" width="${Math.round(item.chip.length * 5.4 + 16)}" height="16" rx="8"/><text class="scene_chip-text" x="20" y="20.5">${escapeHtml(item.chip)}</text>` : '';
-  const dot = pulse ? `<g class="sk-pulse"><circle class="scene_dot is-light" cx="${w - 16}" cy="${h / 2}" r="5"/></g>` : '';
-  return `<g transform="translate(${x} ${y})"><g class="sk-in-${slot}${right ? ' is-from-right' : ''}${pop ? ' is-pop' : ''}"><rect class="scene_card${accent ? ' is-accent' : ''}" width="${w}" height="${h}" rx="8"/>${chip}<text class="scene_title${accent ? ' is-on-accent' : ''}" x="12" y="${item.chip ? 42 : 26}">${lines}</text>${dot}</g></g>`;
-}
-const sceneLine = (d, slot, extra = '') => `<path class="scene_line${extra} sk-draw-${slot}" pathLength="1" d="${d}"/>`;
-const column = (items, gap) => {
-  const heights = items.map(sceneCardHeight);
-  let y = (SCENE.height - heights.reduce((a, b) => a + b, 0) - gap * (items.length - 1)) / 2;
-  return items.map((item, i) => { const top = y; y += heights[i] + gap; return {item, y: Math.round(top), h: heights[i]}; });
-};
-const SCENE_LAYOUTS = {
-  flow(scene) {
-    const side = 150, hubW = 120, left = column(scene.left, 18), right = column(scene.right, 14);
-    const hub = {title: scene.hub}, hubH = sceneCardHeight(hub), hubX = (SCENE.width - hubW) / 2, hubY = (SCENE.height - hubH) / 2, mid = SCENE.height / 2;
-    const n = left.length, rightX = SCENE.width - 20 - side;
-    return [
-      ...left.map(({y, h}) => sceneLine(`M${20 + side} ${y + h / 2} C ${hubX - 14} ${y + h / 2}, ${20 + side + 14} ${mid}, ${hubX} ${mid}`, n + 1)),
-      ...right.map(({y, h}) => sceneLine(`M${hubX + hubW} ${mid} C ${rightX - 14} ${mid}, ${hubX + hubW + 14} ${y + h / 2}, ${rightX} ${y + h / 2}`, n + 3)),
-      ...left.map(({item, y}, i) => sceneCard(item, {x: 20, y, w: side, slot: i + 1})),
-      sceneCard(hub, {x: hubX, y: hubY, w: hubW, slot: n + 2, accent: true, pop: true, pulse: true}),
-      ...right.map(({item, y}, i) => sceneCard(item, {x: rightX, y, w: side, slot: n + 4 + i, right: true})),
-    ];
-  },
-  radial(scene) {
-    const w = 156, centerW = 150, center = {title: scene.center}, ch = sceneCardHeight(center), cx = SCENE.width / 2, cy = SCENE.height / 2, n = scene.around.length;
-    const spots = n === 3 ? [[24, 36], [SCENE.width - 24 - w, 36], [(SCENE.width - w) / 2, SCENE.height - 36]] : [[24, 36], [SCENE.width - 24 - w, 36], [24, SCENE.height - 36], [SCENE.width - 24 - w, SCENE.height - 36]];
-    const placed = scene.around.map((item, i) => { const h = sceneCardHeight(item), [x, y] = spots[i]; return {item, x, y: y > cy ? y - h : y, h}; });
-    return [
-      ...placed.map(({x, y, h}) => sceneLine(`M${x + w / 2} ${y + h / 2} L ${cx} ${cy}`, n + 1, ' is-dashed')),
-      ...placed.map(({item, x, y}, i) => sceneCard(item, {x, y, w, slot: i + 1, right: x > cx - w / 2 && x + w / 2 > cx, pop: x + w / 2 === cx})),
-      sceneCard(center, {x: cx - centerW / 2, y: cy - ch / 2, w: centerW, slot: n + 2, accent: true, pop: true, pulse: true}),
-    ];
-  },
-  chain(scene) {
-    const n = scene.steps.length, w = n > 3 ? 168 : 190, heights = scene.steps.map(sceneCardHeight);
-    const dx = (SCENE.width - 48 - w) / (n - 1), dy = (SCENE.height - 56 - heights[n - 1]) / (n - 1);
-    const placed = scene.steps.map((item, i) => ({item, x: Math.round(24 + dx * i), y: Math.round(28 + dy * i), h: heights[i]}));
-    return [
-      ...placed.slice(0, -1).map(({x, y, h}, i) => { const next = placed[i + 1]; return sceneLine(`M${x + 28} ${y + h} Q ${x + 28} ${next.y + next.h / 2}, ${next.x} ${next.y + next.h / 2}`, 2 * i + 2); }),
-      ...placed.map(({item, x, y}, i) => sceneCard(item, {x, y, w, slot: 2 * i + 1, accent: i === n - 1, pulse: i === n - 1})),
-    ];
-  },
-};
-const renderScene = scene => `<svg class="scene" viewBox="0 0 ${SCENE.width} ${SCENE.height}" aria-hidden="true" focusable="false">${SCENE_LAYOUTS[scene.layout](scene).join('')}</svg>`;
-
-/* Программа, вариант 3: слева вкладки тем и короткое описание, справа тёмная сцена с анимированной схемой
-   темы (лейаут «Карты компетенций» лендинга «Психосоматика»). На телефоне вкладки идут лентой с
-   горизонтальной прокруткой, схема встаёт под текстом. Схемы декоративные, смысл передаёт текст. */
-function renderProgramScenes(data, scenes, id) {
-  const tabs = data.modules.map((module, i) => `<button class="program-scenes_tab" type="button" role="tab" id="${id}-tab-${i + 1}" aria-selected="${i === 0}" aria-controls="${id}-text-${i + 1}" tabindex="${i === 0 ? 0 : -1}" data-scene-tab>${renderText(module.tab)}</button>`).join('');
-  const texts = data.modules.map((module, i) => `<div class="program-scenes_text" role="tabpanel" id="${id}-text-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-scene-text${i ? ' hidden' : ''}><h3 class="content-heading_component is-profile">${renderText(module.heading)}</h3>${moduleDuration(module)}${moduleLead(module)}</div>`).join('');
-  const panels = scenes.map((scene, i) => `<div class="scene_panel" data-scene-panel${i ? ' hidden' : ''}>${renderScene(scene)}</div>`).join('');
-  return section('program-scenes', id, `<div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[2])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${scheduleNote(data.schedule)}</div><div class="program-scenes_layout" data-scene-tabs><div class="program-scenes_panel"><div class="program-scenes_tabs" role="tablist" aria-label="${escapeHtml(data.tabsLabel)}">${tabs}</div><div class="program-scenes_copy">${texts}</div></div><div class="program-scenes_stage">${panels}</div></div>${literature(data, id)}</div>`);
+  return section('program', id, `<div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${scheduleNote(data.schedule)}</div><ol class="card-grid_component is-triple program-topics_list" aria-label="${escapeHtml(data.listLabel)}">${topics}</ol>${literature(data, id)}</div>`);
 }
 
 /* Документы: общий блок «Диплом» Академии (текст, условия, заметка, лицензия, одно изображение),
@@ -286,14 +206,11 @@ async function buildHtml() {
     renderStrategy(typeset(await json('strategy')), `${SLUG}-strategy`),
     renderAudienceBento(audience, `${SLUG}-audience`),
     renderFeatureSplit('level', level, `${SLUG}-level`),
-    renderLevelPath(level, `${SLUG}-level-path`),
     renderHighlights(typeset(await json('highlights')), `${SLUG}-highlights`),
     renderSkills(typeset(await json('skills')), `${SLUG}-skills`),
     renderInstructor(typeset(await json('instructor')), `${SLUG}-instructor`),
     learning,
     renderProgram(program, `${SLUG}-program`),
-    renderProgramTabs(program, `${SLUG}-program-tabs`),
-    renderProgramScenes(program, (await json('program')).modules.map(module => module.scene), `${SLUG}-program-scenes`),
     renderDocuments(typeset(await json('documents')), `${SLUG}-documents`),
     renderAcademyShowcase(academy, {id: `${SLUG}-academy`}),
     pricing.html,
