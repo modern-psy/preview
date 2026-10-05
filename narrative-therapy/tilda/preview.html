@@ -3159,6 +3159,55 @@ body > .iti--detached-country-selector .iti__no-results {
   .diploma_content { gap: 2rem; padding-right: 1rem; }
 }
 
+/* === web-academy/shared/academy/course-audience.css === */
+/* Course audience: content and semantic colors inherit Academy components. */
+.course-audience_component {
+  --section-title-tracking: -0.04em;
+  --body-text-color: var(--course-audience-muted, var(--color-text-secondary));
+  --course-audience-media-height: 18.75rem;
+}
+.course-audience_layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--card-grid-gap, 0.75rem);
+}
+.course-audience_list {
+  display: grid;
+  align-content: start;
+  gap: var(--card-grid-gap, 0.75rem);
+  min-width: 0;
+}
+.card_component.course-audience_card {
+  padding: var(--card-padding, 0.75rem);
+  border-radius: var(--radius-card, 1rem);
+  overflow-wrap: anywhere;
+}
+.course-audience_media {
+  position: relative;
+  min-width: 0;
+  min-height: var(--course-audience-media-height);
+  overflow: clip;
+  border-radius: var(--radius-card, 1rem);
+}
+.course-audience_image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--course-audience-image-position, center);
+}
+@media (min-width: 32.5625rem) {
+  .course-audience_component { --course-audience-media-height: 21.875rem; }
+  .course-audience_image { object-position: var(--course-audience-image-position-landscape, center 41%); }
+}
+@media (min-width: 48rem) {
+  .course-audience_component { --course-audience-media-height: 0rem; }
+  .course-audience_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .course-audience_image { object-position: var(--course-audience-image-position, center); }
+}
+
 /* === web-academy/shared/academy/section-heading.css === */
 /* Opt-in heading and section composition; load after the consuming component CSS. */
 .academy-page {
@@ -3808,13 +3857,19 @@ body > .iti--detached-country-selector .iti__no-results {
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ 07: Для кого этот курс. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="audience" data-academy-anchor-scroll>
-<section class="section_audience section-spacing_component" id="narrative-therapy-audience" aria-labelledby="narrative-therapy-audience-heading">
-  <div class="padding-global"><div class="container-xlarge">
-    <div class="section-layout_component is-responsive card-set_component"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="narrative-therapy-audience-heading">Для&nbsp;кого этот курс</h2></div><div class="card-set_body"><ul class="card-set_list is-columns-3" aria-label="Для кого курс"><li class="card_component card-set_card"><span class="card-set_number" aria-hidden="true">01</span><div class="content-header_component"><h3 class="content-heading_component is-card">Начинающие психологи</h3><p class="body-text_component is-emphasis card-set_lead">Для&nbsp;тех, кто имеет базовое психологическое образование и&nbsp;делает первые шаги в&nbsp;консультировании.</p><p class="body-text_component">Освоите нарративный подход как одну из&nbsp;профессиональных опор для&nbsp;начала практики.</p></div></li>
-<li class="card_component card-set_card"><span class="card-set_number" aria-hidden="true">02</span><div class="content-header_component"><h3 class="content-heading_component is-card">Практикующие психологи</h3><p class="body-text_component is-emphasis card-set_lead">Для&nbsp;специалистов, которые уже консультируют и&nbsp;хотят расширить инструментарий.</p><p class="body-text_component">Освоите нарративную оптику и&nbsp;инструменты, которые можно интегрировать в&nbsp;уже существующую практику.</p></div></li>
-<li class="card_component card-set_card"><span class="card-set_number" aria-hidden="true">03</span><div class="content-header_component"><h3 class="content-heading_component is-card">Специалисты помогающих профессий</h3><p class="body-text_component is-emphasis card-set_lead">Для&nbsp;специалистов помогающих профессий&nbsp;— социальных работников, педагогов, коучей и&nbsp;других специалистов, работающих с&nbsp;людьми.</p><p class="body-text_component">Освоите принципы нарративной беседы и&nbsp;сможете использовать их в&nbsp;рамках своей профессиональной роли.</p></div></li></ul></div></div>
-  </div></div>
+<div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="course-audience" data-academy-anchor-scroll>
+<section class="section_course-audience section-spacing_component" id="narrative-therapy-audience" aria-labelledby="narrative-therapy-audience-heading">
+  <div class="padding-global"><div class="container-xlarge column-grid_component"><div class="column-grid_content is-content-wide">
+    <div class="section-layout_component is-responsive course-audience_component">
+      <h2 class="section-title_component is-center" id="narrative-therapy-audience-heading">Для&nbsp;кого этот курс</h2>
+      <div class="course-audience_layout">
+        <ul class="course-audience_list"><li class="card_component course-audience_card"><p class="body-text_component is-statement"><span class="body-text_lead">Начинающие психологи&nbsp;—</span> для&nbsp;тех, кто имеет базовое психологическое образование и&nbsp;делает первые шаги в&nbsp;консультировании. Освоите нарративный подход как одну из&nbsp;профессиональных опор для&nbsp;начала практики.</p></li>
+<li class="card_component course-audience_card"><p class="body-text_component is-statement"><span class="body-text_lead">Практикующие психологи&nbsp;—</span> для&nbsp;специалистов, которые уже консультируют и&nbsp;хотят расширить инструментарий. Освоите нарративную оптику и&nbsp;инструменты, которые можно интегрировать в&nbsp;уже существующую практику.</p></li>
+<li class="card_component course-audience_card"><p class="body-text_component is-statement"><span class="body-text_lead">Специалисты помогающих профессий&nbsp;—</span> социальные работники, педагоги, коучи и&nbsp;другие специалисты, работающие с&nbsp;людьми. Освоите принципы нарративной беседы и&nbsp;сможете использовать их в&nbsp;рамках своей профессиональной роли.</p></li></ul>
+        <div class="course-audience_media"><img class="course-audience_image" src="https://optim.tildacdn.com/tild3963-3537-4335-b033-303232623063/-/format/webp/img-asp-for-whom.webp" width="1280" height="853" alt="Участники обучения обсуждают материал на занятии" draggable="false" loading="lazy" decoding="async"></div>
+      </div>
+    </div>
+  </div></div></div>
 </section>
 </div>
 </div></div></div></div>

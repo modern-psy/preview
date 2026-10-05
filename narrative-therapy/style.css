@@ -3145,6 +3145,55 @@ body > .iti--detached-country-selector .iti__no-results {
   .diploma_content { gap: 2rem; padding-right: 1rem; }
 }
 
+/* === web-academy/shared/academy/course-audience.css === */
+/* Course audience: content and semantic colors inherit Academy components. */
+.course-audience_component {
+  --section-title-tracking: -0.04em;
+  --body-text-color: var(--course-audience-muted, var(--color-text-secondary));
+  --course-audience-media-height: 18.75rem;
+}
+.course-audience_layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--card-grid-gap, 0.75rem);
+}
+.course-audience_list {
+  display: grid;
+  align-content: start;
+  gap: var(--card-grid-gap, 0.75rem);
+  min-width: 0;
+}
+.card_component.course-audience_card {
+  padding: var(--card-padding, 0.75rem);
+  border-radius: var(--radius-card, 1rem);
+  overflow-wrap: anywhere;
+}
+.course-audience_media {
+  position: relative;
+  min-width: 0;
+  min-height: var(--course-audience-media-height);
+  overflow: clip;
+  border-radius: var(--radius-card, 1rem);
+}
+.course-audience_image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--course-audience-image-position, center);
+}
+@media (min-width: 32.5625rem) {
+  .course-audience_component { --course-audience-media-height: 21.875rem; }
+  .course-audience_image { object-position: var(--course-audience-image-position-landscape, center 41%); }
+}
+@media (min-width: 48rem) {
+  .course-audience_component { --course-audience-media-height: 0rem; }
+  .course-audience_layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .course-audience_image { object-position: var(--course-audience-image-position, center); }
+}
+
 /* === web-academy/shared/academy/section-heading.css === */
 /* Opt-in heading and section composition; load after the consuming component CSS. */
 .academy-page {

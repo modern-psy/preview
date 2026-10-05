@@ -9,6 +9,7 @@ import {renderHeroSection} from '../web-academy/shared/academy/hero-render.mjs';
 import {renderLeadFormSection} from '../web-academy/shared/academy/lead-form-render.mjs';
 import {renderDiploma} from '../web-academy/shared/academy/diploma-render.mjs';
 import {renderFaq} from '../web-academy/shared/academy/faq-render.mjs';
+import {renderCourseAudience} from '../web-academy/shared/academy/course-audience-render.mjs';
 import {escapeHtml, renderText, sectionId} from '../web-academy/shared/academy/html-render.mjs';
 import {loadPricingPromo} from '../web-academy/shared/academy/pricing-promo-tilda.mjs';
 import {assertMotionContract} from '../web-academy/shared/academy/motion-contract.mjs';
@@ -197,7 +198,9 @@ async function buildHtml() {
     renderUseCasesCards(useCases, `${SLUG}-use-cases-cards`),
     renderUseCasesTabs(useCases, `${SLUG}-use-cases-tabs`),
     renderUseCasesRows(useCases, `${SLUG}-use-cases-rows`),
-    renderCardSet('audience', typeset(await json('audience')), `${SLUG}-audience`),
+    // «Для кого»: общий блок Академии course-audience — вводная фраза внутри абзаца, справа общее фото Академии.
+    // Ширина как у образца (trauma-ptsd «После курса вы сможете»): колонка is-content-wide вместо узкой is-content-medium.
+    renderCourseAudience(typeset(await json('audience')), {id: `${SLUG}-audience`}).replace('column-grid_content is-content-medium', 'column-grid_content is-content-wide'),
     renderProgram(typeset(await json('program')), `${SLUG}-program`),
     renderCardSet('skills', typeset(await json('skills')), `${SLUG}-skills`),
     renderPractice(typeset(await json('practice')), `${SLUG}-practice`),
@@ -252,7 +255,7 @@ ${body}
 }
 
 async function buildCss() {
-  const order = ['components.css', 'card-spacing.css', 'hero.css', 'benefits.css', 'section-spacing.css', 'body-text.css', 'button.css', 'toggle-icon.css', 'faq-responsive.css', 'lead-form.css', 'lead-form-responsive.css', 'pricing-promo.css', 'diploma.css', 'section-heading.css', 'anchor-scroll.css'];
+  const order = ['components.css', 'card-spacing.css', 'hero.css', 'benefits.css', 'section-spacing.css', 'body-text.css', 'button.css', 'toggle-icon.css', 'faq-responsive.css', 'lead-form.css', 'lead-form-responsive.css', 'pricing-promo.css', 'diploma.css', 'course-audience.css', 'section-heading.css', 'anchor-scroll.css'];
   const parts = [];
   for (const name of order) {
     let css = await read(shared, name);
