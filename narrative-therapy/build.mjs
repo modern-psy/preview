@@ -73,6 +73,19 @@ function renderCardSet(name, data, id) {
   return section(name, id, `<div class="section-layout_component is-responsive${data.dark ? ' card-set_component is-dark' : ' card-set_component'}">${header(id, data)}<div class="card-set_body">${list}</div></div>`);
 }
 
+/* Проектный блок about-steps: четыре шага работы специалиста, связанные в одну цепочку. Три варианта на выбор
+   (плашка variant-note над заголовком), остаться должен один: лишние убрать из sections и из titles в build-tilda.mjs.
+   line  — одна белая панель, номера в кружках соединены линией (на телефоне линия вертикальная слева);
+   split — заголовок и описание слева, шаги справа по вертикальной линии;
+   flow  — тёмная панель, шаги идут подряд, между ними стрелки (на телефоне стрелки вниз). */
+const variantNote = text => `<p class="variant-note_component">${renderText(text)}</p>`;
+function renderAboutSteps(data, id, variant, index) {
+  const steps = data.cards.map((card, i) => `<li class="about-steps_item"><span class="about-steps_marker" aria-hidden="true">${number(i)}</span><div class="about-steps_copy"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div></li>`).join('\n');
+  const head = `<div class="section-header_component is-${variant === 'split' ? 'left' : 'center'} is-responsive">${variantNote(data.variantLabels[index])}<h2 class="section-title_component is-${variant === 'split' ? 'left' : 'center'} is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${paragraphs(data.paragraphs)}</div>`;
+  const list = `<ol class="about-steps_list" aria-label="${escapeHtml(data.listLabel)}">${steps}</ol>`;
+  return section(`about-${variant}`, id, `<div class="about-steps_component is-${variant}">${head}${list}</div>`);
+}
+
 /* Проектный блок practice: три карточки форматов практики и фото группы рядом. */
 function renderPractice(data, id) {
   const cards = data.cards.map(card => `<li class="card_component practice_card"><div class="content-header_component"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div></li>`).join('\n');
@@ -156,10 +169,12 @@ async function buildHtml() {
   const form = renderLeadFormSection(leadForm, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
 
   const pricing = await renderPricing(`${SLUG}-pricing`);
+  const about = typeset(await json('about'));
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
-    renderCardSet('about', typeset(await json('about')), `${SLUG}-about`),
+    // Три варианта блока «Как работает специалист» (05.10.2026), остаться должен один.
+    ...['line', 'split', 'flow'].map((variant, i) => renderAboutSteps(about, `${SLUG}-about-${variant}`, variant, i)),
     renderCardSet('principles', typeset(await json('principles')), `${SLUG}-principles`),
     renderCardSet('use-cases', typeset(await json('use-cases')), `${SLUG}-use-cases`),
     renderCardSet('audience', typeset(await json('audience')), `${SLUG}-audience`),
