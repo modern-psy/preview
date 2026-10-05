@@ -34,7 +34,7 @@ for (const match of main[1].matchAll(pattern)) {
 }
 const titles = {
   hero: 'Первый экран и особенности программы',
-  strategy: 'Когда нужна другая стратегия',
+  'strategy-tabs': 'Когда нужна другая стратегия',
   'audience-bento': 'Кому подходит этот курс',
   level: 'Это первый уровень РО ДБТ',
   highlights: 'Что делает курс особенным',

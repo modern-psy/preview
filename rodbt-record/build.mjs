@@ -68,10 +68,56 @@ const section = (name, id, inner, {wide = false, extra = ''} = {}) => `<section 
 </section>`;
 
 /* Проектный блок strategy: три карточки с фото, заголовком и текстом (см. README). */
-function renderStrategy(data, id) {
-  const cards = data.cards.map(card => `<li class="card_component strategy_card"><div class="strategy_media">${image(card.image, 'strategy_image', {decorative: true})}</div><div class="content-header_component"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div></li>`).join('\n');
-  return section('strategy', id, `<div class="section-layout_component is-responsive">${header(id, data.heading)}<ul class="card-grid_component is-triple strategy_list" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul></div>`);
+/* «Когда нужна другая стратегия» (strategy-tabs, выбран 05.10.2026 вместо карточек с фото): вкладки и анимированные схемы.
+   Одна белая панель (как блок «Где применять» в narrative-therapy): слева три вкладки с заголовками и текст выбранной,
+   справа на слегка сером фоне анимированная схема.
+   До 1025px всё в колонку: вкладки, текст, схема. Без скрипта видны все тексты и все схемы.
+   Переключение и клавиатура (стрелки, Home, End) в page.js. */
+function renderStrategyTabs(data, id) {
+  const tabs = data.cards.map((card, i) => `<button class="strategy-tabs_tab" type="button" role="tab" id="${id}-tab-${i + 1}" aria-selected="${i === 0}" aria-controls="${id}-panel-${i + 1}" tabindex="${i ? -1 : 0}" data-strategy-tab>${renderText(card.heading)}</button>`).join('');
+  const texts = data.cards.map((card, i) => `<div class="strategy-tabs_text" role="tabpanel" id="${id}-panel-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-strategy-panel><p class="body-text_component">${renderText(card.text)}</p></div>`).join('');
+  const scenes = STRATEGY_SCENES.map((scene, i) => `<div class="strategy-tabs_scene" data-strategy-scene="${i + 1}">${scene}</div>`).join('');
+  return section('strategy-tabs', id, `<div class="section-layout_component is-responsive">${header(id, data.heading)}<div class="strategy-tabs_layout" data-strategy-tabs><div class="strategy-tabs_panel"><div class="strategy-tabs_list" role="tablist" aria-label="${escapeHtml(data.listLabel)}" aria-orientation="vertical">${tabs}</div><div class="strategy-tabs_copy">${texts}</div></div><div class="strategy-tabs_stage">${scenes}</div></div></div>`);
 }
+
+/* Схемы блока «Когда нужна другая стратегия». Декоративные (aria-hidden), смысл несёт текст вкладки. Порядок совпадает с карточками
+   в data/strategy.json. Поле 320×180, цвета и анимация в page.css (раздел «strategy-scene»);
+   при prefers-reduced-motion схема стоит в конечном виде.
+   1 — спектр контроля: рваная линия импульсивности слева, ровная «зажатая» линия справа, метка уходит к сверхконтролю.
+   2 — из рамки к связям: точка в рамке, вокруг другие люди; рамка растворяется, к ним тянутся связи.
+   3 — три состояния появляются по очереди, рядом кольцо «30+ лет практики». */
+const sceneText = (x, y, text, cls = '', anchor = 'start') => `<text class="strategy-scene_label${cls}" x="${x}" y="${y}" text-anchor="${anchor}">${escapeHtml(text)}</text>`;
+// Фишка: ширина по длине текста (заглавные шире строчных), текст по центру фишки и по высоте, и по ширине.
+const sceneChip = (y, text, slot) => { const w = Math.round([...text].reduce((sum, ch) => sum + (/[А-ЯЁA-Z]/.test(ch) ? 7.6 : 6.2), 0) + 28); return `<g class="strategy-scene_pop is-${slot}"><rect class="strategy-scene_chip" x="20" y="${y}" width="${w}" height="28" rx="14"/><text class="strategy-scene_label is-chip" x="${20 + w / 2}" y="${y + 14}" text-anchor="middle" dominant-baseline="central">${escapeHtml(text)}</text></g>`; };
+const PEOPLE = [[64, 48], [256, 48], [64, 120], [256, 120]];
+const STRATEGY_SCENES = [
+  `<svg class="strategy-scene" viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+    <polyline class="strategy-scene_line is-chaos" pathLength="1" points="28,92 40,68 52,106 64,62 76,102 88,74 100,110 112,66 124,98 138,80"/>
+    <rect class="strategy-scene_frame is-dim" x="180" y="66" width="112" height="40" rx="6"/>
+    <path class="strategy-scene_line is-rigid" pathLength="1" d="M188 86 H284"/>
+    <path class="strategy-scene_axis" d="M28 124 H292"/>
+    <g class="strategy-scene_marker"><circle class="strategy-scene_dot is-accent" cx="40" cy="124" r="7"/></g>
+    ${sceneText(28, 150, 'Недостаточный контроль', ' is-muted')}
+    ${sceneText(292, 150, 'Сверхконтроль', ' is-target', 'end')}
+  </svg>`,
+  `<svg class="strategy-scene" viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+    ${PEOPLE.map(([x, y], i) => `<path class="strategy-scene_line is-link is-${i + 1}" pathLength="1" d="M160 84 L${x} ${y}"/>`).join('')}
+    ${PEOPLE.map(([x, y]) => `<circle class="strategy-scene_dot" cx="${x}" cy="${y}" r="7"/>`).join('')}
+    <rect class="strategy-scene_frame is-box" x="128" y="52" width="64" height="64" rx="4"/>
+    <circle class="strategy-scene_dot is-accent" cx="160" cy="84" r="10"/>
+    ${sceneText(160, 158, 'Ригидность и одиночество', ' is-before', 'middle')}
+    ${sceneText(160, 158, 'Гибкость и социальная связь', ' is-after', 'middle')}
+  </svg>`,
+  `<svg class="strategy-scene" viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+    ${sceneChip(38, 'Хроническая депрессия', 1)}
+    ${sceneChip(76, 'Анорексия', 2)}
+    ${sceneChip(114, 'ОКР', 3)}
+    <circle class="strategy-scene_ring-track" cx="252" cy="90" r="50"/>
+    <g transform="rotate(-90 252 90)"><circle class="strategy-scene_ring" pathLength="1" cx="252" cy="90" r="50"/></g>
+    <text class="strategy-scene_number" x="252" y="86" text-anchor="middle" dominant-baseline="central">30+</text>
+    ${sceneText(252, 110, 'лет практики', ' is-muted', 'middle')}
+  </svg>`,
+];
 
 /* Фото человека или заглушка с инициалами, пока фото нет (photo.src: null). */
 const portrait = (photo, className) => photo.src
@@ -207,7 +253,7 @@ async function buildHtml() {
   const pricing = await renderPricing(`${SLUG}-pricing`);
   const sections = [
     heroMarkup,
-    renderStrategy(typeset(await json('strategy')), `${SLUG}-strategy`),
+    renderStrategyTabs(typeset(await json('strategy')), `${SLUG}-strategy`),
     renderAudienceBento(audience, `${SLUG}-audience`),
     renderFeatureSplit('level', level, `${SLUG}-level`),
     renderHighlights(typeset(await json('highlights')), `${SLUG}-highlights`),

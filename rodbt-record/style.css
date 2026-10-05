@@ -3611,7 +3611,7 @@ body > .iti--detached-country-selector .iti__no-results {
 /* Тема лендинга курса в записи «Первый уровень РО ДБТ» (основа: rodbt-live) и его проектные блоки.
    Общие компоненты Академии приходят из web-academy/shared/academy при сборке (node rodbt-record/build.mjs)
    и лежат выше этого файла в style.css. Здесь только переменные темы на .rodbt-record-page
-   и блоки без готового компонента: strategy, feature-split, highlights, topic-tabs (навыки),
+   и блоки без готового компонента: strategy-tabs, feature-split, highlights, topic-tabs (навыки),
    instructor, program-topics, program-literature, learning-note, documents. */
 
 .rodbt-record-page {
@@ -3729,16 +3729,6 @@ body > .iti--detached-country-selector .iti__no-results {
   .rodbt-record-page .feature-split_copy { gap: 2rem; }
 }
 
-/* Проектный блок strategy: три карточки с фото, заголовком и текстом. */
-.rodbt-record-page .strategy_card { gap: 1rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
-.rodbt-record-page .strategy_media { width: 100%; min-width: 0; aspect-ratio: 537 / 375; overflow: clip; border-radius: calc(var(--radius-card, 1rem) - 0.25rem); }
-.rodbt-record-page .strategy_image { display: block; width: 100%; height: 100%; object-fit: cover; }
-.rodbt-record-page .strategy_card .content-header_component { --content-heading-gap: 0.5rem; }
-@media (min-width: 48rem) {
-  .rodbt-record-page .strategy_card { gap: 1.25rem; }
-  .rodbt-record-page .strategy_card .content-header_component { --content-heading-gap: 0.75rem; }
-}
-
 /* Проектный блок highlights: список особенностей слева, карточка практики со списком справа. */
 .rodbt-record-page .highlights_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); align-items: stretch; }
 .rodbt-record-page .highlights_list { display: grid; min-width: 0; gap: var(--card-grid-gap); }
@@ -3845,12 +3835,11 @@ body > .iti--detached-country-selector .iti__no-results {
 
 /* Сетки проектных карточек. Общий card-grid на мобильном ставит две колонки, а от 1025px три:
    здесь число колонок задано под содержимое, чтобы на телефоне карточки шли по одной. */
-.rodbt-record-page :is(.strategy_list, .program-topics_list) { grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.rodbt-record-page .program-topics_list { grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
 @media (min-width: 32.5625rem) {
   .rodbt-record-page .program-topics_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 48rem) {
-  .rodbt-record-page .strategy_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (min-width: 64.0625rem) {
   .rodbt-record-page .program-topics_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -3929,3 +3918,123 @@ body > .iti--detached-country-selector .iti__no-results {
 .rodbt-record-page .program-literature_list { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
 .rodbt-record-page .program-literature_item { --body-text-color: var(--color-text-primary); position: relative; padding-left: 1.25rem; }
 .rodbt-record-page .program-literature_item::before { position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
+
+/* Шкала шрифтов страницы (решение пользователя 05.10.2026). Общие компоненты Академии приносят много близких
+   размеров; здесь они сведены к восьми ролям. Значения по ширинам: телефон / от 768px / от 1025px.
+   Менять размеры роли только в переменных ниже, правила под ними не трогать.
+   - заголовок первого экрана и заголовки секций: как в компонентах (не трогаем);
+   - цена: как заголовок секции, 400;
+   - крупный заголовок карточки (блок об Академии, название курса в цене): 24 / 30 / 36, 444;
+   - подзаголовок первого экрана и заголовки карточек: 20 / 22 / 24, 500;
+   - крупный абзац: 17 / 19 / 22, 444; выделенный — 500;
+   - абзац: 15 / 17 / 19, 444; выделенный — 500;
+   - кнопки: 16 / 19 / 22, 500;
+   - подписи: 14 / 15 / 16, 400. */
+.rodbt-record-page {
+  --type-price: 2rem;
+  --type-card-large: 1.5rem;
+  --type-card: 1.25rem;
+  --type-text-large: 1.0625rem;
+  --type-text: 0.9375rem;
+  --type-button: 1rem;
+  --type-caption: 0.875rem;
+}
+@media (min-width: 32.5625rem) {
+  .rodbt-record-page { --type-price: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-record-page { --type-price: 2.75rem; --type-card-large: 1.875rem; --type-card: 1.375rem; --type-text-large: 1.1875rem; --type-text: 1.0625rem; --type-button: 1.1875rem; --type-caption: 0.9375rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-record-page { --type-price: 3.25rem; --type-card-large: 2.25rem; --type-card: 1.5rem; --type-text-large: 1.375rem; --type-text: 1.1875rem; --type-button: 1.375rem; --type-caption: 1rem; }
+}
+.rodbt-record-page.academy-page .pricing-promo_amount .pricing-promo_number { font-size: var(--type-price); font-weight: 400; }
+.rodbt-record-page.academy-page :is(.content-heading_component.is-prominent, .pricing-promo_course.content-heading_component) { font-size: var(--type-card-large); font-weight: 444; }
+.rodbt-record-page.academy-page :is(.content-heading_component.is-card, .section_learning .content-heading_component, .benefits_card .card_heading, .hero_component.is-dual-action .hero_subtitle) { font-size: var(--type-card); font-weight: 500; }
+.rodbt-record-page.academy-page :is(.body-text_component, .body-text_component.is-detailed, .card_description, .benefits_card .card_description, .pricing-promo_description.body-text_component, .faq_answer-inner p) { font-size: var(--type-text); font-weight: 444; }
+.rodbt-record-page.academy-page :is(.hero_component.is-dual-action .hero_description, .body-text_component.is-summary, .body-text_component.is-showcase, .section-subtitle_component) { font-size: var(--type-text-large); font-weight: 444; }
+.rodbt-record-page.academy-page :is(.body-text_component.is-emphasis, .body-text_component.is-callout, .topic-tabs_tab-title) { font-size: var(--type-text); font-weight: 500; }
+.rodbt-record-page.academy-page .body-text_component.is-summary.is-emphasis { font-size: var(--type-text-large); font-weight: 500; }
+.rodbt-record-page.academy-page :is(.button, .button_component) { --button-font-size: var(--type-button); font-size: var(--type-button); font-weight: 500; }
+.rodbt-record-page.academy-page .button_component span { font-size: inherit; }
+/* Значок в заметке про учебники стоит в строку с её текстом. */
+.rodbt-record-page.academy-page .learning-note_icon { font-size: var(--type-text); font-weight: 500; }
+.rodbt-record-page.academy-page :is(.meta-pill_component, .hero_component.is-dual-action .hero_start-note, .program-topics_schedule, .program-topics_number, .topic-tabs_tab-label, .learning-timeline_marker, .lead-form_label, .lead-form_messenger-title, .lead-form_messenger-option, .lead-form_legal, .body-text_component.is-fine-print, .iti__selected-dial-code) { font-size: var(--type-caption); font-weight: 400; }
+.rodbt-record-page.academy-page :is(.meta-pill_component, .hero_start-note, .program-topics_schedule, .lead-form_messenger-option) span { font-size: inherit; font-weight: inherit; }
+
+/* «Когда нужна другая стратегия» (strategy-tabs): вкладки слева, светлая сцена со схемой справа.
+   До 1025px всё в колонку: вкладки, текст выбранной вкладки, схема. Шрифты из общей шкалы страницы:
+   вкладки — как заголовки карточек, текст — обычный абзац, как в карточках. Всё в одной белой панели, схема на сером фоне страницы. */
+.rodbt-record-page .strategy-tabs_layout { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.rodbt-record-page .strategy-tabs_panel { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; }
+.rodbt-record-page .strategy-tabs_list { display: flex; flex-direction: column; gap: 0.5rem; }
+.rodbt-record-page .strategy-tabs_tab { width: 100%; padding: 0.75rem 1rem; border: 0; border-radius: 0.75rem; background: var(--color-page-background); color: var(--color-text-primary); font: inherit; font-size: var(--type-card); font-weight: 500; line-height: 1.15; letter-spacing: -0.01em; text-align: left; cursor: pointer; transition: background-color var(--motion-duration) ease, color var(--motion-duration) ease; }
+/* Вкладки серые, выбранная тёмно-фиолетовая, как контейнер «Ваши навыки после курса», со светлым текстом (решение пользователя 05.10.2026). */
+.rodbt-record-page .strategy-tabs_tab[aria-selected="true"] { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+@media (hover: hover) and (pointer: fine) {
+  .rodbt-record-page .strategy-tabs_tab:not([aria-selected="true"]):hover { background: var(--color-accent-soft); }
+}
+.rodbt-record-page .strategy-tabs_copy { display: grid; gap: 1rem; padding-inline: 1rem; }
+.rodbt-record-page .strategy-tabs_text[hidden] { display: none; }
+.rodbt-record-page .strategy-tabs_stage { display: grid; min-width: 0; gap: var(--card-grid-gap); }
+/* До 1025px сцена ниже (5:2), чтобы схема не занимала пол-экрана телефона; от 1025px растягивается на высоту колонки. */
+.rodbt-record-page .strategy-tabs_scene { width: 100%; min-width: 0; aspect-ratio: 5 / 2; overflow: clip; border-radius: calc(var(--radius-card, 1rem) - 0.25rem); background: var(--color-page-background); }
+.rodbt-record-page .strategy-tabs_scene[hidden] { display: none; }
+@media (min-width: 64.0625rem) {
+  .rodbt-record-page .strategy-tabs_layout { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: stretch; gap: 2.5rem; padding: 2.5rem; }
+  .rodbt-record-page .strategy-tabs_scene { height: 100%; aspect-ratio: auto; min-height: 20rem; }
+}
+
+/* Схемы блока «Когда нужна другая стратегия» (strategy-scene) на светлой сцене: линии и подписи тёмные, акцент фиолетовый.
+   Цикл 8 секунд: элементы появляются, держатся и гаснут, затем всё сначала. Анимируются только opacity,
+   transform и прорисовка линий. При prefers-reduced-motion схема неподвижна в конечном виде. */
+.rodbt-record-page .strategy-scene { display: block; width: 100%; height: 100%; }
+.rodbt-record-page .strategy-scene_label { fill: var(--color-text-primary); font-size: 11px; font-weight: 444; }
+.rodbt-record-page .strategy-scene_label.is-muted { fill: var(--color-text-secondary); }
+.rodbt-record-page .strategy-scene_label.is-target { fill: var(--color-accent-text); font-weight: 500; }
+.rodbt-record-page .strategy-scene_label.is-chip { fill: var(--color-text-primary); font-weight: 500; }
+.rodbt-record-page .strategy-scene_number { fill: var(--color-text-primary); font-size: 28px; font-weight: 500; letter-spacing: -0.02em; }
+.rodbt-record-page .strategy-scene_axis { fill: none; stroke: var(--color-text-primary); stroke-opacity: 0.15; stroke-width: 2; stroke-linecap: round; }
+.rodbt-record-page .strategy-scene_line { fill: none; stroke: var(--color-surface-dark); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+.rodbt-record-page .strategy-scene_line.is-chaos { stroke-opacity: 0.4; }
+.rodbt-record-page .strategy-scene_line.is-rigid { stroke-width: 3; }
+.rodbt-record-page .strategy-scene_line.is-link { stroke: var(--color-accent-primary); stroke-opacity: 0.6; stroke-width: 1.5; }
+.rodbt-record-page .strategy-scene_frame { fill: none; stroke: var(--color-surface-dark); stroke-opacity: 0.6; stroke-width: 1.5; stroke-dasharray: 4 4; }
+.rodbt-record-page .strategy-scene_dot { fill: var(--color-accent-soft); stroke: var(--color-accent-primary); stroke-width: 1.5; }
+.rodbt-record-page .strategy-scene_dot.is-accent { fill: var(--color-accent-primary); stroke: var(--color-surface-primary); stroke-width: 2; }
+.rodbt-record-page .strategy-scene_chip { fill: var(--color-accent-soft); }
+.rodbt-record-page .strategy-scene_ring-track { fill: none; stroke: var(--color-accent-soft); stroke-width: 6; }
+.rodbt-record-page .strategy-scene_ring { fill: none; stroke: var(--color-accent-primary); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .rodbt-record-page .strategy-scene :is(.strategy-scene_line, .strategy-scene_ring, .strategy-scene_pop, .strategy-scene_marker, .strategy-scene_frame.is-box, .strategy-scene_label.is-before, .strategy-scene_label.is-after, .strategy-scene_label.is-target) { animation-duration: 8000ms; animation-iteration-count: infinite; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); animation-fill-mode: both; transform-box: fill-box; transform-origin: center; }
+  /* Схема 1 */
+  .rodbt-record-page .strategy-scene_line.is-chaos { animation-name: rodbt-record-scene-draw-early; }
+  .rodbt-record-page .strategy-scene_marker { animation-name: rodbt-record-scene-slide; transform-box: view-box; }
+  .rodbt-record-page .strategy-scene_line.is-rigid { animation-name: rodbt-record-scene-draw-late; }
+  .rodbt-record-page .strategy-scene_label.is-target { animation-name: rodbt-record-scene-highlight; }
+  /* Схема 2 */
+  .rodbt-record-page .strategy-scene_frame.is-box { animation-name: rodbt-record-scene-release; }
+  .rodbt-record-page .strategy-scene_line.is-link { animation-name: rodbt-record-scene-draw-late; }
+  .rodbt-record-page .strategy-scene_label.is-before { animation-name: rodbt-record-scene-out; }
+  .rodbt-record-page .strategy-scene_label.is-after { animation-name: rodbt-record-scene-in; }
+  .rodbt-record-page :is(.strategy-scene_line.is-link, .strategy-scene_pop).is-2 { animation-delay: 300ms; }
+  .rodbt-record-page :is(.strategy-scene_line.is-link, .strategy-scene_pop).is-3 { animation-delay: 600ms; }
+  .rodbt-record-page .strategy-scene_line.is-link.is-4 { animation-delay: 900ms; }
+  .rodbt-record-page .strategy-scene_pop { animation-name: rodbt-record-scene-pop; }
+  /* Схема 3: фишки по очереди (задержки выше), кольцо прорисовывается следом */
+  /* Кольцо повёрнуто обёрткой <g rotate(-90 …)>, чтобы линия шла от верхней точки. */
+  .rodbt-record-page .strategy-scene_ring { animation-name: rodbt-record-scene-draw-late; }
+}
+/* Без анимации схема 2 стоит в конечном виде: рамки и первой подписи нет, связи и вторая подпись видны. */
+@media (prefers-reduced-motion: reduce) {
+  .rodbt-record-page .strategy-scene :is(.strategy-scene_frame.is-box, .strategy-scene_label.is-before) { opacity: 0; }
+}
+@keyframes rodbt-record-scene-draw-early { 0%, 100% { stroke-dashoffset: 1; opacity: 0; } 2% { opacity: 1; } 18%, 86% { stroke-dashoffset: 0; opacity: 1; } 94% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-record-scene-draw-late { 0%, 30%, 100% { stroke-dashoffset: 1; opacity: 0; } 31% { opacity: 1; } 48%, 86% { stroke-dashoffset: 0; opacity: 1; } 94% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes rodbt-record-scene-slide { 0%, 12% { transform: translateX(0); opacity: 1; } 34%, 86% { transform: translateX(232px); opacity: 1; } 94%, 100% { transform: translateX(232px); opacity: 0; } }
+@keyframes rodbt-record-scene-highlight { 0%, 30%, 100% { opacity: 0.45; } 38%, 88% { opacity: 1; } }
+@keyframes rodbt-record-scene-release { 0%, 14%, 100% { opacity: 1; transform: none; } 30%, 90% { opacity: 0; transform: scale(1.35); } 96% { opacity: 0; transform: none; } }
+@keyframes rodbt-record-scene-out { 0%, 16%, 96%, 100% { opacity: 1; } 24%, 90% { opacity: 0; } }
+@keyframes rodbt-record-scene-in { 0%, 26%, 94%, 100% { opacity: 0; } 34%, 88% { opacity: 1; } }
+@keyframes rodbt-record-scene-pop { 0%, 8%, 100% { opacity: 0; transform: scale(0.85); } 16%, 86% { opacity: 1; transform: none; } 94% { opacity: 0; transform: none; } }
