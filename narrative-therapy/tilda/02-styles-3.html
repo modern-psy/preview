@@ -74,6 +74,20 @@
 .narrative-therapy-page .section-header_component > .body-text_component { max-width: 56rem; }
 .narrative-therapy-page .section-header_component.is-center > .body-text_component { margin-inline: auto; text-align: center; }
 
+/* Первый экран на телефоне и планшете. Затемнение снизу: белый текст лежит на нижней части фото, поэтому к низу
+   кадра фото темнее (у общего компонента ровные 15% по всему кадру). На телефоне чипсы, заголовок, текст и подпись
+   «Онлайн» выровнены по левому краю, как на планшете (общий компонент на телефоне центрирует). От 1025px текст
+   стоит слева на затемнённой части самого фото, и затемнение возвращается к ровным 15%. */
+.narrative-therapy-page .hero_component.is-dual-action .hero_media::after { background: linear-gradient(to bottom, rgb(0 0 0 / 10%) 0%, rgb(0 0 0 / 15%) 35%, rgb(0 0 0 / 70%) 100%); }
+.narrative-therapy-page .hero_component.is-dual-action .meta-pill_list { align-items: flex-start; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+.narrative-therapy-page .hero_component.is-dual-action .meta-pill_component.is-accent { order: 0; }
+.narrative-therapy-page .hero_component.is-dual-action .hero_content { text-align: left; align-items: flex-start; }
+.narrative-therapy-page .hero_component.is-dual-action .hero_copy { align-items: flex-start; }
+.narrative-therapy-page .hero_component.is-dual-action .hero_start-note { justify-content: flex-start; }
+@media (min-width: 64.0625rem) {
+  .narrative-therapy-page .hero_component.is-dual-action .hero_media::after { background: rgb(0 0 0 / 15%); }
+}
+
 /* Плитки под первым экраном: плитка тарифов и плитка формата. Ниже 1025px они идут друг под другом
    и сжимаются по высоте до текста; от 1025px в один ряд, тарифы занимают две трети ширины. Высота плиток
    на всех ширинах по содержимому (без минимальной высоты общего компонента), в ряду плитки равны по высоте. */
