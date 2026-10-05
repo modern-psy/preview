@@ -3594,3 +3594,123 @@ body > .iti--detached-country-selector .iti__no-results {
   .narrative-therapy-page .about-steps_component .section-header_component { position: sticky; top: 2rem; }
   .narrative-therapy-page .about-steps_list { padding: 2.5rem; }
 }
+
+/* Временная подпись варианта блока (несколько вариантов одного блока на выбор). Убрать вместе с лишними вариантами. */
+.narrative-therapy-page .variant-note_component { display: inline-flex; max-width: 100%; padding: 0.25rem 0.625rem; border: 1px dashed var(--color-accent-primary); border-radius: 0.5rem; color: var(--color-accent-text); font-size: 0.875rem; font-weight: 444; line-height: 1.3; }
+
+/* Схемы ситуаций (scenes.mjs). Цвета: человек — тёмный кружок, проблема — сиреневое пятно, прежняя история —
+   серая линия, новые истории и события — акцентный фиолетовый. Схема стоит на светло-серой плашке. */
+.narrative-therapy-page .use-cases_stage { width: 100%; align-self: stretch; overflow: clip; border-radius: calc(var(--radius-card, 1rem) - 0.25rem); background: var(--color-page-background); }
+.narrative-therapy-page .nt-scene { display: block; width: 100%; height: auto; }
+.narrative-therapy-page .nt-scene :is(path, circle, rect) { transform-box: fill-box; transform-origin: center; }
+.narrative-therapy-page .sc-person { fill: var(--color-text-primary); }
+.narrative-therapy-page .sc-problem { fill: var(--color-accent-soft); fill-opacity: 0.85; stroke: var(--color-accent-primary); stroke-width: 1.5; }
+.narrative-therapy-page .sc-line { fill: none; stroke: rgb(51 47 65 / 25%); stroke-width: 3; stroke-linecap: round; }
+.narrative-therapy-page .sc-alt { fill: none; stroke: var(--color-accent-primary); stroke-width: 2.5; stroke-linecap: round; }
+.narrative-therapy-page .sc-link { fill: none; stroke: rgb(51 47 65 / 30%); stroke-width: 1.5; stroke-linecap: round; }
+.narrative-therapy-page .sc-link.is-dashed { stroke: var(--color-accent-primary); stroke-dasharray: 4 4; }
+.narrative-therapy-page .sc-ring { fill: none; stroke: rgb(51 47 65 / 15%); stroke-width: 1.5; stroke-dasharray: 3 6; }
+.narrative-therapy-page .sc-node { fill: var(--color-accent-soft); stroke: var(--color-accent-primary); stroke-width: 1.5; }
+.narrative-therapy-page .sc-dot { fill: var(--color-accent-primary); }
+.narrative-therapy-page .sc-step { fill: var(--color-accent-soft); stroke: var(--color-accent-primary); stroke-width: 1.5; }
+.narrative-therapy-page .sc-crack { fill: none; stroke: rgb(51 47 65 / 35%); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.narrative-therapy-page .sc-shared { fill: var(--color-accent-soft); }
+.narrative-therapy-page .sc-story { fill: none; stroke: var(--color-accent-text); stroke-width: 2.5; stroke-linecap: round; }
+
+/* Анимация схем. Цикл 7 секунд у всех элементов; --d сдвигает начало элемента, поэтому шаги идут по очереди.
+   До своего старта элемент скрыт (animation-fill-mode: both). Анимируются только transform и opacity.
+   sc-pop — появляется с небольшим увеличением; sc-fade — проявляется; sc-rise — проявляется со сдвигом --fx/--fy;
+   sc-grow — растёт снизу вверх (ступени); sc-move — приходит из точки (--fx, --fy) на своё место;
+   sc-depart — отходит на (--tx, --ty) и возвращается (проблема отделяется от человека); sc-apart — виден только,
+   пока проблема отделена (тот же цикл, без задержки); sc-spin — медленно вращается. */
+.narrative-therapy-page .nt-scene { --scene-loop: 7000ms; }
+.narrative-therapy-page .sc-pop { animation: nt-scene-pop var(--scene-loop) var(--d, 0ms) infinite both var(--motion-easing); }
+.narrative-therapy-page .sc-fade { animation: nt-scene-fade var(--scene-loop) var(--d, 0ms) infinite both var(--motion-easing); }
+.narrative-therapy-page .sc-rise { animation: nt-scene-rise var(--scene-loop) var(--d, 0ms) infinite both var(--motion-easing); }
+.narrative-therapy-page .nt-scene .sc-grow { transform-origin: bottom; animation: nt-scene-grow var(--scene-loop) var(--d, 0ms) infinite both var(--motion-easing); }
+.narrative-therapy-page .sc-move { animation: nt-scene-move var(--scene-loop) var(--d, 0ms) infinite both var(--motion-easing); }
+.narrative-therapy-page .sc-depart { animation: nt-scene-depart var(--scene-loop) var(--d, 0ms) infinite both var(--motion-easing); }
+.narrative-therapy-page .sc-apart { animation: nt-scene-apart var(--scene-loop) var(--d, 0ms) infinite both var(--motion-easing); }
+.narrative-therapy-page .sc-spin { animation: nt-scene-spin 24000ms linear infinite; }
+@keyframes nt-scene-pop { 0% { opacity: 0; transform: scale(0.4); } 8% { opacity: 1; transform: scale(1); } 82% { opacity: 1; transform: scale(1); } 92%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes nt-scene-fade { 0% { opacity: 0; } 10% { opacity: 1; } 82% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes nt-scene-rise { 0% { opacity: 0; transform: translate(var(--fx, 0px), var(--fy, 0px)); } 12% { opacity: 1; transform: none; } 82% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: none; } }
+@keyframes nt-scene-grow { 0% { opacity: 0; transform: scaleY(0); } 10% { opacity: 1; transform: scaleY(1); } 82% { opacity: 1; transform: scaleY(1); } 92%, 100% { opacity: 0; transform: scaleY(1); } }
+@keyframes nt-scene-move { 0% { opacity: 0; transform: translate(var(--fx, 0px), var(--fy, 0px)); } 6% { opacity: 1; transform: translate(var(--fx, 0px), var(--fy, 0px)); } 20% { opacity: 1; transform: none; } 82% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: none; } }
+@keyframes nt-scene-depart { 0%, 15% { transform: none; } 40%, 85% { transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.8); } 100% { transform: none; } }
+@keyframes nt-scene-apart { 0%, 40% { opacity: 0; } 48%, 80% { opacity: 1; } 86%, 100% { opacity: 0; } }
+@keyframes nt-scene-spin { to { transform: rotate(360deg); } }
+/* Схема за пределами экрана стоит на паузе (атрибуты ставит page.js). */
+.narrative-therapy-page .nt-scene[data-scene-observed]:not([data-in-view]) * { animation-play-state: paused; }
+/* Без анимации видно итоговое состояние: все элементы на местах, проблема отделена от человека. */
+@media (prefers-reduced-motion: reduce) {
+  .narrative-therapy-page .nt-scene * { animation: none !important; }
+  .narrative-therapy-page .sc-depart { transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.8); }
+}
+
+/* Вариант 1 (cards): сетка карточек, схема сверху. Телефон: одна колонка; от 521px две; от 1025px три. */
+.narrative-therapy-page .use-cases_grid { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.narrative-therapy-page .use-cases_card { justify-content: flex-start; gap: 1.25rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); overflow-wrap: anywhere; }
+@media (min-width: 32.5625rem) {
+  .narrative-therapy-page .use-cases_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 48rem) {
+  .narrative-therapy-page .use-cases_card { padding: 1rem 1rem 1.5rem; }
+  .narrative-therapy-page .use-cases_card .content-header_component { padding-inline: 0.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .narrative-therapy-page .use-cases_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Вариант 2 (tabs): список ситуаций и белая панель с большой схемой и текстом выбранной ситуации.
+   Телефон и планшет: ситуации лентой с прокруткой над панелью. От 1025px список колонкой слева. */
+.narrative-therapy-page .use-cases_tabs-layout { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.narrative-therapy-page .use-cases_tablist { display: flex; min-width: 0; gap: 0.5rem; margin-inline: calc(var(--page-padding) * -1); padding: 0 var(--page-padding) 0.25rem; overflow-x: auto; scrollbar-width: none; }
+.narrative-therapy-page .use-cases_tablist::-webkit-scrollbar { display: none; }
+.narrative-therapy-page .use-cases_tab { display: flex; flex: none; max-width: 16rem; min-height: 2.75rem; align-items: baseline; gap: 0.625rem; padding: 0.75rem 1rem; border: 0; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); color: var(--color-text-primary); font-family: inherit; font-size: 1rem; font-weight: 500; line-height: 1.25; text-align: left; cursor: pointer; transition: background-color var(--transition-site), color var(--transition-site); }
+.narrative-therapy-page .use-cases_tab[aria-selected="true"] { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.narrative-therapy-page .use-cases_tab:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.narrative-therapy-page .use-cases_tab-number { flex: none; color: var(--color-text-secondary-large); font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+.narrative-therapy-page .use-cases_tab[aria-selected="true"] .use-cases_tab-number { color: var(--color-program-muted); }
+.narrative-therapy-page .use-cases_panels { min-width: 0; }
+.narrative-therapy-page .use-cases_panel { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); overflow-wrap: anywhere; }
+.narrative-therapy-page .use-cases_panel + .use-cases_panel { margin-top: var(--card-grid-gap); }
+.narrative-therapy-page .use-cases_panel[hidden] { display: none; }
+.narrative-therapy-page .use-cases_panel.is-entering { animation: nt-use-case-in 300ms var(--motion-easing); }
+@keyframes nt-use-case-in { from { opacity: 0; transform: translateY(0.5rem); } to { opacity: 1; transform: none; } }
+@media (min-width: 48rem) {
+  .narrative-therapy-page .use-cases_panel { padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .narrative-therapy-page .use-cases_tabs-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); align-items: start; }
+  .narrative-therapy-page .use-cases_tablist { flex-direction: column; margin: 0; padding: 0; overflow: visible; }
+  .narrative-therapy-page .use-cases_tab { max-width: none; padding: 1.125rem 1.25rem; font-size: 1.125rem; }
+  .narrative-therapy-page .use-cases_panel { padding: 1.5rem 1.5rem 2.5rem; }
+  .narrative-therapy-page .use-cases_panel .content-header_component { max-width: 40rem; padding-inline: 1rem; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .narrative-therapy-page .use-cases_tab:not([aria-selected="true"]):hover { background: var(--color-accent-soft); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .narrative-therapy-page .use-cases_panel.is-entering { animation: none; }
+  .narrative-therapy-page .use-cases_tab { transition: none; }
+}
+
+/* Вариант 3 (rows): одна белая панель, ситуации строками через тонкую линию.
+   Телефон: номер и текст, схема под текстом. От 768px схема справа от текста. */
+.narrative-therapy-page .use-cases_rows { width: 100%; min-width: 0; margin: 0; padding: 0 var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); list-style: none; }
+.narrative-therapy-page .use-cases_row { display: grid; min-width: 0; grid-template-columns: 2rem minmax(0, 1fr); gap: 1rem; padding-block: 1.25rem; overflow-wrap: anywhere; }
+.narrative-therapy-page .use-cases_row + .use-cases_row { border-top: 1px solid rgb(51 47 65 / 12%); }
+.narrative-therapy-page .use-cases_row-number { padding-top: 0.25rem; color: var(--color-accent-text); font-size: 1rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.narrative-therapy-page .use-cases_stage.is-row { grid-column: 2; }
+@media (min-width: 48rem) {
+  .narrative-therapy-page .use-cases_rows { padding-inline: 1.5rem; }
+  .narrative-therapy-page .use-cases_row { grid-template-columns: 2.5rem minmax(0, 1fr) minmax(0, 15rem); align-items: center; gap: 1.5rem; padding-block: 1.5rem; }
+  .narrative-therapy-page .use-cases_row-number { padding-top: 0; font-size: 1.125rem; }
+  .narrative-therapy-page .use-cases_stage.is-row { grid-column: auto; }
+}
+@media (min-width: 64.0625rem) {
+  .narrative-therapy-page .use-cases_rows { padding-inline: 2.5rem; }
+  .narrative-therapy-page .use-cases_row { grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 18rem); gap: 2.5rem; }
+  .narrative-therapy-page .use-cases_row .content-header_component { max-width: 40rem; }
+}

@@ -13,6 +13,7 @@ import {escapeHtml, renderText, sectionId} from '../web-academy/shared/academy/h
 import {loadPricingPromo} from '../web-academy/shared/academy/pricing-promo-tilda.mjs';
 import {assertMotionContract} from '../web-academy/shared/academy/motion-contract.mjs';
 import {assertResponsiveContract} from '../web-academy/shared/academy/responsive.mjs';
+import {renderScene} from './scenes.mjs';
 
 const root = new URL('./', import.meta.url);
 const shared = new URL('../web-academy/shared/academy/', import.meta.url);
@@ -41,7 +42,7 @@ export function typography(text) {
     .replace(/№ /g, `№${NBSP}`);
 }
 // Пробелы связываются только в текстовых узлах: URL, атрибуты, идентификаторы и alt не трогаем.
-const SKIP_KEYS = new Set(['id', 'src', 'url', 'href', 'asset', 'alt', 'datetime', 'errorIcon', 'successIcon', 'agreementUrl', 'privacyUrl', 'nativeMarker', 'action', 'value', 'listLabel', 'icon', 'variant', 'heading_id', 'destination']);
+const SKIP_KEYS = new Set(['id', 'src', 'url', 'href', 'asset', 'alt', 'datetime', 'errorIcon', 'successIcon', 'agreementUrl', 'privacyUrl', 'nativeMarker', 'action', 'value', 'listLabel', 'icon', 'variant', 'scene', 'heading_id', 'destination']);
 function typeset(node, key) {
   if (typeof node === 'string') return SKIP_KEYS.has(key) ? node : typography(node);
   if (Array.isArray(node)) return node.map(item => typeset(item, key));
@@ -79,6 +80,28 @@ function renderCardSet(name, data, id) {
 function renderAboutSteps(data, id) {
   const steps = data.cards.map((card, i) => `<li class="about-steps_item"><span class="about-steps_marker" aria-hidden="true">${number(i)}</span><div class="about-steps_copy"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div></li>`).join('\n');
   return section('about', id, `<div class="about-steps_component">${header(id, data, {align: 'left'})}<ol class="about-steps_list" aria-label="${escapeHtml(data.listLabel)}">${steps}</ol></div>`);
+}
+
+/* Проектный блок use-cases: «Где можно применять нарративный подход», шесть ситуаций с анимированными схемами
+   (scenes.mjs). Три варианта на выбор (плашка variant-note над заголовком), остаться должен один:
+   лишние убрать из sections и из titles в build-tilda.mjs.
+   cards — сетка карточек, схема сверху; tabs — список ситуаций слева, большая схема и текст справа;
+   rows  — одна белая панель, ситуации строками, схема справа от текста. */
+const variantNote = text => `<p class="variant-note_component">${renderText(text)}</p>`;
+const useCasesHead = (data, id, index) => `<div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[index])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2></div>`;
+const useCaseCopy = card => `<div class="content-header_component"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p></div>`;
+function renderUseCasesCards(data, id) {
+  const cards = data.cards.map(card => `<li class="card_component use-cases_card"><div class="use-cases_stage">${renderScene(card.scene)}</div>${useCaseCopy(card)}</li>`).join('\n');
+  return section('use-cases-cards', id, `<div class="section-layout_component is-responsive">${useCasesHead(data, id, 0)}<ul class="use-cases_grid" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul></div>`);
+}
+function renderUseCasesTabs(data, id) {
+  const tabs = data.cards.map((card, i) => `<button class="use-cases_tab" type="button" role="tab" id="${id}-tab-${i + 1}" aria-selected="${i === 0}" aria-controls="${id}-panel-${i + 1}" tabindex="${i === 0 ? 0 : -1}" data-use-case-tab><span class="use-cases_tab-number" aria-hidden="true">${number(i)}</span><span>${renderText(card.heading)}</span></button>`).join('');
+  const panels = data.cards.map((card, i) => `<div class="use-cases_panel" role="tabpanel" id="${id}-panel-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-use-case-panel><div class="use-cases_stage is-large">${renderScene(card.scene)}</div>${useCaseCopy(card)}</div>`).join('');
+  return section('use-cases-tabs', id, `<div class="section-layout_component is-responsive">${useCasesHead(data, id, 1)}<div class="use-cases_tabs-layout" data-use-case-tabs><div class="use-cases_tablist" role="tablist" aria-label="${escapeHtml(data.tabsLabel)}">${tabs}</div><div class="use-cases_panels">${panels}</div></div></div>`);
+}
+function renderUseCasesRows(data, id) {
+  const rows = data.cards.map((card, i) => `<li class="use-cases_row"><span class="use-cases_row-number" aria-hidden="true">${number(i)}</span>${useCaseCopy(card)}<div class="use-cases_stage is-row">${renderScene(card.scene)}</div></li>`).join('\n');
+  return section('use-cases-rows', id, `<div class="section-layout_component is-responsive">${useCasesHead(data, id, 2)}<ol class="use-cases_rows" aria-label="${escapeHtml(data.listLabel)}">${rows}</ol></div>`);
 }
 
 /* Проектный блок practice: три карточки форматов практики и фото группы рядом. */
@@ -164,12 +187,16 @@ async function buildHtml() {
   const form = renderLeadFormSection(leadForm, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
 
   const pricing = await renderPricing(`${SLUG}-pricing`);
+  const useCases = typeset(await json('use-cases'));
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
     renderAboutSteps(typeset(await json('about')), `${SLUG}-about`),
     renderCardSet('principles', typeset(await json('principles')), `${SLUG}-principles`),
-    renderCardSet('use-cases', typeset(await json('use-cases')), `${SLUG}-use-cases`),
+    // Три варианта блока «Где можно применять» (05.10.2026), остаться должен один.
+    renderUseCasesCards(useCases, `${SLUG}-use-cases-cards`),
+    renderUseCasesTabs(useCases, `${SLUG}-use-cases-tabs`),
+    renderUseCasesRows(useCases, `${SLUG}-use-cases-rows`),
     renderCardSet('audience', typeset(await json('audience')), `${SLUG}-audience`),
     renderProgram(typeset(await json('program')), `${SLUG}-program`),
     renderCardSet('skills', typeset(await json('skills')), `${SLUG}-skills`),
@@ -246,6 +273,7 @@ async function buildJs() {
   const order = ['components.js', 'anchor-scroll.js', ...(CMS_SLUG ? ['pricing.js', 'pricing-promo-render.js', 'pricing-promo.js'] : []), 'lead-form.js'];
   const parts = [];
   for (const name of order) parts.push(`/* === web-academy/shared/academy/${name} === */\n${(await read(shared, name)).trim()}`);
+  parts.push(`/* === narrative-therapy/page.js === */\n${(await read(root, 'page.js')).trim()}`);
   const js = `/* Сгенерировано: node narrative-therapy/build.mjs. Общие скрипты Академии в порядке зависимостей. Руками не править. */\n\n${parts.join('\n\n')}\n`;
   assertResponsiveContract(js, 'script.js');
   return js;
