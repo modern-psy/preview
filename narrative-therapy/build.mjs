@@ -7,7 +7,6 @@
 import fs from 'node:fs/promises';
 import {renderHeroSection} from '../web-academy/shared/academy/hero-render.mjs';
 import {renderLeadFormSection} from '../web-academy/shared/academy/lead-form-render.mjs';
-import {renderDiploma} from '../web-academy/shared/academy/diploma-render.mjs';
 import {renderFaq} from '../web-academy/shared/academy/faq-render.mjs';
 import {renderCourseAudience} from '../web-academy/shared/academy/course-audience-render.mjs';
 import {escapeHtml, renderText, sectionId} from '../web-academy/shared/academy/html-render.mjs';
@@ -156,22 +155,13 @@ function renderProgram(data, id) {
   return section('program', id, `<div class="topic-tabs_component"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${schedule}</div><div class="topic-tabs_layout" style="--topic-count: ${data.modules.length}" data-topic-tabs>${items}</div></div>`);
 }
 
-/* Проектный блок instructor: «Автор и преподаватель курса», три варианта на выбор (05.10.2026). Во всех заголовок
-   секции стоит по центру над блоком, а имя, фото и описание — внутри белой карточки, имя мельче заголовка:
-   так они не спорят за внимание. Остаться должен один: лишние убрать из sections и из titles в build-tilda.mjs.
-   card   — фото на всю высоту карточки слева, справа имя и описание;
-   avatar — компактная карточка по центру: фото кружком рядом с именем, описание ниже;
-   quote  — описание крупным текстом, под ним подпись: фото кружком и имя. */
-const instructorHead = (data, id, index) => `<div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[index])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2></div>`;
-const instructorName = data => `<h3 class="content-heading_component is-card instructor_name">${renderText(data.name)}</h3>`;
-function renderInstructorCard(data, id) {
-  return section('instructor-card', id, `<div class="section-layout_component is-responsive">${instructorHead(data, id, 0)}<div class="card_component instructor-card_component"><div class="instructor-card_media">${image(data.photo, 'instructor-card_photo')}</div><div class="instructor-card_copy">${instructorName(data)}${paragraphs(data.paragraphs)}</div></div></div>`);
-}
-function renderInstructorAvatar(data, id) {
-  return section('instructor-avatar', id, `<div class="section-layout_component is-responsive">${instructorHead(data, id, 1)}<div class="card_component instructor-avatar_component"><div class="instructor-avatar_person">${image(data.photo, 'instructor-avatar_photo')}${instructorName(data)}</div>${paragraphs(data.paragraphs)}</div></div>`);
-}
-function renderInstructorQuote(data, id) {
-  return section('instructor-quote', id, `<div class="section-layout_component is-responsive">${instructorHead(data, id, 2)}<figure class="card_component instructor-quote_component"><div class="instructor-quote_text">${(data.paragraphs || []).map(text => `<p class="instructor-quote_lead">${renderText(text)}</p>`).join('')}</div><figcaption class="instructor-quote_person">${image(data.photo, 'instructor-quote_photo')}<span class="content-heading_component is-card instructor_name">${renderText(data.name)}</span></figcaption></figure></div>`);
+/* Преподаватель: широкая карточка из RFT (/rft, раздел «Преподаватель», 05.10.2026 по просьбе пользователя).
+   Заголовок секции над карточкой; в карточке фото на сиреневой подложке, имя, роль, регалии плашками
+   и факты биографии с галочкой через тонкие линии. Телефон: фото сверху; от 768px фото слева. */
+function renderInstructor(data, id) {
+  const tags = data.tags?.length ? `<ul class="teacher_tags">${data.tags.map(tag => `<li class="teacher_tag">${renderText(tag)}</li>`).join('')}</ul>` : '';
+  const facts = data.facts?.length ? `<ul class="teacher_facts">${data.facts.map(fact => `<li class="body-text_component teacher_fact">${renderText(fact)}</li>`).join('')}</ul>` : '';
+  return section('instructor', id, `<div class="section-layout_component is-responsive"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2></div><article class="teacher_card"><div class="teacher_portrait">${image(data.photo, 'teacher_photo')}</div><div class="teacher_body"><div class="teacher_intro"><h3 class="teacher_name">${renderText(data.name)}</h3><p class="body-text_component is-summary is-regular teacher_role">${renderText(data.role)}</p>${tags}</div>${facts}</div></article></div>`);
 }
 
 /* Плитка тарифов под первым экраном. Общий компонент benefits умеет только «заголовок + текст», поэтому
@@ -184,8 +174,13 @@ function withTariffCard(markup, card) {
   return markup.replace(tile, `<li class="card_component benefits_card tariff-tile_component"><h2 class="screen-reader-only">${renderText(card.heading)}</h2><ul class="tariff-tile_list">${items}</ul></li>`).replaceAll(NBSP, '&nbsp;');
 }
 
-/* Документы: общий блок «Диплом» Академии (текст, лицензия, изображение удостоверения). */
-const renderDocuments = (data, id) => renderDiploma(data, {id}).replace('class="section_diploma ', 'class="section_documents section_diploma ');
+/* Документы: блок удостоверения из RFT (/rft, раздел «Документы», 05.10.2026 по просьбе пользователя).
+   Белая карточка: слева заголовок с акцентом, условие получения с галочкой и лицензия, справа фото выпускницы
+   с сертификатом. Телефон: фото квадратом под текстом; от 768px две колонки, фото по высоте текста. */
+function renderDocuments(data, id) {
+  const terms = data.terms.map(term => `<li class="document_term"><img src="${CHECK_ICON}" alt="" width="20" height="20" draggable="false" loading="lazy">${renderText(term)}</li>`).join('');
+  return section('documents', id, `<div class="document_component"><div class="document_copy"><h2 class="section-title_component is-left is-responsive document_heading" id="${id}-heading">${renderText(data.heading)} <span class="section-title_accent">${renderText(data.headingAccent)}</span></h2><p class="body-text_component is-summary is-regular">${renderText(data.description)}</p><ul class="document_terms">${terms}</ul><p class="body-text_component is-fine-print document_license">${data.license.map(renderText).join('<br>')}</p></div><div class="document_media">${image(data.image, 'document_image')}</div></div>`);
+}
 
 /* Промо-блок цены. Запаска строится при сборке из data/course.json (два тарифа, режим plans). Если задан
    CMS_SLUG, сборка сначала спрашивает курс у Public API, а в браузере блок перерисовывает pricing-promo.js. */
@@ -232,7 +227,6 @@ async function buildHtml() {
   const pricing = await renderPricing(`${SLUG}-pricing`);
   const useCases = typeset(await json('use-cases'));
   const evidence = typeset(await json('evidence'));
-  const instructor = typeset(await json('instructor'));
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
@@ -253,10 +247,7 @@ async function buildHtml() {
     renderEvidenceExplorer(evidence, `${SLUG}-evidence-explorer`),
     renderEvidenceCompact(evidence, `${SLUG}-evidence-compact`),
     renderEvidenceCarousel(evidence, `${SLUG}-evidence-carousel`),
-    // Три варианта блока преподавателя (05.10.2026), остаться должен один.
-    renderInstructorCard(instructor, `${SLUG}-instructor-card`),
-    renderInstructorAvatar(instructor, `${SLUG}-instructor-avatar`),
-    renderInstructorQuote(instructor, `${SLUG}-instructor-quote`),
+    renderInstructor(typeset(await json('instructor')), `${SLUG}-instructor`),
     renderDocuments(typeset(await json('documents')), `${SLUG}-documents`),
     renderCardSet('why-us', typeset(await json('why-us')), `${SLUG}-why-us`),
     pricing.html,
@@ -306,7 +297,7 @@ ${body}
 }
 
 async function buildCss() {
-  const order = ['components.css', 'card-spacing.css', 'hero.css', 'benefits.css', 'section-spacing.css', 'body-text.css', 'button.css', 'toggle-icon.css', 'faq-responsive.css', 'lead-form.css', 'lead-form-responsive.css', 'pricing-promo.css', 'diploma.css', 'course-audience.css', 'section-heading.css', 'anchor-scroll.css'];
+  const order = ['components.css', 'card-spacing.css', 'hero.css', 'benefits.css', 'section-spacing.css', 'body-text.css', 'button.css', 'toggle-icon.css', 'faq-responsive.css', 'lead-form.css', 'lead-form-responsive.css', 'pricing-promo.css', 'course-audience.css', 'section-heading.css', 'anchor-scroll.css'];
   const parts = [];
   for (const name of order) {
     let css = await read(shared, name);
