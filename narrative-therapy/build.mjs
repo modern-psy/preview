@@ -147,9 +147,22 @@ function renderProgram(data, id) {
   return section('program', id, `<div class="topic-tabs_component"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${schedule}</div><div class="topic-tabs_layout" style="--topic-count: ${data.modules.length}" data-topic-tabs>${items}</div></div>`);
 }
 
-/* Проектный блок instructor: фото слева, имя и описание справа. */
-function renderInstructor(data, id) {
-  return section('instructor', id, `<div class="instructor_component"><div class="instructor_media">${image(data.photo, 'instructor_photo')}</div><div class="instructor_copy">${header(id, {heading: data.heading}, {align: 'left'})}<p class="content-heading_component is-profile instructor_name">${renderText(data.name)}</p>${paragraphs(data.paragraphs)}</div></div>`);
+/* Проектный блок instructor: «Автор и преподаватель курса», три варианта на выбор (05.10.2026). Во всех заголовок
+   секции стоит по центру над блоком, а имя, фото и описание — внутри белой карточки, имя мельче заголовка:
+   так они не спорят за внимание. Остаться должен один: лишние убрать из sections и из titles в build-tilda.mjs.
+   card   — фото на всю высоту карточки слева, справа имя и описание;
+   avatar — компактная карточка по центру: фото кружком рядом с именем, описание ниже;
+   quote  — описание крупным текстом, под ним подпись: фото кружком и имя. */
+const instructorHead = (data, id, index) => `<div class="section-header_component is-center is-responsive">${variantNote(data.variantLabels[index])}<h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(data.heading)}</h2></div>`;
+const instructorName = data => `<h3 class="content-heading_component is-card instructor_name">${renderText(data.name)}</h3>`;
+function renderInstructorCard(data, id) {
+  return section('instructor-card', id, `<div class="section-layout_component is-responsive">${instructorHead(data, id, 0)}<div class="card_component instructor-card_component"><div class="instructor-card_media">${image(data.photo, 'instructor-card_photo')}</div><div class="instructor-card_copy">${instructorName(data)}${paragraphs(data.paragraphs)}</div></div></div>`);
+}
+function renderInstructorAvatar(data, id) {
+  return section('instructor-avatar', id, `<div class="section-layout_component is-responsive">${instructorHead(data, id, 1)}<div class="card_component instructor-avatar_component"><div class="instructor-avatar_person">${image(data.photo, 'instructor-avatar_photo')}${instructorName(data)}</div>${paragraphs(data.paragraphs)}</div></div>`);
+}
+function renderInstructorQuote(data, id) {
+  return section('instructor-quote', id, `<div class="section-layout_component is-responsive">${instructorHead(data, id, 2)}<figure class="card_component instructor-quote_component"><div class="instructor-quote_text">${(data.paragraphs || []).map(text => `<p class="instructor-quote_lead">${renderText(text)}</p>`).join('')}</div><figcaption class="instructor-quote_person">${image(data.photo, 'instructor-quote_photo')}<span class="content-heading_component is-card instructor_name">${renderText(data.name)}</span></figcaption></figure></div>`);
 }
 
 /* Плитка тарифов под первым экраном. Общий компонент benefits умеет только «заголовок + текст», поэтому
@@ -210,6 +223,7 @@ async function buildHtml() {
   const pricing = await renderPricing(`${SLUG}-pricing`);
   const useCases = typeset(await json('use-cases'));
   const evidence = typeset(await json('evidence'));
+  const instructor = typeset(await json('instructor'));
   // Порядок секций по ТЗ. Пятого экрана в ТЗ нет, нумерация там идёт с четвёртого сразу на шестой.
   const sections = [
     heroMarkup,
@@ -229,7 +243,10 @@ async function buildHtml() {
     renderEvidenceZigzag(evidence, `${SLUG}-evidence-zigzag`),
     renderEvidenceExplorer(evidence, `${SLUG}-evidence-explorer`),
     renderEvidenceCompact(evidence, `${SLUG}-evidence-compact`),
-    renderInstructor(typeset(await json('instructor')), `${SLUG}-instructor`),
+    // Три варианта блока преподавателя (05.10.2026), остаться должен один.
+    renderInstructorCard(instructor, `${SLUG}-instructor-card`),
+    renderInstructorAvatar(instructor, `${SLUG}-instructor-avatar`),
+    renderInstructorQuote(instructor, `${SLUG}-instructor-quote`),
     renderDocuments(typeset(await json('documents')), `${SLUG}-documents`),
     renderCardSet('why-us', typeset(await json('why-us')), `${SLUG}-why-us`),
     pricing.html,
