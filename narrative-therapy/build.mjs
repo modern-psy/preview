@@ -134,6 +134,15 @@ function renderEvidenceCompact(data, id) {
   return section('evidence-compact', id, `<div class="section-layout_component is-responsive">${evidenceHead(data, id, 2)}<ul class="evidence-compact_list" aria-label="${escapeHtml(data.listLabel)}">${cards}</ul></div>`);
 }
 
+/* «Доказательная база», вариант 4 (carousel): лента карточек со стрелками, перенесена из «Психосоматики»
+   (блок «7 систем организма»). Слева заголовок и описание, справа стрелки; лента уходит за правый край экрана,
+   листается пальцем, колесом и стрелками (page.js). Карточка: картинка 3:2, вывод, пояснение, источник. */
+function renderEvidenceCarousel(data, id) {
+  const cards = data.cards.map(card => `<li class="evidence-carousel_card"><div class="evidence-carousel_media">${image(card.image, 'evidence-carousel_image', {decorative: true})}</div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">${renderText(card.heading)}</h3><p class="body-text_component">${renderText(card.text)}</p>${evidenceSource(card)}</div></li>`).join('\n');
+  const controls = `<div class="slider_controls" data-slider-controls="${id}"><button class="slider_arrow" type="button" data-slider-prev aria-label="Назад"><span class="slider_arrow-icon is-prev" aria-hidden="true"></span></button><button class="slider_arrow is-accent" type="button" data-slider-next aria-label="Вперёд"><span class="slider_arrow-icon" aria-hidden="true"></span></button></div>`;
+  return section('evidence-carousel', id, `<div class="evidence-carousel_component"><div class="evidence-carousel_intro"><div class="section-header_component is-left is-responsive">${variantNote(data.variantLabels[3])}<h2 class="section-title_component is-left is-responsive" id="${id}-heading">${renderText(data.heading)}</h2>${paragraphs(data.paragraphs)}</div>${controls}</div><ul class="evidence-carousel_track" data-slider-track="${id}" tabindex="0" aria-label="${escapeHtml(data.listLabel)}: лента карточек">${cards}</ul></div>`);
+}
+
 /* Программа обучения: проектный блок topic-tabs (перенесён из rodbt-record, лейаут программы «Психосоматики»).
    Тёмный контейнер, слева кнопки модулей, справа белая карточка с темами выбранного модуля.
    Одна разметка на все ширины: кнопка модуля и сразу за ней его панель. До 1025px это аккордеон
@@ -239,10 +248,11 @@ async function buildHtml() {
     renderProgram(typeset(await json('program')), `${SLUG}-program`),
     renderCardSet('skills', typeset(await json('skills')), `${SLUG}-skills`),
     renderPractice(typeset(await json('practice')), `${SLUG}-practice`),
-    // Три варианта «Доказательной базы» (05.10.2026), остаться должен один.
+    // Четыре варианта «Доказательной базы» (05.10.2026), остаться должен один.
     renderEvidenceZigzag(evidence, `${SLUG}-evidence-zigzag`),
     renderEvidenceExplorer(evidence, `${SLUG}-evidence-explorer`),
     renderEvidenceCompact(evidence, `${SLUG}-evidence-compact`),
+    renderEvidenceCarousel(evidence, `${SLUG}-evidence-carousel`),
     // Три варианта блока преподавателя (05.10.2026), остаться должен один.
     renderInstructorCard(instructor, `${SLUG}-instructor-card`),
     renderInstructorAvatar(instructor, `${SLUG}-instructor-avatar`),

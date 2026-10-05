@@ -3699,6 +3699,40 @@ body > .iti--detached-country-selector .iti__no-results {
   .narrative-therapy-page .evidence-compact_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+/* Вариант 4 (carousel): лента со стрелками, перенесена из «Психосоматики» (блок «7 систем организма»).
+   Лента — обычный скролл-контейнер со scroll-snap: листается пальцем, колесом и стрелками из page.js.
+   Лента выходит из контейнера вправо до края экрана: отрицательное поле и компенсирующий padding.
+   Шапка: телефон — заголовок, под ним стрелки; от 768px заголовок слева, стрелки справа внизу. */
+.narrative-therapy-page .evidence-carousel_component { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: 2.5rem; }
+.narrative-therapy-page .evidence-carousel_intro { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+.narrative-therapy-page .evidence-carousel_track { display: grid; grid-auto-flow: column; gap: var(--card-grid-gap); margin: 0 calc(var(--page-padding) * -1) 0 0; padding: 0 var(--page-padding) 0 0; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; }
+.narrative-therapy-page .evidence-carousel_track::-webkit-scrollbar { display: none; }
+.narrative-therapy-page .evidence-carousel_track:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
+.narrative-therapy-page .evidence-carousel_card { display: flex; width: min(82vw, 26rem); min-width: 0; flex-direction: column; overflow: clip; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); scroll-snap-align: start; overflow-wrap: anywhere; }
+.narrative-therapy-page .evidence-carousel_media { position: relative; aspect-ratio: 3 / 2; background: var(--color-page-background); }
+.narrative-therapy-page .evidence-carousel_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.narrative-therapy-page .evidence-carousel_copy { display: flex; flex: 1; flex-direction: column; gap: 0.625rem; padding: 1.25rem 1.25rem 1.5rem; }
+.narrative-therapy-page .evidence-carousel_copy .evidence_source { margin-top: auto; padding-top: 0.5rem; }
+/* Стрелки лент: тёмная — вперёд, светлая — назад; стрелка нарисована рамкой. У краёв ленты стрелка гаснет. */
+.narrative-therapy-page .slider_controls { display: flex; flex: none; gap: 0.5rem; }
+.narrative-therapy-page .slider_arrow { display: inline-flex; width: 3rem; height: 3rem; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); cursor: pointer; transition: background-color var(--transition-site), opacity var(--transition-site); }
+.narrative-therapy-page .slider_arrow.is-accent { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.narrative-therapy-page .slider_arrow:disabled { opacity: 0.4; cursor: default; }
+.narrative-therapy-page .slider_arrow:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.narrative-therapy-page .slider_arrow-icon { display: block; width: 0.625rem; height: 0.625rem; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: translateX(-0.125rem) rotate(45deg); }
+.narrative-therapy-page .slider_arrow-icon.is-prev { transform: translateX(0.125rem) rotate(-135deg); }
+@media (hover: hover) and (pointer: fine) {
+  .narrative-therapy-page .slider_arrow:not(:disabled):hover { background: var(--color-accent-soft); color: var(--color-text-primary); }
+}
+@media (min-width: 48rem) {
+  .narrative-therapy-page .evidence-carousel_intro { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 2rem; }
+  .narrative-therapy-page .evidence-carousel_card { width: 22.75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .narrative-therapy-page .evidence-carousel_track { scroll-behavior: auto; }
+  .narrative-therapy-page .slider_arrow { transition: none; }
+}
+
 /* Проектный блок instructor: три варианта. Имя — заголовок карточки (мельче заголовка секции), основной цвет текста. */
 .narrative-therapy-page .instructor_name { color: var(--color-text-primary); }
 
@@ -4072,7 +4106,22 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 14: Преподаватель, вариант 1: карточка с фото слева. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 14: Доказательная база, вариант 4: лента со стрелками. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="evidence-carousel" data-academy-anchor-scroll>
+<section class="section_evidence-carousel section-spacing_component" id="narrative-therapy-evidence-carousel" aria-labelledby="narrative-therapy-evidence-carousel-heading">
+  <div class="padding-global"><div class="container-xlarge">
+    <div class="evidence-carousel_component"><div class="evidence-carousel_intro"><div class="section-header_component is-left is-responsive"><p class="variant-note_component">Вариант 4: лента со&nbsp;стрелками, как «7&nbsp;систем организма» в&nbsp;«Психосоматике»</p><h2 class="section-title_component is-left is-responsive" id="narrative-therapy-evidence-carousel-heading">Доказательная база подхода</h2><p class="body-text_component is-summary is-regular">Эффективность нарративной терапии подтверждена исследованиями при&nbsp;работе с&nbsp;депрессией, гореванием, травматичным опытом и&nbsp;тяжёлыми психическими состояниями. Подход сопоставим по&nbsp;результатам с&nbsp;другими доказательными методами.</p></div><div class="slider_controls" data-slider-controls="narrative-therapy-evidence-carousel"><button class="slider_arrow" type="button" data-slider-prev aria-label="Назад"><span class="slider_arrow-icon is-prev" aria-hidden="true"></span></button><button class="slider_arrow is-accent" type="button" data-slider-next aria-label="Вперёд"><span class="slider_arrow-icon" aria-hidden="true"></span></button></div></div><ul class="evidence-carousel_track" data-slider-track="narrative-therapy-evidence-carousel" tabindex="0" aria-label="Исследования: лента карточек"><li class="evidence-carousel_card"><div class="evidence-carousel_media"><img class="evidence-carousel_image" src="https://static.tildacdn.com/tild6437-3234-4462-b732-663164383737/image.png" width="736" height="500" alt="" aria-hidden="true" draggable="false" loading="lazy" decoding="async"></div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">Подход сопоставим с&nbsp;КПТ по&nbsp;эффективности</h3><p class="body-text_component">У&nbsp;клиентов с&nbsp;умеренной депрессией, завершивших курс терапии, нарративный подход показал результаты, сравнимые с&nbsp;КПТ.</p><p class="body-text_component is-fine-print evidence_source">Lopes et al., 2014, Psychotherapy Research</p></div></li>
+<li class="evidence-carousel_card"><div class="evidence-carousel_media"><img class="evidence-carousel_image" src="https://static.tildacdn.com/tild3738-6333-4436-b964-633933616666/image.png" width="736" height="500" alt="" aria-hidden="true" draggable="false" loading="lazy" decoding="async"></div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">Повышает надежду и&nbsp;даёт позитивный аффект</h3><p class="body-text_component">Восьмисессионный нарративный протокол значимо снизил депрессию и&nbsp;повысил надежду и&nbsp;позитивный аффект.</p><p class="body-text_component is-fine-print evidence_source">Seo, 2015, Journal of Psychiatric and Mental Health Nursing</p></div></li>
+<li class="evidence-carousel_card"><div class="evidence-carousel_media"><img class="evidence-carousel_image" src="https://static.tildacdn.com/tild3233-6131-4334-a565-326138363966/image.png" width="736" height="500" alt="" aria-hidden="true" draggable="false" loading="lazy" decoding="async"></div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">Подходит для&nbsp;клиентов с&nbsp;онкологией</h3><p class="body-text_component">Систематический обзор отметил нарративный подход как обнадёживающий для&nbsp;качества жизни, самооценки и&nbsp;духовного благополучия пациентов.</p><p class="body-text_component is-fine-print evidence_source">Jones et al., 2026, Psycho-Oncology</p></div></li>
+<li class="evidence-carousel_card"><div class="evidence-carousel_media"><img class="evidence-carousel_image" src="https://static.tildacdn.com/tild3233-6161-4630-b932-616430343166/image.png" width="736" height="500" alt="" aria-hidden="true" draggable="false" loading="lazy" decoding="async"></div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">Эффективна при&nbsp;ПТСР и&nbsp;сложной травме</h3><p class="body-text_component">Нарративная экспозиционная терапия (NET) значимо снизила симптомы ПТСР и&nbsp;сопутствующей депрессии у&nbsp;переживших войну и&nbsp;насилие.</p><p class="body-text_component is-fine-print evidence_source">Adenauer et al., 2011, BMC Neuroscience</p></div></li>
+<li class="evidence-carousel_card"><div class="evidence-carousel_media"><img class="evidence-carousel_image" src="https://static.tildacdn.com/tild6335-3466-4764-a131-366532313132/image.png" width="736" height="500" alt="" aria-hidden="true" draggable="false" loading="lazy" decoding="async"></div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">Можно встроить в&nbsp;работу с&nbsp;клиентами с&nbsp;психическими расстройствами</h3><p class="body-text_component">У&nbsp;клиентов с&nbsp;тяжёлыми психическими расстройствами групповой нарративный протокол (NECT) снизил самостигматизацию и&nbsp;повысил самооценку, качество жизни и&nbsp;надежду.</p><p class="body-text_component is-fine-print evidence_source">Roe et al., 2014, Journal of Clinical Psychology</p></div></li>
+<li class="evidence-carousel_card"><div class="evidence-carousel_media"><img class="evidence-carousel_image" src="https://static.tildacdn.com/tild3234-3863-4566-a536-333239386631/image.png" width="736" height="500" alt="" aria-hidden="true" draggable="false" loading="lazy" decoding="async"></div><div class="evidence-carousel_copy"><h3 class="content-heading_component is-card">Снижает депрессию и&nbsp;тревогу у&nbsp;детей и&nbsp;подростков</h3><p class="body-text_component">КИ показало, что групповая нарративная терапия с&nbsp;детьми и&nbsp;подростками значимо снизила уровень тревоги и&nbsp;депрессии с&nbsp;высоким размером эффекта.</p><p class="body-text_component is-fine-print evidence_source">Jalali et al., 2019, Journal of Child and Adolescent Mental Health</p></div></li></ul></div>
+  </div></div>
+</section>
+</div>
+</div></div></div></div>
+<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
+<!-- СЕКЦИЯ 15: Преподаватель, вариант 1: карточка с фото слева. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="instructor-card" data-academy-anchor-scroll>
 <section class="section_instructor-card section-spacing_component" id="narrative-therapy-instructor-card" aria-labelledby="narrative-therapy-instructor-card-heading">
   <div class="padding-global"><div class="container-xlarge">
@@ -4082,7 +4131,7 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 15: Преподаватель, вариант 2: компактная карточка. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 16: Преподаватель, вариант 2: компактная карточка. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="instructor-avatar" data-academy-anchor-scroll>
 <section class="section_instructor-avatar section-spacing_component" id="narrative-therapy-instructor-avatar" aria-labelledby="narrative-therapy-instructor-avatar-heading">
   <div class="padding-global"><div class="container-xlarge">
@@ -4092,7 +4141,7 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 16: Преподаватель, вариант 3: описание крупно, подпись с фото. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 17: Преподаватель, вариант 3: описание крупно, подпись с фото. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="instructor-quote" data-academy-anchor-scroll>
 <section class="section_instructor-quote section-spacing_component" id="narrative-therapy-instructor-quote" aria-labelledby="narrative-therapy-instructor-quote-heading">
   <div class="padding-global"><div class="container-xlarge">
@@ -4102,7 +4151,7 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 17: Удостоверение о повышении квалификации. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 18: Удостоверение о повышении квалификации. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="documents" data-academy-anchor-scroll>
 <section class="section_documents section_diploma section-spacing_component" id="narrative-therapy-documents" aria-labelledby="narrative-therapy-documents-heading"><div class="padding-global"><div class="container-xlarge">
     <div class="diploma_component"><div class="diploma_content"><div class="diploma_body"><div class="diploma_details">
@@ -4115,7 +4164,7 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 18: Почему выбирают нас. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 19: Почему выбирают нас. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="why-us" data-academy-anchor-scroll>
 <section class="section_why-us section-spacing_component" id="narrative-therapy-why-us" aria-labelledby="narrative-therapy-why-us-heading">
   <div class="padding-global"><div class="container-xlarge">
@@ -4128,7 +4177,7 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 19: Стоимость обучения. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 20: Стоимость обучения. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="pricing" data-academy-anchor-scroll>
 <section class="section_pricing section-spacing_component" id="narrative-therapy-pricing" aria-labelledby="narrative-therapy-pricing-heading">
   <div class="padding-global"><div class="container-xlarge column-grid_component"><div class="column-grid_content is-content-wide"><div class="pricing-promo_card"><div class="pricing-promo"><div class="pricing-promo_component" data-mode="plans"><h2 class="pricing-promo_heading section-title_component is-responsive" id="narrative-therapy-pricing-heading">Стоимость обучения</h2><div class="pricing-promo_panel"><div class="pricing-promo_intro"><p class="pricing-promo_start-list"><span class="meta-pill_component is-responsive pricing-promo_start"><img class="meta-pill_icon" src="https://static.tildacdn.com/tild3661-3930-4334-a631-643062633834/icon-clock-alert-bla.svg" width="20" height="20" alt="" aria-hidden="true" draggable="false">Старт&nbsp;<time datetime="2027-01-26">26&nbsp;января&nbsp;2027&nbsp;г.</time></span></p><div class="pricing-promo_copy"><p class="pricing-promo_course content-heading_component is-profile">Основы нарративной практики</p></div></div><div class="pricing-promo_price"><ul class="pricing-promo_rows" role="list"><li class="pricing-promo_row"><div class="pricing-promo_row-copy"><h3 class="pricing-promo_row-name content-heading_component is-card" id="narrative-therapy-pricing-plan-1">Первые три модуля</h3><p class="pricing-promo_row-note body-text_component is-caption is-regular is-statement">Модули 1–3, 80 академ. часов, 12 недель</p></div><div class="pricing-promo_row-cost"><p class="pricing-promo_amount is-row"><span class="pricing-promo_number">35&nbsp;000&nbsp;₽</span></p></div></li><li class="pricing-promo_row is-featured"><div class="pricing-promo_row-copy"><h3 class="pricing-promo_row-name content-heading_component is-card" id="narrative-therapy-pricing-plan-2">Полный курс</h3><p class="pricing-promo_row-note body-text_component is-caption is-regular is-statement">Модули 1–4, 112 академ. часов, 16 недель</p></div><div class="pricing-promo_row-cost"><p class="pricing-promo_amount is-row"><span class="pricing-promo_number">45&nbsp;000&nbsp;₽</span></p></div></li></ul></div></div></div></div></div></div></div></div>
@@ -4136,13 +4185,13 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 20: Форма заявки. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 21: Форма заявки. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="lead-form" data-academy-anchor-scroll>
 <section class="section_lead-form section-spacing_component" id="narrative-therapy-application" aria-labelledby="narrative-therapy-form-heading"><div class="padding-global"><div class="container-xlarge column-grid_component"><div class="column-grid_content is-content-wide"><form id="narrative-therapy-form" class="lead-form_component is-responsive" data-academy-lead-form data-tilda-form-name="narrative-therapy" aria-labelledby="narrative-therapy-form-heading" data-state="editing" novalidate ><div class="lead-form_intro section-header_component is-left is-responsive" data-lead-content><h2 class="section-title_component is-left is-responsive" id="narrative-therapy-form-heading"> Занятия начнутся 26&nbsp;января </h2><p class="section-subtitle_component"> Оставьте свои данные в&nbsp;форме, и&nbsp;мы свяжемся с&nbsp;вами в&nbsp;рабочее время. Ответим на&nbsp;все вопросы, поможем определиться с&nbsp;направлением и&nbsp;способом оплаты. </p></div><div class="lead-form_body" data-lead-content><fieldset class="lead-form_fields"><legend class="screen-reader-only">Контактные данные</legend><div class="lead-form_field" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="text" id="narrative-therapy-form-name" name="name" autocomplete="name" placeholder=" " aria-describedby="narrative-therapy-form-name-error" aria-invalid="false" required data-lead-input /><label class="lead-form_label" for="narrative-therapy-form-name">Как к&nbsp;вам обращаться? *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="narrative-therapy-form-name-error" aria-live="polite" data-lead-error></p></div><div class="lead-form_field" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="email" id="narrative-therapy-form-email" name="email" autocomplete="email" inputmode="email" placeholder=" " aria-describedby="narrative-therapy-form-email-error" aria-invalid="false" required data-lead-input /><label class="lead-form_label" for="narrative-therapy-form-email">Почта *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="narrative-therapy-form-email-error" aria-live="polite" data-lead-error></p></div><div class="lead-form_field is-phone" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="tel" id="narrative-therapy-form-phone" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" placeholder=" " aria-describedby="narrative-therapy-form-phone-error" aria-invalid="false" required data-lead-input data-lead-phone /><label class="lead-form_label screen-reader-only" for="narrative-therapy-form-phone">Ваш телефон *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="narrative-therapy-form-phone-error" aria-live="polite" data-lead-error></p></div></fieldset><div class="lead-form_contact-method"><fieldset class="lead-form_messenger"><legend class="lead-form_messenger-title"> Где вам удобнее общаться? </legend><div class="lead-form_messenger-options"><input class="lead-form_messenger-input" type="radio" name="messenger" value="max" id="narrative-therapy-form-messenger-max" checked /><label class="lead-form_messenger-option" for="narrative-therapy-form-messenger-max"><svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor" /></svg><span lang="en">MAX</span></label><input class="lead-form_messenger-input" type="radio" name="messenger" value="telegram" id="narrative-therapy-form-messenger-telegram" /><label class="lead-form_messenger-option" for="narrative-therapy-form-messenger-telegram"><svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor" /></svg><span lang="en">Telegram</span></label></div></fieldset><div class="lead-form_field is-phone" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="tel" id="narrative-therapy-form-max-contact" name="maxContact" autocomplete="tel" inputmode="tel" maxlength="24" placeholder=" " aria-describedby="narrative-therapy-form-max-contact-error" aria-invalid="false" required data-lead-input data-lead-max-contact /><label class="lead-form_label screen-reader-only" for="narrative-therapy-form-max-contact">Телефон в&nbsp;MAX *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="narrative-therapy-form-max-contact-error" aria-live="polite" data-lead-error></p></div><div class="lead-form_field is-telegram" data-lead-field data-state="idle" data-lead-telegram-field hidden><div class="lead-form_control"><input class="lead-form_input" type="text" id="narrative-therapy-form-telegram-contact" name="telegramContact" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="narrative-therapy-form-telegram-contact-error" aria-invalid="false" required disabled data-lead-input data-lead-telegram-contact /><label class="lead-form_label" for="narrative-therapy-form-telegram-contact">Ник в&nbsp;Telegram, начиная с&nbsp;@ *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="narrative-therapy-form-telegram-contact-error" aria-live="polite" data-lead-error></p></div></div><div class="lead-form_submit-group"><button class="button_component lead-form_submit" type="submit" aria-busy="false" data-state="disabled" data-lead-submit disabled><span data-lead-submit-label>Отправить заявку</span></button><p class="lead-form_legal"> Нажимая на&nbsp;кнопку «Отправить заявку», я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на&nbsp;обработку моих персональных данных в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p><p class="lead-form_status" role="status" aria-live="polite" data-state="idle" data-lead-status></p></div></div><div class="lead-form_success section-header_component is-center is-responsive" role="status" aria-live="polite" tabindex="-1" data-lead-success hidden ><h2 class="section-title_component is-center is-responsive" id="narrative-therapy-form-success-heading" data-lead-success-heading> Заявка отправлена </h2><p class="section-subtitle_component"> Спасибо! Мы получили ваши данные и&nbsp;скоро свяжемся с&nbsp;вами. </p></div></form></div></div></div></section>
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ 21: Ответы на популярные вопросы. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ 22: Ответы на популярные вопросы. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="main-wrapper academy-page narrative-therapy-page" data-narrative-therapy-part="faq" data-academy-anchor-scroll>
 <section class="section_faq section-spacing_component" id="narrative-therapy-faq" aria-labelledby="narrative-therapy-faq-heading">
   <div class="padding-global"><div class="container-xlarge"><div class="column-grid_component"><div class="column-grid_content is-content-wide">
@@ -4187,7 +4236,7 @@ body > .iti--detached-country-selector .iti__no-results {
 </div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- ОБЩИЕ СКРИПТЫ 1/1. Последние T123, после всех секций и нативной формы Tilda, по порядку. -->
+<!-- ОБЩИЕ СКРИПТЫ 1/2. Последние T123, после всех секций и нативной формы Tilda, по порядку. -->
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/intlTelInput.min.js"></script>
 <script>
 (() => {
@@ -5968,7 +6017,17 @@ const initialize = () => {
     formControllers.forEach((controller) => controller.cleanup());
   };
 })();
-
+};
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, {once: true});
+else initialize();
+})();
+</script>
+</div></div></div></div>
+<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
+<!-- ОБЩИЕ СКРИПТЫ 2/2. Последние T123, после всех секций и нативной формы Tilda, по порядку. -->
+<script>
+(() => {
+const initialize = () => {
 /* === narrative-therapy/page.js === */
 /* Проектный скрипт лендинга «Основы нарративной практики».
    1. Схемы ситуаций (блок «Где можно применять»): анимация идёт, только пока схема видна на экране,
@@ -5977,6 +6036,7 @@ const initialize = () => {
    2. Вкладки второго варианта блока: выбранная ситуация показывает свою схему и текст справа.
       Стрелки влево/вправо (и вверх/вниз), Home и End переключают вкладки с клавиатуры.
    3. Программа обучения: модули слева, темы выбранного модуля справа (до 1025px аккордеон).
+   4. Лента «Доказательной базы» со стрелками.
    Повторный запуск снимает прошлые обработчики (Tilda может перезапускать скрипты). */
 (() => {
   window.__narrativeTherapyCleanup?.();
@@ -6073,8 +6133,73 @@ const initialize = () => {
     select(tabs.find((tab) => tab.getAttribute('aria-expanded') === 'true') || tabs[0], {animate: false});
   });
 
+
+  /* 4. Лента «Доказательной базы» (вариант 4, перенесена из «Психосоматики»). Стрелки листают ленту на ширину
+     одной карточки, у краёв стрелка гаснет. Листание анимируем сами через requestAnimationFrame: браузерный
+     scrollBy({behavior: 'smooth'}) спорит со scroll-snap и в части браузеров дёргается. На время анимации снимаем
+     с ленты snap и smooth и возвращаем в конце. Несколько быстрых нажатий складываются в одну анимацию. */
+  const SLIDE_DURATION_MS = 400;
+  const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const sliderFrames = [];
+  document.querySelectorAll('[data-slider-controls]').forEach((controls) => {
+    const track = document.querySelector(`[data-slider-track="${controls.dataset.sliderControls}"]`);
+    const prev = controls.querySelector('[data-slider-prev]');
+    const next = controls.querySelector('[data-slider-next]');
+    if (!track || !prev || !next) return;
+
+    const step = () => {
+      const card = track.firstElementChild;
+      if (!card) return track.clientWidth;
+      return card.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 16);
+    };
+    const syncArrows = () => {
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
+    };
+    let frameId = 0;
+    let target = 0;
+    let animating = false;
+    const finish = () => {
+      animating = false;
+      track.style.scrollSnapType = '';
+      track.style.scrollBehavior = '';
+      syncArrows();
+    };
+    const slideTo = (value) => {
+      target = Math.max(0, Math.min(track.scrollWidth - track.clientWidth, value));
+      if (reducedMotion.matches) { track.scrollLeft = target; return; }
+      cancelAnimationFrame(frameId);
+      animating = true;
+      track.style.scrollSnapType = 'none';
+      track.style.scrollBehavior = 'auto';
+      const from = track.scrollLeft;
+      const start = performance.now();
+      const frame = (now) => {
+        const progress = Math.min(1, (now - start) / SLIDE_DURATION_MS);
+        track.scrollLeft = from + (target - from) * easeInOutCubic(progress);
+        if (progress < 1) frameId = requestAnimationFrame(frame);
+        else finish();
+      };
+      frameId = requestAnimationFrame(frame);
+    };
+    sliderFrames.push(() => cancelAnimationFrame(frameId));
+    const base = () => (animating ? target : track.scrollLeft);
+    prev.addEventListener('click', () => slideTo(base() - step()), {signal});
+    next.addEventListener('click', () => slideTo(base() + step()), {signal});
+    // Человек взялся листать сам — уступаем ленту ему.
+    track.addEventListener('pointerdown', () => {
+      if (!animating) return;
+      cancelAnimationFrame(frameId);
+      finish();
+    }, {signal});
+    track.addEventListener('scroll', syncArrows, {passive: true, signal});
+    window.addEventListener('resize', syncArrows, {signal});
+    syncArrows();
+  });
+
   window.__narrativeTherapyCleanup = () => {
     controller.abort();
+    sliderFrames.forEach((cancel) => cancel());
     observer?.disconnect();
     scenes.forEach((scene) => scene.removeAttribute('data-scene-observed'));
     topicBlocks.forEach((block) => {

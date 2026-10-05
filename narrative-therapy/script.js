@@ -1783,6 +1783,7 @@
    2. Вкладки второго варианта блока: выбранная ситуация показывает свою схему и текст справа.
       Стрелки влево/вправо (и вверх/вниз), Home и End переключают вкладки с клавиатуры.
    3. Программа обучения: модули слева, темы выбранного модуля справа (до 1025px аккордеон).
+   4. Лента «Доказательной базы» со стрелками.
    Повторный запуск снимает прошлые обработчики (Tilda может перезапускать скрипты). */
 (() => {
   window.__narrativeTherapyCleanup?.();
@@ -1879,8 +1880,73 @@
     select(tabs.find((tab) => tab.getAttribute('aria-expanded') === 'true') || tabs[0], {animate: false});
   });
 
+
+  /* 4. Лента «Доказательной базы» (вариант 4, перенесена из «Психосоматики»). Стрелки листают ленту на ширину
+     одной карточки, у краёв стрелка гаснет. Листание анимируем сами через requestAnimationFrame: браузерный
+     scrollBy({behavior: 'smooth'}) спорит со scroll-snap и в части браузеров дёргается. На время анимации снимаем
+     с ленты snap и smooth и возвращаем в конце. Несколько быстрых нажатий складываются в одну анимацию. */
+  const SLIDE_DURATION_MS = 400;
+  const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const sliderFrames = [];
+  document.querySelectorAll('[data-slider-controls]').forEach((controls) => {
+    const track = document.querySelector(`[data-slider-track="${controls.dataset.sliderControls}"]`);
+    const prev = controls.querySelector('[data-slider-prev]');
+    const next = controls.querySelector('[data-slider-next]');
+    if (!track || !prev || !next) return;
+
+    const step = () => {
+      const card = track.firstElementChild;
+      if (!card) return track.clientWidth;
+      return card.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 16);
+    };
+    const syncArrows = () => {
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
+    };
+    let frameId = 0;
+    let target = 0;
+    let animating = false;
+    const finish = () => {
+      animating = false;
+      track.style.scrollSnapType = '';
+      track.style.scrollBehavior = '';
+      syncArrows();
+    };
+    const slideTo = (value) => {
+      target = Math.max(0, Math.min(track.scrollWidth - track.clientWidth, value));
+      if (reducedMotion.matches) { track.scrollLeft = target; return; }
+      cancelAnimationFrame(frameId);
+      animating = true;
+      track.style.scrollSnapType = 'none';
+      track.style.scrollBehavior = 'auto';
+      const from = track.scrollLeft;
+      const start = performance.now();
+      const frame = (now) => {
+        const progress = Math.min(1, (now - start) / SLIDE_DURATION_MS);
+        track.scrollLeft = from + (target - from) * easeInOutCubic(progress);
+        if (progress < 1) frameId = requestAnimationFrame(frame);
+        else finish();
+      };
+      frameId = requestAnimationFrame(frame);
+    };
+    sliderFrames.push(() => cancelAnimationFrame(frameId));
+    const base = () => (animating ? target : track.scrollLeft);
+    prev.addEventListener('click', () => slideTo(base() - step()), {signal});
+    next.addEventListener('click', () => slideTo(base() + step()), {signal});
+    // Человек взялся листать сам — уступаем ленту ему.
+    track.addEventListener('pointerdown', () => {
+      if (!animating) return;
+      cancelAnimationFrame(frameId);
+      finish();
+    }, {signal});
+    track.addEventListener('scroll', syncArrows, {passive: true, signal});
+    window.addEventListener('resize', syncArrows, {signal});
+    syncArrows();
+  });
+
   window.__narrativeTherapyCleanup = () => {
     controller.abort();
+    sliderFrames.forEach((cancel) => cancel());
     observer?.disconnect();
     scenes.forEach((scene) => scene.removeAttribute('data-scene-observed'));
     topicBlocks.forEach((block) => {

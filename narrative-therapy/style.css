@@ -3682,6 +3682,40 @@ body > .iti--detached-country-selector .iti__no-results {
   .narrative-therapy-page .evidence-compact_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+/* Вариант 4 (carousel): лента со стрелками, перенесена из «Психосоматики» (блок «7 систем организма»).
+   Лента — обычный скролл-контейнер со scroll-snap: листается пальцем, колесом и стрелками из page.js.
+   Лента выходит из контейнера вправо до края экрана: отрицательное поле и компенсирующий padding.
+   Шапка: телефон — заголовок, под ним стрелки; от 768px заголовок слева, стрелки справа внизу. */
+.narrative-therapy-page .evidence-carousel_component { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: 2.5rem; }
+.narrative-therapy-page .evidence-carousel_intro { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+.narrative-therapy-page .evidence-carousel_track { display: grid; grid-auto-flow: column; gap: var(--card-grid-gap); margin: 0 calc(var(--page-padding) * -1) 0 0; padding: 0 var(--page-padding) 0 0; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; }
+.narrative-therapy-page .evidence-carousel_track::-webkit-scrollbar { display: none; }
+.narrative-therapy-page .evidence-carousel_track:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
+.narrative-therapy-page .evidence-carousel_card { display: flex; width: min(82vw, 26rem); min-width: 0; flex-direction: column; overflow: clip; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); scroll-snap-align: start; overflow-wrap: anywhere; }
+.narrative-therapy-page .evidence-carousel_media { position: relative; aspect-ratio: 3 / 2; background: var(--color-page-background); }
+.narrative-therapy-page .evidence-carousel_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.narrative-therapy-page .evidence-carousel_copy { display: flex; flex: 1; flex-direction: column; gap: 0.625rem; padding: 1.25rem 1.25rem 1.5rem; }
+.narrative-therapy-page .evidence-carousel_copy .evidence_source { margin-top: auto; padding-top: 0.5rem; }
+/* Стрелки лент: тёмная — вперёд, светлая — назад; стрелка нарисована рамкой. У краёв ленты стрелка гаснет. */
+.narrative-therapy-page .slider_controls { display: flex; flex: none; gap: 0.5rem; }
+.narrative-therapy-page .slider_arrow { display: inline-flex; width: 3rem; height: 3rem; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); cursor: pointer; transition: background-color var(--transition-site), opacity var(--transition-site); }
+.narrative-therapy-page .slider_arrow.is-accent { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.narrative-therapy-page .slider_arrow:disabled { opacity: 0.4; cursor: default; }
+.narrative-therapy-page .slider_arrow:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+.narrative-therapy-page .slider_arrow-icon { display: block; width: 0.625rem; height: 0.625rem; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: translateX(-0.125rem) rotate(45deg); }
+.narrative-therapy-page .slider_arrow-icon.is-prev { transform: translateX(0.125rem) rotate(-135deg); }
+@media (hover: hover) and (pointer: fine) {
+  .narrative-therapy-page .slider_arrow:not(:disabled):hover { background: var(--color-accent-soft); color: var(--color-text-primary); }
+}
+@media (min-width: 48rem) {
+  .narrative-therapy-page .evidence-carousel_intro { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 2rem; }
+  .narrative-therapy-page .evidence-carousel_card { width: 22.75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .narrative-therapy-page .evidence-carousel_track { scroll-behavior: auto; }
+  .narrative-therapy-page .slider_arrow { transition: none; }
+}
+
 /* Проектный блок instructor: три варианта. Имя — заголовок карточки (мельче заголовка секции), основной цвет текста. */
 .narrative-therapy-page .instructor_name { color: var(--color-text-primary); }
 
