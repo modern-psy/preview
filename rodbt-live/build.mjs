@@ -197,7 +197,13 @@ async function buildHtml() {
   const leadForm = typeset(await json('lead-form'));
   leadForm.errorIcon = await dataUrl(consultant, 'assets/icons/form-error.svg');
   leadForm.successIcon = await dataUrl(consultant, 'assets/icons/form-success.svg');
-  const form = renderLeadFormSection(leadForm, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
+  // Форма без поля «Почта» (решение пользователя 05.10.2026): общий шаблон Академии выводит его всегда,
+  // поэтому поле вырезается из готовой разметки (подпись нужна только шаблону), а скрипт формы допускает
+  // его отсутствие (см. withoutEmail).
+  const emailField = /<div class="lead-form_field" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="email"[\s\S]*?data-lead-error><\/p><\/div>/;
+  const fullForm = renderLeadFormSection({...leadForm, emailLabel: 'Почта'}, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
+  if (!emailField.test(fullForm)) throw new Error('Lead form: не найдено поле email в разметке формы');
+  const form = fullForm.replace(emailField, '');
 
   // Блок об Академии: тексты и фото общие для лендингов Академии, свечения из assets эталона как data URL.
   const academy = typeset(await json('academy'));
@@ -281,11 +287,31 @@ async function buildCss() {
   return css;
 }
 
+/* Скрипт формы Академии рассчитан на обязательную почту. На этом лендинге поля нет, поэтому при сборке
+   три места скрипта делаются терпимыми к его отсутствию: значение почты пустое, поле почты в нативной
+   форме Тильды необязательно. Если общий скрипт изменится и замена не найдётся, сборка остановится. */
+function withoutEmail(source) {
+  const patches = [
+    ['      !(emailInput instanceof HTMLInputElement) ||\n', ''],
+    ['    setNativeInputValue(emailInput, formData.email);', '    if (emailInput instanceof HTMLInputElement) setNativeInputValue(emailInput, formData.email);'],
+    ['        email: form.elements.email.value.trim(),', '        email: form.elements.email?.value.trim() || "",'],
+  ];
+  for (const [from, to] of patches) {
+    if (!source.includes(from)) throw new Error(`lead-form.js: не найден фрагмент для формы без почты: ${from.trim()}`);
+    source = source.replace(from, to);
+  }
+  return source;
+}
+
 async function buildJs() {
   // Скрипты цены нужны только при живой привязке к CMS: без неё блок цены статичен.
   const order = ['components.js', 'anchor-scroll.js', ...(CMS_SLUG ? ['pricing.js', 'pricing-promo-render.js', 'pricing-promo.js'] : []), 'lead-form.js', 'learning-timeline.js'];
   const parts = [];
-  for (const name of order) parts.push(`/* === web-academy/shared/academy/${name} === */\n${(await read(shared, name)).trim()}`);
+  for (const name of order) {
+    let source = (await read(shared, name)).trim();
+    if (name === 'lead-form.js') source = withoutEmail(source);
+    parts.push(`/* === web-academy/shared/academy/${name} === */\n${source}`);
+  }
   parts.push(`/* === rodbt-live/page.js === */\n${(await read(root, 'page.js')).trim()}`);
   const js = `/* Сгенерировано: node rodbt-live/build.mjs. Общие скрипты Академии в порядке зависимостей. Руками не править. */\n\n${parts.join('\n\n')}\n`;
   assertResponsiveContract(js, 'script.js');

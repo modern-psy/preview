@@ -26,7 +26,8 @@ node rodbt-live/build.mjs          # data + page.css + shared/academy -> index.h
 node rodbt-live/build-tilda.mjs    # index.html -> tilda/*.html (по одной секции на T123), preview.html, manifest.json
 ```
 
-`index.html`, `style.css`, `script.js` и `tilda/` генерируются, руками их не правят.
+`index.html`, `style.css`, `script.js` и `tilda/` генерируются, руками их не правят. Блок формы в `tilda/`
+собирается с переносами строк и отступами (`prettyHtml` в `build-tilda.mjs`), чтобы его было удобно читать в Тильде.
 
 ## Где лежат даты и цена
 
@@ -101,8 +102,9 @@ node rodbt-live/build-tilda.mjs    # index.html -> tilda/*.html (по одной
 
 ## Что ждём и что проверить
 
-- Marker нативной формы Тильды: в `lead-form.json` стоит `rodbt` с прежней страницы, подтвердить
-  для новой. Компонент формы отправляет поле `email`.
+- Нативная форма Тильды: имя `rodbt-live` (`nativeMarker` в `lead-form.json`), поля `Name`, `Phone`,
+  `messenger-type`, `messenger-id`. Почты в форме нет (решение пользователя 05.10.2026): поле вырезается
+  из разметки при сборке, скрипт формы допускает его отсутствие (`withoutEmail` в `build.mjs`).
 - На сертификате в картинке документов подпись Джулианны Гордер и строка на польском: проверить,
   подходит ли для курса с Люком Джорданом.
 - Формулировки, которых нет в макете и которые собраны из присланного текста о тренере:

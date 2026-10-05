@@ -51,6 +51,29 @@ const titles = {
 };
 if (sections.length !== Object.keys(titles).length) throw new Error(`Ожидалось ${Object.keys(titles).length} секций, найдено ${sections.length}`);
 
+/* Читаемая разметка для блоков, которые правят руками в Тильде (сейчас форма): каждый блочный тег
+   с новой строки и с отступом, содержимое абзацев, заголовков, подписей и кнопок остаётся в одну строку.
+   Переносы ставятся только между тегами, текст не меняется. */
+const PRETTY = new Set(['lead-form']);
+const BLOCK = 'section|div|form|fieldset|ul|ol|li';
+const INLINE = 'p|h1|h2|h3|h4|legend|label|button|svg';
+function prettyHtml(html) {
+  const tokens = html.match(new RegExp(`<(${INLINE})\\b[\\s\\S]*?<\\/\\1>|<\\/?(?:${BLOCK})\\b[^>]*>|<input\\b[^>]*>|<img\\b[^>]*>|<span class="lead-form_state"[\\s\\S]*?<\\/span>|<!--[\\s\\S]*?-->|[^<]+|<[^>]+>`, 'g'));
+  let depth = 0;
+  const lines = [];
+  for (const token of tokens) {
+    const text = token.trim();
+    if (!text) continue;
+    const closing = new RegExp(`^<\\/(?:${BLOCK})>`).test(text);
+    const opening = new RegExp(`^<(?:${BLOCK})\\b`).test(text);
+    if (closing) depth = Math.max(0, depth - 1);
+    lines.push(`${'  '.repeat(depth)}${text.replace(/\s+/g, ' ')}`);
+    if (opening) depth += 1;
+  }
+  if (depth !== 0) throw new Error('prettyHtml: не сошлись открытые и закрытые теги');
+  return lines.join('\n');
+}
+
 await fs.mkdir(out, {recursive: true});
 for (const name of await fs.readdir(out)) if (/^\d\d-.*\.html$|^preview\.html$|^manifest\.json$/.test(name)) await fs.rm(new URL(name, out));
 const files = [];
@@ -85,7 +108,8 @@ for (const [i, markup] of sections.entries()) {
   if (!title) throw new Error(`Нет названия для секции ${slug}`);
   const anchor = i === 0 ? ' id="main-content" tabindex="-1"' : '';
   const name = `${String(index++).padStart(2, '0')}-${slug}.html`;
-  blocks.push(await write(name, `<!-- СЕКЦИЯ ${String(i + 1).padStart(2, '0')}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n<div class="main-wrapper academy-page ${SLUG}-page" ${HOOK}="${slug}"${anchor} data-academy-anchor-scroll>\n${markup}\n</div>\n`, title, 'BODY'));
+  const body = PRETTY.has(slug) ? prettyHtml(markup) : markup;
+  blocks.push(await write(name, `<!-- СЕКЦИЯ ${String(i + 1).padStart(2, '0')}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n<div class="main-wrapper academy-page ${SLUG}-page" ${HOOK}="${slug}"${anchor} data-academy-anchor-scroll>\n${body}\n</div>\n`, title, 'BODY'));
 }
 // Скрипты: CDN-библиотеки, затем общий runtime, который ждёт готовности DOM и видит все секции страницы.
 const external = [...source.matchAll(/<script src="(https:[^"]+)" defer><\/script>/g)].map(m => `<script src="${m[1]}"></script>`);
