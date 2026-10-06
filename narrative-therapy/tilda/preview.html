@@ -3731,8 +3731,10 @@ body > .iti--detached-country-selector .iti__no-results {
 /* Плитка тарифов: два тарифа рядом, между ними тонкая линия. Название тарифа — светло-серой плашкой,
    часы — размером заголовка плитки, недели — обычным текстом. На любой ширине тарифы стоят в две равные колонки
    на всю ширину плитки; внутри тарифа плашка и часы идут подряд с одинаковым шагом, ничего не прижато к низу. */
-.narrative-therapy-page .tariff-tile_list { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
-.narrative-therapy-page .tariff-tile_item { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1rem; overflow-wrap: anywhere; }
+/* Тарифы делят общие строки сетки (subgrid): строка плашек и строка часов. Если плашка одного тарифа переносится
+   на две строки (на 340–375px «Первые три модуля»), часы обоих тарифов всё равно стоят на одной линии. */
+.narrative-therapy-page .tariff-tile_list { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto auto; row-gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.narrative-therapy-page .tariff-tile_item { display: grid; min-width: 0; grid-row: span 2; grid-template-rows: subgrid; justify-items: start; align-items: start; row-gap: 1rem; overflow-wrap: anywhere; }
 .narrative-therapy-page .tariff-tile_item + .tariff-tile_item { padding-left: var(--benefits-padding); border-left: 1px solid rgb(51 47 65 / 12%); }
 .narrative-therapy-page .tariff-tile_item:first-child { padding-right: var(--benefits-padding); }
 /* Плашка тарифа в одном стиле с номерами шагов «Как работает специалист»: светло-серый фон, без обводки, тёмный текст. */
