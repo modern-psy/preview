@@ -1,0 +1,895 @@
+/* =========================================================================
+   Студенческая конференция 2.0 — ЧЕРНОВИК СЦЕНАРИЯ СКРОЛЛА
+   Задача файла: показать переходы и ритм. Это не чистовая вёрстка.
+   Всё живёт внутри .sc-page, чтобы на Тильде не задеть чужие стили.
+   ========================================================================= */
+
+/* ---------- 0. Токены. Цвета менять только здесь. ---------- */
+.sc-page {
+  --violet: #7c5cdb;
+  --violet-press: #6c4fc2;
+  --violet-deep: #644ab2; /* violet-600 из UI-кита АСП: мелкий текст на лавандовом */
+  --aubergine: #2b2334;
+  --lavender: #dad6ff;
+  --lavender-soft: #eeeeff;
+  --page: #f5f5f5;
+  --white: #ffffff;
+  --text: #332f41;
+  --text-2: #747476;
+  --on-dark: #e6e5eb;
+
+  --font-display: "Wix Madefor Display", "Wix Madefor Text", Arial, sans-serif;
+  --font-text: "Wix Madefor Text", Arial, sans-serif;
+  --font-hand: "Caveat", "Wix Madefor Text", cursive;
+
+  --fs-h2: clamp(2.25rem, 4.3vw, 4.75rem);
+  --fs-body: clamp(1rem, 1.18vw, 1.1875rem);
+
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --container: 95rem;
+  --radius-card: 1.5rem;
+  --dur: 220ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+
+  --progress: 0; /* доля прокрутки страницы, её ставит script.js */
+  /* Фон первого экрана — тёмный, карточка под студенткой — фиолетовая */
+  --hero-bg: var(--aubergine);
+  --hero-card: var(--violet);
+  position: relative;
+  min-height: 100svh;
+  overflow: clip;
+  color: var(--text);
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--page);
+}
+
+body { margin: 0; background: var(--page, #f5f5f5); }
+/* Сброс с нулевой специфичностью: классы блоков всегда сильнее */
+:where(.sc-page) *, :where(.sc-page) *::before, :where(.sc-page) *::after { box-sizing: border-box; }
+:where(.sc-page) img { max-width: 100%; }
+:where(.sc-page) :is(h1, h2, h3, p, figure) { margin: 0; }
+.sc-page ::selection { background: var(--lavender); color: var(--aubergine); }
+:where(.sc-page) a { color: inherit; }
+.sc-page :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 0.5rem; }
+
+.sc-page .padding-global { width: 100%; padding-inline: var(--page-padding); }
+.sc-page .container-xlarge { width: 100%; max-width: var(--container); margin-inline: auto; }
+
+/* ---------- Кнопки: плоские, без свечения ---------- */
+.sc-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-height: 3.25rem;
+  padding: 0.875rem 1.5rem;
+  border: 0;
+  border-radius: 1rem;
+  font: 500 1.0625rem/1.1 var(--font-text);
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+/* Белая кнопка: текст тёмный, как у кнопок навигации */
+.sc-button.is-light { background: var(--white); color: var(--text); }
+.sc-button.is-violet { background: var(--violet); color: var(--white); }
+.sc-button.is-large { min-height: 3.75rem; padding: 1rem 1.75rem; font-size: 1.1875rem; }
+.sc-button.is-small { min-height: 2.75rem; padding: 0.625rem 1.125rem; font-size: 0.9375rem; border-radius: 0.875rem; }
+.sc-button_arrow { flex: none; transition: transform var(--dur) var(--ease); }
+/* Наведение — только там, где есть мышь, иначе на телефоне эффект «залипает» */
+@media (hover: hover) and (pointer: fine) {
+  /* При наведении — акцентный фиолетовый с белым текстом */
+  .sc-button.is-light:hover { background: var(--violet); color: var(--white); }
+  .sc-button.is-violet:hover { background: var(--violet-press); }
+  .sc-button:hover .sc-button_arrow { transform: translateX(3px); }
+}
+
+/* ---------- Общие заголовки ---------- */
+.sc-h2 {
+  font: 600 var(--fs-h2)/1.02 var(--font-display);
+  letter-spacing: -0.035em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.sc-h2.is-on-dark { color: var(--white); }
+.sc-section-lead { max-width: 40rem; margin-top: 1.25rem; color: var(--text-2); text-wrap: pretty; }
+
+/* Обводка слова от руки */
+.sc-loop { position: relative; display: inline-block; white-space: nowrap; }
+.sc-loop_svg {
+  position: absolute;
+  left: -7%;
+  top: -16%;
+  width: 114%;
+  height: 132%;
+  overflow: visible;
+  pointer-events: none;
+}
+.sc-loop_svg path { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.sc-loop.is-lavender .sc-loop_svg path { stroke: var(--lavender); }
+/* Карандаш: линия тоньше и неровная (фильтр #sc-pencil), второй проход ещё тоньше и бледнее */
+.sc-loop.is-pencil .sc-loop_svg path { stroke-width: 2.6; }
+.sc-loop.is-pencil .sc-loop_svg .sc-loop_second { stroke-width: 1.4; opacity: 0.55; }
+
+/* Общие фильтры и рисунок «замазки» лежат в невидимом svg */
+.sc-defs { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
+
+/* Слово «по замазке»: белый рваный мазок с сухими волокнами по краям (рисунок #sc-brush).
+   Мазок проявляется слева направо, долю задаёт переменная --mark (0…1). */
+.sc-mark {
+  position: relative;
+  z-index: 0;
+  display: inline-block;
+  padding-inline: 0.14em;
+  color: var(--violet);
+}
+/* Мазок шире слова и опускается ниже строки, чтобы хвосты «р» и «у» не терялись на фиолетовом */
+.sc-mark_svg {
+  position: absolute;
+  top: 0.02em;
+  left: -0.16em;
+  z-index: -1;
+  width: calc(100% + 0.32em);
+  height: calc(100% + 0.2em);
+  overflow: visible;
+  pointer-events: none;
+  clip-path: inset(-10% calc((1 - var(--mark, 1)) * 100%) -10% 0);
+}
+
+/* =========================================================================
+   1. Первый экран
+   Пишется от телефона к десктопу: базовые правила — телефон (до 768 px),
+   дальше @media (min-width: 48.0625rem) — планшет, (min-width: 64.0625rem) — десктоп.
+   ========================================================================= */
+.sc-hero { position: relative; }
+.sc-hero_frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--hero-bg);
+  color: var(--white);
+  /* Формат обрезки менять нельзя: его анимирует GSAP при уходе экрана */
+  clip-path: inset(0% 0% 0% 0% round 0px 0px 0px 0px);
+}
+
+/* ---------- Шапка ---------- */
+.sc-header { position: relative; z-index: 6; padding-top: 1rem; }
+.sc-header_inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "brand actions";
+  align-items: center;
+}
+.sc-header_brand { grid-area: brand; font: 700 1.875rem/1 var(--font-display); letter-spacing: -0.03em; text-decoration: none; }
+.sc-header_actions { grid-area: actions; display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; }
+
+/* Кнопка меню (телефон и планшет): квадрат со скруглёнными углами, как кнопки навигации */
+.sc-burger {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--white);
+  color: var(--violet);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease);
+}
+.sc-burger svg { width: 1.375rem; height: 1.375rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+/* ---------- Тело экрана: на телефоне одна колонка, порядок задан строками сетки ---------- */
+.sc-hero_body { position: relative; z-index: 2; padding-top: 1.25rem; padding-bottom: 2.5rem; transform-origin: 50% 40%; }
+.sc-hero_grid { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 0.75rem; }
+.sc-hero_copy, .sc-hero_side { display: contents; }
+
+.sc-hero_meta {
+  grid-row: 1;
+  grid-column: 1;
+  justify-self: start;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 999px;
+  background: var(--lavender);
+  color: var(--violet-deep);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.sc-hero_title {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  font: 800 clamp(2.25rem, 10vw, 4.25rem)/0.96 var(--font-display);
+  letter-spacing: -0.03em;
+}
+.sc-hero_line { display: block; }
+.sc-hero_lead { grid-row: 4; grid-column: 1 / -1; max-width: 36rem; margin-top: 1.25rem; color: rgb(255 255 255 / 94%); text-wrap: pretty; }
+.sc-hero_actions { grid-row: 5; grid-column: 1 / -1; display: flex; flex-direction: column; align-items: stretch; gap: 0.75rem; margin-top: 1.5rem; }
+.sc-hero_actions .sc-button { width: 100%; padding-inline: 1.25rem; font-size: 1.0625rem; }
+.sc-hero_gift { padding-left: 0.5rem; font: 500 1.5rem/1.05 var(--font-hand); transform: rotate(-2deg); }
+
+/* ---------- Колода подходов ---------- */
+.sc-deck {
+  grid-row: 3;
+  grid-column: 1 / -1;
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 30rem;
+  aspect-ratio: 4 / 3;
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem; /* место под подпись и точки */
+}
+.sc-deck_card { position: absolute; inset: 27% 15% 0; z-index: 1; border-radius: 1.25rem; background: var(--hero-card); box-shadow: 0 2rem 4rem -2rem rgb(20 10 40 / 60%); }
+.sc-deck_student {
+  position: absolute;
+  left: 22%;
+  bottom: -5.5%;
+  z-index: 2;
+  width: 56%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sc-approach {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28%;
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  padding: 0.75rem;
+  color: var(--text);
+  /* Тень повторяет неровную форму карты */
+  filter: drop-shadow(0 0.875rem 1rem rgb(20 10 40 / 28%));
+  transform-origin: 50% 90%;
+  transition: transform 600ms var(--ease), opacity 450ms var(--ease);
+}
+.sc-approach_shape { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; fill: var(--white); }
+.sc-approach:is(.is-2, .is-4) .sc-approach_shape { fill: var(--lavender-soft); }
+.sc-approach figcaption { font-weight: 500; font-size: 0.8125rem; line-height: 1.1; text-align: center; }
+.sc-approach_art { width: 100%; height: auto; overflow: visible; }
+.sc-approach_art :is(circle, path) { fill: none; stroke: var(--violet); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.sc-approach_art circle { fill: var(--lavender-soft); }
+.sc-approach:is(.is-2, .is-4) .sc-approach_art circle { fill: var(--white); }
+.sc-approach_art * { transform-box: fill-box; transform-origin: center; transition: transform 600ms var(--ease); }
+
+/* Телефон: две карты по бокам, вторая пара лежит под первой и сменяет её */
+.sc-approach:is(.is-1, .is-3) { left: 1%; top: 44%; rotate: -8deg; }
+.sc-approach:is(.is-2, .is-4) { left: 71%; top: 42%; rotate: 7deg; }
+/* Прячем вторую пару только на телефоне — иначе это правило перебивает подпрыгивание при наведении */
+@media (max-width: 48rem) {
+  .sc-deck:not(.is-pair-b) .sc-approach:is(.is-3, .is-4),
+  .sc-deck.is-pair-b .sc-approach:is(.is-1, .is-2) { opacity: 0; transform: translateY(1.5rem) scale(0.9); pointer-events: none; }
+}
+
+.sc-deck_caption {
+  position: absolute;
+  top: calc(100% + 0.875rem);
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sc-deck_pager { display: flex; flex: none; }
+.sc-deck_dot { position: relative; width: 1.5rem; height: 1.5rem; padding: 0; border: 0; background: none; cursor: pointer; }
+.sc-deck_dot::before { content: ""; position: absolute; inset: 0.4375rem; border-radius: 50%; background: rgb(255 255 255 / 45%); transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.sc-deck_dot[aria-pressed="true"]::before { background: var(--white); transform: scale(1.15); }
+.sc-deck_label { color: rgb(255 255 255 / 92%); font-size: 0.875rem; line-height: 1.25; }
+.sc-deck_arrow { display: none; }
+.sc-deck_arrow path { fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+
+/* Пара штрихов-акцентов вокруг студентки и карт */
+.sc-accent { position: absolute; z-index: 4; width: 7%; height: auto; overflow: visible; pointer-events: none; }
+.sc-accent path { fill: none; stroke: var(--white); stroke-width: 2.4; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.sc-accent.is-head { top: 4%; left: 69%; }
+/* Штрихи над верхним краем карты: двигаются и поворачиваются вместе с ней */
+.sc-accent.is-card { top: -1.75rem; width: 1.75rem; }
+.sc-approach.is-2 .sc-accent.is-card { left: 50%; }
+.sc-approach.is-3 .sc-accent.is-card { left: 58%; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-header { padding-top: 1.25rem; }
+
+  .sc-hero_body { padding-top: 2rem; padding-bottom: 3.5rem; }
+  .sc-hero_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; }
+  .sc-hero_title { grid-row: 1; margin-top: 0; text-align: center; font-size: clamp(3.75rem, 8.2vw, 5.25rem); }
+  .sc-deck { grid-row: 2; max-width: 42rem; aspect-ratio: 3 / 2; margin: 2.5rem 0 0; }
+  .sc-hero_meta { grid-row: 3; margin-top: 2.75rem; font-size: 0.9375rem; }
+  .sc-hero_lead { grid-row: 4; grid-column: 1; margin-top: 1rem; }
+  .sc-hero_actions { grid-row: 3 / 5; grid-column: 2; align-self: end; align-items: flex-end; }
+  .sc-hero_actions .sc-button { width: auto; padding-inline: 1.25rem; font-size: 1.0625rem; }
+  .sc-hero_gift { padding: 0 0.25rem 0 0; text-align: right; }
+
+  .sc-deck_card { inset: 30% 17% 0; border-radius: var(--radius-card); }
+  .sc-deck_student { left: 24%; width: 52%; }
+  .sc-approach { width: 18%; padding: 0.875rem 0.75rem; }
+  .sc-approach figcaption { font-size: 0.9375rem; letter-spacing: -0.01em; }
+  /* Внутренние карты лежат поверх внешних, подписи не перекрываются */
+  .sc-approach:is(.is-2, .is-3) { z-index: 4; }
+  .sc-approach.is-1 { left: 1%; top: 55%; rotate: -9deg; }
+  .sc-approach.is-2 { left: 17%; top: 51%; rotate: -4deg; }
+  .sc-approach.is-3 { left: 65%; top: 50%; rotate: 4deg; }
+  .sc-approach.is-4 { left: 81%; top: 54%; rotate: 9deg; }
+  /* Подпись от руки со стрелкой к картам, как в макете */
+  .sc-deck_caption { top: 4%; left: 2%; right: auto; display: block; width: 24%; }
+  .sc-deck_pager { display: none; }
+  .sc-deck_label { color: var(--white); font: 500 clamp(1.25rem, 1.6vw, 1.5rem)/0.98 var(--font-hand); transform: rotate(-10deg); transform-origin: left top; }
+  .sc-deck_arrow { display: block; width: 2.75rem; height: auto; margin: 0.5rem 0 0 46%; overflow: visible; }
+  .sc-accent.is-head { top: 3%; left: 66%; }
+  .sc-accent.is-card { top: -2.25rem; width: 2.25rem; }
+}
+
+/* ---------- Десктоп: две колонки, колода заходит под длинные строки заголовка ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-hero { height: 100svh; min-height: 46rem; }
+  .sc-hero_frame { height: 100%; }
+  .sc-header { position: absolute; inset: 0 0 auto; padding-top: 1.5rem; }
+  .sc-header .sc-burger { display: none; }
+
+  .sc-hero_body { height: 100%; display: flex; align-items: center; padding-top: 6.5rem; padding-bottom: 2.5rem; }
+  .sc-hero_grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 1.5rem; }
+  .sc-hero_copy { display: flex; flex-direction: column; align-items: flex-start; grid-row: 1; grid-column: 1 / 9; z-index: 3; pointer-events: none; }
+  .sc-hero_copy > * { pointer-events: auto; }
+  .sc-hero_side { position: relative; display: flex; flex-direction: column; justify-content: center; grid-row: 1; grid-column: 6 / 13; }
+  .sc-hero_title { text-align: left; font-size: clamp(3.75rem, 6.3vw, 6.25rem); }
+  .sc-hero_meta { margin-top: clamp(2rem, 5vh, 3rem); }
+  /* Текст не заходит под колоду: она начинается с 6-й колонки из 12 */
+  .sc-hero_lead { max-width: min(36rem, 58%); margin-top: 1rem; }
+  /* Колода выше прежней: под ней больше нет кнопки */
+  .sc-deck { max-width: none; aspect-ratio: 13 / 10; margin: 0; }
+  /* Кнопка и подарок — в левой колонке, под текстом */
+  .sc-hero_actions { align-self: flex-start; align-items: flex-start; margin-top: 1.75rem; }
+  .sc-hero_actions .sc-button { padding-inline: 1.75rem; font-size: 1.1875rem; }
+  .sc-hero_gift { padding: 0 0 0 0.5rem; text-align: left; }
+
+  /* Карточка студентки смещена вправо: слева над колодой проходят длинные строки заголовка,
+     а левые карты держатся подальше от текста */
+  .sc-deck_card { inset: 32% 7% 0 25%; }
+  .sc-deck_student { left: 30.5%; width: 57%; }
+  .sc-approach { width: 17%; }
+  .sc-approach figcaption { font-size: clamp(0.8125rem, 0.95vw, 0.9375rem); letter-spacing: -0.02em; }
+  .sc-approach.is-1 { left: 9%; top: 60%; }
+  .sc-approach.is-2 { left: 23%; top: 55%; }
+  .sc-approach.is-3 { left: 68%; top: 54%; }
+  .sc-approach.is-4 { left: 81.5%; top: 59%; }
+  /* Подпись встаёт в просвет между концом первой строки заголовка и головой студентки */
+  .sc-deck_caption { top: 9%; left: 28%; width: 20%; }
+  .sc-deck_label { font-size: clamp(1.125rem, 1.45vw, 1.4375rem); }
+  .sc-deck_arrow { width: clamp(2.5rem, 3.4vw, 3.5rem); margin: 0.25rem 0 0 18%; }
+  .sc-accent.is-head { top: 6%; left: 68%; }
+}
+
+/* Наведение — только там, где есть мышь */
+@media (hover: hover) and (pointer: fine) {
+  .sc-burger:hover { background: var(--lavender-soft); }
+  .sc-approach:hover { transform: translateY(-0.875rem); }
+  .sc-approach:hover .sc-art-cbt circle:nth-child(1) { transform: translateY(-4px); }
+  .sc-approach:hover .sc-art-cbt circle:nth-child(2) { transform: translate(-4px, 3px); }
+  .sc-approach:hover .sc-art-cbt circle:nth-child(3) { transform: translate(4px, 3px); }
+  .sc-approach:hover .sc-art-act { transform: rotate(60deg); }
+  .sc-approach:hover .sc-art-schema circle:not(:first-child) { transform: scale(1.25); }
+  .sc-approach:hover .sc-art-cft circle:nth-child(1) { transform: translateY(-5px); }
+  .sc-approach:hover .sc-art-cft circle:nth-child(2) { transform: translate(-5px, 3px); }
+  .sc-approach:hover .sc-art-cft circle:nth-child(3) { transform: translate(5px, 3px); }
+}
+
+/* =========================================================================
+   Навигация «пилюли» — как на антикризисной конференции
+   Телефон: сверху «Разделы» и «Зарегистрироваться», плашка выезжает, когда уходит шапка.
+   Планшет: сверху все разделы, тоже выезжает после шапки.
+   Десктоп: плашка стоит в строке шапки с самого начала и остаётся сверху при прокрутке.
+   ========================================================================= */
+/* Отступ при переходе по якорю: начало блока не прячется под навигацией */
+.sc-page section[id] { scroll-margin-top: 4.75rem; }
+
+.sc-pills {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  padding: 0.375rem;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 1.125rem;
+  background: rgb(51 47 65 / 45%);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  box-shadow: 0 0.75rem 2.5rem rgb(51 47 65 / 16%);
+  visibility: hidden;
+  transform: translateY(-160%);
+  transition: transform 450ms var(--ease), visibility 0s linear 450ms;
+}
+.sc-pills.is-visible { visibility: visible; transform: none; transition: transform 450ms var(--ease), visibility 0s; }
+.sc-pills_inner { display: none; }
+/* Кнопки — прямоугольники со скруглёнными углами */
+.sc-pills_menu, .sc-pills_link, .sc-pills_cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--text);
+  color: var(--white);
+  font: 500 0.9375rem/1 var(--font-text);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.sc-pills_menu svg { width: 1.125rem; height: 1.125rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.sc-pills_cta { background: var(--violet); }
+
+@media (min-width: 48.0625rem) {
+  .sc-page section[id] { scroll-margin-top: 5.75rem; }
+  .sc-pills { top: 1rem; right: auto; left: 50%; justify-content: flex-start; transform: translate(-50%, -160%); }
+  .sc-pills.is-visible { transform: translate(-50%, 0); }
+  .sc-pills_inner { display: flex; gap: 0.25rem; }
+  .sc-pills_menu, .sc-pills_cta { display: none; }
+  .sc-pills_link { padding: 0 0.875rem; font-size: 1rem; letter-spacing: -0.03em; }
+  .sc-pills_link.is-current { background: var(--white); color: var(--text); }
+  /* «Регистрация» выезжает справа, когда начинается блок «Для кого» */
+  .sc-pills_link.is-registration {
+    max-width: 0;
+    padding-inline: 0;
+    overflow: hidden;
+    opacity: 0;
+    background: var(--violet);
+    clip-path: inset(0 100% 0 0 round 0.75rem);
+    pointer-events: none;
+    transition: max-width 320ms var(--ease), padding 320ms var(--ease), opacity 220ms ease-out, clip-path 320ms var(--ease), background-color var(--dur) var(--ease);
+  }
+  .sc-pills.is-registration-visible .sc-pills_link.is-registration { max-width: 10rem; padding-inline: 0.875rem; opacity: 1; clip-path: inset(0 0 0 0 round 0.75rem); pointer-events: auto; }
+}
+/* Десктоп: плашка видна всегда и стоит по центру строки шапки */
+@media (min-width: 64.0625rem) {
+  .sc-pills, .sc-pills.is-visible { top: 1.125rem; visibility: visible; transform: translate(-50%, 0); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .sc-pills_link:not(.is-current):not(.is-registration):hover, .sc-pills_menu:hover { background: var(--aubergine); }
+  .sc-pills_link.is-registration:hover, .sc-pills_cta:hover { background: var(--violet-press); }
+}
+
+/* ---------- Меню (телефон и планшет): тёмная шторка сверху, разделы кнопками ---------- */
+.sc-menu {
+  inset: 0 0 auto;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  max-height: 100svh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0 0 1.5rem 1.5rem;
+  background: var(--aubergine);
+  color: var(--white);
+  font-family: var(--font-text);
+}
+.sc-menu::backdrop { background: rgb(43 35 52 / 55%); }
+.sc-menu[open] { display: block; animation: sc-menu-in 360ms var(--ease); }
+@keyframes sc-menu-in { from { transform: translateY(-100%); } }
+.sc-menu_inner { padding: 1rem 1rem 1.25rem; }
+.sc-menu_top { display: flex; align-items: center; justify-content: space-between; }
+.sc-menu_top .sc-header_brand { font-size: 1.5rem; }
+.sc-menu_list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0 2rem; padding: 0; list-style: none; }
+.sc-menu_link { display: inline-flex; align-items: center; min-height: 3rem; padding: 0 1.125rem; border-radius: 0.75rem; background: rgb(255 255 255 / 10%); color: var(--white); font: 500 1.0625rem/1 var(--font-text); letter-spacing: -0.02em; text-decoration: none; }
+.sc-menu_link.is-current { background: var(--white); color: var(--text); }
+.sc-menu_bottom { display: grid; gap: 0.875rem; }
+.sc-menu_meta { color: rgb(255 255 255 / 92%); font-weight: 500; }
+.sc-menu_bottom .sc-button { background: var(--violet); color: var(--white); }
+
+
+/* Текст только для скринридеров */
+.sc-visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* =========================================================================
+   2. Для кого — мини-игра
+   Счётчик «0 / 8» живёт внутри тёмной карточки-вывода.
+   Телефон: заголовок → список → карточка. Пока листаете список, карточка свёрнута
+            до счётчика и едет внизу экрана; в конце списка раскрывается целиком.
+   Планшет: заголовок на всю ширину, слева карточка (прилипает), справа список.
+   Десктоп: заголовок и карточка слева, список справа.
+   ========================================================================= */
+.sc-audience { position: relative; padding-block: 5.5rem; }
+.sc-audience_grid { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 1.25rem; }
+.sc-audience_aside, .sc-audience_sticky { display: contents; }
+.sc-audience_title { grid-row: 1; }
+.sc-checklist { grid-row: 2; display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+
+/* ---------- Карточка-вывод со счётчиком ---------- */
+.sc-result {
+  grid-row: 3;
+  position: relative;
+  z-index: 6;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--aubergine);
+  color: var(--white);
+  transition: opacity 300ms var(--ease), transform 300ms var(--ease);
+}
+.sc-counter { margin-bottom: 1rem; }
+.sc-counter_score { display: flex; align-items: baseline; color: var(--lavender); font: 600 3rem/0.9 var(--font-display); letter-spacing: -0.04em; }
+.sc-counter_value { display: inline-block; min-width: 0.6em; text-align: right; }
+.sc-result_title { font: 600 clamp(1.625rem, 2.7vw, 2.75rem)/1.04 var(--font-display); letter-spacing: -0.035em; text-wrap: balance; }
+.sc-result_track { margin: 0.875rem 0 1.5rem; color: var(--lavender); font-weight: 500; font-size: 1.0625rem; line-height: 1.3; text-wrap: balance; }
+.sc-result_button { width: 100%; }
+
+/* Телефон: свёрнутая карточка (только счётчик) едет внизу, пока виден список */
+/* Свёрнутая карточка — компактная плашка только со счётчиком, слева внизу */
+.sc-result.is-docked { position: sticky; bottom: 0.75rem; justify-self: start; padding: 0.75rem 1.25rem; box-shadow: 0 1rem 2rem -1rem rgb(20 10 40 / 55%); }
+.sc-result.is-docked :is(.sc-result_title, .sc-result_track, .sc-result_button) { display: none; }
+.sc-result.is-docked .sc-counter { margin: 0; }
+.sc-result.is-docked .sc-counter_score { font-size: 2.25rem; }
+/* Пока список ещё не доехал до экрана, свёрнутая карточка спрятана */
+.sc-result.is-docked.is-away { opacity: 0; transform: translateY(1rem); pointer-events: none; }
+
+/* ---------- Пункты ---------- */
+.sc-check {
+  display: grid;
+  grid-template-columns: 1.875rem minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.125rem 1.125rem;
+  border: 1px solid rgb(124 92 219 / 14%);
+  border-radius: 1rem;
+  background: var(--white);
+  color: var(--text);
+  font: 400 1rem/1.4 var(--font-text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+}
+.sc-check[aria-pressed="true"] { border-color: rgb(124 92 219 / 35%); }
+/* Квадрат и галочка нарисованы карандашом, как обводка «знания из вуза» (фильтр #sc-pencil) */
+.sc-check_box { display: grid; place-items: center; width: 1.875rem; height: 1.875rem; }
+.sc-check_box svg { width: 100%; height: 100%; overflow: visible; }
+.sc-check_box path { fill: none; stroke: var(--violet); stroke-linecap: round; stroke-linejoin: round; }
+.sc-check_frame { stroke-width: 2.2; }
+/* Галочка выходит за край квадрата, как от руки */
+.sc-check_tick { stroke-width: 2.8; stroke-dasharray: 40; stroke-dashoffset: 40; transition: stroke-dashoffset 380ms var(--ease); }
+.sc-check[aria-pressed="true"] .sc-check_tick { stroke-dashoffset: 0; }
+
+/* Хайлайтер: полосы под каждой строкой рисует script.js, они закрашиваются по очереди слева направо */
+.sc-check_text { position: relative; display: block; }
+.sc-check_hl { position: relative; z-index: 1; }
+.sc-hl { position: absolute; z-index: 0; color: var(--lavender); pointer-events: none; }
+.sc-hl svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+@media (min-width: 48.0625rem) {
+  .sc-audience { padding-block: 7.5rem; }
+  .sc-audience_grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto auto; column-gap: 2.5rem; row-gap: 2.5rem; }
+  .sc-audience_title { grid-column: 1 / -1; margin: 0; }
+  .sc-audience_aside { display: block; grid-row: 2; grid-column: 1; }
+  .sc-audience_sticky { position: sticky; top: 6rem; display: block; }
+  .sc-checklist { grid-row: 2; grid-column: 2; }
+  .sc-check { padding: 1.25rem 1.375rem; font-size: 1.0625rem; }
+
+  .sc-result { padding: clamp(1.5rem, 2.6vw, 2.5rem); }
+  .sc-counter { margin-bottom: 1.25rem; }
+  .sc-counter_score { font-size: clamp(3.5rem, 5.2vw, 5.25rem); }
+  .sc-result_track { margin: 1rem 0 1.75rem; font-size: 1.125rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  /* Сверху — после того как первый экран свернулся в карточку; снизу — до тёмной сцены */
+  .sc-audience { padding-block: clamp(5rem, 7vw, 7.5rem) clamp(4rem, 6vw, 6.5rem); }
+  .sc-audience_grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-rows: auto minmax(0, 1fr); column-gap: clamp(2rem, 3.5vw, 3.5rem); row-gap: 0; }
+  .sc-audience_title { grid-row: 1; grid-column: 1; }
+  .sc-audience_aside { grid-row: 2; padding-bottom: 2rem; }
+  .sc-audience_sticky { top: 7rem; padding-top: 1.75rem; }
+  .sc-checklist { grid-row: 1 / 3; align-self: start; gap: 0.75rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-check:hover { border-color: rgb(124 92 219 / 45%); }
+}
+
+/* =========================================================================
+   3. Почему начинать сложно
+   Телефон и планшет: заголовок → лента карточек со свайпом и точками → финал.
+   Десктоп (от 1025 px): сцена закрепляется на экране, всё едет вбок одной лентой.
+   ========================================================================= */
+.sc-pains { position: relative; background: var(--aubergine); color: var(--white); }
+/* Десктоп: пока тёмная плашка растёт из карточки-вывода, фон сцены прозрачный (ставит script.js) */
+.sc-pains.is-veiled { background-color: transparent; }
+.sc-pains_viewport { position: relative; padding-block: 5.5rem; }
+.sc-pains_track { display: flex; flex-direction: column; padding-inline: var(--page-padding); }
+
+.sc-pains_intro { margin-bottom: 2rem; }
+/* Заголовок тёмных сцен — крупный и плотный, как заголовок первого экрана */
+.sc-pains_title { font: 800 clamp(2.75rem, 14vw, 4.25rem)/0.98 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+.sc-pains_title .sc-loop { margin-left: 0.1em; }
+.sc-pains_lead { max-width: 24rem; margin-top: 1.25rem; color: var(--lavender); font-size: 1.125rem; line-height: 1.35; text-wrap: balance; }
+
+/* Лента карточек: упирается в края экрана, карточки встают по месту при свайпе */
+.sc-pains_cards {
+  display: flex;
+  gap: 0.75rem;
+  margin-inline: calc(var(--page-padding) * -1);
+  padding-inline: var(--page-padding);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--page-padding);
+  scrollbar-width: none;
+}
+.sc-pains_cards::-webkit-scrollbar { display: none; }
+
+.sc-pain {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  width: min(82vw, 22rem);
+  min-height: 30rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  scroll-snap-align: start;
+}
+.sc-pain.is-white { background: var(--white); color: var(--text); }
+.sc-pain.is-violet { background: var(--violet); color: var(--white); }
+.sc-pain.is-lavender { background: var(--lavender); color: var(--text); }
+.sc-pain_title { font: 700 clamp(1.5rem, 6.4vw, 1.875rem)/1.05 var(--font-display); letter-spacing: -0.025em; text-wrap: balance; }
+.sc-pain_text { font-size: 1rem; line-height: 1.45; opacity: 0.88; text-wrap: pretty; }
+.sc-pain_art { width: 100%; height: auto; margin-top: auto; overflow: visible; }
+.sc-pain_note { color: rgb(51 47 65 / 70%); font-size: 0.8125rem; }
+
+/* Точки ленты */
+.sc-pains_dots { display: flex; justify-content: center; gap: 0.25rem; margin-top: 1rem; }
+.sc-pains_dot { position: relative; width: 1.75rem; height: 1.75rem; padding: 0; border: 0; background: none; cursor: pointer; }
+.sc-pains_dot::before { content: ""; position: absolute; inset: 0.625rem; border-radius: 50%; background: rgb(255 255 255 / 30%); transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.sc-pains_dot[aria-pressed="true"]::before { background: var(--lavender); transform: scale(1.3); }
+
+/* ---------- Иллюстрации ---------- */
+.sc-tome rect:first-child { stroke: none; }
+.sc-tome.is-violet rect:first-child { fill: var(--violet); }
+.sc-tome.is-lavender rect:first-child { fill: var(--lavender); }
+.sc-tome.is-deep rect:first-child { fill: var(--violet-deep); }
+.sc-tome_pages { fill: var(--white); opacity: 0.92; }
+.sc-tome_band { fill: none; stroke: var(--white); stroke-width: 1.5; opacity: 0.55; }
+.sc-tome.is-lavender .sc-tome_band { stroke: var(--violet); opacity: 0.4; }
+.sc-chair :is(path) { stroke: var(--violet); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.sc-chair_back, .sc-chair_arm { fill: var(--lavender); }
+.sc-chair_seat { fill: var(--lavender-soft); }
+.sc-chair_legs { fill: none; }
+
+.sc-chart_base { fill: none; stroke: rgb(51 47 65 / 20%); stroke-width: 2; stroke-linecap: round; }
+.sc-chart_bars rect { fill: var(--violet); }
+.sc-chart_line, .sc-chart_head { fill: none; stroke: var(--aubergine); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+.sc-road_path { fill: none; stroke: var(--violet); stroke-width: 3; stroke-linecap: round; }
+.sc-road_start { fill: var(--violet); }
+.sc-road_flag { fill: var(--lavender); stroke: var(--violet); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.sc-road_label { fill: rgb(51 47 65 / 75%); font: 500 12px var(--font-text); }
+
+/* ---------- Методы: чипы и переключатель ---------- */
+.sc-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: auto 0 0; padding: 0; list-style: none; }
+.sc-chip {
+  padding: 0.5rem 0.875rem;
+  border: 1.5px solid rgb(255 255 255 / 70%);
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1;
+  transition: background-color 400ms var(--ease), color 400ms var(--ease), opacity 400ms var(--ease);
+}
+.sc-chips.is-evidence-mode .sc-chip.is-evidence { background: var(--white); color: var(--violet); }
+.sc-chips.is-evidence-mode .sc-chip:not(.is-evidence) { opacity: 0.32; text-decoration: line-through; }
+.sc-toggle { display: inline-flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; min-height: 2.75rem; margin-top: 0.5rem; padding: 0; border: 0; background: none; color: inherit; font: 500 0.9375rem var(--font-text); cursor: pointer; }
+.sc-toggle_track { position: relative; flex: none; width: 3.25rem; height: 1.875rem; border-radius: 999px; background: rgb(255 255 255 / 30%); transition: background-color 300ms var(--ease); }
+.sc-toggle_thumb { position: absolute; top: 0.1875rem; left: 0.1875rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--white); transition: transform 300ms var(--ease); }
+.sc-toggle[aria-checked="true"] .sc-toggle_track { background: var(--lavender); }
+.sc-toggle[aria-checked="true"] .sc-toggle_thumb { transform: translateX(1.375rem); }
+
+/* ---------- Финал: клубок → стрелка, фраза, кнопка ---------- */
+.sc-pains_finale { display: flex; flex-direction: column; margin-top: 4.5rem; }
+.sc-knot { width: 100%; max-width: 56rem; height: auto; overflow: visible; }
+.sc-knot_path, .sc-knot_head { fill: none; stroke: var(--white); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.sc-finale_text { max-width: 64rem; margin-top: 1.5rem; font: 800 clamp(2.25rem, 10vw, 5.25rem)/1.02 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+.sc-mark.is-on-dark { color: var(--violet); }
+.sc-finale_actions { display: flex; flex-direction: column; align-items: stretch; gap: 0.875rem; margin-top: 2rem; }
+.sc-finale_note { color: var(--lavender); font-style: italic; font-size: 1rem; }
+
+.sc-pains_progress { display: none; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-pains_viewport { padding-block: 7rem; }
+  .sc-pains_intro { margin-bottom: 2.5rem; }
+  .sc-pains_title { font-size: clamp(3.75rem, 8vw, 5rem); }
+  .sc-pains_lead { font-size: 1.25rem; }
+  .sc-pain { width: min(42vw, 22rem); min-height: 32rem; padding: 1.75rem; }
+  .sc-pain_title { font-size: 1.75rem; }
+  .sc-finale_actions { flex-direction: row; align-items: center; gap: 1.5rem; }
+}
+
+/* ---------- Десктоп: закреплённая горизонтальная сцена ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-pains_viewport { display: flex; flex-direction: column; justify-content: center; height: 100svh; min-height: 42rem; padding-block: 0; overflow: hidden; }
+  .sc-pains_track { flex-direction: row; align-items: center; gap: clamp(1.25rem, 2vw, 2rem); width: max-content; padding-inline: var(--page-padding) 0; will-change: transform; }
+  .sc-pains_intro { flex: none; width: clamp(22rem, 30vw, 32rem); margin: 0; padding-right: 2rem; }
+  .sc-pains_title { font-size: clamp(4rem, 5.6vw, 6rem); }
+  .sc-pains_cards { gap: clamp(1.25rem, 2vw, 2rem); margin: 0; padding: 0; overflow: visible; scroll-snap-type: none; }
+  .sc-pain { width: clamp(19rem, 24vw, 24.5rem); min-height: clamp(28rem, 60vh, 35rem); padding: 2rem; }
+  .sc-pain_title { font-size: clamp(1.625rem, 2.1vw, 2.125rem); }
+  .sc-pains_dots { display: none; }
+  .sc-pains_finale { flex: none; justify-content: center; width: 100vw; margin: 0; padding-inline: var(--page-padding) 0; }
+  .sc-knot { width: min(56rem, 72vw); }
+  .sc-finale_text { margin-top: 2rem; font-size: clamp(3rem, 5vw, 5.25rem); }
+  .sc-finale_actions { flex-direction: column; align-items: flex-start; gap: 0.75rem; margin-top: 2.5rem; }
+
+  /* Полоска прогресса сцены — по центру под карточками */
+  .sc-pains_progress { position: absolute; left: 50%; bottom: clamp(1.5rem, 5vh, 3rem); display: block; width: min(26rem, 36vw); height: 3px; border-radius: 3px; background: rgb(255 255 255 / 14%); overflow: hidden; transform: translateX(-50%); }
+  .sc-pains_progress span { display: block; width: 100%; height: 100%; background: var(--lavender); transform: scaleX(0); transform-origin: left center; }
+}
+
+/* Если в системе включено «уменьшить движение», сцена не закрепляется —
+   на десктопе показываем ту же ленту со свайпом, что на планшете */
+@media (min-width: 64.0625rem) and (prefers-reduced-motion: reduce) {
+  .sc-pains_viewport { display: block; height: auto; min-height: 0; padding-block: 8rem; overflow: visible; }
+  .sc-pains_track { flex-direction: column; align-items: stretch; width: auto; padding-inline: var(--page-padding); }
+  .sc-pains_intro { width: auto; margin-bottom: 2.5rem; padding: 0; }
+  .sc-pains_cards { margin-inline: calc(var(--page-padding) * -1); padding-inline: var(--page-padding); overflow-x: auto; scroll-snap-type: x mandatory; }
+  .sc-pains_dots { display: flex; }
+  .sc-pains_finale { width: auto; margin-top: 5rem; padding: 0; }
+  .sc-pains_progress { display: none; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-pains_dot:hover::before { background: rgb(255 255 255 / 60%); }
+}
+
+/* =========================================================================
+   4. Что вы получите
+   ========================================================================= */
+.sc-benefits { position: relative; padding-block: clamp(5rem, 9vw, 9rem); }
+.sc-stations { position: relative; margin: clamp(2.5rem, 5vw, 4rem) 0 clamp(2rem, 3vw, 2.75rem); }
+.sc-stations_line { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 1.25rem; overflow: visible; }
+.sc-stations_line path { fill: none; stroke: var(--violet); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.sc-stations_list { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+.sc-station { display: flex; flex-direction: column; gap: 1rem; font-weight: 500; font-size: 1.125rem; line-height: 1.2; }
+.sc-station_dot { width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 0.375rem var(--page); }
+
+.sc-benefits_grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; align-items: stretch; }
+.sc-gift { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1rem; }
+.sc-book {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 78%;
+  aspect-ratio: 3 / 4;
+  margin-inline: auto;
+  padding: 1.5rem;
+  border-radius: 0.5rem 1.125rem 1.125rem 0.5rem;
+  background: var(--violet);
+  color: var(--white);
+  box-shadow: 1rem 1.5rem 2.5rem -1.25rem rgb(43 35 52 / 55%), inset 0.375rem 0 0 rgb(0 0 0 / 12%);
+  transform: perspective(900px) rotateY(-16deg) rotateZ(-4deg);
+  transition: transform 600ms var(--ease);
+}
+.sc-gift:hover .sc-book { transform: perspective(900px) rotateY(0) rotateZ(0); }
+.sc-book_title { font: 600 1.5rem/1.05 var(--font-display); letter-spacing: -0.03em; }
+.sc-book_art { width: 70%; align-self: center; overflow: visible; }
+.sc-book_art :is(circle, path) { fill: none; stroke: var(--white); stroke-width: 2.2; stroke-linecap: round; }
+.sc-book_tag { align-self: flex-start; padding: 0.25rem 0.625rem; border-radius: 0.5rem; background: var(--lavender); color: var(--violet-press); font-weight: 600; font-size: 0.8125rem; }
+.sc-gift_caption { color: var(--text-2); font-size: 1rem; text-align: center; text-wrap: balance; }
+
+.sc-day { padding: clamp(1.5rem, 2.4vw, 2.25rem); border-radius: var(--radius-card); background: var(--aubergine); color: var(--white); }
+.sc-day_list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 1.5rem; margin: 0; padding: 0; list-style: none; }
+.sc-day_item { display: flex; flex-direction: column; gap: 0.875rem; font-size: 0.9375rem; line-height: 1.4; color: rgb(230 229 235 / 85%); }
+.sc-day_item b { display: block; margin-bottom: 0.25rem; color: var(--white); font: 600 1.125rem/1.15 var(--font-display); letter-spacing: -0.02em; }
+.sc-icon { width: 2.5rem; height: 2.5rem; padding: 0.5rem; border: 1.5px solid rgb(218 214 255 / 60%); border-radius: 50%; overflow: visible; }
+.sc-icon :is(path, circle) { fill: none; stroke: var(--lavender); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+.sc-lesson { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem 1rem 1.5rem; border-radius: var(--radius-card); background: var(--white); }
+.sc-lesson_media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 1rem; }
+.sc-lesson_media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transition: transform 700ms var(--ease); }
+.sc-lesson:hover .sc-lesson_media img { transform: scale(1.04); }
+.sc-lesson_play { position: absolute; inset: 0; display: grid; place-items: center; }
+.sc-lesson_play svg { width: 3.75rem; height: 3.75rem; padding: 1rem; border-radius: 50%; background: var(--white); fill: var(--violet); box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(20 10 40 / 50%); }
+.sc-lesson_title { padding-inline: 0.5rem; font: 600 1.375rem/1.1 var(--font-display); letter-spacing: -0.03em; }
+.sc-lesson_tag { align-self: flex-start; margin-inline: 0.5rem; padding: 0.3125rem 0.75rem; border-radius: 999px; background: var(--lavender-soft); color: var(--violet-press); font-weight: 500; font-size: 0.875rem; }
+.sc-lesson_text { padding-inline: 0.5rem; color: var(--text-2); font-size: 0.9375rem; }
+
+/* =========================================================================
+   5. Антипозиция — фото на весь экран сжимается в ленту
+   ========================================================================= */
+.sc-anti { position: relative; height: calc(100svh + 170svh); background: var(--violet); color: var(--white); }
+.sc-anti_stage { position: sticky; top: 0; height: 100svh; min-height: 40rem; overflow: hidden; }
+.sc-anti_head { position: relative; z-index: 2; padding-top: clamp(4rem, 10vh, 7.5rem); }
+.sc-anti_head-grid { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: 3rem; align-items: start; }
+.sc-anti_title { font: 600 clamp(2.75rem, 5.4vw, 6rem)/0.98 var(--font-display); letter-spacing: -0.05em; transform-origin: 50% 100%; }
+.sc-strike { position: relative; display: inline-block; }
+.sc-strike svg { position: absolute; left: -2%; top: 46%; width: 104%; height: 0.35em; overflow: visible; }
+.sc-strike path { fill: none; stroke: var(--white); stroke-width: 4; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.sc-anti_side p { margin: 0.5rem 0 1.5rem; opacity: 0.92; text-wrap: pretty; }
+
+.sc-ribbon { position: absolute; left: 0; bottom: 8vh; z-index: 1; display: flex; align-items: flex-end; gap: 1.25rem; padding-left: 8vw; will-change: transform; }
+.sc-ribbon_item { position: relative; flex: none; }
+.sc-ribbon_item img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 1.25rem; }
+.sc-ribbon_item.is-tall { width: 17vw; height: 44vh; }
+.sc-ribbon_item.is-wide { width: 30vw; height: 34vh; }
+.sc-ribbon_item.is-square { width: 21vw; height: 29vh; margin-bottom: 8vh; }
+.sc-ribbon_item.is-portrait { width: 16vw; height: 40vh; margin-bottom: 3vh; }
+.sc-ribbon_caption { position: absolute; left: 1rem; bottom: -2.4rem; font: 500 1.5rem/1 var(--font-hand); white-space: nowrap; }
+
+.sc-anti_flyer { position: absolute; z-index: 3; display: none; overflow: hidden; pointer-events: none; }
+.sc-anti_flyer img { width: 100%; height: 100%; object-fit: cover; }
+
+/* =========================================================================
+   Хвост черновика
+   ========================================================================= */
+.sc-next { padding-block: clamp(5rem, 9vw, 8rem); }
+.sc-next_inner { max-width: 60rem; }
+.sc-next_list { display: grid; gap: 0.75rem; margin: 2rem 0; padding-left: 1.25rem; color: var(--text); }
+.sc-next_note { color: var(--text-2); font-size: 0.9375rem; }
+
+/* Портал: тёмная плашка-переход между блоками */
+.sc-portal {
+  position: fixed;
+  z-index: 40;
+  visibility: hidden;
+  background: var(--aubergine);
+  pointer-events: none;
+  will-change: left, top, width, height;
+}
+.sc-portal_text {
+  position: absolute;
+  top: clamp(1.5rem, 2.6vw, 2.5rem);
+  left: clamp(1.5rem, 2.6vw, 2.5rem);
+  right: clamp(1.5rem, 2.6vw, 2.5rem);
+  color: var(--white);
+  font: 600 clamp(1.75rem, 2.7vw, 2.75rem)/1.02 var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+
+/* =========================================================================
+   Остальные главы на планшете и телефоне: без закреплённых сцен, всё в колонку.
+   (Первый экран, «Для кого» и «Почему сложно» написаны от телефона к десктопу — их правила выше.)
+   ========================================================================= */
+@media (max-width: 64rem) {
+  .sc-benefits_grid, .sc-stations_list { grid-template-columns: 1fr; }
+  .sc-stations_line { display: none; }
+  .sc-anti { height: auto; }
+  .sc-anti_stage { position: relative; height: auto; padding-bottom: 6rem; overflow: visible; }
+  .sc-anti_head-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .sc-ribbon { position: relative; bottom: auto; margin-top: 3rem; padding-inline: var(--page-padding); overflow-x: auto; }
+  .sc-ribbon_item.is-tall, .sc-ribbon_item.is-wide, .sc-ribbon_item.is-square, .sc-ribbon_item.is-portrait { width: 70vw; height: 50vw; margin-bottom: 0; }
+}
+
+/* Узкие телефоны (до 375 px): дата и наклейка должны уместиться в одну строку */
+@media (max-width: 23.4375rem) {
+  .sc-hero_meta { padding: 0.375rem 0.625rem; font-size: 0.8125rem; }
+}
+
+@media (max-width: 32.5rem) {
+  .sc-day_list { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-page *, .sc-page *::before, .sc-page *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

@@ -1,0 +1,287 @@
+/* Локальная композиция конференции. Можно менять эту тему; общие стили Academy не трогаем.
+   Антикризисная конференция задаёт цельность блоков, Osmo — масштаб и движение. */
+@font-face{font-family:"Wix Madefor Text";src:url("assets/wix-regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Wix Madefor Text";src:url("assets/wix-medium.ttf") format("truetype");font-weight:500 700;font-style:normal;font-display:swap}
+.conference_body{margin:0;background:var(--bg-page)}
+.student-conference-page{--color-page-background:var(--bg-page);--color-surface-primary:var(--bg-surface);--color-text-primary:var(--text-heading);--color-text-secondary:var(--text-secondary);--color-text-secondary-large:var(--text-secondary);--color-accent-primary:var(--accent);--color-accent-text:var(--accent-hover);--color-text-on-dark:var(--text-inverse);--color-text-on-dark-muted:var(--text-on-inverse);--color-focus:var(--border-focus);--faq-divider-color:var(--border-default);--page-padding:1rem;--anchor-scroll-offset:2rem;--body-text-color:currentColor;--motion-duration:400ms;--motion-easing:cubic-bezier(.16,1,.3,1);font-family:"Wix Madefor Text",sans-serif;font-weight:400;color:var(--text-heading);overflow:clip;min-height:100dvh}
+.student-conference-page .container-large{max-width:80rem;width:100%;margin-inline:auto}
+.student-conference-page [hidden]{display:none!important}
+.student-conference-page ::selection{background:var(--accent);color:var(--text-inverse)}
+.student-conference-page :where(a,button,summary,input):focus-visible{outline:2px solid var(--border-focus);outline-offset:.25rem}
+.student-conference-page :where(button,summary,a){-webkit-tap-highlight-color:transparent;cursor:pointer}
+.student-conference-page :where(h1,h2,h3,h4){text-wrap:balance}
+.student-conference-page .section-spacing_component{padding-block:4rem}
+.student-conference-page .section-title_component,.conference-program_title,.conference-registration_title{font-size:2.125rem;line-height:1.08;letter-spacing:-.035em;font-weight:400;margin:0;max-width:54rem}
+.student-conference-page .content-heading_component{font-size:1.375rem;line-height:1.18;letter-spacing:-.025em;font-weight:500}
+.student-conference-page .body-text_component{font-size:1.0625rem;line-height:1.45;letter-spacing:-.01em;max-width:65ch;font-weight:400}
+.student-conference-page .button_component{font:500 1rem/1.25 "Wix Madefor Text",sans-serif;min-height:3.5rem;padding:1rem 1.5rem;border-radius:1rem;gap:1.5rem;justify-content:space-between;letter-spacing:-.015em;box-shadow:none;transition:background-color .3s,color .3s}
+.student-conference-page .button_component.is-accent{background:var(--accent);color:var(--text-inverse)}
+.student-conference-page .button_component:disabled{opacity:.6;cursor:default}
+.conference-icon{display:inline-block;width:1.25rem;height:1.25rem;flex:none;vertical-align:middle;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.conference_sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.conference_skip{position:fixed;z-index:var(--z-toast);top:1rem;left:1rem;transform:translateY(-200%);padding:1rem;background:var(--bg-surface)}
+.conference_skip:focus{transform:none}
+.conference_label{font-size:.875rem;line-height:1.4;font-weight:400;letter-spacing:0}
+.conference_fine{font-size:.875rem;line-height:1.4;color:var(--text-secondary)}
+.conference_text-link{display:inline-flex;align-items:center;gap:.75rem;min-height:2.75rem;color:inherit;background:none;border:0;padding:0;font:inherit;text-underline-offset:.25em;line-height:1.4}
+.conference_muted{color:var(--text-secondary)}
+.conference_accent,.conference-hero_accent{color:var(--accent)}
+.conference_demo{font-size:.75rem;line-height:1.4;color:var(--text-secondary);display:block}
+.conference-header_inner{min-height:5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.conference-header_brand{display:flex;align-items:center;gap:.75rem;font-size:2.5rem;font-weight:500;letter-spacing:-.04em;line-height:.9}
+.conference-header_brand-note{display:none;font-size:.75rem;line-height:1.15;letter-spacing:0}
+.conference-header_nav{display:none;gap:1.5rem}
+.conference-header_link{font-size:.875rem;min-height:2.75rem;display:flex;align-items:center}
+.conference-header_action{display:flex;align-items:center;gap:1rem;min-height:2.75rem;font-size:.875rem}
+/* Вся фраза H1 имеет один размер и читается без скачков и перекрытий. */
+.conference-hero_component{background:var(--bg-accent-soft);padding-block:2rem 0}
+.conference-hero_stage{display:grid;gap:2.5rem}
+.conference-hero_copy{display:grid;align-content:center;justify-items:start;gap:1.5rem;min-width:0}
+.conference-hero_title{font-size:2.5rem;line-height:1.06;letter-spacing:-.04em;font-weight:400;margin:0!important;max-width:19ch}
+.conference-hero_description{font-size:1.0625rem;line-height:1.4;letter-spacing:-.01em;max-width:32rem;margin:0}
+.conference-hero_visual{margin:0;position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:1rem;background:var(--bg-inverse)}
+.conference-hero_photo{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+.conference-hero_caption{position:absolute;inset:auto 1rem 1rem;background:var(--bg-surface);padding:.75rem 1rem;border-radius:.75rem;font-size:1rem;line-height:1.25}
+.conference-hero_details{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:1.5rem 1rem;border-top:1px solid var(--border-accent);margin-top:2rem;padding-block:1.5rem}
+.conference-hero_date{font-size:1.5rem;line-height:1.2;letter-spacing:-.03em}
+.conference-hero_date>span{display:block;font-size:1rem;letter-spacing:0;margin-top:.25rem}
+.conference-hero_format{font-size:1rem;line-height:1.35}
+.conference-hero_format>span{color:var(--text-secondary);display:inline-block;margin-top:.25rem;font-size:.875rem}
+.conference-hero_gift{grid-column:1/-1;display:flex;align-items:center;gap:1rem;font-size:.875rem;line-height:1.4;border-top:1px solid var(--border-accent);padding-top:1.5rem}
+.conference-hero_gift strong{font-weight:500}
+.conference-hero_gift>.conference_arrow{margin-left:auto}
+.conference-gift_cover{width:3rem;height:3.75rem;flex:none;display:grid;place-content:center;background:var(--accent);color:var(--text-inverse);font-size:.625rem;line-height:1.1;border-radius:.125rem .375rem .375rem .125rem;transform:rotate(-5deg)}
+.conference-section_header{display:block;margin-bottom:2rem}
+.conference-audience_grid{display:grid;gap:2rem}
+.conference-audience_intro{display:grid;gap:1rem;align-content:start}
+.conference-audience_intro>.body-text_component{color:var(--text-secondary)}
+.conference-audience_questions{display:grid;gap:0}
+.conference-audience_questions>.conference_label{color:var(--text-secondary);margin-bottom:.5rem}
+.conference-question_component{display:grid;grid-template-columns:1fr 1.25rem;gap:1rem;align-items:center;border:0;border-bottom:1px solid var(--border-default);background:transparent;padding:1rem .5rem 1rem 0;text-align:left;color:var(--text-heading);font:inherit;transition:background-color .3s}
+.conference-question_text{font-size:1rem;line-height:1.4}
+.conference-question_mark{width:1.25rem;height:1.25rem;border:1px solid var(--border-strong);border-radius:50%;display:grid;place-items:center;color:var(--accent)}
+.conference-question_mark>.conference-icon{width:.875rem;height:.875rem;opacity:0}
+.conference-question_component[aria-pressed=true]{background:var(--bg-accent-soft);padding-left:.75rem}
+.conference-question_component[aria-pressed=true] .conference-icon{opacity:1}
+.conference-audience_result{display:grid;gap:.5rem;padding-top:1.5rem}
+.conference-audience_result>.conference_text-link{font-size:1rem;color:var(--accent)}
+.conference-reality_component{background:var(--bg-surface)}
+.conference-reality_grid{display:grid;gap:1.5rem}
+.conference-reality_card{display:grid;gap:.75rem;align-content:start;padding-top:1.5rem;border-top:1px solid var(--border-default)}
+.conference-reality_card>.body-text_component{color:var(--text-secondary)}
+.conference-reality_footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;padding-top:2rem}
+.conference-benefits_component{background:var(--bg-accent-soft)}
+.conference-benefits_grid{display:grid;gap:3rem}
+.conference-benefits_visual{padding:.75rem;display:grid;gap:1.5rem;justify-items:center;align-content:center}
+.conference-book_component{position:relative;width:min(100%,23rem);aspect-ratio:3/4;background:var(--accent);color:var(--text-inverse);padding:1.5rem 1.5rem 1.5rem 2rem;border-radius:.125rem .75rem .75rem .125rem;display:flex;flex-direction:column;justify-content:space-between;gap:1rem;transform:rotate(-4deg);box-shadow:var(--shadow-overlay);transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.conference-book_spine{position:absolute;inset:0 auto 0 .625rem;width:1px;background:var(--border-accent)}
+.conference-book_title{font-size:2rem;letter-spacing:-.035em;line-height:1.08}
+.conference-book_index{font-size:.75rem;line-height:1.3;display:grid;gap:.5rem}
+.conference-book_index>span{border-bottom:1px solid var(--border-accent);padding-bottom:.5rem}
+.conference-book_bottom{display:flex;justify-content:space-between;gap:1rem;font-size:.75rem;line-height:1.3}
+.conference-benefits_steps{display:grid;gap:1.5rem;list-style:none;margin:0;padding:0}
+.conference-benefits_step{display:grid;grid-template-columns:2rem 1fr;gap:1rem;border-bottom:1px solid var(--border-accent);padding-bottom:1.5rem}
+.conference-step_number{font-size:1rem;color:var(--accent);font-variant-numeric:tabular-nums;padding-top:.125rem}
+.conference-benefits_step>div{display:grid;gap:.75rem}
+.conference-benefits_step .conference_label{color:var(--text-secondary)}
+.conference-list_component{display:grid;gap:.5rem;font-size:1.0625rem;line-height:1.4;list-style:disc;padding-left:1.25rem}
+/* Один тёмный разворот объединяет смысл, атмосферу и подтверждённого спикера. */
+.conference-people_component{background:var(--bg-inverse);color:var(--text-inverse);--color-text-primary:var(--text-inverse);--color-text-secondary:var(--text-on-inverse)}
+.conference-people_component .conference_fine{color:var(--text-on-inverse)}
+.conference-people_grid{display:grid;gap:2.5rem}
+.conference-people_intro{display:grid;gap:1.5rem;align-content:start}
+.conference-people_intro>.body-text_component{color:var(--text-on-inverse)}
+.conference-people_photos{display:grid;grid-template-columns:1fr 2fr;gap:.75rem;align-items:end}
+.conference-people_photo{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:.75rem}
+.conference-people_photo.is-small{aspect-ratio:2/3}
+.conference-speaker_component{display:grid;grid-template-columns:6rem 1fr;gap:1rem;align-content:start;align-items:start}
+.conference-speaker_portrait{aspect-ratio:1;overflow:hidden;border-radius:.75rem;background:var(--bg-surface)}
+.conference-speaker_image{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.conference-speaker_info{display:grid;gap:.75rem}
+.conference-speaker_info>.body-text_component{font-size:1rem}
+.conference-announcement_component{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border-accent)}
+.conference-announcement_component>div{display:grid;gap:.75rem}
+.conference-announcement_component .body-text_component{color:var(--text-on-inverse)}
+.conference-program_intro{display:flex;justify-content:space-between;gap:2rem;margin-bottom:2rem}
+.conference-program_intro>.body-text_component{max-width:36rem;color:var(--text-secondary)}
+.conference-program_intro>.conference_label{display:none}
+.conference-program_opening{display:grid;gap:1.5rem;padding:1.5rem;border-radius:1rem;background:var(--bg-accent-soft)}
+.conference-program_opening>div{display:grid;gap:.75rem}
+.conference-program_opening>.conference_label{color:var(--accent)}
+.conference-track_choices{display:none;grid-template-columns:1fr;gap:.5rem;margin-block:2rem}
+.student-conference-page.is-enhanced .conference-track_choices{display:grid}
+.conference-track_choice{display:flex;align-items:center;justify-content:space-between;gap:.75rem;border:1px solid var(--border-default);border-radius:.75rem;padding:1rem;background:transparent;color:var(--text-secondary);font:inherit;text-align:left;transition:background-color .3s,color .3s}
+.conference-track_choice[aria-selected=true]{background:var(--accent);border-color:var(--accent);color:var(--text-inverse)}
+.conference-track_name{font-size:1.125rem;line-height:1.2;letter-spacing:-.02em}
+.conference-track_panel-header{display:grid;gap:.75rem;margin-bottom:1.5rem}
+.conference-track_panel-header>.body-text_component{font-size:1rem;color:var(--text-secondary)}
+.conference-topic_component{border-top:1px solid var(--border-default)}
+.conference-topic_trigger{list-style:none;display:grid;grid-template-columns:1.5rem 1fr 1.25rem;align-items:start;gap:.5rem;padding:1.5rem 0}
+.conference-topic_trigger::-webkit-details-marker{display:none}
+.conference-topic_number{font-size:.75rem;line-height:1.8;color:var(--text-secondary);font-variant-numeric:tabular-nums}
+.conference-topic_title{font-size:1.25rem;line-height:1.25;letter-spacing:-.025em;font-weight:400}
+.conference-topic_meta{display:block;margin-top:.75rem;font-size:.875rem;line-height:1.4;color:var(--text-secondary)}
+.conference-topic_panel{padding:0 1.5rem 1.5rem 2rem;max-width:55rem}
+.conference-topic_component[open] .accordion_icon{transform:rotate(-45deg)}
+.conference-program_final{display:grid;gap:1rem;margin-top:2rem;padding:1.5rem;border-radius:1rem;background:var(--bg-accent-soft)}
+.conference-program_final>.conference_label{color:var(--accent)}
+.conference-program_note{font-size:.875rem;line-height:1.45;color:var(--text-secondary);max-width:50rem;margin-top:1.5rem!important}
+.conference-proof_component{background:var(--bg-surface)}
+.conference-stats_component{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-bottom:2.5rem}
+.conference-stats_item{display:grid;gap:.5rem}
+.conference-stats_number{font-size:2.75rem;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:var(--accent)}
+.conference-stats_item>.body-text_component{font-size:.875rem;line-height:1.3;color:var(--text-secondary)}
+.conference-reviews_component{display:grid;gap:1rem}
+.conference-review_component{display:flex;flex-direction:column;gap:1.25rem;margin:0;padding:1.5rem;border-radius:1rem;background:var(--bg-page)}
+.conference-review_component.is-featured{background:var(--bg-accent-soft)}
+.conference-review_mark{font-size:3rem;line-height:.8;color:var(--accent)}
+.conference-review_quote{font-size:1.125rem;line-height:1.4;letter-spacing:-.01em}
+.conference-review_author{margin-top:auto;padding-top:1rem}
+.conference-review_name{display:block;font-size:1rem;font-weight:500}
+.conference-review_meta{display:block;font-size:.8125rem;line-height:1.4;color:var(--text-secondary);margin-top:.25rem}
+.conference-universities_component{display:grid;gap:1rem;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border-default)}
+.conference-universities_names{display:flex;flex-wrap:wrap;gap:1rem 2rem;font-size:1.125rem;letter-spacing:-.02em}
+.conference-outcomes_grid{display:grid;gap:2rem}
+.conference-outcomes_list{display:grid;gap:0;list-style:none;padding:0}
+.conference-outcomes_item{padding:1rem 0;border-bottom:1px solid var(--border-default);font-size:1.0625rem;line-height:1.4}
+.conference-registration_component{background:var(--bg-accent-soft)}
+.conference-registration_grid{display:grid;gap:2rem}
+.conference-registration_plans{display:grid;align-content:start;gap:1.5rem}
+.conference-plans_component{border:0;padding:0;margin:0;display:grid;gap:.75rem}
+.conference-plan_component{position:relative;cursor:pointer}
+.conference-plan_component>input{position:absolute;top:1rem;right:1rem;width:1.25rem;height:1.25rem;opacity:0;accent-color:var(--accent)}
+.conference-plan_content{display:grid;gap:1rem;padding:1.25rem;border:1px solid var(--border-accent);border-radius:1rem;transition:background-color .3s,color .3s}
+.conference-plan_head{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.conference-plan_price{font-size:2rem;line-height:1.1;letter-spacing:-.035em}
+.conference-plan_content>.body-text_component{font-size:1rem}
+.conference-plan_component>input:checked+.conference-plan_content{background:var(--bg-inverse);border-color:var(--bg-inverse);color:var(--text-inverse)}
+.conference-plan_component>input:focus-visible+.conference-plan_content{outline:2px solid var(--border-focus);outline-offset:.25rem}
+.conference-plan_check{width:1.5rem;height:1.5rem;display:grid;place-items:center;border:1px solid currentColor;border-radius:50%}
+.conference-plan_check>.conference-icon{width:1rem;height:1rem;opacity:0}
+.conference-plan_component>input:checked+.conference-plan_content .conference-icon{opacity:1}
+.conference-form_component{padding:1.5rem;background:var(--bg-surface);border-radius:1rem}
+.conference-form_fields,.conference-form_success{display:grid;gap:1rem}
+.conference-form_label{display:grid;gap:.5rem;font-size:.875rem;line-height:1.4}
+.conference-form_input{font:inherit;width:100%;border:1px solid var(--border-strong);border-radius:.75rem;background:var(--bg-page);color:var(--text-heading);padding:.875rem 1rem;min-height:3rem;caret-color:var(--accent)}
+.conference-form_input::placeholder{color:var(--text-secondary)}
+.conference-form_consent{display:flex;align-items:start;gap:.625rem;font-size:.75rem;line-height:1.45}
+.conference-form_consent>input{width:1rem;height:1rem;flex:none;margin:.125rem 0 0;accent-color:var(--accent)}
+.conference-form_consent .conference_text-link{display:inline;min-height:auto;text-decoration:underline}
+.conference-form_demo{font-size:.75rem;line-height:1.45;color:var(--text-secondary);padding-top:.75rem;border-top:1px solid var(--border-default)}
+.conference-form_success{min-height:30rem;align-content:start;gap:1.5rem}
+.conference-faq_section .faq_component{gap:2rem;width:100%;max-width:none}
+.conference-faq_section .faq_header{align-items:start;text-align:left;width:100%;max-width:none}
+.conference-faq_section .faq_list{width:100%}
+.conference-faq_section .faq_list{border-radius:0;border:0;border-top:1px solid var(--border-default)}
+.conference-faq_section .faq_question{padding:1.5rem 0}
+.conference-faq_section .faq_answer-inner{padding-inline:0}
+.conference-footer_component{padding-block:2rem;border-top:1px solid var(--border-default)}
+.conference-footer_top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem;padding-bottom:2rem}
+.conference-footer_top>.body-text_component{font-size:1rem}
+.conference-footer_bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.75rem;border-top:1px solid var(--border-default);padding-top:1rem;color:var(--text-secondary);font-size:.75rem}
+@media(hover:hover) and (pointer:fine){
+ .conference-header_link:hover,.conference_text-link:hover,.conference-header_action:hover{text-decoration:underline;text-underline-offset:.25em}
+ .student-conference-page .button_component.is-accent:hover{background:var(--accent-hover)}
+ .button_component:hover .conference-icon,.conference-hero_gift:hover .conference-icon{transform:translate(.15rem,-.15rem)}
+ .conference-book_component:hover{transform:rotate(0)}
+ .conference-question_component:hover{background:var(--bg-accent-soft);padding-left:.75rem}
+ .conference-track_choice:hover:not([aria-selected=true]){background:var(--bg-accent-soft)}
+ .conference-topic_trigger:hover .conference-topic_title{color:var(--accent)}
+ .conference-speaker_portrait:hover .conference-speaker_image{transform:scale(1.025)}
+}
+@media(min-width:32.5625rem){
+ .student-conference-page{--page-padding:1.5rem}
+ .conference-header_brand-note{display:block}
+ .conference-hero_title{font-size:3.5rem}
+ .conference-hero_visual{aspect-ratio:16/9}
+ .conference-reality_grid{grid-template-columns:1fr 1fr;gap:2rem}
+ .conference-track_choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .conference-stats_number{font-size:3.5rem}
+}
+@media(min-width:48rem){
+ .student-conference-page{--page-padding:2rem}
+ .student-conference-page .section-spacing_component{padding-block:5rem}
+ .student-conference-page .section-title_component,.conference-program_title,.conference-registration_title{font-size:3rem}
+ .student-conference-page .content-heading_component{font-size:1.5rem}
+ .student-conference-page .body-text_component{font-size:1.125rem}
+ .conference-header_inner{min-height:6rem}
+ .conference-hero_component{padding-top:3rem}
+ .conference-hero_stage{grid-template-columns:1.65fr 1fr;gap:2.5rem;align-items:center}
+ .conference-hero_title{font-size:clamp(3rem,5.8vw,5.25rem)}
+ .conference-hero_visual{aspect-ratio:3/4;transform:rotate(-3deg)}
+ .conference-hero_description{font-size:1.125rem}
+ .conference-hero_caption{font-size:1rem}
+ .conference-hero_details{grid-template-columns:1fr 1fr 1.5fr;margin-top:3rem;padding-block:2rem;gap:1.5rem}
+ .conference-hero_gift{grid-column:auto;border:0;padding:0}
+ .conference-hero_date{font-size:1.75rem}
+ .conference-hero_format{font-size:1rem}
+ .conference-section_header{margin-bottom:2.5rem}
+ .conference-audience_grid{grid-template-columns:1fr 1.4fr;gap:3rem}
+ .conference-audience_intro{position:sticky;top:2rem;align-self:start}
+ .conference-question_text{font-size:1.125rem}
+ .conference-benefits_grid{grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+ .conference-book_component{padding:2rem;min-height:29rem}
+ .conference-book_title{font-size:2.5rem}
+ .conference-benefits_step{padding-bottom:2rem;gap:1.25rem}
+ .conference-people_grid{grid-template-columns:1.6fr 1fr;gap:3rem}
+ .conference-people_intro>.body-text_component{font-size:1.25rem}
+ .conference-speaker_component{grid-template-columns:1fr;gap:1.25rem}
+ .conference-speaker_portrait{max-width:20rem;aspect-ratio:5/4}
+ .conference-people_photos{margin-top:1rem}
+ .conference-announcement_component{margin-top:3rem}
+ .conference-announcement_component>div{grid-template-columns:1fr 1.5fr;align-items:start;gap:3rem}
+ .conference-program_opening{grid-template-columns:1fr 1fr;gap:2rem;padding:2rem}
+ .conference-program_opening>.conference_label{grid-column:1/-1}
+ .conference-track_choice{padding:1.5rem}
+ .conference-track_name{font-size:1.5rem}
+ .conference-track_panel-header{grid-template-columns:1.25fr 1fr;gap:3rem;align-items:center;margin-bottom:2rem}
+ .conference-topic_trigger{grid-template-columns:2rem 1fr 1.5rem;gap:1rem;padding-block:1.75rem}
+ .conference-topic_title{font-size:1.5rem;max-width:50rem}
+ .conference-topic_panel{padding-left:3rem}
+ .conference-program_final{grid-template-columns:1fr 1fr;padding:2rem;gap:1.5rem 2rem}
+ .conference-program_final>.conference_label{grid-column:1/-1}
+ .conference-reviews_component{grid-template-columns:1.2fr 1fr 1fr}
+ .conference-review_component{padding:1.5rem}
+ .conference-review_quote{font-size:1.125rem}
+ .conference-stats_component{max-width:55rem;gap:3rem;margin-bottom:3rem}
+ .conference-stats_number{font-size:4.5rem}
+ .conference-stats_item>.body-text_component{font-size:1.125rem}
+ .conference-outcomes_grid{grid-template-columns:1fr 1.25fr;gap:3rem}
+ .conference-registration_grid{grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+ .conference-form_component{padding:2rem}
+ .conference-plan_price{font-size:2.5rem}
+}
+@media(min-width:64.0625rem){
+ .student-conference-page{--page-padding:3rem}
+ .student-conference-page .section-spacing_component{padding-block:6rem}
+ .student-conference-page .section-title_component,.conference-program_title,.conference-registration_title{font-size:3.5rem}
+ .conference-header_nav{display:flex}
+ .conference-hero_stage{grid-template-columns:1.9fr 1fr;gap:4rem;min-height:33rem}
+ .conference-hero_copy{gap:2rem}
+ .conference-hero_title{font-size:clamp(4rem,5.8vw,5.25rem)}
+ .conference-hero_visual{max-width:25rem;justify-self:end;width:100%}
+ .conference-hero_description{font-size:1.25rem;max-width:35rem}
+ .conference-hero_details{margin-top:3rem;grid-template-columns:1fr 1fr 1.5fr}
+ .conference-hero_date{font-size:2rem}
+ .conference-hero_gift{font-size:1rem}
+ .conference-audience_grid{gap:6rem;grid-template-columns:1fr 1.5fr}
+ .conference-audience_intro>.body-text_component{font-size:1.375rem}
+ .conference-reality_grid{gap:2.5rem 4rem}
+ .conference-reality_card{grid-template-columns:1fr 1.3fr;gap:2rem;padding-top:2rem}
+ .conference-reality_card .content-heading_component{font-size:1.5rem}
+ .conference-benefits_grid,.conference-people_grid{gap:5rem}
+ .conference-people_component .conference-section_header{max-width:60rem}
+ .conference-people_intro>.body-text_component{font-size:1.375rem}
+ .conference-people_photos{gap:1rem;margin-top:2rem}
+ .conference-speaker_portrait{max-width:none}
+ .conference-program_intro>.conference_label{display:block}
+ .conference-track_panel-header{margin-block:3rem 2rem}
+ .conference-review_component{padding:2rem}
+ .conference-review_quote{font-size:1.25rem}
+ .conference-registration_grid{gap:5rem}
+ .conference-form_component{padding:2.5rem}
+ .conference-outcomes_item{font-size:1.125rem}
+}
+/* На узких телефонах масштабируем rem-композицию целиком. */
+@media(max-width:23.4375rem){html{font-size:calc(100vw / 23.4375)}}
+@media(prefers-reduced-motion:reduce){.student-conference-page *{animation:none!important;transition:none!important}.conference-hero_visual,.conference-book_component{transform:none!important}}
