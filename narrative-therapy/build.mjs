@@ -168,6 +168,40 @@ function renderPricingPlans(data, id) {
 </section>`;
 }
 
+/* SEO по docs/seo.md: canonical, Open Graph и микроразметка JSON-LD. Всё берётся из тех же данных, что и страница:
+   цены и тарифы — data/pricing.json, старт — data/seo.json (дата потока из CMS), вопросы — data/faq.json,
+   преподаватель — data/instructor.json. Поэтому цена в разметке всегда совпадает с ценой на странице.
+   og:image не задан: картинки 1200×630 для соцсетей пока нет (поле ogImage в seo.json). */
+function renderSeoHead(seo) {
+  const tags = [
+    `<link rel="canonical" href="${escapeHtml(seo.canonical)}">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="${escapeHtml(seo.siteName)}">`,
+    `<meta property="og:locale" content="ru_RU">`,
+    `<meta property="og:title" content="${escapeHtml(seo.ogTitle)}">`,
+    `<meta property="og:description" content="${escapeHtml(seo.ogDescription)}">`,
+    `<meta property="og:url" content="${escapeHtml(seo.canonical)}">`,
+    ...(seo.ogImage ? [`<meta property="og:image" content="${escapeHtml(seo.ogImage.src)}">`, `<meta property="og:image:width" content="${seo.ogImage.width}">`, `<meta property="og:image:height" content="${seo.ogImage.height}">`, `<meta name="twitter:card" content="summary_large_image">`] : []),
+  ];
+  return tags.map(tag => `    ${tag}`).join('\n');
+}
+// Текст для разметки: без HTML и с обычными пробелами (на странице те же слова, только с неразрывными пробелами).
+const plain = text => String(text).replace(/<[^>]+>/g, '').replaceAll(NBSP, ' ').replace(/\s+/g, ' ').trim();
+const ldScript = data => `<script type="application/ld+json">\n${JSON.stringify(data, null, 2).replace(/</g, '\\u003c')}\n</script>`;
+function renderJsonLd({seo, pricing, faq, instructor}) {
+  const org = seo.organization;
+  const orgId = `${org.url}/#organization`;
+  const organization = {'@context': 'https://schema.org', '@type': 'EducationalOrganization', '@id': orgId, name: org.name, url: org.url, logo: org.logo, telephone: org.telephone, email: org.email,
+    address: {'@type': 'PostalAddress', addressCountry: 'RU', postalCode: org.address.postalCode, addressLocality: org.address.addressLocality, streetAddress: org.address.streetAddress}};
+  const course = {'@context': 'https://schema.org', '@type': 'Course', '@id': `${seo.canonical}#course`, name: pricing.courseName, description: seo.course.description, url: seo.canonical, inLanguage: 'ru',
+    provider: {'@id': orgId}, educationalCredentialAwarded: seo.course.credential,
+    hasCourseInstance: {'@type': 'CourseInstance', name: `Поток ${plain(pricing.start).replace(/^Старт /, '')}`, courseMode: seo.course.courseMode, startDate: seo.course.startDate,
+      instructor: {'@type': 'Person', name: instructor.name, jobTitle: plain(instructor.role)},
+      offers: pricing.plans.map(plan => ({'@type': 'Offer', name: plan.name, description: plan.description, price: String(plan.total), priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: seo.canonical}))}};
+  const faqPage = {'@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.items.map(item => ({'@type': 'Question', name: plain(item.question), acceptedAnswer: {'@type': 'Answer', text: item.answer.map(plain).join(' ')}}))};
+  return [organization, course, faqPage].map(ldScript).join('\n');
+}
+
 async function buildHtml() {
   const seo = await json('seo');
   const hero = typeset(await json('hero'));
@@ -213,6 +247,7 @@ async function buildHtml() {
     <meta name="robots" content="noindex,nofollow">
     <title>${escapeHtml(seo.title)}</title>
     <meta name="description" content="${escapeHtml(seo.description)}">
+${renderSeoHead(seo)}
     <link rel="icon" href="data:,">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -229,6 +264,7 @@ async function buildHtml() {
     <main class="main-wrapper academy-page narrative-therapy-page" id="main-content" tabindex="-1" data-academy-anchor-scroll>
 ${body}
     </main>
+${renderJsonLd({seo, pricing: pricingVariants, faq: await json('faq'), instructor: await json('instructor')})}
   </body>
 </html>
 `;

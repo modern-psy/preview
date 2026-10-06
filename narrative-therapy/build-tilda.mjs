@@ -88,6 +88,8 @@ for (const [i, markup] of sections.entries()) {
   blocks.push(await write(name, `<!-- СЕКЦИЯ ${String(i + 1).padStart(2, '0')}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n<div class="main-wrapper academy-page ${SLUG}-page" ${HOOK}="${slug}"${anchor} data-academy-anchor-scroll>\n${markup}\n</div>\n`, title, 'BODY'));
 }
 // Скрипты: CDN-библиотеки, затем общий runtime, который ждёт готовности DOM и видит все секции страницы.
+const jsonLd = [...source.matchAll(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g)].map(m => m[0]);
+if (jsonLd.length !== 3) throw new Error(`Ожидалось 3 блока JSON-LD, найдено ${jsonLd.length}`);
 const external = [...source.matchAll(/<script src="(https:[^"]+)" defer><\/script>/g)].map(m => `<script src="${m[1]}"></script>`);
 const jsParts = js.split(/\n(?=\/\* === )/);
 const jsChunks = [];
@@ -102,6 +104,10 @@ for (const [i, chunk] of jsChunks.entries()) {
   const runtime = `<script>\n(() => {\nconst initialize = () => {\n${chunk.trim()}\n};\nif (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, {once: true});\nelse initialize();\n})();\n</script>\n`;
   blocks.push(await write(name, `<!-- ОБЩИЕ СКРИПТЫ ${i + 1}/${jsChunks.length}. Последние T123, после всех секций и нативной формы Tilda, по порядку. -->\n${head}${runtime}`, `Общие скрипты ${i + 1}/${jsChunks.length}`, 'FOOTER'));
 }
+
+// Микроразметка JSON-LD (организация, курс, FAQ) — отдельный T123 после скриптов: в первый блок скриптов она не
+// влезает по лимиту. canonical и Open Graph в Тильде задаются в настройках страницы (см. README, раздел SEO).
+blocks.push(await write(`${String(index++).padStart(2, '0')}-seo-jsonld.html`, `<!-- МИКРОРАЗМЕТКА JSON-LD. Последний T123 страницы. Цены и вопросы совпадают с текстом на странице; при правке data/*.json пересобрать. -->\n${jsonLd.join('\n')}\n`, 'Микроразметка JSON-LD', 'FOOTER'));
 
 // Проверки: локальные ссылки, сохранность и уникальность id, целостность якорей.
 const all = blocks.join('\n');
