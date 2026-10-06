@@ -106,6 +106,7 @@ node narrative-therapy/build-tilda.mjs    # index.html -> tilda/*.html (по о�
 | `assets/practice.webp` | 1131×2000, 89 КБ | «Осваиваете подход через практику» (та же картинка, что в `rodbt-record/assets/level.webp`) | `data/practice.json` → `image.src` |
 | `assets/evidence-cbt.webp` | 1200×896, 76 КБ | доказательная база, карточка «Подход сопоставим с КПТ по эффективности» | `data/evidence.json` → `cards[0].image.src` |
 | `assets/evidence-hope.webp` | 1200×897, 54 КБ | доказательная база, карточка «Повышает надежду и даёт позитивный аффект» | `data/evidence.json` → `cards[1].image.src` |
+| `assets/evidence-oncology.webp` | 1200×897, 63 КБ | доказательная база, карточка «Подходит для клиентов с онкологией» | `data/evidence.json` → `cards[2].image.src` |
 
 ## Что ждём и что проверить
 
