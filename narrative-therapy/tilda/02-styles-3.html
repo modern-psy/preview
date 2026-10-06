@@ -406,6 +406,43 @@
 @keyframes nt-branch-3 { 0%, 48% { stroke-dashoffset: 1; opacity: 0; } 48.5% { opacity: 1; } 62%, 100% { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes nt-bdot-3 { 0%, 62% { opacity: 0; transform: scale(0.4); } 69%, 100% { opacity: 1; transform: scale(1); } }
 
+/* Схема «Кризис или изменения» (crisis) — свой таймлайн на 7 секунд, все элементы стартуют вместе:
+   0–22% серая линия рисуется слева направо; 22–27% появляется разлом; 28–37% поверх него по очереди встают точки
+   пунктира; 38–60% фиолетовая линия рисуется слева направо; до 86% картинка стоит целиком; 86–94% гаснет вся.
+   Клиент (тёмный круг) идёт по пути, пока он рисуется: по серой линии, ждёт у разлома, переходит по пунктиру,
+   поднимается по фиолетовой линии и останавливается на её конце. Точки его пути посчитаны по кривым схемы. */
+.narrative-therapy-page .nt-scene [class*="sc-crisis-"] { animation: var(--crisis-name) 7000ms linear infinite both; }
+.narrative-therapy-page .nt-scene :is(.sc-crisis-old, .sc-crisis-new) { stroke-dasharray: 1 2; }
+.narrative-therapy-page .nt-scene .sc-crisis-old { --crisis-name: nt-crisis-old; }
+.narrative-therapy-page .nt-scene .sc-crisis-crack { --crisis-name: nt-crisis-crack; }
+.narrative-therapy-page .nt-scene .sc-crisis-dot-1 { --crisis-name: nt-crisis-dot-1; }
+.narrative-therapy-page .nt-scene .sc-crisis-dot-2 { --crisis-name: nt-crisis-dot-2; }
+.narrative-therapy-page .nt-scene .sc-crisis-dot-3 { --crisis-name: nt-crisis-dot-3; }
+.narrative-therapy-page .nt-scene .sc-crisis-new { --crisis-name: nt-crisis-new; }
+.narrative-therapy-page .nt-scene .sc-crisis-client { --crisis-name: nt-crisis-client; transform-box: view-box; transform-origin: 0 0; }
+@keyframes nt-crisis-old { 0%, 4% { stroke-dashoffset: 1; opacity: 0; } 4.5% { opacity: 1; } 22% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 94%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes nt-crisis-crack { 0%, 22% { opacity: 0; transform: scale(0.6); } 27% { opacity: 1; transform: scale(1); } 86% { opacity: 1; transform: scale(1); } 94%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes nt-crisis-dot-1 { 0%, 28% { opacity: 0; transform: scale(0.4); } 31% { opacity: 1; transform: scale(1); } 86% { opacity: 1; transform: scale(1); } 94%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes nt-crisis-dot-2 { 0%, 31% { opacity: 0; transform: scale(0.4); } 34% { opacity: 1; transform: scale(1); } 86% { opacity: 1; transform: scale(1); } 94%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes nt-crisis-dot-3 { 0%, 34% { opacity: 0; transform: scale(0.4); } 37% { opacity: 1; transform: scale(1); } 86% { opacity: 1; transform: scale(1); } 94%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes nt-crisis-new { 0%, 38% { stroke-dashoffset: 1; opacity: 0; } 38.5% { opacity: 1; } 60% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 94%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes nt-crisis-client {
+  0% { opacity: 0; transform: translate(0px, 0px); }
+  4% { opacity: 1; transform: translate(0px, 0px); }
+  7% { transform: translate(12.7px, -0.5px); } 10% { transform: translate(25.5px, -1.8px); } 13% { transform: translate(38.1px, -3.8px); }
+  16% { transform: translate(50.6px, -5.8px); } 19% { transform: translate(63.2px, -7.4px); } 22% { transform: translate(76px, -8px); }
+  27% { transform: translate(76px, -8px); } 38% { transform: translate(112px, -8px); }
+  40.75% { transform: translate(124.6px, -9.9px); } 43.5% { transform: translate(136.6px, -15px); } 46.25% { transform: translate(147.6px, -21.6px); }
+  49% { transform: translate(158.6px, -28.5px); } 51.75% { transform: translate(169.6px, -35px); } 54.5% { transform: translate(181.2px, -40.7px); }
+  57.25% { transform: translate(193.3px, -45px); } 60% { transform: translate(206px, -48px); }
+  86% { opacity: 1; transform: translate(206px, -48px); }
+  94%, 100% { opacity: 0; transform: translate(206px, -48px); }
+}
+/* Без анимации клиент стоит в конце нового пути. */
+@media (prefers-reduced-motion: reduce) {
+  .narrative-therapy-page .nt-scene .sc-crisis-client { transform: translate(206px, -48px); }
+}
+
 /* Схема за пределами экрана стоит на паузе (атрибуты ставит page.js). */
 .narrative-therapy-page .nt-scene[data-scene-observed]:not([data-in-view]) * { animation-play-state: paused; }
 /* Без анимации видно итоговое состояние: все элементы на местах, проблема отделена от человека. */
