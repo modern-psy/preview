@@ -385,6 +385,26 @@
 @keyframes nt-scene-depart { 0%, 15% { transform: none; } 40%, 85% { transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.8); } 100% { transform: none; } }
 @keyframes nt-scene-apart { 0%, 40% { opacity: 0; } 48%, 80% { opacity: 1; } 86%, 100% { opacity: 0; } }
 @keyframes nt-scene-spin { to { transform: rotate(360deg); } }
+/* Схема «Застрял в одной истории» (branches) — свой таймлайн, который играет вперёд и затем ровно назад
+   (animation-direction: alternate, полцикла 3,5 секунды). Вперёд: ветка 1 рисуется от точки ответвления к краю,
+   на её конце появляется точка, затем ветка 2 и точка 2, ветка 3 и точка 3, пауза. Назад — то же в обратном
+   порядке: точка 3 исчезает, ветка 3 втягивается к центру, и так до первой ветки. Ветка рисуется через
+   stroke-dashoffset (у пути pathLength="1": 1 — линии не видно, 0 — нарисована целиком). */
+.narrative-therapy-page .nt-scene [class*="sc-branch-"] { stroke-dasharray: 1; animation: var(--branch-name) 3500ms var(--motion-easing) infinite alternate both; }
+.narrative-therapy-page .nt-scene [class*="sc-bdot-"] { animation: var(--branch-name) 3500ms var(--motion-easing) infinite alternate both; }
+.narrative-therapy-page .nt-scene .sc-branch-1 { --branch-name: nt-branch-1; }
+.narrative-therapy-page .nt-scene .sc-branch-2 { --branch-name: nt-branch-2; }
+.narrative-therapy-page .nt-scene .sc-branch-3 { --branch-name: nt-branch-3; }
+.narrative-therapy-page .nt-scene .sc-bdot-1 { --branch-name: nt-bdot-1; }
+.narrative-therapy-page .nt-scene .sc-bdot-2 { --branch-name: nt-bdot-2; }
+.narrative-therapy-page .nt-scene .sc-bdot-3 { --branch-name: nt-bdot-3; }
+@keyframes nt-branch-1 { 0%, 6% { stroke-dashoffset: 1; } 20%, 100% { stroke-dashoffset: 0; } }
+@keyframes nt-bdot-1 { 0%, 20% { opacity: 0; transform: scale(0.4); } 27%, 100% { opacity: 1; transform: scale(1); } }
+@keyframes nt-branch-2 { 0%, 27% { stroke-dashoffset: 1; } 41%, 100% { stroke-dashoffset: 0; } }
+@keyframes nt-bdot-2 { 0%, 41% { opacity: 0; transform: scale(0.4); } 48%, 100% { opacity: 1; transform: scale(1); } }
+@keyframes nt-branch-3 { 0%, 48% { stroke-dashoffset: 1; } 62%, 100% { stroke-dashoffset: 0; } }
+@keyframes nt-bdot-3 { 0%, 62% { opacity: 0; transform: scale(0.4); } 69%, 100% { opacity: 1; transform: scale(1); } }
+
 /* Схема за пределами экрана стоит на паузе (атрибуты ставит page.js). */
 .narrative-therapy-page .nt-scene[data-scene-observed]:not([data-in-view]) * { animation-play-state: paused; }
 /* Без анимации видно итоговое состояние: все элементы на местах, проблема отделена от человека. */

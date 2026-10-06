@@ -2,7 +2,8 @@
 // показывает, что меняет нарративная работа. Схемы декоративные (aria-hidden), смысл передаёт текст карточки.
 // Размер холста 240×140 в единицах viewBox, схема масштабируется целиком.
 // Анимация в page.css (раздел «Схемы ситуаций»): элемент получает класс движения sc-pop / sc-fade / sc-rise /
-// sc-grow / sc-move / sc-depart / sc-apart / sc-spin и задержку --d. Один цикл 7 секунд, анимируются только transform и opacity.
+// sc-grow / sc-move / sc-depart / sc-apart / sc-spin и задержку --d. Один цикл 7 секунд, анимируются transform и opacity;
+// у веток схемы branches ещё stroke-dashoffset — линия рисуется (свой таймлайн, туда и обратно).
 // Без анимации (prefers-reduced-motion) каждая схема показывает итоговое состояние.
 
 const attrs = (list) => Object.entries(list).filter(([, v]) => v !== undefined).map(([k, v]) => ` ${k}="${v}"`).join('');
@@ -23,15 +24,17 @@ const SCENES = {
     el('path', {class: 'sc-link is-dashed', d: 'M110 70H140'}, 'apart'),
     el('circle', {class: 'sc-dot', cx: 90, cy: 70, r: 3}, 'apart'),
   ],
-  // Застрял в одной истории → от главной линии ответвляются альтернативные истории с событиями.
+  // Застрял в одной истории → от главной линии одна за другой прорастают альтернативные истории: ветка рисуется
+  // от центра (точки ответвления) к краю, на её конце появляется событие-точка. Затем всё в обратном порядке:
+  // точка исчезает, ветка втягивается обратно к центру. Свой таймлайн sc-branch-N / sc-bdot-N (см. page.css).
   branches: () => [
     el('path', {class: 'sc-line', d: 'M16 76H224'}),
-    el('path', {class: 'sc-alt', d: 'M52 76C82 76 86 36 120 34'}, 'rise', 400, {fy: '8px'}),
-    dot(120, 34, 5, 'pop', 900),
-    el('path', {class: 'sc-alt', d: 'M100 76C130 76 134 112 168 114'}, 'rise', 1300, {fy: '-8px'}),
-    dot(168, 114, 5, 'pop', 1800),
-    el('path', {class: 'sc-alt', d: 'M150 76C176 76 180 42 212 40'}, 'rise', 2200, {fy: '8px'}),
-    dot(212, 40, 5, 'pop', 2700),
+    el('path', {class: 'sc-alt sc-branch-1', d: 'M52 76C82 76 86 36 120 34', pathLength: 1}),
+    el('circle', {class: 'sc-dot sc-bdot-1', cx: 120, cy: 34, r: 5}),
+    el('path', {class: 'sc-alt sc-branch-2', d: 'M100 76C130 76 134 112 168 114', pathLength: 1}),
+    el('circle', {class: 'sc-dot sc-bdot-2', cx: 168, cy: 114, r: 5}),
+    el('path', {class: 'sc-alt sc-branch-3', d: 'M150 76C176 76 180 42 212 40', pathLength: 1}),
+    el('circle', {class: 'sc-dot sc-bdot-3', cx: 212, cy: 40, r: 5}),
     person(26, 76, 9),
   ],
   // Отношения и контекст → вокруг человека появляются семья, культура, нормы, значимые люди; связи сходятся к нему.
