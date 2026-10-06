@@ -386,8 +386,9 @@
    (animation-direction: alternate, полцикла 3,5 секунды). Вперёд: ветка 1 рисуется от точки ответвления к краю,
    на её конце появляется точка, затем ветка 2 и точка 2, ветка 3 и точка 3, пауза. Назад — то же в обратном
    порядке: точка 3 исчезает, ветка 3 втягивается к центру, и так до первой ветки. Ветка рисуется через
-   stroke-dashoffset (у пути pathLength="1": 1 — линии не видно, 0 — нарисована целиком). */
-.narrative-therapy-page .nt-scene [class*="sc-branch-"] { stroke-dasharray: 1; animation: var(--branch-name) 3500ms var(--motion-easing) infinite alternate both; }
+   stroke-dashoffset (у пути pathLength="1": 1 — линии не видно, 0 — нарисована целиком). Промежуток пунктира 2,
+   а не 1, и opacity 0 до начала рисования: иначе скруглённый кончик штриха нулевой длины виден точкой на конце пути. */
+.narrative-therapy-page .nt-scene [class*="sc-branch-"] { stroke-dasharray: 1 2; animation: var(--branch-name) 3500ms var(--motion-easing) infinite alternate both; }
 .narrative-therapy-page .nt-scene [class*="sc-bdot-"] { animation: var(--branch-name) 3500ms var(--motion-easing) infinite alternate both; }
 .narrative-therapy-page .nt-scene .sc-branch-1 { --branch-name: nt-branch-1; }
 .narrative-therapy-page .nt-scene .sc-branch-2 { --branch-name: nt-branch-2; }
@@ -395,11 +396,11 @@
 .narrative-therapy-page .nt-scene .sc-bdot-1 { --branch-name: nt-bdot-1; }
 .narrative-therapy-page .nt-scene .sc-bdot-2 { --branch-name: nt-bdot-2; }
 .narrative-therapy-page .nt-scene .sc-bdot-3 { --branch-name: nt-bdot-3; }
-@keyframes nt-branch-1 { 0%, 6% { stroke-dashoffset: 1; } 20%, 100% { stroke-dashoffset: 0; } }
+@keyframes nt-branch-1 { 0%, 6% { stroke-dashoffset: 1; opacity: 0; } 6.5% { opacity: 1; } 20%, 100% { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes nt-bdot-1 { 0%, 20% { opacity: 0; transform: scale(0.4); } 27%, 100% { opacity: 1; transform: scale(1); } }
-@keyframes nt-branch-2 { 0%, 27% { stroke-dashoffset: 1; } 41%, 100% { stroke-dashoffset: 0; } }
+@keyframes nt-branch-2 { 0%, 27% { stroke-dashoffset: 1; opacity: 0; } 27.5% { opacity: 1; } 41%, 100% { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes nt-bdot-2 { 0%, 41% { opacity: 0; transform: scale(0.4); } 48%, 100% { opacity: 1; transform: scale(1); } }
-@keyframes nt-branch-3 { 0%, 48% { stroke-dashoffset: 1; } 62%, 100% { stroke-dashoffset: 0; } }
+@keyframes nt-branch-3 { 0%, 48% { stroke-dashoffset: 1; opacity: 0; } 48.5% { opacity: 1; } 62%, 100% { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes nt-bdot-3 { 0%, 62% { opacity: 0; transform: scale(0.4); } 69%, 100% { opacity: 1; transform: scale(1); } }
 
 /* Схема за пределами экрана стоит на паузе (атрибуты ставит page.js). */
