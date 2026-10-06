@@ -107,6 +107,7 @@ node narrative-therapy/build-tilda.mjs    # index.html -> tilda/*.html (по о�
 | `assets/evidence-cbt.webp` | 1200×896, 76 КБ | доказательная база, карточка «Подход сопоставим с КПТ по эффективности» | `data/evidence.json` → `cards[0].image.src` |
 | `assets/evidence-hope.webp` | 1200×897, 54 КБ | доказательная база, карточка «Повышает надежду и даёт позитивный аффект» | `data/evidence.json` → `cards[1].image.src` |
 | `assets/evidence-oncology.webp` | 1200×897, 63 КБ | доказательная база, карточка «Подходит для клиентов с онкологией» | `data/evidence.json` → `cards[2].image.src` |
+| `assets/evidence-ptsd.webp` | 1200×896, 103 КБ | доказательная база, карточка «Эффективна при ПТСР и сложной травме» | `data/evidence.json` → `cards[3].image.src` |
 
 ## Что ждём и что проверить
 
@@ -118,9 +119,7 @@ node narrative-therapy/build-tilda.mjs    # index.html -> tilda/*.html (по о�
 - **Ссылка на CDN для картинки блока «Осваиваете подход через практику».** С 05.10.2026 там руки с блокнотом на коленях
   из `rodbt-record` (блок «Первый уровень», `rodbt-record/assets/level.webp`), скопирована в `assets/practice.webp`.
   У файла нет CDN-ссылки и в `rodbt-record` — та же ссылка подойдёт обоим лендингам.
-- **Новые картинки для трёх карточек доказательной базы:** «Повышает надежду и даёт позитивный аффект»,
-  «Эффективна при ПТСР и сложной травме», «Подходит для клиентов с онкологией». В `evidence.json` у них `"replace": true`,
-  пока стоят старые.
+
 - **Ссылка на CDN для фото первого экрана.** С 05.10.2026 стоит новое широкое фото `assets/hero.webp` (2560×1087,
   «линия жизни на столе», из `Generations/38-narrative-hero/v2-lived-in/web/1-lifeline-table-shaded.webp`).
   Файл локальный: `build-tilda.mjs` без CDN-ссылки останавливается, флаг `--allow-local` только для проверки.
