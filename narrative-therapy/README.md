@@ -94,6 +94,18 @@ node narrative-therapy/build-tilda.mjs    # index.html -> tilda/*.html (по о�
 **⚠️ НЕТ ДАННЫХ:** картинка для соцсетей 1200×630 (`og:image`). Когда появится, заполнить `ogImage` в `data/seo.json`
 (`{src, width, height}`): сборка сама добавит og:image и twitter:card.
 
+## Загрузить в S3
+
+Локальные картинки, которым нужна постоянная ссылка (`s3.twcstorage.ru/asp-media/…`). Без неё `build-tilda.mjs`
+останавливается; флаг `--allow-local` только для проверки. После загрузки вставить ссылку в указанное место
+и пересобрать: `node narrative-therapy/build.mjs && node narrative-therapy/build-tilda.mjs`.
+
+| Файл | Размер | Где на странице | Куда вставить ссылку |
+| --- | --- | --- | --- |
+| `assets/hero.webp` | 2560×1087, 171 КБ | первый экран | `data/assets.json` → `url` у `hero` |
+| `assets/practice.webp` | 1131×2000, 89 КБ | «Осваиваете подход через практику» (та же картинка, что в `rodbt-record/assets/level.webp`) | `data/practice.json` → `image.src` |
+| `assets/evidence-cbt.webp` | 1200×896, 76 КБ | доказательная база, карточка «Подход сопоставим с КПТ по эффективности» | `data/evidence.json` → `cards[0].image.src` |
+
 ## Что ждём и что проверить
 
 - Картинка 1200×630 для соцсетей (`og:image`), см. раздел SEO.
