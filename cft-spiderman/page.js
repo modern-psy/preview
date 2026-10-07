@@ -40,7 +40,8 @@
      5. Запись на вебинар
      6. Петля стрелок в блоке «Когда ответственность…»
      7. Точечная графика: ночной город в первом экране, паутина во втором
-        блоке и полоса города в карточке «Практический разбор»
+        блоке, полоса города в карточке «Практический разбор» и живое поле
+        точек в карточке цикла
      8. Схема «Что разберем на встрече»: появление и наведение
    ========================================================================== */
 
@@ -850,6 +851,15 @@
      обновляется картинка). Дома строятся слева направо из одного
      «зерна», поэтому на любой ширине левая часть города одинаковая.
 
+   ПОЛЕ ТОЧЕК В КАРТОЧКЕ ЦИКЛА ([data-js="cycle-field"])
+     Сетка точек на тёмной карточке «Лучше понимать связь угрозы…».
+     Яркость каждой точки задаёт плавное «поле», которое медленно
+     перетекает: пятна света разгораются, плывут и гаснут. Самая яркая
+     точка — такая же, как в неподвижном узоре из CSS. Вверху, за
+     заголовком, поле слабее, чтобы не мешать чтению.
+     24 кадра в секунду, пауза вне экрана, при «Уменьшить движение» —
+     один неподвижный кадр.
+
    ПАУТИНА ВО ВТОРОМ БЛОКЕ ([data-js="trap-web"])
      Та же паутина, что в углу первого экрана, только на светлом фоне.
      Рисуется один раз (и заново при изменении размера). Как только она
@@ -1645,6 +1655,126 @@
     rebuild();
   };
 
+  /* --- Поле точек в карточке цикла ---------------------------------------- */
+
+  // Плавный шум: случайные значения в узлах решётки, между узлами —
+  // мягкое смешивание. Третья координата — время, поэтому поле перетекает.
+  const hash3 = (x, y, z) => {
+    let h = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ Math.imul(z, 1440662683);
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  };
+  const ease = (t) => t * t * (3 - 2 * t);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const noise3 = (x, y, z) => {
+    const xi = Math.floor(x);
+    const yi = Math.floor(y);
+    const zi = Math.floor(z);
+    const u = ease(x - xi);
+    const v = ease(y - yi);
+    const w = ease(z - zi);
+    const corner = (dx, dy, dz) => hash3(xi + dx, yi + dy, zi + dz);
+    return lerp(
+      lerp(lerp(corner(0, 0, 0), corner(1, 0, 0), u), lerp(corner(0, 1, 0), corner(1, 1, 0), u), v),
+      lerp(lerp(corner(0, 0, 1), corner(1, 0, 1), u), lerp(corner(0, 1, 1), corner(1, 1, 1), u), v),
+      w,
+    );
+  };
+  const smoothstep = (a, b, x) => ease(Math.min(1, Math.max(0, (x - a) / (b - a))));
+
+  const setupField = (canvas) => {
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const card = canvas.parentElement;
+
+    // 🟢 Настройки поля
+    const STEP = 8;          // шаг сетки точек, px
+    const MAX_R = 1.6;       // радиус самой яркой точки, px
+    const MAX_ALPHA = 0.8;   // прозрачность самой яркой точки
+    const SCALE = 1 / 110;   // размер пятен: меньше число — крупнее пятна
+    const SPEED = 0.09;      // как быстро поле меняется (в секунду)
+    const DRIFT = 0.035;     // как быстро пятна плывут вбок
+    const FPS = 24;
+    const LEVELS = 8;        // ступени яркости (точки рисуются пачками)
+
+    let state = null;
+
+    const build = () => {
+      const size = fitCanvas(canvas);
+      if (!size) return null;
+      const { width, height, dpr } = size;
+      const dots = [];
+      for (let y = STEP / 2; y < height; y += STEP) {
+        // Вверху поле слабее: там заголовок и текст
+        const weight = 0.3 + 0.7 * smoothstep(0.12, 0.55, y / height);
+        for (let x = STEP / 2; x < width; x += STEP) dots.push(x, y, weight);
+      }
+      return { width, height, dpr, dots };
+    };
+
+    const draw = (time) => {
+      const s = state;
+      if (!s) return;
+      ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0);
+      ctx.clearRect(0, 0, s.width, s.height);
+      const z = time * SPEED;
+      const drift = time * DRIFT;
+      const buckets = Array.from({ length: LEVELS }, () => []);
+      for (let k = 0; k < s.dots.length; k += 3) {
+        const x = s.dots[k];
+        const y = s.dots[k + 1];
+        const n = 0.65 * noise3(x * SCALE + drift, y * SCALE, z) + 0.35 * noise3(x * SCALE * 2.1 + 7.3, y * SCALE * 2.1 - drift, z * 1.4 + 3.1);
+        const level = smoothstep(0.42, 0.78, n) * s.dots[k + 2];
+        const b = Math.round(level * (LEVELS - 1));
+        if (b > 0) buckets[b].push(x, y, MAX_R * (0.45 + 0.55 * (b / (LEVELS - 1))));
+      }
+      buckets.forEach((list, b) => {
+        if (b > 0) paintDots(ctx, list, COLORS.ramp[3], MAX_ALPHA * (b / (LEVELS - 1)));
+      });
+    };
+
+    let raf = 0;
+    let last = 0;
+    let visible = false;
+    const startTime = performance.now();
+    // При «Уменьшить движение» показываем один кадр с этого момента поля
+    const STILL_TIME = 37;
+    const loop = (now) => {
+      raf = requestAnimationFrame(loop);
+      if (now - last < 1000 / FPS) return;
+      last = now;
+      draw(STILL_TIME + (now - startTime) / 1000);
+    };
+    const update = () => {
+      const run = visible && !document.hidden && !reducedMotion.matches && state;
+      if (run && !raf) {
+        raf = requestAnimationFrame(loop);
+      } else if (!run && raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+    const rebuild = () => {
+      state = build();
+      draw(STILL_TIME);
+      if (state) card.classList.add("is-fluid");
+      update();
+    };
+
+    onResize(canvas, rebuild);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries.some((entry) => entry.isIntersecting);
+        update();
+      }).observe(canvas);
+    } else {
+      visible = true;
+    }
+    document.addEventListener("visibilitychange", update);
+    if (reducedMotion.addEventListener) reducedMotion.addEventListener("change", update);
+    rebuild();
+  };
+
   /* --- Паутина во втором блоке ------------------------------------------- */
 
   const setupTrapWeb = (canvas) => {
@@ -1713,6 +1843,11 @@
       if (canvas.dataset.dotsReady === "true") return;
       canvas.dataset.dotsReady = "true";
       setupSkyline(canvas);
+    });
+    document.querySelectorAll('[data-js="cycle-field"]').forEach((canvas) => {
+      if (canvas.dataset.dotsReady === "true") return;
+      canvas.dataset.dotsReady = "true";
+      setupField(canvas);
     });
   });
 })();

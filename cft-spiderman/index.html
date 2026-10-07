@@ -47,7 +47,9 @@
       чтобы проверять вёрстку. Замените data-bh-widget-id
       и data-bh-customer-id;
     · 🟡 имя формы Тильды (data-tilda-form-name) — стоит рабочее;
-    · 🟡 обложка чек-листа в блоке записи — временная;
+    · 🟡 тема чек-листа «Ловушка сверхответственности: вопросы для работы
+      с клиентом в CFT» придумана 08.10.2026 вместо названия с прошлого
+      вебинара — подтвердить; обложка нарисована кодом (SVG);
     · 🟡 организационные ответы в FAQ (длительность, запись, сертификат,
       продающая часть) перенесены с прошлого вебинара — подтвердить;
     · og:image (картинка 1200×630) и canonical появятся на боевом домене.
@@ -481,7 +483,7 @@
               </svg>
               <p class="program_ticket-text">
                 <span class="program_ticket-label">По&nbsp;завершении&nbsp;— чек-лист</span>
-                <span class="program_ticket-title">Взгляд CFT на&nbsp;трудности клиента: рабочий лист для психолога</span>
+                <span class="program_ticket-title">Ловушка сверхответственности: вопросы для работы с&nbsp;клиентом в&nbsp;CFT</span>
               </p>
             </aside>
 
@@ -497,10 +499,21 @@
 
 
   <!-- ======================================================================
-       5. «ПОСЛЕ ВСТРЕЧИ ВЫ СМОЖЕТЕ»
+       5. «ПОСЛЕ ВСТРЕЧИ ВЫ СМОЖЕТЕ» — МОЗАИКА
        ======================================================================
-       Пять результатов из ТЗ. Карточки с тонкой обводкой, на десктопе
-       три в ряд: получается 3 + 2.
+       Утверждён вариант В (08.10.2026, мокапы — в .impeccable/mocks,
+       в репозиторий не входят). Пять результатов из ТЗ — карточки разного
+       размера и тона, без обводок:
+         · тёмная, высокая — «связь угрозы, вины и самокритики», цикл
+           нарисован цепочкой плашек;
+         · белая широкая — «поведение и его функция», два вопроса
+           друг под другом, второй выделен;
+         · сиреневая широкая — «сопротивление заботе о себе»;
+         · две белые внизу — «CFT-концептуализация» (с цепочкой из точек)
+           и «сострадание и смягчение требований».
+       На телефоне карточки идут одна под другой в порядке ТЗ.
+       🟢 Тексты карточек можно менять. Порядок карточек в разметке —
+          порядок из ТЗ; место в мозаике задают классы is-* (page.css, 10).
        ====================================================================== -->
   <section class="section_shifts" id="rezultaty">
     <div class="padding-global">
@@ -511,32 +524,63 @@
             <h2 class="section-intro_heading">После встречи вы&nbsp;сможете</h2>
           </div>
 
-          <ul class="shifts_list">
-            <li class="shift_component">
+          <ul class="results_grid">
+            <!-- 🟢 Два вопроса: первый привычный, второй — тот, которому учимся -->
+            <li class="result_card is-function">
               <h3 class="card_heading">Смотреть не&nbsp;только на&nbsp;поведение, но&nbsp;и&nbsp;на&nbsp;его функцию</h3>
-              <p class="card_description">
-                Задавать не&nbsp;только вопрос «Почему клиент снова берет на&nbsp;себя слишком много?», но&nbsp;и&nbsp;«От&nbsp;чего эта стратегия его защищает?».
-              </p>
+              <ul class="result_questions">
+                <li class="result_question">
+                  <span class="result_question-label">Не&nbsp;только</span>
+                  «Почему клиент снова берет на&nbsp;себя слишком много?»
+                </li>
+                <li class="result_question is-accent">
+                  <span class="result_question-label">Но&nbsp;и</span>
+                  «От&nbsp;чего эта стратегия его защищает?»
+                </li>
+              </ul>
             </li>
-            <li class="shift_component">
-              <h3 class="card_heading">Лучше понимать связь угрозы, вины и&nbsp;самокритики</h3>
-              <p class="card_description">
-                Увидеть, как попытка быть ответственным может превращаться в&nbsp;цикл: угроза&nbsp;→ необходимость сделать больше&nbsp;→ самокритика&nbsp;→ новая угроза.
+
+            <!-- 🟢 Цикл: каждая плашка — шаг, стрелки рисует page.css -->
+            <li class="result_card is-cycle">
+              <!-- 🔴 Фон: точки медленно разгораются и гаснут, как поле
+                   флуктуаций (page.js, раздел 7). Пока скрипт не готов,
+                   виден неподвижный узор из точек в углу (page.css). -->
+              <canvas class="result_field" data-js="cycle-field" aria-hidden="true"></canvas>
+              <h3 class="card_heading is-on-dark">Лучше понимать связь угрозы, вины и&nbsp;самокритики</h3>
+              <p class="card_description is-on-dark">
+                Увидеть, как попытка быть ответственным может превращаться в&nbsp;цикл:
               </p>
+              <ol class="result_chain">
+                <li class="result_chain-step">угроза</li>
+                <li class="result_chain-step">необходимость сделать больше</li>
+                <li class="result_chain-step">самокритика</li>
+                <li class="result_chain-step">новая угроза</li>
+              </ol>
             </li>
-            <li class="shift_component">
+
+            <li class="result_card is-resistance">
               <h3 class="card_heading">Понимать сопротивление заботе о&nbsp;себе</h3>
               <p class="card_description">
                 Замечать, почему предложение отдохнуть или поддержать себя иногда усиливает тревогу: для клиента оно может звучать как разрешение стать слабым, эгоистичным или ненадежным.
               </p>
             </li>
-            <li class="shift_component">
+
+            <li class="result_card is-model">
               <h3 class="card_heading">Познакомиться с&nbsp;логикой CFT-концептуализации</h3>
               <p class="card_description">
                 На&nbsp;конкретном кейсе увидеть, как связать опыт человека, переживание угрозы, защитные стратегии и&nbsp;их&nbsp;последствия.
               </p>
+              <!-- Четыре звена, соединённые пунктиром из точек; огонёк
+                   по очереди переходит от звена к звену -->
+              <span class="result_links" aria-hidden="true">
+                <span class="result_link"></span>
+                <span class="result_link"></span>
+                <span class="result_link"></span>
+                <span class="result_link"></span>
+              </span>
             </li>
-            <li class="shift_component">
+
+            <li class="result_card is-compassion">
               <h3 class="card_heading">Различать сострадание и&nbsp;простое смягчение требований</h3>
               <p class="card_description">
                 Понять, почему сострадательный подход не&nbsp;означает отказ от&nbsp;ответственности&nbsp;— и&nbsp;как он&nbsp;связан с&nbsp;более гибким выбором действий.
@@ -916,7 +960,7 @@
             <p class="signup_description">
               Полтора часа&nbsp;— и&nbsp;у&nbsp;вас появится взгляд CFT
               на&nbsp;сверхответственность, вину и&nbsp;самокритику.
-              Плюс рабочий лист, который останется с&nbsp;вами после встречи.
+              Плюс чек-лист, который останется с&nbsp;вами после встречи.
             </p>
 
             <ol class="signup_steps">
@@ -946,15 +990,42 @@
               <div class="gift_copy">
                 <p class="gift_label">Бонус для участников вебинара</p>
                 <h3 class="gift_heading">
-                  Взгляд CFT на&nbsp;трудности клиента: рабочий лист
-                  для психолога
+                  Чек-лист «Ловушка сверхответственности: вопросы для работы с&nbsp;клиентом в&nbsp;CFT»
                 </h3>
               </div>
-              <!-- 🟡 Обложка чек-листа. Сейчас стоит временная картинка
-                   с прошлого вебинара — замените её на обложку этого. -->
-              <img class="gift_image" src="img/gift.webp"
-                   alt="Разворот рабочего листа «Взгляд CFT на трудности клиента»"
-                   width="541" height="477" loading="lazy" />
+              <!-- 🟢 Обложка чек-листа нарисована кодом (SVG): лист с галочками,
+                   как на /hudet-snova-modno. В углу — значок трёх систем CFT
+                   из точек, как схема в блоке «Что разберем на встрече».
+                   Цвета — из page.css (классы gift-cover_*).
+                   Если появится настоящая обложка — замените весь <svg> на
+                   <img class="gift_image" src="…" alt="" width="541" height="477" loading="lazy" />. -->
+              <svg class="gift_image" viewBox="0 0 541 477" width="541" height="477" aria-hidden="true" focusable="false">
+                <!-- тень листа -->
+                <rect class="gift-cover_shadow" x="34" y="44" width="420" height="420" rx="28"/>
+                <!-- лист -->
+                <rect class="gift-cover_sheet" x="24" y="30" width="420" height="420" rx="28"/>
+                <!-- плашка «PDF · чек-лист» -->
+                <rect class="gift-cover_pill" x="64" y="66" width="150" height="36" rx="18"/>
+                <text class="gift-cover_pill-text" x="139" y="90" text-anchor="middle" font-size="17">PDF · чек-лист</text>
+                <!-- заголовок -->
+                <text class="gift-cover_title" font-size="28" letter-spacing="-0.5">
+                  <tspan x="64" y="160">Ловушка</tspan>
+                  <tspan x="64" y="194">сверхответственности</tspan>
+                </text>
+                <!-- пункты: три отмечены, четвёртый ещё нет -->
+                <g class="gift-cover_rows">
+                  <rect class="gift-cover_check" x="64" y="226" width="28" height="28" rx="8"/><path class="gift-cover_tick" d="M71 240 l5 5 l10 -11"/><rect class="gift-cover_line" x="110" y="231" width="250" height="8" rx="4"/><rect class="gift-cover_line is-soft" x="110" y="245" width="150" height="6" rx="3"/>
+                  <rect class="gift-cover_check" x="64" y="282" width="28" height="28" rx="8"/><path class="gift-cover_tick" d="M71 296 l5 5 l10 -11"/><rect class="gift-cover_line" x="110" y="287" width="210" height="8" rx="4"/><rect class="gift-cover_line is-soft" x="110" y="301" width="126" height="6" rx="3"/>
+                  <rect class="gift-cover_check" x="64" y="338" width="28" height="28" rx="8"/><path class="gift-cover_tick" d="M71 352 l5 5 l10 -11"/><rect class="gift-cover_line" x="110" y="343" width="270" height="8" rx="4"/><rect class="gift-cover_line is-soft" x="110" y="357" width="162" height="6" rx="3"/>
+                  <rect class="gift-cover_box" x="65.5" y="395.5" width="25" height="25" rx="7"/><rect class="gift-cover_line" x="110" y="399" width="190" height="8" rx="4"/><rect class="gift-cover_line is-soft" x="110" y="413" width="114" height="6" rx="3"/>
+                </g>
+                <!-- значок в углу: три системы CFT, кольца из точек -->
+                <rect class="gift-cover_tile" x="346" y="56" width="80" height="80" rx="20"/>
+                <circle class="gift-cover_ring" cx="386" cy="86" r="14"/>
+                <circle class="gift-cover_ring" cx="377" cy="103" r="14"/>
+                <circle class="gift-cover_ring" cx="395" cy="103" r="14"/>
+                <circle class="gift-cover_core" cx="386" cy="97" r="4"/>
+              </svg>
             </div>
           </div>
 
@@ -1160,7 +1231,7 @@
               </summary>
               <div class="faq_answer accordion_panel" data-accordion-panel>
                 <div class="faq_answer-inner accordion_panel-inner">
-                  <p>Да. Участникам будет доступен рабочий лист «Взгляд CFT на&nbsp;трудности клиента»&nbsp;— он поможет смотреть на&nbsp;реакции клиента глазами метода.</p>
+                  <p>Да. Участникам будет доступен чек-лист «Ловушка сверхответственности: вопросы для работы с&nbsp;клиентом в&nbsp;CFT»&nbsp;— он поможет смотреть на&nbsp;реакции клиента глазами метода.</p>
                 </div>
               </div>
             </details>

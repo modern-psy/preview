@@ -34,7 +34,7 @@
      7. Лента плашек (на этой странице не используется — оставлено про запас)
      8. Нумерованные карточки (стили cases — про запас)
      9. Тёмный блок с карточками (стили risks — про запас)
-    10. «После вебинара вы сможете» (стили shifts)
+    10. «После встречи вы сможете» — мозаика (стили shifts и result)
     11. —
     12. «Для кого этот вебинар»
     13. «За одну встречу мы разберём» — теория и практика (стили agenda)
@@ -106,6 +106,10 @@
   --page-padding: clamp(1rem, 4.7619vw, 5rem);
   --section-gap: clamp(4rem, 7.62vw, 8rem);
   --grid-gap: 1rem;
+  /* Поля внутри обычной карточки — как на «Психологе с нуля» и по правилам
+     Академии (docs/web-academy-rules.md, раздел 3): 12px на телефоне,
+     16px от 768px. Большие панели (программа, форма) — со своими полями. */
+  --card-padding: 0.75rem;
   --radius-card: 1rem;
   --radius-inner: 0.75rem;
   --radius-button: 0.5rem;
@@ -118,6 +122,13 @@
   font-family: var(--font-family-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* От 768px поля обычной карточки — 16px */
+@media screen and (min-width: 48rem) {
+  .cft-page {
+    --card-padding: 1rem;
+  }
 }
 
 .cft-page,
@@ -372,7 +383,7 @@ html {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
-  padding: 1.25rem;
+  padding: var(--card-padding);
   overflow: clip;
   border-radius: var(--radius-inner);
   background: var(--color-surface-primary);
@@ -516,7 +527,7 @@ html {
   width: 100%;
   align-items: flex-start;
   gap: 0.75rem;
-  padding: 1.25rem 1.5rem;
+  padding: var(--card-padding);
   border-radius: var(--radius-inner);
   background: var(--color-accent-soft);
   color: var(--color-text-primary);
@@ -1064,7 +1075,7 @@ html {
   min-width: 0;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 1.25rem;
+  padding: var(--card-padding);
   border-radius: var(--radius-card);
   background: var(--color-surface-primary);
   box-shadow: 0 0.75rem 2rem -1rem rgb(43 35 52 / 28%);
@@ -1217,7 +1228,6 @@ html {
   .trap_card {
     position: absolute;
     width: 48%;
-    padding: 1.125rem 1.25rem;
   }
 
   /* На поле с паутиной текст карточек чуть мельче, чтобы три карточки
@@ -1418,7 +1428,15 @@ html {
 
 
 /* ---------------------------------------------------------------------------
-   10. «ЧТО МЕНЯЕТСЯ У ТЕХ, КТО ДОБРАЛ БАЗУ»
+   10. «ПОСЛЕ ВСТРЕЧИ ВЫ СМОЖЕТЕ» — МОЗАИКА (вариант В)
+   ---------------------------------------------------------------------------
+   Пять карточек разного размера и тона, без обводок: их отделяет от фона
+   цвет. Тёмная — цикл, белые — обычные результаты, сиреневая — акцент.
+     · телефон: карточки одна под другой в порядке ТЗ;
+     · от 768px: две колонки, тёмная карточка — во всю ширину, цепочка
+       цикла выстраивается в строку;
+     · от 992px: мозаика — тёмная карточка слева на всю высоту,
+       справа две широкие и две половинки.
    --------------------------------------------------------------------------- */
 
 .shifts_component {
@@ -1429,25 +1447,213 @@ html {
   gap: clamp(2rem, 3.5vw, 3rem);
 }
 
-.shifts_list {
+.results_grid {
   display: grid;
   min-width: 0;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--grid-gap);
 }
 
-/* Карточка с тонкой светло-сиреневой обводкой по всему периметру */
-.shift_component {
+.result_card {
+  position: relative;
   display: flex;
   min-width: 0;
-  height: 100%;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1.5rem 1.25rem;
+  padding: var(--card-padding);
   overflow: clip;
-  border: 1px solid var(--color-card-outline);
   border-radius: var(--radius-card);
   background: var(--color-surface-primary);
+}
+
+.result_card.is-resistance {
+  background: var(--color-accent-soft);
+}
+
+/* --- Тёмная карточка: цикл ------------------------------------------------ */
+
+.result_card.is-cycle {
+  isolation: isolate;
+  background: var(--color-surface-dark);
+}
+
+/* Россыпь точек в нижнем левом углу — как растр в первом экране.
+   Точки рисует повторяющийся градиент, сверху и справа они тают. */
+.result_card.is-cycle::before {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  width: 60%;
+  height: 45%;
+  background-image: radial-gradient(circle, var(--color-accent-primary) 0 1.4px, transparent 1.9px);
+  background-size: 0.5rem 0.5rem;
+  -webkit-mask-image: radial-gradient(circle at 0 100%, black, transparent 70%);
+  mask-image: radial-gradient(circle at 0 100%, black, transparent 70%);
+  content: "";
+  opacity: 0.8;
+}
+
+/* Живой фон из точек (рисует page.js): когда он готов, карточка получает
+   класс is-fluid, и неподвижный узор в углу прячется */
+.result_field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.result_card.is-cycle.is-fluid::before {
+  display: none;
+}
+
+/* Цепочка цикла: плашки друг под другом, между ними стрелка вниз */
+.result_chain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.result_chain-step {
+  position: relative;
+  width: min(100%, 16rem);
+  padding: 0.625rem 1.25rem;
+  border-radius: 999px;
+  background: rgb(124 92 219 / 32%);
+  color: var(--color-text-on-dark);
+  font-size: var(--text-note-size);
+  line-height: 1.3;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Стрелка к следующему шагу */
+.result_chain-step:not(:last-child)::after {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  left: 50%;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1.5px solid var(--color-accent-light);
+  border-bottom: 1.5px solid var(--color-accent-light);
+  content: "";
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.result_chain-step:not(:last-child)::before {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1.5px;
+  height: 0.9rem;
+  background: var(--color-accent-light);
+  content: "";
+  transform: translateX(-50%);
+}
+
+/* --- Белая широкая: два вопроса ------------------------------------------ */
+
+.result_questions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.result_question {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding-left: 0.875rem;
+  border-left: 3px solid var(--color-divider);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.result_question.is-accent {
+  border-left-color: var(--color-accent-primary);
+  color: var(--color-accent-deep);
+}
+
+.result_question-label {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+.result_question.is-accent .result_question-label {
+  color: var(--color-accent-primary);
+}
+
+/* --- Белая с цепочкой из точек ------------------------------------------- */
+
+/* Четыре кружка-звена, между ними пунктир из точек. Огонёк по очереди
+   переходит от звена к звену (только прозрачность). */
+.result_links {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.result_link {
+  position: relative;
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+}
+
+.result_link::before {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-accent-primary);
+  content: "";
+  opacity: 0;
+  animation: result-link-step 4.8s infinite;
+}
+
+.result_link:nth-child(2)::before { animation-delay: 1.2s; }
+.result_link:nth-child(3)::before { animation-delay: 2.4s; }
+.result_link:nth-child(4)::before { animation-delay: 3.6s; }
+
+/* Пунктир к следующему звену */
+.result_link:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 0.375rem);
+  width: 1.5rem;
+  height: 3px;
+  background-image: radial-gradient(circle, var(--color-accent-light) 0 1.5px, transparent 1.6px);
+  background-size: 0.5rem 3px;
+  content: "";
+  transform: translateY(-50%);
+}
+
+@keyframes result-link-step {
+  0%, 30% { opacity: 0; }
+  6%, 22% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result_link::before {
+    animation: none;
+  }
+
+  .result_link:nth-child(2)::before {
+    opacity: 1;
+  }
 }
 
 
@@ -1993,7 +2199,7 @@ html {
   align-items: center;
   gap: 1rem;
   margin: -2.5rem 0.75rem 0;
-  padding: 1rem 1.25rem;
+  padding: var(--card-padding);
   border-radius: var(--radius-card);
   background: var(--color-surface-primary);
   box-shadow: 0 1.5rem 2.5rem -1.75rem rgb(43 35 52 / 45%);
@@ -2086,7 +2292,6 @@ html {
   .program_ticket {
     width: min(100% - 2rem, 34rem);
     margin: -2.5rem 1rem 0 auto;
-    padding: 1.25rem 1.5rem;
     gap: 1.25rem;
   }
 
@@ -2513,7 +2718,7 @@ html {
   position: relative;
   min-width: 0;
   min-height: 24.5rem;
-  padding: clamp(1.25rem, 2.419vw, 1.5rem);
+  padding: var(--card-padding);
   overflow: hidden;
   overflow: clip;
   border-radius: var(--radius-card);
@@ -2865,19 +3070,94 @@ html {
   text-wrap: pretty;
 }
 
-/* На узких экранах (до 992px) обложка стоит в потоке под текстом,
-   по центру карточки, а её нижняя часть уходит за край и срезается
-   overflow: hidden — как на /seksologiya-dlya-psihologov, только по центру,
-   а не у правого края. Отрицательный margin-bottom больше внутреннего
-   отступа: на эту разницу обложка вылезает вниз. Иначе картинка целиком
-   растягивает блок почти вдвое. На десктопе правила ниже её переопределяют:
-   там она лежит отдельным слоем справа, повёрнутая. */
+/* Обложка — почти фоновая иллюстрация, как на /hudet-snova-modno.
+   До 992px — маленький наклонный лист в правом нижнем углу, который
+   заходит за край карточки; снизу у текста оставлено место, чтобы лист
+   не наезжал на заголовок. На десктопе правила ниже кладут её отдельным
+   слоем справа, тоже наклонно. */
 .gift_image {
+  position: absolute;
+  z-index: 0;
+  right: -2.5rem;
+  bottom: -3rem;
   display: block;
-  width: min(100%, 17rem);
+  width: 16rem;
   height: auto;
-  justify-self: center;
-  margin-bottom: -7rem;
+  margin: 0;
+  transform: rotate(-11deg);
+  pointer-events: none;
+}
+
+.gift_copy {
+  padding-bottom: 9rem;
+}
+
+/* Обложка чек-листа, нарисованная кодом (SVG в index.html).
+   Размеры шрифта стоят атрибутами прямо в SVG: это единицы рисунка,
+   они масштабируются вместе с обложкой. */
+.gift-cover_shadow {
+  fill: var(--color-surface-dark);
+  opacity: 0.18;
+}
+
+.gift-cover_sheet {
+  fill: var(--color-surface-primary);
+}
+
+.gift-cover_pill,
+.gift-cover_tile {
+  fill: var(--color-accent-soft);
+}
+
+.gift-cover_pill-text {
+  fill: var(--color-accent-deep);
+  font-family: var(--font-family-body);
+  font-weight: 500;
+}
+
+.gift-cover_title {
+  fill: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-weight: 500;
+}
+
+.gift-cover_check {
+  fill: var(--color-accent-primary);
+}
+
+.gift-cover_tick {
+  fill: none;
+  stroke: var(--color-surface-primary);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gift-cover_line {
+  fill: var(--color-surface-soft);
+}
+
+.gift-cover_line.is-soft {
+  opacity: 0.6;
+}
+
+.gift-cover_box {
+  fill: none;
+  stroke: var(--color-accent-light);
+  stroke-width: 3;
+}
+
+/* Значок трёх систем CFT: кольца — пунктир из точек, как в схеме */
+.gift-cover_ring {
+  fill: none;
+  stroke: var(--color-accent-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 0.01 5.5;
+}
+
+.gift-cover_core {
+  fill: var(--color-accent-deep);
 }
 
 /* --- Карточка записи ------------------------------------------------------
@@ -3473,9 +3753,34 @@ html {
   .voices_list,
   .optics_list,
   .cases_list,
-  .risks_list,
-  .shifts_list {
+  .risks_list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Мозаика результатов: две колонки, тёмная и широкие — во всю ширину */
+  .results_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .result_card.is-function,
+  .result_card.is-cycle,
+  .result_card.is-resistance {
+    grid-column: 1 / -1;
+  }
+
+  /* Тёмная карточка во всю ширину: текст слева, цикл справа */
+  .result_card.is-cycle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+    gap: 0.75rem 2rem;
+    align-items: start;
+  }
+
+  .result_card.is-cycle .result_chain {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    margin-top: 0;
   }
 
   .agenda_theory,
@@ -3542,7 +3847,6 @@ html {
   }
 
   .card_component {
-    padding: 1.75rem 1.5rem;
     border-radius: var(--radius-card);
   }
 
@@ -3611,8 +3915,49 @@ html {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .shifts_list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Мозаика: тёмная карточка слева на всю высоту, справа — две широкие
+     и две половинки */
+  .results_grid {
+    grid-template-columns: minmax(0, 0.92fr) repeat(2, minmax(0, 0.8fr));
+  }
+
+  .result_card.is-cycle {
+    grid-row: 1 / 4;
+    grid-column: 1;
+  }
+
+  .result_card.is-function {
+    grid-row: 1;
+    grid-column: 2 / 4;
+  }
+
+  .result_card.is-resistance {
+    grid-row: 2;
+    grid-column: 2 / 4;
+  }
+
+  .result_card.is-model {
+    grid-row: 3;
+    grid-column: 2;
+  }
+
+  .result_card.is-compassion {
+    grid-row: 3;
+    grid-column: 3;
+  }
+
+  /* Высокая тёмная карточка: всё снова в один столбец, цикл — сразу
+     под текстом, ниже остаётся россыпь точек */
+  .result_card.is-cycle {
+    display: flex;
+  }
+
+  .result_card.is-cycle .result_chain {
+    margin-top: 1.25rem;
+  }
+
+  .result_card.is-cycle::before {
+    height: 55%;
   }
 
   /* --- Программа --- */
@@ -3680,19 +4025,16 @@ html {
 
   .gift_copy {
     max-width: 60%;
+    padding-bottom: 0;
   }
 
   /* Размер, поворот и вылет за край посчитаны по макету: обложка
      уменьшена вдвое, повёрнута на 11° и заходит за правый и нижний край */
   .gift_image {
-    position: absolute;
-    z-index: 0;
     top: -0.25rem;
     right: -3.375rem;
+    bottom: auto;
     width: 16.8125rem;
-    margin: 0;
-    transform: rotate(-11deg);
-    pointer-events: none;
   }
 }
 
@@ -3779,12 +4121,6 @@ html {
   .academy-showcase_teachers-image {
     height: auto;
     aspect-ratio: 3 / 2;
-  }
-}
-
-@media screen and (max-width: 32.5rem) {
-  .academy-showcase_card {
-    padding: 1.25rem;
   }
 }
 
