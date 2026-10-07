@@ -17,6 +17,7 @@
   --text: #332f41;
   --text-2: #747476;
   --on-dark: #e6e5eb;
+  --error: #dc2626; /* из UI-кита АСП (--error): только ошибки в форме */
 
   --font-display: "Wix Madefor Display", "Wix Madefor Text", Arial, sans-serif;
   --font-text: "Wix Madefor Text", Arial, sans-serif;
@@ -51,7 +52,7 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 /* Сброс с нулевой специфичностью: классы блоков всегда сильнее */
 :where(.sc-page) *, :where(.sc-page) *::before, :where(.sc-page) *::after { box-sizing: border-box; }
 :where(.sc-page) img { max-width: 100%; }
-:where(.sc-page) :is(h1, h2, h3, p, figure) { margin: 0; }
+:where(.sc-page) :is(h1, h2, h3, h4, p, figure) { margin: 0; }
 .sc-page ::selection { background: var(--lavender); color: var(--aubergine); }
 :where(.sc-page) a { color: inherit; }
 .sc-page :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 0.5rem; }
@@ -165,7 +166,9 @@ body { margin: 0; background: var(--page, #f5f5f5); }
   grid-template-areas: "brand actions";
   align-items: center;
 }
-.sc-header_brand { grid-area: brand; font: 700 1.875rem/1 var(--font-display); letter-spacing: -0.03em; text-decoration: none; }
+.sc-header_brand { grid-area: brand; display: block; color: inherit; line-height: 0; text-decoration: none; }
+/* Логотип Академии — вектор, красится цветом текста */
+.sc-logo { display: block; width: auto; height: 1.625rem; fill: currentColor; }
 .sc-header_actions { grid-area: actions; display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; }
 
 /* Кнопка меню (телефон и планшет): квадрат со скруглёнными углами, как кнопки навигации */
@@ -438,7 +441,9 @@ body { margin: 0; background: var(--page, #f5f5f5); }
   cursor: pointer;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.sc-pills_menu svg { width: 1.125rem; height: 1.125rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+/* Бургер — квадратная кнопка с иконкой, высотой как соседняя «Зарегистрироваться» */
+.sc-pills_menu { width: 2.75rem; padding: 0; }
+.sc-pills_menu svg { width: 1.375rem; height: 1.375rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 .sc-pills_cta { background: var(--violet); }
 
 @media (min-width: 48.0625rem) {
@@ -491,7 +496,7 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 @keyframes sc-menu-in { from { transform: translateY(-100%); } }
 .sc-menu_inner { padding: 1rem 1rem 1.25rem; }
 .sc-menu_top { display: flex; align-items: center; justify-content: space-between; }
-.sc-menu_top .sc-header_brand { font-size: 1.5rem; }
+.sc-menu_top .sc-logo { height: 1.375rem; }
 .sc-menu_list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0 2rem; padding: 0; list-style: none; }
 .sc-menu_link { display: inline-flex; align-items: center; min-height: 3rem; padding: 0 1.125rem; border-radius: 0.75rem; background: rgb(255 255 255 / 10%); color: var(--white); font: 500 1.0625rem/1 var(--font-text); letter-spacing: -0.02em; text-decoration: none; }
 .sc-menu_link.is-current { background: var(--white); color: var(--text); }
@@ -611,9 +616,13 @@ body { margin: 0; background: var(--page, #f5f5f5); }
    Телефон и планшет: заголовок → лента карточек со свайпом и точками → финал.
    Десктоп (от 1025 px): сцена закрепляется на экране, всё едет вбок одной лентой.
    ========================================================================= */
-.sc-pains { position: relative; background: var(--aubergine); color: var(--white); }
+.sc-pains { position: relative; z-index: 2; background: var(--aubergine); color: var(--white); }
 /* Десктоп: пока тёмная плашка растёт из карточки-вывода, фон сцены прозрачный (ставит script.js) */
 .sc-pains.is-veiled { background-color: transparent; }
+/* Служебная обёртка закреплённых сцен (её добавляет GSAP) не ловит наведение и клики:
+   иначе после сборки сцены она лежит поверх «Что вы получите». Сами сцены клики принимают. */
+.sc-page .pin-spacer { pointer-events: none; }
+.sc-page .pin-spacer > * { pointer-events: auto; }
 .sc-pains_viewport { position: relative; padding-block: 5.5rem; }
 .sc-pains_track { display: flex; flex-direction: column; padding-inline: var(--page-padding); }
 
@@ -670,10 +679,13 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-tome_pages { fill: var(--white); opacity: 0.92; }
 .sc-tome_band { fill: none; stroke: var(--white); stroke-width: 1.5; opacity: 0.55; }
 .sc-tome.is-lavender .sc-tome_band { stroke: var(--violet); opacity: 0.4; }
-.sc-chair :is(path) { stroke: var(--violet); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.sc-chair path { stroke: var(--violet); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
 .sc-chair_back, .sc-chair_arm { fill: var(--lavender); }
 .sc-chair_seat { fill: var(--lavender-soft); }
-.sc-chair_legs { fill: none; }
+.sc-chair_base { fill: var(--violet); }
+.sc-chair_button { fill: var(--violet); }
+.sc-chair_legs { fill: none; stroke-width: 3; }
+.sc-chair_shadow { fill: rgb(124 92 219 / 12%); }
 
 .sc-chart_base { fill: none; stroke: rgb(51 47 65 / 20%); stroke-width: 2; stroke-linecap: round; }
 .sc-chart_bars rect { fill: var(--violet); }
@@ -705,6 +717,7 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 
 /* ---------- Финал: клубок → стрелка, фраза, кнопка ---------- */
 .sc-pains_finale { display: flex; flex-direction: column; margin-top: 4.5rem; }
+.sc-finale_inner { display: flex; flex-direction: column; }
 .sc-knot { width: 100%; max-width: 56rem; height: auto; overflow: visible; }
 .sc-knot_path, .sc-knot_head { fill: none; stroke: var(--white); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .sc-finale_text { max-width: 64rem; margin-top: 1.5rem; font: 800 clamp(2.25rem, 10vw, 5.25rem)/1.02 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
@@ -763,89 +776,1130 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 
 /* =========================================================================
    4. Что вы получите
+   Телефон: вертикальная линия слева, под каждой станцией её материал.
+   Планшет: станции в ряд над линией, ниже книга и видеоурок, ещё ниже карточка дня.
+   Десктоп: три колонки, станции на одной линии над своими колонками.
    ========================================================================= */
-.sc-benefits { position: relative; padding-block: clamp(5rem, 9vw, 9rem); }
-.sc-stations { position: relative; margin: clamp(2.5rem, 5vw, 4rem) 0 clamp(2rem, 3vw, 2.75rem); }
-.sc-stations_line { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 1.25rem; overflow: visible; }
-.sc-stations_line path { fill: none; stroke: var(--violet); stroke-width: 2; vector-effect: non-scaling-stroke; }
-.sc-stations_list { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
-.sc-station { display: flex; flex-direction: column; gap: 1rem; font-weight: 500; font-size: 1.125rem; line-height: 1.2; }
-.sc-station_dot { width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 0.375rem var(--page); }
+.sc-benefits { position: relative; padding-block: 5.5rem; }
+.sc-benefits_title { font: 800 clamp(2.5rem, 11vw, 4rem)/0.98 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+.sc-benefits .sc-section-lead { margin-top: 1rem; }
 
-.sc-benefits_grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; align-items: stretch; }
-.sc-gift { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1rem; }
+.sc-stages { position: relative; margin-top: 2.5rem; }
+.sc-stages_list { display: grid; gap: 2.5rem; margin: 0; padding: 0 0 0 2.25rem; list-style: none; }
+
+/* Станция: точка и подпись */
+.sc-stage { --line: 1; position: relative; }
+.sc-stage_label { position: relative; color: var(--text); font: 400 1.0625rem/1.25 var(--font-text); }
+.sc-stage_label b { display: block; font: 700 1.25rem/1.15 var(--font-display); letter-spacing: -0.02em; }
+.sc-stage_dot {
+  position: absolute;
+  top: 0.25rem;
+  left: -2.25rem;
+  z-index: 1;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: var(--violet);
+  box-shadow: 0 0 0 0.3125rem var(--page);
+}
+/* Отрезок линии от этой станции к следующей. На телефоне — вниз */
+.sc-stage:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 0.8125rem;
+  bottom: -2.5rem;
+  left: calc(-2.25rem + 0.5625rem - 1px);
+  width: 2px;
+  background: var(--violet);
+  transform: scaleY(var(--line));
+  transform-origin: top center;
+}
+.sc-stage_body { margin-top: 1.25rem; }
+
+/* ---------- Книга «Карта психологических подходов» ----------
+   Две части: страницы (белый блок с линиями) и обложка поверх.
+   При наведении обложка поворачивается на корешке и книга чуть приоткрывается. */
+.sc-gift { display: flex; justify-content: flex-start; padding-block: 0.5rem 1rem; perspective: 75rem; }
 .sc-book {
   position: relative;
+  width: min(15rem, 68%);
+  aspect-ratio: 3 / 4;
+  transform: rotateY(-14deg) rotateZ(-5deg);
+  transform-style: preserve-3d;
+  transition: transform 700ms var(--ease);
+}
+.sc-book_pages {
+  position: absolute;
+  inset: 0.25rem -0.375rem -0.375rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1.25rem 1.5rem 1.75rem;
+  border-radius: 0.25rem 0.875rem 0.875rem 0.25rem;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px rgb(124 92 219 / 14%), 1rem 1.5rem 2.5rem -1rem rgb(43 35 52 / 45%);
+}
+/* Строчки на странице, которая видна, когда обложка приоткрыта */
+.sc-book_line { display: block; height: 0.375rem; border-radius: 999px; background: var(--lavender); }
+.sc-book_line.is-short { width: 62%; }
+.sc-book_cover {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 78%;
-  aspect-ratio: 3 / 4;
-  margin-inline: auto;
-  padding: 1.5rem;
-  border-radius: 0.5rem 1.125rem 1.125rem 0.5rem;
+  padding: 1.25rem;
+  border-radius: 0.375rem 1rem 1rem 0.375rem;
   background: var(--violet);
   color: var(--white);
-  box-shadow: 1rem 1.5rem 2.5rem -1.25rem rgb(43 35 52 / 55%), inset 0.375rem 0 0 rgb(0 0 0 / 12%);
-  transform: perspective(900px) rotateY(-16deg) rotateZ(-4deg);
-  transition: transform 600ms var(--ease);
+  /* Корешок — тёмная полоса слева */
+  box-shadow: inset 0.5rem 0 0 rgb(0 0 0 / 14%), 0.5rem 0.75rem 1.5rem -0.75rem rgb(43 35 52 / 40%);
+  transform-origin: left center;
+  transition: transform 700ms var(--ease);
+  container-type: inline-size; /* размер названия считается от ширины обложки */
 }
-.sc-gift:hover .sc-book { transform: perspective(900px) rotateY(0) rotateZ(0); }
-.sc-book_title { font: 600 1.5rem/1.05 var(--font-display); letter-spacing: -0.03em; }
-.sc-book_art { width: 70%; align-self: center; overflow: visible; }
-.sc-book_art :is(circle, path) { fill: none; stroke: var(--white); stroke-width: 2.2; stroke-linecap: round; }
-.sc-book_tag { align-self: flex-start; padding: 0.25rem 0.625rem; border-radius: 0.5rem; background: var(--lavender); color: var(--violet-press); font-weight: 600; font-size: 0.8125rem; }
-.sc-gift_caption { color: var(--text-2); font-size: 1rem; text-align: center; text-wrap: balance; }
+/* Название всегда помещается в обложку: доля её ширины, но не меньше 16 и не больше 28 px */
+.sc-book_title { font: 700 clamp(1rem, 11.5cqi, 1.75rem)/1.05 var(--font-display); letter-spacing: -0.025em; }
+.sc-book_art { width: 72%; align-self: center; overflow: visible; }
+.sc-book_art :is(circle, path) { fill: none; stroke: var(--white); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.sc-book_tag { align-self: flex-start; padding: 0.25rem 0.625rem; border-radius: 0.5rem; background: var(--lavender); color: var(--violet-deep); font-weight: 600; font-size: 0.8125rem; }
 
-.sc-day { padding: clamp(1.5rem, 2.4vw, 2.25rem); border-radius: var(--radius-card); background: var(--aubergine); color: var(--white); }
-.sc-day_list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 1.5rem; margin: 0; padding: 0; list-style: none; }
-.sc-day_item { display: flex; flex-direction: column; gap: 0.875rem; font-size: 0.9375rem; line-height: 1.4; color: rgb(230 229 235 / 85%); }
-.sc-day_item b { display: block; margin-bottom: 0.25rem; color: var(--white); font: 600 1.125rem/1.15 var(--font-display); letter-spacing: -0.02em; }
-.sc-icon { width: 2.5rem; height: 2.5rem; padding: 0.5rem; border: 1.5px solid rgb(218 214 255 / 60%); border-radius: 50%; overflow: visible; }
-.sc-icon :is(path, circle) { fill: none; stroke: var(--lavender); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+/* ---------- Тёмная карточка дня ---------- */
+.sc-day { padding: 1.5rem; border-radius: var(--radius-card); background: var(--aubergine); color: var(--white); }
+.sc-day_list { display: grid; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+.sc-day_item { display: flex; align-items: flex-start; gap: 1rem; }
+.sc-day_text { color: rgb(230 229 235 / 82%); font-size: 0.9375rem; line-height: 1.4; }
+.sc-day_text b { display: block; margin-bottom: 0.25rem; color: var(--white); font: 700 1.125rem/1.15 var(--font-display); letter-spacing: -0.02em; }
+.sc-icon { display: grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem; border: 1.5px solid rgb(218 214 255 / 55%); border-radius: 50%; }
+.sc-icon svg { width: 1.375rem; height: 1.375rem; overflow: visible; }
+.sc-icon :is(path, circle) { fill: none; stroke: var(--white); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
-.sc-lesson { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem 1rem 1.5rem; border-radius: var(--radius-card); background: var(--white); }
-.sc-lesson_media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 1rem; }
-.sc-lesson_media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transition: transform 700ms var(--ease); }
-.sc-lesson:hover .sc-lesson_media img { transform: scale(1.04); }
+/* ---------- Видеоурок: на всех ширинах вертикальная карточка — фото сверху, текст снизу ---------- */
+.sc-lesson { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 1rem; padding: 0.75rem 0.75rem 1.25rem; border-radius: var(--radius-card); background: var(--white); }
+.sc-lesson_media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 0.875rem; }
+.sc-lesson_media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transition: transform 700ms var(--ease); }
 .sc-lesson_play { position: absolute; inset: 0; display: grid; place-items: center; }
-.sc-lesson_play svg { width: 3.75rem; height: 3.75rem; padding: 1rem; border-radius: 50%; background: var(--white); fill: var(--violet); box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(20 10 40 / 50%); }
-.sc-lesson_title { padding-inline: 0.5rem; font: 600 1.375rem/1.1 var(--font-display); letter-spacing: -0.03em; }
-.sc-lesson_tag { align-self: flex-start; margin-inline: 0.5rem; padding: 0.3125rem 0.75rem; border-radius: 999px; background: var(--lavender-soft); color: var(--violet-press); font-weight: 500; font-size: 0.875rem; }
-.sc-lesson_text { padding-inline: 0.5rem; color: var(--text-2); font-size: 0.9375rem; }
+.sc-lesson_play svg { width: 3.25rem; height: 3.25rem; padding: 0.875rem; border-radius: 50%; background: var(--white); fill: var(--violet); box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(20 10 40 / 50%); }
+.sc-lesson_body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.625rem; padding-inline: 0.375rem; }
+.sc-lesson_title { font: 700 1.25rem/1.12 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
+.sc-lesson_tag { padding: 0.25rem 0.625rem; border-radius: 999px; background: var(--lavender-soft); color: var(--violet-deep); font-weight: 500; font-size: 0.8125rem; }
+.sc-lesson_text { color: var(--text-2); font-size: 0.9375rem; line-height: 1.4; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-benefits { padding-block: 7.5rem; }
+  .sc-benefits_title { font-size: clamp(3.75rem, 8vw, 5rem); }
+  .sc-stages { margin-top: 3rem; }
+  /* Станции в ряд: по 2 из 6 колонок; ниже книга и урок пополам, ещё ниже карточка дня во всю ширину */
+  .sc-stages_list { grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: 1.5rem; row-gap: 1.5rem; padding: 0; }
+  .sc-stage { display: contents; }
+  .sc-stage:not(:last-child)::before { content: none; }
+  .sc-stage_label { display: flex; flex-direction: column-reverse; justify-content: flex-start; gap: 1rem; grid-row: 1; grid-column: span 2; }
+  .sc-stage_dot { position: relative; top: auto; left: auto; }
+  /* Отрезок линии от точки вправо до следующей станции */
+  .sc-stage:not(:last-child) .sc-stage_label::after {
+    content: "";
+    position: absolute;
+    left: 0.5625rem;
+    right: -1.5rem;
+    bottom: calc(0.5625rem - 1px);
+    height: 2px;
+    background: var(--violet);
+    transform: scaleX(var(--line));
+    transform-origin: left center;
+  }
+  .sc-stage_body { margin: 0; }
+  .sc-stage.is-gift .sc-stage_body { grid-row: 2; grid-column: 1 / 4; }
+  .sc-stage.is-lesson .sc-stage_body { grid-row: 2; grid-column: 4 / 7; }
+  .sc-stage.is-day .sc-stage_body { grid-row: 3; grid-column: 1 / 7; }
+
+  .sc-gift { justify-content: center; align-items: center; border-radius: var(--radius-card); background: rgb(124 92 219 / 6%); padding: 2.5rem 1.5rem; }
+  .sc-book { width: min(15rem, 72%); }
+  .sc-day { padding: 2rem; }
+  .sc-day_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 2rem; }
+  .sc-lesson { padding: 1rem 1rem 1.5rem; }
+  .sc-lesson_play svg { width: 3.75rem; height: 3.75rem; padding: 1rem; }
+  .sc-lesson_body { gap: 0.75rem; padding-inline: 0.5rem; }
+  .sc-lesson_title { font-size: 1.375rem; }
+  .sc-lesson_text { font-size: 0.9375rem; }
+}
+
+/* ---------- Десктоп: три колонки ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-benefits { padding-block: clamp(7rem, 9vw, 10rem); }
+  .sc-benefits_title { font-size: clamp(4rem, 5.6vw, 6rem); }
+  .sc-stages { margin-top: clamp(3rem, 4.5vw, 4.5rem); }
+  .sc-stages_list { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(1.25rem, 2vw, 2rem); row-gap: 1.75rem; }
+  .sc-stage_label { grid-column: auto; }
+  .sc-stage:not(:last-child) .sc-stage_label::after { right: calc(clamp(1.25rem, 2vw, 2rem) * -1); }
+  .sc-stage.is-gift .sc-stage_body { grid-row: 2; grid-column: 1; }
+  .sc-stage.is-day .sc-stage_body { grid-row: 2; grid-column: 2; }
+  .sc-stage.is-lesson .sc-stage_body { grid-row: 2; grid-column: 3; }
+  .sc-gift { background: none; padding: 1.5rem 0.5rem; }
+  .sc-book { width: min(17rem, 88%); }
+  /* Карточка дня той же высоты, что соседние: пункты стоят по центру, без пустоты снизу */
+  .sc-day { display: flex; flex-direction: column; justify-content: center; padding: clamp(1.75rem, 2.4vw, 2.5rem); }
+  /* На десктопе иконка над текстом, как в макете */
+  .sc-day_item { flex-direction: column; gap: 1rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Книга чуть разворачивается к зрителю, обложка приоткрывается на корешке */
+  .sc-gift:hover .sc-book { transform: rotateY(-6deg) rotateZ(-2deg); }
+  .sc-gift:hover .sc-book_cover { transform: rotateY(-34deg); }
+  .sc-lesson:hover .sc-lesson_media img { transform: scale(1.04); }
+}
 
 /* =========================================================================
-   5. Антипозиция — фото на весь экран сжимается в ленту
+   5. Антипозиция
+   Телефон и планшет: заголовок, текст и кнопка, ниже лента фото со свайпом.
+   Десктоп: закреплённая сцена — фото на весь экран сжимается в своё место в ленте,
+   поверх проявляется заголовок (анимацию ведёт script.js).
    ========================================================================= */
-.sc-anti { position: relative; height: calc(100svh + 170svh); background: var(--violet); color: var(--white); }
-.sc-anti_stage { position: sticky; top: 0; height: 100svh; min-height: 40rem; overflow: hidden; }
-.sc-anti_head { position: relative; z-index: 2; padding-top: clamp(4rem, 10vh, 7.5rem); }
-.sc-anti_head-grid { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: 3rem; align-items: start; }
-.sc-anti_title { font: 600 clamp(2.75rem, 5.4vw, 6rem)/0.98 var(--font-display); letter-spacing: -0.05em; transform-origin: 50% 100%; }
+.sc-anti { position: relative; background: var(--violet); color: var(--white); }
+.sc-anti_stage { position: relative; padding-block: 5.5rem 6rem; }
+.sc-anti_head-grid { display: grid; gap: 1.5rem; }
+.sc-anti_title { font: 800 clamp(2.25rem, 10.4vw, 4.25rem)/0.98 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; transform-origin: 50% 100%; }
+/* Зачёркивание карандашом — у каждого слова своё, чтобы на телефоне линия не легла между строк */
 .sc-strike { position: relative; display: inline-block; }
-.sc-strike svg { position: absolute; left: -2%; top: 46%; width: 104%; height: 0.35em; overflow: visible; }
-.sc-strike path { fill: none; stroke: var(--white); stroke-width: 4; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.sc-anti_side p { margin: 0.5rem 0 1.5rem; opacity: 0.92; text-wrap: pretty; }
+/* Зачёркивание карандашом: линия ходит туда-обратно-туда по середине строчных букв, сверху тонкий второй проход.
+   Тёмный графит, а не белый: белая линия терялась на белых буквах и была видна только между ними */
+.sc-strike svg { position: absolute; left: -4%; top: 28%; width: 108%; height: 0.58em; overflow: visible; }
+.sc-strike path { fill: none; stroke: var(--aubergine); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.sc-strike .is-second { stroke-width: 1.8; opacity: 0.75; }
+@media (min-width: 64.0625rem) {
+  .sc-strike path { stroke-width: 4.4; }
+  .sc-strike .is-second { stroke-width: 2.2; }
+}
+.sc-anti_side { display: grid; justify-items: stretch; gap: 1.5rem; }
+.sc-anti_side p { margin: 0; color: rgb(255 255 255 / 94%); text-wrap: pretty; }
+.sc-anti_side .sc-button { width: 100%; }
 
-.sc-ribbon { position: absolute; left: 0; bottom: 8vh; z-index: 1; display: flex; align-items: flex-end; gap: 1.25rem; padding-left: 8vw; will-change: transform; }
-.sc-ribbon_item { position: relative; flex: none; }
-.sc-ribbon_item img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 1.25rem; }
-.sc-ribbon_item.is-tall { width: 17vw; height: 44vh; }
-.sc-ribbon_item.is-wide { width: 30vw; height: 34vh; }
-.sc-ribbon_item.is-square { width: 21vw; height: 29vh; margin-bottom: 8vh; }
-.sc-ribbon_item.is-portrait { width: 16vw; height: 40vh; margin-bottom: 3vh; }
-.sc-ribbon_caption { position: absolute; left: 1rem; bottom: -2.4rem; font: 500 1.5rem/1 var(--font-hand); white-space: nowrap; }
+/* Лента: листается пальцем и упирается в края экрана */
+.sc-ribbon {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 2.75rem;
+  padding: 0.75rem var(--page-padding) 3.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--page-padding);
+  scrollbar-width: none;
+}
+.sc-ribbon::-webkit-scrollbar { display: none; }
+.sc-ribbon_item { position: relative; flex: none; width: min(64vw, 17rem); aspect-ratio: 5 / 6; margin: 0; scroll-snap-align: start; }
+/* Фото неровной формы (формы #sc-photo-1…5 в начале страницы); тень повторяет форму */
+.sc-ribbon_item { filter: drop-shadow(0 1rem 1.25rem rgb(20 10 40 / 28%)); }
+.sc-ribbon_item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.sc-ribbon_item:nth-child(1) img { clip-path: url(#sc-photo-1); }
+.sc-ribbon_item:nth-child(2) img { clip-path: url(#sc-photo-2); }
+.sc-ribbon_item:nth-child(3) img { clip-path: url(#sc-photo-3); }
+.sc-ribbon_item:nth-child(4) img { clip-path: url(#sc-photo-4); }
+.sc-ribbon_item:nth-child(5) img { clip-path: url(#sc-photo-5); }
+/* Лёгкий наклон карточек, как у фото, разложенных на столе */
+.sc-ribbon_item:nth-child(1) { rotate: -3deg; }
+.sc-ribbon_item:nth-child(2) { rotate: 2deg; }
+.sc-ribbon_item:nth-child(3) { rotate: -1.5deg; }
+.sc-ribbon_item:nth-child(4) { rotate: 2.5deg; }
+.sc-ribbon_item:nth-child(5) { rotate: -2deg; }
+/* Подпись от руки со стрелкой к фото */
+.sc-ribbon_caption { position: absolute; left: 1.5rem; top: calc(100% + 0.25rem); display: flex; align-items: flex-end; gap: 0.375rem; font: 500 1.5rem/1 var(--font-hand); white-space: nowrap; rotate: -4deg; }
+.sc-ribbon_caption svg { width: 1.75rem; height: auto; overflow: visible; }
+.sc-ribbon_caption path { fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-.sc-anti_flyer { position: absolute; z-index: 3; display: none; overflow: hidden; pointer-events: none; }
-.sc-anti_flyer img { width: 100%; height: 100%; object-fit: cover; }
+.sc-anti_flyer { display: none; }
+
+/* Фото-портал: снимок из карточки «Видеоурок», растущий на весь экран (десктоп) */
+.sc-photo-portal { position: fixed; z-index: 40; visibility: hidden; overflow: hidden; pointer-events: none; }
+.sc-photo-portal img, .sc-anti_flyer img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-anti_stage { padding-block: 7.5rem; }
+  .sc-anti_title { font-size: clamp(3.75rem, 8.4vw, 5.25rem); }
+  /* Планшет: заголовок на всю ширину, под ним текст и кнопка рядом (как в макете) */
+  .sc-anti_head-grid { gap: 2rem; }
+  .sc-anti_side { grid-template-columns: minmax(0, 1.5fr) auto; align-items: center; column-gap: 2rem; }
+  .sc-anti_side .sc-button { width: auto; }
+  .sc-ribbon { gap: 0; margin-top: 3.5rem; }
+  .sc-ribbon_item { width: min(34vw, 17rem); }
+  .sc-ribbon_item + .sc-ribbon_item { margin-left: -0.75rem; }
+}
+
+/* ---------- Десктоп: заголовок слева, текст и кнопка справа ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-anti_head-grid { grid-template-columns: minmax(0, 8.6fr) minmax(0, 3.4fr); gap: 2.5rem; align-items: start; }
+  /* Две строки, как в макете: «Здесь не будет / мотивационных речей» */
+  .sc-anti_title { font-size: clamp(3.5rem, 4.8vw, 5.5rem); }
+  .sc-anti_side { grid-template-columns: 1fr; justify-items: start; gap: 1.5rem; }
+}
+
+/* ---------- Десктоп: закреплённая сцена ---------- */
+@media (min-width: 64.0625rem) and (prefers-reduced-motion: no-preference) {
+  .sc-anti_stage { position: sticky; top: 0; height: 100svh; min-height: 42rem; padding: 0; overflow: hidden; }
+  .sc-anti_head { position: relative; z-index: 2; padding-top: clamp(5.5rem, 13vh, 8rem); }
+  .sc-ribbon { position: absolute; left: 0; bottom: 13vh; z-index: 1; align-items: flex-end; margin: 0; padding: 0 0 0 6vw; overflow: visible; will-change: transform; }
+  .sc-ribbon_item { width: clamp(15rem, 21vw, 24rem); }
+  .sc-ribbon_item + .sc-ribbon_item { margin-left: -1.25vw; }
+  .sc-ribbon_item:nth-child(even) { margin-bottom: 2.5vh; }
+  .sc-ribbon_caption { top: calc(100% + 0.75rem); }
+  .sc-anti_flyer { position: absolute; z-index: 3; display: block; overflow: hidden; pointer-events: none; }
+  /* Пока растёт фото-портал, сцена антипозиции спрятана (ставит script.js) */
+  .sc-anti.is-veiled { background-color: transparent; }
+  /* Прячем прозрачностью: летящее фото внутри сцены скрипт делает видимым, и «visibility» его бы не скрыл */
+  .sc-anti.is-veiled .sc-anti_stage { opacity: 0; pointer-events: none; }
+}
 
 /* =========================================================================
-   Хвост черновика
+   6. Прошлый год
+   Облако окошек эфира вокруг «100+», ниже вузы и спикеры, ещё ниже отзывы.
+   Телефон: облако выше и с меньшим числом окошек, отзывы листаются пальцем.
+   Планшет: облако как на десктопе, отзывы листаются.
+   Десктоп: отзывы в ряд; сюда же стягивается сцена антипозиции (script.js).
    ========================================================================= */
-.sc-next { padding-block: clamp(5rem, 9vw, 8rem); }
-.sc-next_inner { max-width: 60rem; }
-.sc-next_list { display: grid; gap: 0.75rem; margin: 2rem 0; padding-left: 1.25rem; color: var(--text); }
-.sc-next_note { color: var(--text-2); font-size: 0.9375rem; }
+.sc-proof { position: relative; z-index: 1; padding-block: 5.5rem; }
+.sc-proof_title { max-width: 26ch; margin-inline: auto; text-align: center; font: 800 clamp(2.125rem, 9.4vw, 4rem)/1 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+
+/* ---------- Облако окошек ---------- */
+.sc-proof_cloud { position: relative; aspect-ratio: 100 / 96; margin-top: 2rem; }
+.sc-proof_tiles { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.sc-tile {
+  position: absolute;
+  left: var(--mx);
+  top: var(--my);
+  display: grid;
+  place-items: center;
+  width: var(--mw);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem -0.625rem rgb(43 35 52 / 45%);
+  container-type: inline-size;
+  /* Центр окошка — в точке (--x, --y). Смещение анимации script.js пишет в transform отдельно */
+  translate: -50% -50%;
+}
+.sc-tile.is-desktop-only { display: none; }
+.sc-tile.is-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Окошко «камера выключена»: инициалы в круге, внизу плашка имени, как в Zoom */
+.sc-tile.is-soft { background: var(--lavender-soft); }
+.sc-tile.is-lav { background: var(--lavender); }
+.sc-tile.is-dark { background: var(--aubergine); }
+.sc-tile_avatar { display: grid; place-items: center; width: 44%; aspect-ratio: 1; border-radius: 50%; background: var(--violet); color: var(--white); font: 700 15cqi/1 var(--font-display); letter-spacing: -0.02em; }
+.sc-tile.is-lav .sc-tile_avatar { background: var(--white); color: var(--violet); }
+.sc-tile.is-dark .sc-tile_avatar { background: var(--violet-deep); }
+.sc-tile_mic { position: absolute; left: 6%; bottom: 7%; width: 34%; height: 9%; border-radius: 999px; background: rgb(43 35 52 / 18%); }
+.sc-tile.is-dark .sc-tile_mic { background: rgb(255 255 255 / 22%); }
+
+.sc-proof_center { position: absolute; left: 50%; top: 50%; width: 62%; text-align: center; translate: -50% -50%; }
+/* Цифры одной ширины — число не дёргается, пока считает */
+.sc-proof_num { color: var(--violet); font: 800 clamp(4.25rem, 21vw, 9.5rem)/0.9 var(--font-display); letter-spacing: -0.045em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sc-proof_caption { margin-top: 0.375rem; color: var(--violet-deep); font: 700 clamp(1.125rem, 4.8vw, 1.75rem)/1.1 var(--font-display); letter-spacing: -0.02em; }
+
+/* ---------- Вузы и спикеры ---------- */
+.sc-proof_stats { display: grid; justify-items: center; gap: 2.25rem; margin-top: 2.5rem; text-align: center; }
+.sc-stat { display: grid; justify-items: center; }
+.sc-stat_value { display: flex; align-items: center; justify-content: center; gap: 0.875rem; }
+.sc-stat_num { color: var(--violet); font: 800 clamp(3.5rem, 15vw, 5rem)/0.85 var(--font-display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.sc-stat_label { max-width: 9.5rem; color: var(--text); font: 700 1.25rem/1.1 var(--font-display); letter-spacing: -0.02em; text-align: left; }
+.sc-unis { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+.sc-uni { padding: 0.5rem 0.875rem; border: 1px solid rgb(124 92 219 / 14%); border-radius: 999px; background: var(--white); color: var(--text); font-weight: 500; font-size: 0.875rem; line-height: 1.2; }
+.sc-uni.is-more { border-color: transparent; background: var(--lavender); color: var(--violet-deep); font-weight: 600; }
+
+/* ---------- Отзывы: на телефоне и планшете листаются пальцем ---------- */
+/* ---------- Отзывы: чат участников и «Отзовик» ---------- */
+/* minmax(0, 1fr): иначе лента-слайдер растягивает колонку на всю свою длину и чат уезжает за экран */
+.sc-reviews { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; max-width: 70rem; margin: 3rem auto 0; }
+.sc-otz_wrap { min-width: 0; }
+/* Чат: белая панель, сообщения как в мессенджере — кружок с буквой, имя, время, облачко */
+.sc-chat { margin: 0; padding: 1.25rem 1rem 1.5rem; border-radius: 1.5rem; background: var(--white); }
+.sc-chat_title { margin: 0 0 1.25rem 0.25rem; color: var(--text-2); font-size: 0.875rem; }
+.sc-chat_list { display: grid; gap: 0.875rem; margin: 0; padding: 0; list-style: none; }
+.sc-msg { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: end; gap: 0.625rem; }
+.sc-msg_avatar { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; color: var(--white); font: 700 0.9375rem/1 var(--font-display); }
+.sc-msg_avatar.is-a { background: var(--violet); }
+.sc-msg_avatar.is-b { background: var(--aubergine); }
+.sc-msg_avatar.is-c { background: var(--lavender); color: var(--violet-deep); }
+.sc-msg_body { justify-self: start; max-width: 32rem; padding: 0.625rem 0.875rem 0.75rem; border-radius: 1rem 1rem 1rem 0.25rem; background: var(--lavender-soft); }
+.sc-msg_name { color: var(--violet-deep); font-size: 0.8125rem; font-weight: 600; line-height: 1.2; }
+.sc-msg_time { margin-left: 0.25rem; color: var(--text-2); font-weight: 400; }
+.sc-msg_text { margin-top: 0.25rem; color: var(--text); font-size: 0.9375rem; line-height: 1.45; text-wrap: pretty; }
+/* «Отзовик»: карточки с заголовком отзыва, достоинствами и текстом */
+/* Телефон: отзывы листаются вбок, следующая карточка выглядывает справа */
+.sc-otz {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0 calc(var(--page-padding) * -1);
+  padding: 0 var(--page-padding) 0.25rem;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--page-padding);
+  scrollbar-width: none;
+}
+.sc-otz::-webkit-scrollbar { display: none; }
+.sc-otz_card { flex: none; display: grid; gap: 0.625rem; align-content: start; width: min(84vw, 22rem); padding: 1.5rem 1.375rem; border-radius: 1.5rem; background: var(--white); scroll-snap-align: start; }
+.sc-otz_dots { display: flex; justify-content: center; gap: 0.25rem; margin-top: 0.75rem; }
+.sc-otz_dots .sc-pains_dot::before { background: rgb(124 92 219 / 25%); }
+.sc-otz_dots .sc-pains_dot[aria-pressed="true"]::before { background: var(--violet); }
+.sc-otz_source { color: var(--text-2); font-size: 0.875rem; }
+.sc-otz_title { color: var(--text); font: 700 1.25rem/1.15 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
+.sc-otz_pros { color: var(--text-2); font-size: 0.9375rem; line-height: 1.4; }
+.sc-otz_pros b { color: var(--text); font-weight: 600; }
+.sc-otz_text { margin: 0.25rem 0 0; color: var(--text); font-size: 0.9375rem; line-height: 1.5; text-wrap: pretty; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-proof { padding-block: 7.5rem; }
+  .sc-proof_title { font-size: clamp(3rem, 6.4vw, 4.5rem); }
+  .sc-proof_cloud { aspect-ratio: 100 / 40; margin-top: 3rem; }
+  .sc-tile { left: var(--x); top: var(--y); width: var(--w); border-radius: 0.625rem; }
+  .sc-tile.is-desktop-only { display: grid; }
+  .sc-proof_center { width: 32%; }
+  .sc-proof_num { font-size: clamp(5rem, 10.5vw, 9.5rem); }
+  .sc-proof_caption { font-size: clamp(1.25rem, 2.2vw, 1.875rem); }
+  .sc-proof_stats { grid-template-columns: auto auto; justify-content: center; align-items: start; column-gap: 0; margin-top: 3rem; }
+  .sc-stat { padding-inline: 2.5rem; }
+  .sc-stat.is-speakers { align-self: start; border-left: 1px solid rgb(124 92 219 / 20%); }
+  .sc-stat.is-unis { max-width: 44rem; }
+  .sc-chat { padding: 1.5rem 1.5rem 1.75rem; }
+  /* Планшет и шире: слайдера нет, отзывы стоят рядом */
+  .sc-otz { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 0; padding: 0; overflow: visible; }
+  .sc-otz_card { width: auto; padding: 1.75rem 1.625rem; }
+  .sc-otz_dots { display: none; }
+}
+
+/* ---------- Десктоп: отзывы в ряд, слегка наклонены ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-proof { padding-block: clamp(7rem, 9vw, 10rem); }
+  /* Две строки, как в макете */
+  .sc-proof_title { max-width: 30ch; font-size: clamp(3rem, 3.9vw, 4.25rem); }
+  /* Чат слева, два отзыва с «Отзовика» справа друг под другом */
+  .sc-reviews { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; margin-top: 4rem; }
+  .sc-otz { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .sc-chat { padding: 1.75rem 1.75rem 2rem; }
+}
+
+/* ---------- Десктоп со сценами: сюда стягивается антипозиция ----------
+   Блок подтянут вверх на высоту экрана и лежит под последним экраном антипозиции:
+   фиолетовая сцена сжимается к «100+» и открывает его */
+@media (min-width: 64.0625rem) and (prefers-reduced-motion: no-preference) {
+  .sc-anti { z-index: 3; height: calc(100svh + 270svh); background: transparent; }
+  .sc-anti_stage { background: var(--violet); }
+  .sc-proof { margin-top: -100svh; }
+}
+/* Летящие фото (десктоп): форму задаёт script.js на картинке, тень на обёртке повторяет форму */
+.sc-proof-flyer { position: fixed; z-index: 45; visibility: hidden; pointer-events: none; filter: drop-shadow(0 1rem 1.25rem rgb(20 10 40 / 28%)); }
+.sc-proof-flyer img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* =========================================================================
+   7. Эксперты — экран на спикера
+   Телефон и планшет: вкладки треков сверху, ниже спикеры трека листаются слайдером
+   (фото, карточка с именем, доклады), под слайдером точки.
+   Десктоп: экран целиком — фото по центру, имя слева, доклады справа; под спикером маленькие вкладки
+   и лента фото-портретов, которая лежит поверх низа сцены, как на YoungCon.
+   ========================================================================= */
+.sc-speakers { position: relative; z-index: 1; overflow: clip; background: var(--lavender-soft); }
+/* Низ блока плавно темнеет до тёмного фиолетового — следующий тёмный блок продолжает фон без шва */
+/* Затемнение начинается сразу под карточками спикеров (они и точки лежат поверх него) и плавно уходит в тёмный */
+.sc-speakers::after {
+  content: "";
+  position: relative;
+  z-index: 0;
+  display: block;
+  height: 15rem;
+  margin-top: -7rem;
+  background: linear-gradient(rgb(43 35 52 / 0%), rgb(43 35 52 / 10%) 18%, rgb(43 35 52 / 40%) 40%, rgb(43 35 52 / 78%) 66%, var(--aubergine) 90%);
+  pointer-events: none;
+}
+/* Огромное слово на фоне — только украшение, заголовок для скринридера спрятан отдельно */
+.sc-speakers_watermark {
+  position: absolute;
+  top: 13rem;
+  left: 50%;
+  z-index: 0;
+  color: var(--lavender);
+  /* Слово целиком помещается в ширину экрана */
+  font: 800 19vw/0.8 var(--font-display);
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+  translate: -50% 0;
+}
+
+/* ---------- Вкладки треков ---------- */
+.sc-speakers_bar { position: relative; z-index: 3; padding-top: 5rem; }
+.sc-speakers_bar-inner { display: grid; gap: 0.625rem; }
+/* Вкладки листаются пальцем, если не помещаются */
+.sc-tracks {
+  display: flex;
+  gap: 0.375rem;
+  margin-inline: calc(var(--page-padding) * -1);
+  padding: 0 var(--page-padding) 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sc-tracks::-webkit-scrollbar { display: none; }
+.sc-track {
+  flex: none;
+  min-height: 2.5rem;
+  padding: 0 0.875rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--white);
+  color: var(--violet-deep);
+  font: 500 0.875rem/1 var(--font-text);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.sc-track[aria-pressed="true"] { background: var(--violet); color: var(--white); }
+/* «Трек A» — тише названия, вместо точки-разделителя */
+.sc-track_code { margin-right: 0.25rem; opacity: 0.62; }
+
+/* ---------- Слайдер спикеров (телефон и планшет) ---------- */
+.sc-speakers_stage { position: relative; z-index: 1; margin-top: 1.25rem; }
+.sc-speakers_scene {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-inline: calc(var(--page-padding) * -1);
+  padding-inline: var(--page-padding);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--page-padding);
+  scrollbar-width: none;
+}
+.sc-speakers_scene::-webkit-scrollbar { display: none; }
+.sc-speaker { position: relative; flex: none; display: grid; justify-items: center; width: min(86vw, 26rem); scroll-snap-align: start; }
+.sc-speaker[hidden] { display: none; }
+.sc-speaker_photo { display: block; width: auto; max-width: 100%; height: clamp(17rem, 84vw, 26rem); object-fit: contain; object-position: 50% 100%; user-select: none; }
+.sc-speaker_card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  margin-top: -3.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border-radius: 1.5rem;
+  background: var(--violet);
+  color: var(--white);
+  rotate: -1.5deg;
+}
+/* Имя от руки, как подпись */
+.sc-speaker_name { font: 600 clamp(2.375rem, 10.5vw, 3.5rem)/0.9 var(--font-hand); letter-spacing: -0.01em; text-wrap: balance; }
+.sc-speaker_role { margin-top: 0.75rem; color: rgb(255 255 255 / 94%); font-size: 1rem; line-height: 1.35; text-wrap: pretty; }
+.sc-speaker_talks { position: relative; z-index: 2; display: grid; gap: 0.625rem; width: 100%; margin-top: 0.875rem; }
+.sc-talk { padding: 1rem 1.25rem 1.125rem; border-radius: 1.25rem; background: var(--white); }
+.sc-talk_when { color: var(--violet-deep); font-weight: 500; font-size: 0.875rem; line-height: 1.3; }
+.sc-talk_title { margin-top: 0.375rem; color: var(--text); font: 700 1.25rem/1.15 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
+/* Чипы-подходы висят у фото */
+.sc-speaker_tags { position: absolute; top: 8.5rem; left: 0; z-index: 2; display: grid; justify-items: start; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.sc-speaker_tags li { padding: 0.5rem 0.875rem; border-radius: 999px; background: var(--white); color: var(--text); font-weight: 500; font-size: 0.875rem; line-height: 1.1; }
+.sc-speaker_tags li:nth-child(2) { margin-left: 1.5rem; }
+.sc-speakers_dots { display: flex; justify-content: center; gap: 0.25rem; margin-top: 1rem; }
+.sc-speakers_dots .sc-pains_dot::before { background: rgb(124 92 219 / 25%); }
+.sc-speakers_dots .sc-pains_dot[aria-pressed="true"]::before { background: var(--violet); }
+
+/* Лента портретов — только на десктопе */
+.sc-speakers_strip { display: none; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-speakers_bar { padding-top: 6rem; }
+  .sc-tracks { margin: 0; padding: 0; }
+  .sc-speakers_watermark { top: 12rem; }
+  .sc-speaker { width: min(62vw, 30rem); }
+  .sc-speaker_photo { height: clamp(24rem, 52vw, 32rem); }
+  .sc-speaker_tags { top: 12rem; left: 4%; }
+}
+
+/* ---------- Десктоп: экран на спикера ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-speakers { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; height: 100svh; min-height: 50rem; padding: 0; }
+  /* Сцена во весь экран: по якорю встаёт ровно в экран, плашка навигации ложится на её пустой верх */
+  .sc-page .sc-speakers { scroll-margin-top: 0; }
+  .sc-speakers_watermark { top: clamp(5rem, 11vh, 8rem); font-size: min(19vw, 22rem); }
+
+  /* Сцена занимает весь экран, вкладки и лента — поверх её низа */
+  /* z-index: auto — затемнение низа ложится только на фото, а карточки и чипы остаются над ним */
+  .sc-speakers_stage { grid-row: 1 / -1; grid-column: 1; z-index: auto; margin: 0; padding-top: 6rem; }
+  .sc-speaker_card, .sc-speaker_talks, .sc-speaker_tags { z-index: 3; }
+  /* Сцена — внутри контейнера страницы: карточки выравниваются по его краям */
+  .sc-speakers_scene { position: relative; display: block; height: 100%; margin: 0 auto; padding: 0; overflow: visible; }
+  .sc-speaker { position: absolute; inset: 0; display: block; width: auto; }
+  .sc-speaker_photo { position: absolute; left: 50%; bottom: 0; height: 100%; max-width: 48%; translate: -50% 0; }
+  .sc-speaker_card { position: absolute; top: 18%; left: 0; width: min(27rem, 31%); margin: 0; padding: 1.75rem 2rem 2rem; rotate: -3deg; }
+  .sc-speaker_name { font-size: clamp(3rem, 3.9vw, 4.25rem); }
+  .sc-speaker_role { font-size: 1.0625rem; }
+  .sc-speaker_talks { position: absolute; top: 12%; right: 0; width: min(26rem, 30%); margin: 0; gap: 0.875rem; }
+  .sc-talk { padding: 1.25rem 1.5rem 1.375rem; }
+  .sc-talk:first-child .sc-talk_title { font-size: clamp(1.5rem, 2vw, 2rem); }
+  .sc-talk + .sc-talk { margin-left: 2.5rem; }
+  /* Чипы — строкой под карточкой с именем: на узком десктопе имя переносится, карточка растёт, и столбик чипов налезал на неё */
+  .sc-speaker_tags { top: calc(18% + 15rem); left: 5%; display: flex; align-items: flex-start; }
+  .sc-speaker_tags li:nth-child(2) { margin: 0.75rem 0 0; }
+  .sc-speakers_dots { display: none; }
+
+  /* Низ сцены растворяется в тёмный фиолетовый, как на референсе: короткий мягкий переход,
+     который начинается чуть выше вкладок и заканчивается на середине портретов.
+     Фото спикера почти не перекрывается. Следующий тёмный блок продолжает этот фон */
+  .sc-speakers::after {
+    content: "";
+    display: block;
+    height: auto;
+    grid-row: 2 / -1;
+    grid-column: 1;
+    z-index: 2;
+    margin-top: -1.5rem;
+    background: linear-gradient(
+      rgb(43 35 52 / 0%),
+      rgb(43 35 52 / 8%) 10%,
+      rgb(43 35 52 / 22%) 20%,
+      rgb(43 35 52 / 42%) 30%,
+      rgb(43 35 52 / 66%) 40%,
+      rgb(43 35 52 / 86%) 48%,
+      var(--aubergine) 56%
+    );
+    pointer-events: none;
+  }
+  /* Вкладки стоят в самом начале затемнения, поэтому они плотные, как пилюли навигации */
+  .sc-track { background: var(--aubergine); color: var(--white); }
+  .sc-track[aria-pressed="true"] { background: var(--violet); color: var(--white); }
+  .sc-speakers_bar { grid-row: 2; grid-column: 1; padding: 0; }
+  .sc-speakers_bar-inner { position: relative; }
+  .sc-speakers_strip { display: block; grid-row: 3; grid-column: 1; position: relative; z-index: 3; padding-bottom: 1.5rem; }
+
+  .sc-faces { display: flex; gap: 1.25rem; margin: 0; padding: 2.25rem 0 0.25rem; list-style: none; overflow-x: auto; overflow-y: visible; scrollbar-width: none; }
+  .sc-faces::-webkit-scrollbar { display: none; }
+  .sc-faces li[hidden] { display: none; }
+  /* Портрет — квадрат со светлым фоном сцены. Невыбранные приглушены: как будто
+     поверх лежит тонкая вуаль из тёмного фона, а имена бледнее */
+  .sc-face { display: grid; justify-items: start; gap: 0.125rem; width: 7rem; padding: 0; border: 0; background: none; color: rgb(230 229 235 / 55%); text-align: left; cursor: pointer; transition: color var(--dur) var(--ease); }
+  .sc-face img {
+    width: 100%;
+    height: auto; /* иначе браузер берёт высоту из атрибута height и портрет вытягивается */
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: 50% 0;
+    border-radius: 1rem;
+    background: var(--lavender);
+    filter: brightness(0.62) saturate(0.7);
+    transform-origin: 50% 100%;
+    transition: filter var(--dur) var(--ease), background-color var(--dur) var(--ease), translate 450ms var(--ease), scale 450ms var(--ease);
+  }
+  /* Выбранный — светлее и чуть крупнее, приподнят над лентой */
+  .sc-face[aria-pressed="true"] { color: var(--white); }
+  .sc-face[aria-pressed="true"] img { background: var(--lavender-soft); filter: none; translate: 0 -0.375rem; scale: 1.14; }
+  .sc-face_name { margin-top: 0.5rem; font: 700 0.9375rem/1.1 var(--font-display); letter-spacing: -0.01em; }
+  .sc-face_time { color: rgb(218 214 255 / 45%); font-size: 0.8125rem; line-height: 1.2; transition: color var(--dur) var(--ease); }
+  .sc-face[aria-pressed="true"] .sc-face_time { color: rgb(218 214 255 / 80%); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-track[aria-pressed="false"]:hover { background: var(--lavender); }
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 64.0625rem) {
+  .sc-track[aria-pressed="false"]:hover { background: var(--violet-deep); }
+  .sc-face[aria-pressed="false"]:hover { color: rgb(230 229 235 / 85%); }
+  .sc-face[aria-pressed="false"]:hover img { filter: brightness(0.85) saturate(0.9); translate: 0 -0.25rem; }
+}
+
+/* =========================================================================
+   Программа
+   Тёмный фон продолжает низ «Экспертов». Одна лента расписания из светлых карточек:
+   data-view="a|b|c" — выбранный трек: его доклады плюс общие для всех треков
+   открытие, хедлайнер, финал и перерывы — они одинаковые на каждой вкладке.
+   ========================================================================= */
+.sc-program { position: relative; z-index: 1; padding-block: 3rem 5rem; background: var(--aubergine); color: var(--on-dark); }
+.sc-program_head { display: grid; gap: 1rem; justify-items: start; }
+.sc-program_title { color: var(--white); font: 800 clamp(2.75rem, 13vw, 4rem)/0.98 var(--font-display); letter-spacing: -0.03em; }
+.sc-program_lead { max-width: 36rem; color: var(--lavender); font: 600 clamp(1.25rem, 5.4vw, 1.5rem)/1.2 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
+
+/* ---------- Вкладки — как кнопки навигации в шапке: отдельные плашки без обводки, выбранная белая ---------- */
+.sc-program_tabs {
+  display: flex;
+  gap: 0.375rem;
+  margin: 2.25rem calc(var(--page-padding) * -1) 0;
+  padding: 0 var(--page-padding);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sc-program_tabs::-webkit-scrollbar { display: none; }
+.sc-program_tab {
+  flex: none;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 0.25rem;
+  min-height: 3.5rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 9%);
+  color: var(--white);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.sc-program_tab-code { color: rgb(255 255 255 / 55%); font: 500 0.75rem/1.1 var(--font-text); transition: color var(--dur) var(--ease); }
+.sc-program_tab-name { font: 500 0.9375rem/1.1 var(--font-text); letter-spacing: -0.02em; white-space: nowrap; }
+.sc-program_tab[aria-selected="true"] { background: var(--white); color: var(--text); }
+.sc-program_tab[aria-selected="true"] .sc-program_tab-code { color: var(--text-2); }
+
+/* Кому подходит выбранная вкладка: видна только своя строка */
+.sc-program_audience { display: none; margin: 1.75rem 0 1rem; color: var(--lavender); font: 600 1rem/1.35 var(--font-display); text-wrap: balance; }
+.sc-program[data-view="a"] .sc-program_audience[data-for="a"],
+.sc-program[data-view="b"] .sc-program_audience[data-for="b"],
+.sc-program[data-view="c"] .sc-program_audience[data-for="c"] { display: block; }
+.sc-program_panel:focus-visible { outline-offset: 0.5rem; }
+
+/* ---------- Лента расписания: каждый слот — светлая карточка, перерывы — тихие строки между ними ---------- */
+.sc-schedule { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.sc-slot { display: grid; gap: 1rem; padding: 1.25rem; border-radius: 1.25rem; background: var(--page); color: var(--text); }
+.sc-slot_time { display: flex; align-items: center; gap: 0.625rem; }
+/* Телефон: время — фиолетовая плашка над докладом */
+.sc-slot_time time { padding: 0.375rem 0.75rem; border-radius: 0.625rem; background: var(--violet); color: var(--white); font: 600 1.0625rem/1 var(--font-display); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.sc-slot_end { color: var(--text-2); font-size: 0.875rem; line-height: 1.2; white-space: nowrap; }
+.sc-slot_items { display: grid; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+
+/* Перерыв — строка на тёмном фоне, без карточки и спикера */
+.sc-slot.is-break { grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 1rem; padding-block: 0.25rem; background: none; color: inherit; }
+.sc-slot.is-break .sc-slot_time time { padding: 0; background: none; color: rgb(218 214 255 / 60%); font-size: 1rem; font-weight: 600; letter-spacing: 0; }
+.sc-slot.is-break .sc-slot_end { display: none; }
+.sc-slot_break { color: rgb(230 229 235 / 60%); font-size: 0.9375rem; line-height: 1.35; }
+
+/* Доклад */
+.sc-item { display: grid; gap: 0.5rem; align-content: start; }
+.sc-item_label { color: var(--violet-deep); font: 600 0.875rem/1.2 var(--font-text); }
+.sc-item_title { color: var(--text); font: 600 1.1875rem/1.2 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
+.sc-item_desc { max-width: 40rem; color: var(--text-2); font-size: 0.9375rem; line-height: 1.45; text-wrap: pretty; }
+.sc-item_who { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin-top: 0.5rem; }
+
+/* Спикер: кружок с фото или силуэтом, имя, статус. Ведёт на его экран в «Экспертах» */
+.sc-who { display: inline-flex; align-items: center; gap: 0.75rem; color: inherit; text-decoration: none; }
+/* Кружок показывает голову и плечи: картинка крупнее кружка и прижата к его верху */
+.sc-who_photo { flex: none; display: block; width: 3rem; height: 3rem; overflow: hidden; border-radius: 50%; background: var(--lavender); transition: scale var(--dur) var(--ease); }
+.sc-who_photo img { display: block; width: 150%; max-width: none; height: auto; margin: 6% 0 0 -25%; }
+.sc-who_text { display: grid; gap: 0.125rem; }
+.sc-who_name { color: var(--text); font: 600 0.9375rem/1.2 var(--font-display); transition: color var(--dur) var(--ease); }
+.sc-who_role { color: var(--text-2); font-size: 0.8125rem; line-height: 1.3; text-wrap: pretty; }
+
+/* Вкладка трека: в слотах треков остаётся только его доклад. Общий зал и перерывы видны всегда */
+.sc-program[data-view="a"] .sc-slot.is-tracks .sc-item:not([data-track="a"]),
+.sc-program[data-view="b"] .sc-slot.is-tracks .sc-item:not([data-track="b"]),
+.sc-program[data-view="c"] .sc-slot.is-tracks .sc-item:not([data-track="c"]) { display: none; }
+/* Название трека уже на вкладке; у общих блоков подпись остаётся — «Открытие», «Хедлайнер», «Общий финал» */
+.sc-slot.is-tracks .sc-item_label { display: none; }
+.sc-item_title { font-size: clamp(1.25rem, 5.4vw, 1.5rem); }
+
+/* Подвал блока */
+.sc-program_foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin-top: 2rem; }
+.sc-program_note { max-width: 40rem; color: rgb(218 214 255 / 80%); font-size: 0.9375rem; line-height: 1.4; text-wrap: pretty; }
+.sc-program_chip { padding: 0.625rem 1.125rem; border-radius: 62.5rem; background: var(--lavender); color: var(--violet-deep); font: 600 0.9375rem/1.1 var(--font-text); }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-program { padding-block: 4rem 6rem; }
+  .sc-program_title { font-size: clamp(3.75rem, 8vw, 5rem); }
+  .sc-program_lead { font-size: 1.75rem; }
+  .sc-program_tabs { margin: 2.75rem 0 0; padding: 0; overflow: visible; flex-wrap: wrap; }
+  .sc-program_tab-name { font-size: 1rem; letter-spacing: -0.03em; }
+  .sc-program_audience { margin-top: 2rem; font-size: 1.0625rem; }
+
+  /* Время слева крупно, доклады справа за тонкой чертой */
+  .sc-slot { grid-template-columns: 8rem minmax(0, 1fr); column-gap: 2rem; padding: 1.75rem 2rem; }
+  .sc-slot_time { flex-direction: column; align-items: flex-start; gap: 0.375rem; }
+  .sc-slot_time time { padding: 0; background: none; color: var(--violet); font: 700 2.5rem/1 var(--font-display); letter-spacing: -0.035em; }
+  .sc-slot_items { padding-left: 2rem; border-left: 1px solid rgb(51 47 65 / 12%); }
+  .sc-slot.is-break { grid-template-columns: 8rem minmax(0, 1fr); padding: 0.25rem 2rem; }
+  .sc-slot.is-break .sc-slot_time time { font-size: 1.0625rem; }
+  .sc-slot_break { padding-left: 2rem; }
+  .sc-who_photo { width: 3.5rem; height: 3.5rem; }
+}
+
+/* ---------- Десктоп ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-program { padding-block: clamp(2.5rem, 5vh, 4.5rem) 7rem; }
+  .sc-program_title { font-size: clamp(4rem, 5.6vw, 6rem); }
+  .sc-program_lead { max-width: 52rem; font-size: clamp(1.75rem, 2.1vw, 2.125rem); }
+
+  /* Три вкладки на всю ширину, подписи по центру */
+  .sc-program_tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 3.25rem; }
+  .sc-program_tab { justify-items: center; min-height: 4rem; padding: 0.625rem 1rem; text-align: center; }
+  .sc-program_tab-code { font-size: 0.8125rem; }
+  .sc-program_tab-name { font-size: 1.125rem; }
+  .sc-program_audience { margin-top: 2.25rem; font-size: 1.1875rem; }
+
+  .sc-slot { grid-template-columns: 11rem minmax(0, 1fr); column-gap: 2.5rem; padding: 2rem 2.25rem; }
+  .sc-slot_time time { font-size: clamp(3rem, 3.7vw, 3.75rem); }
+  .sc-slot_end { font-size: 0.9375rem; }
+  .sc-slot_items { padding-left: 2.5rem; }
+  .sc-slot.is-break { grid-template-columns: 11rem minmax(0, 1fr); padding: 0.25rem 2.25rem; }
+  .sc-slot.is-break .sc-slot_time time { font-size: 1.125rem; }
+  .sc-slot_break { padding-left: 2.5rem; font-size: 1rem; }
+
+  /* Доклад с одним спикером: текст слева, спикер справа */
+  .sc-item { grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem); column-gap: 3rem; align-content: center; }
+  .sc-item > :not(.sc-item_who) { grid-column: 1; }
+  .sc-item_who { grid-column: 2; grid-row: 1 / span 3; align-self: center; flex-direction: column; margin: 0; }
+  .sc-item_title { font-size: clamp(1.5rem, 1.9vw, 1.875rem); }
+  .sc-item_desc { font-size: 1.0625rem; }
+  .sc-who_photo { width: 4.5rem; height: 4.5rem; }
+  .sc-who { gap: 1rem; }
+  .sc-who_name { font-size: 1.0625rem; }
+  .sc-who_role { font-size: 0.9375rem; }
+
+  .sc-program_foot { margin-top: 2.5rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-program_tab[aria-selected="false"]:hover { background: rgb(255 255 255 / 16%); }
+  .sc-who:hover .sc-who_name { color: var(--violet-deep); }
+  .sc-who:hover .sc-who_photo { scale: 1.06; }
+}
+
+/* =========================================================================
+   После конференции
+   Восемь карточек. Спокойная карточка — только текст. Активная (наведение, фокус с клавиатуры,
+   на телефоне — карточка в центре экрана) темнеет, в правом нижнем углу крупно рисуется
+   карандашный рисунок, сверху появляется доклад. Ширины карточек заданы в разметке: --span, --t.
+   ========================================================================= */
+.sc-out { position: relative; padding-block: 5rem; background: var(--page); }
+.sc-out_head { display: grid; gap: 1.25rem; justify-items: start; }
+.sc-out_title { color: var(--text); font: 800 clamp(2.25rem, 10vw, 3rem)/1 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+
+.sc-out_list { display: grid; gap: 0.75rem; margin: 2rem 0 0; padding: 0; list-style: none; }
+
+/* ---------- Карточка ---------- */
+.sc-out_card {
+  --ink: var(--violet);
+  --hatch: var(--lavender);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 4rem 1.375rem 6.5rem;
+  border-radius: 1.5rem;
+  background: var(--white);
+  color: var(--text);
+  overflow: hidden;
+  transition: background-color 350ms var(--ease), color 350ms var(--ease);
+}
+.sc-out_num { position: absolute; top: 1.25rem; right: 1.375rem; color: var(--text-2); font-size: 0.9375rem; font-variant-numeric: tabular-nums; transition: opacity 250ms var(--ease); }
+/* Рисунок лежит в правом нижнем углу под текстом и появляется только у активной карточки */
+.sc-out_art { position: absolute; right: -0.5rem; bottom: -1rem; z-index: 0; display: block; pointer-events: none; }
+.sc-out_ill { display: block; width: auto; height: 8.5rem; overflow: visible; opacity: 0; scale: 0.85; transform-origin: 100% 100%; transition: scale 550ms var(--ease), opacity 350ms var(--ease); }
+/* Линии рисунка: основной штрих, второй проход тоньше и бледнее, штриховка мягким цветом */
+.sc-out_ill path { fill: none; stroke: var(--ink); stroke-width: 4.6; stroke-linecap: round; stroke-linejoin: round; transition: stroke 350ms var(--ease); }
+.sc-out_ill .is-second { stroke-width: 2; opacity: 0.5; }
+.sc-out_ill .is-hatch { stroke: var(--hatch); stroke-width: 3.6; }
+.sc-out_body { position: relative; z-index: 1; }
+.sc-out_lead { font: 700 1.375rem/1.1 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
+.sc-out_text { max-width: 32rem; margin-top: 0.625rem; color: var(--text-2); font-size: 1rem; line-height: 1.45; text-wrap: pretty; transition: color 350ms var(--ease); }
+
+/* Доклад, где об этом расскажут: появляется у активной карточки наверху, на месте номера; ведёт в программу */
+.sc-out_talk {
+  position: absolute;
+  top: 1.125rem;
+  left: 1.375rem;
+  z-index: 2;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.625rem;
+  max-width: calc(100% - 2.75rem);
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.75rem;
+  background: var(--white);
+  color: var(--text);
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  text-decoration: none;
+  opacity: 0;
+  translate: 0 -0.5rem;
+  transition: opacity 300ms var(--ease), translate 450ms var(--ease);
+}
+.sc-out_time { color: var(--violet); font: 700 1.125rem/1 var(--font-display); letter-spacing: -0.02em; white-space: nowrap; }
+
+/* Активная карточка */
+/* Рисунок на тёмном — фиолетовый, чтобы белый текст поверх него читался */
+.sc-out_card.is-active { --ink: var(--violet); --hatch: rgb(124 92 219 / 40%); background: var(--aubergine); color: var(--white); }
+.sc-out_card.is-active .sc-out_text { color: rgb(230 229 235 / 82%); }
+.sc-out_card.is-active .sc-out_num { opacity: 0; }
+.sc-out_card.is-active .sc-out_ill { opacity: 1; scale: 1; }
+.sc-out_card.is-active .sc-out_talk { opacity: 1; translate: 0 0; }
+
+/* ---------- Планшет: две колонки, длинная первая карточка во всю ширину ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-out { padding-block: 7rem; }
+  .sc-out_title { font-size: clamp(3rem, 6.4vw, 4rem); }
+  .sc-out_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2.5rem; }
+  .sc-out_card { grid-column: span var(--t, 1); min-height: 16rem; padding: 4.5rem 1.75rem 7rem; }
+  .sc-out_num { top: 1.5rem; right: 1.75rem; }
+  .sc-out_talk { top: 1.375rem; left: 1.75rem; max-width: calc(100% - 3.5rem); }
+}
+
+/* ---------- Десктоп: 12 колонок, ширина карточки — по объёму текста ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-out_head { grid-template-columns: minmax(0, 1fr) auto; align-items: start; column-gap: 2rem; row-gap: 1.5rem; }
+  .sc-out_title { grid-column: 1; font-size: clamp(3rem, 4.4vw, 4.5rem); }
+  .sc-out_list { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+  .sc-out_card { grid-column: span var(--span); }
+  .sc-out_card { min-height: 17rem; }
+  .sc-out_lead { font-size: clamp(1.375rem, 1.7vw, 1.625rem); }
+  .sc-out_text { font-size: 1.0625rem; }
+  .sc-out_ill { height: 10.5rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-out_talk:hover { background: var(--lavender); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-out_card, .sc-out_ill, .sc-out_talk, .sc-out_num, .sc-out_text, .sc-out_ill path { transition: none; }
+}
+
+/* =========================================================================
+   Регистрация
+   Фиолетовый блок: форматы участия, форма, бейдж на шнурке.
+   На телефоне: форматы → бейдж → форма. На десктопе: форматы | форма | бейдж.
+   ========================================================================= */
+.sc-reg { position: relative; overflow: clip; padding-block: 4.5rem 5rem; background: var(--violet); color: var(--white); }
+.sc-reg_grid { display: grid; gap: 2.5rem; }
+.sc-reg_title { font: 800 clamp(2.5rem, 11vw, 3.5rem)/0.98 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+
+/* ---------- Форматы участия ---------- */
+.sc-plans { display: grid; gap: 0.75rem; margin: 1.75rem 0 0; padding: 0; list-style: none; }
+.sc-plan { display: grid; gap: 0.375rem; padding: 1.375rem 1.5rem 1.5rem; border-radius: 1.25rem; background: var(--white); color: var(--text); }
+.sc-plan.is-dark { background: var(--aubergine); color: var(--white); }
+.sc-plan_name { font: 700 1.375rem/1.1 var(--font-display); letter-spacing: -0.02em; }
+.sc-plan_text { color: var(--text-2); font-size: 1rem; line-height: 1.4; }
+.sc-plan.is-dark .sc-plan_text { color: rgb(230 229 235 / 80%); }
+.sc-plan_price { margin-top: 0.5rem; color: var(--violet); font: 800 2rem/1 var(--font-display); letter-spacing: -0.03em; }
+.sc-plan.is-dark .sc-plan_price { color: var(--white); }
+.sc-reg_note { max-width: 30rem; margin-top: 1.25rem; color: rgb(255 255 255 / 88%); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+
+/* ---------- Бейдж на шнурке ---------- */
+.sc-reg_badge-wrap { display: grid; justify-items: center; margin-block: -0.5rem; pointer-events: none; }
+.sc-lanyard { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; width: 16.5rem; transform-origin: 50% 0; }
+/* Ленты длинные и сверху растворяются: при падении и покачивании не видно обрезанных концов */
+.sc-lanyard_strap { display: block; width: 7rem; height: 8rem; -webkit-mask-image: linear-gradient(transparent, #000 45%); mask-image: linear-gradient(transparent, #000 45%); }
+.sc-lanyard_band { fill: var(--lavender); }
+.sc-lanyard_band.is-back { opacity: 0.75; }
+.sc-lanyard_clip { width: 2.25rem; height: 1.5rem; margin-top: -0.25rem; border-radius: 0.375rem 0.375rem 0.5rem 0.5rem; background: var(--aubergine); }
+.sc-badge {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  margin-top: -0.375rem;
+  padding: 1.75rem 1.375rem 0;
+  border-radius: 1.125rem;
+  background: var(--white);
+  color: var(--text);
+  overflow: hidden;
+  rotate: 4deg;
+  transform-origin: 50% 0;
+}
+.sc-badge_hole { position: absolute; top: 0.625rem; left: 50%; width: 2.5rem; height: 0.4375rem; border-radius: 1rem; background: var(--lavender-soft); translate: -50% 0; }
+.sc-badge_top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.25rem; }
+.sc-badge_logo { display: block; width: auto; height: 1.375rem; fill: var(--text); }
+.sc-badge_date { color: var(--text-2); font-size: 0.8125rem; line-height: 1.2; text-align: right; }
+/* Имя — в несколько строк без переносов по слогам: если длинное слово не влезает, script.js уменьшает шрифт */
+/* Не больше трёх строк, дальше многоточие. Слово длиннее строки (набор букв без пробелов) переносится по краю */
+.sc-badge_name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; margin-top: 1rem; font: 800 1.625rem/1.05 var(--font-display); letter-spacing: -0.025em; text-wrap: balance; }
+.sc-badge_name.is-broken { overflow-wrap: anywhere; text-wrap: wrap; }
+.sc-badge_name.is-empty { color: rgb(51 47 65 / 30%); }
+.sc-badge_track { justify-self: start; margin-top: 0.25rem; padding: 0.375rem 0.75rem; border-radius: 0.625rem; background: var(--lavender-soft); color: var(--violet-deep); font-size: 0.8125rem; font-weight: 500; line-height: 1.2; }
+/* Нижняя полоса бейджа: тёмная, чтобы не сливаться с фиолетовым фоном; «участник» от руки и карандашные пометки */
+.sc-badge_role { position: relative; display: grid; align-content: end; min-height: 8.5rem; margin: 1.25rem -1.375rem 0; padding: 1.25rem 1.375rem 1.25rem; background: var(--aubergine); color: var(--white); }
+.sc-badge_doodle { position: absolute; top: 0.5rem; right: 0.375rem; width: 7rem; height: auto; pointer-events: none; }
+.sc-badge_doodle path { fill: none; stroke: var(--lavender); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.sc-badge_doodle .is-star { stroke: var(--white); }
+.sc-badge_doodle .is-plus { opacity: 0.7; }
+.sc-badge_role-text { position: relative; font: 600 3rem/0.9 var(--font-hand); }
+.sc-badge_event { position: relative; margin-top: 0.375rem; color: rgb(255 255 255 / 85%); font-size: 0.8125rem; line-height: 1.25; }
+
+/* ---------- Форма ---------- */
+/* Форма лежит поверх бейджа: на телефоне он при падении пролетает за ней, а не по ней */
+.sc-form { position: relative; z-index: 1; display: grid; gap: 1rem; padding: 1.5rem 1.25rem; border-radius: 1.5rem; background: var(--white); color: var(--text); }
+.sc-form_title { font: 800 1.75rem/1.05 var(--font-display); letter-spacing: -0.025em; text-wrap: balance; }
+.sc-form_plan { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; margin: 0; padding: 0.25rem; border: 0; border-radius: 0.875rem; background: var(--lavender-soft); }
+.sc-form_plan-option { position: relative; display: grid; cursor: pointer; }
+.sc-form_plan-option input, .sc-choice input { position: absolute; opacity: 0; pointer-events: none; }
+.sc-form_plan-option span { display: grid; place-items: center; min-height: 2.75rem; padding: 0 0.75rem; border-radius: 0.6875rem; color: var(--violet-deep); font-weight: 500; font-size: 0.9375rem; text-align: center; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.sc-form_plan-option input:checked + span { background: var(--violet); color: var(--white); }
+.sc-form_plan-option input:focus-visible + span, .sc-choice input:focus-visible + span { outline: 2px solid var(--violet); outline-offset: 2px; }
+.sc-form_fields { display: grid; gap: 0.625rem; }
+.sc-field { position: relative; display: grid; gap: 0.125rem; padding: 0.625rem 1rem 0.75rem; border: 1px solid rgb(124 92 219 / 28%); border-radius: 0.875rem; background: var(--white); cursor: text; transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+/* Фокус — рамка всего поля (вторая линия внутри — не тень, а утолщение рамки) */
+.sc-field:focus-within { border-color: var(--violet); box-shadow: inset 0 0 0 1px var(--violet); }
+.sc-field_input:focus-visible { outline: none; }
+/* Ошибка: красная рамка и пояснение под значением */
+.sc-field.is-invalid { border-color: var(--error); }
+.sc-field.is-invalid:focus-within { box-shadow: inset 0 0 0 1px var(--error); }
+.sc-field_error { color: var(--error); font-size: 0.8125rem; line-height: 1.3; }
+.sc-field_error:empty { display: none; }
+/* Телефон: слева выбор страны с кодом, номер набирается по маске выбранной страны */
+.sc-field.is-phone .iti { display: block; width: 100%; --iti-hover-color: var(--lavender-soft); --iti-border-color: rgb(124 92 219 / 28%); --iti-dial-code-color: var(--text); --iti-arrow-color: var(--text-2); --iti-spacer-horizontal: 0.5rem; }
+.sc-field.is-phone .iti__country-container { left: -0.375rem; }
+.sc-field.is-phone .iti__selected-country { padding: 0 0.375rem; border-radius: 0.5rem; color: var(--text); font: inherit; font-size: 1.0625rem; }
+.sc-field.is-phone .iti__selected-country:focus-visible { outline: 2px solid var(--violet); outline-offset: 0; }
+
+.sc-field_label { color: var(--text-2); font-size: 0.8125rem; line-height: 1.2; }
+.sc-field_input { width: 100%; padding: 0; border: 0; background: none; color: var(--text); font: 400 1.0625rem/1.3 var(--font-text); outline: none; }
+.sc-field_input::placeholder { color: rgb(116 116 118 / 60%); }
+.sc-form_messenger { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
+.sc-form_legend { grid-column: 1 / -1; margin-bottom: 0.5rem; padding: 0; font: 600 1rem/1.25 var(--font-display); }
+.sc-choice { position: relative; display: grid; cursor: pointer; }
+.sc-choice span { display: grid; place-items: center; min-height: 3rem; border: 1px solid rgb(124 92 219 / 28%); border-radius: 0.875rem; color: var(--text); font-weight: 500; transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.sc-choice input:checked + span { border-color: var(--violet); background: var(--lavender-soft); color: var(--violet-deep); }
+.sc-form_submit { width: 100%; margin-top: 0.25rem; }
+.sc-form_consent { color: var(--text-2); font-size: 0.8125rem; line-height: 1.4; text-wrap: pretty; }
+.sc-form_consent a { color: var(--violet-deep); }
+.sc-form_done { display: grid; gap: 0.375rem; padding: 1rem 1.125rem; border-radius: 1rem; background: var(--lavender-soft); }
+.sc-form_done[hidden] { display: none; }
+.sc-form_done-title { font: 700 1.25rem/1.15 var(--font-display); }
+.sc-form_done-text { color: var(--text-2); font-size: 0.9375rem; line-height: 1.4; }
+
+/* Список стран открывается поверх страницы (вне .sc-page), поэтому шрифт и скругление заданы здесь явно */
+body > .iti--detached-country-selector { z-index: 1000; font-family: "Wix Madefor Text", Arial, sans-serif; }
+body > .iti--detached-country-selector .iti__country-selector { overflow: hidden; border-radius: 0.75rem; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-reg { padding-block: 6rem; }
+  .sc-reg_grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "plans badge" "form form"; column-gap: 2rem; }
+  .sc-reg_plans { grid-area: plans; }
+  .sc-reg_badge-wrap { grid-area: badge; align-self: start; margin-block: -13rem 0; }
+  .sc-lanyard_strap { height: 16rem; }
+  .sc-form { grid-area: form; padding: 2rem; }
+  .sc-reg_title { font-size: clamp(3.25rem, 7vw, 4.25rem); }
+}
+
+/* ---------- Десктоп: форматы | форма | бейдж ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-reg { padding-block: 7rem 8rem; }
+  .sc-reg_grid { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr) minmax(0, 0.75fr); grid-template-areas: "plans form badge"; align-items: start; column-gap: clamp(1.5rem, 2.6vw, 3rem); }
+  .sc-reg_title { font-size: clamp(3.5rem, 5vw, 5rem); }
+  .sc-form { padding: 2.25rem 2rem; }
+  .sc-form_title { font-size: clamp(1.875rem, 2.4vw, 2.375rem); }
+  .sc-reg_badge-wrap { margin-top: -15rem; }
+  .sc-lanyard { width: min(100%, 19.5rem); }
+  .sc-lanyard_strap { width: 8.5rem; height: 21rem; }
+  .sc-badge { padding: 2rem 1.625rem 0; }
+  .sc-badge_role { min-height: 10.5rem; margin-inline: -1.625rem; padding-inline: 1.625rem; }
+  .sc-badge_role-text { font-size: 3.5rem; }
+  .sc-badge_logo { height: 1.625rem; }
+  .sc-badge_name { font-size: clamp(1.75rem, 2.2vw, 2.25rem); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-form_plan-option input:not(:checked) + span:hover { background: rgb(124 92 219 / 12%); }
+  .sc-choice input:not(:checked) + span:hover { border-color: var(--violet); }
+  .sc-form_consent a:hover { color: var(--violet); }
+}
+
+/* =========================================================================
+   Частые вопросы
+   Светлый блок: слева заголовок и «Задать вопрос», справа белые карточки-вопросы.
+   Открыт один вопрос; плюс в кружке превращается в минус.
+   ========================================================================= */
+.sc-faq { padding-block: 5rem; background: var(--page); }
+.sc-faq_grid { display: grid; gap: 2rem; }
+.sc-faq_head { display: grid; gap: 1rem; justify-items: start; align-content: start; }
+.sc-faq_title { color: var(--text); font: 800 clamp(2.5rem, 11vw, 3.5rem)/0.98 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+.sc-faq_lead { color: var(--text-2); font: 500 1.25rem/1.25 var(--font-display); }
+/* Ссылка в тексте — фиолетовая и подчёркнутая */
+.sc-faq_link { color: var(--violet); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; transition: color var(--dur) var(--ease); }
+.sc-faq_list { display: grid; gap: 0.75rem; }
+.sc-faq_item { border-radius: 1.25rem; background: var(--white); }
+.sc-faq_question { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1rem; padding: 1.125rem 1.25rem; list-style: none; cursor: pointer; }
+.sc-faq_question::-webkit-details-marker { display: none; }
+.sc-faq_question-text { color: var(--text); font: 600 1.125rem/1.25 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
+/* Кружок с плюсом: вертикальная черта прячется у открытого вопроса */
+.sc-faq_icon { position: relative; flex: none; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--lavender-soft); }
+.sc-faq_icon::before, .sc-faq_icon::after { content: ""; position: absolute; top: 50%; left: 50%; width: 0.875rem; height: 0.125rem; border-radius: 0.125rem; background: var(--violet); translate: -50% -50%; transition: rotate 300ms var(--ease); }
+.sc-faq_icon::after { rotate: 90deg; }
+.sc-faq_item[open] .sc-faq_icon::after { rotate: 0deg; }
+.sc-faq_item[open] .sc-faq_icon { background: var(--lavender); }
+.sc-faq_answer { padding: 0 1.25rem 1.25rem calc(1.25rem + 2.5rem + 1rem); color: var(--text-2); font-size: 1rem; line-height: 1.5; text-wrap: pretty; }
+.sc-faq_question:focus-visible { outline-offset: -2px; border-radius: 1.25rem; }
+/* Плавное раскрытие там, где браузер это умеет (остальные просто открывают сразу) */
+@supports (interpolate-size: allow-keywords) {
+  .sc-faq_list { interpolate-size: allow-keywords; }
+  .sc-faq_item::details-content { height: 0; overflow: clip; transition: height 350ms var(--ease), content-visibility 350ms allow-discrete; }
+  .sc-faq_item[open]::details-content { height: auto; }
+}
+
+/* =========================================================================
+   Подвал — как на антикризисной конференции
+   ========================================================================= */
+.sc-footer { background: var(--aubergine); color: var(--on-dark); }
+.sc-footer_inner { display: flex; flex-direction: column; gap: 2rem; padding-block: 3.75rem 1.5rem; }
+.sc-footer_top { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+.sc-footer_identity { display: flex; flex-direction: column; align-items: flex-start; gap: 2rem; min-width: 0; }
+.sc-footer_logo { display: inline-flex; color: var(--white); border-radius: 0.25rem; }
+.sc-footer_logo .sc-logo { height: 1.875rem; }
+.sc-footer_contacts { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+.sc-footer_phone { display: flex; flex-direction: column; gap: 0.5rem; }
+.sc-footer_contact { color: var(--on-dark); font-size: 1.125rem; font-weight: 600; line-height: 1.45; text-decoration: none; transition: opacity 180ms ease; }
+.sc-footer_contact-label { color: rgb(230 229 235 / 65%); font-size: 0.75rem; line-height: 1; }
+.sc-footer_socials { display: flex; align-items: center; margin-left: -0.375rem; }
+/* Иконка соцсети: светлый кружок, тёмный рисунок; область нажатия 44 px */
+.sc-footer_social { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; color: var(--text); }
+.sc-footer_social::before { content: ""; position: absolute; width: 2rem; height: 2rem; border-radius: 50%; background: var(--page); transition: background-color 180ms ease; }
+.sc-footer_social svg { position: relative; z-index: 1; display: block; width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.sc-footer_legal { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.sc-footer_legal a { display: flex; align-items: center; min-height: 2.75rem; color: var(--on-dark); font-size: 1rem; line-height: 1.45; text-decoration: none; transition: opacity 180ms ease; }
+.sc-footer_details { display: flex; flex-direction: column; gap: 1rem; min-width: 0; margin: 0; color: rgb(230 229 235 / 65%); font-size: 0.875rem; font-style: normal; line-height: 1.45; }
+.sc-footer_registration { display: flex; flex-direction: column; gap: 0.5rem 2rem; }
+.sc-footer_bottom { padding-top: 1rem; border-top: 1px solid rgb(230 229 235 / 16%); color: rgb(230 229 235 / 65%); font-size: 0.875rem; line-height: 1.45; }
+.sc-footer :focus-visible { outline-color: var(--on-dark); outline-offset: 4px; }
+
+/* ---------- Планшет ---------- */
+@media (min-width: 48.0625rem) {
+  .sc-faq { padding-block: 6.5rem; }
+  .sc-faq_title { font-size: clamp(3.25rem, 7vw, 4.25rem); }
+  .sc-faq_question { padding: 1.375rem 1.5rem; gap: 1.25rem; }
+  .sc-faq_question-text { font-size: 1.25rem; }
+  .sc-faq_answer { padding: 0 1.5rem 1.5rem calc(1.5rem + 2.5rem + 1.25rem); font-size: 1.0625rem; }
+  .sc-footer_top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sc-footer_identity { gap: 2.5rem; }
+  .sc-footer_legal { gap: 1rem; }
+  .sc-footer_legal a { min-height: 0; }
+  .sc-footer_details { grid-column: 1 / -1; }
+  .sc-footer_registration { flex-direction: row; flex-wrap: wrap; }
+}
+
+/* ---------- Десктоп ---------- */
+@media (min-width: 64.0625rem) {
+  .sc-faq { padding-block: 8rem; }
+  .sc-faq_grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); column-gap: clamp(2rem, 5vw, 6rem); align-items: start; }
+  .sc-faq_head { position: sticky; top: 7rem; }
+  .sc-faq_title { font-size: clamp(3.75rem, 5.2vw, 5.5rem); }
+  .sc-faq_lead { font-size: clamp(1.375rem, 1.8vw, 1.75rem); }
+  .sc-footer_top { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sc-footer_legal, .sc-footer_details { align-self: end; }
+  .sc-footer_legal { gap: 0.5rem; }
+  .sc-footer_legal a { line-height: 1.2; }
+  .sc-footer_details { grid-column: auto; padding-bottom: 1.5rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-faq_question:hover .sc-faq_icon { background: var(--lavender); }
+  .sc-faq_link:hover { color: var(--violet-deep); }
+  .sc-footer_contact:hover, .sc-footer_legal a:hover { opacity: 0.78; }
+  .sc-footer_social:hover::before { background: var(--on-dark); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-faq_icon::before, .sc-faq_icon::after { transition: none; }
+  .sc-faq_item::details-content { transition: none; }
+}
 
 /* Портал: тёмная плашка-переход между блоками */
 .sc-portal {
@@ -867,27 +1921,9 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 }
 
 
-/* =========================================================================
-   Остальные главы на планшете и телефоне: без закреплённых сцен, всё в колонку.
-   (Первый экран, «Для кого» и «Почему сложно» написаны от телефона к десктопу — их правила выше.)
-   ========================================================================= */
-@media (max-width: 64rem) {
-  .sc-benefits_grid, .sc-stations_list { grid-template-columns: 1fr; }
-  .sc-stations_line { display: none; }
-  .sc-anti { height: auto; }
-  .sc-anti_stage { position: relative; height: auto; padding-bottom: 6rem; overflow: visible; }
-  .sc-anti_head-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .sc-ribbon { position: relative; bottom: auto; margin-top: 3rem; padding-inline: var(--page-padding); overflow-x: auto; }
-  .sc-ribbon_item.is-tall, .sc-ribbon_item.is-wide, .sc-ribbon_item.is-square, .sc-ribbon_item.is-portrait { width: 70vw; height: 50vw; margin-bottom: 0; }
-}
-
 /* Узкие телефоны (до 375 px): дата и наклейка должны уместиться в одну строку */
 @media (max-width: 23.4375rem) {
   .sc-hero_meta { padding: 0.375rem 0.625rem; font-size: 0.8125rem; }
-}
-
-@media (max-width: 32.5rem) {
-  .sc-day_list { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

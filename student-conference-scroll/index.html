@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Wix+Madefor+Display:wght@500;600;700;800&family=Wix+Madefor+Text:wght@400;500;600&display=swap">
+  <!-- Телефон с выбором страны и маской — та же библиотека и версия, что на других лендингах Академии -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/css/intlTelInput.css">
   <link rel="stylesheet" href="styles.css">
   <!-- Анимации: GSAP 3.15 с плагинами. Версия закреплена, @latest не используем. -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
@@ -16,6 +18,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MorphSVGPlugin.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/intlTelInput.min.js"></script>
   <script defer src="script.js"></script>
 </head>
 <body>
@@ -30,21 +33,22 @@
     <div class="sc-pills_inner">
       <a class="sc-pills_link" href="#audience" data-sc-station="audience">Для кого</a>
       <a class="sc-pills_link" href="#benefits" data-sc-station="benefits">Что получите</a>
-      <a class="sc-pills_link" href="#next" data-sc-station="next">Эксперты</a>
-      <a class="sc-pills_link" href="#next">Темы</a>
-      <a class="sc-pills_link is-registration" href="#next" aria-hidden="true" tabindex="-1" data-sc-pills-registration>Регистрация</a>
+      <a class="sc-pills_link" href="#experts" data-sc-station="experts">Эксперты</a>
+      <a class="sc-pills_link" href="#program" data-sc-station="program">Программа</a>
+      <a class="sc-pills_link is-registration" href="#registration" aria-hidden="true" tabindex="-1" data-sc-pills-registration>Регистрация</a>
     </div>
-    <button class="sc-pills_menu" type="button" aria-haspopup="dialog" aria-controls="sc-menu" data-sc-menu-open>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>Разделы
+    <!-- Только иконка-бургер: подпись для скринридера — в aria-label -->
+    <button class="sc-pills_menu" type="button" aria-label="Разделы страницы" aria-haspopup="dialog" aria-controls="sc-menu" data-sc-menu-open>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
     </button>
-    <a class="sc-pills_cta" href="#next">Зарегистрироваться</a>
+    <a class="sc-pills_cta" href="#registration">Зарегистрироваться</a>
   </nav>
 
   <!-- Меню для телефона и планшета: тёмная шторка сверху, разделы кнопками -->
   <dialog class="sc-menu" id="sc-menu" aria-label="Меню" data-sc-menu>
     <div class="sc-menu_inner">
       <div class="sc-menu_top">
-        <span class="sc-header_brand">АСП</span>
+        <span class="sc-header_brand"><svg class="sc-logo" viewBox="0 0 84 30" aria-hidden="true" focusable="false"><use href="#sc-logo"/></svg><span class="sc-visually-hidden">Академия современной психологии</span></span>
         <button class="sc-burger" type="button" aria-label="Закрыть меню" data-sc-menu-close>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
         </button>
@@ -53,14 +57,14 @@
         <ol class="sc-menu_list" role="list">
           <li><a class="sc-menu_link" href="#audience" data-sc-menu-station="audience">Для кого</a></li>
           <li><a class="sc-menu_link" href="#benefits" data-sc-menu-station="benefits">Что получите</a></li>
-          <li><a class="sc-menu_link" href="#next" data-sc-menu-station="next">Эксперты</a></li>
-          <li><a class="sc-menu_link" href="#next">Темы</a></li>
-          <li><a class="sc-menu_link" href="#next">Регистрация</a></li>
+          <li><a class="sc-menu_link" href="#experts" data-sc-menu-station="experts">Эксперты</a></li>
+          <li><a class="sc-menu_link" href="#program" data-sc-menu-station="program">Программа</a></li>
+          <li><a class="sc-menu_link" href="#registration">Регистрация</a></li>
         </ol>
       </nav>
       <div class="sc-menu_bottom">
         <p class="sc-menu_meta">21&nbsp;ноября · суббота · онлайн</p>
-        <a class="sc-button is-light is-large" href="#next">Зарегистрироваться бесплатно</a>
+        <a class="sc-button is-light is-large" href="#registration">Зарегистрироваться бесплатно</a>
       </div>
     </div>
   </dialog>
@@ -69,6 +73,8 @@
        Фильтры дают рваный край и сухие волокна; менять можно силу (scale) и частоту (baseFrequency). -->
   <svg class="sc-defs" width="0" height="0" aria-hidden="true" focusable="false">
     <defs>
+      <!-- Логотип Академии (вектор из icons/logo-asp.svg других лендингов), цвет берётся от текста -->
+      <symbol id="sc-logo" viewBox="0 0 84 30"><path d="M43.8333 29.3797C39.7611 29.3797 36.4119 28.0298 33.7856 25.33C31.1291 22.6005 29.8066 19.1575 29.8066 15.0027C29.8066 10.847 31.1344 7.40484 33.7856 4.6745C36.4163 1.97022 39.7611 0.620331 43.8333 0.620331C47.9055 0.620331 51.3435 1.9855 53.9991 4.71045C54.4618 5.18498 54.9388 5.77185 55.4299 6.45937L51.9137 9.07737C51.4519 8.38984 51.0629 7.90004 50.7529 7.60705C49.0023 5.8069 46.7198 4.90727 43.9123 4.90727C41.104 4.90727 38.8507 5.82218 37.0709 7.64749C35.2164 9.5528 34.2874 12.0045 34.2874 14.9973C34.2874 17.9901 35.2164 20.4418 37.0709 22.348C38.8463 24.1724 41.128 25.0873 43.9123 25.0873C46.6958 25.0873 49.283 24.0412 51.3728 21.9481L52.1446 21.0736L55.5481 23.5361C55.1111 24.1167 54.6581 24.6631 54.1963 25.1637C51.4661 27.9696 48.0138 29.3743 43.8377 29.3743L43.8333 29.3797Z"/><path d="M63 1.30518H84.0004V29.3797H79.716V5.63795H67.2845V29.3797H63V1.30518Z"/><path d="M15.9984 1.30518H10.4207L0 29.3797H4.54381L7.23492 21.9598H15.6706L14.1119 17.6719H8.79363L9.86208 14.7232L9.87629 14.7286L13.1705 5.6748L18.7925 20.9604L21.9295 29.3797H26.4191L15.9984 1.30518Z"/></symbol>
       <filter id="sc-pencil" x="-5%" y="-15%" width="110%" height="130%" color-interpolation-filters="sRGB">
         <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="grain"/>
         <feDisplacementMap in="SourceGraphic" in2="grain" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="wobble"/>
@@ -107,6 +113,13 @@
         <path fill="currentColor" d="M9 8C90 4 200 7 300 5s80 1 90 3c4 8 4 17 1 25-60 3-170 1-260 3S32 37 10 34C5 25 5 16 9 8Z"/>
         <path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" d="M14 11H2M11 19H5M13 28H1M386 10h12M389 20h9M385 29h13"/>
       </g>
+      <!-- Неровные формы фото в ленте антипозиции (в долях размера карточки — подходят под любой размер).
+           Форма третьего фото повторена в script.js: туда «садится» летящее фото. -->
+      <clipPath id="sc-photo-1" clipPathUnits="objectBoundingBox"><path d="M0.0899 0.0468L0.9001 0.0032Q0.9600 0.0000 0.9626 0.0599L0.9974 0.8801Q1.0000 0.9400 0.9401 0.9436L0.0599 0.9964Q0.0000 1.0000 0.0019 0.9400L0.0281 0.1100Q0.0300 0.0500 0.0899 0.0468Z"/></clipPath>
+      <clipPath id="sc-photo-2" clipPathUnits="objectBoundingBox"><path d="M0.0599 0.0131L0.9101 0.0569Q0.9700 0.0600 0.9713 0.1200L0.9887 0.9400Q0.9900 1.0000 0.9301 0.9969L0.0899 0.9531Q0.0300 0.9500 0.0281 0.8900L0.0019 0.0700Q0.0000 0.0100 0.0599 0.0131Z"/></clipPath>
+      <clipPath id="sc-photo-3" clipPathUnits="objectBoundingBox"><path d="M0.1100 0.0019L0.9400 0.0281Q1.0000 0.0300 0.9975 0.0899L0.9625 0.9401Q0.9600 1.0000 0.9001 0.9969L0.0599 0.9531Q0.0000 0.9500 0.0032 0.8901L0.0468 0.0599Q0.0500 0.0000 0.1100 0.0019Z"/></clipPath>
+      <clipPath id="sc-photo-4" clipPathUnits="objectBoundingBox"><path d="M0.0599 0.0563L0.9001 0.0037Q0.9600 0.0000 0.9625 0.0599L0.9975 0.9001Q1.0000 0.9600 0.9401 0.9625L0.0999 0.9975Q0.0400 1.0000 0.0374 0.9401L0.0026 0.1199Q0.0000 0.0600 0.0599 0.0563Z"/></clipPath>
+      <clipPath id="sc-photo-5" clipPathUnits="objectBoundingBox"><path d="M0.0899 0.0031L0.9401 0.0469Q1.0000 0.0500 0.9981 0.1100L0.9719 0.9300Q0.9700 0.9900 0.9101 0.9869L0.0599 0.9431Q0.0000 0.9400 0.0019 0.8800L0.0281 0.0600Q0.0300 0.0000 0.0899 0.0031Z"/></clipPath>
     </defs>
   </svg>
 
@@ -119,9 +132,9 @@
       <header class="sc-header" data-sc-header>
         <div class="padding-global">
           <div class="container-xlarge sc-header_inner">
-            <a class="sc-header_brand" href="#main-content" aria-label="АСП — в начало страницы">АСП</a>
+            <a class="sc-header_brand" href="#main-content" aria-label="Академия современной психологии — в начало страницы"><svg class="sc-logo" viewBox="0 0 84 30" aria-hidden="true" focusable="false"><use href="#sc-logo"/></svg></a>
             <div class="sc-header_actions">
-              <a class="sc-button is-light is-small" href="#next">Зарегистрироваться</a>
+              <a class="sc-button is-light is-small" href="#registration">Зарегистрироваться</a>
               <button class="sc-burger" type="button" aria-label="Открыть меню" aria-haspopup="dialog" aria-controls="sc-menu" data-sc-menu-open>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
               </button>
@@ -142,7 +155,7 @@
             <p class="sc-hero_meta" data-sc-hero-fade>21&nbsp;ноября · суббота · онлайн</p>
             <p class="sc-hero_lead" data-sc-hero-fade>Конференция АСП для&nbsp;студентов старших курсов и&nbsp;выпускников: где работать после вуза, какой метод выбрать, как найти первых клиентов и&nbsp;как прийти в&nbsp;психологию из&nbsp;другой профессии.</p>
             <div class="sc-hero_actions" data-sc-hero-fade>
-              <a class="sc-button is-light is-large" href="#next" data-sc-cta>
+              <a class="sc-button is-light is-large" href="#registration" data-sc-cta>
                 Зарегистрироваться бесплатно
               </a>
               <p class="sc-hero_gift">+ PDF «Карта психологических подходов» сразу</p>
@@ -158,7 +171,7 @@
               <img class="sc-deck_student" src="assets/student.webp" width="900" height="1205" alt="Студентка с тетрадью улыбается" draggable="false" data-sc-student>
               <figure class="sc-approach is-1" data-sc-approach>
                 <svg class="sc-approach_shape" viewBox="0 0 120 160" preserveAspectRatio="none" aria-hidden="true"><path d="M13.0 6.6L106.0 2.4Q115.0 2.0 115.2 11.0L117.8 144.0Q118.0 153.0 109.0 153.4L11.0 157.6Q2.0 158.0 2.1 149.0L3.9 16.0Q4.0 7.0 13.0 6.6Z"/></svg>
-                <svg class="sc-approach_art" viewBox="0 0 120 100" aria-hidden="true"><g class="sc-art-cbt"><circle cx="60" cy="18" r="11"/><circle cx="24" cy="80" r="11"/><circle cx="96" cy="80" r="11"/><path d="M52 29 31 68M68 29l21 39M36 80h48"/><path class="sc-art-arrows" d="M28 62l3 7 6-4M86 64l3-7 6 4M76 76l8 4-8 4"/></g></svg>
+                <svg class="sc-approach_art" viewBox="0 0 120 100" aria-hidden="true"><g class="sc-art-cbt"><circle cx="60" cy="18" r="11"/><circle cx="24" cy="80" r="11"/><circle cx="96" cy="80" r="11"/><path d="M52.5 31L31.5 67M39 80H81M88.5 67L67.5 31"/><path class="sc-art-arrows" d="M31.2 58.7L31.5 67L38.9 63.2M74 84.5L81 80L74 75.5M74.9 34.8L67.5 31L67.2 39.3"/></g></svg>
                 <figcaption>КПТ</figcaption>
               </figure>
               <figure class="sc-approach is-2" data-sc-approach>
@@ -216,7 +229,7 @@
               </div>
               <p class="sc-result_title" data-sc-result-title>Отметьте всё, что про&nbsp;вас</p>
               <p class="sc-result_track" data-sc-result-track>Подскажем, с&nbsp;какого трека начать</p>
-              <a class="sc-button is-light sc-result_button" href="#next">Узнать, с&nbsp;чего начать</a>
+              <a class="sc-button is-light sc-result_button" href="#program" data-sc-result-link>Узнать, с&nbsp;чего начать</a>
             </div>
           </div>
         </div>
@@ -265,12 +278,16 @@
                 <g class="sc-tome is-lavender"><rect x="34" y="59" width="108" height="17" rx="2.5"/><rect class="sc-tome_pages" x="126" y="62" width="12" height="11" rx="1"/><path class="sc-tome_band" d="M48 59v17M54 59v17"/></g>
                 <g class="sc-tome is-violet"><rect x="26" y="42" width="118" height="17" rx="2.5"/><rect class="sc-tome_pages" x="128" y="45" width="12" height="11" rx="1"/><path class="sc-tome_band" d="M40 42v17M46 42v17"/></g>
               </g>
+              <!-- Кресло для консультации: пока пустует -->
               <g class="sc-chair">
-                <path class="sc-chair_back" d="M206 142V92c0-13 9-22 22-22h36c13 0 22 9 22 22v50Z"/>
-                <path class="sc-chair_seat" d="M198 138h96c7 0 12 5 12 12v14H186v-14c0-7 5-12 12-12Z"/>
-                <path class="sc-chair_arm" d="M186 118c-9 0-14 6-14 15v35c0 4 3 7 7 7h17v-48c0-5-4-9-10-9Z"/>
-                <path class="sc-chair_arm" d="M306 118c9 0 14 6 14 15v35c0 4-3 7-7 7h-17v-48c0-5 4-9 10-9Z"/>
-                <path class="sc-chair_legs" d="M184 175l-5 19M308 175l5 19"/>
+                <ellipse class="sc-chair_shadow" cx="246" cy="194" rx="70" ry="5"/>
+                <path class="sc-chair_back" d="M198 150V94c0-17 12-28 29-28h38c17 0 29 11 29 28v56Z"/>
+                <circle class="sc-chair_button" cx="231" cy="96" r="2.6"/><circle class="sc-chair_button" cx="261" cy="96" r="2.6"/><circle class="sc-chair_button" cx="246" cy="116" r="2.6"/>
+                <path class="sc-chair_seat" d="M201 144h90c7 0 11 4 11 10v10H190v-10c0-6 4-10 11-10Z"/>
+                <path class="sc-chair_base" d="M184 162h124v14c0 4-3 7-7 7H191c-4 0-7-3-7-7Z"/>
+                <path class="sc-chair_arm" d="M178 179v-49c0-8 6-14 14-14s14 6 14 14v49Z"/>
+                <path class="sc-chair_arm" d="M286 179v-49c0-8 6-14 14-14s14 6 14 14v49Z"/>
+                <path class="sc-chair_legs" d="M193 183l-3 11M299 183l3 11"/>
               </g>
             </svg>
           </article>
@@ -318,16 +335,19 @@
         </div>
 
         <div class="sc-pains_finale" data-sc-finale>
-          <svg class="sc-knot" viewBox="0 0 900 160" aria-hidden="true">
-            <g filter="url(#sc-pencil-soft)">
-              <path class="sc-knot_path" data-sc-knot d="M40 92C59 89 147 70 155 73C163 75 101 113 88 109C76 105 64 51 80 47C96 42 185 72 183 83C182 94 80 118 71 113C61 109 114 62 127 57C139 52 150 77 145 85C140 93 101 108 95 103C90 98 104 57 114 57C123 56 158 94 153 101C149 107 92 109 86 99C79 88 103 39 115 40C127 40 165 92 156 101C147 111 66 106 60 97C54 87 107 42 120 43C133 44 143 96 138 104C132 111 88 96 87 87C86 78 122 43 133 49C144 55 167 117 154 123C141 128 59 94 55 83C51 72 113 51 128 56C143 60 154 104 145 109C136 115 70 97 74 88C77 79 153 51 164 55C176 59 155 110 143 114C130 117 87 85 87 77C87 69 134 58 142 65C150 72 145 121 133 119C122 117 63 62 72 54C82 46 184 62 191 73C198 83 131 120 114 119C97 118 83 76 87 68C91 59 134 61 139 68C144 75 121 111 115 110C108 109 94 67 100 62C107 57 153 72 152 80C152 87 106 113 97 109C87 104 82 60 98 51C113 43 191 50 192 59C192 68 115 109 101 105C87 101 97 40 109 36C121 32 174 70 173 81C173 92 114 109 105 103C97 97 116 49 125 46C134 42 165 70 160 80C155 91 90 105 95 106C100 107 163 90 190 86C217 82 248 84 260 84C420 82 620 80 840 80"/>
-              <path class="sc-knot_head" d="M818 64l26 16-26 16"/>
-            </g>
-          </svg>
-          <p class="sc-finale_text" data-sc-finale-text>Наша конференция о&nbsp;том, как пройти этот путь <span class="sc-mark is-on-dark"><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><use href="#sc-brush"/></svg>быстрее</span></p>
-          <div class="sc-finale_actions">
-            <a class="sc-button is-light is-large" href="#next">Стать участником</a>
-            <p class="sc-finale_note">21&nbsp;ноября, онлайн, бесплатно</p>
+          <!-- Содержимое финала: на десктопе гаснет, когда сцена собирается в карточку дня -->
+          <div class="sc-finale_inner" data-sc-finale-inner>
+            <svg class="sc-knot" viewBox="0 0 900 160" aria-hidden="true">
+              <g filter="url(#sc-pencil-soft)">
+                <path class="sc-knot_path" data-sc-knot d="M40 92C59 89 147 70 155 73C163 75 101 113 88 109C76 105 64 51 80 47C96 42 185 72 183 83C182 94 80 118 71 113C61 109 114 62 127 57C139 52 150 77 145 85C140 93 101 108 95 103C90 98 104 57 114 57C123 56 158 94 153 101C149 107 92 109 86 99C79 88 103 39 115 40C127 40 165 92 156 101C147 111 66 106 60 97C54 87 107 42 120 43C133 44 143 96 138 104C132 111 88 96 87 87C86 78 122 43 133 49C144 55 167 117 154 123C141 128 59 94 55 83C51 72 113 51 128 56C143 60 154 104 145 109C136 115 70 97 74 88C77 79 153 51 164 55C176 59 155 110 143 114C130 117 87 85 87 77C87 69 134 58 142 65C150 72 145 121 133 119C122 117 63 62 72 54C82 46 184 62 191 73C198 83 131 120 114 119C97 118 83 76 87 68C91 59 134 61 139 68C144 75 121 111 115 110C108 109 94 67 100 62C107 57 153 72 152 80C152 87 106 113 97 109C87 104 82 60 98 51C113 43 191 50 192 59C192 68 115 109 101 105C87 101 97 40 109 36C121 32 174 70 173 81C173 92 114 109 105 103C97 97 116 49 125 46C134 42 165 70 160 80C155 91 90 105 95 106C100 107 163 90 190 86C217 82 248 84 260 84C420 82 620 80 840 80"/>
+                <path class="sc-knot_head" d="M818 64l26 16-26 16"/>
+              </g>
+            </svg>
+            <p class="sc-finale_text" data-sc-finale-text>Наша конференция о&nbsp;том, как пройти этот путь <span class="sc-mark is-on-dark"><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><use href="#sc-brush"/></svg>быстрее</span></p>
+            <div class="sc-finale_actions">
+              <a class="sc-button is-light is-large" href="#registration">Стать участником</a>
+              <p class="sc-finale_note">21&nbsp;ноября, онлайн, бесплатно</p>
+            </div>
           </div>
         </div>
       </div>
@@ -336,104 +356,1015 @@
   </section>
 
   <!-- ===================== 4. Что вы получите ===================== -->
+  <!-- Три станции маршрута, у каждой свой материал.
+       Десктоп: три колонки, станции на одной линии над колонками.
+       Планшет: станции в ряд, ниже книга и видеоурок, ещё ниже — тёмная карточка дня.
+       Телефон: вертикальная линия слева, под каждой станцией её материал. -->
   <section class="section_benefits sc-benefits" id="benefits" aria-labelledby="benefits-title" data-sc-benefits>
     <div class="padding-global">
       <div class="container-xlarge">
-        <h2 class="sc-h2" id="benefits-title">Что вы получите</h2>
+        <h2 class="sc-benefits_title" id="benefits-title">Что вы получите</h2>
         <p class="sc-section-lead">Польза на&nbsp;каждом этапе&nbsp;— от&nbsp;регистрации до&nbsp;первой сессии</p>
 
-        <div class="sc-stations" data-sc-stations>
-          <svg class="sc-stations_line" viewBox="0 0 1000 20" preserveAspectRatio="none" aria-hidden="true"><path d="M10 10C200 4 330 16 500 10s320-6 480 0" data-sc-stations-path/></svg>
-          <ol class="sc-stations_list" role="list">
-            <li class="sc-station" data-sc-station-item><span class="sc-station_dot" aria-hidden="true"></span>Сразу после регистрации</li>
-            <li class="sc-station" data-sc-station-item><span class="sc-station_dot" aria-hidden="true"></span>21&nbsp;ноября, за&nbsp;один день</li>
-            <li class="sc-station" data-sc-station-item><span class="sc-station_dot" aria-hidden="true"></span>После конференции</li>
+        <!-- Линию маршрута рисует CSS отрезками от станции к станции:
+             на телефоне вниз, на планшете и десктопе вправо. Прорисовку ведёт script.js (переменная --line). -->
+        <div class="sc-stages" data-sc-stations>
+          <ol class="sc-stages_list" role="list">
+            <li class="sc-stage is-gift" data-sc-station-item>
+              <h3 class="sc-stage_label"><span class="sc-stage_dot" aria-hidden="true"></span><span class="sc-stage_name"><b>Сразу после</b> регистрации</span></h3>
+              <div class="sc-stage_body sc-gift" data-sc-benefit>
+                <p class="sc-visually-hidden">PDF «Карта психологических подходов» приходит на&nbsp;почту и&nbsp;в&nbsp;мессенджер</p>
+                <!-- Книга «Карта психологических подходов». При наведении обложка чуть приоткрывается,
+                     под ней видны страницы. Схема на обложке: четыре подхода по кругу, стрелки — переходы. -->
+                <div class="sc-book" aria-hidden="true">
+                  <div class="sc-book_pages">
+                    <span class="sc-book_line"></span><span class="sc-book_line"></span><span class="sc-book_line is-short"></span>
+                    <span class="sc-book_line"></span><span class="sc-book_line is-short"></span>
+                  </div>
+                  <div class="sc-book_cover">
+                    <span class="sc-book_title">Карта психологических подходов</span>
+                    <svg class="sc-book_art" viewBox="0 0 120 116">
+                      <circle cx="60" cy="20" r="11"/><circle cx="98" cy="58" r="11"/><circle cx="60" cy="96" r="11"/><circle cx="22" cy="58" r="11"/>
+                      <path d="M74.5 22.9A38 38 0 0 1 94.6 42.3M95.1 72.5A38 38 0 0 1 75.7 92.6M45.5 93.1A38 38 0 0 1 25.4 73.7M24.9 43.5A38 38 0 0 1 44.3 23.4"/>
+                      <path d="M96 34.5l-1.4 7.8-6.8-4.1M83.5 94l-7.8-1.4 4.1-6.8M24 81.5l1.4-7.8 6.8 4.1M36.5 22l7.8 1.4-4.1 6.8"/>
+                    </svg>
+                    <span class="sc-book_tag">PDF</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="sc-stage is-day" data-sc-station-item>
+              <h3 class="sc-stage_label"><span class="sc-stage_dot" aria-hidden="true"></span><span class="sc-stage_name"><b>21&nbsp;ноября,</b> за&nbsp;один день</span></h3>
+              <!-- Сюда «приземляется» тёмная сцена предыдущей главы (десктоп) -->
+              <div class="sc-stage_body sc-day" data-sc-day>
+                <ul class="sc-day_list" role="list">
+                  <li class="sc-day_item">
+                    <span class="sc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 6.5 9 4.5l6 2 5.5-2v13l-5.5 2-6-2-5.5 2zM9 4.5v13M15 6.5v13"/></svg></span>
+                    <span class="sc-day_text"><b>Карта профессии</b>где работают психологи и&nbsp;какие пути открываются после вуза</span>
+                  </li>
+                  <li class="sc-day_item">
+                    <span class="sc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span>
+                    <span class="sc-day_text"><b>Ориентиры по&nbsp;методам</b>что доказательно и&nbsp;как выбрать свой</span>
+                  </li>
+                  <li class="sc-day_item">
+                    <span class="sc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/></svg></span>
+                    <span class="sc-day_text"><b>Истории практиков</b>как они перешли от&nbsp;учёбы к&nbsp;работе с&nbsp;клиентами</span>
+                  </li>
+                  <li class="sc-day_item">
+                    <span class="sc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19.5h4v-4H4zM10 19.5h4v-8h-4zM16 19.5h4v-12h-4zM5 10l5-4 3 2 6-4.5"/></svg></span>
+                    <span class="sc-day_text"><b>Конкретные шаги</b>которые можно сделать уже в&nbsp;этом семестре</span>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="sc-stage is-lesson" data-sc-station-item>
+              <h3 class="sc-stage_label"><span class="sc-stage_dot" aria-hidden="true"></span><span class="sc-stage_name"><b>После</b> конференции</span></h3>
+              <div class="sc-stage_body sc-lesson" data-sc-benefit>
+                <div class="sc-lesson_media" data-sc-lesson-media>
+                  <img src="https://optim.tildacdn.com/tild6161-3738-4633-a563-383063663938/-/format/webp/obsuzhdenie-praktich.webp" width="1280" height="1917" alt="" loading="lazy" decoding="async" draggable="false">
+                  <span class="sc-lesson_play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7l8 5-8 5z"/></svg></span>
+                </div>
+                <div class="sc-lesson_body">
+                  <h4 class="sc-lesson_title">Видеоурок «Как провести первую сессию»</h4>
+                  <p class="sc-lesson_tag">только участникам эфира</p>
+                  <p class="sc-lesson_text">Участие в&nbsp;эфире бесплатное, записи&nbsp;— платные. Видеоурок получают только те, кто был онлайн.</p>
+                </div>
+              </div>
+            </li>
           </ol>
-        </div>
-
-        <div class="sc-benefits_grid">
-          <div class="sc-gift" data-sc-benefit>
-            <div class="sc-book" aria-hidden="true">
-              <span class="sc-book_title">Карта психологических подходов</span>
-              <svg class="sc-book_art" viewBox="0 0 120 100"><circle cx="60" cy="22" r="13"/><circle cx="26" cy="58" r="13"/><circle cx="94" cy="58" r="13"/><circle cx="60" cy="86" r="10"/><path d="M50 32 34 47M70 32l16 15M38 64l13 15M82 64 69 79"/></svg>
-              <span class="sc-book_tag">PDF</span>
-            </div>
-            <p class="sc-gift_caption">PDF «Карта психологических подходов» приходит сразу после регистрации</p>
-          </div>
-
-          <!-- Сюда «приземляется» тёмная сцена предыдущей главы. -->
-          <div class="sc-day" data-sc-day>
-            <ul class="sc-day_list" role="list">
-              <li class="sc-day_item"><svg class="sc-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v12H4zM9 7V5h6v2M4 12h16"/></svg><span><b>Карта профессии</b>где работают психологи и&nbsp;какие пути открываются после вуза</span></li>
-              <li class="sc-day_item"><svg class="sc-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span><b>Ориентиры по&nbsp;методам</b>что доказательно и&nbsp;как выбрать свой</span></li>
-              <li class="sc-day_item"><svg class="sc-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg><span><b>Истории практиков</b>как они перешли от&nbsp;учёбы к&nbsp;работе с&nbsp;клиентами</span></li>
-              <li class="sc-day_item"><svg class="sc-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18h4v-5H4zM10 18h4V9h-4zM16 18h4V5h-4z"/></svg><span><b>Конкретные шаги</b>которые можно сделать уже в&nbsp;этом семестре</span></li>
-            </ul>
-          </div>
-
-          <div class="sc-lesson" data-sc-benefit>
-            <div class="sc-lesson_media">
-              <img src="https://optim.tildacdn.com/tild6161-3738-4633-a563-383063663938/-/format/webp/obsuzhdenie-praktich.webp" width="1280" height="1917" alt="" loading="lazy" decoding="async" draggable="false">
-              <span class="sc-lesson_play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7l8 5-8 5z"/></svg></span>
-            </div>
-            <h3 class="sc-lesson_title">Видеоурок «Как провести первую сессию»</h3>
-            <p class="sc-lesson_tag">только участникам эфира</p>
-            <p class="sc-lesson_text">Участие в&nbsp;эфире бесплатное, записи&nbsp;— платные. Видеоурок получают только те, кто был онлайн.</p>
-          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ===================== 5. Антипозиция ===================== -->
-  <!-- Фото на весь экран сжимается в карточку ленты, заголовок переворачивается,
-       зачёркивание прорисовывается. Механика как у спикеров на антикризисной. -->
+  <!-- Десктоп: фото из карточки «Видеоурок» растёт на весь экран и становится сценой этого блока,
+       потом сжимается в своё место в ленте, поверх проявляется заголовок, «мотивационных речей» зачёркивается.
+       Телефон и планшет: заголовок, текст, кнопка, ниже лента фото со свайпом. -->
   <section class="section_anti sc-anti" aria-labelledby="anti-title" data-sc-anti>
     <div class="sc-anti_stage" data-sc-anti-stage>
       <div class="padding-global sc-anti_head">
         <div class="container-xlarge sc-anti_head-grid">
-          <h2 class="sc-anti_title" id="anti-title" data-sc-anti-title>Здесь не&nbsp;будет <span class="sc-strike">мотивационных речей<svg viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true"><path d="M6 26C140 14 300 22 594 12" data-sc-strike/></svg></span></h2>
+          <h2 class="sc-anti_title" id="anti-title" data-sc-anti-title>Здесь не&nbsp;будет <span class="sc-strike">мотивационных<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#sc-pencil)"><path d="M6 34C140 26 330 32 594 22C440 30 250 38 12 44C190 32 390 28 592 31" data-sc-strike/><path class="is-second" d="M22 27C200 21 400 30 578 24" data-sc-strike/></g></svg></span> <span class="sc-strike">речей<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#sc-pencil)"><path d="M6 26C200 35 400 21 594 31C400 39 210 31 10 38C210 24 420 29 592 19" data-sc-strike/><path class="is-second" d="M20 33C220 26 420 35 582 27" data-sc-strike/></g></svg></span></h2>
           <div class="sc-anti_side" data-sc-anti-side>
             <p>Выступают практикующие психологи, клиники и&nbsp;профессиональные ассоциации&nbsp;— они расскажут, как на&nbsp;самом деле выглядит переход от&nbsp;учёбы к&nbsp;работе с&nbsp;клиентами.</p>
-            <a class="sc-button is-light" href="#next">Участвовать бесплатно</a>
+            <a class="sc-button is-light" href="#registration">Участвовать бесплатно</a>
           </div>
         </div>
       </div>
 
+      <!-- Лента фото с конференций АСП. Карточки одной высоты, с лёгким наклоном и внахлёст -->
       <div class="sc-ribbon" data-sc-ribbon>
-        <figure class="sc-ribbon_item is-tall"><img src="https://optim.tildacdn.com/tild3134-3039-4139-b835-633135396361/-/format/webp/vystuplenie-eksperta.webp" alt="Эксперт выступает перед участниками конференции" loading="lazy" decoding="async" draggable="false"></figure>
-        <figure class="sc-ribbon_item is-wide" data-sc-ribbon-target><img src="https://optim.tildacdn.com/tild3562-6534-4531-b135-343465326361/-/format/webp/aktualnye-temy-psiho.webp" alt="Участница конференции во время обсуждения актуальных тем психологии" loading="lazy" decoding="async" draggable="false"><figcaption class="sc-ribbon_caption">живые кейсы</figcaption></figure>
-        <figure class="sc-ribbon_item is-square"><img src="https://optim.tildacdn.com/tild6161-3738-4633-a563-383063663938/-/format/webp/obsuzhdenie-praktich.webp" alt="Участница обсуждает практический вопрос с микрофоном" loading="lazy" decoding="async" draggable="false"></figure>
-        <figure class="sc-ribbon_item is-portrait"><img src="https://optim.tildacdn.com/tild6530-3030-4236-b461-626334356564/-/format/webp/obshchenie-uchastnik.webp" alt="Участник задаёт вопрос на конференции" loading="lazy" decoding="async" draggable="false"><figcaption class="sc-ribbon_caption">вопросы из&nbsp;зала</figcaption></figure>
-        <figure class="sc-ribbon_item is-wide"><img src="https://optim.tildacdn.com/tild3030-3932-4138-b234-653334303165/-/format/webp/eksperty-konferencii.webp" alt="Эксперт конференции показывает жест в форме сердца" loading="lazy" decoding="async" draggable="false"></figure>
+        <figure class="sc-ribbon_item"><img src="https://optim.tildacdn.com/tild3030-3932-4138-b234-653334303165/-/format/webp/eksperty-konferencii.webp" alt="Эксперт конференции показывает жест в форме сердца" loading="lazy" decoding="async" draggable="false"></figure>
+        <figure class="sc-ribbon_item"><img src="https://optim.tildacdn.com/tild3134-3039-4139-b835-633135396361/-/format/webp/vystuplenie-eksperta.webp" alt="Эксперт выступает перед участниками конференции, на слайде «Пишет клиент»" loading="lazy" decoding="async" draggable="false"><figcaption class="sc-ribbon_caption"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M30 40C14 38 8 26 12 6M5 13l7-8 7 7"/></svg>живые кейсы</figcaption></figure>
+        <figure class="sc-ribbon_item" data-sc-ribbon-target><img src="https://optim.tildacdn.com/tild6161-3738-4633-a563-383063663938/-/format/webp/obsuzhdenie-praktich.webp" alt="Участница задаёт вопрос в микрофон" loading="lazy" decoding="async" draggable="false"></figure>
+        <figure class="sc-ribbon_item"><img src="https://optim.tildacdn.com/tild3562-6534-4531-b135-343465326361/-/format/webp/aktualnye-temy-psiho.webp" alt="Участники конференции поднимают руки, чтобы задать вопрос" loading="lazy" decoding="async" draggable="false"><figcaption class="sc-ribbon_caption"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M30 40C14 38 8 26 12 6M5 13l7-8 7 7"/></svg>вопросы из&nbsp;зала</figcaption></figure>
+        <figure class="sc-ribbon_item"><img src="https://optim.tildacdn.com/tild6530-3030-4236-b461-626334356564/-/format/webp/obshchenie-uchastnik.webp" alt="Участница конференции улыбается во время общения" loading="lazy" decoding="async" draggable="false"></figure>
       </div>
 
-      <!-- Летящее фото: в начале закрывает весь экран, потом занимает место в ленте. -->
+      <!-- Летящее фото (десктоп): в начале закрывает весь экран, потом занимает своё место в ленте -->
       <div class="sc-anti_flyer" aria-hidden="true" data-sc-flyer>
-        <img src="https://optim.tildacdn.com/tild3562-6534-4531-b135-343465326361/-/format/webp/aktualnye-temy-psiho.webp" alt="" draggable="false">
+        <img src="https://optim.tildacdn.com/tild6161-3738-4633-a563-383063663938/-/format/webp/obsuzhdenie-praktich.webp" alt="" draggable="false">
       </div>
     </div>
   </section>
 
-  <!-- ===================== Дальше по сценарию ===================== -->
-  <section class="sc-next" id="next" aria-labelledby="next-title">
+  <!-- ===================== 6. Прошлый год ===================== -->
+  <!-- Окошки эфира собираются вокруг «100+», число считается от нуля.
+       Десктоп: сюда стягивается фиолетовая сцена антипозиции, её пять фото становятся окошками.
+       ЧЕРНОВИК: окошки с инициалами — «камера выключена», заменим на скриншот эфира 2025 (с согласия участников).
+       Положение окошек: --x/--y/--w для десктопа, --mx/--my/--mw для телефона (в процентах облака). -->
+  <section class="section_proof sc-proof" aria-labelledby="proof-title" data-sc-proof>
     <div class="padding-global">
-      <div class="container-xlarge sc-next_inner">
-        <h2 class="sc-h2" id="next-title">Дальше по&nbsp;сценарию</h2>
-        <ol class="sc-next_list" role="list">
-          <li>Прошлый год: «окошки Zoom» влетают и&nbsp;собираются вокруг «100+», число считается от&nbsp;нуля</li>
-          <li>Спикеры: фото Ионы на&nbsp;весь экран сжимается в&nbsp;её карточку, силуэты проявляются из&nbsp;размытия</li>
-          <li>Программа: фон плавно темнеет, вкладки треков</li>
-          <li>Регистрация: возвращается фиолетовый, бейдж «падает» на&nbsp;шнурке</li>
+      <div class="container-xlarge">
+        <h2 class="sc-proof_title" id="proof-title" data-sc-proof-title>Как мы провели студенческую конференцию в&nbsp;прошлом году</h2>
+
+        <div class="sc-proof_cloud" data-sc-proof-cloud>
+          <ul class="sc-proof_tiles" role="list" aria-hidden="true">
+            <li class="sc-tile is-photo" style="--x:20.0%;--y:23.75%;--w:10.0%;--mx:18.0%;--my:20.83%;--mw:19.0%" data-sc-proof-photo="1"><img src="https://optim.tildacdn.com/tild3030-3932-4138-b234-653334303165/-/format/webp/eksperty-konferencii.webp" alt="" loading="lazy" decoding="async" draggable="false"></li>
+            <li class="sc-tile is-photo" style="--x:27.0%;--y:77.5%;--w:10.0%;--mx:80.0%;--my:22.92%;--mw:19.0%" data-sc-proof-photo="2"><img src="https://optim.tildacdn.com/tild3134-3039-4139-b835-633135396361/-/format/webp/vystuplenie-eksperta.webp" alt="" loading="lazy" decoding="async" draggable="false"></li>
+            <li class="sc-tile is-photo" style="--x:73.0%;--y:21.25%;--w:10.0%;--mx:16.0%;--my:78.12%;--mw:19.0%" data-sc-proof-photo="3"><img src="https://optim.tildacdn.com/tild6161-3738-4633-a563-383063663938/-/format/webp/obsuzhdenie-praktich.webp" alt="" loading="lazy" decoding="async" draggable="false"></li>
+            <li class="sc-tile is-photo" style="--x:80.0%;--y:77.5%;--w:10.0%;--mx:83.0%;--my:78.12%;--mw:19.0%" data-sc-proof-photo="4"><img src="https://optim.tildacdn.com/tild3562-6534-4531-b135-343465326361/-/format/webp/aktualnye-temy-psiho.webp" alt="" loading="lazy" decoding="async" draggable="false"></li>
+            <li class="sc-tile is-photo" style="--x:50.0%;--y:88.75%;--w:10.0%;--mx:50.0%;--my:91.67%;--mw:19.0%" data-sc-proof-photo="5"><img src="https://optim.tildacdn.com/tild6530-3030-4236-b461-626334356564/-/format/webp/obshchenie-uchastnik.webp" alt="" loading="lazy" decoding="async" draggable="false"></li>
+            <li class="sc-tile is-soft" style="--x:3.33%;--y:37.1%;--w:6.06%;--mx:52.16%;--my:77.56%;--mw:12.6%"><span class="sc-tile_avatar">ФУ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-dark" style="--x:9.96%;--y:79.38%;--w:7.04%;--mx:93.21%;--my:53.35%;--mw:11.22%"><span class="sc-tile_avatar">СЯ</span></li>
+            <li class="sc-tile is-dark" style="--x:17.7%;--y:81.75%;--w:6.43%;--mx:35.99%;--my:8.91%;--mw:13.25%"><span class="sc-tile_avatar">АС</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-soft" style="--x:90.33%;--y:45.31%;--w:5.75%;--mx:7.81%;--my:54.7%;--mw:13.61%"><span class="sc-tile_avatar">ЗС</span></li>
+            <li class="sc-tile is-lav" style="--x:66.3%;--y:89.87%;--w:7.31%;--mx:79.71%;--my:93.74%;--mw:11.75%"><span class="sc-tile_avatar">СО</span></li>
+            <li class="sc-tile is-soft" style="--x:75.29%;--y:48.32%;--w:7.65%;--mx:63.06%;--my:21.9%;--mw:12.98%"><span class="sc-tile_avatar">ИЯ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-lav" style="--x:42.45%;--y:17.06%;--w:6.21%;--mx:60.09%;--my:9.48%;--mw:11.16%"><span class="sc-tile_avatar">ОА</span></li>
+            <li class="sc-tile is-soft" style="--x:6.34%;--y:21.21%;--w:7.44%;--mx:44.04%;--my:22.63%;--mw:12.69%"><span class="sc-tile_avatar">ЕФ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-soft" style="--x:87.28%;--y:13.35%;--w:8.08%;--mx:91.43%;--my:37.98%;--mw:12.31%"><span class="sc-tile_avatar">КС</span></li>
+            <li class="sc-tile is-lav" style="--x:15.35%;--y:53.87%;--w:7.23%;--mx:38.67%;--my:73.68%;--mw:12.05%"><span class="sc-tile_avatar">ПО</span></li>
+            <li class="sc-tile is-dark" style="--x:49.43%;--y:21.96%;--w:6.31%;--mx:10.48%;--my:39.73%;--mw:12.1%"><span class="sc-tile_avatar">РД</span></li>
+            <li class="sc-tile is-soft" style="--x:87.56%;--y:29.5%;--w:6.27%;--mx:33.82%;--my:91.5%;--mw:11.53%"><span class="sc-tile_avatar">БД</span></li>
+            <li class="sc-tile is-soft" style="--x:31.37%;--y:94.35%;--w:5.62%;--mx:75.26%;--my:5.61%;--mw:13.75%"><span class="sc-tile_avatar">ПЯ</span></li>
+            <li class="sc-tile is-lav" style="--x:38.65%;--y:94.07%;--w:6.18%;--mx:20.78%;--my:93.19%;--mw:12.36%"><span class="sc-tile_avatar">ТО</span></li>
+            <li class="sc-tile is-lav" style="--x:3.75%;--y:54.44%;--w:6.07%;--mx:66.22%;--my:92.21%;--mw:11.1%"><span class="sc-tile_avatar">ФП</span></li>
+            <li class="sc-tile is-soft" style="--x:57.76%;--y:8.04%;--w:5.45%;--mx:89.49%;--my:64.61%;--mw:11.06%"><span class="sc-tile_avatar">АК</span></li>
+            <li class="sc-tile is-dark" style="--x:90.17%;--y:79.39%;--w:8.04%;--mx:19.99%;--my:6.44%;--mw:13.75%"><span class="sc-tile_avatar">ЕМ</span></li>
+            <li class="sc-tile is-dark" style="--x:28.14%;--y:53.78%;--w:6.77%;--mx:65.81%;--my:76.0%;--mw:11.24%"><span class="sc-tile_avatar">ФГ</span></li>
+            <li class="sc-tile is-soft" style="--x:31.07%;--y:21.82%;--w:7.31%;--mx:9.86%;--my:65.27%;--mw:11.01%"><span class="sc-tile_avatar">ЯФ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:41.07%;--y:76.09%;--w:5.72%"><span class="sc-tile_avatar">ВС</span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:58.84%;--y:83.19%;--w:6.18%"><span class="sc-tile_avatar">ВН</span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:30.32%;--y:37.69%;--w:5.44%"><span class="sc-tile_avatar">ДА</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:70.55%;--y:67.39%;--w:7.07%"><span class="sc-tile_avatar">ГБ</span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:23.86%;--y:6.62%;--w:6.2%"><span class="sc-tile_avatar">ОФ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:32.21%;--y:6.52%;--w:5.66%"><span class="sc-tile_avatar">ТИ</span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:96.44%;--y:32.68%;--w:5.79%"><span class="sc-tile_avatar">АВ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:94.41%;--y:57.82%;--w:5.57%"><span class="sc-tile_avatar">БЗ</span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:77.01%;--y:94.16%;--w:5.45%"><span class="sc-tile_avatar">ЮК</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:83.16%;--y:60.09%;--w:5.48%"><span class="sc-tile_avatar">ММ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:50.54%;--y:6.85%;--w:7.14%"><span class="sc-tile_avatar">ОО</span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:61.27%;--y:22.38%;--w:5.94%"><span class="sc-tile_avatar">ОЯ</span></li>
+            <li class="sc-tile is-desktop-only is-dark" style="--x:17.93%;--y:67.95%;--w:5.57%"><span class="sc-tile_avatar">УГ</span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:10.95%;--y:35.19%;--w:5.56%"><span class="sc-tile_avatar">КП</span></li>
+            <li class="sc-tile is-desktop-only is-soft" style="--x:83.03%;--y:44.38%;--w:5.54%"><span class="sc-tile_avatar">ЛП</span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:64.3%;--y:7.95%;--w:5.45%"><span class="sc-tile_avatar">ЛУ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-lav" style="--x:23.18%;--y:40.21%;--w:5.65%"><span class="sc-tile_avatar">ФМ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-dark" style="--x:2.81%;--y:67.79%;--w:5.56%"><span class="sc-tile_avatar">ФЯ</span> <span class="sc-tile_mic"></span></li>
+            <li class="sc-tile is-desktop-only is-dark" style="--x:25.09%;--y:93.97%;--w:5.48%"><span class="sc-tile_avatar">ЯМ</span></li>
+            <li class="sc-tile is-desktop-only is-dark" style="--x:97.23%;--y:45.59%;--w:5.42%"><span class="sc-tile_avatar">НЮ</span></li>
+          </ul>
+          <div class="sc-proof_center">
+            <p class="sc-proof_num" data-sc-proof-num><span data-sc-proof-count>100</span><span class="sc-proof_plus" data-sc-proof-plus>+</span></p>
+            <p class="sc-proof_caption" data-sc-proof-caption>участников в&nbsp;эфире</p>
+          </div>
+        </div>
+
+        <div class="sc-proof_stats" data-sc-proof-stats>
+          <div class="sc-stat is-unis">
+            <p class="sc-stat_value"><span class="sc-stat_num" data-sc-count-to="15">15</span><span class="sc-stat_label">вузов, откуда были студенты</span></p>
+            <ul class="sc-unis" role="list">
+              <li class="sc-uni">Волгоградский университет</li>
+              <li class="sc-uni">Пермский университет</li>
+              <li class="sc-uni">Белгородский университет</li>
+              <li class="sc-uni is-more"><span aria-hidden="true">+12</span><span class="sc-visually-hidden">и&nbsp;ещё 12 вузов</span></li>
+            </ul>
+          </div>
+          <div class="sc-stat is-speakers">
+            <p class="sc-stat_value"><span class="sc-stat_num" data-sc-count-to="9">9</span><span class="sc-stat_label">спикеров</span></p>
+          </div>
+        </div>
+
+        <!-- ЧЕРНОВИК: отзывы — временный текст. Заменим на скриншоты из чата участников 2025 -->
+        <!-- Отзывы участников 2025 года — настоящие, перенесены текстом со скриншотов слово в слово
+             (длинные отзывы с «Отзовика» сокращены, пропуски отмечены «…»). Скриншоты — в assets/archive-*.zip.
+             Слева сообщения из чата конференции, справа отзывы с «Отзовика». -->
+        <div class="sc-reviews">
+          <figure class="sc-chat">
+            <figcaption class="sc-chat_title">Из&nbsp;чата участников, 2025</figcaption>
+            <ul class="sc-chat_list" role="list">
+              <li class="sc-msg">
+                <span class="sc-msg_avatar is-a" aria-hidden="true">А</span>
+                <div class="sc-msg_body"><p class="sc-msg_name">Аля Смит <span class="sc-msg_time">16:40</span></p><p class="sc-msg_text">Все спикеры соберутся в&nbsp;одного мега-спикера</p></div>
+              </li>
+              <li class="sc-msg">
+                <span class="sc-msg_avatar is-b" aria-hidden="true">Б</span>
+                <div class="sc-msg_body"><p class="sc-msg_name">Борис Верзун <span class="sc-msg_time">16:41</span></p><p class="sc-msg_text">Спикеры вперед!</p></div>
+              </li>
+              <li class="sc-msg">
+                <span class="sc-msg_avatar is-c" aria-hidden="true">Д</span>
+                <div class="sc-msg_body"><p class="sc-msg_name">Долгирева Вероника <span class="sc-msg_time">16:45</span></p><p class="sc-msg_text">Большое спасибо! Это было очень интересно и&nbsp;познавательно, теперь есть небольшое понимание разных подходов и&nbsp;направлений и&nbsp;стало чуть легче определиться с&nbsp;чего начать)</p></div>
+              </li>
+              <li class="sc-msg">
+                <span class="sc-msg_avatar is-a" aria-hidden="true">И</span>
+                <div class="sc-msg_body"><p class="sc-msg_name">Илона <span class="sc-msg_time">17:03</span></p><p class="sc-msg_text">Спасибо!</p></div>
+              </li>
+              <li class="sc-msg">
+                <span class="sc-msg_avatar is-b" aria-hidden="true">О</span>
+                <div class="sc-msg_body"><p class="sc-msg_name">Оксана <span class="sc-msg_time">17:03</span></p><p class="sc-msg_text">Спасибо огромное за&nbsp;отличную атмосферу и&nbsp;ваше время, проведенное с&nbsp;нами! 🥰</p></div>
+              </li>
+              <li class="sc-msg">
+                <span class="sc-msg_avatar is-c" aria-hidden="true">У</span>
+                <div class="sc-msg_body"><p class="sc-msg_name">Участница конференции</p><p class="sc-msg_text">Для меня все лекции были очень очень интересные. Раньше никогда не&nbsp;задумывалась о&nbsp;сексологии и&nbsp;семейной практики, но&nbsp;Ксения и&nbsp;Артем просто покорили своими рассказами 🥰 Это прекрасные спикеры!</p></div>
+              </li>
+            </ul>
+          </figure>
+          <!-- На телефоне отзывы листаются слайдером, под ними точки -->
+          <div class="sc-otz_wrap">
+          <ul class="sc-otz" role="list" data-sc-otz-list>
+            <li class="sc-otz_card">
+              <p class="sc-otz_source">Отзыв на&nbsp;«Отзовике»</p>
+              <h3 class="sc-otz_title">Осталась под положительным впечатлением</h3>
+              <p class="sc-otz_pros"><b>Достоинства:</b> Интересные спикеры, комфортное комьюнити</p>
+              <blockquote class="sc-otz_text"><p>Посетила Всероссийскую онлайн-конференцию для&nbsp;студентов и&nbsp;выпускников психфаков, а&nbsp;также для&nbsp;всех начинающих специалистов от&nbsp;команды АСП. Мне понравилось, очень много полезной информации рассказывают. Спикеры хорошо подготовлены, были интерактивные задания. Особенно круто, что предоставляют запись встреч, можно пересмотреть в&nbsp;удобное время. Кураторы всегда ответят на&nbsp;интересующие вопросы, и&nbsp;помогут, если потребуется. Спасибо!</p></blockquote>
+            </li>
+            <li class="sc-otz_card">
+              <p class="sc-otz_source">Отзыв на&nbsp;«Отзовике»</p>
+              <h3 class="sc-otz_title">Приятное впечатление</h3>
+              <p class="sc-otz_pros"><b>Достоинства:</b> Лекторы, материал, доступность</p>
+              <blockquote class="sc-otz_text"><p>Посетила всероссийскую онлайн-конференция для&nbsp;студентов и&nbsp;начинающих специалистов. Мне, как студентке, которая только начала свой путь в&nbsp;отрасли психологии, это было очень полезно!&nbsp;… Уже после первой лекции поняла, что пришла не&nbsp;зря. Даже сложные вещи объясняли простым языком, время пролетело очень быстро.&nbsp;… Хочу поблагодарить каждого из&nbsp;организаторов за&nbsp;чудесную возможность поучаствовать в&nbsp;таких мероприятиях, буду ждать еще</p></blockquote>
+            </li>
+          </ul>
+          <div class="sc-otz_dots" role="group" aria-label="Отзывы с&nbsp;«Отзовика»" data-sc-otz-dots>
+            <button class="sc-pains_dot" type="button" aria-label="Отзыв 1" aria-pressed="true"></button>
+            <button class="sc-pains_dot" type="button" aria-label="Отзыв 2" aria-pressed="false"></button>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 7. Эксперты ===================== -->
+  <!-- Экран на спикера: фото по центру, вокруг имя, регалии и доклады.
+       Десктоп: под спикером маленькие вкладки треков и лента фото-портретов поверх низа сцены.
+       Телефон и планшет: вкладки над спикером, спикеры трека листаются слайдером.
+       Данные — из программы (темы рабочие). Спикеры, которых ещё нет, показаны силуэтами.
+       Чтобы добавить спикера: скопировать его <article> и кнопку в ленте, поменять id, фото и тексты. -->
+  <section class="section_speakers sc-speakers" id="experts" aria-labelledby="speakers-title" data-sc-speakers>
+    <h2 class="sc-visually-hidden" id="speakers-title">Эксперты конференции</h2>
+    <p class="sc-speakers_watermark" aria-hidden="true">эксперты</p>
+    <!-- Вкладки треков: на телефоне — над спикером, на десктопе — маленькие, прямо под ним -->
+    <div class="padding-global sc-speakers_bar">
+      <div class="container-xlarge sc-speakers_bar-inner">
+        <div class="sc-tracks" role="group" aria-label="Треки конференции" data-sc-tracks>
+          <button class="sc-track" type="button" aria-pressed="true" data-sc-track="hall">Общий зал</button>
+          <button class="sc-track" type="button" aria-pressed="false" data-sc-track="a"><span class="sc-track_code">Трек A</span> С чего начать</button>
+          <button class="sc-track" type="button" aria-pressed="false" data-sc-track="b"><span class="sc-track_code">Трек B</span> Выбор метода</button>
+          <button class="sc-track" type="button" aria-pressed="false" data-sc-track="c"><span class="sc-track_code">Трек C</span> Путь с нуля</button>
+        </div>
+      </div>
+    </div>
+    <div class="padding-global sc-speakers_stage">
+      <div class="container-xlarge sc-speakers_scene" data-sc-speakers-scene>
+        <article class="sc-speaker is-active" id="speaker-iona" data-track="hall" aria-labelledby="speaker-iona-name">
+          <img class="sc-speaker_photo" src="assets/iona-cut.webp" width="828" height="1214" alt="Иона Гусаченко" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-iona-name">Иона Гусаченко</h3>
+            <p class="sc-speaker_role">Клинический психолог, КПТ- и&nbsp;схема-терапевт, директор по&nbsp;развитию АСП</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">Открытие · 10:00</p><p class="sc-talk_title">Путь в&nbsp;психологии: с&nbsp;чего начинать в&nbsp;2026</p></div>
+            <div class="sc-talk"><p class="sc-talk_when">Общий финал · 14:10</p><p class="sc-talk_title">Как из&nbsp;студента стать востребованным специалистом за&nbsp;2&nbsp;года</p></div>
+          </div>
+          <ul class="sc-speaker_tags" role="list"><li>КПТ</li><li>схема-терапия</li></ul>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-headliner" data-track="hall" aria-labelledby="speaker-headliner-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-headliner-name">Хедлайнер</h3>
+            <p class="sc-speaker_role">Скоро объявим</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">Общий зал · 10:20</p><p class="sc-talk_title">Первый год практики: как выжить, заработать и&nbsp;не&nbsp;выгореть</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-saranceva" data-track="hall" aria-labelledby="speaker-saranceva-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-saranceva-name">Ярослава Саранчева</h3>
+            <p class="sc-speaker_role">Фото и&nbsp;регалии скоро</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">Общий финал · 14:10</p><p class="sc-talk_title">Как из&nbsp;студента стать востребованным специалистом за&nbsp;2&nbsp;года</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-a1" data-track="a" aria-labelledby="speaker-a1-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-4.webp" width="680" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-a1-name">2–3 спикера</h3>
+            <p class="sc-speaker_role">Представители клиники, частной практики и&nbsp;госцентра</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">11:00–11:30, трек «С чего начать»</p><p class="sc-talk_title">Клиника, частная практика, госцентр: где и&nbsp;как начать</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-a2" data-track="a" aria-labelledby="speaker-a2-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-1.webp" width="741" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-a2-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">11:40–12:10, трек «С чего начать»</p><p class="sc-talk_title">Первые клиенты: где искать и&nbsp;как не&nbsp;бояться брать деньги</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-a3" data-track="a" aria-labelledby="speaker-a3-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-6.webp" width="760" height="960" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-a3-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">12:20–12:50, трек «С чего начать»</p><p class="sc-talk_title">Супервизия и&nbsp;интервизия: зачем начинающему и&nbsp;как выбрать супервизора</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-a4" data-track="a" aria-labelledby="speaker-a4-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-3.webp" width="760" height="986" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-a4-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">13:30–14:00, трек «С чего начать»</p><p class="sc-talk_title">Блог и&nbsp;соцсети начинающего психолога: что можно и&nbsp;что нельзя</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-b1" data-track="b" aria-labelledby="speaker-b1-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-3.webp" width="760" height="986" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-b1-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">11:00–11:30, трек «Выбор метода»</p><p class="sc-talk_title">Карта доказательных подходов: КПТ, АСТ, CFT, схема-терапия</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-b2" data-track="b" aria-labelledby="speaker-b2-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-b2-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">11:40–12:10, трек «Выбор метода»</p><p class="sc-talk_title">Как выбрать свой метод: критерии и&nbsp;типичные ошибки</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-b3" data-track="b" aria-labelledby="speaker-b3-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-b3-name">Клиника ALVI</h3>
+            <p class="sc-speaker_role">Спикер клиники-партнёра</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">12:20–12:50, трек «Выбор метода»</p><p class="sc-talk_title">Специализации с&nbsp;перспективой: травма, РПП, детская, пары</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-b4" data-track="b" aria-labelledby="speaker-b4-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-6.webp" width="760" height="960" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-b4-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">13:30–14:00, трек «Выбор метода»</p><p class="sc-talk_title">Клинический психолог и&nbsp;консультант: в&nbsp;чём разница и&nbsp;что даёт клиническая подготовка</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-c1" data-track="c" aria-labelledby="speaker-c1-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-1.webp" width="741" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-c1-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">11:00–11:30, трек «Путь с нуля»</p><p class="sc-talk_title">Можно ли стать психологом без психфака: переподготовка за&nbsp;и&nbsp;против</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-c2" data-track="c" aria-labelledby="speaker-c2-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-4.webp" width="680" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-c2-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">11:40–12:10, трек «Путь с нуля»</p><p class="sc-talk_title">Из&nbsp;педагогики, медицины, социологии: что из&nbsp;прошлой профессии пригодится психологу</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-c3" data-track="c" aria-labelledby="speaker-c3-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-c3-name">Выпускники АСП</h3>
+            <p class="sc-speaker_role">2–3 выпускника переподготовки</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">12:20–12:50, трек «Путь с нуля»</p><p class="sc-talk_title">Истории перехода: круглый стол выпускников переподготовки</p></div>
+          </div>
+        </article>
+        <article class="sc-speaker is-silhouette" id="speaker-c4" data-track="c" aria-labelledby="speaker-c4-name" hidden>
+          <img class="sc-speaker_photo" src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async" draggable="false">
+          <div class="sc-speaker_card">
+            <h3 class="sc-speaker_name" id="speaker-c4-name">Спикер скоро</h3>
+            <p class="sc-speaker_role">Имя и&nbsp;регалии добавим позже</p>
+          </div>
+          <div class="sc-speaker_talks">
+            <div class="sc-talk"><p class="sc-talk_when">13:30–14:00, трек «Путь с нуля»</p><p class="sc-talk_title">Сколько времени и&nbsp;денег стоит путь в&nbsp;профессию: реалистичный план</p></div>
+          </div>
+        </article>
+      </div>
+      <div class="sc-speakers_dots" role="group" aria-label="Спикеры трека" data-sc-speaker-dots></div>
+    </div>
+
+    <!-- Лента портретов: на десктопе лежит поверх низа сцены; на телефоне и планшете её нет — спикеры листаются слайдером -->
+    <div class="padding-global sc-speakers_strip">
+      <div class="container-xlarge">
+        <ul class="sc-faces" role="list" data-sc-faces>
+        <li data-track="hall"><button class="sc-face" type="button" aria-pressed="true" aria-controls="speaker-iona" data-sc-face="iona"><img src="assets/iona-cut.webp" width="828" height="1214" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">Иона</span></button></li>
+        <li data-track="hall"><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-headliner" data-sc-face="headliner"><img src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">хедлайнер</span><span class="sc-face_time">10:20</span></button></li>
+        <li data-track="hall"><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-saranceva" data-sc-face="saranceva"><img src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">Ярослава</span><span class="sc-face_time">14:10</span></button></li>
+        <li data-track="a" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-a1" data-sc-face="a1"><img src="assets/silhouette-4.webp" width="680" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">2–3 спикера</span><span class="sc-face_time">11:00</span></button></li>
+        <li data-track="a" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-a2" data-sc-face="a2"><img src="assets/silhouette-1.webp" width="741" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">11:40</span></button></li>
+        <li data-track="a" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-a3" data-sc-face="a3"><img src="assets/silhouette-6.webp" width="760" height="960" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">12:20</span></button></li>
+        <li data-track="a" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-a4" data-sc-face="a4"><img src="assets/silhouette-3.webp" width="760" height="986" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">13:30</span></button></li>
+        <li data-track="b" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-b1" data-sc-face="b1"><img src="assets/silhouette-3.webp" width="760" height="986" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">11:00</span></button></li>
+        <li data-track="b" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-b2" data-sc-face="b2"><img src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">11:40</span></button></li>
+        <li data-track="b" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-b3" data-sc-face="b3"><img src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">ALVI</span><span class="sc-face_time">12:20</span></button></li>
+        <li data-track="b" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-b4" data-sc-face="b4"><img src="assets/silhouette-6.webp" width="760" height="960" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">13:30</span></button></li>
+        <li data-track="c" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-c1" data-sc-face="c1"><img src="assets/silhouette-1.webp" width="741" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">11:00</span></button></li>
+        <li data-track="c" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-c2" data-sc-face="c2"><img src="assets/silhouette-4.webp" width="680" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">11:40</span></button></li>
+        <li data-track="c" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-c3" data-sc-face="c3"><img src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">выпускники</span><span class="sc-face_time">12:20</span></button></li>
+        <li data-track="c" hidden><button class="sc-face is-silhouette" type="button" aria-pressed="false" aria-controls="speaker-c4" data-sc-face="c4"><img src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async" draggable="false"><span class="sc-face_name">скоро</span><span class="sc-face_time">13:30</span></button></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Программа =====================
+       Продолжает тёмный фон после «Экспертов», шва между блоками нет.
+       Одна лента расписания на весь день. Вкладка трека оставляет в слотах треков только его доклады,
+       а общие блоки — открытие, хедлайнер, финал и перерывы — одинаковые на всех трёх вкладках.
+       Вкладку переключает script.js: он ставит атрибут data-view на секцию, остальное делает CSS.
+       Темы и описания рабочие — из документа «Тайминг_студенческая_конфа». Править текст можно прямо здесь.
+       Клик по спикеру открывает его экран в «Экспертах». -->
+  <section class="section_program sc-program" id="program" aria-labelledby="program-title" data-sc-program data-view="a">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="sc-program_head">
+          <h2 class="sc-program_title" id="program-title" data-sc-program-reveal>Программа</h2>
+          <p class="sc-program_lead" data-sc-program-reveal>Мы&nbsp;помним, каково стоять на&nbsp;пороге профессии,&nbsp;— и&nbsp;готовы говорить об&nbsp;этом честно</p>
+        </div>
+
+        <div class="sc-program_tabs" role="tablist" aria-label="Программа по трекам" data-sc-program-reveal>
+          <button class="sc-program_tab" type="button" role="tab" id="program-tab-a" aria-selected="true" aria-controls="program-schedule" data-sc-program-tab="a"><span class="sc-program_tab-code">Трек A</span><span class="sc-program_tab-name">С&nbsp;чего начать</span></button>
+          <button class="sc-program_tab" type="button" role="tab" id="program-tab-b" aria-selected="false" aria-controls="program-schedule" tabindex="-1" data-sc-program-tab="b"><span class="sc-program_tab-code">Трек B</span><span class="sc-program_tab-name">Выбор метода</span></button>
+          <button class="sc-program_tab" type="button" role="tab" id="program-tab-c" aria-selected="false" aria-controls="program-schedule" tabindex="-1" data-sc-program-tab="c"><span class="sc-program_tab-code">Трек C</span><span class="sc-program_tab-name">Путь с&nbsp;нуля</span></button>
+        </div>
+
+        <div class="sc-program_panel" id="program-schedule" role="tabpanel" aria-labelledby="program-tab-a" tabindex="0" data-sc-program-panel>
+          <!-- Кому подходит выбранная вкладка: видна одна строка, остальные прячет CSS -->
+          <p class="sc-program_audience" data-for="a">Для студентов старших курсов и&nbsp;начинающих специалистов</p>
+          <p class="sc-program_audience" data-for="b">Для тех, кто определился с&nbsp;профессией и&nbsp;хочет углубиться</p>
+          <p class="sc-program_audience" data-for="c">Для выпускников педагогики, социологии, философии и&nbsp;медицины</p>
+
+          <ol class="sc-schedule" role="list" data-sc-schedule>
+          <li class="sc-slot is-hall">
+            <p class="sc-slot_time"><time datetime="2026-11-21T10:00+03:00">10:00</time><span class="sc-slot_end">до&nbsp;10:20</span></p>
+            <ul class="sc-slot_items" role="list">
+              <li class="sc-item" data-track="hall">
+                <p class="sc-item_label">Открытие</p>
+                <h3 class="sc-item_title">Путь в&nbsp;психологии: с&nbsp;чего начинать в&nbsp;2026</h3>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="iona">
+                    <span class="sc-who_photo"><img src="assets/iona-cut.webp" width="828" height="1214" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Иона Гусаченко</span><span class="sc-who_role">Клинический психолог, директор по&nbsp;развитию АСП</span></span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="sc-slot is-hall">
+            <p class="sc-slot_time"><time datetime="2026-11-21T10:20+03:00">10:20</time><span class="sc-slot_end">до&nbsp;10:50</span></p>
+            <ul class="sc-slot_items" role="list">
+              <li class="sc-item" data-track="hall">
+                <p class="sc-item_label">Хедлайнер</p>
+                <h3 class="sc-item_title">Первый год практики: как&nbsp;выжить, заработать и&nbsp;не&nbsp;выгореть</h3>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="headliner">
+                    <span class="sc-who_photo"><img src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Хедлайнер</span><span class="sc-who_role">Скоро объявим</span></span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="sc-slot is-break">
+            <p class="sc-slot_time"><time datetime="2026-11-21T10:50+03:00">10:50</time><span class="sc-slot_end">до&nbsp;11:00</span></p>
+            <p class="sc-slot_break">Перерыв, участники расходятся по&nbsp;трекам</p>
+          </li>
+          <li class="sc-slot is-tracks">
+            <p class="sc-slot_time"><time datetime="2026-11-21T11:00+03:00">11:00</time><span class="sc-slot_end">до&nbsp;11:30</span></p>
+            <ul class="sc-slot_items" role="list">
+              <li class="sc-item" data-track="a">
+                <p class="sc-item_label">С чего начать</p>
+                <h3 class="sc-item_title">Клиника, частная практика, госцентр: где и&nbsp;как&nbsp;начать</h3>
+                <p class="sc-item_desc">Сравним рабочие условия, задачи и&nbsp;возможности разных форматов. Разберёмся, на&nbsp;что&nbsp;ориентироваться при выборе первого места работы.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="a1">
+                    <span class="sc-who_photo"><img src="assets/silhouette-4.webp" width="680" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">2–3 спикера</span><span class="sc-who_role">Клиника, частная практика и&nbsp;госцентр</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="b">
+                <p class="sc-item_label">Выбор метода</p>
+                <h3 class="sc-item_title">Карта доказательных подходов: КПТ, АСТ, CFT, схема-терапия</h3>
+                <p class="sc-item_desc">Познакомимся с&nbsp;направлениями и&nbsp;вопросами об&nbsp;их научной основе. Обсудим, как&nbsp;ориентироваться в&nbsp;многообразии методов.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="b1">
+                    <span class="sc-who_photo"><img src="assets/silhouette-3.webp" width="760" height="986" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="c">
+                <p class="sc-item_label">Путь с нуля</p>
+                <h3 class="sc-item_title">Можно ли стать психологом без&nbsp;психфака: переподготовка за&nbsp;и&nbsp;против</h3>
+                <p class="sc-item_desc">Разберём возможности и&nbsp;ограничения переподготовки, а&nbsp;также вопросы, которые стоит задать до&nbsp;начала обучения.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="c1">
+                    <span class="sc-who_photo"><img src="assets/silhouette-1.webp" width="741" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="sc-slot is-break">
+            <p class="sc-slot_time"><time datetime="2026-11-21T11:30+03:00">11:30</time><span class="sc-slot_end">до&nbsp;11:40</span></p>
+            <p class="sc-slot_break">Короткий перерыв</p>
+          </li>
+          <li class="sc-slot is-tracks">
+            <p class="sc-slot_time"><time datetime="2026-11-21T11:40+03:00">11:40</time><span class="sc-slot_end">до&nbsp;12:10</span></p>
+            <ul class="sc-slot_items" role="list">
+              <li class="sc-item" data-track="a">
+                <p class="sc-item_label">С чего начать</p>
+                <h3 class="sc-item_title">Первые клиенты: где искать и&nbsp;как&nbsp;не&nbsp;бояться брать деньги</h3>
+                <p class="sc-item_desc">Обсудим первые шаги в&nbsp;поиске клиентов и&nbsp;вопросы, которые возникают при назначении цены за&nbsp;сессию.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="a2">
+                    <span class="sc-who_photo"><img src="assets/silhouette-1.webp" width="741" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="b">
+                <p class="sc-item_label">Выбор метода</p>
+                <h3 class="sc-item_title">Как выбрать свой метод: критерии и&nbsp;типичные ошибки</h3>
+                <p class="sc-item_desc">Разберём, что&nbsp;учитывать при выборе обучения: от&nbsp;интересующих запросов до&nbsp;содержания программы и&nbsp;практической подготовки.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="b2">
+                    <span class="sc-who_photo"><img src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="c">
+                <p class="sc-item_label">Путь с нуля</p>
+                <h3 class="sc-item_title">Из педагогики, медицины, социологии: что&nbsp;из&nbsp;прошлой профессии пригодится в&nbsp;профессии психолога</h3>
+                <p class="sc-item_desc">Посмотрим на&nbsp;уже накопленные навыки и&nbsp;на&nbsp;то, чему предстоит научиться для&nbsp;работы психологом.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="c2">
+                    <span class="sc-who_photo"><img src="assets/silhouette-4.webp" width="680" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="sc-slot is-break">
+            <p class="sc-slot_time"><time datetime="2026-11-21T12:10+03:00">12:10</time><span class="sc-slot_end">до&nbsp;12:20</span></p>
+            <p class="sc-slot_break">Короткий перерыв</p>
+          </li>
+          <li class="sc-slot is-tracks">
+            <p class="sc-slot_time"><time datetime="2026-11-21T12:20+03:00">12:20</time><span class="sc-slot_end">до&nbsp;12:50</span></p>
+            <ul class="sc-slot_items" role="list">
+              <li class="sc-item" data-track="a">
+                <p class="sc-item_label">С чего начать</p>
+                <h3 class="sc-item_title">Супервизия и&nbsp;интервизия: зачем начинающему и&nbsp;как&nbsp;выбрать супервизора</h3>
+                <p class="sc-item_desc">Разберём, какую поддержку дают эти форматы и&nbsp;на&nbsp;что&nbsp;обратить внимание при выборе супервизора.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="a3">
+                    <span class="sc-who_photo"><img src="assets/silhouette-6.webp" width="760" height="960" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="b">
+                <p class="sc-item_label">Выбор метода</p>
+                <h3 class="sc-item_title">Специализации с&nbsp;перспективой: травма, РПП, детская, пары</h3>
+                <p class="sc-item_desc">Посмотрим на&nbsp;разные направления практики и&nbsp;подготовку, которая нужна для&nbsp;работы с&nbsp;конкретными запросами.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="b3">
+                    <span class="sc-who_photo"><img src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Клиника ALVI</span><span class="sc-who_role">Спикер клиники-партнёра</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="c">
+                <p class="sc-item_label">Путь с нуля</p>
+                <h3 class="sc-item_title">Истории перехода: круглый стол выпускников переподготовки</h3>
+                <p class="sc-item_desc">Участники поделятся опытом смены профессии: как&nbsp;совмещали обучение с&nbsp;работой и&nbsp;делали первые шаги в&nbsp;практике.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="c3">
+                    <span class="sc-who_photo"><img src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Выпускники АСП</span><span class="sc-who_role">2–3 выпускника переподготовки</span></span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="sc-slot is-break">
+            <p class="sc-slot_time"><time datetime="2026-11-21T12:50+03:00">12:50</time><span class="sc-slot_end">до&nbsp;13:30</span></p>
+            <p class="sc-slot_break">Обеденный перерыв</p>
+          </li>
+          <li class="sc-slot is-tracks">
+            <p class="sc-slot_time"><time datetime="2026-11-21T13:30+03:00">13:30</time><span class="sc-slot_end">до&nbsp;14:00</span></p>
+            <ul class="sc-slot_items" role="list">
+              <li class="sc-item" data-track="a">
+                <p class="sc-item_label">С чего начать</p>
+                <h3 class="sc-item_title">Блог и&nbsp;соцсети начинающего психолога: что&nbsp;можно и&nbsp;что&nbsp;нельзя</h3>
+                <p class="sc-item_desc">Поговорим о&nbsp;профессиональном присутствии в&nbsp;соцсетях, этике и&nbsp;границах публичности психолога.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="a4">
+                    <span class="sc-who_photo"><img src="assets/silhouette-3.webp" width="760" height="986" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="b">
+                <p class="sc-item_label">Выбор метода</p>
+                <h3 class="sc-item_title">Клинический психолог и&nbsp;консультант: в&nbsp;чём разница и&nbsp;что&nbsp;даёт клиническая подготовка</h3>
+                <p class="sc-item_desc">Сопоставим профессиональные задачи и&nbsp;границы компетенций. Обсудим место клинических знаний в&nbsp;работе консультанта.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="b4">
+                    <span class="sc-who_photo"><img src="assets/silhouette-6.webp" width="760" height="960" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+              <li class="sc-item" data-track="c">
+                <p class="sc-item_label">Путь с нуля</p>
+                <h3 class="sc-item_title">Сколько времени и&nbsp;денег стоит путь в&nbsp;профессию: реалистичный план</h3>
+                <p class="sc-item_desc">Обсудим основные этапы подготовки и&nbsp;затраты, которые важно учитывать, планируя переход в&nbsp;психологию.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="c4">
+                    <span class="sc-who_photo"><img src="assets/silhouette-2.webp" width="685" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Спикер скоро</span><span class="sc-who_role">Имя и&nbsp;регалии добавим позже</span></span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="sc-slot is-break">
+            <p class="sc-slot_time"><time datetime="2026-11-21T14:00+03:00">14:00</time><span class="sc-slot_end">до&nbsp;14:10</span></p>
+            <p class="sc-slot_break">Участники возвращаются в&nbsp;общий зал</p>
+          </li>
+          <li class="sc-slot is-hall">
+            <p class="sc-slot_time"><time datetime="2026-11-21T14:10+03:00">14:10</time><span class="sc-slot_end">до&nbsp;15:00</span></p>
+            <ul class="sc-slot_items" role="list">
+              <li class="sc-item" data-track="hall">
+                <p class="sc-item_label">Общий финал</p>
+                <h3 class="sc-item_title">Как из&nbsp;студента стать востребованным специалистом за&nbsp;2 года</h3>
+                <p class="sc-item_desc">И специальное предложение для&nbsp;студентов конференции.</p>
+                <div class="sc-item_who">
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="iona">
+                    <span class="sc-who_photo"><img src="assets/iona-cut.webp" width="828" height="1214" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Иона Гусаченко</span><span class="sc-who_role">Клинический психолог, директор по&nbsp;развитию АСП</span></span>
+                  </a>
+                  <a class="sc-who" href="#experts" data-sc-open-speaker="saranceva">
+                    <span class="sc-who_photo"><img src="assets/silhouette-5.webp" width="705" height="1000" alt="" loading="lazy" decoding="async"></span>
+                    <span class="sc-who_text"><span class="sc-who_name">Ярослава Саранчева</span><span class="sc-who_role">Фото и&nbsp;регалии скоро</span></span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          </ol>
+        </div>
+
+        <div class="sc-program_foot">
+          <p class="sc-program_note">Финальные названия выступлений и&nbsp;подробности добавим позже</p>
+          <p class="sc-program_chip">список тем будет пополняться</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== После конференции =====================
+       Восемь карточек: что участник будет понимать после конференции (текст из ТЗ).
+       Наведение (на телефоне — карточка в центре экрана) делает карточку тёмной: в углу крупно
+       рисуется карандашный рисунок, сверху появляется доклад, где об этом расскажут;
+       по клику программа открывается на этом треке.
+       Ширина карточки зависит от объёма текста: --span — сколько из 12 колонок она занимает
+       на десктопе (ряды 3–3–2), --t — из 2 колонок на планшете. -->
+  <section class="section_outcomes sc-out" id="after" aria-labelledby="after-title" data-sc-out>
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="sc-out_head">
+          <h2 class="sc-out_title" id="after-title">После конференции вы&nbsp;будете понимать</h2>
+        </div>
+        <ol class="sc-out_list" role="list" data-sc-out-list>
+          <li class="sc-out_card" style="--span: 6; --t: 2" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">01</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M36 96l12-14"/><path class="is-hatch" d="M50 99l16-19"/><path class="is-hatch" d="M66 100l16-19"/><path class="is-hatch" d="M104 99l14-16"/><path class="is-hatch" d="M118 98l12-14"/><path d="M26 44c28-3 80-4 110-1 3 19 3 40 1 60-36 3-75 3-110 1-3-20-4-41-1-60Z"/><path d="M60 43c-1-7 0-13 2-16 11-2 25-2 36 0 2 3 3 9 2 16"/><path d="M27 64c34 5 76 5 108-1"/><path d="M73 58c5-1 10-1 14 0 1 4 1 9 0 13-5 1-10 1-14 0-1-4-1-9 0-13Z"/><path class="is-second" d="M30 48c30-2 72-2 102 0"/><path class="is-second" d="M64 40c0-6 1-9 2-11"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Где работать</h3>
+              <p class="sc-out_text">Куда можно пойти работать после вуза и&nbsp;чем отличаются клиника, частная практика, психологический центр и&nbsp;компания</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="a"><span class="sc-out_time">11:00</span><span>трек «С&nbsp;чего начать»</span></a>
+          </li>
+          <li class="sc-out_card" style="--span: 3; --t: 1" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">02</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M72 64l6-3"/><path class="is-hatch" d="M68 72l12-5"/><path class="is-hatch" d="M64 80l15-7"/><path d="M80 22c25-1 43 18 42 42s-19 42-43 42-42-19-41-43 18-41 42-41Z"/><path d="M101 42L87 71 59 87 73 57Z"/><path d="M101 42L73 57"/><path d="M80 22v-9"/><path d="M75 12c3-2 7-2 10 0"/><path class="is-second" d="M86 25c20 4 34 20 33 40"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Метод</h3>
+              <p class="sc-out_text">Как выбрать метод и&nbsp;отличить доказательный подход от&nbsp;остальных</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="b"><span class="sc-out_time">11:00 и&nbsp;11:40</span><span>трек «Выбор метода»</span></a>
+          </li>
+          <li class="sc-out_card" style="--span: 3; --t: 1" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">03</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M38 70l9-9"/><path class="is-hatch" d="M40 76l12-12"/><path class="is-hatch" d="M112 70l9-9"/><path class="is-hatch" d="M108 76l12-12"/><path d="M30 28c32-6 72-6 100 0 6 15 6 34 0 50-18 4-40 5-60 3L46 98l5-18c-8-1-15-2-21-4-6-16-6-32 0-48Z"/><path d="M80 34c11 0 19 9 19 19s-8 19-19 19-19-8-19-19 8-19 19-19Z"/><path d="M75 64V43h8c5 0 8 3 8 7s-3 7-8 7H70"/><path d="M70 61h13"/><path class="is-second" d="M34 32c30-4 66-4 92 0"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Первые клиенты</h3>
+              <p class="sc-out_text">Где искать первых клиентов и&nbsp;как назначать цену на&nbsp;старте</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="a"><span class="sc-out_time">11:40</span><span>трек «С&nbsp;чего начать»</span></a>
+          </li>
+          <li class="sc-out_card" style="--span: 4; --t: 1" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">04</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M98 100l8-12"/><path class="is-hatch" d="M106 102l10-14"/><path class="is-hatch" d="M116 102l8-11"/><path d="M46 30c8 0 13 6 13 13s-5 13-13 13-13-6-13-13 5-13 13-13Z"/><path d="M22 102c1-20 11-34 24-34s23 14 24 34"/><path d="M114 36c8 0 13 6 13 13s-5 13-13 13-13-6-13-13 5-13 13-13Z"/><path d="M90 104c1-19 11-32 24-32s23 13 24 32"/><path d="M68 14c9-2 19-2 26 0 2 5 2 11 0 16-5 1-10 1-14 1l-7 6 1-6c-2 0-4-1-6-1-2-5-2-11 0-16Z"/><path d="M75 22l.4 0"/><path d="M81 22l.4 0"/><path d="M87 22l.4 0"/><path class="is-second" d="M26 98c2-16 10-26 20-28"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Супервизия</h3>
+              <p class="sc-out_text">Зачем начинающему супервизия и&nbsp;как выбрать супервизора</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="a"><span class="sc-out_time">12:20</span><span>трек «С&nbsp;чего начать»</span></a>
+          </li>
+          <li class="sc-out_card" style="--span: 5; --t: 1" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">05</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M76 70l6-4"/><path class="is-hatch" d="M76 76l9-7"/><path d="M26 18c-4 18 1 36 12 42 11-6 16-24 12-42"/><path d="M21 18h9"/><path d="M46 18h9"/><path d="M38 60c-1 22 4 40 20 42 15 1 22-9 22-22"/><path d="M80 64c5 0 8 4 8 8s-3 8-8 8-8-4-8-8 3-8 8-8Z"/><path d="M98 20c16-3 34-3 46 0 3 9 3 19 0 28-9 2-19 2-28 1l-13 10 3-11c-3 0-6-1-8-2-3-9-3-17 0-26Z"/><path d="M110 34l.4 0"/><path d="M120 34l.4 0"/><path d="M130 34l.4 0"/><path class="is-second" d="M30 22c-2 14 1 28 9 34"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Клиницист или консультант</h3>
+              <p class="sc-out_text">Чем клинический психолог отличается от&nbsp;психолога-консультанта</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="b"><span class="sc-out_time">13:30</span><span>трек «Выбор метода»</span></a>
+          </li>
+          <li class="sc-out_card" style="--span: 3; --t: 1" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">06</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M56 60l7-7"/><path class="is-hatch" d="M54 70l10-10"/><path class="is-hatch" d="M60 79l7-7"/><path d="M72 26c22 0 40 18 40 40s-18 40-40 40-40-18-40-40 18-40 40-40Z"/><path d="M72 42c13 0 24 11 24 24s-11 24-24 24-24-11-24-24 11-24 24-24Z"/><path d="M72 57c5 0 9 4 9 9s-4 9-9 9-9-4-9-9 4-9 9-9Z"/><path d="M128 14L76 62"/><path d="M76 62l2-9"/><path d="M76 62l9-2"/><path d="M126 16l2-12"/><path d="M126 16l12-2"/><path class="is-second" d="M76 30c18 2 32 16 33 34"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Специализации</h3>
+              <p class="sc-out_text">Какие специализации сейчас востребованы</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="b"><span class="sc-out_time">12:20</span><span>трек «Выбор метода»</span></a>
+          </li>
+          <li class="sc-out_card" style="--span: 7; --t: 1" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">07</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M111 6l7 2"/><path class="is-hatch" d="M111 10l5 1"/><path d="M54 108c5-30 10-62 16-94"/><path d="M92 110c5-30 10-62 16-94"/><path d="M57 96c12-1 24-1 37 0"/><path d="M60 78c12-1 24-1 37 0"/><path d="M63 60c12-1 24-1 37 0"/><path d="M66 42c12-1 24-1 37 0"/><path d="M69 24c12-1 24-1 37 0"/><path d="M108 16V3l15 5-15 5"/><path class="is-second" d="M58 104c4-26 9-56 14-86"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Из другой профессии</h3>
+              <p class="sc-out_text">Можно ли прийти в&nbsp;психологию из другой профессии и&nbsp;сколько это займёт</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="c"><span class="sc-out_time">11:00 и&nbsp;13:30</span><span>трек «Путь с&nbsp;нуля»</span></a>
+          </li>
+          <li class="sc-out_card" style="--span: 5; --t: 2" data-sc-out-card>
+            <span class="sc-out_num" aria-hidden="true">08</span>
+            <span class="sc-out_art" aria-hidden="true"><svg class="sc-out_ill" viewBox="0 0 160 120" focusable="false"><g filter="url(#sc-pencil)"><path class="is-hatch" d="M122 88l6-22"/><path class="is-hatch" d="M127 90l5-19"/><path d="M32 28c22-2 46-2 66 0 2 26 2 54 0 80-22 2-44 2-66 0-2-26-2-54 0-80Z"/><path d="M42 31c-1-7 7-8 7-1"/><path d="M56 31c-1-7 7-8 7-1"/><path d="M70 31c-1-7 7-8 7-1"/><path d="M84 31c-1-7 7-8 7-1"/><path d="M42 50c14-1 28-1 44 0"/><path d="M42 62c12-1 26-1 40 0"/><path d="M42 74c14-1 28-1 44 0"/><path d="M42 86c10-1 20-1 28 0"/><path d="M116 100L134 34l8 2-18 66Z"/><path d="M116 100l1 10 7-8"/><path d="M131 45l8 2"/><path class="is-second" d="M36 32c20-2 42-2 58 0"/></g></svg></span>
+            <div class="sc-out_body">
+              <h3 class="sc-out_lead">Блог и этика</h3>
+              <p class="sc-out_text">Как вести блог начинающему психологу и&nbsp;не нарушить этику</p>
+            </div>
+            <a class="sc-out_talk" href="#program" data-sc-program-open="a"><span class="sc-out_time">13:30</span><span>трек «С&nbsp;чего начать»</span></a>
+          </li>
         </ol>
-        <p class="sc-next_note">Это черновик сценария: проверяем переходы и&nbsp;ритм, не&nbsp;чистовую вёрстку. Фото студентки временное.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Регистрация =====================
+       Возвращается фиолетовый. Слева — форматы участия, по центру — форма, справа — бейдж участника
+       на шнурке: он падает сверху, когда блок показался, и подписывается именем из формы.
+       ВАЖНО: на Тильде вместо этой формы будет форма Тильды с теми же полями
+       (имя, телефон, почта, мессенджер Telegram или Max, формат участия). Здесь — макет для вёрстки,
+       данные никуда не отправляются. Тексты и цены можно править прямо здесь. -->
+  <section class="section_registration sc-reg" id="registration" aria-labelledby="registration-title" data-sc-reg>
+    <div class="padding-global">
+      <div class="container-xlarge sc-reg_grid">
+
+        <!-- Форматы участия -->
+        <div class="sc-reg_plans">
+          <h2 class="sc-reg_title" id="registration-title">Форматы участия</h2>
+          <ul class="sc-plans" role="list">
+            <li class="sc-plan">
+              <h3 class="sc-plan_name">Онлайн-участие</h3>
+              <p class="sc-plan_text">Эфир 21&nbsp;ноября в&nbsp;Zoom</p>
+              <p class="sc-plan_price">Бесплатно</p>
+            </li>
+            <li class="sc-plan is-dark">
+              <h3 class="sc-plan_name">Онлайн-участие и&nbsp;записи</h3>
+              <p class="sc-plan_text">Записи всех выступлений и&nbsp;сертификат участника</p>
+              <p class="sc-plan_price">1&nbsp;999&nbsp;₽</p>
+            </li>
+          </ul>
+          <p class="sc-reg_note">Участие в&nbsp;эфире бесплатное, записи&nbsp;— платные. Выгоднее быть онлайн: только участники эфира получают видеоурок «Как провести первую сессию».</p>
+        </div>
+
+        <!-- Бейдж участника на шнурке. Имя подставляется из формы, трек — из чек-листа «Для кого» -->
+        <div class="sc-reg_badge-wrap" aria-hidden="true">
+          <div class="sc-lanyard" data-sc-lanyard>
+            <svg class="sc-lanyard_strap" viewBox="0 0 160 260" preserveAspectRatio="none" focusable="false">
+              <path class="sc-lanyard_band" d="M28 0h34l26 236h-16Z"/>
+              <path class="sc-lanyard_band is-back" d="M98 0h34l-44 236h-16Z"/>
+            </svg>
+            <span class="sc-lanyard_clip"></span>
+            <div class="sc-badge" data-sc-badge>
+              <span class="sc-badge_hole"></span>
+              <div class="sc-badge_top">
+                <svg class="sc-badge_logo" viewBox="0 0 84 30" focusable="false"><use href="#sc-logo"/></svg>
+                <p class="sc-badge_date">21&nbsp;ноября, онлайн</p>
+              </div>
+              <p class="sc-badge_name is-empty" data-sc-badge-name>Ваше имя</p>
+              <p class="sc-badge_track" data-sc-badge-track>Три трека на&nbsp;выбор</p>
+              <div class="sc-badge_role">
+                <svg class="sc-badge_doodle" viewBox="0 0 120 70" focusable="false">
+                  <g filter="url(#sc-pencil)">
+                    <path class="is-star" d="M70 10l5 11 12 2-9 8 2 12-10-6-11 6 3-12-9-8 12-2Z"/>
+                    <path d="M96 18l9-4M98 30h10M96 42l8 5"/>
+                    <path class="is-plus" d="M36 20v10M31 25h10"/>
+                  </g>
+                </svg>
+                <p class="sc-badge_role-text">участник</p>
+                <p class="sc-badge_event">студенческой конференции&nbsp;2.0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Форма -->
+        <form class="sc-form" id="registration-form" action="#" novalidate aria-labelledby="registration-form-title" data-sc-form>
+          <h3 class="sc-form_title" id="registration-form-title">Регистрация займёт минуту</h3>
+          <fieldset class="sc-form_plan">
+            <legend class="sc-visually-hidden">Формат участия</legend>
+            <label class="sc-form_plan-option"><input type="radio" name="tariff" value="Бесплатно" checked data-sc-tariff><span>Бесплатно</span></label>
+            <label class="sc-form_plan-option"><input type="radio" name="tariff" value="С записями, 1 999 ₽" data-sc-tariff><span>С&nbsp;записями</span></label>
+          </fieldset>
+          <div class="sc-form_fields">
+            <div class="sc-field" data-sc-field>
+              <label class="sc-field_label" for="registration-name">Имя</label>
+              <input class="sc-field_input" id="registration-name" type="text" name="name" autocomplete="name" placeholder="Как к&nbsp;вам обращаться" maxlength="80" required aria-describedby="registration-name-error" data-sc-form-name>
+              <span class="sc-field_error" id="registration-name-error" aria-live="polite"></span>
+            </div>
+            <div class="sc-field is-phone" data-sc-field>
+              <label class="sc-field_label" for="registration-phone">Телефон</label>
+              <input class="sc-field_input" id="registration-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" required aria-describedby="registration-phone-error" data-sc-phone>
+              <span class="sc-field_error" id="registration-phone-error" aria-live="polite"></span>
+            </div>
+            <div class="sc-field" data-sc-field>
+              <label class="sc-field_label" for="registration-email">Почта</label>
+              <input class="sc-field_input" id="registration-email" type="email" name="email" autocomplete="email" inputmode="email" placeholder="name@mail.ru" required aria-describedby="registration-email-error">
+              <span class="sc-field_error" id="registration-email-error" aria-live="polite"></span>
+            </div>
+          </div>
+          <fieldset class="sc-form_messenger">
+            <legend class="sc-form_legend">Куда прислать ссылку на&nbsp;эфир?</legend>
+            <label class="sc-choice"><input type="radio" name="messenger" value="Telegram" checked><span>Telegram</span></label>
+            <label class="sc-choice"><input type="radio" name="messenger" value="Max"><span>Max</span></label>
+          </fieldset>
+          <button class="sc-button is-violet is-large sc-form_submit" type="submit" data-sc-form-submit>Зарегистрироваться бесплатно</button>
+          <p class="sc-form_consent">Нажимая на&nbsp;кнопку, я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на&nbsp;обработку моих персональных данных в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p>
+          <!-- Что видно после отправки (в Тильде — её собственное сообщение об успехе) -->
+          <div class="sc-form_done" role="status" hidden data-sc-form-done>
+            <p class="sc-form_done-title">Вы&nbsp;зарегистрированы</p>
+            <p class="sc-form_done-text" data-sc-form-done-text>Ссылку на&nbsp;эфир пришлём в&nbsp;Telegram утром 21&nbsp;ноября.</p>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Частые вопросы =====================
+       Аккордеон на обычных <details>: открыт только один вопрос (атрибут name), работает без скриптов.
+       Вопросы и ответы — из ТЗ и текстов этой страницы; ответы про переходы между треками
+       и время ссылки на эфир — проверить с организаторами. Править можно прямо здесь. -->
+  <section class="section_faq sc-faq" id="faq" aria-labelledby="faq-title">
+    <div class="padding-global">
+      <div class="container-xlarge sc-faq_grid">
+        <div class="sc-faq_head">
+          <h2 class="sc-faq_title" id="faq-title">Частые вопросы</h2>
+          <p class="sc-faq_lead">Не&nbsp;нашли ответ? <a class="sc-faq_link" href="mailto:info@modern-psy.ru">Напишите нам</a></p>
+        </div>
+        <div class="sc-faq_list">
+          <details class="sc-faq_item" name="sc-faq" open>
+            <summary class="sc-faq_question"><span class="sc-faq_icon" aria-hidden="true"></span><h3 class="sc-faq_question-text">Нужно&nbsp;ли быть психологом, чтобы участвовать?</h3></summary>
+            <div class="sc-faq_answer"><p>Нет. Трек «Путь с&nbsp;нуля» сделан для&nbsp;тех, кто приходит из&nbsp;других профессий.</p></div>
+          </details>
+          <details class="sc-faq_item" name="sc-faq">
+            <summary class="sc-faq_question"><span class="sc-faq_icon" aria-hidden="true"></span><h3 class="sc-faq_question-text">Я&nbsp;на втором курсе, можно прийти?</h3></summary>
+            <div class="sc-faq_answer"><p>Можно, хотя основная программа рассчитана на&nbsp;третий курс и&nbsp;старше.</p></div>
+          </details>
+          <details class="sc-faq_item" name="sc-faq">
+            <summary class="sc-faq_question"><span class="sc-faq_icon" aria-hidden="true"></span><h3 class="sc-faq_question-text">Можно&nbsp;ли переходить между треками?</h3></summary>
+            <div class="sc-faq_answer"><p>Да, в&nbsp;любой момент. Ссылки на&nbsp;все залы придут в&nbsp;мессенджер утром 21&nbsp;ноября.</p></div>
+          </details>
+          <details class="sc-faq_item" name="sc-faq">
+            <summary class="sc-faq_question"><span class="sc-faq_icon" aria-hidden="true"></span><h3 class="sc-faq_question-text">Сколько стоит участие?</h3></summary>
+            <div class="sc-faq_answer"><p>Участие в&nbsp;эфире бесплатное. Записи всех выступлений и&nbsp;сертификат участника&nbsp;— 1&nbsp;999&nbsp;₽.</p></div>
+          </details>
+          <details class="sc-faq_item" name="sc-faq">
+            <summary class="sc-faq_question"><span class="sc-faq_icon" aria-hidden="true"></span><h3 class="sc-faq_question-text">Выдаётся&nbsp;ли сертификат участника?</h3></summary>
+            <div class="sc-faq_answer"><p>Да. Электронный сертификат доступен для&nbsp;тарифа с&nbsp;записями.</p></div>
+          </details>
+          <details class="sc-faq_item" name="sc-faq">
+            <summary class="sc-faq_question"><span class="sc-faq_icon" aria-hidden="true"></span><h3 class="sc-faq_question-text">Кто получит видеоурок «Как провести первую сессию»?</h3></summary>
+            <div class="sc-faq_answer"><p>Только участники эфира&nbsp;— те, кто был онлайн 21&nbsp;ноября.</p></div>
+          </details>
+          <details class="sc-faq_item" name="sc-faq">
+            <summary class="sc-faq_question"><span class="sc-faq_icon" aria-hidden="true"></span><h3 class="sc-faq_question-text">Что нужно для&nbsp;участия?</h3></summary>
+            <div class="sc-faq_answer"><p>Компьютер или телефон с&nbsp;Zoom и&nbsp;стабильный интернет.</p></div>
+          </details>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Портал: тёмная плашка, которая «перетекает» между блоками
        (карточка-вывод → сцена препятствий, сцена → карточка дня конференции). -->
+  <!-- Фото-портал (десктоп): снимок из карточки «Видеоурок» растёт на весь экран и передаёт эстафету антипозиции -->
+  <div class="sc-photo-portal" aria-hidden="true" data-sc-photo-portal><img src="https://optim.tildacdn.com/tild6161-3738-4633-a563-383063663938/-/format/webp/obsuzhdenie-praktich.webp" alt="" draggable="false"></div>
   <div class="sc-portal" aria-hidden="true" data-sc-portal><span class="sc-portal_text" data-sc-portal-text></span></div>
+  <!-- ===================== Подвал =====================
+       Как на антикризисной конференции: контакты, соцсети, правовые ссылки и реквизиты Академии.
+       Реквизиты и ссылки не менять без отдельной задачи. -->
+  <footer class="sc-footer">
+    <div class="padding-global">
+      <div class="container-xlarge sc-footer_inner">
+        <div class="sc-footer_top">
+          <div class="sc-footer_identity">
+            <a class="sc-footer_logo" href="https://modern-psy.ru/" aria-label="Академия современной психологии — на главную"><svg class="sc-logo" viewBox="0 0 84 30" aria-hidden="true" focusable="false"><use href="#sc-logo"/></svg></a>
+            <div class="sc-footer_contacts">
+              <div class="sc-footer_phone">
+                <a class="sc-footer_contact" href="tel:+78124435189">+7&nbsp;812 443-51-89</a>
+                <span class="sc-footer_contact-label">Отдел продаж</span>
+              </div>
+              <a class="sc-footer_contact" href="mailto:info@modern-psy.ru">info@modern-psy.ru</a>
+            </div>
+            <div class="sc-footer_socials" aria-label="Академия в&nbsp;социальных сетях">
+              <a class="sc-footer_social" href="https://www.youtube.com/@modernpsy" target="_blank" rel="noopener" aria-label="YouTube Академии">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.806 5.122c.875.255 1.552.973 1.773 1.882.562 1.679.559 8.35 0 9.954-.221.909-.898 1.627-1.773 1.882-1.574.589-12.039.57-13.612 0-.858-.241-1.53-.926-1.773-1.807-.562-1.654-.561-8.349 0-9.991.221-.91.897-1.627 1.773-1.882 1.573-.571 12.038-.571 13.612-.038Z"/><path d="m14.519 12.427-3.672 2.088a.47.47 0 0 1-.703-.408V9.931a.47.47 0 0 1 .703-.41l3.672 2.088a.47.47 0 0 1 0 .818Z"/></svg>
+              </a>
+              <a class="sc-footer_social" href="https://t.me/modernpsyacademy" target="_blank" rel="noopener" aria-label="Telegram Академии">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.782 3h8.435C19.165 3 21 5.081 21 8.026v7.948C21 18.919 19.165 21 16.216 21H7.782C4.834 21 3 18.919 3 15.974V8.026C3 5.081 4.843 3 7.782 3Z"/><path d="m10.373 13.6-1.997-1.171c-.753-.441-.653-1.56.165-1.862l5.655-2.092c.829-.307 1.636.5 1.33 1.329l-2.092 5.655c-.304.819-1.422.918-1.863.164L10.4 13.627a.073.073 0 0 0-.027-.027Z"/></svg>
+              </a>
+              <a class="sc-footer_social" href="https://vk.com/modernpsyacademy" target="_blank" rel="noopener" aria-label="VK Академии">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.782 3h8.435C19.165 3 21 5.081 21 8.026v7.948C21 18.919 19.165 21 16.216 21H7.782C4.834 21 3 18.919 3 15.974V8.026C3 5.081 4.843 3 7.782 3Z"/><path d="M16.925 8.984c-.326.663-.729 1.291-1.22 1.842-.439.492-.954.906-1.576 1.132-.42.148-.847.189-1.279.201M16.925 15.329c-.326-.663-.729-1.291-1.22-1.842-.439-.486-.954-.906-1.576-1.132-.42-.148-.847-.189-1.279-.195h-.635M10.928 8.988h1.267v6.334c-3.784 0-5.154-4.591-5.154-6.334"/></svg>
+              </a>
+            </div>
+          </div>
+          <nav class="sc-footer_legal" aria-label="Правовая информация">
+            <a href="https://modern-psy.ru/oferta" target="_blank" rel="noopener">Публичная оферта</a>
+            <a href="https://modern-psy.ru/privacy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Политика конфиденциальности</a>
+            <a href="https://modern-psy.ru/agreement?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Согласие на&nbsp;обработку персональных данных</a>
+            <a href="https://modern-psy.ru/documents?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Сведения об&nbsp;образовательной организации</a>
+            <a href="https://islod.obrnadzor.gov.ru/rlic/details/da67f5b1-2fd3-daeb-9904-9e381afa5ee8/" target="_blank" rel="noopener">Образовательная лицензия</a>
+            <a href="https://modern-psy.ru/documents?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Документы</a>
+          </nav>
+          <address class="sc-footer_details">
+            <p>197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ Введенский, пр-т Большой П.с., д.&nbsp;7/4, литера&nbsp;А, помещ. 2-Н</p>
+            <div class="sc-footer_registration">
+              <span>ОГРН 1217800102783</span>
+              <span>ИНН/КПП 7839141929/781301001</span>
+            </div>
+          </address>
+        </div>
+        <div class="sc-footer_bottom">
+          <p>© <span data-sc-year>2026</span> Академия Современной Психологии</p>
+        </div>
+      </div>
+    </div>
+  </footer>
 </main>
 </body>
 </html>
