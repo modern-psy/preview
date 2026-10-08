@@ -1,0 +1,3282 @@
+/* ============================================================================
+   СТИЛИ СТРАНИЦЫ «БИЗНЕС-ИГРА ДЛЯ ПСИХОЛОГОВ»
+   ============================================================================
+
+   Файл самодостаточный: дизайн-система из /design-system сюда не подключается
+   (как на /cft-spiderman). Всё лежит внутри обёртки .game-page.
+
+   ИДЕЯ
+     Страница собрана из «клеток игрового поля». Клетка — плашка со скруглёнными
+     углами, у которой снизу видна толщина (тёмная кромка) и мягкая тень.
+     Так выглядят и клетки поля на первом экране, и карточки ниже.
+     Классы клеток:
+       .tile.is-raised    — тёмная клетка на тёмном фоне
+       .tile.is-light     — белая клетка на светлом фоне
+       .tile.is-violet    — фиолетовая клетка
+       .tile.is-lavender  — лавандовая клетка
+       .tile.is-dark      — тёмная клетка на светлом фоне
+     Нажатая клетка опускается на свою толщину — как настоящая.
+
+   СЕТКА
+     .padding-global   боковые поля, от 16px на телефоне до 80px
+     .container-xlarge содержимое, максимум 1520px (95rem)
+
+   БРЕЙКПОИНТЫ (как в правилах Академии)
+     до 520px       телефон
+     от 521px       телефон горизонтально — @media (min-width: 32.5625rem)
+     от 768px       планшет                — @media (min-width: 48rem)
+     от 1025px      десктоп                — @media (min-width: 64.0625rem)
+
+   ПАЛИТРА
+     Баклажан #2b2334 (тёмные блоки), клетки на нём #3a3047, фиолетовый
+     #7c5cdb, лаванда #dad6ff, фон страницы #f5f5f5. Новых цветов нет —
+     только более тёмные кромки тех же цветов для толщины клеток.
+
+   ПОРЯДОК РАЗДЕЛОВ
+      0. Переменные и сброс
+      1. Каркас страницы
+      2. Общие детали: клетки, кнопки, заголовки
+      3. Шапка
+      4. Первый экран — игровое поле
+      5. «Как разобраться в запросе, если ресурсов мало?»
+      6. «Командная симуляция» — бенто
+      7. «Для кого»
+      8. «Как пройдёт игра» — липкое поле и этапы
+      9. «Практика навыков»
+     10. «Кто проводит игру»
+     11. Курсоры участников
+     12. Появление при прокрутке
+     13. Регистрация и подвал — перенесены с /cft-spiderman
+     14. Уменьшенное движение, печать
+     15. Защита от общих стилей Тильды
+   ========================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   0. ПЕРЕМЕННЫЕ И СБРОС
+   ---------------------------------------------------------------------------
+   Цвета меняются только здесь. Кромки (*-edge) — это «толщина» клеток:
+   тот же цвет, только темнее.
+   --------------------------------------------------------------------------- */
+
+.game-page {
+  /* Палитра поля */
+  --ink: #2b2334;
+  --ink-raised: #3a3047;
+  --ink-raised-active: #463b56;
+  --ink-edge: #1b1522;
+  --violet: #7c5cdb;
+  --violet-hover: #6a49c9;
+  --violet-edge: #4e37a8;
+  --lavender: #dad6ff;
+  --lavender-edge: #b3a8ee;
+  --lavender-soft: #eeeeff;
+  --paper: #f5f5f5;
+  --paper-edge: #dedbe8;
+  --white: #ffffff;
+
+  /* Текст */
+  --text: #2b2334;
+  --text-2: #5b5468;
+  --on-dark: #ffffff;
+  --on-dark-2: #d6d0e2;
+  --on-dark-3: #aea6bf;
+
+  /* Толщина и тени клеток.
+     Обычная клетка стоит на своей толщине (--tile-depth): снизу видна
+     тёмная грань и мягкая тень. Нажатая клетка опускается на эту
+     толщину: грань почти пропадает, тень становится короткой (*-pressed). */
+  --tile-depth: 0.4375rem;
+  --tile-face: linear-gradient(180deg, #41364f 0%, #382e45 100%);
+  --tile-radius: clamp(0.875rem, 1.2vw, 1.25rem);
+  --shadow-raised:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 var(--tile-depth) 0 var(--ink-edge),
+    0 calc(var(--tile-depth) + 0.625rem) 1.25rem -0.25rem rgb(6 3 10 / 60%);
+  --shadow-raised-pressed:
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    0 0.0625rem 0 var(--ink-edge),
+    0 0.25rem 0.5rem -0.125rem rgb(6 3 10 / 55%);
+  --shadow-light:
+    inset 0 1px 0 #ffffff,
+    0 var(--tile-depth) 0 var(--paper-edge),
+    0 calc(var(--tile-depth) + 0.5rem) 1.5rem -0.625rem rgb(43 35 52 / 22%);
+  --shadow-light-pressed:
+    inset 0 1px 0 #ffffff,
+    0 0.0625rem 0 var(--paper-edge),
+    0 0.25rem 0.5rem -0.25rem rgb(43 35 52 / 22%);
+  --shadow-violet:
+    inset 0 1px 0 rgb(255 255 255 / 16%),
+    0 var(--tile-depth) 0 var(--violet-edge),
+    0 calc(var(--tile-depth) + 0.5rem) 1.5rem -0.25rem rgb(8 5 14 / 45%);
+  --shadow-violet-pressed:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 0.0625rem 0 var(--violet-edge),
+    0 0.25rem 0.5rem -0.125rem rgb(8 5 14 / 45%);
+  --shadow-lavender:
+    inset 0 1px 0 rgb(255 255 255 / 65%),
+    0 var(--tile-depth) 0 var(--lavender-edge),
+    0 calc(var(--tile-depth) + 0.5rem) 1.5rem -0.5rem rgb(43 35 52 / 28%);
+  --shadow-lavender-pressed:
+    inset 0 1px 0 rgb(255 255 255 / 50%),
+    0 0.0625rem 0 var(--lavender-edge),
+    0 0.25rem 0.5rem -0.25rem rgb(43 35 52 / 28%);
+  --shadow-dark:
+    inset 0 1px 0 rgb(255 255 255 / 6%),
+    0 var(--tile-depth) 0 #15101b,
+    0 calc(var(--tile-depth) + 0.5rem) 1.5rem -0.5rem rgb(43 35 52 / 35%);
+  --shadow-dark-pressed:
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 0.0625rem 0 #15101b,
+    0 0.25rem 0.5rem -0.25rem rgb(43 35 52 / 35%);
+  --press-shift: calc(var(--tile-depth) - 0.0625rem);
+
+  /* Шрифты и размеры. Размеры тянутся от телефона до 1680px. */
+  --font-display: "Wix Madefor Display", "Wix Madefor Text", Arial, sans-serif;
+  --font-text: "Wix Madefor Text", Arial, sans-serif;
+  --text-hero: clamp(2.5rem, 4.4vw, 4.25rem);
+  --text-h2: clamp(2rem, 3.6vw, 3.5rem);
+  --text-h3: clamp(1.25rem, 1.55vw, 1.5rem);
+  --text-lead: clamp(1.0625rem, 1.3vw, 1.3125rem);
+  --text-body: clamp(1rem, 1.12vw, 1.125rem);
+
+  /* Сетка и ритм */
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --section-gap: clamp(4.5rem, 8.5vw, 9rem);
+  --board-gap: clamp(0.5rem, 1.1vw, 1rem);
+  --radius-button: 1rem;
+
+  /* Движение */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 220ms;
+
+  /* Имена переменных, которыми пользуются блоки, перенесённые
+     с /cft-spiderman (Академия, регистрация, подвал). */
+  --color-page-background: var(--paper);
+  --color-surface-primary: #ffffff;
+  --color-surface-soft: #ebeaee;
+  --color-surface-dark: var(--ink);
+  --color-surface-dark-soft: var(--ink-raised);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--text-2);
+  --color-text-muted: #8b8598;
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #cfc9dd;
+  --color-accent-primary: var(--violet);
+  --color-accent-hover: var(--violet-hover);
+  --color-accent-soft: #e4deff;
+  --color-accent-soft-strong: #ddd5ff;
+  --color-accent-light: #c4b5fd;
+  --color-accent-mid: #9e7ff0;
+  --color-accent-deep: #5b3fb0;
+  --color-focus: var(--violet);
+  --color-divider: #e7e5ee;
+  --color-card-outline: #ded6fa;
+  --font-family-body: var(--font-text);
+  --text-section-size: var(--text-h2);
+  --text-block-size: clamp(1.75rem, 3.4vw, 2.25rem);
+  --text-subhead-size: clamp(1.5rem, 2.6vw, 1.875rem);
+  --text-card-size: clamp(1.25rem, 1.9vw, 1.5rem);
+  --text-lead-size: var(--text-lead);
+  --text-body-size: var(--text-body);
+  --text-note-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+  --grid-gap: 1rem;
+  --card-padding: 0.75rem;
+  --radius-card: 1rem;
+  --radius-inner: 0.75rem;
+  --transition-site: 180ms ease;
+
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--text);
+  background: var(--paper);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media screen and (min-width: 48rem) {
+  .game-page {
+    --card-padding: 1rem;
+  }
+}
+
+.game-page,
+.game-page *,
+.game-page *::before,
+.game-page *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+}
+
+.game-page :where(h1, h2, h3, h4, p, ul, ol, li, figure, blockquote) {
+  margin: 0;
+  padding: 0;
+}
+
+.game-page :where(ul, ol) {
+  list-style: none;
+}
+
+.game-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.game-page img,
+.game-page svg {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.game-page ::selection {
+  background: var(--lavender);
+  color: var(--ink);
+}
+
+/* Ссылка «перейти к содержимому» — видна только при переходе с клавиатуры */
+.skip-link {
+  position: absolute;
+  z-index: 100;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #2b2334;
+  font: 500 1rem/1.2 "Wix Madefor Text", Arial, sans-serif;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Атрибут hidden сильнее, чем display у компонентов */
+.game-page [hidden] {
+  display: none !important;
+}
+
+/* Текст только для скринридеров */
+.game-page .screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
+/* Спрайт с игровыми предметами: сам по себе не виден */
+.game-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Фокус с клавиатуры виден всегда. На тёмных блоках — лавандовый. */
+.game-page :focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.site-header_component :focus-visible,
+.section_hero :focus-visible,
+.game-page .section-dark :focus-visible {
+  outline-color: var(--lavender);
+}
+
+
+/* ---------------------------------------------------------------------------
+   1. КАРКАС СТРАНИЦЫ
+   --------------------------------------------------------------------------- */
+
+.padding-global {
+  width: 100%;
+  padding-right: var(--page-padding);
+  padding-left: var(--page-padding);
+}
+
+.container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.main-wrapper {
+  display: block;
+}
+
+/* Светлые блоки отделяются отступом сверху */
+.section_problem,
+.section_audience,
+.section_skills,
+.section_host,
+.section_signup {
+  padding-top: var(--section-gap);
+}
+
+.section_signup {
+  padding-bottom: var(--section-gap);
+}
+
+/* Тёмные блоки — полосы во всю ширину экрана со своими полями */
+.game-page .section-dark {
+  margin-top: var(--section-gap);
+  padding-top: var(--section-gap);
+  padding-bottom: var(--section-gap);
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+/* Якоря: содержимое не приклеивается к верхней границе экрана */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. ОБЩИЕ ДЕТАЛИ
+   --------------------------------------------------------------------------- */
+
+/* --- Клетки ------------------------------------------------------------- */
+
+.tile {
+  position: relative;
+  min-width: 0;
+  border-radius: var(--tile-radius);
+  transition:
+    translate 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    background-color 300ms ease;
+}
+
+.tile.is-raised {
+  background: var(--tile-face);
+  box-shadow: var(--shadow-raised);
+  color: var(--on-dark);
+}
+
+.tile.is-light {
+  background: var(--white);
+  box-shadow: var(--shadow-light);
+  color: var(--text);
+}
+
+.tile.is-violet {
+  background: var(--violet);
+  box-shadow: var(--shadow-violet);
+  color: var(--on-dark);
+}
+
+.tile.is-lavender {
+  background: var(--lavender);
+  box-shadow: var(--shadow-lavender);
+  color: var(--text);
+}
+
+.tile.is-dark {
+  background: var(--ink);
+  box-shadow: var(--shadow-dark);
+  color: var(--on-dark);
+}
+
+/* Наведение мышью: клетка «нажимается», как физическая кнопка —
+   опускается на свою толщину, тень становится короткой. На телефоне
+   наведения нет, там так же нажимаются только ссылки и кнопки.
+   Класс is-static выключает нажатие: у клеток с кнопкой внутри (иначе
+   при наведении на кнопку нажимаются сразу две вещи) и у блока ведущей. */
+@media (hover: hover) and (pointer: fine) {
+  .tile:not(.is-static):hover {
+    translate: 0 var(--press-shift);
+  }
+
+  .tile.is-raised:not(.is-static):hover { box-shadow: var(--shadow-raised-pressed); }
+  .tile.is-light:not(.is-static):hover { box-shadow: var(--shadow-light-pressed); }
+  .tile.is-violet:not(.is-static):hover { box-shadow: var(--shadow-violet-pressed); }
+  .tile.is-lavender:not(.is-static):hover { box-shadow: var(--shadow-lavender-pressed); }
+  .tile.is-dark:not(.is-static):hover { box-shadow: var(--shadow-dark-pressed); }
+}
+
+/* Не переносить внутри (например, «5–7 минут») */
+.game-page .nowrap {
+  white-space: nowrap;
+}
+
+/* --- Заголовок блока ---------------------------------------------------- */
+
+.section_heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* --- Кнопки -------------------------------------------------------------
+   Кнопка — тоже клетка поля: у неё есть толщина (грань снизу). При наведении
+   и нажатии она опускается на эту толщину, как настоящая кнопка.
+   ------------------------------------------------------------------------ */
+
+.button {
+  --button-depth: 0.3125rem;
+  --button-edge: #c3bcd4;
+  display: inline-flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.75rem;
+  border: 0;
+  border-radius: var(--radius-button);
+  font-family: var(--font-text);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+  cursor: pointer;
+  box-shadow:
+    0 var(--button-depth) 0 var(--button-edge),
+    0 calc(var(--button-depth) + 0.375rem) 1rem -0.25rem rgb(8 5 14 / 35%);
+  transition:
+    translate 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out),
+    background-color var(--dur) ease;
+}
+
+.button.is-light {
+  --button-edge: #c3bcd4;
+  background: var(--white);
+  color: var(--ink);
+}
+
+.button.is-accent {
+  --button-edge: var(--violet-edge);
+  background: var(--violet);
+  color: var(--on-dark);
+}
+
+/* Нажатие (и на телефоне тоже): кнопка опускается до конца */
+.button:active {
+  translate: 0 var(--button-depth);
+  box-shadow:
+    0 0 0 var(--button-edge),
+    0 0.125rem 0.375rem -0.125rem rgb(8 5 14 / 40%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    translate: 0 calc(var(--button-depth) - 0.0625rem);
+    box-shadow:
+      0 0.0625rem 0 var(--button-edge),
+      0 0.1875rem 0.5rem -0.125rem rgb(8 5 14 / 40%);
+  }
+
+  .button.is-light:hover {
+    background: #f6f5fb;
+  }
+
+  .button.is-accent:hover {
+    background: var(--violet-hover);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. ШАПКА
+   ---------------------------------------------------------------------------
+   Тёмная, продолжает игровое поле. На телефоне: логотип, кнопка, меню.
+   С 1025px разделы стоят в строке шапки на общей плашке.
+   --------------------------------------------------------------------------- */
+
+.site-header_component {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+.site-header_bar {
+  display: flex;
+  min-height: 4.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+
+.site-header_logo {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  color: var(--on-dark);
+}
+
+.site-header_logo svg {
+  display: block;
+  width: 4.5rem;
+  height: auto;
+  fill: currentColor;
+}
+
+.site-header_nav {
+  display: none;
+}
+
+.site-header_cta.button {
+  min-height: 3rem;
+  margin-left: auto;
+  padding: 0.5rem 1.125rem;
+  font-size: 1rem;
+}
+
+.site-header_burger {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 8%);
+  color: var(--on-dark);
+  cursor: pointer;
+}
+
+/* Три полоски нарисованы прямо в CSS */
+.site-header_burger-icon {
+  position: relative;
+}
+
+.site-header_burger-icon,
+.site-header_burger-icon::before,
+.site-header_burger-icon::after {
+  display: block;
+  width: 1.25rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+  transition:
+    transform var(--dur) ease,
+    background-color var(--dur) ease;
+}
+
+.site-header_burger-icon::before {
+  position: absolute;
+  top: -0.375rem;
+  left: 0;
+}
+
+.site-header_burger-icon::after {
+  position: absolute;
+  top: 0.375rem;
+  left: 0;
+}
+
+.site-header_burger[aria-expanded="true"] .site-header_burger-icon {
+  background: transparent;
+}
+
+.site-header_burger[aria-expanded="true"] .site-header_burger-icon::before {
+  transform: translateY(0.375rem) rotate(45deg);
+}
+
+.site-header_burger[aria-expanded="true"] .site-header_burger-icon::after {
+  transform: translateY(-0.375rem) rotate(-45deg);
+}
+
+/* Меню на телефоне — тёмная шторка под шапкой */
+.site-header_menu {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem var(--page-padding) 1.25rem;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+  background: var(--ink);
+  box-shadow: 0 1rem 2rem rgb(8 5 14 / 40%);
+}
+
+.site-header_menu-date {
+  margin-bottom: 0.5rem;
+  color: var(--lavender);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.site-header_menu a {
+  padding: 0.625rem 0;
+  color: var(--on-dark);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .site-header_bar {
+    min-height: 5.5rem;
+    gap: 1.5rem;
+  }
+
+  .site-header_logo svg {
+    width: 5.25rem;
+  }
+
+  .site-header_nav {
+    display: flex;
+    margin: 0 auto;
+    gap: 0.25rem;
+    padding: 0.3125rem;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 1rem;
+    background: rgb(255 255 255 / 4%);
+  }
+
+  .site-header_nav a {
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 5%);
+    color: var(--on-dark-2);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    transition:
+      background-color var(--dur) ease,
+      color var(--dur) ease;
+  }
+
+  .site-header_cta.button {
+    margin-left: 0;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .site-header_burger,
+  .site-header_menu {
+    display: none !important;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-header_nav a:hover {
+    background: rgb(255 255 255 / 12%);
+    color: var(--on-dark);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. ПЕРВЫЙ ЭКРАН — ИГРОВОЕ ПОЛЕ
+   ---------------------------------------------------------------------------
+   Телефон и планшет: сетка 3 колонки — три этапа, панель с заголовком,
+   ещё три этапа. Фишка и монеты лежат на углах клеток 1 и 2, сверху
+   оставлено место для курсоров.
+   Десктоп: поле 10×6 — кольцо клеток вокруг панели, как у настольной
+   игры. Высота клетки подстраивается под экран, чтобы всё поле
+   помещалось целиком (проверено на 1440×900 и 1280×800).
+   Пунктир дорожки лежит под клетками этапов и поверх пустых клеток.
+   --------------------------------------------------------------------------- */
+
+.section_hero {
+  padding-top: 0.75rem;
+  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+.board_component {
+  /* --board-top — место над клетками для курсоров и фишки,
+     --plate-pad — насколько доска выступает за крайние клетки */
+  --board-top: 3rem;
+  --plate-pad: clamp(0.625rem, 1.2vw, 1.25rem);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
+  gap: var(--board-gap);
+  padding-top: var(--board-top);
+}
+
+/* Доска: одна большая плита с толщиной и тенью, на которой лежат все
+   клетки поля, — как у настоящей настольной игры. Нарисована
+   псевдоэлементом, клетки сетки она не занимает. */
+.board_component::before {
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--board-top) - var(--plate-pad));
+  right: calc(-1 * var(--plate-pad));
+  bottom: calc(-1 * var(--plate-pad));
+  left: calc(-1 * var(--plate-pad));
+  border-radius: calc(var(--tile-radius) + var(--plate-pad) * 0.6);
+  background: linear-gradient(180deg, #372d45 0%, #30273c 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 8%),
+    0 0.5rem 0 #18121f,
+    0 1.5rem 2.5rem -0.75rem rgb(6 3 10 / 70%);
+  content: "";
+  pointer-events: none;
+}
+
+/* Пустые клетки — углубления на доске, как напечатанные ячейки поля
+   настольной игры (вариант Б, выбран 08.10.2026). Объёмными остаются
+   этапы, фишка, монеты и панель с заголовком. */
+.board_component .board_cell {
+  background: rgb(18 12 26 / 38%);
+  box-shadow:
+    inset 0 0.1875rem 0.5rem rgb(6 3 10 / 50%),
+    inset 0 0 0 1px rgb(255 255 255 / 5%);
+}
+
+/* --- Панель с заголовком ------------------------------------------------ */
+
+.board_panel {
+  z-index: 2;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  grid-area: 2 / 1 / 3 / 4;
+  padding: clamp(1.75rem, 2.2vw, 2.25rem) clamp(1.25rem, 3.2vw, 3.5rem);
+  justify-content: center;
+  gap: clamp(1.75rem, 3vw, 2.75rem);
+  border-radius: var(--tile-radius);
+  background: var(--tile-face);
+  box-shadow: var(--shadow-raised);
+  text-align: center;
+}
+
+/* Две группы панели: «о чём» и «как попасть». Внутри групп отступы
+   плотные, между группами — воздух (gap у панели). */
+.board_intro,
+.board_cta {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board_kicker {
+  margin-bottom: 0.75rem;
+  color: var(--lavender);
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.board_heading {
+  max-width: 14ch;
+  margin-bottom: clamp(1rem, 1.4vw, 1.25rem);
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.board_lead {
+  max-width: 44em;
+  color: var(--on-dark);
+  font-size: var(--text-lead);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.board_meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.board_meta li {
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+  color: var(--on-dark);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.board_actions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.board_actions .button {
+  width: min(100%, 24rem);
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.board_note {
+  max-width: 46em;
+  color: var(--on-dark-3);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+/* --- Клетки этапов ------------------------------------------------------ */
+
+.board_stage {
+  z-index: 3;
+  display: flex;
+  min-width: 0;
+  min-height: 6.25rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: var(--tile-radius);
+  transition:
+    translate 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+}
+
+.board_stage.is-violet {
+  background: var(--violet);
+  box-shadow: var(--shadow-violet);
+  color: var(--on-dark);
+}
+
+.board_stage.is-lavender {
+  background: var(--lavender);
+  box-shadow: var(--shadow-lavender);
+  color: var(--ink);
+}
+
+.board_stage.is-plain {
+  background: var(--tile-face);
+  box-shadow: var(--shadow-raised);
+  color: var(--on-dark);
+}
+
+.board_stage-number {
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 2.6vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums;
+}
+
+.board_stage-label {
+  font-size: clamp(0.8125rem, 1vw, 1rem);
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+/* Нажатая клетка этапа опускается на свою толщину (и на телефоне) */
+.board_stage:active {
+  translate: 0 var(--tile-depth);
+}
+
+.board_stage.is-violet:active { box-shadow: var(--shadow-violet-pressed); }
+.board_stage.is-lavender:active { box-shadow: var(--shadow-lavender-pressed); }
+.board_stage.is-plain:active { box-shadow: var(--shadow-raised-pressed); }
+
+/* Панель с заголовком не нажимается: внутри неё кнопка регистрации */
+@media (hover: hover) and (pointer: fine) {
+  .board_stage:hover {
+    translate: 0 var(--press-shift);
+  }
+
+  .board_stage.is-violet:hover { box-shadow: var(--shadow-violet-pressed); }
+  .board_stage.is-lavender:hover { box-shadow: var(--shadow-lavender-pressed); }
+  .board_stage.is-plain:hover { box-shadow: var(--shadow-raised-pressed); }
+}
+
+.is-s1 { grid-area: 1 / 1; }
+.is-s2 { grid-area: 1 / 2; }
+.is-s3 { grid-area: 1 / 3; }
+.is-s6 { grid-area: 3 / 1; }
+.is-s5 { grid-area: 3 / 2; }
+.is-s4 { grid-area: 3 / 3; }
+
+/* --- Пустые клетки, фишка и монеты -------------------------------------- */
+
+.board_cell {
+  display: none;
+  min-width: 0;
+  border-radius: var(--tile-radius);
+  background: var(--tile-face);
+  box-shadow: var(--shadow-raised);
+  transition:
+    translate 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
+}
+
+/* На телефоне фишка и монеты лежат на углах клеток 1 и 2 */
+.board_cell.is-pawn,
+.board_cell.is-coins {
+  z-index: 4;
+  display: block;
+  align-self: start;
+  justify-self: end;
+  background: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.board_cell.is-pawn {
+  width: 2.875rem;
+  grid-area: 1 / 1;
+  margin: -1.75rem -0.25rem 0 0;
+}
+
+.board_cell.is-coins {
+  width: 4.5rem;
+  grid-area: 1 / 2;
+  margin: -1.5rem -0.5rem 0 0;
+}
+
+.board_pawn,
+.board_coins {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* --- Пунктир дорожки ----------------------------------------------------
+   Абсолютный: так он не занимает клетки сетки, а только ложится поверх
+   нужного ряда или колонки. Цвет — светлый фиолетовый акцента. */
+
+.board_track {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.board_track.is-top,
+.board_track.is-bottom {
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 0.3125rem;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, var(--color-accent-mid) 0 0.15rem, transparent 0.175rem) 0 50% / 0.75rem 0.3125rem repeat-x;
+}
+
+.board_track.is-top { grid-area: 1 / 1 / 2 / -1; }
+.board_track.is-bottom { grid-area: 3 / 1 / 4 / -1; }
+
+.board_track.is-right {
+  display: none;
+}
+
+/* --- Десктоп: кольцо клеток вокруг панели ------------------------------
+   1025–1439 px — поле 8×6: клетки шире, подписи этапов не рвутся
+   посреди слова (ноутбуки 13", планшеты в альбомной ориентации).
+   От 1440 px — поле 10×6.
+   Граница 1440 (90rem) — своя у этого поля, она зависит от ширины
+   клетки, а не от устройства; новых полос адаптива не создаёт.
+   ------------------------------------------------------------------------ */
+
+@media screen and (min-width: 64.0625rem) {
+  .section_hero {
+    padding-top: 1.25rem;
+  }
+
+  .board_component {
+    /* Клетка квадратная по ширине колонки, но не выше, чем позволяет
+       высота экрана: 6 рядов, шапка и края доски помещаются в один экран */
+    --board-cols: 8;
+    --board-top: 0.5rem;
+    --cell-w: calc((min(100vw - 2 * var(--page-padding), var(--container-xlarge)) - (var(--board-cols) - 1) * var(--board-gap)) / var(--board-cols));
+    --cell-h: calc((100vh - 9rem - 5 * var(--board-gap)) / 6);
+    --cell-h: calc((100dvh - 9rem - 5 * var(--board-gap)) / 6);
+    --cell: max(5.5rem, min(var(--cell-w), var(--cell-h)));
+    grid-template-columns: repeat(var(--board-cols), minmax(0, 1fr));
+    grid-template-rows: repeat(6, minmax(var(--cell), auto));
+  }
+
+  .board_panel {
+    grid-area: 2 / 2 / 6 / -2;
+    padding-top: clamp(1rem, 1.6vw, 1.75rem);
+    padding-bottom: clamp(1rem, 1.6vw, 1.75rem);
+  }
+
+  .board_lead {
+    max-width: 52em;
+  }
+
+  .board_stage {
+    min-height: 0;
+    padding: 0.875rem 0.5rem 0.75rem 0.875rem;
+  }
+
+  .board_stage-label {
+    font-size: clamp(0.8125rem, 0.88vw, 0.9375rem);
+  }
+
+  .is-s1 { grid-area: 1 / 1; }
+  .is-s2 { grid-area: 1 / 4; }
+  .is-s3 { grid-area: 1 / -2; }
+  .is-s4 { grid-area: 6 / -2; }
+  .is-s5 { grid-area: 6 / 5; }
+  .is-s6 { grid-area: 6 / 1; }
+
+  .board_cell {
+    z-index: 1;
+    display: block;
+    min-height: 0;
+  }
+
+  /* Эти клетки есть только на поле 10×6 */
+  .board_cell.is-wide-only {
+    display: none;
+  }
+
+  /* Клетки с фишкой и монетами — такие же углубления на доске,
+     фишка и стопка стоят в них */
+  .board_cell.is-pawn,
+  .board_cell.is-coins {
+    z-index: 3;
+    display: grid;
+    width: auto;
+    margin: 0;
+    place-items: center;
+    align-self: stretch;
+    justify-self: stretch;
+    background: rgb(18 12 26 / 38%);
+    box-shadow:
+      inset 0 0.1875rem 0.5rem rgb(6 3 10 / 50%),
+      inset 0 0 0 1px rgb(255 255 255 / 5%);
+  }
+
+  .board_cell.is-pawn { grid-area: 1 / 2; }
+  .board_cell.is-coins { grid-area: 1 / 5; }
+
+  .board_pawn {
+    width: 46%;
+    margin-top: -12%;
+  }
+
+  .board_coins {
+    width: 70%;
+    margin-top: -6%;
+  }
+
+  .board_track.is-top { grid-area: 1 / 1 / 2 / -1; }
+  .board_track.is-bottom { grid-area: 6 / 1 / 7 / -1; }
+
+  .board_track.is-right {
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0.3125rem;
+    grid-area: 1 / -2 / 7 / -1;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, var(--color-accent-mid) 0 0.15rem, transparent 0.175rem) 50% 0 / 0.3125rem 0.75rem repeat-y;
+  }
+}
+
+/* Поле 10×6 на широких экранах */
+@media screen and (min-width: 90rem) {
+  .board_component {
+    --board-cols: 10;
+  }
+
+  .is-s2 { grid-area: 1 / 5; }
+  .is-s5 { grid-area: 6 / 6; }
+
+  .board_cell.is-wide-only {
+    display: block;
+  }
+
+  .board_cell.is-coins { grid-area: 1 / 6; }
+}
+
+/* Пустые клетки — углубления на доске, поэтому при наведении
+   не нажимаются: нажимаются только этапы. */
+
+
+/* ---------------------------------------------------------------------------
+   5. «КАК РАЗОБРАТЬСЯ В ЗАПРОСЕ, ЕСЛИ РЕСУРСОВ МАЛО?»
+   --------------------------------------------------------------------------- */
+
+.problem_component {
+  display: grid;
+}
+
+.problem_intro {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.problem_text {
+  display: grid;
+  gap: 1em;
+  max-width: 40em;
+  color: var(--text-2);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+/* Карточки и вывод стоят с тем же зазором, что клетки первого экрана */
+.problem_list {
+  display: grid;
+  gap: var(--board-gap);
+}
+
+.problem_card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.problem_art {
+  display: block;
+  width: 9.5rem;
+  height: auto;
+  margin-bottom: 0.5rem;
+  overflow: visible;
+}
+
+.problem_card-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.problem_card-text {
+  color: var(--text-2);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+.problem_finale {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: var(--board-gap);
+  padding: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+.problem_finale-art {
+  width: 10rem;
+  height: auto;
+  overflow: visible;
+}
+
+.problem_finale-heading {
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 2.6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.problem_finale-text {
+  max-width: 36em;
+  color: var(--on-dark-2);
+  font-size: var(--text-lead);
+  line-height: 1.45;
+}
+
+@media screen and (min-width: 48rem) {
+  .problem_list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .problem_finale {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .problem_intro {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    gap: 1rem;
+  }
+
+  .problem_intro .section_heading {
+    grid-column: 1 / 7;
+  }
+
+  .problem_text {
+    grid-column: 8 / 13;
+    font-size: var(--text-body);
+  }
+
+  .problem_art {
+    width: 11rem;
+  }
+
+  .problem_finale-art {
+    width: 13rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   6. «КОМАНДНАЯ СИМУЛЯЦИЯ» — БЕНТО (макет b3a-rules-bento)
+   ---------------------------------------------------------------------------
+   Телефон: клетки друг под другом, «90 минут» и «до 5 человек» рядом.
+   Планшет: три факта в ряд.
+   Десктоп (12 колонок): заголовок 7 колонок, монеты справа на две строки,
+   под заголовком три факта, внизу лавандовая полоса во всю ширину.
+   --------------------------------------------------------------------------- */
+
+.rules_component {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--board-gap);
+}
+
+.rules_intro,
+.rules_coins,
+.rules_accent,
+.rules_fact.is-zoom {
+  grid-column: 1 / -1;
+}
+
+.rules_intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+.rules_lead {
+  max-width: 40em;
+  color: var(--on-dark-2);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+.rules_coins {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.rules_coins-art {
+  width: clamp(7rem, 14vw, 14rem);
+  height: auto;
+  margin-bottom: 0.25rem;
+  overflow: visible;
+}
+
+.rules_coins-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.95vw, 2.125rem);
+  hyphens: manual;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.rules_coins-text {
+  max-width: 34em;
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+/* Если плашка переносится на две строки, текст в ней по центру */
+.rules_coins-note {
+  margin-top: auto;
+  text-align: center;
+  text-wrap: balance;
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--violet-edge);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.rules_fact {
+  display: flex;
+  min-height: 11rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.rules_fact-value {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-variant-numeric: lining-nums;
+}
+
+.rules_fact-label {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rules_fact-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.1875rem, 1.5vw, 1.4375rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.rules_fact-text {
+  color: var(--on-dark-2);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.rules_fact-icon {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.25rem;
+  color: var(--lavender);
+}
+
+.rules_pawns {
+  display: flex;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.rules_pawns svg {
+  width: clamp(1.75rem, 2.4vw, 2.25rem);
+  height: auto;
+  margin-right: -0.375rem;
+  overflow: visible;
+}
+
+.rules_accent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+/* Фраза встаёт в две строки на десктопе и не уже 22rem на телефоне */
+.rules_accent-text {
+  flex: 1 1 22rem;
+  min-width: min(100%, 15rem);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.6vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.rules_accent-art {
+  width: min(100%, 26rem);
+  height: auto;
+  overflow: visible;
+}
+
+.rules_branch {
+  fill: none;
+  stroke: var(--violet);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 0 10;
+}
+
+@media screen and (min-width: 48rem) {
+  .rules_component {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rules_fact.is-zoom {
+    grid-column: auto;
+  }
+
+  .rules_coins {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 2rem;
+    align-items: start;
+  }
+
+  .rules_coins-art {
+    grid-row: 1 / 4;
+  }
+
+  .rules_coins-note {
+    justify-self: start;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .rules_component {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .rules_intro { grid-area: 1 / 1 / 2 / 9; }
+  .rules_coins { grid-area: 1 / 9 / 3 / 13; }
+  .rules_fact.is-time { grid-area: 2 / 1 / 3 / 3; }
+  .rules_fact.is-team { grid-area: 2 / 3 / 3 / 6; }
+  .rules_fact.is-zoom { grid-area: 2 / 6 / 3 / 9; }
+  .rules_accent { grid-area: 3 / 1 / 4 / 13; }
+
+  .rules_coins {
+    display: flex;
+  }
+
+  .rules_fact {
+    min-height: 13rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   7. «ДЛЯ КОГО»
+   ---------------------------------------------------------------------------
+   Заголовок длинный, поэтому он стоит сверху во всю ширину, а три клетки —
+   под ним: на телефоне друг под другом, на планшете две и третья под ними,
+   на десктопе три в ряд.
+   --------------------------------------------------------------------------- */
+
+.audience_component {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+.audience_intro {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.audience_intro .section_heading {
+  max-width: 26ch;
+}
+
+.audience_lead {
+  max-width: 36em;
+  color: var(--text-2);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+.audience_cards {
+  display: grid;
+  gap: var(--board-gap);
+}
+
+/* Клетки одной высоты: значок, заголовок, текст — сверху вниз */
+.audience_card,
+.audience_note {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 2.2vw, 2rem);
+}
+
+/* Значок лежит на маленькой клетке */
+.audience_card-icon,
+.audience_note-icon {
+  width: 3rem;
+  height: 3rem;
+  flex: none;
+  margin-bottom: 0.5rem;
+  padding: 0.625rem;
+  border-radius: 0.875rem;
+  color: var(--violet);
+}
+
+.audience_card-icon {
+  background: var(--lavender-soft);
+  box-shadow: 0 0.1875rem 0 #d4cff5;
+}
+
+.audience_note-icon {
+  background: var(--white);
+  box-shadow: 0 0.1875rem 0 var(--lavender-edge);
+}
+
+.audience_card-heading,
+.audience_note-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.audience_card-text {
+  color: var(--text-2);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+.audience_note-text {
+  color: var(--text);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+@media screen and (min-width: 48rem) {
+  .audience_cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .audience_note {
+    grid-column: 1 / -1;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .audience_intro {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    gap: 1rem;
+  }
+
+  .audience_intro .section_heading {
+    grid-column: 1 / 8;
+    max-width: none;
+  }
+
+  .audience_lead {
+    grid-column: 9 / 13;
+  }
+
+  .audience_cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .audience_note {
+    grid-column: auto;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   8. «КАК ПРОЙДЁТ ИГРА» — ЛИПКОЕ ПОЛЕ И ЭТАПЫ (макет b5a-route-sticky)
+   ---------------------------------------------------------------------------
+   Поле из шести клеток змейкой (1→2→3, вниз, 4→5→6) и кошелёк стоят
+   на месте, пока листаются карточки этапов. Активная карточка — та, что
+   посередине экрана: она поднята и светлее, остальные приглушены.
+   Фишка переходит на клетку активного этапа, монеты с верха стопки
+   улетают на клетку, стопка уменьшается.
+
+   Телефон и планшет: прилипающая сверху плашка — слева маленькое поле,
+   справа крупная стопка монет, под ними число и пояснение.
+   Десктоп: поле и кошелёк — отдельные клетки слева, карточки справа.
+   --------------------------------------------------------------------------- */
+
+/* Ширина заголовка не ограничена: строки ломаются только там,
+   где не хватает экрана */
+.route_heading {
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+/* На самых узких экранах заголовок чуть меньше, чтобы «решения»
+   не падало отдельной четвёртой строкой */
+@media screen and (max-width: 25rem) {
+  .route_heading {
+    font-size: min(var(--text-h2), 9vw);
+  }
+}
+
+.route_layout {
+  display: grid;
+  gap: var(--board-gap);
+}
+
+/* --- Прилипающая плашка (телефон и планшет) ----------------------------- */
+
+.route_aside {
+  position: sticky;
+  z-index: 6;
+  top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.route_board {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 0.875rem 1rem 0.75rem;
+  border-radius: var(--tile-radius);
+  background: var(--tile-face);
+  box-shadow: var(--shadow-raised);
+}
+
+.route_tiles {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.is-t1 { grid-area: 1 / 1; }
+.is-t2 { grid-area: 1 / 2; }
+.is-t3 { grid-area: 1 / 3; }
+.is-t4 { grid-area: 2 / 3; }
+.is-t5 { grid-area: 2 / 2; }
+.is-t6 { grid-area: 2 / 1; }
+
+.route_tile {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 2.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.625rem;
+  background: var(--ink);
+  box-shadow: 0 0.1875rem 0 var(--ink-edge);
+  color: var(--on-dark-3);
+  transition:
+    background-color 300ms ease,
+    color 300ms ease,
+    box-shadow 300ms ease,
+    translate 180ms var(--ease-out);
+}
+
+.route_tile b {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.route_tile span {
+  display: none;
+}
+
+/* Пройденные клетки: фон остаётся плотным (иначе сквозь него видно
+   пунктир), приглушается только надпись */
+.route_tile[data-state="passed"] {
+  color: #8b8598;
+}
+
+.route_tile[data-state="active"] {
+  background: var(--violet);
+  box-shadow: 0 0.1875rem 0 var(--violet-edge);
+  color: var(--on-dark);
+}
+
+/* Пунктир-змейка через центры клеток: верхний ряд (::before),
+   нижний ряд (::after) и правый край вниз (::after у поля) */
+.route_track {
+  position: absolute;
+  z-index: 0;
+  top: 25%;
+  right: 16.67%;
+  bottom: 25%;
+  left: 16.67%;
+}
+
+.route_track::before,
+.route_track::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 0.3125rem;
+  margin-top: -0.15625rem;
+  background: radial-gradient(circle, var(--color-accent-mid) 0 0.15rem, transparent 0.175rem) 0 50% / 0.625rem 0.3125rem repeat-x;
+  content: "";
+}
+
+.route_track::before { top: 0; }
+.route_track::after { top: 100%; }
+
+.route_tiles::after {
+  position: absolute;
+  z-index: 0;
+  top: 25%;
+  right: calc(16.67% - 0.15625rem);
+  bottom: 25%;
+  width: 0.3125rem;
+  background: radial-gradient(circle, var(--color-accent-mid) 0 0.15rem, transparent 0.175rem) 50% 0 / 0.3125rem 0.625rem repeat-y;
+  content: "";
+}
+
+/* Фишка. Её место считает скрипт; без скрипта она стоит на клетке 1. */
+.route_pawn {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 1.5rem;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+  translate: 1.5rem -0.875rem;
+}
+
+/* --- Кошелёк ------------------------------------------------------------
+   На телефоне и планшете обёртка кошелька «растворяется» (display:
+   contents): стопка встаёт справа от поля, подписи — строкой под ними. */
+
+.route_wallet {
+  display: contents;
+}
+
+/* Монета в стопке: ширина --stack-w, толщина — десятая часть ширины.
+   Шаг чуть больше толщины, поэтому между монетами виден ободок нижней —
+   стопка читается как монеты, а не как цилиндр */
+.route_stack {
+  --stack-w: 5rem;
+  --coin-step: calc(var(--stack-w) * 0.135);
+  position: relative;
+  width: var(--stack-w);
+  height: calc(var(--stack-w) * 0.55 + 6 * var(--coin-step));
+  grid-area: 1 / 2;
+  margin-top: 0.25rem;
+}
+
+.route_stack-shadow {
+  position: absolute;
+  right: -12%;
+  bottom: -4%;
+  left: -12%;
+  height: 34%;
+  background: radial-gradient(closest-side, rgb(6 3 10 / 60%), transparent);
+}
+
+.route_stack-coin {
+  position: absolute;
+  bottom: calc(var(--i) * var(--coin-step));
+  left: 0;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transition:
+    opacity 280ms ease,
+    translate 420ms var(--ease-out);
+}
+
+/* Монета ушла со стопки */
+.route_stack-coin.is-gone {
+  opacity: 0;
+  translate: 0 -1.5rem;
+}
+
+.route_stack-coin.is-instant {
+  transition: none;
+}
+
+.route_wallet-copy {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  grid-area: 2 / 1 / 3 / 3;
+}
+
+.route_wallet-value {
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.route_wallet-label {
+  color: var(--on-dark-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.route_wallet-note {
+  flex-basis: 100%;
+  color: var(--lavender);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* --- Карточки этапов ---------------------------------------------------- */
+
+.route_list {
+  display: grid;
+  gap: var(--board-gap);
+}
+
+.route_step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.75rem 1rem;
+  padding: clamp(1.25rem, 2.4vw, 2rem);
+  scroll-margin-top: 13rem;
+}
+
+/* Неактивные этапы (когда скрипт работает) приглушены: клетка ниже
+   и темнее, текст тише. Активный — поднят и светлее. */
+.route_list .route_step[data-state="passed"],
+.route_list .route_step[data-state="upcoming"] {
+  background: #322940;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 0.1875rem 0 var(--ink-edge),
+    0 0.5rem 1rem -0.5rem rgb(6 3 10 / 45%);
+}
+
+.route_list .route_step[data-state="active"] {
+  background: linear-gradient(180deg, #4c405e 0%, #42374f 100%);
+  box-shadow: var(--shadow-raised);
+}
+
+.route_step-number {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  grid-row: 1;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 0.75rem;
+  color: var(--on-dark-2);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.route_step-heading {
+  align-self: center;
+  font-family: var(--font-display);
+  font-size: clamp(1.3125rem, 2vw, 1.875rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  transition: color 300ms ease;
+}
+
+.route_step-text,
+.route_step-note,
+.route_step-prize {
+  grid-column: 1 / -1;
+}
+
+.route_step-text {
+  color: var(--on-dark-2);
+  font-size: var(--text-body);
+  line-height: 1.55;
+  transition: color 300ms ease;
+}
+
+.route_step[data-state="passed"] .route_step-heading,
+.route_step[data-state="upcoming"] .route_step-heading {
+  color: var(--on-dark-2);
+}
+
+.route_step[data-state="passed"] .route_step-text,
+.route_step[data-state="upcoming"] .route_step-text {
+  color: var(--on-dark-3);
+}
+
+.route_step-note {
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--lavender);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.route_step-prize {
+  justify-self: start;
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  background: var(--violet);
+  color: var(--on-dark);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Активный этап: номер — фиолетовая клетка с толщиной */
+.route_step[data-state="active"] .route_step-number {
+  border-color: transparent;
+  background: var(--violet);
+  box-shadow: 0 0.1875rem 0 var(--violet-edge);
+  color: var(--on-dark);
+}
+
+.route_finish {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.route_finish-text {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+.route_finish .button {
+  justify-self: start;
+}
+
+/* --- Планшет ------------------------------------------------------------ */
+
+@media screen and (min-width: 48rem) {
+  .route_board {
+    padding: 1rem 1.25rem;
+  }
+
+  .route_tile {
+    min-height: 3.25rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .route_tile span {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .route_pawn {
+    width: 1.875rem;
+  }
+
+  .route_stack {
+    --stack-w: 6rem;
+  }
+
+  .route_wallet-value {
+    font-size: 2rem;
+  }
+
+  .route_step {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 1.25rem;
+  }
+
+  .route_step-number {
+    width: 3rem;
+    height: 3rem;
+    grid-row: 1 / span 3;
+    font-size: 1.375rem;
+  }
+
+  .route_step-text,
+  .route_step-note,
+  .route_step-prize {
+    grid-column: 2;
+  }
+}
+
+/* --- Десктоп: поле слева стоит на месте --------------------------------- */
+
+@media screen and (min-width: 64.0625rem) {
+  .route_layout {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .route_aside {
+    grid-column: 1 / 6;
+    align-self: start;
+    top: 6rem;
+    margin-bottom: 0;
+  }
+
+  .route_list {
+    grid-column: 7 / 13;
+  }
+
+  /* Поле и кошелёк — отдельные клетки на тёмном фоне, без общей подложки */
+  .route_board {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .route_tiles {
+    gap: 1.5rem;
+  }
+
+  .route_tile {
+    min-height: 7.5rem;
+    padding: 0.875rem 1rem;
+    border-radius: var(--tile-radius);
+    background: var(--tile-face);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .route_tile[data-state="active"] {
+    box-shadow: var(--shadow-violet);
+  }
+
+  .route_tile b {
+    font-size: 2.25rem;
+  }
+
+  .route_tile span {
+    font-size: 1rem;
+  }
+
+  .route_pawn {
+    width: 3.25rem;
+    translate: 3.5rem -1.5rem;
+  }
+
+  .route_wallet {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: 1.75rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    border-radius: var(--tile-radius);
+    background: var(--tile-face);
+    box-shadow: var(--shadow-raised);
+    transition:
+      translate 180ms var(--ease-out),
+      box-shadow 180ms var(--ease-out);
+  }
+
+  .route_stack {
+    --stack-w: 6.5rem;
+    grid-area: auto;
+    margin-top: 0;
+  }
+
+  .route_wallet-copy {
+    display: grid;
+    gap: 0.5rem;
+    grid-area: auto;
+  }
+
+  .route_wallet-value {
+    font-size: clamp(3rem, 4.4vw, 4.25rem);
+  }
+
+  .route_wallet-label {
+    font-size: 1.125rem;
+  }
+
+  .route_wallet-note {
+    justify-self: start;
+    padding: 0.4375rem 0.875rem;
+    border-radius: 999px;
+    background: var(--lavender);
+    color: var(--ink);
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .route_step {
+    scroll-margin-top: 30vh;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 64.0625rem) {
+  .route_tile:hover,
+  .route_wallet:hover {
+    translate: 0 var(--press-shift);
+    box-shadow: var(--shadow-raised-pressed);
+  }
+
+  .route_tile[data-state="active"]:hover {
+    box-shadow: var(--shadow-violet-pressed);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .route_list .route_step:hover {
+    translate: 0 var(--press-shift);
+    box-shadow: var(--shadow-raised-pressed);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   9. «ПРАКТИКА НАВЫКОВ»
+   ---------------------------------------------------------------------------
+   Слева заголовок и вывод, справа «лист навыков» — одна белая клетка,
+   внутри шесть строк, разделённых пунктиром.
+   --------------------------------------------------------------------------- */
+
+.skills_component {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.skills_intro {
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+}
+
+.skills_lead {
+  max-width: 34em;
+  color: var(--text-2);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+/* Вывод — плоская лавандовая плашка, без толщины и тени, шрифт
+   на ступень меньше: она поясняет, а не спорит с заголовком */
+.skills_outro {
+  display: grid;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+  padding: 1rem 1.25rem 1.125rem;
+  border-radius: var(--tile-radius);
+  background: var(--lavender);
+  color: var(--text);
+  font-size: clamp(1rem, 1.15vw, 1.125rem);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.skills_outro-art {
+  width: 5rem;
+  height: auto;
+  overflow: visible;
+}
+
+/* Лист не растягивается по высоте левой колонки — иначе строки
+   навыков раздуваются пустотой */
+.skills_sheet {
+  display: grid;
+  align-self: start;
+  align-content: start;
+  padding: clamp(0.5rem, 1.6vw, 1.5rem) clamp(1.25rem, 2.6vw, 2.5rem);
+}
+
+/* Второй ряд гибкий: высота значка уходит в него, и под однострочным
+   заголовком не появляется лишний зазор */
+.skills_item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  gap: 0.375rem 1rem;
+  padding: 1.25rem 0;
+  background: radial-gradient(circle, #cfc9dd 0 0.0625rem, transparent 0.09rem) 0 0 / 0.5rem 0.125rem repeat-x;
+}
+
+.skills_item:first-child {
+  background: none;
+}
+
+/* Значок — маленькая лавандовая клетка */
+.skills_icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  grid-row: 1 / span 2;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: var(--lavender-soft);
+  box-shadow: 0 0.1875rem 0 #d4cff5;
+  color: var(--violet);
+}
+
+.skills_icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.skills_heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 1.4vw, 1.3125rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.skills_text {
+  color: var(--text-2);
+  font-size: clamp(0.9375rem, 1.05vw, 1.0625rem);
+  line-height: 1.5;
+}
+
+@media screen and (min-width: 48rem) {
+  .skills_sheet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .skills_item:nth-child(2) {
+    background: none;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .skills_component {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  /* Левая колонка шире, чтобы заголовок встал в две строки. Она
+     растянута на высоту листа навыков, а плашка-вывод прижата к низу —
+     обе колонки заканчиваются на одной линии */
+  .skills_intro {
+    display: flex;
+    grid-column: 1 / 6;
+    flex-direction: column;
+    align-self: stretch;
+  }
+
+  .skills_outro {
+    margin-top: auto;
+  }
+
+  .skills_sheet {
+    grid-column: 7 / 13;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   10. «КТО ПРОВОДИТ ИГРУ»
+   ---------------------------------------------------------------------------
+   Фото без фона стоит на лавандовой клетке и выходит за её верхний край.
+   Низ фото обрезан по скруглению клетки.
+   --------------------------------------------------------------------------- */
+
+.host_heading {
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.host_grid {
+  display: grid;
+  gap: var(--board-gap);
+}
+
+/* Плоская подложка, без толщины и тени. clip-path обрезает фото по бокам
+   и снизу (по скруглению углов), а сверху оставляет запас — туда фото
+   и выходит. */
+.host_media {
+  position: relative;
+  min-width: 0;
+  min-height: clamp(20rem, 70vw, 26rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-radius: var(--tile-radius);
+  background: var(--lavender);
+  clip-path: inset(-60% 0 0 0 round 0 0 var(--tile-radius) var(--tile-radius));
+}
+
+/* Высота фото — 126% подложки: так над краем остаётся около четверти
+   головы (в исходном снимке сверху 13% пустого поля, голова — 30% высоты) */
+.host_photo {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  height: 126%;
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+.host_copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: clamp(1.5rem, 3vw, 3rem);
+}
+
+.host_name {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 3vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.host_role {
+  color: var(--violet-edge);
+  font-size: var(--text-lead);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.host_course {
+  max-width: 34em;
+  color: var(--text-2);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+.host_list {
+  display: grid;
+  margin-top: 1rem;
+}
+
+.host_list li {
+  position: relative;
+  padding: 0.875rem 0 0.875rem 1.5rem;
+  background: radial-gradient(circle, #cfc9dd 0 0.0625rem, transparent 0.09rem) 0 0 / 0.5rem 0.125rem repeat-x;
+  font-size: var(--text-body);
+  line-height: 1.4;
+}
+
+.host_list li::before {
+  position: absolute;
+  top: 1.25rem;
+  left: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 0.1875rem;
+  background: var(--violet);
+  box-shadow: 0 0.125rem 0 var(--violet-edge);
+  content: "";
+}
+
+@media screen and (min-width: 48rem) {
+  .host_grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: stretch;
+  }
+
+  .host_media {
+    min-height: 28rem;
+    margin-top: 4rem;
+  }
+
+  .host_copy {
+    justify-content: center;
+    margin-top: 4rem;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .host_media {
+    min-height: 32rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   11. КУРСОРЫ УЧАСТНИКОВ
+   ---------------------------------------------------------------------------
+   Слой поверх страницы, не перехватывает нажатия. Места курсоров задаёт
+   скрипт (page.js, раздел 7). Пока скрипт не запустился, курсоров не видно.
+   На телефоне остаются три курсора из пяти — иначе тесно.
+   --------------------------------------------------------------------------- */
+
+.game-cursors {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.game-cursor {
+  --cursor: var(--violet);
+  --tag-bg: var(--violet);
+  --tag-text: #ffffff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  opacity: 0;
+  transition: opacity 450ms ease;
+  will-change: transform;
+}
+
+.game-cursor.is-visible {
+  opacity: 1;
+}
+
+.game-cursor svg {
+  width: 1.25rem;
+  height: 1.5rem;
+  flex: none;
+  color: var(--cursor);
+  filter: drop-shadow(0 0.125rem 0.25rem rgb(8 5 14 / 35%));
+  transform-origin: 15% 10%;
+  transition: transform 160ms ease;
+}
+
+.game-cursor span {
+  margin: 1.125rem 0 0 -0.125rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--tag-bg);
+  box-shadow: 0 0.25rem 0.75rem rgb(8 5 14 / 22%);
+  color: var(--tag-text);
+  font-family: var(--font-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* «Нажатие» курсора */
+.game-cursor.is-pressing svg {
+  transform: scale(0.82);
+}
+
+.game-cursor.is-analyst  { --cursor: #7c5cdb; --tag-bg: #7c5cdb; --tag-text: #ffffff; }
+.game-cursor.is-keeper   { --cursor: #4e37a8; --tag-bg: #4e37a8; --tag-text: #ffffff; }
+.game-cursor.is-speaker  { --cursor: #b3a8ee; --tag-bg: #dad6ff; --tag-text: #2b2334; }
+.game-cursor.is-moderator { --cursor: #9e7ff0; --tag-bg: #9e7ff0; --tag-text: #2b2334; }
+.game-cursor.is-you      { --cursor: #2b2334; --tag-bg: #ffffff; --tag-text: #2b2334; }
+.game-cursor.is-host     { --cursor: #6a49c9; --tag-bg: #eeeeff; --tag-text: #4e37a8; }
+
+.game-cursor.is-you span {
+  box-shadow: inset 0 0 0 1px #dad6ff, 0 0.25rem 0.75rem rgb(8 5 14 / 22%);
+}
+
+@media screen and (max-width: 47.9375rem) {
+  /* На телефоне курсоры мельче, двух игроков прячем */
+  .game-cursor.is-speaker,
+  .game-cursor.is-moderator {
+    display: none;
+  }
+
+  .game-cursor svg {
+    width: 1rem;
+    height: 1.25rem;
+  }
+
+  .game-cursor span {
+    margin-top: 0.875rem;
+    font-size: 0.75rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   12. ПОЯВЛЕНИЕ ПРИ ПРОКРУТКЕ
+   ---------------------------------------------------------------------------
+   Клетки «встают на поле»: поднимаются снизу. Включается, только если
+   скрипт запустился (класс has-motion) — без скрипта всё видно сразу.
+   Фишка на первом экране время от времени подпрыгивает.
+   --------------------------------------------------------------------------- */
+
+.game-page.has-motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+}
+
+.game-page.has-motion [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms var(--ease-out) var(--reveal-delay, 0ms),
+    transform 750ms var(--ease-out) var(--reveal-delay, 0ms),
+    translate 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    background-color 300ms ease;
+}
+
+.game-page.has-motion .board_pawn {
+  animation: board-hop 7s var(--ease-out) 1.2s infinite;
+}
+
+@keyframes board-hop {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  86% {
+    transform: translateY(-16%);
+  }
+
+  92% {
+    transform: translateY(0);
+  }
+
+  96% {
+    transform: translateY(-4%);
+  }
+}
+
+/* Монеты, которые улетают из кошелька на клетку этапа. Лежат внутри
+   поля (.route_board), поэтому уезжают вместе с ним при прокрутке. */
+.route_flying-coin {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  width: 1.75rem;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------------------------
+   13. РЕГИСТРАЦИЯ И ПОДВАЛ — перенесены с /cft-spiderman
+   ---------------------------------------------------------------------------
+   Правила ниже скопированы без изменений смысла; поменялись только имя
+   обёртки (.game-page) и граница десктопа — 1025px вместо 992px, как
+   в правилах Академии.
+   --------------------------------------------------------------------------- */
+
+.agenda_badge {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-accent-primary);
+  border-radius: 999px;
+  color: var(--color-accent-deep);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.agenda_badge.is-inverse {
+  border-color: var(--color-accent-mid);
+  color: var(--color-accent-light);
+}
+
+
+.signup_component {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 3.5vw, 3rem) clamp(1.5rem, 3.6vw, 3.5rem);
+  padding: clamp(1.5rem, 3.6vw, 3.5rem) clamp(1rem, 3.6vw, 3.5rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-dark);
+}
+
+.signup_copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.signup_heading {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-section-size);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.signup_description {
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.signup_steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.signup_step {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.25rem 0.75rem;
+}
+
+.signup_step-content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.signup_step-title {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.signup_step-description {
+  color: var(--color-text-muted);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.gift_component {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+  padding: 1.5rem;
+  overflow: hidden;
+  border: 1px solid var(--color-accent-soft-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-accent-primary);
+}
+
+.gift_copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.gift_label {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 22%);
+  color: var(--color-text-on-dark);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.gift_heading {
+  color: var(--color-text-on-dark);
+  font-size: var(--text-card-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.gift_image {
+  position: absolute;
+  z-index: 0;
+  right: -2.5rem;
+  bottom: -3rem;
+  display: block;
+  width: 16rem;
+  height: auto;
+  margin: 0;
+  transform: rotate(-11deg);
+  pointer-events: none;
+}
+
+.gift_copy {
+  padding-bottom: 9rem;
+}
+
+.gift-cover_shadow {
+  fill: var(--color-surface-dark);
+  opacity: 0.18;
+}
+
+.gift-cover_sheet {
+  fill: var(--color-surface-primary);
+}
+
+.gift-cover_pill,
+.gift-cover_tile {
+  fill: var(--color-accent-soft);
+}
+
+.gift-cover_pill-text {
+  fill: var(--color-accent-deep);
+  font-family: var(--font-family-body);
+  font-weight: 500;
+}
+
+.gift-cover_title {
+  fill: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-weight: 500;
+}
+
+.gift-cover_check {
+  fill: var(--color-accent-primary);
+}
+
+.gift-cover_tick {
+  fill: none;
+  stroke: var(--color-surface-primary);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gift-cover_line {
+  fill: var(--color-surface-soft);
+}
+
+.gift-cover_line.is-soft {
+  opacity: 0.6;
+}
+
+.gift-cover_box {
+  fill: none;
+  stroke: var(--color-accent-light);
+  stroke-width: 3;
+}
+
+.gift-cover_ring {
+  fill: none;
+  stroke: var(--color-accent-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 0.01 5.5;
+}
+
+.gift-cover_core {
+  fill: var(--color-accent-deep);
+}
+
+.lead-form_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-self: start;
+  padding: clamp(1.25rem, 2.4vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+
+.lead-form_intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lead-form_heading {
+  color: var(--color-text-primary);
+  font-size: var(--text-subhead-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.lead-form_date {
+  color: var(--color-accent-primary);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.lead-form_hint {
+  color: var(--color-text-secondary);
+  font-size: var(--text-note-size);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.lead-form_widget {
+  min-width: 0;
+}
+
+.lead-form_bh,
+.lead-form_bh .bh-widget-button,
+.lead-form_bh .bh-w-button-list {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+}
+
+.lead-form_bh .bh-widget-button {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.lead-form_bh .bh-w-button-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.lead-form_bh .bh-w-messenger-button {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 3.5rem !important;
+  max-height: none !important;
+  flex: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  margin: 0 !important;
+  padding: 1rem 1.5rem !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: var(--radius-button) !important;
+  background: var(--color-accent-primary) !important;
+  color: var(--color-text-on-dark) !important;
+  font-family: inherit !important;
+  font-size: var(--text-lead-size) !important;
+  font-weight: 500 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: background-color var(--transition-site), opacity var(--transition-site) !important;
+}
+
+.lead-form_bh .bh-w-messenger-button:focus-visible {
+  outline: 2px solid var(--color-focus) !important;
+  outline-offset: 4px !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lead-form_bh .bh-w-messenger-button:hover {
+    background: var(--color-accent-hover) !important;
+  }
+}
+
+.lead-form_component[data-state="sending"] .lead-form_bh .bh-w-messenger-button {
+  opacity: 0.65 !important;
+  pointer-events: none !important;
+}
+
+.lead-form_bh .bh-w-button__icon {
+  position: static !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  flex: none !important;
+  margin: 0 !important;
+}
+
+.lead-form_bh .bh-w-button__title {
+  position: static !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title {
+  font-size: 0 !important;
+}
+
+.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title::after {
+  content: "ВКонтакте";
+  font-size: var(--text-lead-size);
+}
+
+.lead-form_bh .bh-w-consent__body {
+  min-width: 0;
+}
+
+.lead-form_bh .bh-w-consent__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  cursor: pointer;
+}
+
+.lead-form_bh .bh-w-consent__checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-accent-primary);
+  cursor: pointer;
+}
+
+.lead-form_bh .bh-w-consent__label {
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.lead-form_bh .bh-w-consent__label a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.lead-form_bh .bh-w-consent__message {
+  display: none;
+}
+
+.lead-form_bh .bh-w-powered-by {
+  display: none;
+}
+
+.lead-form_widget-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lead-form_widget-skeleton span {
+  height: 3.5rem;
+  border-radius: var(--radius-button);
+  background: linear-gradient(90deg, #f0f0f5 25%, #e6e5ee 37%, #f0f0f5 63%);
+  background-size: 400% 100%;
+  animation: lead-form-skeleton 1.4s ease infinite;
+}
+
+.lead-form_widget-skeleton span:last-child {
+  width: 70%;
+  height: 1rem;
+}
+
+@keyframes lead-form-skeleton {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+.lead-form_widget[data-bh-state="loading"] .lead-form_bh {
+  display: none;
+}
+
+.lead-form_note {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.lead-form_status {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.lead-form_status[data-state="error"] {
+  color: #d92d20;
+}
+
+.lead-form_status[data-state="loading"] {
+  color: var(--color-text-secondary);
+}
+
+.lead-form_status:empty {
+  display: none;
+}
+
+.lead-form_manual {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.lead-form_manual a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.site-footer_component {
+  width: 100%;
+  padding: clamp(2.5rem, 4vw, 4rem) 0 clamp(2rem, 3vw, 3rem);
+  background: var(--color-surface-dark, #2b2334);
+  color: #ffffff;
+}
+
+.site-footer_heading {
+  margin: 0 0 clamp(1.5rem, 2.4vw, 2.5rem);
+  font-size: clamp(1.75rem, 3.4vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.site-footer_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem var(--grid-gap, 1rem);
+}
+
+.site-footer_group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.site-footer_group-title {
+  color: #a29ab4;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+
+.site-footer_line {
+  color: #ffffff;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.site-footer_line a {
+  transition: color var(--transition-site, 180ms ease);
+}
+
+.site-footer_bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: clamp(2rem, 3.4vw, 3rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+  color: #a29ab4;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-footer_line a:hover {
+    color: var(--color-accent-light, #c4b5fd);
+  }
+}
+
+@media screen and (min-width: 48rem) {
+  .site-footer_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .site-footer_bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .signup_component {
+    grid-template-columns: minmax(0, 689fr) minmax(0, 551fr);
+    align-items: stretch;
+    gap: 2.5rem;
+    padding: clamp(3rem, 6vw, 7.5rem);
+  }
+  .signup_copy {
+    gap: 2rem;
+  }
+  .lead-form_component {
+    align-self: start;
+  }
+  .gift_component {
+    min-height: 10.5rem;
+  }
+  .gift_copy {
+    max-width: 60%;
+    padding-bottom: 0;
+  }
+  .gift_image {
+    top: -0.25rem;
+    right: -3.375rem;
+    bottom: auto;
+    width: 16.8125rem;
+  }
+}
+
+
+.game-page .faq_support a,
+.game-page .lead-form_manual a,
+.game-page .lead-form_bh .bh-w-consent__label a {
+  color: var(--color-accent-primary) !important;
+}
+
+.game-page .site-footer_line a {
+  color: #ffffff !important;
+}
+
+/* Регистрация: клетка-подложка получает толщину, как всё поле */
+.signup_component {
+  box-shadow: var(--shadow-dark);
+}
+
+/* Подписи шагов регистрации и плашка бонуса — контрастнее, чем на
+   исходной странице: там серый на тёмном не дотягивал до 4,5:1 */
+.signup_step-description {
+  color: var(--on-dark-3);
+}
+
+.gift_label {
+  background: var(--white);
+  color: var(--violet-edge);
+  font-weight: 600;
+}
+
+/* Заголовки стандартных блоков — тем же шрифтом, что и вся страница */
+.signup_heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* Скрытая форма Тильды: убираем с глаз, но не выключаем — скриптам
+   Тильды нужно измерять поля и ставить в них фокус. */
+[data-game-native-form-record] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   14. УМЕНЬШЕННОЕ ДВИЖЕНИЕ, ПЕЧАТЬ
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .game-page *,
+  .game-page *::before,
+  .game-page *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .game-page.has-motion [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media print {
+  .game-cursors,
+  .site-header_burger {
+    display: none !important;
+  }
+
+  .route_aside {
+    position: static;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   15. ЗАЩИТА ОТ ОБЩИХ СТИЛЕЙ ТИЛЬДЫ
+   ---------------------------------------------------------------------------
+   В шапке сайта на Тильде стоит правило вида a { color: inherit !important }.
+   Оно сильнее обычных объявлений, поэтому у ссылок-кнопок цвет повторён
+   здесь с !important. Меняете цвет кнопки выше — поменяйте и здесь.
+   --------------------------------------------------------------------------- */
+
+.game-page .button.is-light {
+  color: var(--ink) !important;
+}
+
+.game-page .button.is-accent {
+  color: #ffffff !important;
+}
+
+.game-page .board_stage.is-violet,
+.game-page .board_stage.is-plain,
+.game-page .site-header_menu a,
+.game-page .site-header_logo {
+  color: #ffffff !important;
+}
+
+.game-page .board_stage.is-lavender {
+  color: var(--ink) !important;
+}
+
+.game-page .site-header_nav a {
+  color: var(--on-dark-2) !important;
+}
+
+.game-page .lead-form_manual a,
+.game-page .lead-form_bh .bh-w-consent__label a {
+  color: var(--violet) !important;
+}
+
+.game-page .site-footer_line a {
+  color: #ffffff !important;
+}
+
+.skip-link {
+  color: #2b2334 !important;
+}
