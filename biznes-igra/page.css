@@ -45,11 +45,12 @@
       9. «Практика навыков»
      10. «Кто проводит игру»
      11. Курсоры участников
-     12. Появление при прокрутке
+     12. Подпрыгивание фишки, летящие монеты
      13. Подарок и подвал — перенесены с /cft-spiderman
      13.5. Лид-форма Академии (копия web-academy)
      14. Уменьшенное движение, печать
      15. Защита от общих стилей Тильды
+     16. Игровые экраны: смена экранов, сборка из гнёзд, карта хода
    ========================================================================= */
 
 
@@ -2515,28 +2516,12 @@ html {
 
 
 /* ---------------------------------------------------------------------------
-   12. ПОЯВЛЕНИЕ ПРИ ПРОКРУТКЕ
+   12. ПОДПРЫГИВАНИЕ ФИШКИ, ЛЕТЯЩИЕ МОНЕТЫ
    ---------------------------------------------------------------------------
-   Клетки «встают на поле»: поднимаются снизу. Включается, только если
-   скрипт запустился (класс has-motion) — без скрипта всё видно сразу.
-   Фишка на первом экране время от времени подпрыгивает.
+   Фишка на первом экране время от времени подпрыгивает (класс has-motion
+   ставит скрипт, если движение не выключено в настройках системы).
+   Появление блоков — сборка из гнёзд, раздел 16.
    --------------------------------------------------------------------------- */
-
-.game-page.has-motion [data-reveal] {
-  opacity: 0;
-  transform: translateY(1.5rem);
-}
-
-.game-page.has-motion [data-reveal].is-in {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 600ms var(--ease-out) var(--reveal-delay, 0ms),
-    transform 750ms var(--ease-out) var(--reveal-delay, 0ms),
-    translate 180ms var(--ease-out),
-    box-shadow 180ms var(--ease-out),
-    background-color 300ms ease;
-}
 
 .game-page.has-motion .board_pawn {
   animation: board-hop 7s var(--ease-out) 1.2s infinite;
@@ -3753,10 +3738,6 @@ body > .iti--detached-country-selector .iti__country:hover .iti__dial-code {
     animation-iteration-count: 1 !important;
   }
 
-  .game-page.has-motion [data-reveal] {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 @media print {
@@ -3809,4 +3790,359 @@ body > .iti--detached-country-selector .iti__country:hover .iti__dial-code {
 
 .skip-link {
   color: #2b2334 !important;
+}
+
+/* ===========================================================================
+   16. ИГРОВЫЕ ЭКРАНЫ
+   ===========================================================================
+   Как в игре: на десктопе (от 1025px, мышь или тачпад) страница не
+   прокручивается, экраны сменяют друг друга; каждый экран собирается
+   из гнёзд; справа — карта хода. На телефоне и планшете страница
+   прокручивается, блоки собираются из гнёзд, когда выходят на экран.
+   Поведение — в page.js, разделы 9–11.
+
+   Классы на <html> ставит скрипт: is-game-screens — скрипт запустился,
+   is-screen-mode — десктоп, экраны сменяют друг друга, is-game-motion —
+   движение не выключено в настройках системы. Без скрипта страница
+   обычная, всё видно сразу.
+
+     16.1. Экраны на десктопе
+     16.2. «Как пройдёт игра» на десктопе: одна карточка этапа за раз
+     16.3. Без мыши (планшет в альбомной ориентации): блоки в высоту окна
+     16.4. Сборка экрана: гнёзда и скрытые до сборки клетки
+     16.5. Карта хода справа (десктоп)
+   ========================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   16.1. ЭКРАНЫ НА ДЕСКТОПЕ
+   ---------------------------------------------------------------------------
+   С 1025px при мыши или тачпаде страница не прокручивается. Каждый блок —
+   отдельный экран во весь размер окна, видны только текущий и (на время
+   смены) уходящий. Переключают колесо, тачпад, клавиши и ссылки.
+   Если содержимое блока выше окна, внутри экрана можно докрутить,
+   и только потом колесо переключит экран.
+   Шапка — часть первого экрана.
+   --------------------------------------------------------------------------- */
+
+html.is-screen-mode,
+html.is-screen-mode body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html.is-screen-mode {
+  scroll-behavior: auto;
+}
+
+.is-screen-mode .main-wrapper > section,
+.is-screen-mode .site-footer_component {
+  /* Поля сверху и снизу экрана: можно менять */
+  --screen-pad: clamp(2.5rem, 7dvh, 5.5rem);
+  position: fixed;
+  z-index: 1;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  margin: 0;
+  padding-top: var(--screen-pad);
+  padding-bottom: var(--screen-pad);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+/* Экран получает фокус при смене с клавиатуры, чтобы Tab шёл по нему.
+   Рамка вокруг всего окна не нужна */
+.is-screen-mode .main-wrapper > section:focus,
+.is-screen-mode .site-footer_component:focus {
+  outline: none;
+}
+
+/* Светлые экраны — на светлом фоне страницы; тёмные свой фон уже имеют */
+.is-screen-mode .main-wrapper > section:not(.section-dark):not(.section_hero) {
+  background: var(--paper);
+}
+
+.is-screen-mode .main-wrapper > section.is-screen-current,
+.is-screen-mode .main-wrapper > section.is-screen-leaving,
+.is-screen-mode .site-footer_component.is-screen-current,
+.is-screen-mode .site-footer_component.is-screen-leaving {
+  display: flex;
+}
+
+/* Новый экран проявляется поверх уходящего */
+.is-screen-mode .main-wrapper > section.is-screen-current,
+.is-screen-mode .site-footer_component.is-screen-current {
+  z-index: 2;
+}
+
+/* Содержимое стоит по центру экрана, а если оно выше окна — от верха */
+.is-screen-mode .main-wrapper > section > .padding-global,
+.is-screen-mode .site-footer_component > .padding-global {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* Первый экран: шапка сверху, под ней поле.
+   --screen-header — высота шапки, её ставит скрипт */
+.is-screen-mode .site-header_component {
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: none;
+}
+
+.is-screen-mode .site-header_component.is-screen-current,
+.is-screen-mode .site-header_component.is-screen-leaving {
+  display: block;
+}
+
+.is-screen-mode .main-wrapper > .section_hero {
+  --screen-pad: 1.25rem;
+  padding-top: calc(var(--screen-header, 5.5rem) + 1.25rem);
+}
+
+
+/* ---------------------------------------------------------------------------
+   16.2. «КАК ПРОЙДЁТ ИГРА» НА ДЕСКТОПЕ
+   ---------------------------------------------------------------------------
+   Поле и кошелёк слева, справа — карточка одного этапа. Колесо делает ход:
+   карточка меняется, фишка переходит на следующую клетку, монеты улетают
+   (это делает page.js, раздел 8). После шестого этапа — фиолетовая
+   клетка с кнопкой, следующий поворот колеса открывает новый экран.
+   --------------------------------------------------------------------------- */
+
+.is-screen-mode .route_list > :not(.is-sub-current) {
+  display: none;
+}
+
+/* Карточка стоит по высоте посередине поля: так page.js (раздел 8) узнаёт, какой
+   этап сейчас активный (он смотрит на середину окна) */
+.is-screen-mode .route_list {
+  align-self: center;
+}
+
+.is-screen-mode .route_finish {
+  margin-top: 0;
+}
+
+.is-screen-mode .route_heading {
+  margin-bottom: clamp(1.5rem, 4dvh, 3rem);
+}
+
+
+/* ---------------------------------------------------------------------------
+   16.3. БЕЗ МЫШИ — ПЛАНШЕТ В АЛЬБОМНОЙ ОРИЕНТАЦИИ
+   ---------------------------------------------------------------------------
+   Там нет колеса, поэтому страница прокручивается, но каждый блок
+   занимает не меньше высоты окна, содержимое по центру.
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 64.0625rem) {
+  html.is-game-screens:not(.is-screen-mode) .main-wrapper > section:not(.section_hero) {
+    --screen-pad: clamp(3rem, 8dvh, 6rem);
+    display: flex;
+    min-height: 100dvh;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 0;
+    padding-top: var(--screen-pad);
+    padding-bottom: var(--screen-pad);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   16.4. СБОРКА ЭКРАНА
+   ---------------------------------------------------------------------------
+   Гнёзда — углубления на месте будущих клеток. Они проступают в начале
+   смены экрана, клетки поднимаются из них, и гнёзда исчезают. Цвет — как
+   у пустых клеток на первом экране; на светлых блоках — светлый вариант.
+   Слой с гнёздами лежит под клетками, по нему нельзя кликнуть.
+   --------------------------------------------------------------------------- */
+
+.game-sockets {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.game-socket {
+  position: absolute;
+  background: rgb(43 35 52 / 5%);
+  box-shadow:
+    inset 0 0.1875rem 0.5rem rgb(43 35 52 / 13%),
+    inset 0 0 0 1px rgb(43 35 52 / 5%);
+}
+
+.game-socket.is-dark {
+  background: var(--socket-face);
+  box-shadow: var(--shadow-socket);
+}
+
+/* Клетки, которые ещё ни разу не собирались, не видны. Класс
+   is-game-motion скрипт ставит, только если движение не выключено
+   в настройках системы, — иначе всё видно сразу. */
+.is-game-motion [data-game-piece]:not(.is-built) {
+  opacity: 0;
+}
+
+/* Форма регистрации должна лежать выше слоя гнёзд */
+.is-game-screens .lead-form_component {
+  position: relative;
+}
+
+
+/* ---------------------------------------------------------------------------
+   16.5. КАРТА ХОДА
+   ---------------------------------------------------------------------------
+   Маленькое поле из восьми клеток справа, в поле страницы. Одна клетка —
+   один экран. Пройденные — лавандовые, текущая — фиолетовая с фишкой,
+   впереди — углубления. Выезжает из-за края, когда уходит первый экран.
+   При наведении и после хода рядом на секунду видно название экрана.
+   Только на десктопе: на узких экранах для неё нет места.
+   --------------------------------------------------------------------------- */
+
+.game-hud {
+  display: none;
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .is-game-screens .game-hud {
+    /* Размер клетки, зазор и край доски: можно менять */
+    --hud-cell: 1.125rem;
+    --hud-gap: 0.4375rem;
+    --hud-pad: 0.4375rem;
+    position: fixed;
+    z-index: 25;
+    top: 50%;
+    right: max(0.375rem, calc((var(--page-padding) - var(--hud-cell) - 2 * var(--hud-pad)) / 2));
+    display: block;
+    padding: var(--hud-pad);
+    border-radius: 0.75rem;
+    background: var(--tile-face);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 10%),
+      0 0.25rem 0 var(--ink-edge),
+      0 0.75rem 1.5rem -0.5rem rgb(6 3 10 / 55%);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(calc(100% + 1.5rem), -50%);
+    visibility: hidden;
+    transition:
+      opacity 320ms var(--ease-out),
+      transform 520ms var(--ease-out),
+      visibility 0s linear 520ms;
+  }
+
+  .is-game-screens .game-hud.is-shown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(0, -50%);
+    visibility: visible;
+    transition:
+      opacity 320ms var(--ease-out),
+      transform 520ms var(--ease-out),
+      visibility 0s;
+  }
+}
+
+.game-hud_track {
+  display: grid;
+  gap: var(--hud-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.game-hud_item {
+  position: relative;
+}
+
+.game-hud_cell {
+  position: relative;
+  display: block;
+  width: var(--hud-cell);
+  height: var(--hud-cell);
+  border-radius: 0.3125rem;
+  background: rgb(18 12 26 / 45%);
+  box-shadow:
+    inset 0 0.125rem 0.25rem rgb(6 3 10 / 55%),
+    inset 0 0 0 1px rgb(255 255 255 / 5%);
+  transition:
+    background-color 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.game-hud_cell.is-passed {
+  background: rgb(218 214 255 / 55%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%);
+}
+
+.game-hud_cell.is-active {
+  background: var(--violet);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 16%),
+    0 0.1875rem 0 var(--violet-edge);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .game-hud_cell:not(.is-active):hover {
+    background: rgb(218 214 255 / 80%);
+  }
+}
+
+.game-hud :focus-visible {
+  outline-color: var(--lavender);
+}
+
+/* Название экрана — подсказка слева от клетки */
+.game-hud_label {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + var(--hud-pad) + 0.625rem);
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
+  background: var(--ink);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 12%),
+    0 0.5rem 1.25rem -0.5rem rgb(6 3 10 / 50%);
+  color: var(--on-dark);
+  font-family: var(--font-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0.5rem, -50%);
+  transition:
+    opacity 200ms ease,
+    transform 260ms var(--ease-out);
+}
+
+.game-hud_cell:hover .game-hud_label,
+.game-hud_cell:focus-visible .game-hud_label,
+.game-hud_item.is-announced .game-hud_label {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* Фишка стоит на текущей клетке и прыгает на следующую */
+.game-hud_pawn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.875rem;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
 }
