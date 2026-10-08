@@ -118,30 +118,19 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-loop.is-pencil .sc-loop_svg path { stroke-width: 2.6; }
 .sc-loop.is-pencil .sc-loop_svg .sc-loop_second { stroke-width: 1.4; opacity: 0.55; }
 
-/* Общие фильтры и рисунок «замазки» лежат в невидимом svg */
+/* Общие фильтры лежат в невидимом svg */
 .sc-defs { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
 
-/* Слово «по замазке»: белый рваный мазок с сухими волокнами по краям (рисунок #sc-brush).
-   Мазок проявляется слева направо, долю задаёт переменная --mark (0…1). */
-.sc-mark {
-  position: relative;
-  z-index: 0;
-  display: inline-block;
-  padding-inline: 0.14em;
-  color: var(--violet);
-}
-/* Мазок шире слова и опускается ниже строки, чтобы хвосты «р» и «у» не терялись на фиолетовом */
-.sc-mark_svg {
-  position: absolute;
-  top: 0.02em;
-  left: -0.16em;
-  z-index: -1;
-  width: calc(100% + 0.32em);
-  height: calc(100% + 0.2em);
-  overflow: visible;
-  pointer-events: none;
-  clip-path: inset(-10% calc((1 - var(--mark, 1)) * 100%) -10% 0);
-}
+/* Выделенные слова («первую практику», «быстрее»): белый текст и небрежное подчёркивание белым карандашом —
+   линия вылетает за края слова, второй проход и короткий росчерк назад. Проявляется слева направо (--mark). */
+.sc-mark { position: relative; z-index: 0; display: inline-block; }
+.sc-mark_line { position: absolute; left: -0.1em; bottom: -0.16em; z-index: -1; width: calc(100% + 0.22em); height: 0.34em; overflow: visible; pointer-events: none; clip-path: inset(-40% calc((1 - var(--mark, 1)) * 100%) -40% 0); }
+.sc-mark_line path { fill: none; stroke: var(--white); stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.sc-mark_line .is-second { stroke-width: 2; opacity: 0.75; }
+@media (min-width: 64.0625rem) { .sc-mark_line path { stroke-width: 4.6; } .sc-mark_line .is-second { stroke-width: 2.4; } }
+/* Карандашные линии первого экрана — в своих слоях: пока экран сжимается при прокрутке,
+   Safari не пересчитывает их фильтр на каждом кадре */
+.sc-hero .sc-loop_svg, .sc-hero .sc-mark_line { will-change: transform; }
 
 /* =========================================================================
    1. Первый экран
@@ -715,15 +704,11 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-toggle[aria-checked="true"] .sc-toggle_track { background: var(--lavender); }
 .sc-toggle[aria-checked="true"] .sc-toggle_thumb { transform: translateX(1.375rem); }
 
-/* ---------- Финал: клубок → стрелка, фраза, кнопка ---------- */
+/* ---------- Финал: фраза и кнопка ---------- */
 .sc-pains_finale { display: flex; flex-direction: column; margin-top: 4.5rem; }
 .sc-finale_inner { display: flex; flex-direction: column; }
-.sc-knot { width: 100%; max-width: 56rem; height: auto; overflow: visible; }
-.sc-knot_path, .sc-knot_head { fill: none; stroke: var(--white); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.sc-finale_text { max-width: 64rem; margin-top: 1.5rem; font: 800 clamp(2.25rem, 10vw, 5.25rem)/1.02 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
-.sc-mark.is-on-dark { color: var(--violet); }
+.sc-finale_text { max-width: 64rem; font: 800 clamp(2.25rem, 10vw, 5.25rem)/1.02 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
 .sc-finale_actions { display: flex; flex-direction: column; align-items: stretch; gap: 0.875rem; margin-top: 2rem; }
-.sc-finale_note { color: var(--lavender); font-style: italic; font-size: 1rem; }
 
 .sc-pains_progress { display: none; }
 
@@ -749,8 +734,7 @@ body { margin: 0; background: var(--page, #f5f5f5); }
   .sc-pain_title { font-size: clamp(1.625rem, 2.1vw, 2.125rem); }
   .sc-pains_dots { display: none; }
   .sc-pains_finale { flex: none; justify-content: center; width: 100vw; margin: 0; padding-inline: var(--page-padding) 0; }
-  .sc-knot { width: min(56rem, 72vw); }
-  .sc-finale_text { margin-top: 2rem; font-size: clamp(3rem, 5vw, 5.25rem); }
+  .sc-finale_text { font-size: clamp(3rem, 5vw, 5.25rem); }
   .sc-finale_actions { flex-direction: column; align-items: flex-start; gap: 0.75rem; margin-top: 2.5rem; }
 
   /* Полоска прогресса сцены — по центру под карточками */

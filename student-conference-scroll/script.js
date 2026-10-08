@@ -725,7 +725,7 @@
     return;
   }
 
-  gsap.registerPlugin(ScrollTrigger, SplitText, DrawSVGPlugin, MorphSVGPlugin);
+  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
 
   const hero = $("[data-sc-hero]");
   const heroFrame = $("[data-sc-hero-frame]");
@@ -753,9 +753,6 @@
   const painsProgress = $("[data-sc-pains-progress]");
   const finale = $("[data-sc-finale]");
   const finaleText = $("[data-sc-finale-text]");
-  const knot = $("[data-sc-knot]");
-  const KNOT_STRAIGHT = "M40 80C300 80 560 80 840 80";
-  const knotHead = $(".sc-knot_head");
   const benefits = $("[data-sc-benefits]");
   const day = $("[data-sc-day]");
   const anti = $("[data-sc-anti]");
@@ -917,14 +914,6 @@
         .to(marks, { "--mark": 1, duration: 0.55, stagger: 0.18, ease: "power2.out" }, 0.95)
         .to(deckArrow, { drawSVG: "100%", duration: 0.6, stagger: 0.25, ease: "power2.out" }, 1.35)
         .to(accents, { drawSVG: "100%", duration: 0.35, stagger: 0.06, ease: "power2.out" }, 1.5);
-
-      // Чек-лист: пункты выезжают лесенкой
-      gsap.set(checks, { x: desktop ? 70 : 0, y: desktop ? 0 : 24, opacity: 0 });
-      ScrollTrigger.batch(checks, {
-        start: "top 92%",
-        once: true,
-        onEnter: (batch) => gsap.to(batch, { x: 0, y: 0, opacity: 1, duration: 0.75, stagger: 0.09, ease: "power3.out" }),
-      });
 
       // Станции «Что вы получите»: отрезки линии прорисовываются от станции к станции, подписи загораются.
       // Телефон: линия идёт вниз вдоль всего списка. Планшет и десктоп: вправо, пока станции въезжают на экран.
@@ -1091,13 +1080,6 @@
           onEnter: () => painItems.forEach((card) => cardObserver.observe(card)),
         });
 
-        // Финал: клубок рисуется и распрямляется в стрелку по мере прокрутки
-        gsap.set(knot, { drawSVG: "0%" });
-        gsap.set(knotHead, { opacity: 0 });
-        gsap.timeline({ scrollTrigger: { trigger: finale, start: "top 85%", end: "top 25%", scrub: 0.6 } })
-          .to(knot, { drawSVG: "100%", ease: "none", duration: 0.5 })
-          .to(knot, { morphSVG: KNOT_STRAIGHT, ease: "power1.inOut", duration: 0.5 })
-          .to(knotHead, { opacity: 1, duration: 0.1 }, "-=0.1");
         gsap.fromTo($(".sc-mark", finale), { "--mark": 0 }, { "--mark": 1, duration: 0.6, ease: "power2.out", scrollTrigger: { trigger: finaleText, start: "top 75%", once: true } });
 
         return () => {
@@ -1214,25 +1196,8 @@
         .from($(".sc-road_path", roadCard), { drawSVG: "0%", ease: "none", duration: 0.9 })
         .from($(".sc-road_flag", roadCard), { scale: 0, transformOrigin: "0% 100%", ease: "back.out(2)", duration: 0.1 });
 
-      // Финал: клубок рисуется, потом распрямляется в стрелку
-      const straight = KNOT_STRAIGHT;
-      gsap.set(knot, { drawSVG: "0%" });
-      gsap.set(knotHead, { opacity: 0 });
-      gsap.timeline({ scrollTrigger: inTrack(finale, "left 85%", "left 8%") })
-        .to(knot, { drawSVG: "100%", ease: "none", duration: 0.45 })
-        .to(knot, { morphSVG: straight, ease: "power1.inOut", duration: 0.55 })
-        .to(knotHead, { opacity: 1, duration: 0.1 }, "-=0.1");
-
-      // Буквы фразы прилетают и собираются, как в примере GreenSock
-      const split = SplitText.create(finaleText, { type: "words,chars" });
-      gsap.from(split.chars, {
-        yPercent: () => gsap.utils.random(-320, 320),
-        rotation: () => gsap.utils.random(-75, 75),
-        opacity: 0,
-        ease: "power3.out",
-        stagger: { each: 0.012, from: "random" },
-        scrollTrigger: inTrack(finale, "left 98%", "left 18%"),
-      });
+      // Фраза финала спокойно поднимается, пока сцена доезжает
+      gsap.from(finaleText, { y: 40, opacity: 0, ease: "none", scrollTrigger: inTrack(finale, "left 85%", "left 35%") });
       gsap.fromTo($(".sc-mark", finale), { "--mark": 0 }, { "--mark": 1, ease: "none", scrollTrigger: inTrack(finale, "left 20%", "left 2%") });
       gsap.from($(".sc-finale_actions", finale), { y: 30, opacity: 0, ease: "none", scrollTrigger: inTrack(finale, "left 22%", "left 2%") });
 
@@ -1571,7 +1536,6 @@
         benefits.style.marginTop = "";
         ScrollTrigger.removeEventListener("refreshInit", pullBenefits);
         benefitLinks.forEach((link) => link.removeEventListener("click", toBenefits));
-        split.revert();
         hidePortal();
         antiTrigger.kill();
         flyers.forEach((node) => node.remove());
