@@ -75,15 +75,16 @@
     <defs>
       <!-- Логотип Академии (вектор из icons/logo-asp.svg других лендингов), цвет берётся от текста -->
       <symbol id="sc-logo" viewBox="0 0 84 30"><path d="M43.8333 29.3797C39.7611 29.3797 36.4119 28.0298 33.7856 25.33C31.1291 22.6005 29.8066 19.1575 29.8066 15.0027C29.8066 10.847 31.1344 7.40484 33.7856 4.6745C36.4163 1.97022 39.7611 0.620331 43.8333 0.620331C47.9055 0.620331 51.3435 1.9855 53.9991 4.71045C54.4618 5.18498 54.9388 5.77185 55.4299 6.45937L51.9137 9.07737C51.4519 8.38984 51.0629 7.90004 50.7529 7.60705C49.0023 5.8069 46.7198 4.90727 43.9123 4.90727C41.104 4.90727 38.8507 5.82218 37.0709 7.64749C35.2164 9.5528 34.2874 12.0045 34.2874 14.9973C34.2874 17.9901 35.2164 20.4418 37.0709 22.348C38.8463 24.1724 41.128 25.0873 43.9123 25.0873C46.6958 25.0873 49.283 24.0412 51.3728 21.9481L52.1446 21.0736L55.5481 23.5361C55.1111 24.1167 54.6581 24.6631 54.1963 25.1637C51.4661 27.9696 48.0138 29.3743 43.8377 29.3743L43.8333 29.3797Z"/><path d="M63 1.30518H84.0004V29.3797H79.716V5.63795H67.2845V29.3797H63V1.30518Z"/><path d="M15.9984 1.30518H10.4207L0 29.3797H4.54381L7.23492 21.9598H15.6706L14.1119 17.6719H8.79363L9.86208 14.7232L9.87629 14.7286L13.1705 5.6748L18.7925 20.9604L21.9295 29.3797H26.4191L15.9984 1.30518Z"/></symbol>
+      <!-- Карандаш: шум в одну октаву — на глаз как две, но Safari считает его вдвое быстрее -->
       <filter id="sc-pencil" x="-5%" y="-15%" width="110%" height="130%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="grain"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="3" result="grain"/>
         <feDisplacementMap in="SourceGraphic" in2="grain" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="wobble"/>
         <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.9 0 0 0 1.8" result="grainAlpha"/>
         <feComposite in="wobble" in2="grainAlpha" operator="in"/>
       </filter>
       <!-- Мягкий карандаш для длинных линий (клубок → стрелка): меньше пропусков, линия не рассыпается в пунктир -->
       <filter id="sc-pencil-soft" x="-2%" y="-20%" width="104%" height="140%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="grain"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="4" result="grain"/>
         <feDisplacementMap in="SourceGraphic" in2="grain" scale="2" xChannelSelector="R" yChannelSelector="G" result="wobble"/>
         <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.1 0 0 0 1.55" result="grainAlpha"/>
         <feComposite in="wobble" in2="grainAlpha" operator="in"/>
@@ -100,6 +101,9 @@
         <feColorMatrix in="fibers" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -3 0 0 0 2.4" result="fiberAlpha"/>
         <feComposite in="ragged" in2="fiberAlpha" operator="in"/>
       </filter>
+      <!-- «Замазка» и маркер ниже — исходники. На странице вместо них готовые картинки assets/brush.webp
+           и assets/highlight.webp, отрисованные из этих фильтров один раз: живые фильтры с шумом Safari
+           пересчитывал на каждом кадре прокрутки. Поменяли рисунок — перерисовать картинки. -->
       <g id="sc-brush">
         <path filter="url(#sc-whiteout)" fill="#fff" d="M16 14C76 7 156 12 232 9s128-2 154 6c8 18 9 47 4 70-58 8-134 4-208 7S56 95 14 88C6 68 6 37 16 14Z"/>
         <path filter="url(#sc-dry)" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" d="M30 17H4M26 30H8M24 44H2M24 57H9M25 70H3M30 83H11M372 17h24M378 30h20M382 44h14M381 57h18M378 70h16M370 83h22M60 9h120M210 7h110M80 92h130M240 90h100"/>
@@ -149,8 +153,8 @@
             <h1 class="sc-hero_title" id="hero-title">
               <span class="sc-hero_line" data-sc-hero-line>Как превратить</span>
               <span class="sc-hero_line" data-sc-hero-line><span class="sc-loop is-pencil" data-sc-loop>знания из&nbsp;вуза<svg class="sc-loop_svg" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#sc-pencil)"><path d="M30 64C34 30 120 12 214 13c92 1 173 18 175 52 2 34-84 47-188 46C99 110 13 98 10 66c-2-26 54-44 133-49" /><path class="sc-loop_second" d="M22 72C16 42 104 20 206 19c98-1 176 15 180 50 3 26-30 40-64 45" /></g></svg></span></span>
-              <span class="sc-hero_line" data-sc-hero-line>в&nbsp;<span class="sc-mark" data-sc-mark><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><use href="#sc-brush"/></svg>первую</span></span>
-              <span class="sc-hero_line" data-sc-hero-line><span class="sc-mark" data-sc-mark><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><use href="#sc-brush" transform="translate(400 0) scale(-1 1)"/></svg>практику</span></span>
+              <span class="sc-hero_line" data-sc-hero-line>в&nbsp;<span class="sc-mark" data-sc-mark><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><image href="assets/brush.webp" x="-10" y="-10" width="420" height="120" preserveAspectRatio="none"/></svg>первую</span></span>
+              <span class="sc-hero_line" data-sc-hero-line><span class="sc-mark" data-sc-mark><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><image href="assets/brush.webp" x="-10" y="-10" width="420" height="120" preserveAspectRatio="none" transform="translate(400 0) scale(-1 1)"/></svg>практику</span></span>
             </h1>
             <p class="sc-hero_meta" data-sc-hero-fade>21&nbsp;ноября · суббота · онлайн</p>
             <p class="sc-hero_lead" data-sc-hero-fade>Конференция АСП для&nbsp;студентов старших курсов и&nbsp;выпускников: где работать после вуза, какой метод выбрать, как найти первых клиентов и&nbsp;как прийти в&nbsp;психологию из&nbsp;другой профессии.</p>
@@ -343,7 +347,7 @@
                 <path class="sc-knot_head" d="M818 64l26 16-26 16"/>
               </g>
             </svg>
-            <p class="sc-finale_text" data-sc-finale-text>Наша конференция о&nbsp;том, как пройти этот путь <span class="sc-mark is-on-dark"><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><use href="#sc-brush"/></svg>быстрее</span></p>
+            <p class="sc-finale_text" data-sc-finale-text>Наша конференция о&nbsp;том, как пройти этот путь <span class="sc-mark is-on-dark"><svg class="sc-mark_svg" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><image href="assets/brush.webp" x="-10" y="-10" width="420" height="120" preserveAspectRatio="none"/></svg>быстрее</span></p>
             <div class="sc-finale_actions">
               <a class="sc-button is-light is-large" href="#registration">Стать участником</a>
               <p class="sc-finale_note">21&nbsp;ноября, онлайн, бесплатно</p>

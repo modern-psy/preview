@@ -73,10 +73,11 @@
 
   /* ---------------------------------------------------------------------
      Хайлайтер: под каждой строкой отмеченного пункта рисуется полоса с рваными краями
-     (рисунок #sc-hl). Строки закрашиваются по очереди, слева направо — как маркером в тетради.
+     (картинка assets/highlight.webp, нарисована по #sc-hl). Строки закрашиваются по очереди, слева направо — как маркером в тетради.
      --------------------------------------------------------------------- */
   const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const HL_SVG = '<svg viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><use href="#sc-hl"/></svg>';
+  // Полоса маркера — готовая картинка (отрисована из #sc-hl один раз, так быстрее в Safari)
+  const HL_SVG = '<svg viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><image href="assets/highlight.webp" x="-6" y="-6" width="412" height="52" preserveAspectRatio="none"/></svg>';
   // Строки текста: прямоугольники, которые браузер отдаёт для каждой строки, склеенные по высоте
   const textLines = (node) => {
     const range = document.createRange();
@@ -1373,35 +1374,56 @@
         return `path("${d}Z")`;
       }
       gsap.set(strikes, { drawSVG: "0%" });
+      // Производительность: сцены пересчитываются только когда прогресс изменился,
+      // а летящее фото — только пока оно летит. Иначе Safari и Firefox перерисовывают
+      // большую картинку на каждом кадре прокрутки, и анимации проседают до 15–20 кадров.
+      let lastAnti = -1;
+      let lastConverge = -1;
+      let flyerParked = false;
+      const strikeDone = strikeWords.map(() => [-1, -1]);
+      const resetSceneCache = () => { lastAnti = -1; lastConverge = -1; flyerParked = false; };
+      ScrollTrigger.addEventListener("refresh", resetSceneCache);
       const renderAnti = (progress) => {
-        const stage = antiStage.getBoundingClientRect();
+        if (progress === lastAnti) return;
+        lastAnti = progress;
         const flight = smooth(clamp(progress / 0.42));
 
         // Лента всё время медленно едет влево
         ribbon.style.transform = `translate3d(${lerp(6, -26, progress)}vw, 0, 0)`;
 
-        // Куда садится фото: центр карточки в ленте, её размер без наклона и сам наклон
-        const target = ribbonTarget.getBoundingClientRect();
-        const targetW = ribbonTarget.offsetWidth;
-        const targetH = ribbonTarget.offsetHeight;
-        const targetRotate = parseFloat(getComputedStyle(ribbonTarget).rotate) || 0;
-        const to = {
-          left: target.left + target.width / 2 - targetW / 2 - stage.left,
-          top: target.top + target.height / 2 - targetH / 2 - stage.top,
-          width: targetW,
-          height: targetH,
-        };
-        const box = mixRect({ left: 0, top: 0, width: stage.width, height: stage.height }, to, flight);
-        flyer.style.left = `${box.left}px`;
-        flyer.style.top = `${box.top}px`;
-        flyer.style.width = `${box.width}px`;
-        flyer.style.height = `${box.height}px`;
-        flyer.style.clipPath = flyerShape(flight, box.width, box.height);
-        // Кадрирование снимка плавно переходит к кадрированию карточки в ленте — при посадке нет скачка
-        flyerImg.style.objectPosition = `50% ${lerp(30, 50, flight)}%`;
-        flyer.style.transform = `rotate(${lerp(0, targetRotate, flight)}deg)`;
-        flyer.style.visibility = flight >= 1 ? "hidden" : "visible";
-        targetImg.style.opacity = flight >= 1 ? "1" : "0";
+        // Фото приземлилось: прячем его один раз и дальше не трогаем
+        if (flight >= 1) {
+          if (!flyerParked) {
+            flyer.style.visibility = "hidden";
+            targetImg.style.opacity = "1";
+            flyerParked = true;
+          }
+        } else {
+          flyerParked = false;
+          const stage = antiStage.getBoundingClientRect();
+          // Куда садится фото: центр карточки в ленте, её размер без наклона и сам наклон
+          const target = ribbonTarget.getBoundingClientRect();
+          const targetW = ribbonTarget.offsetWidth;
+          const targetH = ribbonTarget.offsetHeight;
+          const targetRotate = parseFloat(getComputedStyle(ribbonTarget).rotate) || 0;
+          const to = {
+            left: target.left + target.width / 2 - targetW / 2 - stage.left,
+            top: target.top + target.height / 2 - targetH / 2 - stage.top,
+            width: targetW,
+            height: targetH,
+          };
+          const box = mixRect({ left: 0, top: 0, width: stage.width, height: stage.height }, to, flight);
+          flyer.style.left = `${box.left}px`;
+          flyer.style.top = `${box.top}px`;
+          flyer.style.width = `${box.width}px`;
+          flyer.style.height = `${box.height}px`;
+          flyer.style.clipPath = flyerShape(flight, box.width, box.height);
+          // Кадрирование снимка плавно переходит к кадрированию карточки в ленте — при посадке нет скачка
+          flyerImg.style.objectPosition = `50% ${lerp(30, 50, flight)}%`;
+          flyer.style.transform = `rotate(${lerp(0, targetRotate, flight)}deg)`;
+          flyer.style.visibility = "visible";
+          targetImg.style.opacity = "0";
+        }
 
         // Заголовок переворачивается в 3D и встаёт на место, потом слова зачёркиваются по очереди
         const tEase = smooth(clamp((progress - 0.22) / 0.3));
@@ -1411,8 +1433,11 @@
         strikeWords.forEach((word, index) => {
           const [from, span] = index === 0 ? [0.5, 0.14] : [0.65, 0.1];
           const t = clamp((progress - from) / span);
-          gsap.set(word.main, { drawSVG: `${clamp(t / 0.8) * 100}%` });
-          gsap.set(word.second, { drawSVG: `${clamp((t - 0.55) / 0.45) * 100}%` });
+          const main = clamp(t / 0.8);
+          const second = clamp((t - 0.55) / 0.45);
+          // Линию перерисовываем, только если она изменилась: у неё карандашный фильтр, он дорогой
+          if (main !== strikeDone[index][0]) { gsap.set(word.main, { drawSVG: `${main * 100}%` }); strikeDone[index][0] = main; }
+          if (second !== strikeDone[index][1]) { gsap.set(word.second, { drawSVG: `${second * 100}%` }); strikeDone[index][1] = second; }
         });
         antiSide.style.opacity = String(clamp((progress - 0.5) / 0.15));
       };
@@ -1441,6 +1466,8 @@
         return node;
       });
       const renderConverge = (t) => {
+        if (t === lastConverge) return;
+        lastConverge = t;
         const active = t > 0 && t < 1;
 
         // Заголовок и текст антипозиции уходят вверх
@@ -1473,7 +1500,9 @@
           const node = flyers[i];
           const tile = photoTiles[i];
           if (!tile || !active) {
-            node.style.visibility = "hidden";
+            // display: none, а не visibility: hidden — иначе Firefox держит пять скрытых фото
+            // поверх страницы и перерисовывает их на каждом кадре прокрутки
+            node.style.display = "none";
             item.style.visibility = "";
             if (tile) tile.style.opacity = t >= 1 ? "1" : "0";
             return;
@@ -1488,7 +1517,7 @@
           const cy = lerp(a.top + a.height / 2, b.top + b.height / 2, f);
           const rotation = parseFloat(getComputedStyle(item).rotate) || 0;
           Object.assign(node.style, {
-            visibility: "visible",
+            display: "block",
             left: `${cx - w / 2}px`,
             top: `${cy - h / 2}px`,
             width: `${w}px`,
@@ -1536,6 +1565,7 @@
       ScrollTrigger.refresh();
 
       return () => {
+        ScrollTrigger.removeEventListener("refresh", resetSceneCache);
         pains.classList.remove("is-veiled");
         pains.style.clipPath = "";
         benefits.style.marginTop = "";
