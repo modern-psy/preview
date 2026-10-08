@@ -132,6 +132,15 @@
     0 0.25rem 0.5rem -0.25rem rgb(43 35 52 / 35%);
   --press-shift: calc(var(--tile-depth) - 0.0625rem);
 
+  /* Доска (плита поля) и углубление в ней — как пустые клетки на первом
+     экране. Углублениями сделаны и поля формы регистрации. */
+  --plate-face: linear-gradient(180deg, #372d45 0%, #30273c 100%);
+  --plate-edge: #18121f;
+  --socket-face: rgb(18 12 26 / 38%);
+  --shadow-socket:
+    inset 0 0.1875rem 0.5rem rgb(6 3 10 / 50%),
+    inset 0 0 0 1px rgb(255 255 255 / 5%);
+
   /* Шрифты и размеры. Размеры тянутся от телефона до 1680px. */
   --font-display: "Wix Madefor Display", "Wix Madefor Text", Arial, sans-serif;
   --font-text: "Wix Madefor Text", Arial, sans-serif;
@@ -733,10 +742,10 @@ html {
   bottom: calc(-1 * var(--plate-pad));
   left: calc(-1 * var(--plate-pad));
   border-radius: calc(var(--tile-radius) + var(--plate-pad) * 0.6);
-  background: linear-gradient(180deg, #372d45 0%, #30273c 100%);
+  background: var(--plate-face);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 8%),
-    0 0.5rem 0 #18121f,
+    0 0.5rem 0 var(--plate-edge),
     0 1.5rem 2.5rem -0.75rem rgb(6 3 10 / 70%);
   content: "";
   pointer-events: none;
@@ -746,10 +755,8 @@ html {
    настольной игры (вариант Б, выбран 08.10.2026). Объёмными остаются
    этапы, фишка, монеты и панель с заголовком. */
 .board_component .board_cell {
-  background: rgb(18 12 26 / 38%);
-  box-shadow:
-    inset 0 0.1875rem 0.5rem rgb(6 3 10 / 50%),
-    inset 0 0 0 1px rgb(255 255 255 / 5%);
+  background: var(--socket-face);
+  box-shadow: var(--shadow-socket);
 }
 
 /* --- Панель с заголовком ------------------------------------------------ */
@@ -3435,18 +3442,33 @@ body > .iti--detached-country-selector .iti__no-results {
 }
 
 /* --- Тема страницы ------------------------------------------------------
-   Форма — тёмная плита поля с толщиной; заголовок тем же шрифтом, что
-   и вся страница; кнопка регистрации «нажимается», как остальные. */
+   Форма собрана из тех же деталей, что и всё поле:
+   — сама форма — доска, как на первом экране (плита с толщиной);
+   — поля ввода — углубления в доске, как пустые клетки;
+   — MAX и Telegram — переключатель, как в iPhone: общая дорожка-
+     углубление, по ней скользит фиолетовая клетка выбранного варианта;
+   — кнопка, пока поля не заполнены, утоплена в доску, как пустая клетка;
+     когда всё заполнено верно, она поднимается и становится белой;
+   — подарок — фиолетовая клетка с толщиной.
+   Цвета — из раздела 0; стандартные проверки и состояния формы
+   (скрипт lead-form.js) не меняются. */
 
 .signup_component {
   position: relative;
 }
 
+/* Доска */
 .signup_component .lead-form_component.is-responsive {
   --lead-form-padding: clamp(1.5rem, 4vw, 3.5rem);
   --color-surface-dark: var(--ink);
-  border-radius: var(--tile-radius);
-  box-shadow: var(--shadow-dark);
+  --color-form-muted: var(--on-dark-3);
+  --field-radius: 0.875rem;
+  border-radius: calc(var(--tile-radius) + 0.25rem);
+  background: var(--plate-face);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 8%),
+    0 0.5rem 0 var(--plate-edge),
+    0 1.5rem 2.5rem -0.75rem rgb(43 35 52 / 40%);
 }
 
 .signup_component .lead-form_heading {
@@ -3464,6 +3486,211 @@ body > .iti--detached-country-selector .iti__no-results {
   line-height: 1.45;
 }
 
+/* Подарок — фиолетовая клетка с толщиной */
+.signup_component .gift_component {
+  border: 0;
+  border-radius: var(--tile-radius);
+  background: var(--violet);
+  box-shadow: var(--shadow-violet);
+}
+
+.signup_component .gift_heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+/* Поля — углубления в доске */
+.signup_component .lead-form_input,
+.signup_component .lead-form_control > .iti > .lead-form_input {
+  border: 0;
+  border-radius: var(--field-radius);
+  background: var(--socket-face);
+  box-shadow: var(--shadow-socket);
+  color: var(--on-dark);
+  caret-color: var(--lavender);
+  font-family: var(--font-text);
+  transition:
+    background-color var(--dur) ease,
+    box-shadow var(--dur) ease;
+}
+
+.signup_component .lead-form_label,
+.signup_component .lead-form_field.is-phone .lead-form_input::placeholder {
+  color: var(--on-dark-3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .signup_component .lead-form_control:hover .lead-form_input,
+  .signup_component .lead-form_control:hover > .iti > .lead-form_input {
+    box-shadow:
+      var(--shadow-socket),
+      inset 0 0 0 1px rgb(255 255 255 / 16%);
+  }
+}
+
+/* Фокус: лавандовый край углубления (рамка вокруг поля не нужна) */
+.signup_component .lead-form_input:focus-visible {
+  outline: none;
+}
+
+.signup_component .lead-form_control:focus-within .lead-form_input,
+.signup_component .lead-form_control:focus-within > .iti > .lead-form_input {
+  background: rgb(18 12 26 / 50%);
+  box-shadow:
+    var(--shadow-socket),
+    inset 0 0 0 2px var(--lavender);
+}
+
+.signup_component .lead-form_control:focus-within .lead-form_label {
+  color: var(--lavender);
+}
+
+/* Ошибка: красный край углубления */
+.signup_component .lead-form_field[data-state="invalid"] .lead-form_input,
+.signup_component .lead-form_field[data-state="invalid"] .iti > .lead-form_input {
+  box-shadow:
+    var(--shadow-socket),
+    inset 0 0 0 2px var(--color-form-error);
+}
+
+/* Выбор страны внутри поля телефона */
+.signup_component .lead-form_control .iti__selected-country {
+  border-radius: var(--field-radius) 0 0 var(--field-radius);
+  color: var(--on-dark-2) !important;
+}
+
+/* MAX / Telegram — переключатель, как в iPhone: одна общая дорожка-
+   углубление, а выбранная половина — фиолетовая клетка, которая
+   скользит под нужную надпись. Сами кнопки — прозрачные надписи
+   поверх дорожки; какую половину подсветить, решает :has() по тому,
+   какая радиокнопка выбрана. */
+.signup_component .lead-form_messenger-title {
+  color: var(--on-dark-2);
+  font-weight: 500;
+}
+
+.signup_component .lead-form_messenger-options {
+  --switch-pad: 0.3125rem;
+  --switch-edge: 0.1875rem;
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  padding: var(--switch-pad) var(--switch-pad) calc(var(--switch-pad) + var(--switch-edge));
+  border-radius: var(--field-radius);
+  background: var(--socket-face);
+  box-shadow: var(--shadow-socket);
+  transition: box-shadow var(--dur) ease;
+}
+
+/* Скользящая клетка */
+.signup_component .lead-form_messenger-options::before {
+  position: absolute;
+  z-index: -1;
+  top: var(--switch-pad);
+  bottom: calc(var(--switch-pad) + var(--switch-edge));
+  left: var(--switch-pad);
+  width: calc((100% - 2 * var(--switch-pad)) / 2);
+  border-radius: calc(var(--field-radius) - var(--switch-pad));
+  background: var(--violet);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 16%),
+    0 var(--switch-edge) 0 var(--violet-edge),
+    0 0.375rem 0.75rem -0.125rem rgb(6 3 10 / 45%);
+  content: "";
+  transition: transform 320ms var(--ease-out);
+}
+
+.signup_component .lead-form_messenger-options:has(.lead-form_messenger-input[value="telegram"]:checked)::before {
+  transform: translateX(100%);
+}
+
+.signup_component .lead-form_component .lead-form_messenger-option {
+  border: 0;
+  border-radius: calc(var(--field-radius) - var(--switch-pad));
+  background: transparent;
+  color: var(--on-dark-3);
+  font-family: var(--font-text);
+  font-weight: 600;
+  transition: color var(--dur) ease;
+}
+
+.signup_component .lead-form_component .lead-form_messenger-input:not(:checked) + .lead-form_messenger-option {
+  color: var(--on-dark-3);
+}
+
+.signup_component .lead-form_component .lead-form_messenger-input:checked + .lead-form_messenger-option {
+  background: transparent;
+  color: var(--on-dark);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .signup_component .lead-form_component .lead-form_messenger-input:not(:checked) + .lead-form_messenger-option:hover {
+    color: var(--on-dark);
+  }
+}
+
+/* Фокус с клавиатуры — лавандовый край у всей дорожки */
+.signup_component .lead-form_messenger-input:focus-visible + .lead-form_messenger-option {
+  outline: none;
+}
+
+.signup_component .lead-form_messenger-options:has(.lead-form_messenger-input:focus-visible) {
+  box-shadow:
+    var(--shadow-socket),
+    inset 0 0 0 2px var(--lavender);
+}
+
+/* Кнопка — как остальные кнопки страницы: белая, с толщиной, нажимается */
+.signup_component .lead-form_submit.button {
+  min-height: 3.75rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radius-button);
+  font-family: var(--font-text);
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .signup_component .lead-form_submit.button:not(:disabled):hover {
+    background: var(--lavender-soft);
+  }
+}
+
+/* Пока поля не заполнены — кнопка утоплена в доску, как пустая клетка.
+   Когда всё верно, она поднимается (переход translate и тени задан
+   у .button в разделе 2) */
+.signup_component .lead-form_submit.button:disabled {
+  translate: 0 var(--button-depth);
+  background: var(--socket-face);
+  box-shadow: var(--shadow-socket);
+  cursor: not-allowed;
+}
+
+/* Во время отправки — снова белая и поднятая */
+.signup_component .lead-form_submit.button[aria-busy="true"]:disabled {
+  translate: none;
+  background: var(--white);
+  box-shadow: 0 var(--button-depth) 0 var(--button-edge);
+}
+
+.signup_component .lead-form_submit:focus-visible {
+  outline: 2px solid var(--lavender);
+  outline-offset: 0.25rem;
+}
+
+.signup_component .lead-form_legal {
+  color: var(--on-dark-3);
+}
+
+.signup_component .lead-form_legal a:focus-visible,
+.signup_component .lead-form_control .iti__selected-country:focus-visible {
+  outline-color: var(--lavender);
+}
+
+/* После отправки */
 .signup_component .lead-form_success-heading {
   color: var(--on-dark);
   font-family: var(--font-display);
@@ -3471,24 +3698,41 @@ body > .iti--detached-country-selector .iti__no-results {
   letter-spacing: -0.03em;
 }
 
-.signup_component .lead-form_submit.button {
-  min-height: 3.75rem;
-  padding: 0.875rem 1.75rem;
-  border-radius: var(--radius-button);
-  font-size: 1.125rem;
-  letter-spacing: -0.01em;
+.signup_component .lead-form_success-description {
+  color: var(--on-dark-2);
 }
 
-/* Пока поля не заполнены, кнопка плоская и не нажимается */
-.signup_component .lead-form_submit.button:disabled {
-  translate: none;
-  box-shadow: none;
-  cursor: not-allowed;
+/* Список стран телефона открывается поверх страницы, вне её обёртки,
+   поэтому переменные раздела 0 до него не доходят: цвета повторены
+   буквально — это --ink-raised, --ink-edge и --violet. */
+body > .iti--detached-country-selector .iti__country-selector {
+  border: 0;
+  border-radius: 1rem;
+  background: #3a3047;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 0.4375rem 0 #1b1522,
+    0 1.5rem 2.5rem -0.5rem rgb(6 3 10 / 60%);
 }
 
-/* Во время отправки — снова белая */
-.signup_component .lead-form_submit.button[aria-busy="true"]:disabled {
-  box-shadow: 0 var(--button-depth) 0 var(--button-edge);
+body > .iti--detached-country-selector .iti__search-input-wrapper,
+body > .iti--detached-country-selector .iti__country-list,
+body > .iti--detached-country-selector .iti__no-results {
+  background: #3a3047;
+}
+
+body > .iti--detached-country-selector .iti__search-input-wrapper {
+  border-bottom-color: rgb(255 255 255 / 10%);
+}
+
+body > .iti--detached-country-selector .iti__country.iti__highlight,
+body > .iti--detached-country-selector .iti__country:hover {
+  background: #7c5cdb;
+}
+
+body > .iti--detached-country-selector .iti__country.iti__highlight .iti__dial-code,
+body > .iti--detached-country-selector .iti__country:hover .iti__dial-code {
+  color: #ffffff;
 }
 
 

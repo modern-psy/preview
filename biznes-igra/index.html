@@ -77,6 +77,12 @@
   <!-- 🔴 Стили только этой страницы -->
   <link rel="stylesheet" href="page.css" />
 
+  <!-- 🟡 Вариант для сравнения «игровые экраны»: работает только по ссылке
+       /biznes-igra/?motion=game, без параметра ничего не меняет.
+       Скрипт стоит раньше page.js — порядок важен. -->
+  <link rel="stylesheet" href="game-screens.css" />
+  <script src="game-screens.js" defer></script>
+
   <!-- 🔴 Скрипт страницы: меню, курсоры, ходы фишки -->
   <script src="page.js" defer></script>
 
@@ -469,8 +475,11 @@
 
           <ul class="problem_list"
               data-cursor="analyst 0.25 0.3; keeper 0.6 0.24; you 0.93 0.62"
-              data-cursor-compact="analyst 0.85 0.08; keeper 0.85 0.42">
-            <li class="problem_card tile is-light" data-reveal>
+              data-cursor-compact="">
+            <!-- На телефоне и планшете Аналитик стоит у картинки первой карточки:
+                 место считается от самой карточки, поэтому не закрывает текст
+                 ни в столбик, ни в ряд -->
+            <li class="problem_card tile is-light" data-reveal data-cursor-spot="" data-cursor-spot-compact="analyst 0.8 0.18">
               <!-- Карточка кейса, часть строк закрыта -->
               <svg class="problem_art" viewBox="0 0 160 100" aria-hidden="true" focusable="false">
                 <rect x="18" y="16" width="118" height="76" rx="11" fill="#dedbe8" />
@@ -555,7 +564,7 @@
           </div>
 
           <div class="rules_coins tile is-violet" data-reveal>
-            <svg class="rules_coins-art" viewBox="0 0 120 116" aria-hidden="true" focusable="false" data-cursor-spot="keeper 1.02 0.55"><use href="#g-coins" /></svg>
+            <svg class="rules_coins-art" viewBox="0 0 120 116" aria-hidden="true" focusable="false" data-cursor-spot="keeper 1.02 0.55" data-cursor-spot-compact=""><use href="#g-coins" /></svg>
             <h3 class="rules_coins-heading">100&nbsp;монет</h3>
             <p class="rules_coins-text">
               Каждая команда получит 100&nbsp;монет&nbsp;— игровой ресурс, который обозначает
@@ -917,12 +926,14 @@
   <section class="section_signup" id="registraciya">
     <div class="padding-global">
       <div class="container-xlarge">
-        <div class="signup_component" data-cursor="you 0.94 0.86" data-cursor-compact="">
+        <div class="signup_component" data-cursor="" data-cursor-compact="">
           <form id="biznes-igra-form" class="lead-form_component is-responsive" data-academy-lead-form data-tilda-form-name="biznes-igra" aria-labelledby="biznes-igra-form-heading" data-state="editing" novalidate ><div class="lead-form_intro" data-lead-content>
               <h2 class="lead-form_heading" id="biznes-igra-form-heading">Участие бесплатное</h2>
               <p class="lead-form_description">Оставьте контакты&nbsp;— пришлём ссылку на&nbsp;Zoom в&nbsp;удобный мессенджер. Можно прийти одному&nbsp;— команду соберём на&nbsp;месте.</p>
             <!-- 🟡 Бизнес-призы. Что именно — не раскрываем (по ТЗ). -->
-              <div class="gift_component">
+              <!-- 🔴 Курсор «Вы» на десктопе стоит под подарком: там пусто
+                   и он не закрывает поля и текст согласия -->
+              <div class="gift_component" data-cursor-spot="you 0.8 1.15" data-cursor-spot-compact="">
                 <div class="gift_copy">
                   <p class="gift_label">Бонус после игры</p>
                   <h3 class="gift_heading">Бизнес-призы от&nbsp;Академии: какие именно&nbsp;— расскажем на&nbsp;встрече</h3>
