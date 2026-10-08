@@ -25,16 +25,17 @@
     🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
        не надо: на них держится вёрстка и работа скриптов.
 
-  КАК РАБОТАЕТ ЗАПИСЬ — так же, как на /cft-spiderman
-    Полей на странице нет. В блоке регистрации стоит виджет BotHelp: человек
-    нажимает кнопку мессенджера, скрипт page.js кладёт служебные значения
-    (ClientID Метрики и UTM-метки) в скрытую форму Тильды, отправляет её
-    и только потом отдаёт нажатие виджету.
+  КАК РАБОТАЕТ ЗАПИСЬ
+    Стандартная лид-форма Академии (как на /narrative-therapy): имя, телефон,
+    мессенджер MAX или Telegram. Скрипт lead-form.js проверяет поля, переносит
+    их в нативную форму Тильды на странице и отправляет её; форма Тильды
+    скрыта, но остаётся на странице — она и есть канал в CRM.
 
   ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
-    · 🟡 виджет BotHelp этой игры — стоит виджет прошлого вебинара, только
-      чтобы проверять вёрстку. Замените data-bh-widget-id и data-bh-customer-id;
-    · 🟡 имя формы Тильды (data-tilda-form-name) — стоит рабочее «biznes-igra»;
+    · 🟡 имя нативной формы Тильды (data-tilda-form-name) — стоит рабочее
+      «biznes-igra», сверить с настройками блока формы;
+    · 🟡 что приходит после заявки (текст «Вы зарегистрированы…») —
+      сверить со сценарием отдела продаж;
     · 🟡 время «14:00 МСК» — в ТЗ часовой пояс не указан, поставили МСК,
       как у всех мероприятий Академии;
     · 🟡 бизнес-призы: на странице сказано только «бизнес-призы от Академии»,
@@ -70,15 +71,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700;800&family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
+  <!-- 🔴 Выбор страны и маска телефона в форме (закреплённая версия) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/css/intlTelInput.css" />
+
   <!-- 🔴 Стили только этой страницы -->
   <link rel="stylesheet" href="page.css" />
 
-  <!-- 🔴 Загрузчик виджета BotHelp. На боевой странице он подключается
-       в настройках Тильды — здесь нужен, чтобы форму можно было проверить. -->
-  <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
-
-  <!-- 🔴 Скрипт страницы: меню, курсоры, ходы фишки, запись через BotHelp -->
+  <!-- 🔴 Скрипт страницы: меню, курсоры, ходы фишки -->
   <script src="page.js" defer></script>
+
+  <!-- 🔴 Лид-форма Академии: библиотека телефонов, затем скрипт формы
+       (копия web-academy/shared/academy/lead-form.js, порядок важен) -->
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/intlTelInput.min.js" defer></script>
+  <script src="lead-form.js" defer></script>
 </head>
 
 <body>
@@ -87,7 +92,7 @@
 <a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
 
 <!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css -->
-<div class="page-wrapper game-page">
+<div class="page-wrapper game-page academy-page">
 
 <!-- ==========================================================================
      ИГРОВЫЕ ПРЕДМЕТЫ (SVG)
@@ -893,130 +898,57 @@
 
 
   <!-- ======================================================================
-       8. РЕГИСТРАЦИЯ + ФОРМА (как на /cft-spiderman)
+       8. РЕГИСТРАЦИЯ — ЛИД-ФОРМА АКАДЕМИИ
        ======================================================================
-       Тёмная плашка. Слева — как проходит запись и бизнес-призы,
-       справа — белая карточка с кнопками мессенджеров.
+       Стандартная форма Академии (как на /narrative-therapy): имя, телефон,
+       мессенджер MAX или Telegram с контактом, согласие. Слева — заголовок,
+       пояснение и бизнес-призы, справа — поля. Разметка, проверки полей
+       и связь с формой Тильды — из библиотеки web-academy (lead-form),
+       описание: web-academy/shared/academy/lead-form.md.
+
+       🔴 Имена полей (name="…") и атрибуты data-lead-* не менять — по ним
+          скрипт lead-form.js проверяет поля и переносит их в форму Тильды.
+       🟡 data-tilda-form-name — имя нативной формы Тильды (tildaspec-formname),
+          буква в букву. Сейчас стоит рабочее «biznes-igra» — сверьте.
+       🟡 Ссылки на согласие и политику — как на других формах Академии.
+       🔴 Текст кнопки «Отправить заявку» задаёт скрипт формы Академии
+          (общий для всех лендингов) — менять его только в библиотеке.
        ====================================================================== -->
   <section class="section_signup" id="registraciya">
     <div class="padding-global">
       <div class="container-xlarge">
-        <div class="signup_component"
-             data-cursor="you 0.83 0.62; keeper 0.32 0.82"
-             data-cursor-compact="you 0.86 0.8">
-
-          <div class="signup_copy">
-            <h2 class="signup_heading">Участие бесплатное</h2>
-            <p class="signup_description">
-              Полтора часа командной практики: кейс из&nbsp;бизнес-сферы,
-              100&nbsp;игровых монет и&nbsp;защита стратегии перед заказчиком.
-              Можно прийти одному&nbsp;— команду соберём на&nbsp;месте.
-            </p>
-
-            <ol class="signup_steps">
-              <li class="signup_step">
-                <span class="agenda_badge is-inverse" aria-hidden="true">01</span>
-                <div class="signup_step-content">
-                  <h3 class="signup_step-title">Выберите мессенджер</h3>
-                  <p class="signup_step-description">
-                    Одно нажатие, без анкет и&nbsp;лишних полей
-                  </p>
-                </div>
-              </li>
-              <li class="signup_step">
-                <span class="agenda_badge is-inverse" aria-hidden="true">02</span>
-                <div class="signup_step-content">
-                  <h3 class="signup_step-title">Ссылка придёт в&nbsp;мессенджер</h3>
-                  <!-- 🟡 «Напомним за час» — как на прошлых вебинарах, сверить со сценарием бота -->
-                  <p class="signup_step-description">
-                    Пришлём ссылку на&nbsp;Zoom в&nbsp;Telegram или MAX и&nbsp;напомним
-                    за&nbsp;час до&nbsp;начала
-                  </p>
-                </div>
-              </li>
-            </ol>
-
+        <div class="signup_component" data-cursor="you 0.94 0.86" data-cursor-compact="">
+          <form id="biznes-igra-form" class="lead-form_component is-responsive" data-academy-lead-form data-tilda-form-name="biznes-igra" aria-labelledby="biznes-igra-form-heading" data-state="editing" novalidate ><div class="lead-form_intro" data-lead-content>
+              <h2 class="lead-form_heading" id="biznes-igra-form-heading">Участие бесплатное</h2>
+              <p class="lead-form_description">Оставьте контакты&nbsp;— пришлём ссылку на&nbsp;Zoom в&nbsp;удобный мессенджер. Можно прийти одному&nbsp;— команду соберём на&nbsp;месте.</p>
             <!-- 🟡 Бизнес-призы. Что именно — не раскрываем (по ТЗ). -->
-            <div class="gift_component">
-              <div class="gift_copy">
-                <p class="gift_label">Бонус после игры</p>
-                <h3 class="gift_heading">Бизнес-призы от&nbsp;Академии: какие именно&nbsp;— расскажем на&nbsp;встрече</h3>
+              <div class="gift_component">
+                <div class="gift_copy">
+                  <p class="gift_label">Бонус после игры</p>
+                  <h3 class="gift_heading">Бизнес-призы от&nbsp;Академии: какие именно&nbsp;— расскажем на&nbsp;встрече</h3>
+                </div>
+                <!-- Коробка с призом нарисована кодом (SVG) -->
+                <svg class="gift_image" viewBox="0 0 541 477" width="541" height="477" aria-hidden="true" focusable="false">
+                  <ellipse cx="270" cy="440" rx="190" ry="26" fill="#1d1724" opacity="0.35" />
+                  <rect x="120" y="212" width="300" height="214" rx="22" fill="#b3a8ee" />
+                  <rect x="120" y="212" width="300" height="200" rx="22" fill="#dad6ff" />
+                  <rect x="252" y="212" width="36" height="214" fill="#4e37a8" />
+                  <rect x="252" y="212" width="36" height="200" fill="#5b3fb0" />
+                  <rect x="100" y="160" width="340" height="68" rx="18" fill="#c7bff8" />
+                  <rect x="100" y="152" width="340" height="68" rx="18" fill="#eeeeff" />
+                  <rect x="250" y="152" width="40" height="68" fill="#6a4fd0" />
+                  <path d="M270 152c-30-62-104-74-112-34-8 40 74 40 112 34z" fill="#7c5cdb" />
+                  <path d="M270 152c30-62 104-74 112-34 8 40-74 40-112 34z" fill="#6a4fd0" />
+                  <circle cx="270" cy="150" r="16" fill="#4e37a8" />
+                  <rect x="330" y="250" width="70" height="70" rx="16" fill="#2b2334" transform="rotate(10 365 285)" />
+                  <text x="365" y="306" fill="#ffffff" font-family="Wix Madefor Display, Arial, sans-serif" font-size="48" font-weight="800" text-anchor="middle" transform="rotate(10 365 285)">?</text>
+                </svg>
               </div>
-              <!-- Коробка с призом нарисована кодом (SVG) -->
-              <svg class="gift_image" viewBox="0 0 541 477" width="541" height="477" aria-hidden="true" focusable="false">
-                <ellipse cx="270" cy="440" rx="190" ry="26" fill="#1d1724" opacity="0.35" />
-                <rect x="120" y="212" width="300" height="214" rx="22" fill="#b3a8ee" />
-                <rect x="120" y="212" width="300" height="200" rx="22" fill="#dad6ff" />
-                <rect x="252" y="212" width="36" height="214" fill="#4e37a8" />
-                <rect x="252" y="212" width="36" height="200" fill="#5b3fb0" />
-                <rect x="100" y="160" width="340" height="68" rx="18" fill="#c7bff8" />
-                <rect x="100" y="152" width="340" height="68" rx="18" fill="#eeeeff" />
-                <rect x="250" y="152" width="40" height="68" fill="#6a4fd0" />
-                <path d="M270 152c-30-62-104-74-112-34-8 40 74 40 112 34z" fill="#7c5cdb" />
-                <path d="M270 152c30-62 104-74 112-34 8 40-74 40-112 34z" fill="#6a4fd0" />
-                <circle cx="270" cy="150" r="16" fill="#4e37a8" />
-                <rect x="330" y="250" width="70" height="70" rx="16" fill="#2b2334" transform="rotate(10 365 285)" />
-                <text x="365" y="306" fill="#ffffff" font-family="Wix Madefor Display, Arial, sans-serif" font-size="48" font-weight="800" text-anchor="middle" transform="rotate(10 365 285)">?</text>
-              </svg>
-            </div>
-          </div>
-
-          <!-- 🔴 РЕГИСТРАЦИЯ ЧЕРЕЗ BOTHELP — устроена так же, как на /cft-spiderman.
-               🟡 data-tilda-form-name — имя формы в настройках Тильды, буква
-                  в букву. Сейчас стоит рабочее «biznes-igra» — сверьте.
-               🟡 data-metrika-id — номер счётчика Метрики. Можно оставить
-                  пустым: скрипт сам найдёт счётчик на странице.
-               🔴 ВАЖНО: атрибуты data-bh-widget-id и data-bh-customer-id
-                  должны стоять ТОЛЬКО на пустом контейнере
-                  #bh-widget-button-root ниже. -->
-          <div class="lead-form_component" data-signup data-state="idle"
-               data-tilda-form-name="biznes-igra"
-               data-metrika-id="">
-
-            <div class="lead-form_intro">
-              <h3 class="lead-form_heading">Зарегистрироваться на&nbsp;игру</h3>
-              <p class="lead-form_date">24 октября, 14:00 МСК</p>
-            </div>
-
-            <p class="lead-form_hint">
-              Выберите мессенджер: пришлём туда ссылку на&nbsp;Zoom
-              и&nbsp;напомним за&nbsp;час до&nbsp;начала.
-            </p>
-
-            <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
-                 Пока виджет не пришёл, на этом месте стоит серый скелет.
-                 🟡 Сейчас подключён виджет ПРОШЛОГО вебинара — только чтобы
-                 проверять вёрстку на превью. Когда придёт виджет этой игры,
-                 замените data-bh-widget-id и data-bh-customer-id. -->
-            <div class="lead-form_widget" data-bh-mount data-bh-state="loading">
-              <div class="lead-form_widget-skeleton" data-bh-skeleton aria-hidden="true">
-                <span></span><span></span><span></span>
-              </div>
-
-              <div class="lead-form_bh" id="bh-widget-button-root"
-                   data-bh-widget-id="23" data-bh-customer-id="278875"></div>
-
-              <p class="lead-form_note" data-bh-error hidden>
-                Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу
-                или напишите нам, и&nbsp;мы&nbsp;пришлём ссылку на&nbsp;игру вручную.
-              </p>
-            </div>
-
-            <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
-
-            <!-- 🔴 Запасной выход. Показывается, только если переход
-                 в мессенджер не сработал. Адрес подставляет скрипт. -->
-            <p class="lead-form_manual" data-lead-manual hidden>
-              Мессенджер не&nbsp;открылся?
-              <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
-            </p>
-
-            <p class="lead-form_note">
-              Формат предполагает активное участие: возьмите с&nbsp;собой микрофон
-              и&nbsp;готовность обсуждать кейс с&nbsp;командой.
-            </p>
-          </div>
-
+            </div><div class="lead-form_body" data-lead-content><fieldset class="lead-form_fields"><legend class="screen-reader-only">Контактные данные</legend><div class="lead-form_field" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="text" id="biznes-igra-form-name" name="name" autocomplete="name" placeholder=" " aria-describedby="biznes-igra-form-name-error" aria-invalid="false" required data-lead-input /><label class="lead-form_label" for="biznes-igra-form-name">Как к&nbsp;вам обращаться? *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="biznes-igra-form-name-error" aria-live="polite" data-lead-error></p></div><div class="lead-form_field is-phone" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="tel" id="biznes-igra-form-phone" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" placeholder=" " aria-describedby="biznes-igra-form-phone-error" aria-invalid="false" required data-lead-input data-lead-phone /><label class="lead-form_label screen-reader-only" for="biznes-igra-form-phone">Ваш телефон *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="biznes-igra-form-phone-error" aria-live="polite" data-lead-error></p></div></fieldset><div class="lead-form_contact-method"><fieldset class="lead-form_messenger"><legend class="lead-form_messenger-title"> Где вам удобнее общаться? </legend><div class="lead-form_messenger-options"><input class="lead-form_messenger-input" type="radio" name="messenger" value="max" id="biznes-igra-form-messenger-max" checked /><label class="lead-form_messenger-option" for="biznes-igra-form-messenger-max"><svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor" /></svg><span lang="en">MAX</span></label><input class="lead-form_messenger-input" type="radio" name="messenger" value="telegram" id="biznes-igra-form-messenger-telegram" /><label class="lead-form_messenger-option" for="biznes-igra-form-messenger-telegram"><svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor" /></svg><span lang="en">Telegram</span></label></div></fieldset><div class="lead-form_field is-phone" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="tel" id="biznes-igra-form-max-contact" name="maxContact" autocomplete="tel" inputmode="tel" maxlength="24" placeholder=" " aria-describedby="biznes-igra-form-max-contact-error" aria-invalid="false" required data-lead-input data-lead-max-contact /><label class="lead-form_label screen-reader-only" for="biznes-igra-form-max-contact">Телефон в&nbsp;MAX *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="biznes-igra-form-max-contact-error" aria-live="polite" data-lead-error></p></div><div class="lead-form_field is-telegram" data-lead-field data-state="idle" data-lead-telegram-field hidden><div class="lead-form_control"><input class="lead-form_input" type="text" id="biznes-igra-form-telegram-contact" name="telegramContact" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="biznes-igra-form-telegram-contact-error" aria-invalid="false" required disabled data-lead-input data-lead-telegram-contact /><label class="lead-form_label" for="biznes-igra-form-telegram-contact">Ник в&nbsp;Telegram, начиная с&nbsp;@ *</label><span class="lead-form_state" aria-hidden="true"><img class="lead-form_state-icon is-error" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMTAgOC43NDIyOGUtN0M0LjQ3NzE1IDEuMzU3MDVlLTYgMy45MTQwNWUtNyA0LjQ3NzE1IDguNzQyMjhlLTcgMTBDMS4zNTcwNWUtNiAxNS41MjI4IDQuNDc3MTUgMjAgMTAgMjBDMTUuNTIyOCAyMCAyMCAxNS41MjI4IDIwIDEwQzIwIDQuNDc3MTUgMTUuNTIyOCAzLjkxNDA1ZS03IDEwIDguNzQyMjhlLTdaIiBmaWxsPSIjRkY3MzczIi8+CiAgPHBhdGggZD0iTTEwIDZMMTAgMTAiIHN0cm9rZT0iIzMzMkY0MSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMCAxNEw5Ljk5IDE0IiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" width="20" height="20" alt="" draggable="false" /><img class="lead-form_state-icon is-success" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIj4KICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iIzYzRUY4OCIvPgogIDxwYXRoIGQ9Ik0xMy41IDcuNUw4LjY4NzUgMTIuNUw2LjUgMTAuMjI3MyIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=" width="20" height="20" alt="" draggable="false" /></span></div><p class="lead-form_error" id="biznes-igra-form-telegram-contact-error" aria-live="polite" data-lead-error></p></div></div><div class="lead-form_submit-group"><button class="button is-light lead-form_submit" type="submit" aria-busy="false" data-state="disabled" data-lead-submit disabled><span data-lead-submit-label>Отправить заявку</span></button><p class="lead-form_legal"> Нажимая на&nbsp;кнопку «Отправить заявку», я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на&nbsp;обработку моих персональных данных в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p><p class="lead-form_status" role="status" aria-live="polite" data-state="idle" data-lead-status></p></div></div><div class="lead-form_success" role="status" aria-live="polite" tabindex="-1" data-lead-success hidden>
+              <h2 class="lead-form_success-heading" id="biznes-igra-form-success-heading" data-lead-success-heading>Вы&nbsp;зарегистрированы</h2>
+              <!-- 🟡 Что приходит после заявки — сверить со сценарием отдела продаж -->
+              <p class="lead-form_success-description">Спасибо! Мы&nbsp;получили заявку и&nbsp;пришлём ссылку на&nbsp;игру в&nbsp;выбранный мессенджер.</p>
+            </div></form>
         </div>
       </div>
     </div>

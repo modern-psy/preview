@@ -46,7 +46,8 @@
      10. «Кто проводит игру»
      11. Курсоры участников
      12. Появление при прокрутке
-     13. Регистрация и подвал — перенесены с /cft-spiderman
+     13. Подарок и подвал — перенесены с /cft-spiderman
+     13.5. Лид-форма Академии (копия web-academy)
      14. Уменьшенное движение, печать
      15. Защита от общих стилей Тильды
    ========================================================================= */
@@ -150,9 +151,12 @@
   /* Движение */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur: 220ms;
+  --motion-duration: 220ms;
+  --motion-easing: ease;
+  --font-body: var(--font-text);
 
   /* Имена переменных, которыми пользуются блоки, перенесённые
-     с /cft-spiderman (Академия, регистрация, подвал). */
+     с /cft-spiderman (подарок, подвал). */
   --color-page-background: var(--paper);
   --color-surface-primary: #ffffff;
   --color-surface-soft: #ebeaee;
@@ -2564,109 +2568,14 @@ html {
   pointer-events: none;
 }
 
-
 /* ---------------------------------------------------------------------------
-   13. РЕГИСТРАЦИЯ И ПОДВАЛ — перенесены с /cft-spiderman
+   13. ПОДАРОК И ПОДВАЛ — перенесены с /cft-spiderman
    ---------------------------------------------------------------------------
    Правила ниже скопированы без изменений смысла; поменялись только имя
    обёртки (.game-page) и граница десктопа — 1025px вместо 992px, как
    в правилах Академии.
    --------------------------------------------------------------------------- */
 
-.agenda_badge {
-  display: inline-flex;
-  width: 2rem;
-  height: 2rem;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-accent-primary);
-  border-radius: 999px;
-  color: var(--color-accent-deep);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1;
-  font-feature-settings: "lnum" 1, "tnum" 1;
-}
-
-.agenda_badge.is-inverse {
-  border-color: var(--color-accent-mid);
-  color: var(--color-accent-light);
-}
-
-
-.signup_component {
-  display: grid;
-  width: 100%;
-  min-width: 0;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(2rem, 3.5vw, 3rem) clamp(1.5rem, 3.6vw, 3.5rem);
-  padding: clamp(1.5rem, 3.6vw, 3.5rem) clamp(1rem, 3.6vw, 3.5rem);
-  border-radius: var(--radius-card);
-  background: var(--color-surface-dark);
-}
-
-.signup_copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.signup_heading {
-  color: var(--color-text-on-dark);
-  font-size: var(--text-section-size);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  text-wrap: balance;
-}
-
-.signup_description {
-  color: var(--color-text-on-dark-muted);
-  font-size: var(--text-body-size);
-  font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  text-wrap: pretty;
-}
-
-.signup_steps {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.signup_step {
-  display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  align-items: start;
-  gap: 0.25rem 0.75rem;
-}
-
-.signup_step-content {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.signup_step-title {
-  color: var(--color-text-on-dark);
-  font-size: var(--text-card-size);
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-.signup_step-description {
-  color: var(--color-text-muted);
-  font-size: var(--text-note-size);
-  font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  text-wrap: pretty;
-}
 
 .gift_component {
   position: relative;
@@ -2795,258 +2704,6 @@ html {
   fill: var(--color-accent-deep);
 }
 
-.lead-form_component {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 1.5rem;
-  align-self: start;
-  padding: clamp(1.25rem, 2.4vw, 2rem);
-  border-radius: var(--radius-card);
-  background: var(--color-surface-primary);
-}
-
-.lead-form_intro {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.lead-form_heading {
-  color: var(--color-text-primary);
-  font-size: var(--text-subhead-size);
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.lead-form_date {
-  color: var(--color-accent-primary);
-  font-size: var(--text-note-size);
-  font-weight: 400;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-}
-
-.lead-form_hint {
-  color: var(--color-text-secondary);
-  font-size: var(--text-note-size);
-  font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  text-wrap: pretty;
-}
-
-.lead-form_widget {
-  min-width: 0;
-}
-
-.lead-form_bh,
-.lead-form_bh .bh-widget-button,
-.lead-form_bh .bh-w-button-list {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  background: transparent !important;
-}
-
-.lead-form_bh .bh-widget-button {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1rem !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.lead-form_bh .bh-w-button-list {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.75rem !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  list-style: none !important;
-}
-
-.lead-form_bh .bh-w-messenger-button {
-  position: relative !important;
-  display: flex !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  height: auto !important;
-  min-height: 3.5rem !important;
-  max-height: none !important;
-  flex: none !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.75rem !important;
-  margin: 0 !important;
-  padding: 1rem 1.5rem !important;
-  overflow: visible !important;
-  border: 0 !important;
-  border-radius: var(--radius-button) !important;
-  background: var(--color-accent-primary) !important;
-  color: var(--color-text-on-dark) !important;
-  font-family: inherit !important;
-  font-size: var(--text-lead-size) !important;
-  font-weight: 500 !important;
-  line-height: 1.1 !important;
-  letter-spacing: -0.02em !important;
-  text-align: center !important;
-  text-decoration: none !important;
-  cursor: pointer !important;
-  transition: background-color var(--transition-site), opacity var(--transition-site) !important;
-}
-
-.lead-form_bh .bh-w-messenger-button:focus-visible {
-  outline: 2px solid var(--color-focus) !important;
-  outline-offset: 4px !important;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .lead-form_bh .bh-w-messenger-button:hover {
-    background: var(--color-accent-hover) !important;
-  }
-}
-
-.lead-form_component[data-state="sending"] .lead-form_bh .bh-w-messenger-button {
-  opacity: 0.65 !important;
-  pointer-events: none !important;
-}
-
-.lead-form_bh .bh-w-button__icon {
-  position: static !important;
-  width: 1.5rem !important;
-  height: 1.5rem !important;
-  flex: none !important;
-  margin: 0 !important;
-}
-
-.lead-form_bh .bh-w-button__title {
-  position: static !important;
-  margin: 0 !important;
-  color: inherit !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  line-height: inherit !important;
-  letter-spacing: inherit !important;
-}
-
-.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title {
-  font-size: 0 !important;
-}
-
-.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title::after {
-  content: "ВКонтакте";
-  font-size: var(--text-lead-size);
-}
-
-.lead-form_bh .bh-w-consent__body {
-  min-width: 0;
-}
-
-.lead-form_bh .bh-w-consent__row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.625rem;
-  cursor: pointer;
-}
-
-.lead-form_bh .bh-w-consent__checkbox {
-  width: 1.125rem;
-  height: 1.125rem;
-  flex: none;
-  margin: 0.125rem 0 0;
-  accent-color: var(--color-accent-primary);
-  cursor: pointer;
-}
-
-.lead-form_bh .bh-w-consent__label {
-  color: var(--color-text-secondary);
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-}
-
-.lead-form_bh .bh-w-consent__label a {
-  color: var(--color-accent-primary);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-.lead-form_bh .bh-w-consent__message {
-  display: none;
-}
-
-.lead-form_bh .bh-w-powered-by {
-  display: none;
-}
-
-.lead-form_widget-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.lead-form_widget-skeleton span {
-  height: 3.5rem;
-  border-radius: var(--radius-button);
-  background: linear-gradient(90deg, #f0f0f5 25%, #e6e5ee 37%, #f0f0f5 63%);
-  background-size: 400% 100%;
-  animation: lead-form-skeleton 1.4s ease infinite;
-}
-
-.lead-form_widget-skeleton span:last-child {
-  width: 70%;
-  height: 1rem;
-}
-
-@keyframes lead-form-skeleton {
-  0% { background-position: 100% 50%; }
-  100% { background-position: 0 50%; }
-}
-
-.lead-form_widget[data-bh-state="loading"] .lead-form_bh {
-  display: none;
-}
-
-.lead-form_note {
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
-  line-height: 1.4;
-}
-
-.lead-form_status {
-  font-size: 0.9375rem;
-  line-height: 1.35;
-}
-
-.lead-form_status[data-state="error"] {
-  color: #d92d20;
-}
-
-.lead-form_status[data-state="loading"] {
-  color: var(--color-text-secondary);
-}
-
-.lead-form_status:empty {
-  display: none;
-}
-
-.lead-form_manual {
-  color: var(--color-text-secondary);
-  font-size: 0.9375rem;
-  line-height: 1.35;
-}
-
-.lead-form_manual a {
-  color: var(--color-accent-primary);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
 
 .site-footer_component {
   width: 100%;
@@ -3123,18 +2780,8 @@ html {
 }
 
 @media screen and (min-width: 64.0625rem) {
-  .signup_component {
-    grid-template-columns: minmax(0, 689fr) minmax(0, 551fr);
-    align-items: stretch;
-    gap: 2.5rem;
-    padding: clamp(3rem, 6vw, 7.5rem);
-  }
-  .signup_copy {
-    gap: 2rem;
-  }
-  .lead-form_component {
-    align-self: start;
-  }
+
+
   .gift_component {
     min-height: 10.5rem;
   }
@@ -3151,26 +2798,10 @@ html {
 }
 
 
-.game-page .faq_support a,
-.game-page .lead-form_manual a,
-.game-page .lead-form_bh .bh-w-consent__label a {
-  color: var(--color-accent-primary) !important;
-}
-
 .game-page .site-footer_line a {
   color: #ffffff !important;
 }
 
-/* Регистрация: клетка-подложка получает толщину, как всё поле */
-.signup_component {
-  box-shadow: var(--shadow-dark);
-}
-
-/* Подписи шагов регистрации и плашка бонуса — контрастнее, чем на
-   исходной странице: там серый на тёмном не дотягивал до 4,5:1 */
-.signup_step-description {
-  color: var(--on-dark-3);
-}
 
 .gift_label {
   background: var(--white);
@@ -3179,26 +2810,685 @@ html {
 }
 
 /* Заголовки стандартных блоков — тем же шрифтом, что и вся страница */
-.signup_heading {
+
+
+/* ---------------------------------------------------------------------------
+   13.5. ЛИД-ФОРМА АКАДЕМИИ
+   ---------------------------------------------------------------------------
+   Ниже без изменений скопированы стили стандартной формы Академии:
+   web-academy/shared/academy/lead-form.css и lead-form-responsive.css.
+   Правьте оригиналы и копируйте сюда заново. Под эту страницу форма
+   подстраивается в конце раздела — блоком «Тема страницы».
+   --------------------------------------------------------------------------- */
+
+/* Complete Academy lead form UI with optional native Tilda bridge; see lead-form.md. */
+.lead-form_component {
+  --color-form-muted: #bdb7b7;
+  --color-form-error: #ff7373;
+  --color-form-error-text: #f95959;
+  --lead-form-padding: 1.25rem;
+  --lead-form-control-font-size: 1rem;
+  --section-subtitle-color: var(--color-form-muted);
+}
+.lead-form_component .screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.academy-page button.lead-form_submit { color: var(--color-surface-dark) !important; }
+.academy-page button.lead-form_submit:disabled { color: var(--color-form-muted) !important; }
+.academy-page button.lead-form_submit[aria-busy="true"]:disabled { color: var(--color-surface-dark) !important; }
+.academy-page .lead-form_legal a { color: var(--color-form-muted) !important; }
+.academy-page .lead-form_legal a:hover,
+.academy-page .lead-form_legal a:focus-visible { color: var(--color-text-on-dark-muted) !important; }
+/* The native Tilda record remains in the DOM as the delivery bridge only. */
+[data-academy-native-form-record] {
+  display: none !important;
+}
+
+.lead-form_component,
+.lead-form_intro,
+.lead-form_body,
+.lead-form_fields,
+.lead-form_field,
+.lead-form_contact-method,
+.lead-form_messenger,
+.lead-form_submit-group,
+.lead-form_success {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.lead-form_component {
+  gap: 2rem;
+  padding: var(--lead-form-padding);
+  border-radius: 1rem;
+  color: var(--color-text-on-dark-muted);
+  background: var(--color-surface-dark);
+}
+
+.lead-form_component[data-state="success"] {
+  min-height: clamp(18rem, 48vw, 30rem);
+}
+
+.lead-form_intro {
+  gap: 1.25rem;
+}
+
+.lead-form_heading,
+.lead-form_description,
+.lead-form_error,
+.lead-form_legal,
+.lead-form_status,
+.lead-form_success-heading,
+.lead-form_success-description {
+  margin: 0;
+}
+
+.lead-form_heading {
+  color: var(--color-text-on-dark-muted);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.lead-form_description {
+  max-width: 39rem;
+  color: var(--color-form-muted);
+  font-size: clamp(1.125rem, 2.149vw, 1.375rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.lead-form_body {
+  gap: 1.375rem;
+}
+
+.lead-form_fields {
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.lead-form_field {
+  gap: 0.125rem;
+}
+
+.lead-form_contact-method {
+  gap: 0.5rem;
+}
+
+.lead-form_field[hidden] {
+  display: none;
+}
+
+.lead-form_component [data-lead-content][hidden] {
+  display: none;
+}
+
+.lead-form_success {
+  min-height: 100%;
+  flex: 1;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: clamp(2rem, 7vw, 4rem) 1rem;
+  text-align: center;
+}
+
+.lead-form_success[hidden] {
+  display: none;
+}
+
+.lead-form_success-heading {
+  color: var(--color-text-on-dark-muted);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.lead-form_success-description {
+  max-width: 34rem;
+  color: var(--color-form-muted);
+  font-size: clamp(1.125rem, 2.149vw, 1.375rem);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.lead-form_success:focus-visible {
+  outline: 2px solid var(--color-text-on-dark-muted);
+  outline-offset: 0.1875rem;
+}
+
+.lead-form_control {
+  position: relative;
+  min-width: 0;
+}
+
+.lead-form_input,
+.lead-form_control > .iti > .lead-form_input {
+  display: block;
+  width: 100%;
+  height: 4.375rem;
+  padding: 1.5rem 3.25rem 0.45rem 1rem;
+  border: 1px solid var(--color-form-muted);
+  border-radius: 0.375rem;
+  color: var(--color-text-on-dark-muted);
+  background: transparent;
+  font: inherit;
+  font-size: var(--lead-form-control-font-size);
+  font-weight: 400;
+  line-height: 1.1;
+  outline: none;
+  caret-color: var(--color-text-on-dark-muted);
+  transition:
+    border-color var(--motion-duration, 300ms) var(--motion-easing, ease),
+    box-shadow var(--motion-duration, 300ms) var(--motion-easing, ease);
+}
+
+.lead-form_input::placeholder {
+  color: transparent;
+}
+
+.lead-form_field.is-phone .lead-form_input::placeholder {
+  color: var(--color-form-muted);
+}
+
+.lead-form_field.is-phone .lead-form_input,
+.lead-form_field.is-phone .iti > .lead-form_input {
+  padding-block: 0.45rem;
+}
+
+.lead-form_label {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 1rem;
+  max-width: calc(100% - 4.5rem);
+  overflow: hidden;
+  color: var(--color-form-muted);
+  font-size: var(--lead-form-control-font-size);
+  font-weight: 400;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  transform-origin: left top;
+  transition:
+    top var(--motion-duration, 300ms) var(--motion-easing, ease),
+    left var(--motion-duration, 300ms) var(--motion-easing, ease),
+    color var(--motion-duration, 300ms) var(--motion-easing, ease),
+    font-size var(--motion-duration, 300ms) var(--motion-easing, ease),
+    transform var(--motion-duration, 300ms) var(--motion-easing, ease);
+  pointer-events: none;
+}
+
+.lead-form_control:focus-within .lead-form_label,
+.lead-form_field[data-has-value="true"] .lead-form_label {
+  top: 0.65rem;
+  left: 1rem;
+  max-width: calc(100% - 4.5rem);
+  font-size: 0.75rem;
+  transform: none;
+}
+
+.lead-form_control:focus-within .lead-form_input,
+.lead-form_control:focus-within > .iti > .lead-form_input {
+  border-color: var(--color-text-on-dark-muted);
+  box-shadow: inset 0 0 0 1px rgb(230 229 235 / 22%);
+}
+
+.lead-form_field[data-state="invalid"] .lead-form_input,
+.lead-form_field[data-state="invalid"] .iti > .lead-form_input {
+  border-color: var(--color-form-error);
+}
+
+.lead-form_state {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  right: 0.875rem;
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  place-items: center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.lead-form_state-icon {
+  display: none;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.lead-form_field[data-state="invalid"] .lead-form_state-icon.is-error,
+.lead-form_field[data-state="valid"] .lead-form_state-icon.is-success {
+  display: block;
+}
+
+.lead-form_error {
+  color: var(--color-form-error-text);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.lead-form_error:empty {
+  display: none;
+}
+
+.lead-form_messenger {
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.lead-form_messenger-title {
+  margin: 0 0 0.75rem;
+  padding: 0;
+  color: var(--color-form-muted);
+  font-size: var(--lead-form-control-font-size);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.lead-form_messenger-options {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.lead-form_messenger-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.lead-form_messenger-option {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 3.125rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  overflow: hidden;
+  border: 1px solid var(--color-form-muted);
+  border-radius: 0.375rem;
+  color: var(--color-form-muted);
+  font-size: var(--lead-form-control-font-size);
+  font-weight: 500;
+  line-height: 1.1;
+  cursor: pointer;
+  transition:
+    color var(--motion-duration, 300ms) var(--motion-easing, ease),
+    border-color var(--motion-duration, 300ms) var(--motion-easing, ease),
+    background-color var(--motion-duration, 300ms) var(--motion-easing, ease);
+  user-select: none;
+}
+
+.lead-form_messenger-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+.lead-form_messenger-input:checked + .lead-form_messenger-option {
+  border-color: #c7c7c7;
+  color: var(--color-text-primary);
+  background: #c7c7c7;
+}
+
+.lead-form_messenger-input:focus-visible + .lead-form_messenger-option {
+  outline: 2px solid var(--color-text-on-dark-muted);
+  outline-offset: 0.1875rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lead-form_control:hover .lead-form_input,
+  .lead-form_control:hover > .iti > .lead-form_input {
+    border-color: #fff;
+  }
+
+  .lead-form_messenger-input:not(:checked) + .lead-form_messenger-option:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+}
+
+.lead-form_submit-group {
+  gap: 0.75rem;
+}
+
+.lead-form_submit {
+  width: 100%;
+  min-height: 4rem;
+  padding: 1.25rem 3rem;
+  border: 0;
+  border-radius: 0.5rem;
+  color: var(--color-surface-dark);
+  background: #fff;
+  font: inherit;
+  font-size: clamp(1.125rem, 2.149vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  transition:
+    color var(--motion-duration, 300ms) var(--motion-easing, ease),
+    background-color var(--motion-duration, 300ms) var(--motion-easing, ease);
+}
+
+.lead-form_submit:not(:disabled):hover {
+  background: var(--color-text-on-dark-muted);
+}
+
+.lead-form_submit:focus-visible {
+  outline: 2px solid var(--color-text-on-dark-muted);
+  outline-offset: 0.1875rem;
+}
+
+.lead-form_submit:disabled {
+  color: var(--color-form-muted);
+  background: rgb(255 255 255 / 14%);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.lead-form_submit[aria-busy="true"]:disabled {
+  color: var(--color-surface-dark);
+  background: #fff;
+  cursor: pointer;
+}
+
+.lead-form_legal,
+.lead-form_status {
+  color: var(--color-form-muted);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.lead-form_legal a {
+  text-decoration: underline;
+  text-underline-position: from-font;
+  transition: color var(--motion-duration, 300ms) var(--motion-easing, ease);
+}
+
+.lead-form_legal a:hover {
+  color: var(--color-text-on-dark-muted);
+}
+
+.lead-form_legal a:focus-visible {
+  outline: 2px solid var(--color-text-on-dark-muted);
+  outline-offset: 0.1875rem;
+}
+
+.lead-form_status[data-state="idle"]:empty {
+  display: none;
+}
+
+.lead-form_status[data-state="error"] {
+  color: var(--color-form-error);
+}
+
+.lead-form_control .iti {
+  display: block;
+  width: 100%;
+  --iti-border-color: var(--color-form-muted);
+  --iti-dial-code-color: var(--color-form-muted);
+  --iti-hover-color: rgb(230 229 235 / 10%);
+  --iti-icon-color: var(--color-text-on-dark-muted);
+  --iti-mobile-popup-margin: 1rem;
+}
+
+.lead-form_control .iti__selected-country {
+  color: var(--color-form-muted) !important;
+  min-width: 4.5rem;
+  border-radius: 0.375rem 0 0 0.375rem;
+  color: var(--color-form-muted);
+  font-family: var(--font-body);
+  font-size: var(--lead-form-control-font-size);
+  font-weight: 400;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.lead-form_control .iti__selected-dial-code {
+  font: inherit;
+}
+
+.lead-form_control .iti__selected-country:focus-visible {
+  outline: 2px solid var(--color-text-on-dark-muted);
+  outline-offset: -0.25rem;
+}
+
+.academy-page .iti__country-selector,
+body > .iti--detached-country-selector {
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+body > .iti--detached-country-selector {
+  z-index: 2147483000 !important;
+  color: #e6e5eb;
+  --iti-border-color: #77707f;
+  --iti-dial-code-color: #bdb7b7;
+  --iti-hover-color: rgb(230 229 235 / 10%);
+  --iti-icon-color: #e6e5eb;
+}
+
+body > .iti--detached-country-selector .iti__country-selector {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid #77707f;
+  border-radius: 0.375rem;
+  color: #e6e5eb;
+  background: #332b3d;
+  box-shadow: 0 1rem 2.5rem rgb(17 12 23 / 32%);
+}
+
+body > .iti--detached-country-selector .iti__search-input-wrapper {
+  border-bottom: 1px solid #5d5665;
+  background: #332b3d;
+}
+
+body > .iti--detached-country-selector .iti__search-icon {
+  left: 0.625rem;
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: #e6e5eb;
+  -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMjEuMDAwMiAyMS4wMDAyTDE2LjY2MDIgMTYuNjYwMiIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMSAxOUMxNS40MTgzIDE5IDE5IDE1LjQxODMgMTkgMTFDMTkgNi41ODE3MiAxNS40MTgzIDMgMTEgM0M2LjU4MTcyIDMgMyA2LjU4MTcyIDMgMTFDMyAxNS40MTgzIDYuNTgxNzIgMTkgMTEgMTlaIiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=") center / contain no-repeat;
+  mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMjEuMDAwMiAyMS4wMDAyTDE2LjY2MDIgMTYuNjYwMiIgc3Ryb2tlPSIjMzMyRjQxIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMSAxOUMxNS40MTgzIDE5IDE5IDE1LjQxODMgMTkgMTFDMTkgNi41ODE3MiAxNS40MTgzIDMgMTEgM0M2LjU4MTcyIDMgMyA2LjU4MTcyIDMgMTFDMyAxNS40MTgzIDYuNTgxNzIgMTkgMTEgMTlaIiBzdHJva2U9IiMzMzJGNDEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=") center / contain no-repeat;
+}
+
+body > .iti--detached-country-selector .iti__search-icon-svg {
+  display: none;
+}
+
+body > .iti--detached-country-selector .iti__search-input {
+  width: 100%;
+  padding-left: 3rem;
+  border-color: transparent;
+  color: #e6e5eb;
+  background: transparent;
+  font: inherit;
+  line-height: 1.5;
+  outline: none;
+}
+
+body > .iti--detached-country-selector .iti__search-input::placeholder {
+  color: #bdb7b7;
+  opacity: 1;
+}
+
+body > .iti--detached-country-selector .iti__search-input:focus {
+  box-shadow: inset 0 0 0 1px rgb(230 229 235 / 35%);
+}
+
+body > .iti--detached-country-selector .iti__country-list {
+  color: #e6e5eb;
+  background: #332b3d;
+  scrollbar-color: #77707f #332b3d;
+}
+
+body > .iti--detached-country-selector .iti__country {
+  min-height: 44px;
+  padding: 0.625rem;
+}
+
+body > .iti--detached-country-selector .iti__country-name {
+  color: #e6e5eb;
+}
+
+body > .iti--detached-country-selector .iti__dial-code {
+  color: #bdb7b7;
+}
+
+body > .iti--detached-country-selector .iti__country.iti__highlight,
+body > .iti--detached-country-selector .iti__country:hover {
+  background: rgb(230 229 235 / 10%);
+}
+
+body > .iti--detached-country-selector .iti__no-results {
+  padding: 1rem;
+  color: #bdb7b7;
+  background: #332b3d;
+}
+
+
+@media (min-width: 48rem) {
+  .lead-form_component { --lead-form-padding: 1.5rem; --lead-form-control-font-size: 1.125rem; }
+  .academy-page .iti__country-selector,
+  body > .iti--detached-country-selector { font-size: 1.125rem; }
+}
+@media (min-width: 64.0625rem) {
+  .lead-form_component { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; gap: 2.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lead-form_input, .lead-form_label, .lead-form_messenger-option,
+  .lead-form_submit, .lead-form_success, .lead-form_legal a { transition-duration: 0.01ms; }
+}
+
+/* New four-layout contract is opt-in; legacy consumers keep their current UI. */
+.lead-form_component.is-responsive {
+  --lead-form-padding: 1rem;
+  --lead-form-control-font-size: 0.9375rem;
+  --lead-form-input-height: 3.125rem;
+  --lead-form-input-inset: 0.75rem;
+  --lead-form-choice-height: 3rem;
+  --lead-form-choice-icon: 1.125rem;
+  --lead-form-small-text: 0.75rem;
+  --section-title-line-height: 1.1;
+  --section-subtitle-line-height: 1.1;
+  --section-subtitle-tracking: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+.lead-form_component.is-responsive .section-title_component { line-height: 1.1; }
+.lead-form_component.is-responsive .lead-form_body { gap: 1.25rem; }
+.lead-form_component.is-responsive .lead-form_submit-group { margin-top: 0.125rem; }
+.lead-form_component.is-responsive .lead-form_input,
+.lead-form_component.is-responsive .lead-form_control > .iti > .lead-form_input { height: var(--lead-form-input-height); padding-left: var(--lead-form-input-inset); }
+.lead-form_component.is-responsive .lead-form_label { left: var(--lead-form-input-inset); }
+.lead-form_component.is-responsive .lead-form_messenger-option { min-height: var(--lead-form-choice-height); padding-inline: 0.75rem; }
+.lead-form_component.is-responsive .lead-form_messenger-icon { width: var(--lead-form-choice-icon); height: var(--lead-form-choice-icon); }
+.lead-form_component.is-responsive .lead-form_error,
+.lead-form_component.is-responsive .lead-form_legal { font-size: var(--lead-form-small-text); }
+.lead-form_component.is-responsive .lead-form_messenger-input:not(:checked) + .lead-form_messenger-option { color: var(--color-text-on-dark); border-color: var(--color-text-on-dark); }
+@media (min-width: 32.5625rem) {
+  .lead-form_component.is-responsive { --lead-form-padding: 1.25rem; --lead-form-control-font-size: 1rem; --lead-form-input-height: 3.75rem; --lead-form-input-inset: 1rem; --lead-form-small-text: 0.875rem; gap: 2.25rem; }
+  .lead-form_component.is-responsive .lead-form_body { gap: 1.375rem; }
+  .lead-form_component.is-responsive .lead-form_submit-group { margin-top: 0; }
+}
+@media (min-width: 48rem) {
+  .lead-form_component.is-responsive { --lead-form-padding: 1.5rem; --lead-form-control-font-size: 1.125rem; --lead-form-input-height: 4.375rem; --lead-form-choice-height: 3.125rem; --lead-form-choice-icon: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .lead-form_component.is-responsive { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 2rem; }
+}
+
+/* --- Тема страницы ------------------------------------------------------
+   Форма — тёмная плита поля с толщиной; заголовок тем же шрифтом, что
+   и вся страница; кнопка регистрации «нажимается», как остальные. */
+
+.signup_component {
+  position: relative;
+}
+
+.signup_component .lead-form_component.is-responsive {
+  --lead-form-padding: clamp(1.5rem, 4vw, 3.5rem);
+  --color-surface-dark: var(--ink);
+  border-radius: var(--tile-radius);
+  box-shadow: var(--shadow-dark);
+}
+
+.signup_component .lead-form_heading {
+  color: var(--on-dark);
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+.signup_component .lead-form_description {
+  color: var(--on-dark-2);
+  font-size: var(--text-lead);
+  line-height: 1.45;
+}
+
+.signup_component .lead-form_success-heading {
+  color: var(--on-dark);
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.03em;
 }
 
-/* Скрытая форма Тильды: убираем с глаз, но не выключаем — скриптам
-   Тильды нужно измерять поля и ставить в них фокус. */
-[data-game-native-form-record] {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  margin: -1px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  border: 0 !important;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  pointer-events: none !important;
-  white-space: nowrap !important;
+.signup_component .lead-form_submit.button {
+  min-height: 3.75rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radius-button);
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+}
+
+/* Пока поля не заполнены, кнопка плоская и не нажимается */
+.signup_component .lead-form_submit.button:disabled {
+  translate: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Во время отправки — снова белая */
+.signup_component .lead-form_submit.button[aria-busy="true"]:disabled {
+  box-shadow: 0 var(--button-depth) 0 var(--button-edge);
 }
 
 
@@ -3268,10 +3558,6 @@ html {
   color: var(--on-dark-2) !important;
 }
 
-.game-page .lead-form_manual a,
-.game-page .lead-form_bh .bh-w-consent__label a {
-  color: var(--violet) !important;
-}
 
 .game-page .site-footer_line a {
   color: #ffffff !important;
