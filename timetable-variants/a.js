@@ -3,8 +3,8 @@
   ВАРИАНТ A · ПОД МОЙ ГРАФИК · версия 2 — программа страницы
 
   1. Рисует ивент первым блоком — тот, что задан в FEATURED ниже.
-  2. Навигатор по дням: курс остаётся в списке, если ВСЕ его дни
-     занятий попадают в отмеченные. Курсы без постоянных дней
+  2. Навигатор по дням: курс остаётся в списке, если хотя бы один день
+     занятий попадает в отмеченные. Дата старта не участвует. Курсы без постоянных дней
      (интенсивы, дни уточняются) не пропадают молча — уходят в свою группу.
   3. «Последний шанс» — уже начавшиеся курсы, донабор. Всегда первым и раскрыт.
   4. Потоки по месяцам.
@@ -82,10 +82,10 @@
   function hasDays() { return Object.keys(state.days).length > 0; }
   function chosenDays() { return T.WEEK.filter(function (d) { return state.days[d]; }); }
 
-  // Курс подходит, если все его дни занятий — среди отмеченных
+  // Достаточно одного выбранного дня занятий; дата старта не участвует.
   function fits(it) {
     if (!hasDays()) return true;
-    return it.days.length > 0 && it.days.every(function (d) { return state.days[d]; });
+    return it.days.length > 0 && it.days.some(function (d) { return state.days[d]; });
   }
 
   // Платные потоки: идут сейчас, стартуют позже, старт в любое время
@@ -186,8 +186,8 @@
 
     if (!shown.length) {
       html += '<div class="card timetable-empty_component timetable-list_group">' +
-        '<h2 class="heading-style-h4">Курсов только в эти дни нет</h2>' +
-        '<p class="text-size-caption-md text-color-secondary">Добавьте ещё один свободный день — у многих курсов занятия дважды в неделю.</p>' +
+        '<h2 class="heading-style-h4">Курсов с занятиями в выбранные дни нет</h2>' +
+        '<p class="text-size-caption-md text-color-secondary">Выберите другие дни или сбросьте фильтр, чтобы увидеть все курсы.</p>' +
         '<button class="button is-sm is-secondary" type="button" data-reset>Сбросить дни</button>' +
       '</div>';
     }
