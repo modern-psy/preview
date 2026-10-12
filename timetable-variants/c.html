@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ПРОТОТИП РАСПИСАНИЯ · ВАРИАНТ C «ФИЛЬТРЫ И ШКАЛА»
+
+  Слева панель фильтров: шкала месяцев (длина полоски = сколько стартов),
+  удобное время, документ, направление, стоимость. Рядом с каждым
+  вариантом — сколько потоков останется, если его выбрать.
+  Справа поиск и список по месяцам. На телефоне панель открывается
+  кнопкой «Фильтры» поверх страницы — разметка та же самая.
+
+  Данные живые: core.js сводит /api/public/timetable и /api/public/catalog.
+  Это прототип для сравнения, а не боевая страница.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Расписание · вариант C · фильтры и шкала</title>
+  <meta name="description" content="Прототип расписания Академии: фильтры по месяцу, времени, документу, направлению и цене." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="data:," />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/design-system/tokens.css" />
+  <link rel="stylesheet" href="/design-system/base.css" />
+  <link rel="stylesheet" href="/design-system/typography.css" />
+  <link rel="stylesheet" href="/design-system/components.css" />
+
+  <link rel="stylesheet" href="/timetable-variants/shared.css" />
+  <link rel="stylesheet" href="/timetable-variants/c.css" />
+</head>
+
+<body>
+  <div class="page-wrapper">
+
+    <!-- 🔴 Служебная полоса для сравнения вариантов. На сайт не переносится. -->
+    <nav class="prototype-bar_component" aria-label="Варианты прототипа">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="prototype-bar_inner text-size-caption-md">
+            <span class="prototype-bar_label">Прототип расписания</span>
+            <a class="prototype-bar_link" href="/timetable-variants/a.html">Вариант A</a>
+            <a class="prototype-bar_link" href="/timetable-variants/b.html">Вариант B</a>
+            <a class="prototype-bar_link is-current" href="/timetable-variants/c.html" aria-current="page">Вариант C</a>
+            <a class="prototype-bar_link" href="https://modernpsy.academy/timetable" target="_blank" rel="noopener">Как сейчас</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-wrapper" id="main">
+      <section class="section_timetable">
+        <div class="padding-global">
+          <div class="container-large">
+            <div class="padding-section-small">
+
+              <!-- 🟢 Заголовок страницы — текст можно менять -->
+              <header class="timetable-head_component margin-bottom margin-medium">
+                <h1 class="timetable-head_title heading-style-h2">Расписание обучения и&nbsp;мероприятий</h1>
+                <p class="text-size-paragraph-md text-color-secondary">Даты стартов, стоимость и&nbsp;статус набора. Обновляется автоматически.</p>
+              </header>
+
+              <div class="catalog-layout_component">
+
+                <!-- ПАНЕЛЬ ФИЛЬТРОВ. На десктопе — колонка слева,
+                     на телефоне и планшете — слой поверх страницы. -->
+                <aside class="filter-panel_component" id="filters" aria-labelledby="filtersTitle">
+                  <div class="filter-panel_head">
+                    <h2 class="heading-style-h4" id="filtersTitle">Фильтры</h2>
+                    <button class="button is-sm is-ghost is-icon-only filter-panel_close" type="button" id="closeFilters" aria-label="Закрыть фильтры">
+                      <span class="icon is-sm" style="--icon-url:url('/timetable-variants/icons/x.svg')" aria-hidden="true"></span>
+                    </button>
+                  </div>
+                  <!-- 🔴 Группы фильтров рисует код -->
+                  <div class="filter-panel_body" id="facets"></div>
+                  <div class="filter-panel_foot">
+                    <button class="button is-md is-full" type="button" id="applyFilters">Показать</button>
+                  </div>
+                </aside>
+
+                <div class="results_component">
+                  <div class="results_bar">
+                    <div class="form_field results_search">
+                      <label class="visually-hidden" for="search">Найти курс по названию</label>
+                      <span class="results_search-icon icon is-sm" style="--icon-url:url('/timetable-variants/icons/search.svg')" aria-hidden="true"></span>
+                      <input class="form_input results_search-input" id="search" type="search" placeholder="Найти курс" autocomplete="off" />
+                    </div>
+                    <button class="button is-md is-secondary results_filters-button" type="button" id="openFilters" aria-controls="filters">
+                      <span class="icon button_icon is-sm" style="--icon-url:url('/timetable-variants/icons/sliders-horizontal.svg')" aria-hidden="true"></span>
+                      <span id="openFiltersText">Фильтры</span>
+                    </button>
+                  </div>
+
+                  <div class="results_head">
+                    <p class="text-size-paragraph-sm text-weight-medium text-color-heading" id="resultCount" aria-live="polite">&nbsp;</p>
+                    <div class="results_chips" id="activeChips"></div>
+                  </div>
+
+                  <!-- 🔴 Бесплатные эфиры и список — рисует код -->
+                  <div id="freeBand"></div>
+                  <div class="timetable-list_component" id="list"></div>
+
+                  <p class="timetable-note_component text-size-caption-sm margin-top margin-medium" id="sourceNote" hidden></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/timetable-variants/core.js" defer></script>
+  <script src="/timetable-variants/c.js" defer></script>
+</body>
+</html>

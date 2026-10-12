@@ -1,0 +1,161 @@
+/* ==========================================================================
+   ВАРИАНТ A · ПОД МОЙ ГРАФИК · версия 2
+
+   Сверху вниз: ивент первым блоком → навигатор по дням недели →
+   «Последний шанс» → потоки по месяцам. Строка потока и кружочки дней — в shared.css.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. ИВЕНТ ПЕРВЫМ БЛОКОМ
+
+   Светлая карточка: обложки ивентов бывают любых цветов, на белом
+   уживаются все. Выделяют блок размер и единственная на экране
+   основная кнопка.
+   Телефон: обложка сверху полосой, ниже дата и текст.
+   Десктоп: дата · текст · квадратная обложка справа.
+   ========================================================================== */
+.featured-event_component {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  margin-bottom: var(--space-small);
+}
+
+.featured-event_cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  /* героиня лендинга стоит справа — кадр сдвинут к ней */
+  object-position: 72% 40%;
+}
+
+.featured-event_body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-small);
+  padding: var(--space-small);
+}
+
+/* Дата крупно: число, месяц и день недели, время */
+.featured-event_date {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xxsmall) var(--space-xsmall);
+  color: var(--text-accent);
+}
+.featured-event_day { line-height: 1; }
+
+.featured-event_text { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xsmall); }
+.featured-event_title { text-wrap: balance; }
+.featured-event_desc { max-width: 40rem; }
+.featured-event_text .button { margin-top: var(--space-xsmall); }
+
+@media (min-width: 48.0625rem) {
+  .featured-event_component { grid-template-columns: minmax(0, 1fr) 15rem; }
+  .featured-event_cover { grid-column: 2; grid-row: 1; height: 100%; aspect-ratio: auto; }
+  .featured-event_body {
+    grid-column: 1;
+    grid-row: 1;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: var(--space-medium);
+    padding: var(--space-medium);
+  }
+  .featured-event_date { flex-direction: column; align-items: flex-start; gap: var(--space-xxsmall); }
+}
+@media (min-width: 64.0625rem) {
+  .featured-event_component { grid-template-columns: minmax(0, 1fr) 24rem; }
+}
+
+
+/* ==========================================================================
+   2. НАВИГАТОР ПО ДНЯМ НЕДЕЛИ
+
+   Семь круглых кнопок «пн…вс» — тот же рисунок, что кружочки дней
+   в строках, только крупнее и нажимаются. Чисел нет: студенту они
+   ничего не говорят.
+   ========================================================================== */
+.planner_component {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  padding: var(--space-small);
+}
+.planner_days-part { display: flex; flex-direction: column; gap: var(--space-small); }
+.planner_text { display: flex; flex-direction: column; gap: var(--space-xxsmall); max-width: 32rem; }
+.planner_reset { align-self: flex-start; }
+
+@media (min-width: 48.0625rem) {
+  .planner_component { padding: var(--space-medium); }
+}
+@media (min-width: 64.0625rem) {
+  .planner_component { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: var(--space-large); }
+  .planner_days-part { flex-direction: row; align-items: center; gap: var(--space-large); }
+  .planner_reset { align-self: center; }
+}
+
+/* Телефон: семь кружков всегда в одну строку — делят ширину поровну,
+   но не больше 44px каждый. С планшета — фиксированные 52px. */
+.day-picker_component {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, var(--tap-target-min)));
+  gap: var(--space-xxsmall);
+}
+.day-picker_day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-hover);
+  color: var(--text-heading);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .day-picker_day:hover { background-color: var(--bg-accent-soft); color: var(--text-accent); }
+}
+.day-picker_day:active { transform: scale(.95); }
+.day-picker_day[aria-pressed="true"] {
+  background-color: var(--accent);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-button);
+}
+@media (min-width: 48.0625rem) {
+  .day-picker_component { grid-template-columns: repeat(7, 3.25rem); gap: var(--space-xsmall); }
+}
+
+/* ==========================================================================
+   ЛИПКАЯ СТРОКА «какие дни выбраны»
+   Появляется, когда навигатор уехал за верх экрана.
+   ========================================================================== */
+.planner-sticky_component {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-small);
+  margin: var(--space-small) calc(var(--padding-global) * -1) 0;
+  padding: var(--space-xsmall) var(--padding-global);
+  background-color: var(--bg-page);
+  border-bottom: 1px solid var(--border-default);
+}
+
+
+/* ==========================================================================
+   3. СПИСОК
+   ========================================================================== */
+.timetable-list_component { display: flex; flex-direction: column; }
+.timetable-list_group { margin-top: var(--space-large); }
+.timetable-list_group:first-child { margin-top: var(--space-medium); }

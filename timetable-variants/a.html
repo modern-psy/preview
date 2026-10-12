@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ПРОТОТИП РАСПИСАНИЯ · ВАРИАНТ A «ПОД МОЙ ГРАФИК» · версия 2
+
+  Порядок страницы:
+    1. Ивент первым блоком — выбирается вручную в a.js (FEATURED),
+       автоматики нет: конференция, вебинар или что-то ещё.
+    2. Навигатор по дням недели: человек отмечает свободные дни,
+       в списке остаются курсы, у которых все занятия в эти дни.
+    3. «Последний шанс» — донабор на курсы, которые уже идут. Всегда раскрыт.
+    4. Потоки по месяцам. Дни занятий в строке — кружочками.
+
+  Мини-курсов здесь нет: у них нет даты, им место в каталоге.
+  Данные живые: core.js сводит /api/public/timetable и /api/public/catalog.
+  Это прототип для сравнения, а не боевая страница.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Расписание · вариант A · под мой график</title>
+  <meta name="description" content="Прототип расписания Академии: ближайший ивент, подбор потоков по дням недели, старты по месяцам." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="data:," />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Дизайн-система сайта — те же файлы, что у боевого /timetable -->
+  <link rel="stylesheet" href="/design-system/tokens.css" />
+  <link rel="stylesheet" href="/design-system/base.css" />
+  <link rel="stylesheet" href="/design-system/typography.css" />
+  <link rel="stylesheet" href="/design-system/components.css" />
+
+  <link rel="stylesheet" href="/timetable-variants/shared.css" />
+  <link rel="stylesheet" href="/timetable-variants/a.css" />
+</head>
+
+<body>
+  <div class="page-wrapper">
+
+    <!-- 🔴 Служебная полоса для сравнения вариантов. На сайт не переносится. -->
+    <nav class="prototype-bar_component" aria-label="Варианты прототипа">
+      <div class="padding-global">
+        <div class="container-large">
+          <div class="prototype-bar_inner text-size-caption-md">
+            <span class="prototype-bar_label">Прототип расписания</span>
+            <a class="prototype-bar_link is-current" href="/timetable-variants/a.html" aria-current="page">Вариант A</a>
+            <a class="prototype-bar_link" href="/timetable-variants/b.html">Вариант B</a>
+            <a class="prototype-bar_link" href="/timetable-variants/c.html">Вариант C</a>
+            <a class="prototype-bar_link" href="https://modernpsy.academy/timetable" target="_blank" rel="noopener">Как сейчас</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-wrapper">
+      <section class="section_timetable">
+        <div class="padding-global">
+          <div class="container-large">
+            <div class="padding-section-small">
+
+              <!-- 🟢 Заголовок страницы — текст можно менять -->
+              <header class="timetable-head_component margin-bottom margin-medium">
+                <h1 class="timetable-head_title heading-style-h2">Расписание обучения и&nbsp;мероприятий</h1>
+                <p class="text-size-paragraph-md text-color-secondary">Даты стартов, стоимость и&nbsp;статус набора. Обновляется автоматически.</p>
+              </header>
+
+              <!-- 1. ИВЕНТ ПЕРВЫМ БЛОКОМ. Какой именно — задаётся в a.js, FEATURED.
+                   Если ивент не задан или уже прошёл, блока нет. -->
+              <div id="featured"></div>
+
+              <!-- 2. НАВИГАТОР ПО ДНЯМ НЕДЕЛИ -->
+              <section class="card planner_component" id="picker" aria-labelledby="pickerTitle">
+                <div class="planner_days-part">
+                  <div class="planner_text">
+                    <h2 class="heading-style-h4" id="pickerTitle">В какие дни вам удобно заниматься?</h2>
+                    <p class="text-size-caption-md text-color-secondary">Отметьте свободные дни&nbsp;— оставим курсы, у&nbsp;которых все занятия выпадают на&nbsp;них.</p>
+                  </div>
+                  <!-- 🔴 Кнопки дней рисует код -->
+                  <div class="day-picker_component" id="dayPicker" role="group" aria-label="Свободные дни"></div>
+                </div>
+                <button class="button is-sm is-link planner_reset" type="button" id="resetDays" hidden>Сбросить дни</button>
+              </section>
+
+              <!-- Липкая строка: какие дни выбраны, когда навигатор уехал за экран -->
+              <div class="planner-sticky_component" id="stickyBar" hidden>
+                <p class="text-size-caption-md text-color-primary" id="stickyText"></p>
+                <button class="button is-sm is-secondary" type="button" id="stickyEdit">Изменить</button>
+              </div>
+
+              <!-- 3. ПОТОКИ ПО МЕСЯЦАМ — рисует код -->
+              <div class="timetable-list_component" id="list"></div>
+
+              <p class="timetable-note_component text-size-caption-sm margin-top margin-medium" id="sourceNote" hidden></p>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/timetable-variants/core.js" defer></script>
+  <script src="/timetable-variants/a.js" defer></script>
+</body>
+</html>

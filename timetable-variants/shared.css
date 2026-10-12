@@ -1,0 +1,375 @@
+/* ==========================================================================
+   ОБЩИЕ СТИЛИ ТРЁХ ВАРИАНТОВ РАСПИСАНИЯ
+
+   Цвета, размеры текста и отступы приходят из дизайн-системы сайта
+   (/design-system/*.css) — здесь только раскладка. hex-кодов и px нет,
+   кроме границ в 1px.
+
+   🔴 Полоса вариантов сверху (.prototype-bar) — служебная, только для
+   сравнения прототипов. На сайт она не переносится.
+   ========================================================================== */
+
+/* --- ЖЁЛТАЯ ПЛАШКА СКИДКИ ---
+   ⚠️ Нового цвета нет в дизайн-системе. Добавлен по решению Дарьи
+   (12.10.2026) — тот же жёлтый, что у плашки скидки в каталоге
+   (apps/tilda/catalog/src/catalog.css). При переносе на сайт —
+   завести токен в tokens.css, отсюда убрать. */
+:root {
+  --promo-bg: #FFE110;
+  --promo-text: #3D3A2A;
+  /* купон в строке: тот же жёлтый, разбавленный белым — поярче и побледнее */
+  --promo-bg-strong: color-mix(in srgb, var(--promo-bg) 80%, var(--bg-surface));
+  --promo-bg-soft: color-mix(in srgb, var(--promo-bg) 35%, var(--bg-surface));
+}
+
+/* --- Мелочи браузера в тон сайту --- */
+::selection { background-color: var(--bg-accent-soft); color: var(--text-heading); }
+body { background-color: var(--bg-page); }
+
+/* Скрытое скрыто всегда — даже у кнопок, которым дизайн-система задаёт display */
+[hidden] { display: none !important; }
+
+/* Подсказка в поле поиска. В дизайн-системе она --text-disabled (2.2:1) —
+   для единственной подписи поля этого мало. Здесь вторичный текст (7:1).
+   ⚠️ В самой дизайн-системе это стоит поправить отдельной задачей. */
+.form_input::placeholder { color: var(--text-secondary); }
+.timetable-row_date,
+.timetable-row_price,
+.stream-ticket_component,
+.month-ruler_count,
+.week-grid_count { font-variant-numeric: tabular-nums; }
+
+
+/* ==========================================================================
+   0. ПОЛОСА ВАРИАНТОВ (только прототип)
+   ========================================================================== */
+.prototype-bar_component {
+  background-color: var(--bg-inverse);
+  color: var(--text-on-inverse);
+}
+.prototype-bar_inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xsmall);
+  min-height: var(--tap-target-min);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.prototype-bar_inner::-webkit-scrollbar { display: none; }
+.prototype-bar_label { flex: none; margin-right: var(--space-xsmall); }
+.prototype-bar_link {
+  flex: none;
+  padding: var(--space-xxsmall) var(--space-xsmall);
+  border-radius: var(--radius-md);
+  color: var(--text-on-inverse);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .prototype-bar_link:hover { color: var(--text-inverse); background-color: var(--accent-press); }
+}
+.prototype-bar_link.is-current { background-color: var(--accent); color: var(--text-inverse); }
+.prototype-bar_link:focus-visible { outline-color: var(--border-inverse); }
+
+
+/* ==========================================================================
+   1. ЗАГОЛОВОК СТРАНИЦЫ
+   ========================================================================== */
+.timetable-head_component { display: flex; flex-direction: column; gap: var(--space-xsmall); }
+.timetable-head_title { text-wrap: balance; }
+
+
+/* ==========================================================================
+   2. МЕСЯЦ: ПЛАШКИ КУРСОВ
+
+   Курсы месяца — отдельные белые плашки прямо на фоне страницы.
+   Плашка целиком ссылка на страницу курса, справа светло-фиолетовый
+   круг со стрелкой.
+
+   Телефон: дата · курс и цена друг под другом · стрелка внизу справа.
+   С планшета: дата · курс · цена · стрелка. Число даты, название курса
+   и сумма стоят на одной линии текста, стрелка — у верхнего края.
+   ========================================================================== */
+
+/* Белые карточки на сером фоне страницы — без обводки:
+   их отделяет от фона заливка и мягкая тень из дизайн-системы */
+.card { border-color: transparent; }
+
+.month-panel_component { overflow: hidden; }
+.month-panel_heading {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xsmall);
+  margin-bottom: var(--space-small);
+}
+
+/* Заголовок секции с подписью: «Лист ожидания», «Без постоянных дней» */
+.timetable-list_heading { display: flex; flex-direction: column; gap: var(--space-xxsmall); margin-bottom: var(--space-small); }
+
+/* Месяц: белые плашки курсов прямо на фоне страницы, без подложки.
+   Подложка есть только у «Последнего шанса» — так он и выделяется. */
+.month-panel_component.is-underlay {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  overflow: visible;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* Плашка курса */
+.timetable-row_component {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: var(--space-small);
+  row-gap: var(--space-xsmall);
+  padding: var(--space-small);
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+  color: inherit;
+  text-decoration: none;
+}
+.timetable-row_component:focus-visible { outline-offset: 0.125rem; }
+
+.timetable-row_title { text-wrap: pretty; transition: color var(--duration-fast) var(--ease-out); }
+
+/* Дата столбиком: число крупно, день недели под ним, как листок календаря.
+   Месяц уже в заголовке. */
+.timetable-row_date {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.timetable-row_day { line-height: 1; }
+.timetable-row_weekday { margin-top: var(--space-xxsmall); }
+
+.timetable-row_main { grid-column: 2 / -1; grid-row: 1; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xxsmall); min-width: 0; }
+
+/* Цена: сумма, под ней старая цена с купоном скидки, под ней рассрочка.
+   На телефоне цена отделена от дней недели воздухом. */
+.timetable-row_price {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xxsmall);
+  margin-top: var(--space-xsmall);
+}
+.timetable-row_amount { line-height: 1.1; }
+.timetable-row_discount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xxsmall) var(--space-xsmall);
+}
+
+/* Стрелка: светло-фиолетовый круг, при наведении на плашку — сплошной */
+.timetable-row_arrow {
+  grid-column: 3;
+  grid-row: 2;
+  align-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-accent-soft);
+  color: var(--text-accent);
+  transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.timetable-row_arrow .icon { transition: transform var(--duration-fast) var(--ease-out); }
+
+/* Наведение: меняется цвет — название фирменное, стрелка заливается
+   и чуть сдвигается вперёд. Без подчёркивания. */
+@media (hover: hover) and (pointer: fine) {
+  .timetable-row_component:hover .timetable-row_title { color: var(--text-accent); }
+  .timetable-row_component:hover .timetable-row_arrow { background-color: var(--accent); color: var(--text-inverse); }
+  .timetable-row_component:hover .timetable-row_arrow .icon { transform: translateX(0.125rem); }
+}
+.timetable-row_component:focus-visible .timetable-row_title { color: var(--text-accent); }
+
+/* Плашка без колонки даты (лист ожидания, старт в любое время, «Последний шанс») */
+.timetable-row_component.is-nodate { grid-template-columns: minmax(0, 1fr) auto; }
+.timetable-row_component.is-nodate .timetable-row_date { display: none; }
+.timetable-row_component.is-nodate .timetable-row_main { grid-column: 1 / -1; }
+.timetable-row_component.is-nodate .timetable-row_price { grid-column: 1; }
+.timetable-row_component.is-nodate .timetable-row_arrow { grid-column: 2; }
+
+@media (min-width: 48.0625rem) {
+  .timetable-row_component {
+    grid-template-columns: 3.5rem minmax(0, 1fr) 11rem var(--tap-target-min);
+    column-gap: var(--space-medium);
+    padding: var(--space-small) var(--space-medium);
+  }
+  .timetable-row_date { grid-row: 1; }
+  .timetable-row_main { grid-column: 2; }
+  .timetable-row_price { grid-column: 3; grid-row: 1; align-items: flex-end; text-align: right; margin-top: 0; }
+  .timetable-row_discount { justify-content: flex-end; }
+  .timetable-row_arrow { grid-column: 4; grid-row: 1; align-self: start; width: var(--tap-target-min); height: var(--tap-target-min); }
+
+  .timetable-row_component.is-nodate { grid-template-columns: minmax(0, 1fr) 11rem var(--tap-target-min); }
+  .timetable-row_component.is-nodate .timetable-row_main { grid-column: 1; }
+  .timetable-row_component.is-nodate .timetable-row_price { grid-column: 2; }
+  .timetable-row_component.is-nodate .timetable-row_arrow { grid-column: 3; }
+}
+@media (min-width: 64.0625rem) {
+  .timetable-row_component { grid-template-columns: 3.5rem minmax(0, 1fr) 15rem var(--tap-target-min); }
+  .timetable-row_component.is-nodate { grid-template-columns: minmax(0, 1fr) 15rem var(--tap-target-min); }
+}
+
+
+/* --- Купон скидки «−10 % | до 31 октября» ---
+   Две части, как у отрывного купона: слева размер скидки на жёлтом
+   поярче, справа срок на бледно-жёлтом. На линии отрыва сверху
+   и снизу — полукруглые вырезы. Обводки нет. */
+.promo-badge_component {
+  --cut: 3.25rem;   /* ширина левой части: где проходит линия отрыва */
+  display: inline-flex;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  color: var(--promo-text);
+  white-space: nowrap;
+  -webkit-mask:
+    radial-gradient(circle at var(--cut) 0, transparent 0.1875rem, black 0.2188rem),
+    radial-gradient(circle at var(--cut) 100%, transparent 0.1875rem, black 0.2188rem);
+  -webkit-mask-composite: source-in;
+          mask:
+    radial-gradient(circle at var(--cut) 0, transparent 0.1875rem, black 0.2188rem),
+    radial-gradient(circle at var(--cut) 100%, transparent 0.1875rem, black 0.2188rem);
+          mask-composite: intersect;
+}
+.promo-badge_value {
+  width: var(--cut);
+  padding: var(--space-tiny) 0;
+  text-align: center;
+  background-color: var(--promo-bg-strong);
+}
+.promo-badge_until {
+  padding: var(--space-tiny) var(--space-xsmall);
+  background-color: var(--promo-bg-soft);
+}
+
+
+/* ==========================================================================
+   «ПОСЛЕДНИЙ ШАНС» — донабор на курсы, которые уже начались
+
+   Приоритетный блок: всегда первым в списке и всегда раскрыт.
+   Та же схема, что у месяца, — подложка и белые плашки, только
+   подложка тёмно-фиолетовая (тёмные блоки на сайте — фиолетовые).
+   Заголовок стоит внутри подложки.
+   ========================================================================== */
+.last-call_component {
+  padding: var(--space-small) var(--space-xsmall) var(--space-xsmall);
+  border-radius: var(--radius-2xl);
+  background-color: var(--bg-inverse);
+}
+.last-call_head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxsmall);
+  padding: 0 var(--space-xsmall) var(--space-small);
+}
+.last-call_list { display: flex; flex-direction: column; gap: var(--space-xsmall); }
+@media (min-width: 48.0625rem) {
+  .last-call_component { padding: var(--space-medium) var(--space-small) var(--space-small); }
+  .last-call_head { padding: 0 var(--space-small) var(--space-small); }
+}
+
+
+/* --- Дни занятий: «пн вт ср чт пт сб вс» ---
+   Жирные сокращения: дни занятий фиолетовые, остальные едва заметные.
+   Экранному диктору отдаётся одна фраза «Занятия: вт и пт». */
+.week-days_component { display: inline-flex; gap: var(--space-xsmall); font-weight: var(--weight-strong); line-height: 1.3; }
+.week-days_day { color: color-mix(in srgb, var(--text-disabled) 55%, var(--bg-surface)); }
+.week-days_day.is-on { color: var(--accent); }
+
+
+/* --- Семь точек «пн…вс» (вариант C, старая подача) --- */
+.week-dots_component { display: inline-flex; gap: var(--space-tiny); }
+.week-dots_dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: var(--radius-full);
+  background-color: var(--border-strong);
+}
+.week-dots_dot.is-on { background-color: var(--accent); }
+
+
+/* ==========================================================================
+   4. БЕСПЛАТНЫЕ ЭФИРЫ — лента небольших плиток
+   ========================================================================== */
+.event-tile_component {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxsmall);
+  width: 17rem;
+  padding: var(--space-small);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .event-tile_component:hover { border-color: var(--border-strong); }
+  .event-tile_component:hover .event-tile_title { text-decoration: underline; text-underline-offset: .15em; text-decoration-thickness: 1px; }
+}
+.event-tile_title {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* ==========================================================================
+   5. СВЁРНУТЫЕ ГРУППЫ: мини-курсы, лист ожидания
+   ========================================================================== */
+.more-group_component { overflow: hidden; }
+.more-group_summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+  min-height: var(--tap-target-min);
+  padding: var(--space-small);
+  cursor: pointer;
+  list-style: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+.more-group_summary::-webkit-details-marker { display: none; }
+.more-group_summary:focus-visible { outline-offset: -0.1875rem; }
+@media (hover: hover) and (pointer: fine) {
+  .more-group_summary:hover { background-color: var(--bg-hover); }
+}
+.more-group_text { display: flex; flex-direction: column; gap: var(--space-tiny); flex: 1; min-width: 0; }
+.more-group_icon { color: var(--text-muted); transition: transform var(--duration-medium) var(--ease-out); }
+.more-group_component[open] .more-group_icon { transform: rotate(180deg); }
+.more-group_list { border-top: 1px solid var(--border-default); }
+
+@media (min-width: 48.0625rem) {
+  .more-group_summary { padding: var(--space-small) var(--space-medium); }
+}
+
+
+/* ==========================================================================
+   6. ЗАГРУЗКА, ПУСТО, СНИМОК
+   ========================================================================== */
+.timetable-skeleton_row { display: flex; flex-direction: column; gap: var(--space-xsmall); padding: var(--space-small) var(--space-medium); }
+.timetable-skeleton_row + .timetable-skeleton_row { border-top: 1px solid var(--border-default); }
+.timetable-skeleton_row .skeleton { display: block; }
+
+.timetable-empty_component {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xsmall);
+  padding: var(--space-medium);
+}
+
+.timetable-note_component { color: var(--text-secondary); }
