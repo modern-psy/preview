@@ -349,12 +349,12 @@
     return '<span class="week-days_component text-size-caption-md" role="img" aria-label="Занятия: ' + daysLabel(it.days) + '">' + html + '</span>';
   }
 
-  // --- Индикаторы: готовый чип дизайн-системы с точкой и текстом ---
+  // --- Индикаторы: спокойная подпись и светящаяся точка, без плашки ---
   // Статус берётся из CMS. Если там не «Идёт набор» — метки нет.
   function statusMark(it, started) {
     if (!started && !/набор/i.test(it.status || '')) return '';
     var label = started ? 'Идёт с ' + dateLong(it.start) : 'Идёт набор';
-    return '<span class="chip status-mark_component' + (started ? ' is-warn is-started' : ' is-done') + '">' +
+    return '<span class="status-mark_component' + (started ? ' is-started' : '') + ' text-size-caption-sm text-weight-medium">' +
       '<span class="status-mark_dot" aria-hidden="true"></span>' + label + '</span>';
   }
 

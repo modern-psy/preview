@@ -25,10 +25,19 @@
   right: var(--space-small);
 }
 
-/* Уже начавшийся курс: warning из дизайн-системы, точка без пульсации. */
+/* Мягко светится только точка. Текст без фона и обводки, движения нет.
+   🟢 Цвета и радиус размытия берём из токенов дизайн-системы. */
+[data-status] .status-mark_dot {
+  flex-shrink: 0;
+  box-shadow: 0 0 var(--space-xsmall) var(--status-done-border);
+}
+[data-status] .status-mark_dot::after { content: none; }
+/* Уже начавшийся курс: тот же приём в цвете warning. */
 [data-status] .status-mark_component.is-started { color: var(--status-warn-text); }
-[data-status] .status-mark_component.is-started .status-mark_dot { background-color: currentColor; }
-[data-status] .status-mark_component.is-started .status-mark_dot::after { animation: none; background: none; }
+[data-status] .status-mark_component.is-started .status-mark_dot {
+  background-color: currentColor;
+  box-shadow: 0 0 var(--space-xsmall) var(--status-warn-border);
+}
 
 /* Широкий мобильный: название и индикатор начинаются на одной высоте.
    Место справа зарезервировано, чтобы длинный заголовок не заходил под метку.
