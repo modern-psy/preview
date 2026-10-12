@@ -12,12 +12,38 @@
 }
 
 /* Мобильный: обложка ниже по высоте, метка вверху справа у названия. */
-[data-status] .timetable-row_component { position: relative; align-items: start; }
+[data-status] .timetable-row_component {
+  position: relative;
+  align-items: start;
+  grid-template-columns: var(--space-large) minmax(0, 1fr) auto;
+  column-gap: var(--space-small);
+  padding: var(--space-small);
+  border-radius: var(--radius-2xl);
+}
+[data-status] .timetable-row_component.is-nodate {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
 /* Число и день недели — на одной центральной оси; блок остаётся сверху. */
 [data-status] .timetable-row_date {
   align-self: start;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--bg-hover);
+  border-radius: var(--radius-md);
   text-align: center;
+}
+[data-status] .timetable-row_arrow {
+  background-color: var(--bg-hover);
+  color: var(--text-secondary);
+}
+/* Наведение остаётся нейтральным: стрелка не становится фиолетовой. */
+@media (hover: hover) and (pointer: fine) {
+  [data-status] .timetable-row_component:hover .timetable-row_arrow {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+  }
 }
 [data-status] .timetable-row_main { align-self: start; }
 [data-status] .timetable-row_price { align-self: end; }
@@ -111,7 +137,7 @@
     gap: var(--space-xxsmall) var(--space-xsmall);
   }
   [data-status] .timetable-row_component {
-    grid-template-columns: 3.5rem minmax(0, 1fr) 11rem;
+    grid-template-columns: var(--space-xlarge) minmax(0, 1fr) 11rem;
     column-gap: var(--space-small);
   }
   [data-status] .timetable-row_date { grid-row: 1 / span 2; }
@@ -173,8 +199,8 @@
     gap: var(--space-xxsmall);
   }
   [data-status] .timetable-row_component {
-    grid-template-columns: 3.5rem minmax(0, 1fr) 15rem var(--tap-target-min);
-    column-gap: var(--space-medium);
+    grid-template-columns: var(--space-xlarge) minmax(0, 1fr) 15rem var(--tap-target-min);
+    column-gap: var(--space-small);
   }
   [data-status] .timetable-row_date,
   [data-status] .timetable-row_main { grid-row: 1; }
