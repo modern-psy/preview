@@ -469,7 +469,7 @@
 
 /* ===== 7.1. Удостоверение — «Документ с фото человека» из библиотеки блоков (как на /narrative-therapy) =====
    Белая карточка: слева заголовок с акцентом, условия с тёмной галочкой и лицензия; справа удостоверение в 3D-сцене.
-   Телефон: фото квадратом под текстом; от 768px две колонки, фото по высоте текста. */
+   Телефон: картинка 3 : 2 под текстом; от 768px две колонки, картинка по высоте текста. */
 .document_component { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); overflow: clip; border-radius: var(--radius-card); background: var(--color-surface-primary); }
 .document_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1.5rem 1rem; overflow-wrap: anywhere; }
 .document_heading { text-wrap: balance; }
@@ -477,7 +477,8 @@
 .document_term { display: flex; align-items: flex-start; gap: 0.625rem; color: var(--color-text-primary); font-size: 1rem; line-height: 1.35; text-wrap: pretty; }
 .document_check { width: 1.25rem; height: 1.25rem; margin-top: 0.0625rem; color: var(--color-text-primary); }
 .document_license { --body-text-color: var(--color-text-secondary); }
-.document_media { position: relative; aspect-ratio: 1; background: #ecebef; }
+/* На телефоне кадр 3 : 2 вместо квадрата: сверху и снизу у удостоверения пустой фон, его срезаем — картинка ниже. */
+.document_media { position: relative; aspect-ratio: 3 / 2; background: #ecebef; }
 /* Удостоверение стоит по центру квадратного кадра с запасом, поэтому обрезка по высоте или ширине его не задевает. */
 .document_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
 @media (min-width: 48rem) {
