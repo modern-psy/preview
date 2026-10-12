@@ -1,0 +1,1059 @@
+/* Собрано build.mjs: база, meta-pill, card-spacing, section-spacing, body-text, section-heading и button из apps/preview/web-academy/shared/academy, затем page.css. Править исходники и пересобирать. */
+
+.academy-page {
+  --color-page-background: #f5f5f5;
+  --color-surface-primary: #ffffff;
+  --color-text-primary: #332f41;
+  --color-text-secondary: #747476;
+  --color-text-secondary-large: #7b7b7c;
+  --color-text-secondary-on-accent: #5e5a6a;
+  --color-text-on-dark: #ffffff;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-soft: #dad6ff;
+  --color-focus: #7c5cdb;
+  --color-surface-dark: #2b2334;
+  --color-text-on-dark-muted: #e6e5eb;
+  --color-cta-grid-muted: #32293c;
+  --color-cta-grid-medium: #3b2e49;
+  --color-cta-grid-bright: #38254e;
+  --border-gradient-accent: linear-gradient(
+    to top right,
+    rgba(124, 92, 219, 0.8) 0%,
+    rgba(124, 92, 219, 0.3) 50%,
+    rgba(124, 92, 219, 0.8) 100%
+  );
+  --section-heading-gap: clamp(1.25rem, 3.63vw, 1.75rem);
+  --section-heading-description-size: clamp(1rem, 2.149vw, 1.375rem);
+  --text-body-size: clamp(1.125rem, 2.016vw, 1.25rem);
+  --text-body-line-height: 1.4;
+  --content-heading-gap: 0.5rem;
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+  --font-family-emphasis: var(--font-family-body);
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --radius-card: 1rem;
+  --transition-site: 180ms ease;
+  --hero-section-offset: 3rem;
+  --hero-section-end: 5rem;
+  --hero-section-end-desktop: 9.375rem;
+  --hero-media-min-height: 37.5rem;
+  --hero-media-min-height-desktop: 43.75rem;
+  --hero-image-position: 66% center;
+  --hero-image-position-desktop: center;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.academy-page,
+.academy-page *,
+.academy-page *::before,
+.academy-page *::after {
+  box-sizing: border-box;
+}
+
+body:has(.academy-page) {
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.academy-page :where(h1, h2, h3, h4, h5, h6, p, ul, li) {
+  margin: 0;
+  padding: 0;
+}
+
+.academy-page ul {
+  list-style: none;
+}
+
+.academy-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.academy-page img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.academy-page .main-wrapper {
+  display: block;
+}
+
+.academy-page .padding-global {
+  width: 100%;
+  padding-right: var(--page-padding);
+  padding-left: var(--page-padding);
+}
+
+.academy-page .container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.meta-pill_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.meta-pill_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+
+.meta-pill_component img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* The approved Hero tag, also used independently in content cards. */
+.meta-pill_component.is-responsive {
+  --meta-pill-padding-y: calc(0.3125rem + clamp(0rem, 0.25575448vw - 0.09590793rem, 0.0625rem));
+  --meta-pill-padding-start: calc(0.375rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-padding-end: calc(0.5625rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-size: calc(0.875rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --meta-pill-icon-size: calc(1.125rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  padding: var(--meta-pill-padding-y) var(--meta-pill-padding-end) var(--meta-pill-padding-y) var(--meta-pill-padding-start);
+  font-size: var(--meta-pill-size);
+  white-space: normal;
+}
+.meta-pill_icon {
+  display: block;
+  width: var(--meta-pill-icon-size, 1.25rem);
+  height: var(--meta-pill-icon-size, 1.25rem);
+  flex: none;
+}
+.meta-pill_component.is-responsive .meta-pill_icon {
+  width: var(--meta-pill-icon-size);
+  height: var(--meta-pill-icon-size);
+}
+
+/* Shared spacing for Academy cards. Opt in once per landing. */
+.academy-page {
+  --card-padding: 0.75rem;
+  --radius-card: 0.75rem;
+  --card-grid-gap: 0.75rem;
+}
+@media (min-width: 48rem) {
+  .academy-page { --card-padding: 1rem; --card-grid-gap: 1rem; --radius-card: 1rem; }
+}
+
+
+/* Separate inter-section rhythm from internal padding of dark sections. */
+.academy-page { --section-space: 3.75rem; --section-inset-space: 2.5rem; }
+@media (min-width: 32.5625rem) { .academy-page { --section-space: 5rem; } }
+@media (min-width: 48rem) { .academy-page { --section-space: 6.25rem; --section-inset-space: 3.125rem; } }
+@media (min-width: 64.0625rem) { .academy-page { --section-space: 9.375rem; --section-inset-space: 4.375rem; } }
+.section-spacing_component { padding-block: 0 var(--section-space); }
+.section-spacing_component.is-inset { padding-block: var(--section-inset-space); }
+.section-spacing_component.is-after-inset { padding-block-start: var(--section-space); }
+
+
+/* Shared body typography; compositions own only layout and spacing. */
+.body-text_component {
+  margin: 0;
+  color: var(--body-text-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: min(var(--body-text-max, 1.25rem), 0.9375rem);
+  font-weight: 444;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.body-text_component.is-regular { font-weight: 400; }
+.body-text_component.is-statement { letter-spacing: normal; }
+.body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1rem)); }
+.body-text_component.is-reading { line-height: 1.4; letter-spacing: normal; }
+.body-text_component.is-showcase { font-size: 1rem; font-weight: 400; line-height: 1.1; }
+.body-text_component.is-detailed { line-height: 1.4; letter-spacing: normal; }
+.body-text_lead { color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) {
+  .body-text_component.is-showcase { font-size: 1.125rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.125rem)); }
+}
+@media (min-width: 48rem) {
+  .body-text_component.is-showcase { font-size: 1.25rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.125rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.25rem)); }
+}
+@media (min-width: 64.0625rem) {
+  .body-text_component.is-showcase { font-size: 1.5rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.25rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.375rem)); }
+}
+
+/* Small supporting copy for prices and compact factual captions. */
+.body-text_component.is-caption { font-size: 0.9375rem; }
+@media (min-width: 32.5625rem) { .body-text_component.is-caption { font-size: 1rem; } }
+@media (min-width: 64.0625rem) { .body-text_component.is-caption { font-size: 1.125rem; } }
+
+/* Shared emphasis, callout and fine-print roles; no section owns a second scale. */
+.body-text_component.is-emphasis { font-weight: 600; }
+.body-text_component.is-callout { font-weight: 500; line-height: 1.3; }
+.body-text_component.is-fine-print { font-size: 0.875rem; font-weight: 400; line-height: 1.4; }
+
+
+/* Opt-in heading and section composition; load after the consuming component CSS. */
+.academy-page {
+  --space-heading-copy: 1.25rem;
+  --space-subtitle-pair: 0.25rem;
+  --space-mark-heading: 0.75rem;
+  --space-section-content: 2rem;
+  --space-cta-action: 2rem;
+}
+@media (min-width: 32.5625rem) {
+  .academy-page { --space-subtitle-pair: 0.5rem; --space-section-content: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .academy-page { --space-heading-copy: 1.5rem; --space-subtitle-pair: 0.75rem; --space-mark-heading: 1rem; --space-section-content: 2.625rem; }
+}
+@media (min-width: 64.0625rem) {
+  .academy-page { --space-heading-copy: 1.75rem; --space-subtitle-pair: 1rem; --space-section-content: 4.375rem; --space-cta-action: 2.25rem; }
+}
+
+.section-title_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--section-title-size, clamp(2.25rem, 3.1vw, 3.25rem));
+  font-weight: var(--section-title-weight, 400);
+  line-height: var(--section-title-line-height, 1.1);
+  letter-spacing: var(--section-title-tracking, -0.06em);
+  text-align: inherit;
+  text-wrap: var(--section-title-wrap, balance);
+}
+
+.section-title_component.is-left {
+  text-align: left;
+}
+
+.section-title_component.is-center {
+  text-align: center;
+}
+
+.section-title_component.is-right {
+  text-align: right;
+}
+
+/* The same responsive title scale can be used without changing section gaps. */
+.section-title_component.is-responsive { --section-title-size: 2rem; --section-title-line-height: 1; overflow-wrap: anywhere; }
+@media (min-width: 32.5625rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-title_component.is-responsive { --section-title-size: 3.25rem; }
+}
+
+.section-title_accent {
+  display: inline;
+  color: var(--color-accent-text, var(--color-accent-primary));
+}
+
+.section-subtitle_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--section-subtitle-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: var(--section-subtitle-line-height, 1.2);
+  letter-spacing: var(--section-subtitle-tracking, -0.01em);
+  text-wrap: pretty;
+}
+
+.content-heading_component {
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--content-heading-size, clamp(1.25rem, 2.419vw, 1.5rem));
+  font-weight: 500;
+  line-height: var(--content-heading-line-height, 1.1);
+  letter-spacing: 0;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.content-heading_component.is-prominent {
+  font-size: var(--content-prominent-size, clamp(1.75rem, 2.4vw, 2.25rem));
+  font-weight: 444;
+  letter-spacing: -0.03em;
+}
+
+/* One portrait heading size for the standard card families. */
+@media (max-width: 32.5rem) {
+  .card_component.is-icon-statement,
+  .card_component.is-stage { --content-heading-size: 1.25rem; }
+  .card_component.benefits_card { --hero-card-title-size: 1.25rem; }
+}
+
+/* Shared card/question heading role; independent of its surrounding surface. */
+.content-heading_component.is-card { --content-heading-size: 1.25rem; }
+.content-heading_component.is-profile { --content-heading-size: 1.375rem; font-weight: 400; }
+@media (min-width: 32.5625rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.375rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.5rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .content-heading_component.is-profile { --content-heading-size: 2rem; }
+}
+
+.content-header_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--content-heading-gap);
+}
+
+.section-header_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-heading-gap);
+}
+
+/* Separate the heading-to-copy distance from gaps inside a copy group. */
+.section-subtitles_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-subtitles-gap, 1rem);
+}
+.section-header_title {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: inherit;
+  gap: var(--section-heading-mark-gap, 1rem);
+}
+.section-header_component.is-responsive {
+  --section-heading-gap: var(--space-heading-copy);
+  --section-heading-description-size: 1rem;
+  --section-subtitles-gap: var(--space-subtitle-pair);
+  --section-heading-mark-gap: var(--space-mark-heading);
+}
+@media (min-width: 32.5625rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.125rem; }
+}
+@media (min-width: 48rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-header_component.is-responsive { --section-heading-description-size: 1.375rem; }
+}
+
+.section-header_component.is-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.section-header_component.is-center {
+  align-items: center;
+  text-align: center;
+}
+
+.section-header_component.is-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.section-layout_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-layout-gap, clamp(2.5rem, 6.835vw, 4.375rem));
+}
+.section-layout_component.is-responsive {
+  --section-title-size: 2rem;
+  --section-title-line-height: 1;
+  --section-layout-gap: var(--space-section-content);
+}
+@media (min-width: 32.5625rem) {
+  .section-layout_component.is-responsive { --section-title-size: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .section-layout_component.is-responsive { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-layout_component.is-responsive { --section-title-size: 3.25rem; }
+}
+
+@media (min-width: 64.0625rem) {
+  .section-layout_component.is-split {
+    display: grid;
+    grid-template-columns: var(--section-layout-columns, minmax(0, 0.75fr) minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+
+/* Opt-in action button. Geometry extracted from the approved dual-action Hero.
+   Page specificity intentionally supersedes legacy composition sizing. */
+.academy-page { --button-light-padding-inline: 0.75rem; }
+@media (min-width: 48rem) {
+  .academy-page { --button-light-padding-inline: 1.5rem; }
+}
+.academy-page .button_component {
+  --button-font-size: calc(1rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  --button-min-height: calc(3.125rem + clamp(0rem, 2.91560102vw - 1.09335038rem, 0.7125rem) + clamp(0rem, 0.31059507vw - 0.19237482rem, 0.13375rem));
+  display: inline-flex;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--button-min-height);
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: var(--button-font-size);
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 150ms ease-in-out),
+    box-shadow var(--transition-site, 150ms ease-in-out);
+}
+.academy-page .button_component.is-light { padding-inline: var(--button-light-padding-inline, 0.75rem); background: var(--color-surface-primary); color: var(--color-text-primary); }
+.button_component.is-light:where(:not(:disabled)):hover { background: var(--color-text-on-dark-muted); }
+.button_component.is-accent { background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.button_component.is-accent:where(:not(:disabled)):hover { background: var(--color-accent-text); }
+.academy-page .button_component:where(.is-outline) {
+  border-color: var(--color-text-on-dark);
+  background: rgb(255 255 255 / 15%);
+  color: var(--color-text-on-dark);
+  backdrop-filter: blur(4px);
+}
+.button_component.is-outline:where(:not(:disabled)):hover { background: rgb(255 255 255 / 25%); }
+.button_component:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 85%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .academy-page .button_component { transition: none; }
+}
+
+
+/* =====================================================================
+   Витрина «Блок цены: восемь сценариев, две системы подачи».
+   Общие стили Web Academy (база, meta-pill, кнопка, заголовки, текст,
+   кнопка) приклеиваются выше сборкой build.mjs. Здесь только то, что
+   принадлежит витрине и системам «Одна цифра» и «Сравнение».
+   Кнопок в блоке цены нет: кнопка живёт в форме следующим блоком.
+   Цвета — токены Web Academy. Единственное исключение — жёлтая плашка
+   «Курс месяца» (#ffe110), её Дарья утвердила в каталоге.
+   ===================================================================== */
+
+.pricing-scenarios-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-accent-text: #644ab2;
+  --page-padding: 1rem;
+  /* Линии на светлом: как подложка табов Web Academy; при наведении — как обводка карточки каталога. */
+  --line: #e8e6ee;
+  --line-strong: #cfd1db;
+  /* Второстепенный текст на сером фоне страницы: #747476 там даёт меньше 4.5:1, поэтому темнее. */
+  --text-quiet: #5e5a6a;
+  /* Тёмная поверхность: те же оттенки, что в pricing-promo. */
+  --dark-text: var(--color-text-on-dark-muted);
+  --dark-muted: #bdb7b7;
+  --dark-faint: #99929f;
+  --dark-line: rgb(255 255 255 / 14%);
+  --dark-dash: rgb(255 255 255 / 24%);
+  --dark-raised: #3a2f48;
+  /* Плашка «Курс месяца»: цвет из каталога и лендингов, вне палитры Web Academy. */
+  --promo-surface: #ffe110;
+  --promo-text: #3d3a2a;
+  --controls-offset: 4.5rem;
+  font-variant-numeric: lining-nums proportional-nums;
+}
+
+.pricing-scenarios-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+.pricing-scenarios-page { caret-color: var(--color-accent-primary); }
+.pricing-scenarios-page p,
+.pricing-scenarios-page h1,
+.pricing-scenarios-page h2,
+.pricing-scenarios-page h3,
+.pricing-scenarios-page h4,
+.pricing-scenarios-page ul,
+.pricing-scenarios-page dl,
+.pricing-scenarios-page dd { margin: 0; }
+.pricing-scenarios-page button { font-family: inherit; }
+
+.screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Колонка 10 из 12, как у блока цены и формы на лендингах. */
+.pricing-scenarios-page .column-grid_component { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.pricing-scenarios-page .column-grid_content { min-width: 0; grid-column: 1; }
+@media (min-width: 48rem) { .pricing-scenarios-page { --page-padding: 1.5rem; } }
+@media (min-width: 64.0625rem) {
+  .pricing-scenarios-page .column-grid_component { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 1rem; }
+  .pricing-scenarios-page .column-grid_content.is-content-wide { grid-column: 2 / span 10; }
+}
+@media (min-width: 75rem) { .pricing-scenarios-page { --page-padding: 5rem; } }
+
+/* ---------- Вводная ---------- */
+.section_intro { padding-block: 2.5rem 2rem; }
+.intro_component { display: flex; flex-direction: column; gap: var(--space-heading-copy, 1.25rem); }
+.intro_lead { max-width: 46rem; color: var(--text-quiet); font-size: 1rem; line-height: 1.45; }
+.intro_systems { display: grid; gap: 0; padding: 0; list-style: none; }
+.intro_system { display: flex; flex-direction: column; gap: 0.375rem; padding-block: 0.875rem; border-top: 1px solid var(--line-strong); }
+.intro_system-name { color: var(--color-text-primary); font-size: 1.0625rem; font-weight: 500; line-height: 1.2; }
+.intro_system-text { max-width: 30rem; color: var(--text-quiet); font-size: 0.9375rem; line-height: 1.4; }
+@media (min-width: 48rem) {
+  .intro_lead { font-size: 1.125rem; }
+  .intro_systems { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; }
+}
+@media (min-width: 64.0625rem) { .section_intro { padding-block: 4rem 2.5rem; } }
+
+/* ---------- Липкая панель: система и курс месяца ---------- */
+.scenario-controls_component {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--color-page-background);
+}
+.scenario-controls_inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.25rem; padding-block: 0.625rem; }
+.scenario-controls_systems { flex: 1 1 18rem; min-width: 0; max-width: 32rem; margin: 0; padding: 0; border: 0; }
+.scenario-controls_legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+/* Сегментированный выбор. На странице — нейтральный (выбранный тёмный, как таб Web Academy),
+   внутри макетов — акцентный. Ввод — настоящие радиокнопки, поэтому работает с клавиатуры стрелками. */
+.segmented_component {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 0.125rem;
+  padding: 0.25rem;
+  border-radius: 6rem;
+  background: var(--tabs-idle-surface, #e8e6ee);
+}
+.segmented_item { position: relative; display: flex; min-width: 0; }
+.segmented_input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.segmented_label {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6rem;
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 444;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  transition: background-color var(--transition-site), color var(--transition-site);
+}
+.segmented_input:checked + .segmented_label { background: var(--color-text-primary); color: var(--color-text-on-dark); }
+.segmented_input:focus-visible + .segmented_label { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .segmented_input:not(:checked):hover + .segmented_label { background: var(--color-accent-soft); }
+}
+/* Внутри макетов: на белом фоне подложка серая, выбранный — фиолетовый. */
+.segmented_component.is-accent { background: var(--color-page-background); }
+.segmented_component.is-accent .segmented_input:checked + .segmented_label { background: var(--color-accent-primary); }
+.segmented_component.is-dark { background: rgb(255 255 255 / 8%); }
+.segmented_component.is-dark .segmented_label { color: var(--dark-text); }
+.segmented_component.is-dark .segmented_input:checked + .segmented_label { background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.segmented_component.is-dark .segmented_input:focus-visible + .segmented_label { outline-color: var(--color-text-on-dark); }
+
+/* Переключатель «Курс месяца». */
+.switch_component { position: relative; display: inline-flex; min-height: 2.75rem; align-items: center; gap: 0.625rem; color: var(--color-text-primary); font-size: 0.9375rem; font-weight: 444; line-height: 1.2; cursor: pointer; }
+.switch_input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; }
+.switch_track { position: relative; width: 2.75rem; height: 1.5rem; flex: none; border-radius: 999px; background: var(--line-strong); transition: background-color var(--transition-site); }
+.switch_track::after {
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  content: "";
+  transition: transform var(--transition-site);
+}
+.switch_input:checked + .switch_track { background: var(--color-accent-primary); }
+.switch_input:checked + .switch_track::after { transform: translateX(1.25rem); }
+.switch_input:focus-visible + .switch_track { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+
+/* ---------- Карта сценариев ---------- */
+.section_map { padding-block: 2.5rem 1rem; }
+.map_heading { margin-bottom: 1.25rem; color: var(--color-text-primary); font-size: clamp(1.75rem, 2.4vw, 2.25rem); font-weight: 444; line-height: 1.1; letter-spacing: -0.03em; }
+.scenario-map_component {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.scenario-map_component thead th { padding: 1rem 1rem 0.75rem; border-bottom: 1px solid var(--line); color: var(--text-quiet); font-size: 0.8125rem; font-weight: 500; line-height: 1.3; text-align: left; vertical-align: bottom; }
+.scenario-map_component tbody > tr > * { padding: 1rem; border-top: 1px solid var(--line); text-align: left; vertical-align: top; overflow-wrap: break-word; hyphens: auto; }
+.scenario-map_component thead th { overflow-wrap: break-word; hyphens: auto; }
+.scenario-map_component tbody > tr:first-child > * { border-top: 0; }
+.scenario-map_component { table-layout: fixed; }
+.scenario-map_col.is-name { width: 13%; }
+.scenario-map_col.is-when { width: 18%; }
+.scenario-map_col.is-example { width: 24%; }
+.scenario-map_col.is-promo { width: 16%; }
+.scenario-map_col.is-cms { width: 16%; }
+.scenario-map_col.is-first { width: 13%; }
+.scenario-map_name { color: var(--color-text-primary); font-weight: 500; }
+.scenario-map_course { display: block; margin-bottom: 0.25rem; font-weight: 500; }
+.scenario-map_line { display: block; }
+.scenario-map_line + .scenario-map_line { margin-top: 0.25rem; }
+.scenario-map_link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent-soft);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  transition: color var(--transition-site), text-decoration-color var(--transition-site);
+}
+.scenario-map_link:hover { color: var(--color-accent-text); text-decoration-color: var(--color-accent-primary); }
+.scenario-map_link:focus-visible { border-radius: 0.25rem; outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.scenario-map_cell.is-example { color: var(--color-text-primary); }
+
+/* До десктопа таблица становится стопкой карточек: шесть колонок на узком экране не читаются. */
+@media (max-width: 64rem) {
+  .scenario-map_component,
+  .scenario-map_component tbody,
+  .scenario-map_component tr,
+  .scenario-map_component th,
+  .scenario-map_component td { display: block; }
+  .scenario-map_component { overflow: visible; border-radius: 0; background: transparent; table-layout: auto; }
+  .scenario-map_component colgroup,
+  .scenario-map_component thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); }
+  .scenario-map_component .scenario-map_row { margin-bottom: 0.75rem; padding: 1rem; border-radius: var(--radius-card); background: var(--color-surface-primary); }
+  .scenario-map_component tbody > tr > .scenario-map_name { padding: 0 0 0.75rem; border-top: 0; font-size: 1.0625rem; }
+  .scenario-map_component tbody > tr > .scenario-map_cell { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.25rem; padding: 0.625rem 0; border-top: 1px solid var(--line); }
+  .scenario-map_cell::before { color: var(--text-quiet); font-size: 0.8125rem; font-weight: 500; content: attr(data-label); }
+}
+@media (min-width: 32.5625rem) and (max-width: 64rem) {
+  .scenario-map_component tbody > tr > .scenario-map_cell { grid-template-columns: minmax(0, 10rem) minmax(0, 1fr); column-gap: 1rem; }
+  .scenario-map_cell.is-example > span { grid-column: 2; }
+}
+
+.map_columns { display: grid; gap: 2rem; margin-top: 2rem; }
+.map_subheading { margin-bottom: 0.75rem; color: var(--color-text-primary); font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.map_list { display: flex; flex-direction: column; }
+.map_list-item { display: grid; gap: 0.25rem; padding-block: 0.75rem; border-top: 1px solid var(--line-strong); }
+.map_term { color: var(--color-text-primary); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.map_text { color: var(--text-quiet); font-size: 0.9375rem; line-height: 1.4; }
+.map_note { margin-top: 1.25rem; padding: 1rem; border-radius: var(--radius-card); background: var(--color-accent-soft); color: var(--color-text-primary); font-size: 0.9375rem; line-height: 1.45; }
+@media (min-width: 32.5625rem) { .map_list-item { grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); column-gap: 1rem; } }
+@media (min-width: 48rem) { .map_columns { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2.5rem; } }
+@media (min-width: 64.0625rem) { .section_map { padding-block: 4rem 1.5rem; } }
+
+/* ---------- Сценарий ---------- */
+.section_scenario { padding-top: 3.5rem; }
+.section_scenario:last-of-type { padding-bottom: 5rem; }
+.scenario-note_component { display: flex; flex-direction: column; gap: 0.5rem; max-width: 40rem; margin-bottom: 1.25rem; }
+.scenario-note_heading { color: var(--color-text-primary); font-size: clamp(1.375rem, 2vw, 1.75rem); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.scenario-note_course { color: var(--text-quiet); font-weight: 400; }
+.scenario-note_text { color: var(--text-quiet); font-size: 1rem; line-height: 1.45; }
+.scenario_fallback { padding: 1.25rem; border-radius: var(--radius-card); background: var(--color-surface-primary); color: var(--text-quiet); }
+@media (min-width: 64.0625rem) { .section_scenario { padding-top: 5.5rem; } .scenario-note_component { margin-bottom: 1.75rem; } }
+
+/* ---------- Общие детали макетов ---------- */
+.price-pills { display: flex; flex-wrap: wrap; gap: 0.375rem; padding: 0; list-style: none; }
+.price-pills .meta-pill_component { background: var(--color-page-background); }
+/* На сером фоне страницы («Сравнение») пилюли белые, на белой карточке («Одна цифра») — серые. */
+.price-compare_head .price-pills .meta-pill_component { background: var(--color-surface-primary); }
+.price-promo_badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  background: var(--promo-surface);
+  color: var(--promo-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.price-flag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.price-flag.is-dark { background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.price-includes { display: flex; flex-direction: column; gap: 0.5rem; padding: 0; list-style: none; color: var(--color-text-primary); font-size: 0.9375rem; line-height: 1.35; }
+.price-includes_item { display: grid; grid-template-columns: 1.125rem minmax(0, 1fr); gap: 0.5rem; align-items: start; }
+.price-includes_item .price-icon { width: 1.125rem; height: 1.125rem; margin-top: 0.0625rem; color: var(--color-accent-primary); }
+.price-icon { display: block; flex: none; }
+
+/* Цена спокойного размера. Под ней одна строка: «Выгода N ₽» акцентом и причина,
+   затем «или в рассрочку N ₽/мес на 24 мес» тем же тихим цветом — как список скидок
+   на лендингах: число акцентом, пояснение серым. */
+.price-number { font-weight: 500; line-height: 1; letter-spacing: -0.04em; white-space: nowrap; }
+.price-offer { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-offer_benefit { color: var(--color-accent-text); font-weight: 600; }
+@media (min-width: 48rem) { .price-offer { font-size: 1rem; } }
+
+/* Персональные скидки Академии вместо описания курса: число акцентом, условие серым. */
+.price-discounts { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+.price-discounts_title { color: var(--color-text-primary); font-size: 1.0625rem; font-weight: 500; line-height: 1.25; }
+.price-discounts_list { display: flex; flex-direction: column; gap: 0.5rem; padding: 0; list-style: none; color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-discounts_value { color: var(--color-accent-text); font-weight: 600; white-space: nowrap; }
+.price-discounts_note { color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.35; }
+/* Строкой под таблицей тарифов и полосой под карточками «Сравнения». */
+.price-discounts.is-band { padding: 1.25rem; border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.price-discounts.is-row { padding-top: 1.25rem; border-top: 1px solid var(--line); }
+@media (min-width: 48rem) {
+  .price-discounts.is-band,
+  .price-discounts.is-row { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); column-gap: 2rem; align-items: start; }
+  .price-discounts.is-band .price-discounts_note,
+  .price-discounts.is-row .price-discounts_note { grid-column: 1; grid-row: 2; }
+  .price-discounts.is-band .price-discounts_list,
+  .price-discounts.is-row .price-discounts_list { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (min-width: 64.0625rem) {
+  .price-discounts.is-band { padding: 1.5rem 1.75rem; }
+  .price-discounts.is-band .price-discounts_list,
+  .price-discounts.is-row .price-discounts_list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 1.5rem; }
+}
+
+/* Ближайшее повышение — отдельный заметный блок: повод записаться раньше. */
+.price-rise { display: flex; align-items: center; gap: 0.875rem; padding: 0.75rem 1rem 0.75rem 0.75rem; border-radius: 0.75rem; background: var(--color-page-background); color: var(--color-text-primary); }
+.price-rise_icon { box-sizing: content-box; width: 1.25rem; height: 1.25rem; flex: none; padding: 0.625rem; border-radius: 50%; background: var(--color-accent-soft); color: var(--color-accent-text); }
+.price-rise_text { display: flex; min-width: 0; flex-direction: column; gap: 0.125rem; }
+.price-rise_title { font-size: 1.0625rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
+.price-rise_note { color: var(--text-quiet); font-size: 0.875rem; line-height: 1.3; }
+.price-rise.is-compact { display: inline-flex; margin-top: 0.75rem; padding: 0.375rem 0.75rem 0.375rem 0.375rem; gap: 0.5rem; text-align: left; }
+.price-rise.is-compact .price-rise_icon { width: 1rem; height: 1rem; padding: 0.375rem; }
+.price-rise.is-compact .price-rise_title { font-size: 0.875rem; }
+.price-rise.is-compact .price-rise_note { font-size: 0.8125rem; }
+
+/* Подпись над переключателем (даты старта, формат, способ записи). */
+.price-switch { display: flex; min-width: 0; flex-direction: column; margin: 0; padding: 0; border: 0; }
+.price-switch_legend { float: left; width: 100%; margin-bottom: 0.5rem; padding: 0; color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.2; }
+.price-switch_legend + * { clear: both; }
+/* На телефоне подписи сегментов компактнее, чтобы «Полный курс» и «18 февраля 2027» не ломались. */
+@media (max-width: 32.5rem) {
+  .segmented_component .segmented_label { padding-inline: 0.375rem; font-size: 0.875rem; letter-spacing: -0.02em; }
+}
+
+/* =====================================================================
+   Строки выбора: допуслуга в «Сравнении», тарифы и лист ожидания в форме.
+   Ввод — настоящие радиокнопки и чекбоксы, строка целиком кликабельна.
+   ===================================================================== */
+.price-choice_group { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
+.price-choice_legend { float: left; width: 100%; margin-bottom: 0.5rem; padding: 0; color: var(--color-text-secondary); font-size: 0.875rem; font-weight: 400; line-height: 1.2; }
+.price-choice_legend + * { clear: both; }
+.price-choice_row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  gap: 0.375rem 0.875rem;
+  align-items: start;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: border-color var(--transition-site), box-shadow var(--transition-site), background-color var(--transition-site);
+}
+@media (hover: hover) and (pointer: fine) {
+  .price-choice_row:hover { border-color: var(--line-strong); }
+}
+.price-choice_row:has(.price-choice_input:checked) { border-color: var(--color-accent-primary); box-shadow: inset 0 0 0 1px var(--color-accent-primary); }
+.price-choice_row:has(.price-choice_input:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.price-choice_input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; }
+.price-choice_mark {
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.0625rem;
+  place-items: center;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  color: var(--color-text-on-dark);
+  transition: border-color var(--transition-site), background-color var(--transition-site);
+}
+.price-choice_mark.is-checkbox { border-radius: 0.375rem; }
+.price-choice_mark .price-icon { width: 0.875rem; height: 0.875rem; opacity: 0; }
+.price-choice_input:checked + .price-choice_mark { border-color: var(--color-accent-primary); }
+.price-choice_input:checked + .price-choice_mark.is-radio { box-shadow: inset 0 0 0 0.25rem var(--color-surface-primary); background: var(--color-accent-primary); }
+.price-choice_input:checked + .price-choice_mark.is-checkbox { background: var(--color-accent-primary); }
+.price-choice_input:checked + .price-choice_mark .price-icon { opacity: 1; }
+.price-choice_copy { display: flex; min-width: 0; flex-direction: column; gap: 0.25rem; }
+.price-choice_name { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.5rem; font-size: 1rem; font-weight: 500; line-height: 1.25; }
+@media (min-width: 32.5625rem) { .price-choice_name { font-size: 1.0625rem; } }
+.price-choice_note { color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.4; }
+/* =====================================================================
+   Сравнение тарифов: колонки тарифов, галочки по строкам состава.
+   Старший тариф — тёмная колонка. В «Одной цифре» шапка колонки — радиокнопка
+   выбора, в «Сравнении» в шапке полная цена. На телефоне строка состава
+   встаёт над своими галочками, чтобы колонкам хватило ширины.
+   ===================================================================== */
+.price-tariffs_table { width: 100%; overflow: hidden; border-collapse: separate; border-spacing: 0; border-radius: var(--radius-card); background: var(--color-surface-primary); table-layout: fixed; color: var(--color-text-primary); font-size: 0.9375rem; line-height: 1.35; }
+.price-tariffs_caption { margin-bottom: 0.625rem; color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.3; }
+.price-tariffs_corner { width: 44%; }
+.price-tariffs_head { padding: 1rem; text-align: center; vertical-align: top; font-weight: 400; }
+.price-tariffs_head.is-featured { background: var(--color-surface-dark); color: var(--dark-text); }
+.price-tariffs_title { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.375rem 0.5rem; }
+.price-tariffs_name { color: var(--color-text-primary); font-size: 1.125rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-tariffs_head.is-featured .price-tariffs_name { color: var(--color-text-on-dark); }
+.price-tariffs_price { display: block; margin-top: 0.25rem; color: var(--color-text-secondary); font-size: 0.9375rem; font-variant-numeric: lining-nums tabular-nums; }
+.price-tariffs_head.is-featured .price-tariffs_price { color: var(--dark-muted); }
+.price-tariffs_number { display: block; margin: 0.875rem 0 0.5rem; font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.875rem); font-weight: 500; line-height: 1; letter-spacing: -0.04em; white-space: nowrap; }
+.price-tariffs_head .price-offer { font-size: 0.875rem; line-height: 1.35; }
+.price-tariffs_head .price-offer_part { display: block; }
+.price-tariffs_head .price-offer_sep { display: none; }
+.price-tariffs_head.is-featured .price-tariffs_number { color: var(--color-text-on-dark); }
+.price-tariffs_head.is-featured .price-offer { color: var(--dark-muted); }
+.price-tariffs_head.is-featured .price-offer_benefit { color: var(--color-accent-soft); }
+.price-tariffs_head.is-featured .price-rise { background: var(--dark-raised); color: var(--color-text-on-dark); }
+.price-tariffs_head.is-featured .price-rise_icon { background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.price-tariffs_head.is-featured .price-rise_note { color: var(--dark-muted); }
+.price-tariffs_feature { padding: 0.75rem 1rem; border-top: 1px solid var(--line); font-weight: 400; text-align: left; vertical-align: middle; }
+.price-tariffs_mark-cell { border-top: 1px solid var(--line); color: var(--line-strong); text-align: center; vertical-align: middle; }
+.price-tariffs_mark-cell .price-icon { width: 1.25rem; height: 1.25rem; margin: 0 auto; }
+.price-tariffs_mark-cell.is-yes { color: var(--color-accent-primary); }
+.price-tariffs_mark-cell.is-featured { border-top-color: var(--dark-line); background: var(--color-surface-dark); color: var(--dark-faint); }
+.price-tariffs_mark-cell.is-featured.is-yes { color: var(--color-accent-soft); }
+
+@media (max-width: 32.5rem) {
+  .price-tariffs_table,
+  .price-tariffs_table thead,
+  .price-tariffs_table tbody { display: block; }
+  .price-tariffs_table tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .price-tariffs_corner { display: none; }
+  .price-tariffs_head { padding: 0.875rem 0.75rem; }
+  .price-tariffs_name { font-size: 1rem; }
+  .price-tariffs_head .price-offer { font-size: 0.8125rem; }
+  /* В белой карточке «Одной цифры» таблица тарифов на телефоне шире на поля карточки. */
+  .price-figure_component.is-tariffs .price-figure_table { margin-inline: -0.75rem; }
+  .price-figure_component.is-tariffs .price-tariffs_caption { padding-inline: 0.75rem; }
+  .price-tariffs_feature { grid-column: 1 / -1; padding: 0.75rem 0.75rem 0.375rem; font-size: 0.875rem; }
+  .price-tariffs_mark-cell { padding: 0 0 0.625rem; border-top: 0; }
+  .price-tariffs_mark-cell.is-featured { border-top: 0; }
+}
+@media (min-width: 48rem) {
+  .price-tariffs_head { padding: 1.25rem 1.5rem; }
+  .price-tariffs_feature { padding: 0.875rem 1.5rem; }
+  .price-tariffs_name { font-size: 1.25rem; }
+}
+
+/* =====================================================================
+   «Одна цифра»: выбор и одна крупная цена.
+   ===================================================================== */
+.price-figure_component {
+  display: grid;
+  grid-template-areas: "title" "head" "stage" "details";
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+}
+.price-figure_heading { grid-area: title; }
+.price-figure_head { display: flex; min-width: 0; flex-direction: column; gap: 1rem; grid-area: head; }
+.price-figure_course-name { color: var(--color-text-primary); }
+.price-figure_stage { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; grid-area: stage; }
+.price-figure_details { display: flex; min-width: 0; flex-direction: column; gap: 1rem; grid-area: details; }
+.price-figure_details { gap: 1.75rem; }
+.price-figure_includes { display: flex; flex-direction: column; gap: 0.625rem; }
+.price-figure_includes-title { font-size: 1.0625rem; font-weight: 500; line-height: 1.25; }
+.price-figure_component.is-tariffs { grid-template-areas: "title" "head" "stage" "table" "discounts"; }
+.price-figure_component.is-tariffs > .price-discounts { grid-area: discounts; }
+.price-figure_choice { display: flex; flex-direction: column; gap: 0.25rem; }
+.price-figure_choice-name { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.625rem; font-size: 1.125rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
+.price-figure_choice-sub { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.35; }
+.price-figure_money { display: flex; flex-direction: column; gap: 0.625rem; }
+.price-figure_amount { display: flex; flex-wrap: wrap; align-items: center; gap: 0.625rem 1rem; }
+.price-figure_amount .price-number { font-size: clamp(2.25rem, 1.9rem + 1.4vw, 3.25rem); }
+.price-figure_amount.is-entering { animation: price-figure-in var(--motion-duration) var(--motion-easing); }
+@keyframes price-figure-in { from { opacity: 0; transform: translateY(0.375rem); } }
+.price-figure_addon {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem 1rem;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-card);
+  background: var(--color-page-background);
+  cursor: pointer;
+}
+.price-figure_addon:has(.switch_input:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.price-figure_addon .switch_input:focus-visible + .switch_track { outline: 0; }
+.price-figure_addon-copy { display: flex; min-width: 0; flex-direction: column; gap: 0.125rem; }
+.price-figure_addon-name { font-size: 1rem; font-weight: 500; line-height: 1.25; }
+.price-figure_addon-note { color: var(--text-quiet); font-size: 0.875rem; line-height: 1.35; }
+
+/* Тарифы: даты, сравнение на всю ширину, цена выбранного тарифа под таблицей. */
+.price-figure_table { grid-area: table; min-width: 0; }
+
+@media (min-width: 48rem) {
+  .price-figure_component {
+    grid-template-areas: "title title" "head stage" "details stage";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-rows: auto auto 1fr;
+    gap: 1.75rem 2.5rem;
+    padding: 2rem;
+  }
+  .price-figure_component.is-tariffs { grid-template-areas: "title title" "head stage" "table table" "discounts discounts"; grid-template-rows: auto auto auto auto; }
+  .price-figure_component.is-tariffs .price-figure_stage { align-self: end; }
+  .price-figure_component.is-tariffs .price-promo_badge { order: -1; }
+}
+@media (min-width: 64.0625rem) {
+  .price-figure_component { gap: 2rem 4rem; padding: 2.5rem 3rem; }
+}
+
+/* =====================================================================
+   «Сравнение»: все варианты видны сразу, без кнопок.
+   ===================================================================== */
+.price-compare_component { display: flex; flex-direction: column; gap: 1.5rem; color: var(--color-text-primary); }
+.price-compare_head { display: flex; min-width: 0; flex-direction: column; gap: 1rem; }
+.price-compare_bar { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.75rem 1.5rem; }
+.price-compare_bar .price-switch { flex: 0 1 26rem; }
+/* На сером фоне страницы вторичный текст темнее: #747476 там даёт меньше 4.5:1. */
+.price-compare_component .price-switch_legend,
+.price-compare_component > .price-tariffs_caption { color: var(--text-quiet); }
+.price-compare_grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap, 0.75rem); padding: 0; list-style: none; }
+.price-compare_card {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: auto auto auto 1fr;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+.price-compare_card.is-featured { background: var(--color-surface-dark); color: var(--dark-text); }
+.price-compare_card-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.5rem 0.75rem; }
+.price-compare_name { color: var(--color-text-primary); font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-compare_card.is-featured .price-compare_name { color: var(--color-text-on-dark); }
+.price-compare_sub { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-compare_card.is-featured .price-compare_sub { color: var(--dark-muted); }
+.price-compare_price { display: flex; flex-direction: column; gap: 0.625rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.price-compare_card.is-featured .price-compare_price { border-top-color: var(--dark-line); }
+.price-compare_amount { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.price-compare_amount .price-number { font-size: clamp(1.75rem, 1.5rem + 0.8vw, 2.25rem); }
+.price-compare_card.is-featured .price-number { color: var(--color-text-on-dark); }
+.price-compare_card.is-featured .price-offer { color: var(--dark-muted); }
+.price-compare_card.is-featured .price-offer_benefit { color: var(--color-accent-soft); }
+.price-compare_card.is-featured .price-rise { background: var(--dark-raised); color: var(--color-text-on-dark); }
+.price-compare_card.is-featured .price-rise_icon { background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.price-compare_card.is-featured .price-rise_note { color: var(--dark-muted); }
+.price-compare_card.is-featured .price-includes { color: var(--dark-text); }
+.price-compare_card.is-featured .price-includes_item .price-icon { color: var(--color-accent-soft); }
+
+.price-compare_addon {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+.price-compare_addon-copy { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.price-compare_addon-name { font-size: 1.125rem; font-weight: 500; line-height: 1.25; }
+.price-compare_addon-text { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-compare_addon-price { display: flex; flex-direction: column; gap: 0.375rem; }
+.price-compare_addon-number { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.5rem; font-size: 1.625rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.03em; }
+.price-compare_addon-number-note { color: var(--color-text-secondary); font-size: 0.9375rem; font-weight: 400; letter-spacing: 0; }
+.price-compare_addon-separate { color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.35; }
+.price-compare_addon .price-choice_row { align-self: center; }
+.price-compare_card-body,
+.price-compare_card-side { display: flex; min-width: 0; flex-direction: column; gap: 1rem; }
+.price-compare_card.is-wide .price-compare_card-side .price-compare_price { padding-top: 0; border-top: 0; }
+.price-compare_card.is-wide .price-compare_card-body { gap: 1.5rem; }
+
+@media (min-width: 48rem) {
+  .price-compare_grid.is-count-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .price-compare_grid.is-count-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Строки карточек выровнены между колонками: цены стоят на одной высоте. */
+  .price-compare_grid.is-count-2 .price-compare_card,
+  .price-compare_grid.is-count-3 .price-compare_card { grid-row: span 4; grid-template-rows: subgrid; row-gap: 1rem; }
+  .price-compare_card.is-wide { grid-template-columns: minmax(0, 1fr) minmax(0, 20rem); grid-template-rows: auto; column-gap: 2rem; align-items: start; }
+  .price-compare_card.is-wide .price-compare_card-body { grid-column: 1; }
+  .price-compare_card.is-wide .price-compare_card-side { grid-column: 2; }
+  .price-compare_addon { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; column-gap: 2rem; }
+  .price-compare_addon .price-choice_row { grid-column: 2; }
+}
+@media (min-width: 64.0625rem) {
+  .price-compare_card { padding: 1.75rem; }
+  .price-compare_grid.is-count-3 .price-compare_card { padding: 1.5rem; }
+  .price-compare_name { font-size: 1.375rem; }
+  .price-compare_addon { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.9fr); padding: 1.75rem; }
+  .price-compare_addon .price-choice_row { grid-column: 3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-scenarios-page { --transition-site: 0ms linear; }
+  .price-figure_amount.is-entering { animation: none; }
+}

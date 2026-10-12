@@ -461,6 +461,56 @@
   disposers.push(() => window.clearTimeout(programRefresh));
 
   /* ---------------------------------------------------------------------
+     Партнёры: две ленты медленно плывут справа налево.
+     Каждую ленту дополняем копиями её плиток, чтобы на любом экране она не кончалась,
+     и сдвигаем ровно на длину одного набора — так круг замыкается без рывка.
+     Копии скрыты от скринридера. При «уменьшении движения» ленты стоят.
+     --------------------------------------------------------------------- */
+  const partnersMarquee = $("[data-sc-partners]");
+  if (partnersMarquee && !matchMedia(MQ_REDUCE).matches) {
+    const PARTNERS_SPEED = 26; // пикселей в секунду — медленно, чтобы успеть прочитать
+    const partnerRows = $$(".sc-partners_row", partnersMarquee).map((row) => ({ row, originals: [...row.children] }));
+    let partnersWidth = 0;
+    const fillPartners = () => {
+      const width = partnersMarquee.clientWidth;
+      if (width === partnersWidth) return;
+      partnersWidth = width;
+      partnersMarquee.classList.add("is-moving");
+      partnerRows.forEach(({ row, originals }) => {
+        row.replaceChildren(...originals);
+        const setWidth = row.getBoundingClientRect().width;
+        if (!setWidth) return;
+        const copies = Math.ceil(width / setWidth) + 1;
+        for (let i = 0; i < copies; i += 1) {
+          originals.forEach((item) => {
+            const copy = item.cloneNode(true);
+            copy.setAttribute("aria-hidden", "true");
+            $$("img", copy).forEach((img) => { img.alt = ""; });
+            row.append(copy);
+          });
+        }
+        row.style.setProperty("--shift", `${setWidth.toFixed(2)}px`);
+        row.style.setProperty("--run", `${(setWidth / PARTNERS_SPEED).toFixed(1)}s`);
+      });
+    };
+    fillPartners();
+    // Пока блок не на экране, ленты стоят
+    const partnersObserver = new IntersectionObserver(([entry]) => partnersMarquee.classList.toggle("is-offscreen", !entry.isIntersecting));
+    partnersObserver.observe(partnersMarquee);
+    let partnersFrame = 0;
+    on(window, "resize", () => {
+      window.cancelAnimationFrame(partnersFrame);
+      partnersFrame = window.requestAnimationFrame(fillPartners);
+    });
+    disposers.push(() => {
+      window.cancelAnimationFrame(partnersFrame);
+      partnersObserver.disconnect();
+      partnersMarquee.classList.remove("is-moving", "is-offscreen");
+      partnerRows.forEach(({ row, originals }) => { row.replaceChildren(...originals); row.style.removeProperty("--shift"); row.style.removeProperty("--run"); });
+    });
+  }
+
+  /* ---------------------------------------------------------------------
      «После конференции»: карточки с карандашными рисунками.
      Мышь: карточка активна, пока на неё наведён курсор (или на ней фокус с клавиатуры).
      Телефон и планшет: наведения нет — активна карточка, которая сейчас в середине экрана.

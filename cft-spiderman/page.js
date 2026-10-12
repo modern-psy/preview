@@ -7,37 +7,19 @@
         Без скрипта аккордеон тоже работает — просто без анимации:
         это обычный тег <details>;
      2) открывает и закрывает меню в шапке на узких экранах;
-     3) связывает кнопки виджета BotHelp со скрытой формой Тильды.
+     3) записывает на вебинар: через виджет BotHelp, а если он не поднялся —
+        через запасную лид-форму.
 
-   ГЛАВНОЕ ПРО ЗАПИСЬ НА ВЕБИНАР
-   Полей и своих кнопок на странице нет. Человек видит только кнопки
-   мессенджеров, которые рисует виджет BotHelp, и нажимает одну из них.
-   По нажатию скрипт:
-
-     1) перехватывает нажатие в фазе погружения, пока его не увидел BotHelp;
-     2) кладёт служебные значения — ClientID Метрики и UTM-метки — в скрытую
-        форму Тильды и отправляет её. Дальше данные уходят в AmoCRM штатной
-        интеграцией Тильды;
-     3) как только Тильда ответила, возвращает нажатие виджету, и человек
-        уходит подписываться на бота.
-
-   ПОЧЕМУ ИМЕННО ТАКОЙ ПОРЯДОК
-   BotHelp по клику уводит со страницы в этой же вкладке (location.href).
-   Если дать его кнопке сработать сразу, страница закроется, а заявка в Тильду
-   уйти не успеет. Поэтому: сначала Тильда, потом BotHelp.
-
-   А ЕСЛИ ТИЛЬДА НЕ ОТВЕТИЛА
-   Всё равно уводим человека в мессенджер. Подписка на бота важнее: без неё
-   он не получит ссылку на эфир. Про неудачу пишем в консоль.
+   ЗАПИСЬ НА ВЕБИНАР
+   Вынесена в отдельный блок «ЗАПИСЬ НА ВЕБИНАР: BOTHELP + ЗАПАСНАЯ ФОРМА»
+   сразу после первого блока этого файла. Он одинаковый на всех лендингах
+   вебинаров с BotHelp, как всё устроено — написано в его шапке.
 
    ПОРЯДОК РАЗДЕЛОВ
      0. Общее
      1. Аккордеон
      1.5. Меню в шапке
-     2. Служебные значения: ClientID Метрики и UTM-метки
-     3. Скрытая форма Тильды
-     4. Виджет BotHelp
-     5. Запись на вебинар
+     2–5. Запись на вебинар: BotHelp и запасная форма (отдельный блок)
      6. Петля стрелок в блоке «Когда ответственность…»
      7. Точечная графика: ночной город в первом экране, паутина во втором
         блоке, полоса города в карточке «Практический разбор» и живое поле
@@ -56,18 +38,6 @@
      -------------------------------------------------------------------------- */
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  // На боевом домене скрытая форма Тильды обязана быть на странице.
-  // На превью её нет, поэтому шаг с Тильдой пропускается — иначе страницу
-  // нельзя было бы проверить.
-  const IS_PRODUCTION = /(^|\.)modern-psy\.ru$/.test(window.location.hostname);
-
-  // Сколько ждём виджет BotHelp, прежде чем признать, что он не загрузился
-  const BOTHELP_TIMEOUT_MS = 12000;
-
-  // Сколько ждём, что BotHelp уведёт человека в мессенджер. Если не увёл
-  // (например, не ответил их сервер) — разблокируем форму и показываем ссылку
-  const HANDOFF_TIMEOUT_MS = 6000;
 
   /* --------------------------------------------------------------------------
      1. АККОРДЕОН
@@ -199,21 +169,107 @@
       menuToggle.focus();
     });
   }
+})();
 
+
+/* ============================================================================
+   ЗАПИСЬ НА ВЕБИНАР: BOTHELP + ЗАПАСНАЯ ФОРМА
+   ============================================================================
+   🔴 Этот блок одинаковый на всех лендингах вебинаров с BotHelp. Если правите
+      его на одной странице — перенесите правку и на остальные (найти их можно
+      по этому заголовку). Всё, что отличается от страницы к странице, лежит
+      в разметке блока записи: data-tilda-form-name, data-signup-source.
+
+   КАК ЭТО РАБОТАЕТ
+   При каждой загрузке страницы скрипт ждёт кнопки виджета BotHelp.
+
+   1) BotHelp поднялся — всё как раньше. Полей на странице нет, человек
+      нажимает кнопку мессенджера. Скрипт перехватывает нажатие, отправляет
+      скрытую форму Тильды (пустые поля + служебные: ClientID Метрики, UTM-метки
+      и подпись для отдела продаж), а потом возвращает нажатие виджету —
+      и человек уходит подписываться на бота.
+
+   2) BotHelp не поднялся — вместо кнопок появляется обычная лид-форма:
+      имя, телефон, мессенджер, галочка согласия. Заявка уходит в ту же
+      скрытую форму Тильды, но уже с заполненными полями и пометкой
+      «запасная форма»: ссылку на эфир такому человеку отдел продаж
+      отправляет вручную.
+
+   КОГДА СЧИТАЕМ, ЧТО BOTHELP НЕ ПОДНЯЛСЯ
+     · скрипт BotHelp вообще не загрузился (сервер не ответил, блокировщик
+       рекламы, блок с виджетом убрали со страницы) — форма появляется сразу;
+     · скрипт загрузился, но кнопки не пришли за 10 секунд после загрузки
+       страницы. «Загрузка страницы» — событие load, но дольше 5 секунд его
+       не ждём: его может задерживать тот же BotHelp или тяжёлая картинка.
+   Если кнопки пришли позже, чем появилась форма, форму не убираем:
+   человек мог уже начать её заполнять.
+
+   ПРОВЕРИТЬ ЗАПАСНУЮ ФОРМУ, КОГДА BOTHELP РАБОТАЕТ
+   Добавьте к адресу страницы ?signup=form — форма покажется сразу.
+
+   ПОРЯДОК ПОДРАЗДЕЛОВ
+     А. Настройки
+     Б. Служебные значения: ClientID Метрики и UTM-метки
+     В. Скрытая форма Тильды
+     Г. Ждём виджет BotHelp
+     Д. Запись через BotHelp
+     Е. Запасная форма
+     Ж. Запуск
+   ========================================================================== */
+
+(() => {
+  "use strict";
+
+  const blocks = [...document.querySelectorAll("[data-signup]")];
+  if (blocks.length === 0) return;
 
   /* --------------------------------------------------------------------------
-     2. СЛУЖЕБНЫЕ ЗНАЧЕНИЯ: ClientID МЕТРИКИ И UTM-МЕТКИ
-     --------------------------------------------------------------------------
-     Это те самые скрытые поля, ради которых мы вообще трогаем форму Тильды.
-     Полей на странице нет, значит и человек их не заполняет — всё, что можно
-     узнать, скрипт собирает сам: из адреса страницы и из счётчика Метрики.
+     А. НАСТРОЙКИ
      -------------------------------------------------------------------------- */
 
+  // Сколько ждём кнопки BotHelp после загрузки страницы
+  const BOTHELP_WAIT_MS = 10000;
+
+  // Сколько ждём события «страница загрузилась», прежде чем начать отсчёт
+  // сами. Событие может задерживаться из-за картинок или самого BotHelp
+  const PAGE_LOAD_WAIT_MS = 5000;
+
+  // Сколько ждём, что BotHelp уведёт человека в мессенджер. Если не увёл —
+  // показываем прямую ссылку на бота
+  const HANDOFF_TIMEOUT_MS = 6000;
+
+  // Сколько ждём ответа Тильды при записи через BotHelp. Не дождались —
+  // всё равно уводим в бота: без подписки человек не получит ссылку на эфир
+  const TILDA_TIMEOUT_MS = 5000;
+
+  // Сколько ждём ответа Тильды в запасной форме. Здесь Тильда — единственный
+  // канал, поэтому ждём дольше
+  const FALLBACK_TILDA_TIMEOUT_MS = 10000;
+
+  // Сколько ждём ответа Метрики. Не дождались — берём номер из куки
+  const METRIKA_TIMEOUT_MS = 1500;
+
+  // На боевом домене скрытая форма Тильды обязана быть на странице.
+  // На превью её нет, поэтому шаг с Тильдой пропускается — иначе страницу
+  // нельзя было бы проверить.
+  const IS_PRODUCTION = /(^|\.)modern-psy\.ru$/.test(window.location.hostname);
+
+  // Проверка запасной формы: ?signup=form в адресе страницы
+  const FORCE_FALLBACK = new URLSearchParams(window.location.search).get("signup") === "form";
+
   // 🟡 КАК ПОЛЯ НАЗЫВАЮТСЯ В ФОРМЕ ТИЛЬДЫ.
-  // Имена должны совпадать с настройками формы буква в букву. Если в Тильде
-  // поле назвали иначе — поменяйте строку здесь, больше нигде править не надо.
-  // Если поля с таким именем в форме нет, скрипт добавит его сам.
-  const CLIENT_ID_FIELD = "ym_client_id";
+  // Имена должны совпадать с настройками формы буква в букву. Если поля
+  // с таким именем в форме нет, скрипт добавит его сам скрытым полем.
+  const FIELDS = {
+    name: "Name",
+    phone: "Phone",
+    messenger: "messenger",
+    contact: "messenger_contact",
+    consent: "personal_data_consent",
+    source: "form_source",
+    clientId: "ym_client_id",
+  };
+
   const UTM_FIELDS = [
     "utm_source",
     "utm_medium",
@@ -222,42 +278,55 @@
     "utm_term",
   ];
 
-  // 🟡 ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ.
-  // Тильда не заводит сделку в CRM, если в форме заполнены одни только скрытые
-  // поля: она считает такую заявку пустой. Поэтому кладём в «Имя» понятную
-  // подпись — по ней в CRM видно, с какого лендинга пришёл человек.
-  // Слева — имя поля в форме Тильды, справа — что в него подставить.
-  const DEFAULT_FIELDS = {
-    Name: "Заявка с лендинга «Ловушка сверхответственности»",
+  // 🟢 ПОДПИСИ ДЛЯ ОТДЕЛА ПРОДАЖ.
+  // Дописываются к названию лендинга (data-signup-source) в поле form_source:
+  // по ним в CRM видно, как человек записался.
+  const SOURCE_NOTES = {
+    bot: "запись через бота BotHelp",
+    form: "запасная форма: BotHelp не загрузился, ссылку на эфир отправить вручную",
   };
 
-  // Метки живут в адресе только на первом шаге. Запоминаем их на время визита,
-  // чтобы они не потерялись, если человек ушёл по ссылке и вернулся назад.
-  const UTM_STORAGE_KEY = "cft-spiderman-utm";
+  // 🟢 Как мессенджеры называются в заявке и в тексте после отправки
+  const MESSENGER_NAMES = {
+    max: "MAX",
+    telegram: "Telegram",
+  };
 
-  const readStoredUtm = () => {
+
+  /* --------------------------------------------------------------------------
+     Б. СЛУЖЕБНЫЕ ЗНАЧЕНИЯ: ClientID МЕТРИКИ И UTM-МЕТКИ
+     --------------------------------------------------------------------------
+     Скрипт собирает их сам: из адреса страницы и из счётчика Метрики.
+     -------------------------------------------------------------------------- */
+
+  // Метки живут в адресе только на первом шаге. Запоминаем их на время визита,
+  // чтобы они не потерялись, если человек ушёл по ссылке и вернулся назад
+  const utmStorageKey = (formName) => `signup-utm:${formName || "page"}`;
+
+  const readStoredUtm = (key) => {
     try {
-      const saved = JSON.parse(window.sessionStorage.getItem(UTM_STORAGE_KEY) || "{}");
+      const saved = JSON.parse(window.sessionStorage.getItem(key) || "{}");
       return saved && typeof saved === "object" ? saved : {};
     } catch (error) {
       return {};
     }
   };
 
-  const collectUtm = () => {
+  const collectUtm = (formName) => {
+    const key = utmStorageKey(formName);
     const params = new URLSearchParams(window.location.search);
     const fromUrl = {};
 
-    UTM_FIELDS.forEach((key) => {
-      const value = (params.get(key) || "").trim();
-      if (value) fromUrl[key] = value;
+    UTM_FIELDS.forEach((name) => {
+      const value = (params.get(name) || "").trim();
+      if (value) fromUrl[name] = value;
     });
 
-    const result = { ...readStoredUtm(), ...fromUrl };
+    const result = { ...readStoredUtm(key), ...fromUrl };
 
     if (Object.keys(fromUrl).length > 0) {
       try {
-        window.sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(result));
+        window.sessionStorage.setItem(key, JSON.stringify(result));
       } catch (error) {
         // Приватный режим браузера — просто работаем без запоминания
       }
@@ -265,12 +334,6 @@
 
     return result;
   };
-
-  // Запоминаем метки сразу при загрузке, не дожидаясь нажатия
-  collectUtm();
-
-  // Сколько ждём ответа Метрики. Не дождались — берём номер из куки
-  const METRIKA_TIMEOUT_MS = 1500;
 
   // Номер посетителя Метрики лежит в куке _ym_uid. Это то же самое значение,
   // что отдаёт getClientID, поэтому кука — надёжный запасной вариант
@@ -329,12 +392,10 @@
 
 
   /* --------------------------------------------------------------------------
-     3. СКРЫТАЯ ФОРМА ТИЛЬДЫ
+     В. СКРЫТАЯ ФОРМА ТИЛЬДЫ
      --------------------------------------------------------------------------
      Тильда рисует свою форму где-то на странице. Мы её не удаляем — она и есть
      наш канал в AmoCRM, — а убираем с глаз и отправляем из скрипта.
-     Своей кнопки на странице для этого не нужно: у формы вызывается
-     requestSubmit(), как будто по её собственной кнопке нажали.
      Значения выставляем «родным» сеттером и шлём события input/change —
      иначе скрипты Тильды не заметят, что поля заполнены.
      -------------------------------------------------------------------------- */
@@ -388,7 +449,7 @@
 
     const record = nativeForm.closest(".t-rec") || nativeForm;
     record.setAttribute("aria-hidden", "true");
-    record.setAttribute("data-cft-native-form-record", "");
+    record.setAttribute("data-signup-native-form-record", "");
 
     return nativeForm;
   };
@@ -402,17 +463,32 @@
       input = document.createElement("input");
       input.type = "hidden";
       input.name = name;
-      input.setAttribute("data-cft-added-field", "");
+      input.setAttribute("data-signup-added-field", "");
       nativeForm.appendChild(input);
     }
 
     setNativeValue(input, value);
   };
 
-  // Поля на странице мы больше не показываем, а в форме Тильды «Имя» и
-  // «Телефон» могут остаться обязательными — тогда её же проверка не пустит
-  // заявку. Снимаем обязательность только с пустых полей: если кто-то настроит
-  // в форме поле со значением, мы его не трогаем.
+  // Если в форме Тильды есть поле телефона с маской, заполняем его через саму
+  // Тильду — иначе при отправке она пересчитает номер из пустой маски
+  const setTildaPhone = (nativeForm, phone) => {
+    const group = nativeForm.querySelector(".t-input-group_ph");
+
+    if (group && typeof window.t_form_phonemask__setValue === "function") {
+      try {
+        window.t_form_phonemask__setValue(group, phone, undefined, { noFocus: true });
+      } catch (error) {
+        console.warn("[запись] Тильда не приняла номер в поле с маской.", error);
+      }
+    }
+
+    setTildaField(nativeForm, FIELDS.phone, phone);
+  };
+
+  // В форме Тильды поля могут остаться обязательными — тогда её же проверка
+  // не пустит заявку. Снимаем обязательность только с пустых полей: если
+  // в форме настроено поле со значением, мы его не трогаем.
   const relaxTildaValidation = (nativeForm) => {
     const relaxed = [];
 
@@ -434,10 +510,6 @@
     }
   };
 
-  // Сколько ждём ответа Тильды, прежде чем всё равно увести человека в бота.
-  // Подписка на бота важнее: без неё он не получит ссылку на эфир
-  const TILDA_TIMEOUT_MS = 5000;
-
   const eventForm = (event, passedForm) =>
     passedForm instanceof HTMLFormElement ? passedForm
       : event?.detail?.form instanceof HTMLFormElement ? event.detail.form
@@ -447,7 +519,10 @@
   // Ответ приходит событием, а не из requestSubmit, поэтому ждём его отдельно.
   // Возвращаем "success" | "error" | "timeout" — но в любом случае возвращаем:
   // застрять на странице человек не должен
-  const waitForTilda = (nativeForm) => new Promise((resolve) => {
+  let waitCounter = 0;
+
+  const waitForTilda = (nativeForm, timeoutMs) => new Promise((resolve) => {
+    const namespace = `.signup${++waitCounter}`;
     let done = false;
     let timer = 0;
 
@@ -458,7 +533,7 @@
       document.removeEventListener("tildaform:aftersuccess", onSuccess);
       document.removeEventListener("tildaform:aftererror", onError);
       if (typeof window.jQuery === "function") {
-        window.jQuery(document).off(".cftSignup");
+        window.jQuery(document).off(namespace);
       }
       resolve(result);
     };
@@ -475,79 +550,137 @@
     document.addEventListener("tildaform:aftererror", onError);
 
     if (typeof window.jQuery === "function") {
-      window.jQuery(document).on("tildaform:aftersuccess.cftSignup", onSuccess);
-      window.jQuery(document).on("tildaform:aftererror.cftSignup", onError);
+      window.jQuery(document).on(`tildaform:aftersuccess${namespace}`, onSuccess);
+      window.jQuery(document).on(`tildaform:aftererror${namespace}`, onError);
     }
 
-    timer = window.setTimeout(() => finish("timeout"), TILDA_TIMEOUT_MS);
+    timer = window.setTimeout(() => finish("timeout"), timeoutMs);
   });
 
+  // Заполняет скрытую форму и отправляет её.
+  // Возвращает "success" | "error" | "timeout" | "skipped" (формы нет)
+  const sendToTilda = async (block, values, timeoutMs) => {
+    const formName = block.dataset.tildaFormName || "";
+    const nativeForm = hideTildaForm(formName);
 
-  /* --------------------------------------------------------------------------
-     4. ВИДЖЕТ BOTHELP
-     --------------------------------------------------------------------------
-     Виджет подгружает свои кнопки не сразу, поэтому ждём их появления.
-     Пока не дождались — на их месте стоит серый скелет. Если за отведённое
-     время кнопки не пришли, показываем подсказку: записаться будет негде.
-     Но ждать не перестаём: если кнопки всё-таки пришли позже (медленный
-     интернет), подсказка убирается и запись работает как обычно.
-     -------------------------------------------------------------------------- */
-
-  const createBotHelp = (mount) => {
-    const skeleton = mount.querySelector("[data-bh-skeleton]");
-    const errorNote = mount.querySelector("[data-bh-error]");
-    let state = "loading"; // loading → ready | failed
-    let observer = null;
-    let timer = 0;
-
-    const buttons = () => [...mount.querySelectorAll(".bh-w-messenger-button")];
-
-    const checkboxes = () => [
-      ...mount.querySelectorAll("[data-consent-checkbox], .bh-w-consent__checkbox"),
-    ];
-
-    const setState = (next) => {
-      if (state === next) return;
-      state = next;
-      mount.dataset.bhState = next;
-      if (skeleton) skeleton.hidden = next !== "loading";
-      if (errorNote) errorNote.hidden = next !== "failed";
-    };
-
-    const finish = () => {
-      window.clearTimeout(timer);
-      observer?.disconnect();
-      observer = null;
-    };
-
-    const check = () => {
-      if (buttons().length === 0) return false;
-      finish();
-      setState("ready");
-      return true;
-    };
-
-    if (!check()) {
-      observer = new MutationObserver(check);
-      observer.observe(mount, { childList: true, subtree: true });
-      timer = window.setTimeout(() => {
-        if (state === "loading") setState("failed");
-      }, BOTHELP_TIMEOUT_MS);
+    if (!(nativeForm instanceof HTMLFormElement)) {
+      const message = `[запись] Формы Тильды «${formName}» на странице нет — заявка не отправлена.`;
+      if (IS_PRODUCTION) console.error(message);
+      else console.info(`${message} Это превью, так и должно быть.`, values);
+      return "skipped";
     }
 
-    return {
-      // Согласие BotHelp проверяет сам и молча не пускает клик.
-      // Мы читаем галочку до него, чтобы не отправить заявку впустую
-      consentGiven: () => {
-        const items = checkboxes();
-        return items.length === 0 || items.every((item) => item.checked);
-      },
-    };
+    const utm = collectUtm(formName);
+    const clientId = await readClientId(block);
+
+    // Сначала содержательные поля, потом служебные. Порядок важен:
+    // заполненное «Имя» проходит проверку Тильды само, и снимать
+    // с него обязательность уже не придётся
+    Object.entries(values).forEach(([name, value]) => {
+      if (name === FIELDS.phone) setTildaPhone(nativeForm, value);
+      else setTildaField(nativeForm, name, value);
+    });
+
+    setTildaField(nativeForm, FIELDS.clientId, clientId);
+    UTM_FIELDS.forEach((name) => setTildaField(nativeForm, name, utm[name] || ""));
+
+    relaxTildaValidation(nativeForm);
+
+    const answer = waitForTilda(nativeForm, timeoutMs);
+
+    // Кнопку Тильды можно спрятать через display:none — на отправку это никак
+    // не влияет. А вот выключенную (disabled) в качестве отправителя брать
+    // нельзя, поэтому в таком случае отправляем форму без указания кнопки
+    const nativeSubmit = nativeForm.querySelector(
+      'button[type="submit"]:not(:disabled), input[type="submit"]:not(:disabled)'
+    );
+    if (nativeSubmit instanceof HTMLElement) nativeForm.requestSubmit(nativeSubmit);
+    else nativeForm.requestSubmit();
+
+    return answer;
   };
 
 
   /* --------------------------------------------------------------------------
-     5. ЗАПИСЬ НА ВЕБИНАР
+     Г. ЖДЁМ ВИДЖЕТ BOTHELP
+     --------------------------------------------------------------------------
+     Виджет подгружает свои кнопки не сразу. Пока ждём — на их месте стоит
+     серый скелет. Итог один из двух: «ready» (кнопки пришли) или «failed»
+     (не придут). Решение принимается один раз за загрузку страницы.
+     -------------------------------------------------------------------------- */
+
+  // Событие «страница загрузилась», но не дольше PAGE_LOAD_WAIT_MS
+  const pageLoaded = new Promise((resolve) => {
+    if (document.readyState === "complete") {
+      resolve();
+      return;
+    }
+    window.addEventListener("load", () => resolve(), { once: true });
+    window.setTimeout(resolve, PAGE_LOAD_WAIT_MS);
+  });
+
+  // Выполнить после того, как отработали все обработчики DOMContentLoaded.
+  // Скрипт BotHelp создаёт window.BhWidgets именно там
+  const afterDomReady = (callback) => {
+    const navigation = performance.getEntriesByType?.("navigation")?.[0];
+    const alreadyFired = navigation
+      ? navigation.domContentLoadedEventStart > 0
+      : document.readyState === "complete";
+
+    if (alreadyFired) {
+      window.setTimeout(callback, 0);
+    } else {
+      document.addEventListener("DOMContentLoaded", () => window.setTimeout(callback, 0), { once: true });
+    }
+  };
+
+  const watchBotHelp = (mount, onResult) => {
+    let settled = false;
+    let timer = 0;
+    let observer = null;
+
+    const hasButtons = () => mount.querySelector(".bh-w-messenger-button") !== null;
+
+    const settle = (result, reason) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
+      observer?.disconnect();
+      onResult(result, reason);
+    };
+
+    if (FORCE_FALLBACK) {
+      settle("failed", "проверка запасной формы (?signup=form)");
+      return;
+    }
+
+    if (hasButtons()) {
+      settle("ready");
+      return;
+    }
+
+    observer = new MutationObserver(() => {
+      if (hasButtons()) settle("ready");
+    });
+    observer.observe(mount, { childList: true, subtree: true });
+
+    // Скрипт BotHelp не выполнился вовсе — кнопок не будет, ждать нечего
+    afterDomReady(() => {
+      if (!window.BhWidgets) settle("failed", "скрипт BotHelp не загрузился");
+    });
+
+    pageLoaded.then(() => {
+      if (settled) return;
+      timer = window.setTimeout(
+        () => settle("failed", `кнопки BotHelp не пришли за ${BOTHELP_WAIT_MS / 1000} с после загрузки страницы`),
+        BOTHELP_WAIT_MS
+      );
+    });
+  };
+
+
+  /* --------------------------------------------------------------------------
+     Д. ЗАПИСЬ ЧЕРЕЗ BOTHELP
      --------------------------------------------------------------------------
      Своих кнопок в блоке нет — есть только кнопки мессенджеров от BotHelp.
      По нажатию на любую из них:
@@ -558,26 +691,22 @@
        3) возвращаем нажатие виджету — и человек уходит в мессенджер.
      -------------------------------------------------------------------------- */
 
-  page.querySelectorAll("[data-signup]").forEach((block) => {
-    const formName = block.dataset.tildaFormName || "";
-    const mount = block.querySelector("[data-bh-mount]");
-    const status = block.querySelector("[data-lead-status]");
+  const setupBotSignup = (block, ui) => {
+    const { mount, setStatus } = ui;
     const manualBlock = block.querySelector("[data-lead-manual]");
     const manualLink = block.querySelector("[data-lead-manual-link]");
-
-    if (!mount) return;
-
-    const bothelp = createBotHelp(mount);
+    const source = block.dataset.signupSource || "";
 
     let busy = false;
     // Поднимаем на время, когда сами нажимаем кнопку виджета: по этому флагу
     // перехватчик пропускает нажатие дальше, к обработчику BotHelp
     let passThrough = false;
 
-    const setStatus = (message = "", state = "idle") => {
-      if (!status) return;
-      status.textContent = message;
-      status.dataset.state = state;
+    // Согласие BotHelp проверяет сам и молча не пускает клик.
+    // Мы читаем галочку до него, чтобы не отправить заявку впустую
+    const consentGiven = () => {
+      const items = [...mount.querySelectorAll("[data-consent-checkbox], .bh-w-consent__checkbox")];
+      return items.length === 0 || items.every((item) => item.checked);
     };
 
     const showManual = (link) => {
@@ -590,50 +719,6 @@
         manualBlock.hidden = false;
       }
     };
-
-    /* --- Шаг 2: заявка в Тильду ------------------------------------------ */
-
-    const sendToTilda = async () => {
-      const nativeForm = hideTildaForm(formName);
-
-      // На превью формы Тильды нет — это нормально, просто пропускаем шаг
-      if (!(nativeForm instanceof HTMLFormElement)) {
-        const message = `[запись] Формы Тильды «${formName}» на странице нет — заявка не отправлена.`;
-        if (IS_PRODUCTION) console.error(message);
-        else console.info(`${message} Это превью, так и должно быть.`);
-        return "skipped";
-      }
-
-      const utm = collectUtm();
-      const clientId = await readClientId(block);
-
-      // Сначала значения по умолчанию, потом служебные поля.
-      // Порядок важен: заполненное «Имя» проходит проверку Тильды само,
-      // и снимать с него обязательность уже не придётся
-      Object.entries(DEFAULT_FIELDS).forEach(([name, value]) => {
-        setTildaField(nativeForm, name, value);
-      });
-
-      setTildaField(nativeForm, CLIENT_ID_FIELD, clientId);
-      UTM_FIELDS.forEach((key) => setTildaField(nativeForm, key, utm[key] || ""));
-
-      relaxTildaValidation(nativeForm);
-
-      const answer = waitForTilda(nativeForm);
-
-      // Кнопку Тильды можно спрятать через display:none — на отправку это никак
-      // не влияет. А вот выключенную (disabled) в качестве отправителя брать
-      // нельзя, поэтому в таком случае отправляем форму без указания кнопки
-      const nativeSubmit = nativeForm.querySelector(
-        'button[type="submit"]:not(:disabled), input[type="submit"]:not(:disabled)'
-      );
-      if (nativeSubmit instanceof HTMLElement) nativeForm.requestSubmit(nativeSubmit);
-      else nativeForm.requestSubmit();
-
-      return answer;
-    };
-
-    /* --- Шаг 3: передаём нажатие виджету ---------------------------------- */
 
     const handoff = (button) => {
       setStatus("Переносим вас в мессенджер…", "loading");
@@ -652,8 +737,6 @@
       }, HANDOFF_TIMEOUT_MS);
     };
 
-    /* --- Шаг 1: перехват нажатия ------------------------------------------ */
-
     const onClick = async (event) => {
       const button = event.target instanceof Element
         ? event.target.closest(".bh-w-messenger-button")
@@ -668,7 +751,7 @@
 
       if (busy) return;
 
-      if (!bothelp.consentGiven()) {
+      if (!consentGiven()) {
         setStatus("Поставьте галочку согласия, чтобы продолжить", "error");
         return;
       }
@@ -679,7 +762,13 @@
       setStatus("Секунду, записываем вас…", "loading");
 
       try {
-        const result = await sendToTilda();
+        // Тильда не заводит сделку, если заполнены одни скрытые поля, поэтому
+        // в «Имя» кладём название лендинга — как и раньше
+        const result = await sendToTilda(block, {
+          [FIELDS.name]: source,
+          [FIELDS.source]: `${source} — ${SOURCE_NOTES.bot}`,
+        }, TILDA_TIMEOUT_MS);
+
         if (result === "error") {
           console.warn("[запись] Тильда не приняла заявку — уводим в мессенджер без неё.");
         }
@@ -699,18 +788,270 @@
     // Слушаем на document в фазе погружения: так мы гарантированно раньше
     // любого обработчика внутри виджета
     document.addEventListener("click", onClick, true);
+  };
 
-    /* --- Старт ------------------------------------------------------------ */
 
+  /* --------------------------------------------------------------------------
+     Е. ЗАПАСНАЯ ФОРМА
+     --------------------------------------------------------------------------
+     Обычная лид-форма: имя, телефон, мессенджер, галочка согласия.
+     Своей отправки у неё нет — данные раскладываются по скрытой форме Тильды.
+     Для MAX отдельный номер не спрашиваем: пишем на телефон из формы.
+     -------------------------------------------------------------------------- */
+
+  // Телефон приводим к виду +79001234567. Российский номер можно ввести
+  // как угодно: 8 900…, 900…, +7 (900)…
+  const normalizePhone = (value) => {
+    const raw = String(value || "").trim();
+    const digits = raw.replace(/\D/g, "");
+
+    if (!digits) return "";
+    if (raw.startsWith("+")) return `+${digits}`;
+    if (digits.startsWith("00")) return `+${digits.slice(2)}`;
+    if (digits.length === 11 && digits.startsWith("8")) return `+7${digits.slice(1)}`;
+    if (digits.length === 10) return `+7${digits}`;
+    return `+${digits}`;
+  };
+
+  const isPhoneValid = (phone) => {
+    const digits = phone.replace(/\D/g, "");
+    if (digits.startsWith("7")) return digits.length === 11;
+    return digits.length >= 10 && digits.length <= 15;
+  };
+
+  // Ник в Telegram: принимаем и «@anna», и «anna», и ссылку t.me/anna
+  const normalizeTelegram = (value) => {
+    let nick = String(value || "").trim().replace(/^(https?:\/\/)?(t|telegram)\.me\//i, "");
+    if (nick && !nick.startsWith("@")) nick = `@${nick}`;
+    return nick;
+  };
+
+  const TELEGRAM_PATTERN = /^@[A-Za-z0-9_]{4,32}$/;
+
+  // 🟢 Тексты ошибок под полями
+  const ERRORS = {
+    name: "Напишите, как к вам обращаться",
+    phone: "Проверьте номер телефона",
+    telegram: "Напишите ник в Telegram, например @anna_petrova",
+    consent: "Без согласия мы не сможем записать вас на вебинар",
+    send: "Не получилось отправить заявку. Проверьте интернет и попробуйте ещё раз.",
+  };
+
+  const setupFallback = (block, ui) => {
+    const form = block.querySelector("[data-signup-fallback]");
+    const success = block.querySelector("[data-signup-success]");
+    const successMessenger = block.querySelector("[data-signup-success-messenger]");
+    if (!(form instanceof HTMLFormElement)) return null;
+
+    const { setStatus } = ui;
+    const source = block.dataset.signupSource || "";
+    const nameInput = form.elements.namedItem("name");
+    const phoneInput = form.elements.namedItem("phone");
+    const telegramInput = form.elements.namedItem("telegram");
+    const consentInput = form.elements.namedItem("consent");
+    const messengerInputs = [...form.querySelectorAll('input[name="messenger"]')];
+    const telegramField = form.querySelector("[data-signup-telegram-field]");
+    const maxNote = form.querySelector("[data-signup-max-note]");
+    const submit = form.querySelector("[data-signup-submit]");
+    const submitLabel = submit?.querySelector("[data-signup-submit-label]");
+    const submitText = submitLabel?.textContent || "";
+    let busy = false;
+
+    const selectedMessenger = () =>
+      messengerInputs.find((input) => input.checked)?.value || "max";
+
+    // Ошибку пишем под полем; у галочки — своя строка под ней
+    const setError = (input, message = "") => {
+      if (!(input instanceof HTMLInputElement)) return;
+      const field = input.closest("[data-signup-field]");
+      const error = field?.querySelector("[data-signup-error]");
+
+      input.setAttribute("aria-invalid", String(Boolean(message)));
+      if (field) field.dataset.state = message ? "invalid" : "idle";
+      if (error) error.textContent = message;
+    };
+
+    const checks = {
+      name: () => (nameInput.value.trim().length >= 2 ? "" : ERRORS.name),
+      phone: () => (isPhoneValid(normalizePhone(phoneInput.value)) ? "" : ERRORS.phone),
+      telegram: () =>
+        selectedMessenger() !== "telegram" || TELEGRAM_PATTERN.test(normalizeTelegram(telegramInput.value))
+          ? ""
+          : ERRORS.telegram,
+      consent: () => (consentInput.checked ? "" : ERRORS.consent),
+    };
+
+    const inputs = { name: nameInput, phone: phoneInput, telegram: telegramInput, consent: consentInput };
+
+    const validate = (key) => {
+      const message = checks[key]();
+      setError(inputs[key], message);
+      return !message;
+    };
+
+    // Поле ника видно только при выборе Telegram
+    const renderMessenger = () => {
+      const isTelegram = selectedMessenger() === "telegram";
+      if (telegramField) telegramField.hidden = !isTelegram;
+      if (maxNote) maxNote.hidden = isTelegram;
+      telegramInput.disabled = !isTelegram;
+      if (!isTelegram) setError(telegramInput);
+    };
+
+    messengerInputs.forEach((input) => input.addEventListener("change", renderMessenger));
+    renderMessenger();
+
+    // Пока человек печатает, ошибку убираем; проверяем, когда он ушёл с поля
+    Object.entries(inputs).forEach(([key, input]) => {
+      input.addEventListener(input.type === "checkbox" ? "change" : "input", () => {
+        if (input.getAttribute("aria-invalid") === "true") validate(key);
+        setStatus();
+      });
+      if (input.type !== "checkbox") {
+        input.addEventListener("blur", () => {
+          if (input.value.trim()) validate(key);
+        });
+      }
+    });
+
+    const setBusy = (value) => {
+      busy = value;
+      block.dataset.state = value ? "sending" : "idle";
+      if (submit instanceof HTMLButtonElement) {
+        submit.disabled = value;
+        submit.setAttribute("aria-busy", String(value));
+      }
+      if (submitLabel) submitLabel.textContent = value ? "Отправляем…" : submitText;
+    };
+
+    const showSuccess = (messenger) => {
+      if (successMessenger) successMessenger.textContent = MESSENGER_NAMES[messenger] || "мессенджер";
+      form.hidden = true;
+      setStatus();
+      block.dataset.state = "done";
+      if (success instanceof HTMLElement) {
+        success.hidden = false;
+        // Карточка стала короче — без прокрутки сообщение уехало бы за верх экрана
+        success.focus();
+      }
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (busy) return;
+
+      const results = Object.keys(checks).map((key) => [key, validate(key)]);
+      const firstInvalid = results.find(([, ok]) => !ok);
+      if (firstInvalid) {
+        inputs[firstInvalid[0]].focus();
+        return;
+      }
+
+      const messenger = selectedMessenger();
+      const phone = normalizePhone(phoneInput.value);
+
+      setBusy(true);
+      setStatus("Отправляем заявку…", "loading");
+
+      let result = "error";
+      try {
+        result = await sendToTilda(block, {
+          [FIELDS.name]: nameInput.value.trim(),
+          [FIELDS.phone]: phone,
+          [FIELDS.messenger]: MESSENGER_NAMES[messenger] || messenger,
+          [FIELDS.contact]: messenger === "telegram" ? normalizeTelegram(telegramInput.value) : phone,
+          [FIELDS.consent]: "да",
+          [FIELDS.source]: `${source} — ${SOURCE_NOTES.form}`,
+        }, FALLBACK_TILDA_TIMEOUT_MS);
+      } catch (error) {
+        console.error("[запись] Не получилось отправить заявку в Тильду.", error);
+      }
+
+      // На превью формы Тильды нет — показываем экран успеха, чтобы его
+      // можно было проверить. На боевом сайте без формы это ошибка
+      if (result === "success" || (result === "skipped" && !IS_PRODUCTION)) {
+        setBusy(false);
+        block.dataset.state = "done";
+        showSuccess(messenger);
+        return;
+      }
+
+      if (result === "timeout") {
+        console.warn("[запись] Тильда не ответила вовремя на заявку из запасной формы.");
+      }
+
+      setBusy(false);
+      setStatus(ERRORS.send, "error");
+    });
+
+    return form;
+  };
+
+
+  /* --------------------------------------------------------------------------
+     Ж. ЗАПУСК
+     -------------------------------------------------------------------------- */
+
+  blocks.forEach((block) => {
+    const formName = block.dataset.tildaFormName || "";
+    const mount = block.querySelector("[data-bh-mount]");
+    const status = block.querySelector("[data-lead-status]");
+    if (!mount) return;
+
+    const skeleton = mount.querySelector("[data-bh-skeleton]");
+    const errorNote = mount.querySelector("[data-bh-error]");
+
+    const setStatus = (message = "", state = "idle") => {
+      if (!status) return;
+      status.textContent = message;
+      status.dataset.state = state;
+    };
+
+    const ui = { mount, setStatus };
+    const fallbackForm = block.querySelector("[data-signup-fallback]");
+
+    // Запоминаем метки сразу при загрузке, не дожидаясь нажатия
+    collectUtm(formName);
+
+    block.dataset.signupMode = "waiting";
+
+    watchBotHelp(mount, (result, reason) => {
+      if (skeleton) skeleton.hidden = true;
+      mount.dataset.bhState = result;
+
+      if (result === "ready") {
+        block.dataset.signupMode = "bot";
+        setupBotSignup(block, ui);
+        return;
+      }
+
+      // Запасной формы в разметке нет — показываем старую подсказку
+      if (!(fallbackForm instanceof HTMLFormElement)) {
+        if (errorNote) errorNote.hidden = false;
+        console.warn(`[запись] BotHelp не поднялся: ${reason}. Запасной формы на странице нет.`);
+        return;
+      }
+
+      console.warn(`[запись] BotHelp не поднялся: ${reason}. Показываем запасную форму.`);
+      block.dataset.signupMode = "form";
+      mount.hidden = true;
+      block.querySelectorAll("[data-bh-only]").forEach((element) => { element.hidden = true; });
+      setupFallback(block, ui);
+      fallbackForm.hidden = false;
+    });
+
+    // Тильда дорисовывает свои блоки позже — прячем её форму, когда появится
     if (formName) {
       hideTildaForm(formName);
 
-      // Тильда дорисовывает свои блоки позже — прячем форму снова, когда появится
-      new MutationObserver(() => hideTildaForm(formName))
-        .observe(document.body, { childList: true, subtree: true });
+      const observer = new MutationObserver(() => {
+        if (hideTildaForm(formName)) observer.disconnect();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
     }
   });
 })();
+
 
 
 /* ============================================================================

@@ -2279,27 +2279,6 @@ html {
   text-underline-offset: 0.15em;
 }
 
-/* --- Скрытая форма Тильды -------------------------------------------------
-   Тильда рисует свою форму где-то на странице. Мы её не удаляем — она нужна,
-   чтобы отправлять заявку, — а убираем с глаз. Именно убираем, а не прячем
-   через hidden: скриптам Тильды нужно измерять поля и ставить в них фокус,
-   а у display:none этого не выходит.
-   -------------------------------------------------------------------------- */
-
-[data-sexology-native-form-record] {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  margin: -1px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  border: 0 !important;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  pointer-events: none !important;
-  white-space: nowrap !important;
-}
-
 
 /* ---------------------------------------------------------------------------
    18. ВОПРОСЫ И ОТВЕТЫ
@@ -3117,4 +3096,299 @@ html {
 /* Ссылка «перейти к содержимому» лежит выше .cft-page, поэтому селектор свой */
 .skip-link {
   color: #2b2334 !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+   ЗАПАСНАЯ ФОРМА ЗАПИСИ
+   ---------------------------------------------------------------------------
+   Видна, только если виджет BotHelp не поднялся (см. page.js, блок
+   «ЗАПИСЬ НА ВЕБИНАР: BOTHELP + ЗАПАСНАЯ ФОРМА»). Поля в тех же размерах,
+   что и кнопки BotHelp: высота от 52px, скругление как у кнопок.
+
+   🔴 Блок одинаковый на всех лендингах вебинаров с BotHelp. Правите здесь —
+      перенесите правку и на остальные страницы.
+   --------------------------------------------------------------------------- */
+
+/* Атрибут hidden сильнее, чем display у элементов формы */
+[data-signup] [hidden] {
+  display: none !important;
+}
+
+/* Скрытая форма Тильды: убираем с глаз, но не через display:none — скриптам
+   Тильды нужно измерять поля и ставить в них фокус */
+[data-signup-native-form-record] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+.lead-form_fallback,
+.lead-form_fields,
+.lead-form_messenger {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.lead-form_fallback {
+  gap: 1.25rem;
+}
+
+.lead-form_field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lead-form_label {
+  display: block;
+  padding: 0;
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.lead-form_required {
+  margin-left: 0.125rem;
+  color: var(--color-accent-primary);
+}
+
+.lead-form_control {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  padding: 0 1rem;
+  border: 1px solid var(--color-field-border, #d4d4d4);
+  border-radius: var(--radius-button);
+  background: var(--color-surface-primary);
+  transition: border-color var(--transition-site);
+}
+
+.lead-form_control:focus-within {
+  border-color: var(--color-accent-primary);
+}
+
+.lead-form_field[data-state="invalid"] .lead-form_control {
+  border-color: #d92d20;
+}
+
+.lead-form_input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0.75rem 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  appearance: none;
+}
+
+.lead-form_input::placeholder {
+  color: var(--color-field-placeholder, #a3a3a3);
+  opacity: 1;
+}
+
+.lead-form_input:focus {
+  outline: none;
+}
+
+.lead-form_error {
+  color: #d92d20;
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.lead-form_error:empty {
+  display: none;
+}
+
+/* --- Выбор мессенджера ---------------------------------------------------- */
+
+/* <legend> не участвует во flex-раскладке fieldset, поэтому gap на него
+   не действует — отступ до кнопок задаём ему отдельно */
+.lead-form_messenger > .lead-form_label {
+  margin-bottom: 0.5rem;
+}
+
+.lead-form_messenger-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+/* Радиокнопка спрятана, кликается подпись рядом с ней */
+.lead-form_messenger-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.lead-form_messenger-option {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  background: var(--color-page-background, #f5f5f5);
+  color: var(--color-text-secondary);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    border-color var(--transition-site),
+    color var(--transition-site);
+}
+
+.lead-form_messenger-icon {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+.lead-form_messenger-input:checked + .lead-form_messenger-option {
+  border-color: var(--color-accent-primary);
+  background: var(--color-surface-primary);
+  color: var(--color-accent-primary);
+}
+
+.lead-form_messenger-input:focus-visible + .lead-form_messenger-option {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.lead-form_contact-note {
+  margin-top: -0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* --- Галочка согласия ------------------------------------------------------ */
+
+.lead-form_check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  cursor: pointer;
+}
+
+.lead-form_check-input {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-accent-primary);
+  cursor: pointer;
+}
+
+.lead-form_check-label {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+/* !important — защита от правила Тильды a { color: inherit !important } */
+[data-signup] .lead-form_check-label a {
+  color: var(--color-accent-primary) !important;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* --- Кнопка и экран после отправки ---------------------------------------- */
+
+.lead-form_submit[aria-busy="true"] {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.lead-form_success {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lead-form_success:focus {
+  outline: none;
+}
+
+/* --- Планшет: форма во всю ширину плашки ----------------------------------
+   От 768 до 1279px в две колонки форма выходит слишком узкой (около 330px),
+   а в левой колонке под шагами остаётся дыра. Поэтому, когда показана
+   запасная форма, плашка на этих ширинах складывается в одну колонку:
+   сверху текст и подарок, под ними форма, а поля встают по два в ряд.
+   Режим BotHelp не меняется: в карточке только кнопки, им хватает места.
+   -------------------------------------------------------------------------- */
+
+@media screen and (min-width: 48rem) and (max-width: 79.9375rem) {
+  .signup_component:has([data-signup-mode="form"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-signup-mode="form"] .lead-form_fallback {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 1.25rem 1rem;
+  }
+
+  /* Подсказка и строка «Имя | Телефон» — на всю ширину */
+  [data-signup-mode="form"] .lead-form_fallback > .lead-form_hint,
+  [data-signup-mode="form"] .lead-form_fallback > .lead-form_fields {
+    grid-column: 1 / -1;
+  }
+
+  [data-signup-mode="form"] .lead-form_fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  /* Подсказка про MAX стоит справа от кнопок мессенджеров, по их центру */
+  [data-signup-mode="form"] .lead-form_contact-note {
+    display: flex;
+    min-height: 3.25rem;
+    align-items: center;
+    align-self: end;
+    margin-top: 0;
+  }
+
+  /* Последний ряд: галочка согласия слева, кнопка справа */
+  [data-signup-mode="form"] .lead-form_submit {
+    align-self: center;
+  }
 }

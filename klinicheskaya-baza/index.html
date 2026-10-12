@@ -38,6 +38,11 @@
     в скрытую форму Тильды и отправляет её — оттуда данные уходят в AmoCRM.
     Как только Тильда ответила, скрипт возвращает нажатие виджету.
     На превью формы Тильды нет, поэтому шаг с ней пропускается.
+    Если BotHelp не поднялся (скрипт не загрузился или кнопки не пришли
+    за 10 секунд после загрузки страницы), вместо его кнопок появляется
+    запасная лид-форма: имя, телефон, мессенджер, согласие. Заявка уходит
+    в ту же форму Тильды с пометкой для отдела продаж. Проверить её можно,
+    добавив к адресу ?signup=form.
 
   ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
     · 🟡 картинки основных секций лежат локально в img/; блок про Академию
@@ -75,12 +80,15 @@
   <!-- 🔴 Стили только этой страницы -->
   <link rel="stylesheet" href="page.css" />
 
+  <!-- 🔴 Скрипт страницы: FAQ, меню и связка «кнопка BotHelp → форма Тильды».
+       Стоит РАНЬШЕ загрузчика BotHelp: скрипты с defer запускаются по
+       порядку, и если BotHelp не отвечает, наш скрипт ждал бы его.
+       Виджет он дожидается сам, а не дождавшись — показывает запасную форму. -->
+  <script src="page.js" defer></script>
+
   <!-- 🔴 Загрузчик виджета BotHelp. На боевой странице он подключается
        в настройках Тильды — здесь нужен, чтобы форму можно было проверить. -->
   <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
-
-  <!-- 🔴 Скрипт страницы: FAQ, меню и связка «кнопка BotHelp → форма Тильды» -->
-  <script src="page.js" defer></script>
 </head>
 
 <body>
@@ -936,8 +944,14 @@
                     уходят в AmoCRM штатной интеграцией Тильды;
                  3) и только после ответа Тильды возвращает нажатие виджету.
 
+               Если BotHelp не поднялся, вместо его кнопок скрипт показывает
+               запасную лид-форму — она ниже, под виджетом.
+
                🟡 data-tilda-form-name — имя формы в настройках Тильды.
                   Должно совпадать с ним буква в букву.
+               🟡 data-signup-source — название лендинга для отдела продаж.
+                  Уходит в поле form_source вместе с пометкой, как человек
+                  записался: через бота или через запасную форму.
                🟡 data-metrika-id — номер счётчика Метрики. Можно оставить
                   пустым: скрипт сам найдёт счётчик на странице.
                🔴 ВАЖНО: атрибуты data-bh-widget-id и data-bh-customer-id
@@ -945,6 +959,7 @@
                   #bh-widget-button-root ниже. -->
           <div class="lead-form_component" data-signup data-state="idle"
                data-tilda-form-name="clinical-base"
+               data-signup-source="Заявка с лендинга «Клиническая база: тренд или необходимость»"
                data-metrika-id="">
 
             <div class="lead-form_intro">
@@ -952,7 +967,7 @@
               <p class="lead-form_date">11 сентября, 18:00 МСК</p>
             </div>
 
-            <p class="lead-form_hint">
+            <p class="lead-form_hint" data-bh-only>
               Выберите мессенджер&nbsp;— пришлём ссылку на&nbsp;эфир туда
               и&nbsp;напомним за&nbsp;час до&nbsp;начала.
             </p>
@@ -973,11 +988,110 @@
               </p>
             </div>
 
+            <!-- 🔴 ЗАПАСНАЯ ФОРМА ЗАПИСИ.
+                 Видна, только если виджет BotHelp не поднялся: скрипт BotHelp
+                 не загрузился вовсе или его кнопки не пришли за 10 секунд после
+                 загрузки страницы. Тогда кнопки мессенджеров и подсказка над
+                 ними прячутся, а на их месте появляется эта форма.
+                 Заявка уходит в ту же скрытую форму Тильды — с пометкой для
+                 отдела продаж, что ссылку на эфир нужно отправить вручную.
+                 Проверить форму, когда BotHelp работает: добавьте ?signup=form
+                 к адресу страницы.
+                 🟢 Тексты меняйте смело. Имена полей (name=…) не трогайте. -->
+            <form class="lead-form_fallback" data-signup-fallback novalidate hidden>
+              <p class="lead-form_hint">
+                Оставьте контакты&nbsp;— пришлём ссылку на&nbsp;эфир в&nbsp;удобный мессенджер.
+              </p>
+
+              <div class="lead-form_fields">
+                <div class="lead-form_field" data-signup-field data-state="idle">
+                  <label class="lead-form_label" for="signup-name">Имя<span class="lead-form_required" aria-hidden="true">*</span></label>
+                  <span class="lead-form_control">
+                    <input class="lead-form_input" id="signup-name" name="name" type="text"
+                           placeholder="Анна Петрова" autocomplete="name" maxlength="80" required
+                           aria-describedby="signup-name-error" aria-invalid="false" />
+                  </span>
+                  <p class="lead-form_error" id="signup-name-error" aria-live="polite" data-signup-error></p>
+                </div>
+
+                <div class="lead-form_field" data-signup-field data-state="idle">
+                  <label class="lead-form_label" for="signup-phone">Телефон<span class="lead-form_required" aria-hidden="true">*</span></label>
+                  <span class="lead-form_control">
+                    <input class="lead-form_input" id="signup-phone" name="phone" type="tel"
+                           placeholder="+7 900 000-00-00" autocomplete="tel" inputmode="tel" maxlength="24" required
+                           aria-describedby="signup-phone-error" aria-invalid="false" />
+                  </span>
+                  <p class="lead-form_error" id="signup-phone-error" aria-live="polite" data-signup-error></p>
+                </div>
+              </div>
+
+              <fieldset class="lead-form_messenger">
+                <legend class="lead-form_label">Куда прислать ссылку на&nbsp;эфир</legend>
+                <div class="lead-form_messenger-options">
+                  <input class="lead-form_messenger-input" type="radio" name="messenger"
+                         id="signup-messenger-max" value="max" checked />
+                  <label class="lead-form_messenger-option" for="signup-messenger-max">
+                    <svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor" /></svg>
+                    <span lang="en">MAX</span>
+                  </label>
+
+                  <input class="lead-form_messenger-input" type="radio" name="messenger"
+                         id="signup-messenger-telegram" value="telegram" />
+                  <label class="lead-form_messenger-option" for="signup-messenger-telegram">
+                    <svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor" /></svg>
+                    <span lang="en">Telegram</span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <p class="lead-form_contact-note" data-signup-max-note>
+                Напишем в&nbsp;MAX на&nbsp;этот номер телефона.
+              </p>
+
+              <div class="lead-form_field" data-signup-field data-signup-telegram-field data-state="idle" hidden>
+                <label class="lead-form_label" for="signup-telegram">Ник в&nbsp;Telegram<span class="lead-form_required" aria-hidden="true">*</span></label>
+                <span class="lead-form_control">
+                  <input class="lead-form_input" id="signup-telegram" name="telegram" type="text"
+                         placeholder="@anna_petrova" autocomplete="off" autocapitalize="none" spellcheck="false"
+                         maxlength="64" required disabled
+                         aria-describedby="signup-telegram-error" aria-invalid="false" />
+                </span>
+                <p class="lead-form_error" id="signup-telegram-error" aria-live="polite" data-signup-error></p>
+              </div>
+
+              <div class="lead-form_field" data-signup-field data-state="idle">
+                <label class="lead-form_check">
+                  <input class="lead-form_check-input" type="checkbox" name="consent" required
+                         aria-describedby="signup-consent-error" aria-invalid="false" />
+                  <span class="lead-form_check-label">
+                    Я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener">согласие</a>
+                    на&nbsp;обработку моих персональных данных в&nbsp;соответствии
+                    с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener">политикой обработки персональных данных</a>
+                  </span>
+                </label>
+                <p class="lead-form_error" id="signup-consent-error" aria-live="polite" data-signup-error></p>
+              </div>
+
+              <button class="button is-accent is-full-width lead-form_submit" type="submit"
+                      data-signup-submit aria-busy="false">
+                <span data-signup-submit-label>Зарегистрироваться</span>
+              </button>
+            </form>
+
+            <!-- 🔴 Экран после отправки запасной формы -->
+            <div class="lead-form_success" data-signup-success role="status" tabindex="-1" hidden>
+              <h3 class="lead-form_heading">Вы&nbsp;записаны</h3>
+              <p class="lead-form_hint">
+                Пришлём ссылку на&nbsp;эфир в&nbsp;<span data-signup-success-messenger>мессенджер</span>
+                перед началом вебинара.
+              </p>
+            </div>
+
             <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
 
             <!-- 🔴 Запасной выход. Показывается, только если переход
                  в мессенджер не сработал. Адрес подставляет скрипт. -->
-            <p class="lead-form_manual" data-lead-manual hidden>
+            <p class="lead-form_manual" data-lead-manual data-bh-only hidden>
               Мессенджер не&nbsp;открылся?
               <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
             </p>

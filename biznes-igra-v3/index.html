@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  ЛЕНДИНГ «БИЗНЕС-ИГРА ДЛЯ ПСИХОЛОГОВ» — ВАРИАНТ «КОЛОДА»
+  ============================================================================
+
+  Бесплатная онлайн-встреча с командной практикой: 24 октября, 14:00 МСК,
+  90 минут, команды до 5 человек. Ведущая — Екатерина Исупова.
+
+  ВАРИАНТЫ (выбираем по итогу из трёх):
+    /biznes-igra     — первая версия: игровое поле из клеток (не трогаем);
+    /biznes-igra-v3  — «Колода»: карты тянут кнопкой «Тянуть карту»;
+    /biznes-igra-v2  — «Колода с прокруткой»: карты меняются сами,
+                       пока страница прокручивается.
+    Разметка, стили и скрипт у v2 и v3 одинаковые, отличается только
+    атрибут data-deck-mode у обёртки страницы ("click" или "scroll").
+
+  ИДЕЯ СТРАНИЦЫ
+    Сначала заставка, как у игры: название, одна фраза, дата и кнопка
+    «Узнать, как устроена игра». Дальше — игровой стол: в левом верхнем
+    углу ведущая, напротив сидит заказчик, в центре колода из 11 карт,
+    слева монеты команды, справа «Ваша команда», внизу лента открытых
+    карт. Карты по одной рассказывают, как устроена игра; на каждой
+    говорит ведущая или заказчик, монеты тратятся по правилам, фишка
+    в шапке идёт по этапам. Последняя карта — билет с записью.
+    Макеты: apps/preview/.impeccable/mocks/biznes-igra/r3-*.png
+
+  ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
+    🟢 обычный текст между тегами — меняйте смело;
+    🟡 адрес ссылки href="…" или адрес картинки src="…" — сюда подставляют
+       настоящие ссылки;
+    🔴 всё остальное (class=…, id=…, data-…) — «шестерёнки», их трогать
+       не надо: на них держится вёрстка и работа скриптов.
+
+  КАК РАБОТАЕТ ЗАПИСЬ
+    Как на вебинарах: кнопки мессенджеров BotHelp, а если виджет
+    не поднялся — запасная лид-форма (page.js, блок «ЗАПИСЬ НА ВЕБИНАР»).
+    ⚠️ Виджета BotHelp для этой игры ПОКА НЕТ, поэтому сейчас всегда
+    показывается запасная форма. Когда виджет появится: впишите его номера
+    в data-bh-widget-id и data-bh-customer-id у #bh-widget-button-root
+    (в карте-билете) и раскомментируйте загрузчик BotHelp в <head>.
+
+  ЧЕГО ТУТ ПОКА НЕТ (ждём данных):
+    · 🟡 виджет BotHelp (id и customer);
+    · 🟡 имя нативной формы Тильды (data-tilda-form-name) — стоит рабочее
+      «biznes-igra», сверить с настройками блока формы;
+    · 🟡 бизнес-призы: на странице сказано только «бизнес-призы от Академии»,
+      без подробностей;
+    · og:image (картинка 1200×630) и canonical появятся на боевом домене.
+  ============================================================================
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- 🔴 Превью-страница не должна попадать в поиск. Не убирать. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- 🟢 Заголовок вкладки и строка в поиске -->
+  <title>Бизнес-игра для психологов: онлайн-встреча с командной практикой 24 октября</title>
+  <!-- 🟢 Описание для поиска -->
+  <meta name="description" content="Бесплатная онлайн-встреча 24 октября в 14:00 МСК. Решите консультационный кейс командой: от первого вопроса заказчику до защиты стратегии. 90 минут, команды до 5 человек, 100 игровых монет." />
+
+  <!-- 🔴 Как страница выглядит при отправке в мессенджер -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Академия современной психологии" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Бизнес-игра для психологов" />
+  <meta property="og:description" content="Командная практика онлайн: от первого вопроса заказчику до защиты стратегии. 24 октября, 14:00 МСК, бесплатно." />
+  <meta name="theme-color" content="#2b2334" />
+
+  <!-- 🔴 Шрифты Wix Madefor: Display — заголовки, Text — всё остальное -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700&family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- 🔴 Стили только этой страницы -->
+  <link rel="stylesheet" href="page.css" />
+
+  <!-- 🔴 Скрипт страницы: колода, монеты, команда, запись.
+       Стоит РАНЬШЕ загрузчика BotHelp: скрипты с defer запускаются строго
+       по порядку, и долгий BotHelp не должен задерживать стол. -->
+  <script src="page.js" defer></script>
+
+  <!-- 🔴 Загрузчик виджета BotHelp. Пока виджета нет — выключен,
+       и в билете показывается запасная форма. Когда номер виджета придёт,
+       уберите знаки комментария вокруг строки ниже.
+  <script src="https://main.bothelp.io/w/widget-button.js" defer></script>
+  -->
+</head>
+
+<body>
+
+<!-- 🔴 Ссылка для тех, кто ходит по сайту с клавиатуры -->
+<a class="skip-link" href="#soderzhimoe">Перейти к содержимому</a>
+
+<!-- 🔴 Общая обёртка страницы: на ней заданы все переменные из page.css.
+     data-deck-mode="click"  — карты тянут кнопкой (этот вариант, v3);
+     data-deck-mode="scroll" — карты меняются при прокрутке (вариант v2). -->
+<div class="page-wrapper game-page" data-deck-mode="click">
+
+<!-- ==========================================================================
+     ИГРОВЫЕ ПРЕДМЕТЫ (SVG)
+     ==========================================================================
+     Фишки, стопка монет, курсор, логотип и значки нарисованы здесь один раз,
+     а дальше по странице вставляются через <use href="#…">. Это не картинки:
+     они не теряют чёткость при увеличении и весят несколько килобайт.
+     ========================================================================== -->
+<svg class="game-sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <!-- Мягкая тень под фишкой -->
+    <radialGradient id="g-floor-shadow">
+      <stop offset="0" stop-color="#0d0814" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#0d0814" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Фишка фиолетовая -->
+    <linearGradient id="g-pv-body" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#4a339c" />
+      <stop offset="0.36" stop-color="#a28af3" />
+      <stop offset="0.58" stop-color="#8a6fe6" />
+      <stop offset="1" stop-color="#43308f" />
+    </linearGradient>
+    <linearGradient id="g-pv-side" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#3b2884" />
+      <stop offset="0.4" stop-color="#6c51d2" />
+      <stop offset="1" stop-color="#36257a" />
+    </linearGradient>
+    <linearGradient id="g-pv-top" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#b39ff7" />
+      <stop offset="1" stop-color="#7c5cdb" />
+    </linearGradient>
+    <radialGradient id="g-pv-head" cx="0.36" cy="0.3" r="0.78">
+      <stop offset="0" stop-color="#ddd2ff" />
+      <stop offset="0.34" stop-color="#9f87f1" />
+      <stop offset="1" stop-color="#4a339c" />
+    </radialGradient>
+
+    <!-- Фишка лавандовая -->
+    <linearGradient id="g-pl-body" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#9487d8" />
+      <stop offset="0.36" stop-color="#f1eeff" />
+      <stop offset="0.58" stop-color="#d9d3ff" />
+      <stop offset="1" stop-color="#8b7fd0" />
+    </linearGradient>
+    <linearGradient id="g-pl-side" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#8174c6" />
+      <stop offset="0.4" stop-color="#c3baf6" />
+      <stop offset="1" stop-color="#7a6dbf" />
+    </linearGradient>
+    <linearGradient id="g-pl-top" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f4f2ff" />
+      <stop offset="1" stop-color="#cdc6fb" />
+    </linearGradient>
+    <radialGradient id="g-pl-head" cx="0.36" cy="0.3" r="0.78">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="0.36" stop-color="#e4dfff" />
+      <stop offset="1" stop-color="#9a8dde" />
+    </radialGradient>
+
+    <!-- Фишка белая -->
+    <linearGradient id="g-pw-body" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#aaa3bb" />
+      <stop offset="0.36" stop-color="#ffffff" />
+      <stop offset="0.58" stop-color="#f0eef5" />
+      <stop offset="1" stop-color="#a39cb4" />
+    </linearGradient>
+    <linearGradient id="g-pw-side" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#9c95ad" />
+      <stop offset="0.4" stop-color="#dcd8e6" />
+      <stop offset="1" stop-color="#958ea6" />
+    </linearGradient>
+    <linearGradient id="g-pw-top" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#e6e3ee" />
+    </linearGradient>
+    <radialGradient id="g-pw-head" cx="0.36" cy="0.3" r="0.78">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="0.4" stop-color="#f5f3f9" />
+      <stop offset="1" stop-color="#ada6be" />
+    </radialGradient>
+
+    <!-- Фишка тёмная (баклажан) -->
+    <linearGradient id="g-pi-body" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#1c1524" />
+      <stop offset="0.36" stop-color="#5e5073" />
+      <stop offset="0.58" stop-color="#40354f" />
+      <stop offset="1" stop-color="#1a1422" />
+    </linearGradient>
+    <linearGradient id="g-pi-top" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#6a5c80" />
+      <stop offset="1" stop-color="#3a3047" />
+    </linearGradient>
+    <radialGradient id="g-pi-head" cx="0.36" cy="0.3" r="0.78">
+      <stop offset="0" stop-color="#8d7fa3" />
+      <stop offset="0.36" stop-color="#4b3f5d" />
+      <stop offset="1" stop-color="#1c1524" />
+    </radialGradient>
+
+    <!-- Монеты -->
+    <linearGradient id="g-coin-side" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#412d92" />
+      <stop offset="0.3" stop-color="#7d5fe0" />
+      <stop offset="0.55" stop-color="#6a4fd0" />
+      <stop offset="1" stop-color="#3a2884" />
+    </linearGradient>
+    <radialGradient id="g-coin-top" cx="0.4" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#c3b2fb" />
+      <stop offset="0.55" stop-color="#9478ec" />
+      <stop offset="1" stop-color="#7457d8" />
+    </radialGradient>
+    <!-- Рубашка карты -->
+    <linearGradient id="g-back" x1="0" x2="0.45" y1="0" y2="1">
+      <stop offset="0" stop-color="#6d52cc" />
+      <stop offset="1" stop-color="#5a40b6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Логотип Академии -->
+  <symbol id="g-logo" viewBox="0 0 84 30"><path d="M43.8333 29.3797C39.7611 29.3797 36.4119 28.0298 33.7856 25.33C31.1291 22.6005 29.8066 19.1575 29.8066 15.0027C29.8066 10.847 31.1344 7.40484 33.7856 4.6745C36.4163 1.97022 39.7611 0.620331 43.8333 0.620331C47.9055 0.620331 51.3435 1.9855 53.9991 4.71045C54.4618 5.18498 54.9388 5.77185 55.4299 6.45937L51.9137 9.07737C51.4519 8.38984 51.0629 7.90004 50.7529 7.60705C49.0023 5.8069 46.7198 4.90727 43.9123 4.90727C41.104 4.90727 38.8507 5.82218 37.0709 7.64749C35.2164 9.5528 34.2874 12.0045 34.2874 14.9973C34.2874 17.9901 35.2164 20.4418 37.0709 22.348C38.8463 24.1724 41.128 25.0873 43.9123 25.0873C46.6958 25.0873 49.283 24.0412 51.3728 21.9481L52.1446 21.0736L55.5481 23.5361C55.1111 24.1167 54.6581 24.6631 54.1963 25.1637C51.4661 27.9696 48.0138 29.3743 43.8377 29.3743L43.8333 29.3797Z"/><path d="M63 1.30518H84.0004V29.3797H79.716V5.63795H67.2845V29.3797H63V1.30518Z"/><path d="M15.9984 1.30518H10.4207L0 29.3797H4.54381L7.23492 21.9598H15.6706L14.1119 17.6719H8.79363L9.86208 14.7232L9.87629 14.7286L13.1705 5.6748L18.7925 20.9604L21.9295 29.3797H26.4191L15.9984 1.30518Z"/></symbol>
+
+  <!-- Фишки: тень, основание, тело, воротник, голова -->
+  <symbol id="g-pawn-violet" viewBox="0 0 64 96">
+    <ellipse cx="32" cy="88" rx="26" ry="6.5" fill="url(#g-floor-shadow)" />
+    <path d="M8 80c0-4.4 10.7-8 24-8s24 3.6 24 8v3.2c0 4.4-10.7 8-24 8S8 87.6 8 83.2z" fill="url(#g-pv-side)" />
+    <ellipse cx="32" cy="80" rx="24" ry="8" fill="url(#g-pv-top)" />
+    <path d="M15 79.5c2.6-12.4 9.2-20.4 11.1-31.5h11.8c1.9 11.1 8.5 19.1 11.1 31.5-3.3 2.4-9.8 4-17 4s-13.7-1.6-17-4z" fill="url(#g-pv-body)" />
+    <ellipse cx="32" cy="48" rx="12.6" ry="4.2" fill="url(#g-pv-body)" />
+    <circle cx="32" cy="28.5" r="16" fill="url(#g-pv-head)" />
+  </symbol>
+  <symbol id="g-pawn-lavender" viewBox="0 0 64 96">
+    <ellipse cx="32" cy="88" rx="26" ry="6.5" fill="url(#g-floor-shadow)" />
+    <path d="M8 80c0-4.4 10.7-8 24-8s24 3.6 24 8v3.2c0 4.4-10.7 8-24 8S8 87.6 8 83.2z" fill="url(#g-pl-side)" />
+    <ellipse cx="32" cy="80" rx="24" ry="8" fill="url(#g-pl-top)" />
+    <path d="M15 79.5c2.6-12.4 9.2-20.4 11.1-31.5h11.8c1.9 11.1 8.5 19.1 11.1 31.5-3.3 2.4-9.8 4-17 4s-13.7-1.6-17-4z" fill="url(#g-pl-body)" />
+    <ellipse cx="32" cy="48" rx="12.6" ry="4.2" fill="url(#g-pl-body)" />
+    <circle cx="32" cy="28.5" r="16" fill="url(#g-pl-head)" />
+  </symbol>
+  <symbol id="g-pawn-white" viewBox="0 0 64 96">
+    <ellipse cx="32" cy="88" rx="26" ry="6.5" fill="url(#g-floor-shadow)" />
+    <path d="M8 80c0-4.4 10.7-8 24-8s24 3.6 24 8v3.2c0 4.4-10.7 8-24 8S8 87.6 8 83.2z" fill="url(#g-pw-side)" />
+    <ellipse cx="32" cy="80" rx="24" ry="8" fill="url(#g-pw-top)" />
+    <path d="M15 79.5c2.6-12.4 9.2-20.4 11.1-31.5h11.8c1.9 11.1 8.5 19.1 11.1 31.5-3.3 2.4-9.8 4-17 4s-13.7-1.6-17-4z" fill="url(#g-pw-body)" />
+    <ellipse cx="32" cy="48" rx="12.6" ry="4.2" fill="url(#g-pw-body)" />
+    <circle cx="32" cy="28.5" r="16" fill="url(#g-pw-head)" />
+  </symbol>
+  <symbol id="g-pawn-ink" viewBox="0 0 64 96">
+    <ellipse cx="32" cy="88" rx="26" ry="6.5" fill="url(#g-floor-shadow)" />
+    <path d="M8 80c0-4.4 10.7-8 24-8s24 3.6 24 8v3.2c0 4.4-10.7 8-24 8S8 87.6 8 83.2z" fill="url(#g-pi-body)" />
+    <ellipse cx="32" cy="80" rx="24" ry="8" fill="url(#g-pi-top)" />
+    <path d="M15 79.5c2.6-12.4 9.2-20.4 11.1-31.5h11.8c1.9 11.1 8.5 19.1 11.1 31.5-3.3 2.4-9.8 4-17 4s-13.7-1.6-17-4z" fill="url(#g-pi-body)" />
+    <ellipse cx="32" cy="48" rx="12.6" ry="4.2" fill="url(#g-pi-body)" />
+    <circle cx="32" cy="28.5" r="16" fill="url(#g-pi-head)" />
+  </symbol>
+
+  <!-- Стопка из четырёх монет, на верхней — «100» -->
+  <symbol id="g-coins" viewBox="0 0 120 116">
+    <ellipse cx="60" cy="104" rx="56" ry="10" fill="url(#g-floor-shadow)" />
+    <g>
+      <path d="M12 86v12a48 13 0 0 0 96 0V86a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+      <ellipse cx="60" cy="86" rx="48" ry="13" fill="url(#g-coin-top)" />
+      <path d="M12 72v12a48 13 0 0 0 96 0V72a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+      <ellipse cx="60" cy="72" rx="48" ry="13" fill="url(#g-coin-top)" />
+      <path d="M12 58v12a48 13 0 0 0 96 0V58a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+      <ellipse cx="60" cy="58" rx="48" ry="13" fill="url(#g-coin-top)" />
+      <path d="M12 44v12a48 13 0 0 0 96 0V44a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+      <ellipse cx="60" cy="44" rx="48" ry="13" fill="url(#g-coin-top)" />
+      <ellipse cx="60" cy="44" rx="37" ry="9.6" fill="none" stroke="#6247c9" stroke-opacity="0.55" stroke-width="2" />
+      <text x="60" y="52" fill="#ffffff" font-family="Wix Madefor Display, Wix Madefor Text, Arial, sans-serif" font-size="22" font-weight="800" text-anchor="middle" transform="matrix(1 0 0 0.62 0 16.7)">100</text>
+    </g>
+  </symbol>
+
+  <!-- Одна монета — для стопки в кошельке и для монет, которые улетают
+       на клетку этапа. Тонкая (как монеты в стопке «100»): грань снизу
+       с тёмной кромкой, светлый ободок по верху, кольцо на лицевой стороне. -->
+  <symbol id="g-coin" viewBox="0 0 40 22">
+    <path d="M2 8v4a18 6 0 0 0 36 0V8a18 6 0 0 1-36 0z" fill="url(#g-coin-side)" />
+    <path d="M2 12a18 6 0 0 0 36 0" fill="none" stroke="#24185a" stroke-opacity="0.7" stroke-width="0.9" />
+    <ellipse cx="20" cy="8" rx="18" ry="6" fill="url(#g-coin-top)" />
+    <ellipse cx="20" cy="8" rx="17.5" ry="5.6" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+    <ellipse cx="20" cy="8" rx="12.5" ry="4" fill="none" stroke="#6247c9" stroke-opacity="0.65" stroke-width="1.2" />
+  </symbol>
+
+  <!-- Курсор участника: стрелка с белой обводкой -->
+  <symbol id="g-cursor" viewBox="0 0 22 26">
+    <path d="M3 2.2v18.4l4.9-4.7 3.3 7.6 3.4-1.5-3.3-7.5h6.9z" fill="currentColor" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="round" />
+  </symbol>
+
+  <!-- Значки навыков и фактов: одна толщина линии, сетка 24×24 -->
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21H11" /><path d="M13 3l5 5v3" /><path d="M13 3v5h5" /><circle cx="16" cy="16" r="3.2" /><path d="m18.4 18.4 2.6 2.6" /></symbol>
+  <symbol id="i-listen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5h10a2 2 0 0 1 2 2V11a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2z" /><path d="M19 8.5h1a2 2 0 0 1 2 2V15a2 2 0 0 1-2 2h-1v3l-4-3h-3" /></symbol>
+  <symbol id="i-strategy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="18.5" r="2" /><circle cx="11" cy="9" r="2" /><path d="M6.1 16.8 9.9 10.7" /><path d="M12.6 10.3 16 14" /><path d="M17 21V4" /><path d="M17 4h4.5L20 6.5 21.5 9H17" /></symbol>
+  <symbol id="i-coins" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8.5" cy="6" rx="5.5" ry="2.5" /><path d="M3 6v4c0 1.4 2.5 2.5 5.5 2.5S14 11.4 14 10V6" /><path d="M3 10v4c0 1.4 2.5 2.5 5.5 2.5" /><ellipse cx="16" cy="13.5" rx="5" ry="2.2" /><path d="M11 13.5v4.2c0 1.2 2.2 2.2 5 2.2s5-1 5-2.2v-4.2" /></symbol>
+  <symbol id="i-rivals" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="7" r="2.3" /><path d="M2.5 19.5h6l-1.3-7.2H3.8z" /><circle cx="18.5" cy="7" r="2.3" /><path d="M15.5 19.5h6l-1.3-7.2h-3.4z" /><path d="m12.8 7-2.1 4.3h2.6L11.2 16" /></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.5" r="3" /><path d="M6.5 20a5.5 5.5 0 0 1 11 0" /><circle cx="4.8" cy="9.5" r="2" /><path d="M1.5 18a3.6 3.6 0 0 1 4.2-3.4" /><circle cx="19.2" cy="9.5" r="2" /><path d="M22.5 18a3.6 3.6 0 0 0-4.2-3.4" /></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3" /><path d="M5 11a7 7 0 0 0 14 0" /><path d="M12 18v3.5" /><path d="M8.5 21.5h7" /></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5" /><path d="m15.5 10.5 6-3.5v10l-6-3.5" /></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2.6 2.6" /><path d="M9.5 2.5h5" /></symbol>
+
+  <!-- Стопка из четырёх монет без надписи — для кучки монет команды -->
+  <symbol id="g-coins-plain" viewBox="0 0 120 116">
+    <ellipse cx="60" cy="104" rx="56" ry="10" fill="url(#g-floor-shadow)" />
+    <path d="M12 86v12a48 13 0 0 0 96 0V86a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+    <ellipse cx="60" cy="86" rx="48" ry="13" fill="url(#g-coin-top)" />
+    <path d="M12 72v12a48 13 0 0 0 96 0V72a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+    <ellipse cx="60" cy="72" rx="48" ry="13" fill="url(#g-coin-top)" />
+    <path d="M12 58v12a48 13 0 0 0 96 0V58a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+    <ellipse cx="60" cy="58" rx="48" ry="13" fill="url(#g-coin-top)" />
+    <path d="M12 44v12a48 13 0 0 0 96 0V44a48 13 0 0 1-96 0z" fill="url(#g-coin-side)" />
+    <ellipse cx="60" cy="44" rx="48" ry="13" fill="url(#g-coin-top)" />
+    <ellipse cx="60" cy="44" rx="37" ry="9.6" fill="none" stroke="#6247c9" stroke-opacity="0.55" stroke-width="2" />
+  </symbol>
+
+  <!-- Рубашка карты: фиолетовая, с толщиной, монета посередине -->
+  <symbol id="g-card-back" viewBox="0 0 144 206">
+    <rect x="0" y="8" width="144" height="198" rx="16" fill="#3b2a86" />
+    <rect x="0" y="0" width="144" height="198" rx="16" fill="url(#g-back)" />
+    <rect x="8" y="8" width="128" height="182" rx="11" fill="none" stroke="#ffffff" stroke-opacity="0.16" />
+    <use href="#g-coin" x="40" y="81" width="64" height="35" />
+  </symbol>
+
+  <!-- Заказчик: безликая фигурка в пиджаке на подставке -->
+  <symbol id="g-client" viewBox="0 0 96 112">
+    <ellipse cx="48" cy="104" rx="40" ry="7" fill="url(#g-floor-shadow)" />
+    <path d="M12 92c0-4.4 16.1-8 36-8s36 3.6 36 8v6c0 4.4-16.1 8-36 8s-36-3.6-36-8z" fill="url(#g-pi-body)" />
+    <ellipse cx="48" cy="92" rx="36" ry="8" fill="url(#g-pi-top)" />
+    <rect x="42.5" y="50" width="11" height="14" rx="4" fill="#5b42b8" />
+    <path d="M20 90c0-15 8.5-25 20-27.5h16C67.5 65 76 75 76 90c-6 3-16.5 4.6-28 4.6S26 93 20 90z" fill="url(#g-pv-body)" />
+    <path d="M41 62.5h14L48 75z" fill="#eeeeff" />
+    <path d="M46.2 66h3.6l1.8 15-3.6 4.4-3.6-4.4z" fill="#4e37a8" />
+    <circle cx="48" cy="38" r="17" fill="url(#g-pv-head)" />
+  </symbol>
+
+  <!-- Участник команды (силуэт в кружке) -->
+  <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4.5" fill="currentColor" /><path d="M3.5 21.5c.8-4.6 4.2-7.5 8.5-7.5s7.7 2.9 8.5 7.5z" fill="currentColor" /></symbol>
+
+  <!-- Коробка с призом (из первой версии лендинга) -->
+  <symbol id="g-gift" viewBox="0 0 541 477">
+    <ellipse cx="270" cy="440" rx="190" ry="26" fill="#1d1724" opacity="0.35" />
+    <rect x="120" y="212" width="300" height="214" rx="22" fill="#b3a8ee" />
+    <rect x="120" y="212" width="300" height="200" rx="22" fill="#eeeeff" />
+    <rect x="252" y="212" width="36" height="214" fill="#4e37a8" />
+    <rect x="252" y="212" width="36" height="200" fill="#5b3fb0" />
+    <rect x="100" y="160" width="340" height="68" rx="18" fill="#c7bff8" />
+    <rect x="100" y="152" width="340" height="68" rx="18" fill="#ffffff" />
+    <rect x="250" y="152" width="40" height="68" fill="#6a4fd0" />
+    <path d="M270 152c-30-62-104-74-112-34-8 40 74 40 112 34z" fill="#7c5cdb" />
+    <path d="M270 152c30-62 104-74 112-34 8 40-74 40-112 34z" fill="#6a4fd0" />
+    <circle cx="270" cy="150" r="16" fill="#4e37a8" />
+    <rect x="330" y="250" width="70" height="70" rx="16" fill="#2b2334" transform="rotate(10 365 285)" />
+    <text x="365" y="306" fill="#ffffff" font-family="Wix Madefor Display, Arial, sans-serif" font-size="48" font-weight="700" text-anchor="middle" transform="rotate(10 365 285)">?</text>
+  </symbol>
+</svg>
+
+<!-- ==========================================================================
+     ШАПКА
+     ==========================================================================
+     Липкая. В центре — шесть шагов игры: по нажатию колода переходит
+     к карте этого этапа, над текущим шагом стоит фишка.
+     ========================================================================== -->
+<header class="site-header_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="site-header_bar">
+
+        <!-- 🟡 Ссылка на главную сайта -->
+        <a class="site-header_logo" href="https://modern-psy.ru" aria-label="Академия современной психологии, на главную">
+          <svg viewBox="0 0 84 30" focusable="false" aria-hidden="true"><use href="#g-logo" /></svg>
+        </a>
+
+        <nav class="steps_component" aria-label="Этапы игры" data-steps>
+          <ol class="steps_list">
+            <li><button class="steps_item" type="button" data-step-target="1" data-state="todo" aria-label="Этап 1. Знакомство и правила"><span class="steps_number">1</span><span class="steps_label">Знакомство</span></button></li>
+            <li><button class="steps_item" type="button" data-step-target="2" data-state="todo" aria-label="Этап 2. Кейс и стартовый ресурс"><span class="steps_number">2</span><span class="steps_label">Кейс</span></button></li>
+            <li><button class="steps_item" type="button" data-step-target="3" data-state="todo" aria-label="Этап 3. Брифинг с заказчиком"><span class="steps_number">3</span><span class="steps_label">Брифинг</span></button></li>
+            <li><button class="steps_item" type="button" data-step-target="4" data-state="todo" aria-label="Этап 4. Ярмарка данных"><span class="steps_number">4</span><span class="steps_label">Ярмарка данных</span></button></li>
+            <li><button class="steps_item" type="button" data-step-target="5" data-state="todo" aria-label="Этап 5. Разработка стратегии"><span class="steps_number">5</span><span class="steps_label">Стратегия</span></button></li>
+            <li><button class="steps_item" type="button" data-step-target="6" data-state="todo" aria-label="Этап 6. Защита и итоги"><span class="steps_number">6</span><span class="steps_label">Защита</span></button></li>
+          </ol>
+          <svg class="steps_pawn" viewBox="0 0 64 96" aria-hidden="true" focusable="false" data-steps-pawn><use href="#g-pawn-lavender" /></svg>
+        </nav>
+
+        <a class="button is-light site-header_cta" href="#bilet" data-go-ticket>
+          <span class="for-narrow">Записаться</span><span class="for-wide">Зарегистрироваться</span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<main class="main-wrapper" id="soderzhimoe">
+
+  <!-- ======================================================================
+       1. ЗАСТАВКА
+       ======================================================================
+       Как титульный экран игры. Стол «в расфокусе» нарисован кодом (SVG)
+       из тех же предметов, что и на столе ниже.
+       ====================================================================== -->
+  <section class="section_splash" id="top" aria-labelledby="splash-heading">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <div class="splash_inner">
+
+          <div class="splash_text">
+            <p class="splash_label">Онлайн-встреча с&nbsp;командной практикой</p>
+            <h1 class="splash_heading" id="splash-heading">Бизнес-игра <span class="splash_heading-accent">для&nbsp;психологов</span></h1>
+            <p class="splash_lead">
+              Для психологов, которые хотят попробовать бизнес-консультирование
+              на&nbsp;практике. Решите консультационный кейс командой: от&nbsp;первого
+              вопроса заказчику до&nbsp;защиты стратегии
+            </p>
+            <ul class="splash_chips" aria-label="Когда и сколько">
+              <li class="splash_chip">24&nbsp;октября</li>
+              <li class="splash_chip">14:00&nbsp;МСК</li>
+              <li class="splash_chip">90&nbsp;минут</li>
+              <li class="splash_chip">бесплатно</li>
+            </ul>
+          </div>
+
+          <div class="splash_art" aria-hidden="true">
+            <svg viewBox="0 0 900 360" focusable="false">
+              <!-- Заказчик за столом -->
+              <use href="#g-client" x="408" y="0" width="84" height="98" />
+              <!-- Стопки монет слева и справа -->
+              <use href="#g-coins-plain" x="168" y="150" width="104" height="100" />
+              <use href="#g-coins-plain" x="96" y="206" width="98" height="94" />
+              <use href="#g-coins-plain" x="236" y="214" width="98" height="94" />
+              <use href="#g-coins-plain" x="630" y="160" width="104" height="100" />
+              <use href="#g-coins-plain" x="706" y="214" width="98" height="94" />
+              <!-- Колода в центре -->
+              <g transform="translate(450 205)">
+                <g transform="translate(-34 8) rotate(-11)"><use href="#g-card-back" x="-72" y="-99" width="144" height="198" /></g>
+                <g transform="translate(34 6) rotate(9)"><use href="#g-card-back" x="-72" y="-99" width="144" height="198" /></g>
+                <use href="#g-card-back" x="-72" y="-103" width="144" height="198" />
+              </g>
+              <!-- Команда: пять фишек -->
+              <use href="#g-pawn-violet" x="294" y="282" width="44" height="66" />
+              <use href="#g-pawn-violet" x="356" y="290" width="44" height="66" />
+              <use href="#g-pawn-lavender" x="428" y="294" width="44" height="66" />
+              <use href="#g-pawn-violet" x="500" y="290" width="44" height="66" />
+              <use href="#g-pawn-violet" x="562" y="282" width="44" height="66" />
+            </svg>
+          </div>
+
+          <div class="splash_actions">
+            <a class="button is-light splash_start" href="#kak-ustroena" data-start>Узнать, как устроена игра</a>
+            <p class="splash_note">Можно прийти одному&nbsp;— команду соберём на&nbsp;месте</p>
+            <a class="text-link splash_skip" href="#bilet" data-go-ticket>Сразу зарегистрироваться</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
+       2. ИГРОВОЙ СТОЛ
+       ======================================================================
+       🔴 Атрибуты у карт (data-…) задают, что происходит на столе, когда
+          карта открыта:
+            data-kind    — вид карты (цвет): stage, rule, resource, event,
+                           paper, prize, ticket;
+            data-step    — номер этапа: на этой карте фишка в шапке
+                           переходит на этот шаг;
+            data-wallet  — сколько монет у команды: none (ещё не выдали),
+                           100, 92, 88 или unknown («?» — остаток зависит
+                           от решений команды; цены ярмарки не называем);
+            data-team    — fill: на этой карте участники садятся за стол.
+            data-speaker — кто говорит на этой карте: host (ведущая)
+                           или client (заказчик);
+            data-short   — короткое название карты для ленты внизу.
+       🟢 data-line — реплика говорящего, текст можно менять. Ведущая
+          объясняет правила, заказчик создаёт ощущение присутствия.
+          Кейс на странице не раскрываем.
+       🟢 Тексты карт — с первой версии лендинга (по ТЗ), местами короче,
+          чтобы помещались на карту. Порядок карт — порядок самой игры.
+       ====================================================================== -->
+  <section class="section_table" id="kak-ustroena" aria-labelledby="table-heading" data-table>
+    <h2 class="screen-reader-only" id="table-heading">Как устроена игра</h2>
+
+    <div class="table_track" data-table-track>
+      <div class="table_stage" data-table-stage>
+
+        <!-- Ведущая (левый верхний угол) и заказчик (напротив).
+             На каждой карте говорит кто-то один: у него облачко с репликой,
+             у второго — только подпись. Кто говорит и что — задают атрибуты
+             data-speaker и data-line у карты. -->
+        <div class="table_speakers speakers_component">
+
+          <div class="speaker_component is-host" data-speaker="host" data-active="true">
+            <button class="speaker_avatar" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">
+              <img class="host_photo"
+                   src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/240x/-/format/webp/telegram-cloud-docum.png.webp"
+                   alt="" width="120" height="120" decoding="async" />
+              <span class="screen-reader-only">Ведущая Екатерина Исупова, открыть биографию</span>
+            </button>
+            <div class="speaker_bubble">
+              <p class="speaker_name">Екатерина Исупова<span class="speaker_role">, ведущая</span></p>
+              <p class="speaker_line" data-speaker-line>Я&nbsp;— ведущая игры. Сначала о&nbsp;том, что вы&nbsp;потренируете</p>
+              <button class="speaker_more" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">Биография</button>
+            </div>
+            <div class="host-panel_component" id="host-panel" role="dialog" aria-modal="false" aria-labelledby="host-panel-name" data-host-panel hidden>
+              <img class="host-panel_photo"
+                   src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/720x/-/format/webp/telegram-cloud-docum.png.webp"
+                   alt="Екатерина Исупова, клинический и корпоративный психолог"
+                   width="720" height="1080" loading="lazy" decoding="async" />
+              <div class="host-panel_head">
+                <h3 class="host-panel_name" id="host-panel-name">Екатерина Исупова</h3>
+                <p class="host-panel_label">Ведущая игры</p>
+                <p class="host-panel_lead">Клинический и&nbsp;корпоративный психолог (ACT, CFT)</p>
+              </div>
+              <ul class="host-panel_list">
+                <li>Автор и&nbsp;преподаватель курса «Основы бизнес-консультирования для&nbsp;психологов» в&nbsp;Академии</li>
+                <li>Руководитель корпоративного направления клиники АЛВИ</li>
+                <li>6&nbsp;лет частной практики</li>
+                <li>Автор тренингов, ведущая групп навыков</li>
+                <li>Супервизор для&nbsp;психологов</li>
+              </ul>
+              <button class="button is-quiet host-panel_close" type="button" data-host-close>Свернуть</button>
+            </div>
+          </div>
+
+          <div class="speaker_component is-client" data-speaker="client" data-active="false">
+            <span class="speaker_avatar">
+              <svg class="client_figure" viewBox="0 0 96 112" aria-hidden="true" focusable="false"><use href="#g-client" /></svg>
+            </span>
+            <div class="speaker_bubble">
+              <p class="speaker_name">Заказчик</p>
+              <p class="speaker_line" data-speaker-line></p>
+            </div>
+          </div>
+
+          <!-- Монеты на телефоне: плашка справа -->
+          <p class="wallet-pill" data-wallet-pill hidden>
+            <svg viewBox="0 0 120 116" aria-hidden="true" focusable="false"><use href="#g-coins-plain" /></svg>
+            <span data-wallet-pill-value>100</span><span class="screen-reader-only">&nbsp;монет у&nbsp;команды</span>
+          </p>
+        </div>
+
+        <!-- Монеты команды: пять стопок по 20 -->
+        <div class="table_wallet wallet_component" data-wallet data-state="none">
+          <div class="wallet_cluster" aria-hidden="true">
+            <span class="wallet_socket"></span>
+            <span class="wallet_stack" data-stack="0"></span>
+            <span class="wallet_stack" data-stack="1"></span>
+            <span class="wallet_stack" data-stack="2"></span>
+            <span class="wallet_stack" data-stack="3"></span>
+            <span class="wallet_stack" data-stack="4"></span>
+            <span class="wallet_delta" data-wallet-delta></span>
+          </div>
+          <p class="wallet_value" data-wallet-value>100 монет</p>
+          <p class="wallet_note" data-wallet-note>Монеты выдадут вместе с&nbsp;кейсом</p>
+        </div>
+
+        <!-- Колода -->
+        <div class="table_deck deck_component" data-deck data-remaining="2">
+          <div class="deck_under is-2" aria-hidden="true"></div>
+          <div class="deck_under is-1" aria-hidden="true"></div>
+
+          <ol class="deck_list" aria-label="Карты: как устроена игра">
+
+            <!-- 1 -->
+            <li class="deck_item" data-card data-kind="paper" data-wallet="none" data-short="Навыки"
+                data-speaker="host" data-line="Я&nbsp;— ведущая игры. Сначала о&nbsp;том, что вы&nbsp;потренируете">
+              <article class="card_component is-paper is-light-card" aria-labelledby="card-1">
+                <p class="card_tag">Перед игрой</p>
+                <h3 class="card_title" id="card-1">Что вы&nbsp;потренируете</h3>
+                <ul class="card_skills">
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-search" /></svg>Работа с&nbsp;запросом и&nbsp;аналитика</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-listen" /></svg>Активное слушание</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-strategy" /></svg>Стратегическое управление</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-coins" /></svg>Управление ресурсами</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-rivals" /></svg>Конкурентная среда и&nbsp;рыночное мышление</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-team" /></svg>Командная работа и&nbsp;коммуникация</li>
+                </ul>
+              </article>
+            </li>
+
+            <!-- 2 -->
+            <li class="deck_item" data-card data-kind="stage" data-step="1" data-wallet="none" data-team="fill" data-short="Знакомство"
+                data-speaker="host" data-line="Объясню механику и&nbsp;распределю вас по&nbsp;командам">
+              <article class="card_component is-stage" aria-labelledby="card-2">
+                <p class="card_tag">Этап&nbsp;1</p>
+                <h3 class="card_title" id="card-2">Знакомство и&nbsp;правила</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Ведущий объяснит механику игры и&nbsp;распределит участников по&nbsp;командам до&nbsp;5&nbsp;человек. В&nbsp;отдельной комнате Zoom вы&nbsp;познакомитесь, выберете название команды и&nbsp;договоритесь, как будете работать вместе.</p>
+                <p class="card_note">Общие этапы&nbsp;— в&nbsp;общем зале Zoom</p>
+              </article>
+            </li>
+
+            <!-- 3 -->
+            <li class="deck_item" data-card data-kind="stage" data-step="2" data-wallet="100" data-short="Кейс и&nbsp;монеты"
+                data-speaker="client" data-line="Здравствуйте! Задачу опишу своими словами">
+              <article class="card_component is-stage" aria-labelledby="card-3">
+                <p class="card_tag">Этап&nbsp;2</p>
+                <h3 class="card_title" id="card-3">Кейс и&nbsp;100&nbsp;монет</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Команда получит краткое описание клиентского запроса и&nbsp;100&nbsp;консультационных монет&nbsp;— это время, внимание и&nbsp;энергия специалиста. Первое решение&nbsp;— какой информации не&nbsp;хватает и&nbsp;какие вопросы задать заказчику.</p>
+                <p class="card_note">Монеты&nbsp;— игровая валюта, не&nbsp;реальные деньги</p>
+              </article>
+            </li>
+
+            <!-- 4 -->
+            <li class="deck_item" data-card data-kind="stage" data-step="3" data-wallet="92" data-short="Брифинг"
+                data-speaker="client" data-line="У&nbsp;меня можно узнать дополнительную информацию">
+              <article class="card_component is-stage" aria-labelledby="card-4">
+                <p class="card_tag">Этап&nbsp;3</p>
+                <h3 class="card_title" id="card-4">Брифинг с&nbsp;заказчиком</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Команды возвращаются в&nbsp;общий зал и&nbsp;задают по&nbsp;два вопроса за&nbsp;один подход, соблюдая очерёдность. Каждый вопрос стоит 4&nbsp;монеты.</p>
+                <svg class="card_art is-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-listen" /></svg>
+              </article>
+            </li>
+
+            <!-- 5 -->
+            <li class="deck_item" data-card data-kind="event" data-wallet="88" data-short="Повторный вопрос"
+                data-speaker="client" data-line="Я&nbsp;уже отвечал на&nbsp;это другой команде">
+              <article class="card_component is-event" aria-labelledby="card-5">
+                <p class="card_tag">Событие</p>
+                <h3 class="card_title" id="card-5">Повторный вопрос</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Слушайте ответы и&nbsp;вопросы других команд: повторный вопрос тоже оплачивается, но&nbsp;не&nbsp;добавляет новой информации.</p>
+                <p class="card_art-number" aria-hidden="true">−4</p>
+              </article>
+            </li>
+
+            <!-- 6 -->
+            <li class="deck_item" data-card data-kind="stage" data-step="4" data-wallet="unknown" data-short="Ярмарка данных"
+                data-speaker="host" data-line="Я&nbsp;приду в&nbsp;вашу комнату и&nbsp;приму заказ">
+              <article class="card_component is-stage" aria-labelledby="card-6">
+                <p class="card_tag">Этап&nbsp;4</p>
+                <h3 class="card_title" id="card-6">«Ярмарка данных»</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Команда решает, какие материалы помогут с&nbsp;кейсом, и&nbsp;формирует заказ. Ведущий придёт в&nbsp;комнату, примет заказ и&nbsp;передаст оплаченные материалы:</p>
+                <ul class="card_list">
+                  <li>расшифровку скрытого запроса</li>
+                  <li>подсказки и&nbsp;инструменты</li>
+                  <li>усложнения для&nbsp;соперников</li>
+                </ul>
+                <p class="card_note">Сколько потратить&nbsp;— решает команда</p>
+              </article>
+            </li>
+
+            <!-- 7 -->
+            <li class="deck_item" data-card data-kind="event" data-wallet="unknown" data-short="Ход соперников"
+                data-speaker="client" data-line="Другие команды тоже решают мой кейс">
+              <article class="card_component is-event" aria-labelledby="card-7">
+                <p class="card_tag">Событие</p>
+                <h3 class="card_title" id="card-7">Ход соперников</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Получая информацию для&nbsp;своей команды, вы&nbsp;можете усложнить игру другим. Соперники могут сделать так&nbsp;же.</p>
+                <svg class="card_art is-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-rivals" /></svg>
+              </article>
+            </li>
+
+            <!-- 8 -->
+            <li class="deck_item" data-card data-kind="stage" data-step="5" data-wallet="unknown" data-short="Стратегия"
+                data-speaker="client" data-line="Как ваше решение связано с&nbsp;моим запросом?">
+              <article class="card_component is-stage" aria-labelledby="card-8">
+                <p class="card_tag">Этап&nbsp;5</p>
+                <h3 class="card_title" id="card-8">Разработка стратегии</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Команда проанализирует собранную информацию, определит подход к&nbsp;работе с&nbsp;запросом и&nbsp;подготовит выступление. Если нужно, можно снова обратиться к&nbsp;ведущему и&nbsp;докупить материалы.</p>
+                <svg class="card_art is-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-strategy" /></svg>
+              </article>
+            </li>
+
+            <!-- 9 -->
+            <li class="deck_item" data-card data-kind="stage" data-step="6" data-wallet="unknown" data-short="Защита"
+                data-speaker="client" data-line="У&nbsp;вас 5–7&nbsp;минут, чтобы убедить меня">
+              <article class="card_component is-stage" aria-labelledby="card-9">
+                <p class="card_tag">Этап&nbsp;6</p>
+                <h3 class="card_title" id="card-9">Защита и&nbsp;итоги</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Каждая команда представит своё решение заказчику за&nbsp;<span class="nowrap">5–7&nbsp;минут</span>. Важно показать, как подход связан с&nbsp;запросом. Заказчик оценит глубину проработки и&nbsp;стратегии, затем объявят победителей.</p>
+                <svg class="card_art is-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-mic" /></svg>
+              </article>
+            </li>
+
+            <!-- 10 -->
+            <li class="deck_item" data-card data-kind="prize" data-wallet="unknown" data-short="После игры"
+                data-speaker="host" data-line="Какие призы&nbsp;— расскажу на&nbsp;встрече">
+              <article class="card_component is-prize is-light-card" aria-labelledby="card-10">
+                <p class="card_tag">Финал</p>
+                <h3 class="card_title" id="card-10">После игры</h3>
+                <span class="card_rule" aria-hidden="true"></span>
+                <p class="card_text">Бизнес-призы от&nbsp;Академии. А&nbsp;ещё&nbsp;— возможность сравнить своё решение с&nbsp;решениями других команд и&nbsp;понять, что хотите развивать.</p>
+                <svg class="card_art" viewBox="0 0 541 477" aria-hidden="true" focusable="false" style="width: clamp(5rem, 44cqi, 10rem)"><use href="#g-gift" /></svg>
+              </article>
+            </li>
+
+            <!-- 11. БИЛЕТ С ЗАПИСЬЮ -->
+            <li class="deck_item is-ticket" data-card data-kind="ticket" data-wallet="unknown"
+                data-short="24 октября"
+                data-speaker="host" data-line="Жду вас 24&nbsp;октября в&nbsp;14:00">
+              <article class="card_component is-ticket is-light-card" id="bilet" aria-labelledby="card-11">
+                <div class="ticket_head">
+                  <h3 class="card_title" id="card-11">Билет на&nbsp;игру</h3>
+                  <p class="ticket_meta">24&nbsp;октября · 14:00&nbsp;МСК · 90&nbsp;минут · бесплатно</p>
+                </div>
+
+                <div class="ticket_body">
+                  <!-- 🔴 РЕГИСТРАЦИЯ ЧЕРЕЗ BOTHELP + ЗАПАСНАЯ ФОРМА — блок с вебинаров.
+                       Если виджет BotHelp есть, человек видит только кнопки
+                       мессенджеров; скрипт отправляет скрытую форму Тильды со
+                       служебными полями и возвращает нажатие виджету.
+                       Если виджета нет или он не поднялся — запасная форма ниже.
+                       🟡 data-tilda-form-name — имя формы в настройках Тильды,
+                          буква в букву. Сейчас стоит рабочее «biznes-igra».
+                       🟡 data-signup-source — название лендинга для отдела продаж.
+                       🔴 data-bh-widget-id и data-bh-customer-id — только на пустом
+                          контейнере #bh-widget-button-root ниже. -->
+                  <div class="lead-form_component" data-signup data-state="idle"
+                       data-tilda-form-name="biznes-igra"
+                       data-signup-source="Заявка с лендинга «Бизнес-игра для психологов» (вариант «Колода»)"
+                       data-metrika-id="">
+
+                    <p class="lead-form_hint" data-bh-only>
+                      Выберите мессенджер&nbsp;— пришлём ссылку на&nbsp;игру туда.
+                    </p>
+
+                    <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
+                         🟡 Виджета пока нет: впишите номера, когда придут. -->
+                    <div class="lead-form_widget" data-bh-mount data-bh-state="loading">
+                      <div class="lead-form_widget-skeleton" data-bh-skeleton aria-hidden="true">
+                        <span></span><span></span><span></span>
+                      </div>
+
+                      <div class="lead-form_bh" id="bh-widget-button-root"
+                           data-bh-widget-id="" data-bh-customer-id=""></div>
+
+                      <p class="lead-form_note" data-bh-error hidden>
+                        Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу
+                        или напишите нам, и&nbsp;мы&nbsp;пришлём ссылку на&nbsp;игру вручную.
+                      </p>
+                    </div>
+
+                    <!-- 🔴 ЗАПАСНАЯ ФОРМА ЗАПИСИ. Видна, если виджет BotHelp
+                         не поднялся (сейчас — всегда, виджета ещё нет).
+                         Заявка уходит в ту же скрытую форму Тильды.
+                         🟢 Тексты меняйте смело. Имена полей (name=…) не трогайте. -->
+                    <form class="lead-form_fallback" data-signup-fallback novalidate hidden>
+                      <p class="lead-form_hint">
+                        Оставьте контакты&nbsp;— пришлём ссылку на&nbsp;игру в&nbsp;удобный мессенджер.
+                      </p>
+
+                      <div class="lead-form_fields">
+                        <div class="lead-form_field" data-signup-field data-state="idle">
+                          <label class="lead-form_label" for="signup-name">Имя<span class="lead-form_required" aria-hidden="true">*</span></label>
+                          <span class="lead-form_control">
+                            <input class="lead-form_input" id="signup-name" name="name" type="text"
+                                   placeholder="Анна Петрова" autocomplete="name" maxlength="80" required
+                                   aria-describedby="signup-name-error" aria-invalid="false" />
+                          </span>
+                          <p class="lead-form_error" id="signup-name-error" aria-live="polite" data-signup-error></p>
+                        </div>
+
+                        <div class="lead-form_field" data-signup-field data-state="idle">
+                          <label class="lead-form_label" for="signup-phone">Телефон<span class="lead-form_required" aria-hidden="true">*</span></label>
+                          <span class="lead-form_control">
+                            <input class="lead-form_input" id="signup-phone" name="phone" type="tel"
+                                   placeholder="+7 900 000-00-00" autocomplete="tel" inputmode="tel" maxlength="24" required
+                                   aria-describedby="signup-phone-error" aria-invalid="false" />
+                          </span>
+                          <p class="lead-form_error" id="signup-phone-error" aria-live="polite" data-signup-error></p>
+                        </div>
+                      </div>
+
+                      <fieldset class="lead-form_messenger">
+                        <legend class="lead-form_label">Куда прислать ссылку на&nbsp;игру</legend>
+                        <div class="lead-form_messenger-options">
+                          <input class="lead-form_messenger-input" type="radio" name="messenger"
+                                 id="signup-messenger-max" value="max" checked />
+                          <label class="lead-form_messenger-option" for="signup-messenger-max">
+                            <svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor" /></svg>
+                            <span lang="en">MAX</span>
+                          </label>
+
+                          <input class="lead-form_messenger-input" type="radio" name="messenger"
+                                 id="signup-messenger-telegram" value="telegram" />
+                          <label class="lead-form_messenger-option" for="signup-messenger-telegram">
+                            <svg class="lead-form_messenger-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor" /></svg>
+                            <span lang="en">Telegram</span>
+                          </label>
+                        </div>
+                      </fieldset>
+
+                      <p class="lead-form_contact-note" data-signup-max-note>
+                        Напишем в&nbsp;MAX на&nbsp;этот номер телефона.
+                      </p>
+
+                      <div class="lead-form_field" data-signup-field data-signup-telegram-field data-state="idle" hidden>
+                        <label class="lead-form_label" for="signup-telegram">Ник в&nbsp;Telegram<span class="lead-form_required" aria-hidden="true">*</span></label>
+                        <span class="lead-form_control">
+                          <input class="lead-form_input" id="signup-telegram" name="telegram" type="text"
+                                 placeholder="@anna_petrova" autocomplete="off" autocapitalize="none" spellcheck="false"
+                                 maxlength="64" required disabled
+                                 aria-describedby="signup-telegram-error" aria-invalid="false" />
+                        </span>
+                        <p class="lead-form_error" id="signup-telegram-error" aria-live="polite" data-signup-error></p>
+                      </div>
+
+                      <div class="lead-form_field" data-signup-field data-state="idle">
+                        <label class="lead-form_check">
+                          <input class="lead-form_check-input" type="checkbox" name="consent" required
+                                 aria-describedby="signup-consent-error" aria-invalid="false" />
+                          <span class="lead-form_check-label">
+                            Я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener">согласие</a>
+                            на&nbsp;обработку моих персональных данных в&nbsp;соответствии
+                            с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener">политикой обработки персональных данных</a>
+                          </span>
+                        </label>
+                        <p class="lead-form_error" id="signup-consent-error" aria-live="polite" data-signup-error></p>
+                      </div>
+
+                      <button class="button is-accent is-full-width lead-form_submit" type="submit"
+                              data-signup-submit aria-busy="false">
+                        <span data-signup-submit-label>Зарегистрироваться</span>
+                      </button>
+                    </form>
+
+                    <!-- 🔴 Экран после отправки запасной формы -->
+                    <div class="lead-form_success" data-signup-success role="status" tabindex="-1" hidden>
+                      <p class="lead-form_success-heading">Вы&nbsp;записаны</p>
+                      <p class="lead-form_hint">
+                        Пришлём ссылку на&nbsp;игру в&nbsp;<span data-signup-success-messenger>мессенджер</span>
+                        перед началом встречи.
+                      </p>
+                    </div>
+
+                    <p class="lead-form_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+                    <!-- 🔴 Запасной выход, если переход в мессенджер не сработал -->
+                    <p class="lead-form_manual" data-lead-manual data-bh-only hidden>
+                      Мессенджер не&nbsp;открылся?
+                      <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a>
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </li>
+
+          </ol>
+        </div>
+
+        <!-- Кнопки колоды (вариант «кнопкой») и подсказка (вариант «прокруткой») -->
+        <div class="table_controls">
+          <div class="controls_component" data-controls>
+            <button class="button is-quiet controls_back" type="button" data-deck-prev disabled>Назад</button>
+            <button class="button is-light controls_next" type="button" data-deck-next>
+              <span class="for-narrow">Дальше</span><span class="for-wide">Тянуть карту</span>
+            </button>
+            <p class="controls_counter" data-deck-counter><b>1</b> из&nbsp;11</p>
+            <p class="controls_swipe" data-deck-swipe>Смахните карту или нажмите «Дальше»</p>
+
+            <div class="hint-cursor" data-hint-cursor aria-hidden="true">
+              <svg viewBox="0 0 22 26" focusable="false"><use href="#g-cursor" /></svg><span>Вы</span>
+            </div>
+          </div>
+
+          <div class="hint_component" data-scroll-hint>
+            <svg viewBox="0 0 18 26" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="16" height="24" rx="8" /><path class="hint_wheel" d="M9 6v4" stroke-linecap="round" /></svg>
+            <span>Листайте&nbsp;— карты открываются по&nbsp;одной</span>
+          </div>
+        </div>
+
+        <!-- Ваша команда -->
+        <div class="table_team team_component" data-team data-filled="false">
+          <p class="team_title">Ваша команда</p>
+          <ul class="team_seats">
+            <li class="team_seat is-you">
+              <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
+              <span class="team_name">Вы</span>
+            </li>
+            <li class="team_seat">
+              <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
+              <span class="team_name">Участник</span>
+              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
+            </li>
+            <li class="team_seat">
+              <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
+              <span class="team_name">Участник</span>
+              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
+            </li>
+            <li class="team_seat">
+              <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
+              <span class="team_name">Участник</span>
+              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
+            </li>
+            <li class="team_seat">
+              <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
+              <span class="team_name">Участник</span>
+              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Лента открытых карт: вытянутые — открываются по нажатию,
+             остальные пока лежат в колоде (рубашкой вверх). Ленту строит скрипт. -->
+        <nav class="table_ribbon ribbon_component" aria-label="Карты колоды" data-ribbon>
+          <ol class="ribbon_list" data-ribbon-list></ol>
+        </nav>
+
+        <!-- Объявление для скринридера: какая карта открыта -->
+        <p class="screen-reader-only" aria-live="polite" data-deck-live></p>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ==========================================================================
+     ПОДВАЛ
+     ==========================================================================
+     Контакты и реквизиты — те же, что на прошлых страницах вебинаров.
+     ========================================================================== -->
+<footer class="site-footer_component">
+  <div class="padding-global">
+    <div class="container-xlarge">
+
+      <h2 class="site-footer_heading">Контакты</h2>
+
+      <div class="site-footer_grid">
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Отдел продаж</p>
+          <p class="site-footer_line"><a href="tel:+78124702901">+7&nbsp;812&nbsp;470-29-01</a></p>
+          <p class="site-footer_line"><a href="mailto:info@modern-psy.ru">info@modern-psy.ru</a></p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Адрес</p>
+          <p class="site-footer_line">
+            197198, г.&nbsp;Санкт-Петербург, вн.тер.г. Муниципальный Округ
+            Введенский, пр-т&nbsp;Большой&nbsp;П.с., д.&nbsp;7/4, литера&nbsp;А,
+            помещ.&nbsp;2-Н
+          </p>
+        </div>
+
+        <div class="site-footer_group">
+          <p class="site-footer_group-title">Правовая информация</p>
+          <!-- 🟡 Адреса документов подставьте с боевого сайта -->
+          <p class="site-footer_line"><a href="/oferta">Публичная оферта</a></p>
+          <p class="site-footer_line"><a href="/privacy">Политика конфиденциальности</a></p>
+          <p class="site-footer_line"><a href="/documents">Сведения об&nbsp;образовательной организации</a></p>
+        </div>
+
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>© 2026 Академия Современной Психологии</p>
+        <p>ОГРН 1217800102783<br />ИНН/КПП 7839141929/781301001</p>
+      </div>
+
+      <div class="site-footer_bottom">
+        <p>
+          Доступ к&nbsp;мессенджеру Telegram и&nbsp;видеохостингу YouTube
+          в&nbsp;РФ ограничен в&nbsp;связи с&nbsp;применяемыми техническими мерами
+          и&nbsp;требованиями российского законодательства; работоспособность
+          сервисов может быть нестабильной.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<!-- 🔴 Слой для монет, которые летят к заказчику и ведущей -->
+<div class="fly-layer" aria-hidden="true" data-fly-layer></div>
+
+</div>
+
+<!-- 🔴 Микроразметка для поисковиков: бесплатное онлайн-мероприятие -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Бизнес-игра для психологов",
+  "description": "Онлайн-встреча с командной практикой: от первого вопроса заказчику до защиты стратегии.",
+  "startDate": "2026-10-24T14:00:00+03:00",
+  "endDate": "2026-10-24T15:30:00+03:00",
+  "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "isAccessibleForFree": true,
+  "location": { "@type": "VirtualLocation", "url": "https://modern-psy.ru/biznes-igra" },
+  "performer": { "@type": "Person", "name": "Екатерина Исупова" },
+  "organizer": { "@type": "EducationalOrganization", "name": "Академия современной психологии", "url": "https://modern-psy.ru" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB", "availability": "https://schema.org/InStock", "url": "https://modern-psy.ru/biznes-igra" }
+}
+</script>
+
+</body>
+</html>

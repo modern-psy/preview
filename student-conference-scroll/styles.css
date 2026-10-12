@@ -1263,6 +1263,8 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-speaker { position: relative; flex: none; display: grid; justify-items: center; width: min(86vw, 26rem); scroll-snap-align: start; }
 .sc-speaker[hidden] { display: none; }
 .sc-speaker_photo { display: block; width: auto; max-width: 100%; height: clamp(17rem, 84vw, 26rem); object-fit: contain; object-position: 50% 100%; user-select: none; }
+/* Фото, обрезанное по правому краю ещё на исходнике: край плавно растворяется, а не обрывается */
+.sc-speaker_photo.is-fade-right { mask-image: linear-gradient(to left, transparent, black 14%); }
 .sc-speaker_card {
   position: relative;
   z-index: 2;
@@ -1402,6 +1404,11 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-program { position: relative; z-index: 1; padding-block: 3rem 5rem; background: var(--aubergine); color: var(--on-dark); }
 .sc-program_head { display: grid; gap: 1rem; justify-items: start; }
 .sc-program_title { color: var(--white); font: 800 clamp(2.75rem, 13vw, 4rem)/0.98 var(--font-display); letter-spacing: -0.03em; }
+/* Дата рядом с заголовком: от руки, чуть наклонена — как пометка на полях */
+.sc-program_title-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem 1.75rem; }
+.sc-program_date { display: grid; justify-items: start; gap: 0.25rem; padding-bottom: 0.25rem; color: var(--lavender); rotate: -4deg; transform-origin: left bottom; }
+.sc-program_date time { font: 600 clamp(2.125rem, 9.5vw, 2.625rem)/0.9 var(--font-hand); }
+.sc-program_tz { padding-left: 0.125rem; color: rgb(230 229 235 / 72%); font: 500 0.875rem/1.2 var(--font-text); }
 .sc-program_lead { max-width: 36rem; color: var(--lavender); font: 600 clamp(1.25rem, 5.4vw, 1.5rem)/1.2 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
 
 /* ---------- Вкладки — как кнопки навигации в шапке: отдельные плашки без обводки, выбранная белая ---------- */
@@ -1510,6 +1517,9 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 @media (min-width: 64.0625rem) {
   .sc-program { padding-block: clamp(2.5rem, 5vh, 4.5rem) 7rem; }
   .sc-program_title { font-size: clamp(4rem, 5.6vw, 6rem); }
+  .sc-program_date { padding-bottom: 0.375rem; }
+  .sc-program_date time { font-size: clamp(2.75rem, 3.4vw, 3.5rem); }
+  .sc-program_tz { font-size: 1rem; }
   .sc-program_lead { max-width: 52rem; font-size: clamp(1.75rem, 2.1vw, 2.125rem); }
 
   /* Три вкладки на всю ширину, подписи по центру */
@@ -1644,6 +1654,56 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 }
 @media (prefers-reduced-motion: reduce) {
   .sc-out_card, .sc-out_ill, .sc-out_talk, .sc-out_num, .sc-out_text, .sc-out_ill path { transition: none; }
+}
+
+/* =========================================================================
+   Партнёры
+   Идёт сразу после тёмной программы. Светлый фон тот же, что у «После конференции» ниже,
+   поэтому снизу отступа нет — его даёт следующий блок.
+   Две ленты плиток от края до края экрана; вторая сдвинута на полплитки — шахматный порядок.
+   Ленты медленно плывут справа налево (движение включает script.js классом .is-moving,
+   длину шага --shift и время круга --run считает он же). Наведение мышью — пауза.
+   Логотипы — svg из Figma в собственных цветах. Где логотипа пока нет — название тем же тёмным цветом.
+   ========================================================================= */
+.sc-partners { --tile: 9rem; --tile-gap: 0.5rem; padding-block: 4.5rem 0; background: var(--page); color: var(--text); }
+.sc-partners_head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; }
+.sc-partners_title { color: var(--text); font: 800 clamp(2.25rem, 10vw, 3rem)/1 var(--font-display); letter-spacing: -0.03em; }
+/* Без скрипта (и при «уменьшении движения») ленты стоят и листаются пальцем */
+.sc-partners_marquee { display: grid; gap: var(--tile-gap); margin-top: 2rem; padding-inline: var(--page-padding, 1rem); overflow-x: auto; scrollbar-width: none; }
+.sc-partners_marquee::-webkit-scrollbar { display: none; }
+.sc-partners_row { display: flex; width: max-content; margin: 0; padding: 0; list-style: none; }
+/* Шахматный порядок: вторая лента сдвинута на полплитки — пока ленты стоят, вправо, в движении — влево */
+.sc-partners_row.is-offset { margin-left: calc((var(--tile) + var(--tile-gap)) / 2); }
+.sc-partners_marquee.is-moving .sc-partners_row.is-offset { margin-left: calc((var(--tile) + var(--tile-gap)) / -2); }
+.sc-partner { display: grid; flex: none; place-items: center; width: var(--tile); min-height: 5rem; margin-right: var(--tile-gap); padding: 0.875rem; border-radius: 1.25rem; background: var(--white); text-align: center; }
+.sc-partner img { display: block; width: auto; max-width: 100%; height: auto; max-height: 2.75rem; }
+.sc-partner_name { color: var(--aubergine); font: 700 1.0625rem/1.05 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: anywhere; }
+
+/* Движение: лента целиком сдвигается на длину одного набора плиток и незаметно начинается заново */
+.sc-partners_marquee.is-moving { padding-inline: 0; overflow: clip; }
+.sc-partners_marquee.is-moving .sc-partners_row { animation: sc-partners-run var(--run, 60s) linear infinite; will-change: transform; }
+@keyframes sc-partners-run { to { transform: translate3d(calc(-1 * var(--shift, 50%)), 0, 0); } }
+/* Блок ушёл с экрана — ленты стоят, чтобы не тратить ресурсы */
+.sc-partners_marquee.is-offscreen .sc-partners_row { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) {
+  .sc-partners_marquee.is-moving:hover .sc-partners_row { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-partners_marquee.is-moving .sc-partners_row { animation: none; }
+}
+
+@media (min-width: 48.0625rem) {
+  .sc-partners { --tile: 11rem; }
+  .sc-partner { min-height: 6rem; padding: 1rem; }
+  .sc-partner img { max-height: 3.25rem; }
+  .sc-partner_name { font-size: 1.1875rem; }
+}
+@media (min-width: 64.0625rem) {
+  .sc-partners { --tile: 13.5rem; padding-top: 7rem; }
+  .sc-partners_marquee { margin-top: 2.5rem; }
+  .sc-partner { min-height: 6.875rem; padding: 1.25rem; }
+  .sc-partner img { max-height: 4rem; }
+  .sc-partner_name { font-size: 1.3125rem; }
 }
 
 /* =========================================================================
