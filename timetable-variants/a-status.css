@@ -2,6 +2,13 @@
    🟢 Здесь можно менять раскладку; значения берём из дизайн-системы. */
 
 /* Мобильный: обложка ниже по высоте, метка вверху справа у названия. */
+[data-status] .timetable-row_heading { display: contents; }
+/* Обычный перенос заполняет строку. pretty оставлял лишний воздух,
+   а anywhere разрешал разрывать даже связку с неразрывным пробелом. */
+[data-status] .timetable-row_title {
+  text-wrap: wrap;
+  overflow-wrap: normal;
+}
 [data-status] .featured-event_cover {
   height: var(--space-xhuge);
   aspect-ratio: auto;
@@ -84,8 +91,14 @@
 }
 
 /* Десктоп: сохраняем исходный размер баннера и отдельную колонку стрелки.
-   Статус остаётся сразу под названием, вдали от цены. */
+   Статус продолжает последнюю строку названия. */
 @media (min-width: 64.0625rem) {
+  [data-status] .timetable-row_heading { display: block; }
+  [data-status] .timetable-row_heading .timetable-row_title { display: inline; }
+  [data-status] .timetable-row_heading .status-mark_component {
+    margin-left: var(--space-xsmall);
+    vertical-align: baseline;
+  }
   [data-status] .featured-event_component {
     grid-template-columns: minmax(0, 1fr) 24rem;
   }

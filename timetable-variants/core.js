@@ -42,9 +42,13 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  // Название курса: дефис перед цифрой неразрывный, чтобы «GLP-1»
-  // не разваливалось на «GLP-» и «1» по разным строкам
-  function title(s) { return esc(s).replace(/-(?=\d)/g, '\u2011'); }
+  // Название можно менять в CMS. Здесь только правила переноса:
+  // короткое служебное слово остаётся со следующим, GLP-1 не разрывается.
+  function title(s) {
+    var text = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+    text = text.replace(/(^|[\s(«„])((?:а|в|и|к|о|с|у|я|во|до|за|из|на|не|ни|но|об|от|по|со|без|для|над|под|при|про)) +(?=\S)/gi, '$1$2' + NBSP);
+    return esc(text).replace(/-(?=\d)/g, '\u2011');
+  }
 
   // 45 000 ₽: разряды узким неразрывным, рубль неразрывным
   function money(n) {
@@ -373,16 +377,20 @@
       '</span>';
     }
     var meta = metaLine(it);
+    var mark = opts.status ? statusMark(it) : '';
+    var heading = '<h3 class="timetable-row_title text-size-paragraph-md text-weight-medium text-color-heading text-style-break">' + title(it.title) + '</h3>';
+    // Одна группа названия и статуса: на десктопе метка продолжает строку,
+    // на мобильном CSS поднимает её в правый верхний угол.
+    if (mark) heading = '<div class="timetable-row_heading">' + heading + ' ' + mark + '</div>';
 
     return '<a class="timetable-row_component' + (d ? '' : ' is-nodate') + '" href="' + esc(it.url) + '" target="_blank" rel="noopener">' +
       date +
-      '<span class="timetable-row_main">' +
-        '<h3 class="timetable-row_title text-size-paragraph-md text-weight-medium text-color-heading text-style-break">' + title(it.title) + '</h3>' +
-        (opts.status ? statusMark(it) : '') +
+      '<div class="timetable-row_main">' +
+        heading +
         (opts.started ? '<span class="text-size-caption-md text-weight-semibold text-color-primary">Идёт с ' + dateLong(it.start) + '</span>' : '') +
         (meta ? '<span class="text-size-caption-md text-color-secondary">' + esc(meta) + '</span>' : '') +
         weekDays(it) +
-      '</span>' +
+      '</div>' +
       '<span class="timetable-row_price">' + priceHtml(it) + '</span>' +
       // Стрелка вместо кнопки «Записаться»: нажимается вся строка, а стрелка
       // показывает, куда. Внутри ссылки — span, ссылку в ссылку класть нельзя.
