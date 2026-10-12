@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <!--
   ============================================================================
-  ПРОТОТИП РАСПИСАНИЯ · ВАРИАНТ A «ПОД МОЙ ГРАФИК» · С МЕТКОЙ «ИДЁТ НАБОР»
+  РАСПИСАНИЕ АКАДЕМИИ · УТВЕРЖДЁННЫЙ ВАРИАНТ
 
-  Та же страница, что a.html, только у курсов месяцев и «Старта
-  в любое время» у названия зелёная метка «Идёт набор». Включается
-  атрибутом data-status у тега body, весь код общий с a.html.
+  У курсов месяцев и «Старта в любое время» у названия зелёная метка
+  «Идёт набор». Оформление включается атрибутом data-status у body.
   В «Ещё можно успеть» — индикатор «Последний шанс» в цвете warning.
 
   Порядок страницы:
@@ -18,15 +17,15 @@
 
   Мини-курсов здесь нет: у них нет даты, им место в каталоге.
   Данные живые: core.js сводит /api/public/timetable и /api/public/catalog.
-  Это прототип для сравнения, а не боевая страница.
+  Предыдущие варианты удалены; страница выбора ведёт сюда.
   ============================================================================
 -->
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Расписание · вариант A · с меткой «Идёт набор»</title>
-  <meta name="description" content="Прототип расписания Академии: ближайший ивент, подбор потоков по дням недели, старты по месяцам." />
+  <title>Расписание — Академия современной психологии</title>
+  <meta name="description" content="Расписание Академии: ближайший вебинар, подбор потоков по дням недели и даты старта курсов." />
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" href="data:," />
 
@@ -43,39 +42,30 @@
   <link rel="stylesheet" href="/timetable-variants/shared.css" />
   <link rel="stylesheet" href="/timetable-variants/a.css" />
   <link rel="stylesheet" href="/timetable-variants/a-status-type.css?v=20261012-1" />
-  <link rel="stylesheet" href="/timetable-variants/a-status.css?v=20261012-17" />
+  <link rel="stylesheet" href="/timetable-variants/a-status.css?v=20261012-18" />
 </head>
 
 <body data-status>
   <div class="page-wrapper">
 
-    <!-- 🔴 Служебная полоса для сравнения вариантов. На сайт не переносится. -->
-    <nav class="prototype-bar_component" aria-label="Варианты прототипа">
+    <!-- 🟢 Логотип Академии; ссылка ведёт на основной сайт. -->
+    <header class="timetable-header_component">
       <div class="padding-global">
         <div class="container-large">
-          <div class="prototype-bar_inner body-text_component is-caption">
-            <span class="prototype-bar_label">Прототип расписания</span>
-            <a class="prototype-bar_link" href="/timetable-variants/a.html">Вариант A</a>
-            <a class="prototype-bar_link is-current" href="/timetable-variants/a-status.html" aria-current="page">A с «Идёт набор»</a>
-            <a class="prototype-bar_link" href="/timetable-variants/b.html">Вариант B</a>
-            <a class="prototype-bar_link" href="/timetable-variants/c.html">Вариант C</a>
-            <a class="prototype-bar_link" href="https://modernpsy.academy/timetable" target="_blank" rel="noopener">Как сейчас</a>
-          </div>
+          <a class="timetable-header_brand" href="https://modern-psy.ru/" aria-label="Академия современной психологии — на главную">
+            <img class="timetable-header_logo" src="/timetable-variants/icons/logo-asp.svg" width="84" height="30" alt="АСП" />
+          </a>
         </div>
       </div>
-    </nav>
+    </header>
 
     <main class="main-wrapper">
       <section class="section_timetable">
         <div class="padding-global">
           <div class="container-large">
-            <div class="padding-section-small">
+            <div class="padding-bottom padding-xlarge">
 
-              <!-- 🟢 Заголовок страницы — текст можно менять -->
-              <header class="timetable-head_component margin-bottom margin-medium">
-                <h1 class="timetable-head_title section-title_component is-responsive">Расписание обучения и&nbsp;мероприятий</h1>
-                <p class="body-text_component is-summary text-color-secondary">Даты стартов, стоимость и&nbsp;статус набора. Обновляется автоматически.</p>
-              </header>
+              <h1 class="visually-hidden">Расписание</h1>
 
               <!-- 1. ИВЕНТ ПЕРВЫМ БЛОКОМ. Какой именно — задаётся в a.js, FEATURED.
                    Если ивент не задан или уже прошёл, блока нет. -->
