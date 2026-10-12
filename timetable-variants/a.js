@@ -44,7 +44,8 @@
   var state = { days: {} };
 
   // Страница a-status.html — та же, но с меткой «Идёт набор» у курсов
-  // месяцев и «Старта в любое время» (у «Последнего шанса» и листа ожидания её нет)
+  // месяцев и «Старта в любое время»; у «Последнего шанса» — «Идёт с …».
+  // В листе ожидания индикатора нет.
   var SHOW_STATUS = document.body.hasAttribute('data-status');
   var ROW_OPTS = { status: SHOW_STATUS };
   var data = null;
@@ -162,7 +163,7 @@
       '</div>';
     }
 
-    html += T.lastCall(started);
+    html += T.lastCall(started, ROW_OPTS);
 
     T.byMonth(upcoming).forEach(function (g) {
       var withYear = data.showYear && g.date.getFullYear() !== data.today.getFullYear();

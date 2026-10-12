@@ -351,15 +351,16 @@
 
   // --- Метка «Идёт набор»: зелёная точка с мягкой пульсацией и текст ---
   // Статус берётся из CMS. Если там не «Идёт набор» — метки нет.
-  function statusMark(it) {
-    if (!/набор/i.test(it.status || '')) return '';
-    return '<span class="status-mark_component text-size-caption-md text-weight-medium">' +
-      '<span class="status-mark_dot" aria-hidden="true"></span>Идёт набор</span>';
+  function statusMark(it, started) {
+    if (!started && !/набор/i.test(it.status || '')) return '';
+    var label = started ? 'Идёт с ' + dateLong(it.start) : 'Идёт набор';
+    return '<span class="status-mark_component' + (started ? ' is-started' : '') + ' text-size-caption-md text-weight-medium">' +
+      '<span class="status-mark_dot" aria-hidden="true"></span>' + label + '</span>';
   }
 
   // --- Строка потока: вся строка — ссылка на страницу курса ---
   // opts.started — курс уже идёт (блок «Последний шанс»): вместо колонки
-  //                с датой фраза «Идёт с 18 сентября» под названием.
+  //                с датой фраза «Идёт с 18 сентября» (индикатор при opts.status).
   // opts.status  — показать зелёную метку «Идёт набор» у названия
   //                (только если такой статус пришёл из CMS).
   // В обычной строке месяц не пишем: он уже стоит в заголовке панели.
@@ -377,7 +378,7 @@
       '</span>';
     }
     var meta = metaLine(it);
-    var mark = opts.status ? statusMark(it) : '';
+    var mark = opts.status ? statusMark(it, opts.started) : '';
     var titleText = title(it.title);
     // Последнее слово и метка переносятся вместе. Разделяем только по обычному
     // пробелу, чтобы не разорвать предлог, уже связанный со следующим словом.
@@ -392,7 +393,7 @@
       date +
       '<div class="timetable-row_main">' +
         heading +
-        (opts.started ? '<span class="text-size-caption-md text-weight-semibold text-color-primary">Идёт с ' + dateLong(it.start) + '</span>' : '') +
+        (opts.started && !mark ? '<span class="text-size-caption-md text-weight-semibold text-color-primary">Идёт с ' + dateLong(it.start) + '</span>' : '') +
         (meta ? '<span class="text-size-caption-md text-color-secondary">' + esc(meta) + '</span>' : '') +
         weekDays(it) +
       '</div>' +
@@ -423,14 +424,14 @@
   // «Последний шанс»: курсы уже начались, идёт донабор. Приоритетный блок,
   // всегда перед месяцами и всегда раскрыт. Тёмно-фиолетовая подложка
   // (тёмные блоки на сайте — фиолетовые), курсы на ней — белые плашки.
-  function lastCall(list) {
+  function lastCall(list, opts) {
     if (!list.length) return '';
     return '<section class="timetable-list_group last-call_component" aria-labelledby="lastCallTitle">' +
       '<div class="last-call_head">' +
         '<h2 class="heading-style-h3 text-color-inverse" id="lastCallTitle">Последний шанс</h2>' +
         '<p class="text-size-paragraph-sm text-color-on-inverse">Курсы уже начались, идёт донабор. Ещё можно присоединиться.</p>' +
       '</div>' +
-      '<div class="last-call_list">' + list.map(function (it) { return row(it, { started: true }); }).join('') + '</div>' +
+      '<div class="last-call_list">' + list.map(function (it) { return row(it, { started: true, status: opts && opts.status }); }).join('') + '</div>' +
     '</section>';
   }
 
