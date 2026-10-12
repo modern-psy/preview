@@ -2,8 +2,10 @@
    🟢 Здесь можно менять раскладку; значения берём из дизайн-системы. */
 
 /* Мобильный: обложка ниже по высоте, метка вверху справа у названия. */
-[data-status] .timetable-row_component { position: relative; }
+[data-status] .timetable-row_component { position: relative; align-items: start; }
 [data-status] .timetable-row_date { align-self: start; }
+[data-status] .timetable-row_main { align-self: start; }
+[data-status] .timetable-row_price { align-self: end; }
 [data-status] .timetable-row_heading {
   padding-top: calc(var(--icon-md) + var(--space-xsmall));
 }
@@ -27,6 +29,20 @@
 [data-status] .status-mark_component.is-started { color: var(--status-warn-text); }
 [data-status] .status-mark_component.is-started .status-mark_dot { background-color: currentColor; }
 [data-status] .status-mark_component.is-started .status-mark_dot::after { animation: none; background: none; }
+
+/* Широкий мобильный: название и индикатор начинаются на одной высоте.
+   Место справа зарезервировано, чтобы длинный заголовок не заходил под метку.
+   На узком телефоне сохраняется отдельная строка статуса: двух колонок мало. */
+@media (min-width: 32.5625rem) {
+  [data-status] .timetable-row_heading {
+    width: 100%;
+    padding-top: var(--space-0);
+    padding-right: calc(var(--space-xhuge) + var(--space-small));
+  }
+  [data-status] .timetable-row_heading:has(.status-mark_component.is-started) {
+    padding-right: calc(var(--space-xxhuge) + var(--space-small));
+  }
+}
 
 /* Выбранный баннер: фотография — подложка всего блока.
    Светлый слой поддерживает контраст текста на узком экране. */
@@ -72,7 +88,7 @@
   }
   [data-status] .timetable-row_date { grid-row: 1 / span 2; }
   [data-status] .timetable-row_main { grid-row: 1 / span 2; }
-  [data-status] .timetable-row_price { grid-column: 3; grid-row: 1; }
+  [data-status] .timetable-row_price { grid-column: 3; grid-row: 1; align-self: start; }
   [data-status] .timetable-row_arrow {
     grid-column: 3;
     grid-row: 2;
@@ -93,7 +109,10 @@
   }
   /* Метка остаётся с последним словом и на планшете, и на десктопе. */
   [data-status] .timetable-row_tail { white-space: nowrap; }
-  [data-status] .timetable-row_heading { padding-top: var(--space-0); }
+  [data-status] .timetable-row_heading,
+  [data-status] .timetable-row_heading:has(.status-mark_component.is-started) {
+    padding: var(--space-0);
+  }
   [data-status] .featured-event_component.is-backdrop .featured-event_body {
     padding: var(--space-medium);
     background: linear-gradient(90deg, var(--bg-surface) 50%, transparent 100%);
