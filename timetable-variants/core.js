@@ -353,7 +353,7 @@
   // Статус берётся из CMS. Если там не «Идёт набор» — метки нет.
   function statusMark(it, started) {
     if (!started && !/набор/i.test(it.status || '')) return '';
-    var label = started ? 'Донабор открыт' : 'Идёт набор';
+    var label = started ? 'Последний шанс' : 'Идёт набор';
     return '<span class="status-mark_component' + (started ? ' is-started' : '') + ' text-size-caption-sm text-weight-medium">' +
       '<span class="status-mark_dot" aria-hidden="true"></span>' + label + '</span>';
   }
@@ -428,8 +428,8 @@
     if (!list.length) return '';
     return '<section class="timetable-list_group last-call_component" aria-labelledby="lastCallTitle">' +
       '<div class="last-call_head">' +
-        '<h2 class="heading-style-h3 text-color-inverse" id="lastCallTitle">Последний шанс</h2>' +
-        '<p class="text-size-paragraph-sm text-color-on-inverse">' + (opts && opts.status ? 'Потоки уже стартовали, но ещё можно присоединиться.' : 'Курсы уже начались, идёт донабор. Ещё можно присоединиться.') + '</p>' +
+        '<h2 class="heading-style-h3 text-color-inverse" id="lastCallTitle">' + (opts && opts.status ? 'Ещё можно успеть' : 'Последний шанс') + '</h2>' +
+        '<p class="text-size-paragraph-sm text-color-on-inverse">' + (opts && opts.status ? 'Потоки уже стартовали. Присоединяйтесь, пока можно включиться в обучение.' : 'Курсы уже начались, идёт донабор. Ещё можно присоединиться.') + '</p>' +
       '</div>' +
       '<div class="last-call_list">' + list.map(function (it) { return row(it, { started: true, status: opts && opts.status }); }).join('') + '</div>' +
     '</section>';
