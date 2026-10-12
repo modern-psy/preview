@@ -9,8 +9,7 @@
 
    Скрипт делает две вещи:
      1) ведёт игровой стол: колода карт, фишка в шапке, монеты команды,
-        места участников, реплики ведущей и заказчика, лента открытых карт,
-        биография ведущей. В варианте «кнопкой» карты тянут кнопкой, свайпом или
+        места участников, реплики ведущей и заказчика, лента карт. В варианте «кнопкой» карты тянут кнопкой, свайпом или
         стрелками на клавиатуре; в варианте «прокруткой» карта меняется,
         пока страница прокручивается (стол в это время стоит на месте);
      2) записывает на игру: через виджет BotHelp, а если он не поднялся
@@ -31,7 +30,7 @@
      3. Монеты команды
      4. Стол: шаги, говорящие, команда, счётчики
      5. Лента открытых карт
-     6. Биография ведущей
+     6. Биография ведущей — переход к её карте
      7. Вариант «кнопкой»: кнопки, свайп, клавиатура
      8. Вариант «прокруткой»: один жест — один экран
      9. Переходы со всей страницы: «Узнать», «Зарегистрироваться», шаги
@@ -62,7 +61,7 @@
     host: page.querySelector('.speaker_component[data-speaker="host"]'),
     client: page.querySelector('.speaker_component[data-speaker="client"]'),
   };
-  const clientFigure = page.querySelector(".client_figure");
+  const clientFigure = page.querySelector(".client_photo");
 
   const wallet = page.querySelector(".wallet_component[data-wallet]");
   const walletStacks = [...page.querySelectorAll(".wallet_stack")];
@@ -87,8 +86,6 @@
 
   const team = page.querySelector(".team_component[data-team]");
   const hostOpeners = [...page.querySelectorAll("[data-host-open]")];
-  const hostPanel = page.querySelector("[data-host-panel]");
-  const hostClose = page.querySelector("[data-host-close]");
   const hostPhoto = page.querySelector(".host_photo");
 
   const live = page.querySelector("[data-deck-live]");
@@ -344,6 +341,9 @@
 
   const flyCoins = (count, from, to) => {
     if (!flyLayer || !from || !to) return;
+    // Размер монеты меряем один раз: каждый замер заставляет браузер
+    // пересчитать страницу, и на медленном ноутбуке она подвисает
+    let half = null;
     for (let i = 0; i < count; i += 1) {
       const coin = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       coin.setAttribute("viewBox", "0 0 40 22");
@@ -351,8 +351,10 @@
       coin.innerHTML = '<use href="#g-coin" />';
       flyLayer.append(coin);
 
-      const size = coin.getBoundingClientRect();
-      const half = { x: size.width / 2, y: size.height / 2 };
+      if (!half) {
+        const size = coin.getBoundingClientRect();
+        half = { x: size.width / 2, y: size.height / 2 };
+      }
       const startX = from.x - half.x + (i - (count - 1) / 2) * 10;
       const startY = from.y - half.y;
       const endX = to.x - half.x;
@@ -474,10 +476,14 @@
     team.dataset.filled = String(filled);
 
     if (filled && !wasFilled && animate) {
-      team.querySelectorAll(".team_seat:not(.is-you)").forEach((seat, i) => {
+      // Перезапускаем анимацию всем местам разом — одним пересчётом страницы
+      const seats = [...team.querySelectorAll(".team_seat:not(.is-you)")];
+      seats.forEach((seat, i) => {
         seat.style.setProperty("--d", String(i * 130));
-        restartAnimation(seat, "is-joining");
+        seat.classList.remove("is-joining");
       });
+      void team.offsetWidth;
+      seats.forEach((seat) => seat.classList.add("is-joining"));
     }
   };
 
@@ -593,63 +599,16 @@
   /* --------------------------------------------------------------------------
      6. БИОГРАФИЯ ВЕДУЩЕЙ
      --------------------------------------------------------------------------
-     Открывается по нажатию на фото ведущей или на «Биография». На десктопе
-     панель раскрывается вниз из угла, на телефоне — шторкой с подложкой.
+     Биография — отдельная карта колоды («Кто будет вас направлять»).
+     Фото ведущей и ссылка «биография» у её портрета открывают эту карту.
      -------------------------------------------------------------------------- */
 
-  let backdrop = null;
-  let panelOpener = null;
-
-  const isHostOpen = () => hostPanel && !hostPanel.hidden;
-
-  const closeHost = (returnFocus = true) => {
-    if (!isHostOpen()) return;
-    hostPanel.hidden = true;
-    hostOpeners.forEach((button) => button.setAttribute("aria-expanded", "false"));
-    backdrop?.remove();
-    backdrop = null;
-    if (returnFocus && panelOpener) panelOpener.focus({ preventScroll: true });
-    panelOpener = null;
-  };
-
-  const openHost = (opener) => {
-    if (!hostPanel) return;
-    panelOpener = opener;
-    hostPanel.hidden = false;
-    hostOpeners.forEach((button) => button.setAttribute("aria-expanded", "true"));
-    if (!wideQuery.matches) {
-      backdrop = document.createElement("div");
-      backdrop.className = "panel-backdrop";
-      backdrop.setAttribute("aria-hidden", "true");
-      backdrop.addEventListener("click", () => closeHost());
-      page.append(backdrop);
-    }
-    const heading = hostPanel.querySelector("h3");
-    if (heading) {
-      heading.tabIndex = -1;
-      heading.focus({ preventScroll: true });
-    }
-  };
+  const hostCardIndex = items.findIndex((item) => item.hasAttribute("data-host-card"));
 
   hostOpeners.forEach((button) => {
     button.addEventListener("click", () => {
-      if (isHostOpen()) closeHost();
-      else openHost(button);
+      if (hostCardIndex >= 0) showCard(hostCardIndex);
     });
-  });
-
-  hostClose?.addEventListener("click", () => closeHost());
-
-  // Клик мимо панели закрывает её (на десктопе подложки нет)
-  document.addEventListener("pointerdown", (event) => {
-    if (!isHostOpen()) return;
-    if (hostPanel.contains(event.target)) return;
-    if (hostOpeners.some((button) => button.contains(event.target))) return;
-    closeHost(false);
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeHost();
   });
 
 
@@ -824,9 +783,23 @@
      Колесо мыши, тачпад и клавиши не прокручивают страницу плавно,
      а переключают экраны: заставка → стол → следующая карта. После билета
      прокрутка снова обычная — до подвала. На телефоне листают пальцем,
-     а прокрутка «примагничивается» к картам (scroll-snap в page.css). */
+     а прокрутка «примагничивается» к картам (scroll-snap в page.css).
+
+     Один свайп тачпада — одна карта:
+     · случайное лёгкое касание карту не листает;
+     · инерция тачпада после свайпа (затухающий хвост) карты не листает;
+     · новый свайп узнаём по паузе или по разгону поверх затухающей
+       инерции — его не нужно ждать, он засчитывается сразу;
+     · свайп, сделанный, пока карта ещё едет, перелистнёт следующую,
+       как только она встанет.
+     Числа ниже можно менять, если листание покажется тугим или быстрым. */
 
   const SLOT_SPLASH = -1;
+  const GESTURE_MIN_PX = 40;    // сколько нужно прокрутить, чтобы перелистнуть
+  const GESTURE_PAUSE_MS = 160; // пауза, после которой жест точно новый
+  const GESTURE_MIN_AGE_MS = 450; // раньше этого разгон считается частью того же свайпа
+  const SCREEN_HOLD_MS = 180;   // сколько карта стоит на месте после смены
+  const GLIDE_MS = 640;         // сколько длится смена экрана
   let lockedUntil = 0;
   let tween = 0;
 
@@ -836,8 +809,8 @@
   // На каком экране мы сейчас: заставка или карта номер N
   const currentSlot = () => (window.scrollY < trackStart - 4 ? SLOT_SPLASH : indexFromScroll());
 
-  // Быстрая плавная смена экрана — своя, чтобы длительность была одинаковой
-  const glideTo = (y, duration = 560) => {
+  // Плавная смена экрана — своя, чтобы длительность была одинаковой
+  const glideTo = (y, duration = GLIDE_MS) => {
     window.cancelAnimationFrame(tween);
     const from = window.scrollY;
     const distance = y - from;
@@ -847,7 +820,7 @@
       return 0;
     }
     const start = performance.now();
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     const frame = (now) => {
       const t = Math.min(1, (now - start) / duration);
       window.scrollTo({ top: from + distance * ease(t), behavior: "instant" });
@@ -865,8 +838,8 @@
     const target = direction > 0
       ? (slot === SLOT_SPLASH ? 0 : slot + 1)
       : (slot === 0 ? SLOT_SPLASH : slot - 1);
-    const duration = glideTo(slotY(target), target === 0 && slot === SLOT_SPLASH ? 640 : 520);
-    lockedUntil = performance.now() + duration + 120;
+    const duration = glideTo(slotY(target), target === 0 && slot === SLOT_SPLASH ? GLIDE_MS + 120 : GLIDE_MS);
+    lockedUntil = performance.now() + duration + SCREEN_HOLD_MS;
     markStarted();
     return true;
   };
@@ -882,17 +855,67 @@
     return false;
   };
 
-  // Тачпад после жеста ещё долго присылает затухающую инерцию — её
-  // пропускаем. Новый жест — это либо пауза, либо разгон.
-  const wheelLog = [];
-  const isNewGesture = (time, size) => {
-    const previous = wheelLog[wheelLog.length - 1];
-    wheelLog.push({ time, size });
-    if (wheelLog.length > 12) wheelLog.shift();
-    if (!previous || time - previous.time > 180) return true;
-    if (wheelLog.length < 6) return false;
-    const average = (list) => list.reduce((sum, item) => sum + item.size, 0) / list.length;
-    return average(wheelLog.slice(-3)) > average(wheelLog.slice(0, -3)) * 1.25;
+  // Тачпад после свайпа ещё долго присылает затухающую инерцию: шаги
+  // прокрутки всё мельче. Новый свайп поверх неё снова разгоняется — шаги
+  // резко растут. Так и отличаем новый жест от хвоста старого.
+  let lastWheelAt = 0;
+  let gestureStartedAt = 0;
+  let gestureSum = 0;
+  let gestureDirection = 0;
+  let gestureUsed = false; // этим жестом уже перелистнули
+  let gesturePeak = 0;     // самый крупный шаг жеста
+  let gestureTrough = 0;   // самый мелкий шаг после пика — до него затухла инерция
+  let risingSteps = 0;     // сколько шагов подряд снова растут
+
+  const startGesture = (direction, time) => {
+    gestureStartedAt = time;
+    gestureSum = 0;
+    gestureDirection = direction;
+    gestureUsed = false;
+    gesturePeak = 0;
+    gestureTrough = 0;
+    risingSteps = 0;
+  };
+
+  // Время берём из самого события, а не «сейчас»: если страница на миг
+  // занята анимацией карты, события доходят пачкой с опозданием, и это
+  // нельзя принимать за паузу между свайпами.
+  const trackGesture = (time, dy) => {
+    const size = Math.abs(dy);
+    const direction = dy > 0 ? 1 : -1;
+    // Разгон — три шага подряд заметно крупнее, чем самый мелкий шаг
+    // затухающей инерции. В начале свайпа (палец отрывается, тачпад
+    // подхватывает инерцию) скорость тоже скачет — это ещё тот же свайп.
+    const accelerates = gesturePeak > 0
+      && time - gestureStartedAt > GESTURE_MIN_AGE_MS
+      && gestureTrough < gesturePeak * 0.5
+      && size > gestureTrough * 2.5 + 8;
+    risingSteps = accelerates ? risingSteps + 1 : 0;
+    if (time - lastWheelAt > GESTURE_PAUSE_MS || direction !== gestureDirection || risingSteps >= 3) {
+      startGesture(direction, time);
+    }
+    lastWheelAt = time;
+    if (size > gesturePeak) {
+      gesturePeak = size;
+      gestureTrough = size;
+    } else {
+      gestureTrough = Math.min(gestureTrough, size);
+    }
+  };
+
+  // Свайп, сделанный, пока карта ещё едет, ждёт и листает, как только она встанет
+  let queuedStep = 0;
+  const queueStep = () => {
+    if (queuedStep) return;
+    queuedStep = window.setTimeout(() => {
+      queuedStep = 0;
+      if (gestureUsed || Math.abs(gestureSum) < GESTURE_MIN_PX) return;
+      if (performance.now() < lockedUntil) {
+        queueStep();
+        return;
+      }
+      if (stepScreen(gestureDirection)) gestureUsed = true;
+    }, Math.max(0, lockedUntil - performance.now()) + 10);
   };
 
   // Экраны переключаются, только пока мы на заставке или на столе
@@ -900,21 +923,31 @@
 
   const onWheel = (event) => {
     if (event.ctrlKey || !inScreens()) return;
-    const dy = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
+    // Колесо мыши в некоторых браузерах считает строками или страницами —
+    // переводим в пиксели: один щелчок колеса ≈ 100 px
+    const unit = event.deltaMode === 1 ? 33 : event.deltaMode === 2 ? window.innerHeight : 1;
+    const dy = event.deltaY * unit;
     if (!dy || Math.abs(dy) < Math.abs(event.deltaX)) return;
+    const now = performance.now();
+    trackGesture(event.timeStamp || now, dy);
     if (roomInside(event.target, dy)) {
-      wheelLog.length = 0;
+      gestureUsed = true;
       return;
     }
     const direction = dy > 0 ? 1 : -1;
-    // После билета вниз — обычная прокрутка к подвалу
-    if (direction > 0 && currentSlot() === TOTAL - 1 && performance.now() >= lockedUntil) return;
+    // После билета вниз — обычная прокрутка к подвалу, но не инерцией
+    // того же жеста, которым до билета долистали
+    if (direction > 0 && currentSlot() === TOTAL - 1 && now >= lockedUntil && !gestureUsed) return;
 
     event.preventDefault();
-    const now = performance.now();
-    const fresh = isNewGesture(now, Math.abs(dy));
-    if (!fresh || now < lockedUntil) return;
-    stepScreen(direction);
+    if (gestureUsed) return;
+    gestureSum += dy;
+    if (Math.abs(gestureSum) < GESTURE_MIN_PX) return;
+    if (now < lockedUntil) {
+      queueStep();
+      return;
+    }
+    if (stepScreen(direction)) gestureUsed = true;
   };
 
   const onKey = (event) => {
@@ -977,7 +1010,6 @@
   page.querySelectorAll("[data-go-ticket]").forEach((link) => {
     link.addEventListener("click", (event) => {
       event.preventDefault();
-      closeHost(false);
       showCard(TICKET);
       // Фокус — на первое поле или кнопку в билете, когда он откроется
       window.setTimeout(() => {
@@ -996,7 +1028,6 @@
     button.addEventListener("click", () => {
       const index = stageCardIndex[Number(button.dataset.stepTarget)];
       if (index === undefined) return;
-      closeHost(false);
       showCard(index);
     });
   });

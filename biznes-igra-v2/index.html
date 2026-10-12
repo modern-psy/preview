@@ -18,7 +18,7 @@
   ИДЕЯ СТРАНИЦЫ
     Сначала заставка, как у игры: название, одна фраза, дата и кнопка
     «Узнать, как устроена игра». Дальше — игровой стол: сверху лента карт
-    (она же прогресс), в центре колода из 11 карт, слева ведущая и монеты
+    (она же прогресс), в центре колода из 12 карт, слева ведущая и монеты
     команды, справа заказчик, внизу «Ваша команда». Карты по одной
     рассказывают, как устроена игра; на каждой говорит ведущая или
     заказчик, монеты тратятся по правилам. Один жест колеса или тачпада —
@@ -321,18 +321,6 @@
     <use href="#g-coin" x="40" y="81" width="64" height="35" />
   </symbol>
 
-  <!-- Заказчик: безликая фигурка в пиджаке на подставке -->
-  <symbol id="g-client" viewBox="0 0 96 112">
-    <ellipse cx="48" cy="104" rx="40" ry="7" fill="url(#g-floor-shadow)" />
-    <path d="M12 92c0-4.4 16.1-8 36-8s36 3.6 36 8v6c0 4.4-16.1 8-36 8s-36-3.6-36-8z" fill="url(#g-pi-body)" />
-    <ellipse cx="48" cy="92" rx="36" ry="8" fill="url(#g-pi-top)" />
-    <rect x="42.5" y="50" width="11" height="14" rx="4" fill="#5b42b8" />
-    <path d="M20 90c0-15 8.5-25 20-27.5h16C67.5 65 76 75 76 90c-6 3-16.5 4.6-28 4.6S26 93 20 90z" fill="url(#g-pv-body)" />
-    <path d="M41 62.5h14L48 75z" fill="#eeeeff" />
-    <path d="M46.2 66h3.6l1.8 15-3.6 4.4-3.6-4.4z" fill="#4e37a8" />
-    <circle cx="48" cy="38" r="17" fill="url(#g-pv-head)" />
-  </symbol>
-
   <!-- Участник команды (силуэт в кружке) -->
   <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4.5" fill="currentColor" /><path d="M3.5 21.5c.8-4.6 4.2-7.5 8.5-7.5s7.7 2.9 8.5 7.5z" fill="currentColor" /></symbol>
 
@@ -386,88 +374,59 @@
   <!-- ======================================================================
        1. ЗАСТАВКА
        ======================================================================
-       Как титульный экран игры. Стол «в расфокусе» нарисован кодом (SVG)
-       из тех же предметов, что и на столе ниже.
+       Как титульный экран игры: название, одна фраза, дата и кнопка лежат
+       на большой карте. За ней веером раскрыты карты этапов 1–6, перед ней
+       стоят монеты и фишки. Карты нарисованы кодом (page.css, раздел 4),
+       монеты и фишки — матовые картинки из папки img.
+       Макет: .impeccable/mocks/biznes-igra/hero2-c-bigcard.png
        ====================================================================== -->
   <section class="section_splash" id="top" aria-labelledby="splash-heading">
     <div class="padding-global">
       <div class="container-xlarge">
         <div class="splash_inner">
 
-          <div class="splash_text">
-            <p class="splash_label">Онлайн-встреча с&nbsp;командной практикой</p>
-            <h1 class="splash_heading" id="splash-heading">Бизнес-игра <span class="splash_heading-accent">для&nbsp;психологов</span></h1>
-            <p class="splash_lead">
-              Для психологов, которые хотят попробовать бизнес-консультирование
-              на&nbsp;практике. Решите консультационный кейс командой: от&nbsp;первого
-              вопроса заказчику до&nbsp;защиты стратегии
-            </p>
-            <ul class="splash_chips" aria-label="Когда и сколько">
-              <li class="splash_chip">24&nbsp;октября</li>
-              <li class="splash_chip">14:00&nbsp;МСК</li>
-              <li class="splash_chip">90&nbsp;минут</li>
-              <li class="splash_chip">бесплатно</li>
-            </ul>
-          </div>
+          <div class="splash_scene">
+            <!-- Веер карт этапов 1–6 за большой картой. Это картинка,
+                 скринридер её пропускает. -->
+            <div class="splash_fan" aria-hidden="true">
+              <span class="splash_fan-card is-1"><span class="splash_fan-number">1</span></span>
+              <span class="splash_fan-card is-2"><span class="splash_fan-number">2</span></span>
+              <span class="splash_fan-card is-3"><span class="splash_fan-number">3</span></span>
+              <span class="splash_fan-card is-4"><span class="splash_fan-number">4</span></span>
+              <span class="splash_fan-card is-5"><span class="splash_fan-number">5</span></span>
+              <span class="splash_fan-card is-6"><span class="splash_fan-number">6</span></span>
+            </div>
 
-          <!-- Иллюстрация «команда и заказчик» (макет: .impeccable/mocks/biznes-igra/hero-c-diorama.png).
-               Слева команда из пяти фишек (светлая — «вы»), в центре колода
-               и монеты, справа заказчик со знаком вопроса. Когда заставка
-               появляется, три монеты один раз перелетают от команды к заказчику.
-               Нарисовано кодом из тех же предметов, что на столе. -->
-          <div class="splash_art" aria-hidden="true">
-            <svg viewBox="0 0 900 340" focusable="false">
-              <defs>
-                <linearGradient id="g-deck-top" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0" stop-color="#8a6de6" />
-                  <stop offset="1" stop-color="#6a4fd0" />
-                </linearGradient>
-              </defs>
+            <!-- Большая карта: всё главное о встрече и кнопка -->
+            <div class="splash_card">
+              <p class="splash_label">Онлайн-встреча с&nbsp;командной практикой</p>
+              <h1 class="splash_heading" id="splash-heading">Бизнес-игра <span class="splash_heading-accent">для&nbsp;психологов</span></h1>
+              <p class="splash_lead">
+                Попробуйте бизнес-консультирование на&nbsp;практике и&nbsp;решите
+                консультационный кейс командой: от&nbsp;первого вопроса заказчику
+                до&nbsp;защиты стратегии
+              </p>
+              <ul class="splash_chips" aria-label="Когда и сколько">
+                <li class="splash_chip">24&nbsp;октября, 14:00&nbsp;МСК</li>
+                <li class="splash_chip">90&nbsp;минут</li>
+                <li class="splash_chip">бесплатно</li>
+              </ul>
+              <a class="button is-light splash_start" href="#kak-ustroena" data-start>Узнать, как устроена игра</a>
+            </div>
 
-              <!-- Команда: две фишки сзади, три спереди -->
-              <use href="#g-pawn-violet" x="132" y="86" width="68" height="102" />
-              <use href="#g-pawn-violet" x="232" y="80" width="68" height="102" />
-              <use href="#g-pawn-violet" x="78" y="130" width="78" height="117" />
-              <use href="#g-pawn-violet" x="268" y="128" width="78" height="117" />
-              <use href="#g-pawn-lavender" x="166" y="140" width="88" height="132" />
-
-              <!-- Колода лежит на столе: стопка и одна открытая карта -->
-              <ellipse cx="462" cy="292" rx="96" ry="14" fill="#0d0814" opacity="0.4" />
-              <g stroke-linejoin="round" stroke-width="10">
-                <path d="M413 262 L528 262 L528 280 L413 280 Z" fill="#3b2a86" stroke="#3b2a86" />
-                <path d="M505 226 L528 262 L528 280 L505 244 Z" fill="#4a3699" stroke="#4a3699" />
-                <path d="M390 226 L505 226 L528 262 L413 262 Z" fill="url(#g-deck-top)" stroke="url(#g-deck-top)" />
-              </g>
-              <ellipse cx="459" cy="244" rx="20" ry="7.5" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2" />
-              <g stroke-linejoin="round" stroke-width="8">
-                <path d="M356 296 L446 296 L446 302 L356 302 Z" fill="#4e37a8" stroke="#4e37a8" />
-                <path d="M340 272 L430 272 L446 296 L356 296 Z" fill="#9e86ee" stroke="#9e86ee" />
-              </g>
-              <ellipse cx="393" cy="284" rx="15" ry="5.5" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="2" />
-
-              <!-- Монеты команды -->
-              <use href="#g-coins-plain" x="540" y="200" width="74" height="72" />
-              <use href="#g-coins-plain" x="598" y="226" width="62" height="60" />
-              <use href="#g-coin" x="560" y="284" width="44" height="24" />
-
-              <!-- Монеты в полёте: от команды к заказчику -->
-              <use class="splash_coin is-1" href="#g-coin" x="378" y="140" width="44" height="24" />
-              <use class="splash_coin is-2" href="#g-coin" x="462" y="104" width="40" height="22" />
-              <use class="splash_coin is-3" href="#g-coin" x="548" y="122" width="36" height="20" />
-
-              <!-- Заказчик на подставке и его вопрос -->
-              <use href="#g-client" x="640" y="58" width="184" height="215" />
-              <g class="splash_question">
-                <path d="M792 30 h50 a16 16 0 0 1 16 16 v32 a16 16 0 0 1 -16 16 h-30 l-16 14 v-14 h-4 a16 16 0 0 1 -16 -16 v-32 a16 16 0 0 1 16 -16 z" fill="#3a3047" stroke="#dad6ff" stroke-opacity="0.22" stroke-width="1.5" />
-                <text x="817" y="76" fill="#b3a8ee" font-family="Wix Madefor Display, Arial, sans-serif" font-size="40" font-weight="700" text-anchor="middle">?</text>
-              </g>
-            </svg>
+            <!-- Монеты и фишки перед картой. 🟡 Картинки можно заменить,
+                 сохранив прозрачный фон. -->
+            <div class="splash_props" aria-hidden="true">
+              <img class="splash_coins is-left" src="img/splash-coins-left.webp" alt="" width="483" height="520" />
+              <img class="splash_coins is-right" src="img/splash-coins-right.webp" alt="" width="440" height="389" />
+              <img class="splash_pawn is-big" src="img/splash-pawn.webp" alt="" width="190" height="360" />
+              <img class="splash_pawn is-small" src="img/splash-pawn.webp" alt="" width="190" height="360" />
+            </div>
           </div>
 
           <div class="splash_actions">
-            <a class="button is-light splash_start" href="#kak-ustroena" data-start>Узнать, как устроена игра</a>
             <p class="splash_note">Можно прийти одному&nbsp;— команду соберём на&nbsp;месте</p>
-            <a class="text-link splash_skip" href="#bilet" data-go-ticket>Сразу зарегистрироваться</a>
+            <a class="button is-quiet splash_skip" href="#bilet" data-go-ticket>Сразу зарегистрироваться</a>
           </div>
 
         </div>
@@ -518,46 +477,30 @@
 
           <div class="speaker_component is-host" data-speaker="host" data-active="true">
             <div class="speaker_head">
-              <button class="speaker_avatar" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">
-                <img class="host_photo"
+              <button class="speaker_avatar" type="button" data-host-open>
+                <img class="speaker_photo host_photo"
                      src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/240x/-/format/webp/telegram-cloud-docum.png.webp"
                      alt="" width="120" height="120" decoding="async" />
-                <span class="screen-reader-only">Ведущая Екатерина Исупова, открыть биографию</span>
+                <span class="screen-reader-only">Ведущая Екатерина Исупова, показать карту с её биографией</span>
               </button>
               <div class="speaker_meta">
                 <p class="speaker_name">Екатерина Исупова</p>
-                <p class="speaker_role">ведущая · <button class="speaker_more" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">биография</button></p>
+                <p class="speaker_role">ведущая · <button class="speaker_more" type="button" data-host-open>биография</button></p>
               </div>
             </div>
             <div class="speaker_bubble">
               <p class="speaker_bubble-name" aria-hidden="true">Екатерина Исупова</p>
               <p class="speaker_line" data-speaker-line>Я&nbsp;— ведущая игры. Сначала о&nbsp;том, что вы&nbsp;потренируете</p>
             </div>
-          <div class="host-panel_component" id="host-panel" role="dialog" aria-modal="false" aria-labelledby="host-panel-name" data-host-panel hidden>
-              <img class="host-panel_photo"
-                   src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/720x/-/format/webp/telegram-cloud-docum.png.webp"
-                   alt="Екатерина Исупова, клинический и корпоративный психолог"
-                   width="720" height="1080" loading="lazy" decoding="async" />
-              <div class="host-panel_head">
-                <h3 class="host-panel_name" id="host-panel-name">Екатерина Исупова</h3>
-                <p class="host-panel_label">Ведущая игры</p>
-                <p class="host-panel_lead">Клинический и&nbsp;корпоративный психолог (ACT, CFT)</p>
-              </div>
-              <ul class="host-panel_list">
-                <li>Автор и&nbsp;преподаватель курса «Основы бизнес-консультирования для&nbsp;психологов» в&nbsp;Академии</li>
-                <li>Руководитель корпоративного направления клиники АЛВИ</li>
-                <li>6&nbsp;лет частной практики</li>
-                <li>Автор тренингов, ведущая групп навыков</li>
-                <li>Супервизор для&nbsp;психологов</li>
-              </ul>
-              <button class="button is-quiet host-panel_close" type="button" data-host-close>Свернуть</button>
-            </div>
           </div>
 
           <div class="speaker_component is-client" data-speaker="client" data-active="false">
             <div class="speaker_head">
+              <!-- 🟡 Аватар заказчика — силуэт инкогнито (сгенерирован, лежит в img/).
+                   Для Тильды файл нужно залить на CDN и поставить сюда ссылку. -->
               <span class="speaker_avatar">
-                <svg class="client_figure" viewBox="0 0 96 112" aria-hidden="true" focusable="false"><use href="#g-client" /></svg>
+                <img class="speaker_photo client_photo" src="img/client.webp" alt=""
+                     width="120" height="120" decoding="async" />
               </span>
               <div class="speaker_meta">
                 <p class="speaker_name">Заказчик</p>
@@ -612,6 +555,33 @@
                   <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-coins" /></svg>Управление ресурсами</li>
                   <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-rivals" /></svg>Конкурентная среда и&nbsp;рыночное мышление</li>
                   <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-team" /></svg>Командная работа и&nbsp;коммуникация</li>
+                </ul>
+              </article>
+            </li>
+
+            <!-- 1б. Ведущая. Фото и регалии — с лендинга курса
+                 modern-psy.ru/business-consulting, слово в слово. -->
+            <li class="deck_item" data-card data-kind="paper" data-host-card data-wallet="none" data-short="Ведущая"
+                data-speaker="host" data-line="Давайте познакомимся: я&nbsp;буду вести игру">
+              <article class="card_component is-paper is-light-card" aria-labelledby="card-host">
+                <p class="card_tag">Перед игрой</p>
+                <h3 class="card_title" id="card-host">Кто будет вас направлять</h3>
+                <div class="card_person">
+                  <img class="card_person-photo"
+                       src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/720x/-/format/webp/telegram-cloud-docum.png.webp"
+                       alt="Екатерина Исупова, клинический и корпоративный психолог"
+                       width="720" height="1080" loading="lazy" decoding="async" />
+                  <div class="card_person-text">
+                    <p class="card_person-name">Екатерина Исупова</p>
+                    <p class="card_person-role">Клинический и&nbsp;корпоративный психолог (ACT, CFT)</p>
+                  </div>
+                </div>
+                <ul class="card_list">
+                  <li>Автор и&nbsp;преподаватель курса «Основы бизнес-консультирования для&nbsp;психологов» в&nbsp;Академии</li>
+                  <li>Руководитель корпоративного направления клиники АЛВИ</li>
+                  <li>6&nbsp;лет частной практики</li>
+                  <li>Автор тренингов, ведущая групп навыков</li>
+                  <li>Супервизор для&nbsp;психологов</li>
                 </ul>
               </article>
             </li>
@@ -890,7 +860,7 @@
             <button class="button is-light controls_next" type="button" data-deck-next>
               <span class="for-narrow">Дальше</span><span class="for-wide">Тянуть карту</span>
             </button>
-            <p class="controls_counter" data-deck-counter><b>1</b> из&nbsp;11</p>
+            <p class="controls_counter" data-deck-counter><b>1</b> из&nbsp;12</p>
             <p class="controls_swipe" data-deck-swipe>Смахните карту или нажмите «Дальше»</p>
 
             <div class="hint-cursor" data-hint-cursor aria-hidden="true">
