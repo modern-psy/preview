@@ -86,7 +86,12 @@
     // Подпись типа не повторяем, если описание из CMS и так с неё начинается
     var showKind = FEATURED.kind && !(ev.description && ev.description.toLowerCase().indexOf(FEATURED.kind.toLowerCase()) === 0);
 
-    box.innerHTML = '<section class="card featured-event_component" aria-labelledby="featuredTitle">' +
+    // 🟢 На странице с меткой показываем два оформления подряд для сравнения.
+    // Данные общие; на обычной странице A остаётся один баннер.
+    var variants = SHOW_STATUS ? ['', 'is-backdrop'] : [''];
+    box.innerHTML = variants.map(function (variant, index) {
+      var titleId = index ? 'featuredBackdropTitle' : 'featuredTitle';
+      return '<section class="card featured-event_component' + (variant ? ' ' + variant : '') + '" aria-labelledby="' + titleId + '">' +
       (ev.cover ? '<img class="featured-event_cover" src="' + T.esc(ev.cover) + '" alt="" width="1920" height="960" />' : '') +
       '<div class="featured-event_body">' +
         '<p class="featured-event_date">' +
@@ -95,13 +100,14 @@
           (ev.time ? ' <span class="text-size-paragraph-sm text-weight-medium">' + T.esc(ev.time) + '</span>' : '') +
         '</p>' +
         '<div class="featured-event_text">' +
-          '<h2 class="featured-event_title heading-style-h3" id="featuredTitle">' + T.title(ev.title) + '</h2>' +
+          '<h2 class="featured-event_title heading-style-h3" id="' + titleId + '">' + T.title(ev.title) + '</h2>' +
           (showKind ? '<p class="text-size-paragraph-sm text-weight-medium text-color-accent">' + T.esc(FEATURED.kind) + '</p>' : '') +
           (ev.description ? '<p class="featured-event_desc text-size-paragraph-sm text-color-secondary">' + T.esc(ev.description) + '</p>' : '') +
           '<a class="button is-md" href="' + T.esc(ev.url) + '" target="_blank" rel="noopener">Записаться</a>' +
         '</div>' +
       '</div>' +
     '</section>';
+    }).join('');
   }
 
   /* ---------- 2. НАВИГАТОР ---------- */

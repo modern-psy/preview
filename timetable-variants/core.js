@@ -356,7 +356,7 @@
   // --- Строка потока: вся строка — ссылка на страницу курса ---
   // opts.started — курс уже идёт (блок «Последний шанс»): вместо колонки
   //                с датой фраза «Идёт с 18 сентября» под названием.
-  // opts.status  — показать зелёную метку «Идёт набор» над ценой
+  // opts.status  — показать зелёную метку «Идёт набор» у названия
   //                (только если такой статус пришёл из CMS).
   // В обычной строке месяц не пишем: он уже стоит в заголовке панели.
   // Следующие потоки того же курса не упоминаем: собираем на ближайший.
@@ -378,11 +378,12 @@
       date +
       '<span class="timetable-row_main">' +
         '<h3 class="timetable-row_title text-size-paragraph-md text-weight-medium text-color-heading text-style-break">' + title(it.title) + '</h3>' +
+        (opts.status ? statusMark(it) : '') +
         (opts.started ? '<span class="text-size-caption-md text-weight-semibold text-color-primary">Идёт с ' + dateLong(it.start) + '</span>' : '') +
         (meta ? '<span class="text-size-caption-md text-color-secondary">' + esc(meta) + '</span>' : '') +
         weekDays(it) +
       '</span>' +
-      '<span class="timetable-row_price">' + (opts.status ? statusMark(it) : '') + priceHtml(it) + '</span>' +
+      '<span class="timetable-row_price">' + priceHtml(it) + '</span>' +
       // Стрелка вместо кнопки «Записаться»: нажимается вся строка, а стрелка
       // показывает, куда. Внутри ссылки — span, ссылку в ссылку класть нельзя.
       '<span class="timetable-row_arrow" aria-hidden="true">' +

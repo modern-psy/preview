@@ -1,0 +1,119 @@
+/* Правки только варианта с меткой. Остальные прототипы не меняются.
+   🟢 Здесь можно менять раскладку; значения берём из дизайн-системы. */
+
+/* Мобильный: обложка ниже по высоте, метка вверху справа у названия. */
+[data-status] .featured-event_cover {
+  height: var(--space-xhuge);
+  aspect-ratio: auto;
+}
+[data-status] .timetable-row_main .status-mark_component {
+  order: -1;
+  align-self: flex-end;
+  margin-bottom: var(--space-xsmall);
+}
+
+/* Второй баннер для сравнения: фотография — подложка всего блока.
+   Светлый слой поддерживает контраст текста на узком экране. */
+[data-status] .featured-event_component.is-backdrop {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+  isolation: isolate;
+}
+[data-status] .featured-event_component.is-backdrop .featured-event_cover {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  grid-column: auto;
+  grid-row: auto;
+}
+[data-status] .featured-event_component.is-backdrop .featured-event_body {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  background: color-mix(in srgb, var(--bg-surface) 90%, transparent);
+}
+
+/* Планшет: обложка компактнее; справа цена, под ней стрелка.
+   Основной текст занимает обе строки, поэтому под ним нет пустоты. */
+@media (min-width: 48.0625rem) {
+  [data-status] .featured-event_component {
+    grid-template-columns: minmax(0, 1fr) var(--space-xxhuge);
+  }
+  [data-status] .featured-event_cover { height: 100%; }
+  [data-status] .featured-event_body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-small);
+    padding: var(--space-small);
+  }
+  [data-status] .featured-event_date {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-xxsmall) var(--space-xsmall);
+  }
+  [data-status] .timetable-row_component {
+    grid-template-columns: 3.5rem minmax(0, 1fr) 11rem;
+    column-gap: var(--space-small);
+  }
+  [data-status] .timetable-row_date { grid-row: 1 / span 2; }
+  [data-status] .timetable-row_main { grid-row: 1 / span 2; }
+  [data-status] .timetable-row_price { grid-column: 3; grid-row: 1; }
+  [data-status] .timetable-row_arrow {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    align-self: end;
+  }
+  [data-status] .timetable-row_component.is-nodate {
+    grid-template-columns: minmax(0, 1fr) 11rem;
+  }
+  [data-status] .timetable-row_component.is-nodate .timetable-row_arrow {
+    grid-column: 2;
+  }
+  [data-status] .timetable-row_main .status-mark_component {
+    order: 0;
+    align-self: flex-start;
+    margin-bottom: var(--space-0);
+  }
+  [data-status] .featured-event_component.is-backdrop .featured-event_body {
+    padding: var(--space-medium);
+    background: linear-gradient(90deg, var(--bg-surface) 50%, transparent 100%);
+  }
+  [data-status] .featured-event_component.is-backdrop .featured-event_text {
+    max-width: 60%;
+  }
+}
+
+/* Десктоп: сохраняем исходный размер баннера и отдельную колонку стрелки.
+   Статус остаётся сразу под названием, вдали от цены. */
+@media (min-width: 64.0625rem) {
+  [data-status] .featured-event_component {
+    grid-template-columns: minmax(0, 1fr) 24rem;
+  }
+  [data-status] .featured-event_body {
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: var(--space-medium);
+    padding: var(--space-medium);
+  }
+  [data-status] .featured-event_date {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xxsmall);
+  }
+  [data-status] .timetable-row_component {
+    grid-template-columns: 3.5rem minmax(0, 1fr) 15rem var(--tap-target-min);
+    column-gap: var(--space-medium);
+  }
+  [data-status] .timetable-row_date,
+  [data-status] .timetable-row_main { grid-row: 1; }
+  [data-status] .timetable-row_arrow {
+    grid-column: 4;
+    grid-row: 1;
+    align-self: start;
+  }
+  [data-status] .timetable-row_component.is-nodate {
+    grid-template-columns: minmax(0, 1fr) 15rem var(--tap-target-min);
+  }
+  [data-status] .timetable-row_component.is-nodate .timetable-row_arrow {
+    grid-column: 3;
+  }
+}
