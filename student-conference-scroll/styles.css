@@ -1813,6 +1813,100 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-form_done-title { font: 700 1.25rem/1.15 var(--font-display); }
 .sc-form_done-text { color: var(--text-2); font-size: 0.9375rem; line-height: 1.4; }
 
+/* ---------- Бейдж без имени: вместо имени — название конференции ----------
+   Размер считается от ширины самого бейджа (cqi — сотая доля его ширины), а не окна:
+   бейдж на широких экранах больше не растёт, и «конференция 2.0» всегда помещается в строку */
+.sc-badge { container-type: inline-size; }
+.sc-badge_title { margin-top: 1rem; font: 800 1.375rem/1.05 var(--font-display); font-size: min(1.5rem, 9.5cqi); letter-spacing: -0.025em; text-wrap: balance; }
+
+/* «Пропуск придёт в …»: мессенджер вписан от руки. Пока не выбран — бледное «мессенджер».
+   Новое слово проявляется слева направо (script.js двигает --write от 0 до 1) */
+.sc-pass { display: grid; gap: 0.125rem; margin-top: 0.5rem; }
+.sc-pass_label { color: var(--text-2); font-size: 0.8125rem; line-height: 1.2; }
+.sc-pass_value { position: relative; justify-self: start; min-width: 8.5rem; padding: 0 0.75rem 0.375rem 0; color: var(--violet-deep); font: 600 2.25rem/1 var(--font-hand); }
+.sc-pass_text { display: inline-block; clip-path: inset(-20% calc((1 - var(--write, 1)) * 100%) -20% -5%); }
+.sc-pass_value.is-empty { color: rgb(51 47 65 / 32%); }
+.sc-pass_line { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 0.625rem; overflow: visible; pointer-events: none; }
+.sc-pass_line path { fill: none; stroke: var(--lavender); stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+
+/* Штамп «выдан»: карандашное кольцо и слово от руки, наклонён. Ставится на тёмную полосу бейджа,
+   вместо карандашной звёздочки, — там ему хватает места при любом мессенджере. Появляется классом .is-stamped */
+.sc-stamp { position: absolute; right: 0.5rem; bottom: 2.25rem; z-index: 2; display: grid; place-items: center; width: 6.5rem; height: 6.5rem; color: var(--lavender); rotate: -14deg; opacity: 0; pointer-events: none; }
+.sc-stamp.is-stamped { opacity: 1; }
+.sc-stamp.is-stamped ~ .sc-badge_role .sc-badge_doodle { opacity: 0; }
+.sc-stamp_ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sc-stamp_ring path { fill: none; stroke: currentColor; stroke-width: 3.5; stroke-linecap: round; }
+.sc-stamp_ring .is-second { stroke-width: 2; opacity: 0.7; }
+.sc-stamp_text { position: relative; font: 700 2.375rem/1 var(--font-hand); }
+
+/* ---------- Запись через бота BotHelp ----------
+   Кнопки мессенджеров рисует чужой скрипт, поэтому правим их по классам BotHelp
+   и через !important: часть размеров он проставляет прямо в style="". */
+.sc-signup_hint { color: var(--text-2); font-size: 1rem; line-height: 1.4; text-wrap: pretty; }
+.sc-signup_widget { min-width: 0; }
+.sc-signup_bh, .sc-signup_bh .bh-widget-button, .sc-signup_bh .bh-w-button-list { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; background: transparent !important; }
+.sc-signup_bh .bh-widget-button { display: flex !important; flex-direction: column !important; gap: 1rem !important; margin: 0 !important; padding: 0 !important; }
+.sc-signup_bh .bh-w-button-list { display: flex !important; flex-direction: column !important; gap: 0.625rem !important; margin: 0 !important; padding: 0 !important; list-style: none !important; }
+.sc-signup_bh .bh-w-messenger-button {
+  position: relative !important; display: flex !important; width: 100% !important; min-width: 0 !important;
+  height: auto !important; min-height: 3.5rem !important; max-height: none !important; flex: none !important;
+  align-items: center !important; justify-content: center !important; gap: 0.75rem !important;
+  margin: 0 !important; padding: 0.875rem 1.5rem !important; overflow: visible !important;
+  border: 0 !important; border-radius: 1rem !important; background: var(--violet) !important; color: var(--white) !important;
+  font: 500 1.125rem/1.1 var(--font-text) !important; letter-spacing: -0.01em !important;
+  text-align: center !important; text-decoration: none !important; cursor: pointer !important;
+  transition: background-color var(--dur) var(--ease), opacity var(--dur) var(--ease) !important;
+}
+.sc-signup_bh .bh-w-messenger-button:focus-visible { outline: 2px solid var(--violet) !important; outline-offset: 3px !important; }
+@media (hover: hover) and (pointer: fine) {
+  .sc-signup_bh .bh-w-messenger-button:hover { background: var(--violet-deep) !important; }
+}
+/* Пока заявка уходит в Тильду, кнопки не нажимаются повторно */
+.sc-signup[data-state="sending"] .sc-signup_bh .bh-w-messenger-button { opacity: 0.65 !important; pointer-events: none !important; }
+.sc-signup_bh .bh-w-button__icon { position: static !important; width: 1.5rem !important; height: 1.5rem !important; flex: none !important; margin: 0 !important; }
+.sc-signup_bh .bh-w-button__title { position: static !important; margin: 0 !important; color: inherit !important; font: inherit !important; letter-spacing: inherit !important; }
+/* Виджет подписывает кнопку ВКонтакте латиницей — показываем по-русски.
+   🟡 Если подпись поменяют в настройках BotHelp, эти два правила можно убрать */
+.sc-signup_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title { font-size: 0 !important; }
+.sc-signup_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title::after { content: "ВКонтакте"; font-size: 1.125rem; }
+/* Галочка согласия — её тоже рисует BotHelp */
+.sc-signup_bh .bh-w-consent__body { min-width: 0; }
+.sc-signup_bh .bh-w-consent__row { display: flex; align-items: flex-start; gap: 0.625rem; cursor: pointer; }
+.sc-signup_bh .bh-w-consent__checkbox { width: 1.125rem; height: 1.125rem; flex: none; margin: 0.125rem 0 0; accent-color: var(--violet); cursor: pointer; }
+.sc-signup_bh .bh-w-consent__label { color: var(--text-2); font: 400 0.8125rem/1.4 var(--font-text); }
+.sc-signup_bh .bh-w-consent__label a { color: var(--violet-deep); text-decoration: underline; text-underline-offset: 0.15em; }
+/* Своё сообщение об ошибке у виджета прячем — пишем его в общей строке статуса под кнопками */
+.sc-signup_bh .bh-w-consent__message, .sc-signup_bh .bh-w-powered-by { display: none; }
+
+/* Полоски на месте кнопок, пока виджет грузится */
+.sc-signup_skeleton { display: grid; gap: 0.625rem; }
+.sc-signup_skeleton[hidden] { display: none; }
+.sc-signup_skeleton span { height: 3.5rem; border-radius: 1rem; background: linear-gradient(90deg, var(--lavender-soft) 25%, rgb(218 214 255 / 70%) 37%, var(--lavender-soft) 63%); background-size: 400% 100%; animation: sc-signup-skeleton 1.4s ease infinite; }
+.sc-signup_skeleton span:last-child { width: 70%; height: 1rem; }
+@keyframes sc-signup-skeleton { from { background-position: 100% 50%; } to { background-position: 0 50%; } }
+@media (prefers-reduced-motion: reduce) { .sc-signup_skeleton span { animation: none; } }
+.sc-signup_widget[data-bh-state="loading"] .sc-signup_bh { display: none; }
+
+/* Запасная форма: поля как у старой формы, ошибка — красная рамка */
+.sc-signup_fallback { display: grid; gap: 1rem; }
+.sc-signup_fallback[hidden] { display: none; }
+.sc-field[data-state="invalid"] { border-color: var(--error); }
+.sc-field[data-state="invalid"]:focus-within { box-shadow: inset 0 0 0 1px var(--error); }
+.sc-field[hidden] { display: none; }
+.sc-consent { display: flex; align-items: flex-start; gap: 0.625rem; cursor: pointer; }
+.sc-consent_input { width: 1.125rem; height: 1.125rem; flex: none; margin: 0.125rem 0 0; accent-color: var(--violet); cursor: pointer; }
+.sc-consent_label { color: var(--text-2); font-size: 0.8125rem; line-height: 1.4; text-wrap: pretty; }
+.sc-consent_label a { color: var(--violet-deep); }
+.sc-signup_consent .sc-field_error { margin-top: 0.375rem; }
+
+.sc-signup_note { color: var(--text-2); font-size: 0.875rem; line-height: 1.4; }
+.sc-signup_note[hidden] { display: none; }
+.sc-signup_note a { color: var(--violet-deep); text-decoration: underline; text-underline-offset: 0.15em; }
+.sc-signup_status { font-size: 0.9375rem; line-height: 1.35; }
+.sc-signup_status:empty { display: none; }
+.sc-signup_status[data-state="error"] { color: var(--error); }
+.sc-signup_status[data-state="loading"] { color: var(--text-2); }
+
 /* Список стран открывается поверх страницы (вне .sc-page), поэтому шрифт и скругление заданы здесь явно */
 body > .iti--detached-country-selector { z-index: 1000; font-family: "Wix Madefor Text", Arial, sans-serif; }
 body > .iti--detached-country-selector .iti__country-selector { overflow: hidden; border-radius: 0.75rem; }
@@ -1843,12 +1937,16 @@ body > .iti--detached-country-selector .iti__country-selector { overflow: hidden
   .sc-badge_role-text { font-size: 3.5rem; }
   .sc-badge_logo { height: 1.625rem; }
   .sc-badge_name { font-size: clamp(1.75rem, 2.2vw, 2.25rem); }
+  .sc-pass_value { font-size: 2.5rem; }
+  .sc-stamp { right: 0.75rem; bottom: 2.75rem; width: 7.5rem; height: 7.5rem; }
+  .sc-stamp_text { font-size: 2.75rem; }
 }
 
 @media (hover: hover) and (pointer: fine) {
   .sc-form_plan-option input:not(:checked) + span:hover { background: rgb(124 92 219 / 12%); }
   .sc-choice input:not(:checked) + span:hover { border-color: var(--violet); }
   .sc-form_consent a:hover { color: var(--violet); }
+  .sc-consent_label a:hover, .sc-signup_note a:hover { color: var(--violet); }
 }
 
 /* =========================================================================

@@ -10,14 +10,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Wix+Madefor+Display:wght@500;600;700;800&family=Wix+Madefor+Text:wght@400;500;600&display=swap">
   <!-- Телефон с выбором страны и маской — та же библиотека и версия, что на других лендингах Академии -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/css/intlTelInput.css">
+  <!-- Маска телефона с выбором страны — нужна была только старой форме регистрации (она в архиве, см. блок «Регистрация»).
+       Если вернёте старую форму, раскомментируйте эту строку и такую же строку со скриптом ниже.
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/css/intlTelInput.css"> -->
   <link rel="stylesheet" href="styles.css">
   <!-- Анимации: GSAP 3.15 с плагинами. Версия закреплена, @latest не используем. -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/intlTelInput.min.js"></script>
+  <!-- <script defer src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/intlTelInput.min.js"></script> -->
   <script defer src="script.js"></script>
+  <!-- BotHelp: кнопки мессенджеров в блоке «Регистрация». Подключается после script.js — так нужно скрипту записи -->
+  <script defer src="https://main.bothelp.io/w/widget-button.js"></script>
 </head>
 <body>
 <main class="main-wrapper sc-page" id="main-content">
@@ -1210,11 +1214,13 @@
   </section>
 
   <!-- ===================== Регистрация =====================
-       Возвращается фиолетовый. Слева — форматы участия, по центру — форма, справа — бейдж участника
-       на шнурке: он падает сверху, когда блок показался, и подписывается именем из формы.
-       ВАЖНО: на Тильде вместо этой формы будет форма Тильды с теми же полями
-       (имя, телефон, почта, мессенджер Telegram или Max, формат участия). Здесь — макет для вёрстки,
-       данные никуда не отправляются. Тексты и цены можно править прямо здесь. -->
+       Возвращается фиолетовый. Слева — форматы участия, по центру — запись через бота BotHelp,
+       справа — бейдж участника на шнурке: он падает сверху, когда блок показался.
+       Запись: три кнопки мессенджеров рисует виджет BotHelp. По нажатию script.js сначала отправляет
+       скрытую форму Тильды (служебные поля для отдела продаж), потом уводит человека в бота.
+       Если BotHelp не загрузился за 10 секунд, вместо кнопок появляется запасная форма
+       (имя, телефон, мессенджер) — заявка уходит в ту же форму Тильды. Проверить: ?signup=form в адресе.
+       Тексты и цены можно править прямо здесь. -->
   <section class="section_registration sc-reg" id="registration" aria-labelledby="registration-title" data-sc-reg>
     <div class="padding-global">
       <div class="container-xlarge sc-reg_grid">
@@ -1237,6 +1243,12 @@
           <p class="sc-reg_note">Участие в&nbsp;эфире бесплатное, записи&nbsp;— платные. Выгоднее быть онлайн: только участники эфира получают видеоурок «Как провести первую сессию».</p>
         </div>
 
+        <!-- ======== АРХИВ: старая регистрация (бейдж с именем из формы + форма Тильды) ========
+             Отключена 12.10.2026: запись теперь идёт через бота BotHelp, имени на странице нет.
+             Разметка лежит внутри <template> — браузер её не показывает и не выполняет, но она цела:
+             чтобы вернуть, достаньте содержимое из <template> и раскомментируйте маску телефона в шапке.
+             🔴 В сборку для Тильды этот <template> НЕ переносить. -->
+        <template data-sc-archive="registration-v1">
         <!-- Бейдж участника на шнурке. Имя подставляется из формы, трек — из чек-листа «Для кого» -->
         <div class="sc-reg_badge-wrap" aria-hidden="true">
           <div class="sc-lanyard" data-sc-lanyard>
@@ -1306,6 +1318,120 @@
             <p class="sc-form_done-text" data-sc-form-done-text>Ссылку на&nbsp;эфир пришлём в&nbsp;Telegram утром 21&nbsp;ноября.</p>
           </div>
         </form>
+        </template>
+
+        <!-- Бейдж участника на шнурке — «пропуск со штампом». Имени нет: записываемся через бота.
+             Наведение (или выбор в запасной форме) вписывает мессенджер в строку «пропуск придёт в…»,
+             а когда человек записался — на бейдже карандашом ставится штамп «выдан». Логика — в script.js -->
+        <div class="sc-reg_badge-wrap" aria-hidden="true">
+          <div class="sc-lanyard" data-sc-lanyard>
+            <svg class="sc-lanyard_strap" viewBox="0 0 160 260" preserveAspectRatio="none" focusable="false">
+              <path class="sc-lanyard_band" d="M28 0h34l26 236h-16Z"/>
+              <path class="sc-lanyard_band is-back" d="M98 0h34l-44 236h-16Z"/>
+            </svg>
+            <span class="sc-lanyard_clip"></span>
+            <div class="sc-badge" data-sc-badge>
+              <span class="sc-badge_hole"></span>
+              <div class="sc-badge_top">
+                <svg class="sc-badge_logo" viewBox="0 0 84 30" focusable="false"><use href="#sc-logo"/></svg>
+                <p class="sc-badge_date">21&nbsp;ноября, онлайн</p>
+              </div>
+              <p class="sc-badge_title">Студенческая конференция&nbsp;2.0</p>
+              <div class="sc-pass">
+                <p class="sc-pass_label">пропуск придёт в</p>
+                <p class="sc-pass_value is-empty"><span class="sc-pass_text" data-sc-pass-value>мессенджер</span><svg class="sc-pass_line" viewBox="0 0 200 14" preserveAspectRatio="none" focusable="false"><g filter="url(#sc-pencil)"><path d="M3 8C50 5 110 10 197 6"/></g></svg></p>
+              </div>
+              <!-- Штамп «выдан»: невидим, пока человек не записался -->
+              <div class="sc-stamp" data-sc-stamp>
+                <svg class="sc-stamp_ring" viewBox="0 0 120 120" focusable="false"><g filter="url(#sc-pencil)"><path d="M60 8c30 0 52 22 52 52s-24 52-54 51C29 110 8 88 9 58 10 30 33 7 63 9"/><path class="is-second" d="M60 19c22 0 40 18 40 41"/></g></svg>
+                <span class="sc-stamp_text">выдан</span>
+              </div>
+              <div class="sc-badge_role">
+                <svg class="sc-badge_doodle" viewBox="0 0 120 70" focusable="false">
+                  <g filter="url(#sc-pencil)">
+                    <path class="is-star" d="M70 10l5 11 12 2-9 8 2 12-10-6-11 6 3-12-9-8 12-2Z"/>
+                    <path d="M96 18l9-4M98 30h10M96 42l8 5"/>
+                    <path class="is-plus" d="M36 20v10M31 25h10"/>
+                  </g>
+                </svg>
+                <p class="sc-badge_role-text">участник</p>
+                <p class="sc-badge_event">студенческой конференции&nbsp;2.0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Запись через бота.
+             🟡 data-tilda-form-name — имя скрытой формы в настройках Тильды, буква в букву.
+                Сейчас рабочее название: сверьте, когда форму заведут.
+             🟡 data-signup-source — название лендинга для отдела продаж: уходит в поле form_source
+                вместе с пометкой, как человек записался — через бота или через запасную форму.
+             🟡 data-metrika-id — номер счётчика Метрики. Можно оставить пустым: скрипт найдёт его сам. -->
+        <div class="sc-form sc-signup" data-signup data-state="idle"
+             data-tilda-form-name="student-conference-2026"
+             data-signup-source="Заявка с лендинга «Студенческая конференция 2.0»"
+             data-metrika-id="">
+          <h3 class="sc-form_title">Регистрация займёт минуту</h3>
+          <p class="sc-signup_hint" data-bh-only>Выберите мессенджер: бот пришлёт ссылку на&nbsp;эфир и&nbsp;напомнит о&nbsp;начале.</p>
+
+          <!-- 🔴 СЮДА BOTHELP ВСТАВЛЯЕТ СВОИ КНОПКИ И ГАЛОЧКУ СОГЛАСИЯ.
+               Пока они грузятся, на этом месте серые полоски.
+               🔴 Атрибуты data-bh-widget-id и data-bh-customer-id — только на пустом #bh-widget-button-root. -->
+          <div class="sc-signup_widget" data-bh-mount data-bh-state="loading">
+            <div class="sc-signup_skeleton" data-bh-skeleton aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="sc-signup_bh" id="bh-widget-button-root" data-bh-widget-id="33" data-bh-customer-id="278875"></div>
+            <p class="sc-signup_note" data-bh-error hidden>Не&nbsp;удалось загрузить кнопки мессенджеров. Обновите страницу или напишите нам&nbsp;— пришлём ссылку на&nbsp;эфир вручную.</p>
+          </div>
+
+          <!-- 🔴 ЗАПАСНАЯ ФОРМА. Видна, только если BotHelp не поднялся.
+               Заявка уходит в ту же скрытую форму Тильды с пометкой «ссылку на эфир отправить вручную».
+               🟢 Тексты меняйте смело. Имена полей (name=…) не трогайте. -->
+          <form class="sc-signup_fallback" data-signup-fallback novalidate hidden>
+            <p class="sc-signup_hint">Оставьте контакты&nbsp;— пришлём ссылку на&nbsp;эфир в&nbsp;удобный мессенджер.</p>
+            <div class="sc-form_fields">
+              <div class="sc-field" data-signup-field data-state="idle">
+                <label class="sc-field_label" for="signup-name">Имя</label>
+                <input class="sc-field_input" id="signup-name" name="name" type="text" placeholder="Как к&nbsp;вам обращаться" autocomplete="name" maxlength="80" required aria-describedby="signup-name-error" aria-invalid="false">
+                <p class="sc-field_error" id="signup-name-error" aria-live="polite" data-signup-error></p>
+              </div>
+              <div class="sc-field" data-signup-field data-state="idle">
+                <label class="sc-field_label" for="signup-phone">Телефон</label>
+                <input class="sc-field_input" id="signup-phone" name="phone" type="tel" placeholder="+7 900 000-00-00" autocomplete="tel" inputmode="tel" maxlength="24" required aria-describedby="signup-phone-error" aria-invalid="false">
+                <p class="sc-field_error" id="signup-phone-error" aria-live="polite" data-signup-error></p>
+              </div>
+            </div>
+            <fieldset class="sc-form_messenger">
+              <legend class="sc-form_legend">Куда прислать ссылку на&nbsp;эфир?</legend>
+              <label class="sc-choice"><input type="radio" name="messenger" value="telegram" checked><span>Telegram</span></label>
+              <label class="sc-choice"><input type="radio" name="messenger" value="max"><span>MAX</span></label>
+            </fieldset>
+            <p class="sc-signup_note" data-signup-max-note hidden>Напишем в&nbsp;MAX на&nbsp;этот номер телефона.</p>
+            <div class="sc-field" data-signup-field data-signup-telegram-field data-state="idle">
+              <label class="sc-field_label" for="signup-telegram">Ник в&nbsp;Telegram</label>
+              <input class="sc-field_input" id="signup-telegram" name="telegram" type="text" placeholder="@anna_petrova" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="64" required aria-describedby="signup-telegram-error" aria-invalid="false">
+              <p class="sc-field_error" id="signup-telegram-error" aria-live="polite" data-signup-error></p>
+            </div>
+            <div class="sc-signup_consent" data-signup-field data-state="idle">
+              <label class="sc-consent">
+                <input class="sc-consent_input" type="checkbox" name="consent" required aria-describedby="signup-consent-error" aria-invalid="false">
+                <span class="sc-consent_label">Я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на&nbsp;обработку моих персональных данных в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></span>
+              </label>
+              <p class="sc-field_error" id="signup-consent-error" aria-live="polite" data-signup-error></p>
+            </div>
+            <button class="sc-button is-violet is-large sc-form_submit" type="submit" data-signup-submit aria-busy="false"><span data-signup-submit-label>Зарегистрироваться бесплатно</span></button>
+          </form>
+
+          <!-- Экран после отправки запасной формы -->
+          <div class="sc-form_done" data-signup-success role="status" tabindex="-1" hidden>
+            <p class="sc-form_done-title">Вы&nbsp;зарегистрированы</p>
+            <p class="sc-form_done-text">Ссылку на&nbsp;эфир пришлём в&nbsp;<span data-signup-success-messenger>мессенджер</span> утром 21&nbsp;ноября.</p>
+          </div>
+
+          <p class="sc-signup_status" data-lead-status data-state="idle" role="status" aria-live="polite"></p>
+
+          <!-- Запасной выход: показывается, только если переход в мессенджер не сработал. Адрес подставляет скрипт -->
+          <p class="sc-signup_note" data-lead-manual data-bh-only hidden>Мессенджер не&nbsp;открылся? <a href="#" target="_blank" rel="noopener" data-lead-manual-link>Подписаться на&nbsp;бота вручную</a></p>
+        </div>
 
       </div>
     </div>
