@@ -1,6 +1,16 @@
 /* Правки только варианта с меткой. Остальные прототипы не меняются.
    🟢 Здесь можно менять раскладку; значения берём из дизайн-системы. */
 
+/* 🟢 Новые оттенки согласованы Дарьей 12.10.2026 для этого прототипа.
+   Текст на белом: салатовый 4.99:1, оранжевый 5.18:1.
+   Точки: 3.09:1 и 3.56:1. Корневую дизайн-систему здесь не меняем. */
+[data-status] {
+  --indicator-open-text: #4D7C0F;
+  --indicator-open-dot: #65A30D;
+  --indicator-started-text: #C2410C;
+  --indicator-started-dot: #EA580C;
+}
+
 /* Мобильный: обложка ниже по высоте, метка вверху справа у названия. */
 [data-status] .timetable-row_component { position: relative; align-items: start; }
 [data-status] .timetable-row_date { align-self: start; }
@@ -26,19 +36,21 @@
 }
 
 /* Мягко светится только точка. Текст без фона и обводки, движения нет.
-   🟢 Цвета и радиус размытия берём из токенов дизайн-системы. */
+   Радиус размытия берём из дизайн-системы, цвета — из согласованных выше. */
+[data-status] .status-mark_component { color: var(--indicator-open-text); }
 [data-status] .status-mark_dot {
   width: var(--space-xxsmall);
   height: var(--space-xxsmall);
   flex-shrink: 0;
-  box-shadow: 0 0 var(--space-xsmall) var(--status-done-border);
+  background-color: var(--indicator-open-dot);
+  box-shadow: 0 0 var(--space-xsmall) var(--indicator-open-dot);
 }
 [data-status] .status-mark_dot::after { content: none; }
-/* Уже начавшийся курс: тот же приём в цвете warning. */
-[data-status] .status-mark_component.is-started { color: var(--status-warn-text); }
+/* Уже начавшийся курс: тот же приём в оранжевом оттенке. */
+[data-status] .status-mark_component.is-started { color: var(--indicator-started-text); }
 [data-status] .status-mark_component.is-started .status-mark_dot {
-  background-color: currentColor;
-  box-shadow: 0 0 var(--space-xsmall) var(--status-warn-border);
+  background-color: var(--indicator-started-dot);
+  box-shadow: 0 0 var(--space-xsmall) var(--indicator-started-dot);
 }
 
 /* Широкий мобильный: название и индикатор начинаются на одной высоте.
