@@ -50,3 +50,5 @@ Legacy-классы других компонентов остаются сов�
 
 `is-emphasis`: weight 600; `is-callout`: weight 500, line-height 1.3;
 `is-fine-print`: 14px, line-height 1.4. Семантика p/h3 остаётся у композиции.
+
+`body-text_component.is-compact` — фактические подписи и рассрочка в плотных списках: 16px во всех диапазонах, вес 444, line-height 1.2. Первый потребитель — расписание.

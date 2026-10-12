@@ -56,7 +56,11 @@
     return html.replace(/class="([^"]*)"/g, function (attr, classes) {
       if (/\b(?:week-days_component|week-days_note|timetable-row_weekday|day-picker_day)\b/.test(classes)) return attr;
       var role = '';
-      if (/\b(?:timetable-row_title|timetable-row_amount|timetable-row_day|featured-event_day|featured-event_title)\b/.test(classes)) {
+      if (/\btimetable-row_title\b/.test(classes)) {
+        role = 'content-heading_component is-compact';
+      } else if (/\btimetable-row_meta\b/.test(classes)) {
+        role = 'body-text_component is-compact';
+      } else if (/\b(?:timetable-row_amount|timetable-row_day|featured-event_day|featured-event_title)\b/.test(classes)) {
         role = 'content-heading_component is-card';
       } else if (/\bheading-style-h[123]\b/.test(classes)) {
         role = 'section-title_component is-responsive';
@@ -69,7 +73,7 @@
       } else if (/\btext-size-caption-md\b/.test(classes)) {
         role = 'body-text_component is-caption';
       } else if (/\btext-size-caption-sm\b/.test(classes)) {
-        role = 'body-text_component is-fine-print';
+        role = /\bstatus-mark_component\b/.test(classes) ? 'body-text_component is-fine-print' : 'body-text_component is-compact';
       }
       if (!role) return attr;
       classes = classes.replace(/\b(?:heading-style-h[1-6]|text-size-[a-z-]+|text-weight-[a-z-]+)\b/g, '').replace(/\s+/g, ' ').trim();

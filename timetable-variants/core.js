@@ -394,7 +394,7 @@
       '<div class="timetable-row_main">' +
         heading +
         (opts.started && !mark ? '<span class="text-size-caption-md text-weight-semibold text-color-primary">Идёт с ' + dateLong(it.start) + '</span>' : '') +
-        (meta ? '<span class="text-size-caption-md text-color-secondary">' + esc(meta) + '</span>' : '') +
+        (meta ? '<span class="timetable-row_meta text-size-caption-md text-color-secondary">' + esc(meta) + '</span>' : '') +
         weekDays(it) +
       '</div>' +
       '<span class="timetable-row_price">' + priceHtml(it) + '</span>' +
