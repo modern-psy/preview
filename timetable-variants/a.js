@@ -42,6 +42,11 @@
   var DAY_NAMES = { 1: 'понедельник', 2: 'вторник', 3: 'среда', 4: 'четверг', 5: 'пятница', 6: 'суббота', 0: 'воскресенье' };
 
   var state = { days: {} };
+
+  // Страница a-status.html — та же, но с меткой «Идёт набор» у курсов
+  // месяцев и «Старта в любое время» (у «Последнего шанса» и листа ожидания её нет)
+  var SHOW_STATUS = document.body.hasAttribute('data-status');
+  var ROW_OPTS = { status: SHOW_STATUS };
   var data = null;
 
   function hasDays() { return Object.keys(state.days).length > 0; }
@@ -155,13 +160,13 @@
 
     T.byMonth(upcoming).forEach(function (g) {
       var withYear = data.showYear && g.date.getFullYear() !== data.today.getFullYear();
-      html += section(T.monthTitle(g.date, withYear), rows(g.items), 'month-' + g.key);
+      html += section(T.monthTitle(g.date, withYear), rows(g.items, ROW_OPTS), 'month-' + g.key);
     });
 
-    if (anytime.length) html += section('Старт в любое время', rows(anytime));
+    if (anytime.length) html += section('Старт в любое время', rows(anytime, ROW_OPTS));
 
     if (unscheduled.length) {
-      html += captioned('Без постоянных дней', 'Интенсивы и курсы, у которых дни занятий ещё уточняются.', rows(unscheduled), 'unscheduled');
+      html += captioned('Без постоянных дней', 'Интенсивы и курсы, у которых дни занятий ещё уточняются.', rows(unscheduled, ROW_OPTS), 'unscheduled');
     }
 
     var wait = data.waitlist;

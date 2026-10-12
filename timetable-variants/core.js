@@ -198,6 +198,7 @@
         band: time ? (time.from >= EVENING_FROM ? 'evening' : 'day') : null,
         intensive: intensive,
         msk: /мск/i.test(raw.schedule || ''),
+        status: raw.status || null,
         description: c && c.description ? c.description.trim() : null,
         cover: c && c.cover && c.cover.url ? c.cover.url : null,
         price: price,
@@ -344,9 +345,19 @@
     return '<span class="week-days_component text-size-caption-md" role="img" aria-label="Занятия: ' + daysLabel(it.days) + '">' + html + '</span>';
   }
 
+  // --- Метка «Идёт набор»: зелёная точка с мягкой пульсацией и текст ---
+  // Статус берётся из CMS. Если там не «Идёт набор» — метки нет.
+  function statusMark(it) {
+    if (!/набор/i.test(it.status || '')) return '';
+    return '<span class="status-mark_component text-size-caption-md text-weight-medium">' +
+      '<span class="status-mark_dot" aria-hidden="true"></span>Идёт набор</span>';
+  }
+
   // --- Строка потока: вся строка — ссылка на страницу курса ---
   // opts.started — курс уже идёт (блок «Последний шанс»): вместо колонки
   //                с датой фраза «Идёт с 18 сентября» под названием.
+  // opts.status  — показать зелёную метку «Идёт набор» над ценой
+  //                (только если такой статус пришёл из CMS).
   // В обычной строке месяц не пишем: он уже стоит в заголовке панели.
   // Следующие потоки того же курса не упоминаем: собираем на ближайший.
   function row(it, opts) {
@@ -371,7 +382,7 @@
         (meta ? '<span class="text-size-caption-md text-color-secondary">' + esc(meta) + '</span>' : '') +
         weekDays(it) +
       '</span>' +
-      '<span class="timetable-row_price">' + priceHtml(it) + '</span>' +
+      '<span class="timetable-row_price">' + (opts.status ? statusMark(it) : '') + priceHtml(it) + '</span>' +
       // Стрелка вместо кнопки «Записаться»: нажимается вся строка, а стрелка
       // показывает, куда. Внутри ссылки — span, ссылку в ссылку класть нельзя.
       '<span class="timetable-row_arrow" aria-hidden="true">' +

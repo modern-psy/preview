@@ -226,6 +226,40 @@ body { background-color: var(--bg-page); }
 }
 
 
+/* --- Метка «Идёт набор» (страница a-status.html) ---
+   Зелёная точка и текст, без плашки и обводки. Точка мягко пульсирует:
+   вокруг неё расходится и тает кольцо. При настройке «уменьшить
+   движение» пульсация выключается сама (base.css). */
+.status-mark_component {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xsmall);
+  color: var(--status-done-text);
+  white-space: nowrap;
+}
+.status-mark_dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--status-done-text);
+}
+.status-mark_dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--status-done-border);
+  animation: status-mark-pulse 2s var(--ease-out) infinite;
+}
+@keyframes status-mark-pulse {
+  0%   { transform: scale(1);   opacity: .9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+/* Над суммой — небольшой отступ, чтобы метка не слипалась с ценой */
+.timetable-row_price .status-mark_component { margin-bottom: var(--space-tiny); }
+
+
 /* --- Купон скидки «−10 % | до 31 октября» ---
    Две части, как у отрывного купона: слева размер скидки на жёлтом
    поярче, справа срок на бледно-жёлтом. На линии отрыва сверху
