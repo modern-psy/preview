@@ -1,0 +1,592 @@
+<!-- ОБЩИЕ СТИЛИ 3/3. Один раз на странице, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<style>
+/* === business-consulting/page.css === */
+/* Тема лендинга «Корпоративное консультирование для психологов» (адрес /business-consulting) и его проектные блоки.
+   Общие блоки Академии приходят из web-academy/shared/academy при сборке (node business-consulting/build.mjs)
+   и лежат выше этого файла в style.css. Здесь только переменные темы на .business-consulting-page и то, чего нет
+   в общих блоках: первый экран «Описание в плашке», схема «Несколько компаний», «Для кого», таблица сравнения,
+   «Как вы будете учиться», программа с результатами, преподаватель, цена и «Гибкие условия оплаты».
+   Цвета и размеры менять здесь, тексты — в data/*.json. */
+
+.business-consulting-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-page-background: #f5f5f5;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-text: #644ab2;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  /* Вторичный текст #6b6970: 4,96:1 на фоне страницы #f5f5f5 и 5,41:1 на белом (как в narrative-therapy). */
+  --color-text-secondary: #6b6970;
+  --color-text-secondary-large: #6b6970;
+  --color-text-on-dark-muted: #e6e5eb;
+  /* Тёмные поверхности: поле #2B2334, чуть светлее — плашки на нём, подписи #BDB7C9 (7,9:1 на поле). */
+  --dark-field: #2b2334;
+  --dark-raise: #383041;
+  --dark-muted: #bdb7c9;
+  --dark-line: rgb(255 255 255 / 12%);
+  /* Серые линии и подложки на белом и на фоне страницы. */
+  --line: #e8e6ee;
+  --line-strong: #cfd1db;
+  --chip-surface: #efeef2;
+  --hero-section-offset: 2rem;
+  --page-padding: 1rem;
+  /* Под первым экраном сразу идут «кубики», поэтому отступ между ними — как между карточками. */
+  --hero-section-end: var(--card-grid-gap, 0.75rem);
+  --hero-section-end-desktop: var(--card-grid-gap, 1rem);
+  overflow: visible;
+}
+@media (min-width: 48rem) {
+  .business-consulting-page { --hero-section-offset: 3rem; --page-padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .business-consulting-page { --page-padding: clamp(1.5rem, 4.7619vw, 5rem); }
+}
+
+.business-consulting-page :where(a, button) { cursor: pointer; }
+.business-consulting-page :where(h3, h4, p, ul, ol) { margin: 0; }
+
+/* Тёмные поверхности отвечают за контраст подписей формы, как в эталоне. */
+.business-consulting-page .lead-form_component { --section-subtitle-color: var(--color-form-muted); }
+@media (prefers-reduced-motion: reduce) {
+  .business-consulting-page .button_component { transition: none; }
+}
+
+/* Точечная защита цветов от глобальных правил Тильды (только эти варианты, с их состояниями). */
+.business-consulting-page a.button_component.is-light,
+.business-consulting-page a.button_component.is-light:hover,
+.business-consulting-page a.button_component.is-light:focus-visible { color: var(--color-text-primary) !important; }
+.business-consulting-page a.button_component.is-accent,
+.business-consulting-page a.button_component.is-accent:hover,
+.business-consulting-page a.button_component.is-accent:focus-visible { color: var(--color-text-on-dark) !important; }
+
+.business-consulting-page .screen-reader-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ===== 1. Первый экран «Описание в плашке» (эталон В3/К4, как на /treningi-dlya-detey) =====
+   Поле #2B2334. Телефон и планшет: заголовок, плашка с подводкой, ниже фото, а плитки, кнопка и подпись лежат
+   прямо на фото — его низ растворяется в поле, поэтому мелкий белый текст стоит на тёмном.
+   От 1025px: слева заголовок, плашка, плитки и кнопка; справа фото в рамке на всю высоту. */
+.hero-panel_component { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "panel" "photo"; gap: 1rem; padding: 1rem; border-radius: 1.5rem; background: var(--dark-field); color: #fff; }
+.hero-panel_text { display: contents; }
+.hero-panel_heading { grid-area: title; margin: 0; padding: 0.5rem 0.25rem 0; color: #fff; font-size: clamp(1.75rem, 7vw, 2.875rem); font-weight: 500; line-height: 1; letter-spacing: -0.035em; text-wrap: balance; }
+.hero-panel_panel { grid-area: panel; display: grid; gap: 0.5rem; padding: 1rem 1rem 0.25rem; border-radius: 1.25rem; background: var(--dark-raise); }
+.hero-panel_lead { color: var(--color-text-on-dark-muted); font-size: 0.96875rem; line-height: 1.4; }
+/* Строки — как поля «откуда / куда» у Uber: иконки в кружках, между ними пунктир, строки разделены тонкой линией. */
+.hero-panel_rows { position: relative; display: grid; margin: 0; padding: 0; list-style: none; }
+.hero-panel_rows::before { content: ""; position: absolute; top: 1.75rem; bottom: 1.75rem; left: 1.0625rem; border-left: 1.5px dashed rgb(255 255 255 / 26%); }
+.hero-panel_row { position: relative; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0.75rem; align-items: center; padding: 0.75rem 0; color: #fff; font-size: 0.9375rem; line-height: 1.35; }
+.hero-panel_row + .hero-panel_row::before { content: ""; position: absolute; top: 0; right: 0; left: 3rem; border-top: 1px solid var(--dark-line); }
+.hero-panel_row-icon { position: relative; z-index: 1; display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--dark-field); color: var(--color-text-on-dark-muted); }
+.hero-panel_cta { grid-area: photo; z-index: 1; display: grid; align-content: end; gap: 0.75rem; padding: 8.5rem 0.875rem 1rem; border-radius: 1.25rem; background: linear-gradient(180deg, rgb(43 35 52 / 0%) 28%, rgb(43 35 52 / 86%) 56%, #2b2334 100%); }
+.hero-panel_tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.hero-panel_tile { display: flex; align-items: center; gap: 0.625rem; padding: 0.875rem; border-radius: 1rem; background: var(--dark-raise); color: #fff; font-size: 0.96875rem; font-weight: 500; line-height: 1.2; }
+.hero-panel_tile .hero-icon { color: var(--color-text-on-dark-muted); }
+.hero-panel_actions { display: grid; gap: 0.75rem; }
+.hero-panel_button { width: 100%; }
+/* Фото вертикальное (1012 × 1616), поэтому рамка задаёт свою пропорцию: на телефоне квадрат, на планшете 16 : 9,
+   на компьютере фото по высоте текста в колонке шире, чем было, — иначе оно вытягивает первый экран. */
+.hero-panel_photo { grid-area: photo; display: block; align-self: stretch; width: 100%; height: auto; min-height: 0; aspect-ratio: 1 / 1; border-radius: 1.25rem; object-fit: cover; object-position: 50% 30%; }
+@media (min-width: 48rem) {
+  .hero-panel_component { gap: 1.25rem; padding: 1.5rem; }
+  .hero-panel_panel { padding: 1.25rem 1.5rem 0.375rem; }
+  .hero-panel_lead { font-size: 1.0625rem; }
+  .hero-panel_row { font-size: 1rem; }
+  .hero-panel_cta { padding: 10rem 1.25rem 1.25rem; gap: 1rem; }
+  .hero-panel_tile { padding: 1rem 1.125rem; font-size: 1.125rem; }
+  .hero-panel_actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.875rem 1.375rem; }
+  .hero-panel_button { width: auto; flex: 0 1 18rem; }
+  .hero-panel_photo { aspect-ratio: 16 / 9; object-position: 50% 32%; }
+}
+@media (min-width: 64.0625rem) {
+  .hero-panel_component { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); grid-template-areas: "text photo"; gap: 3rem; padding: 2.5rem; border-radius: 1.75rem; }
+  .hero-panel_text { grid-area: text; display: grid; align-content: start; gap: 1.5rem; }
+  .hero-panel_heading { grid-area: auto; padding: 0; font-size: clamp(2.5rem, 3.3vw, 3.5rem); }
+  .hero-panel_panel { grid-area: auto; padding: 1.25rem 1.5rem 0.625rem; }
+  .hero-panel_cta { grid-area: auto; gap: 1.5rem; padding: 0; background: none; }
+  /* Высоту первого экрана задаёт текст, а не фото: contain: size не даёт фото растянуть строку сетки. */
+  .hero-panel_photo { height: 100%; aspect-ratio: auto; contain: size; object-position: 50% 40%; }
+}
+/* Иконки Lucide: 20 px, цвет как у текста рядом. */
+.hero-icon { display: block; width: 1.25rem; height: 1.25rem; flex: none; }
+
+/* ===== 1.1. «Кубики» под первым экраном — общий benefits Академии =====
+   Три белые плитки: часы, форматы, удостоверение. Телефон — друг под другом, от 768px — три в ряд. */
+.section_facts { --hero-card-title-size: 1.375rem; --hero-card-body-size: 1rem; --hero-card-height: 0rem; --hero-title-gap: 0.5rem; padding-bottom: var(--section-space); }
+.section_facts .card_description { color: var(--color-text-secondary); line-height: 1.4; }
+@media (min-width: 48rem) {
+  .section_facts .benefits_component { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .section_facts { --hero-card-height: 10rem; }
+  .section_facts .benefits_card { grid-column: auto; }
+}
+@media (min-width: 64.0625rem) {
+  .section_facts { --hero-card-title-size: 1.625rem; --hero-card-body-size: 1.0625rem; --hero-card-height: 11rem; }
+}
+
+/* ===== 2. «Несколько компаний в практике — стабильный доход» и схема работы (правка 3) =====
+   Пять этапов на одной серой линии: на телефоне и планшете линия вертикальная (кружок с номером слева),
+   от 1025px — горизонтальная, этапы в ряд. Шестой этап — тёмная плашка во всю ширину: слева итог,
+   справа пример «три компании одновременно» — у каждой полоса из пяти делений, закрашено до её этапа. */
+.companies_component { display: grid; gap: 1.5rem; }
+.companies_scheme-title { color: var(--color-text-primary); font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-align: center; text-wrap: balance; }
+.companies_steps { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0; padding: 0; list-style: none; }
+.companies_step { position: relative; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); align-content: start; gap: 1rem; padding-bottom: 1.5rem; }
+/* Линия от кружка к следующему этапу. */
+.companies_step::before { content: ""; position: absolute; top: 2.5rem; bottom: 0; left: 1.25rem; border-left: 1px solid var(--line-strong); }
+.companies_node { position: relative; z-index: 1; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 1rem; font-weight: 500; line-height: 1; }
+.companies_copy { display: grid; align-content: start; gap: 0.375rem; padding-top: 0.5rem; }
+.companies_step-title { color: var(--color-text-primary); font-size: 1.125rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
+.companies_step-text { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; text-wrap: pretty; }
+.companies_final { display: grid; gap: 1.25rem; padding: 1rem; border-radius: var(--radius-card); background: var(--dark-field); color: #fff; }
+.companies_final-copy { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 1rem; }
+.companies_node.is-final { border-color: transparent; background: #fff; color: var(--dark-field); }
+.companies_final-title { color: #fff; font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+.companies_final-text { color: var(--color-text-on-dark-muted); font-size: 0.9375rem; line-height: 1.45; text-wrap: pretty; }
+.companies_example { display: grid; gap: 0.25rem; padding: 0.875rem 1rem 0.375rem; border-radius: 0.75rem; background: var(--dark-raise); }
+.companies_example-label { color: var(--dark-muted); font-size: 0.8125rem; line-height: 1.3; }
+.companies_tracks { display: grid; margin: 0; padding: 0; list-style: none; }
+.companies_track { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "name stage" "dots dots"; gap: 0.5rem 0.75rem; align-items: baseline; padding: 0.75rem 0; }
+.companies_track + .companies_track { border-top: 1px solid var(--dark-line); }
+.companies_track-name { grid-area: name; color: #fff; font-size: 0.9375rem; font-weight: 500; line-height: 1.2; }
+.companies_track-stage { grid-area: stage; justify-self: end; color: var(--dark-muted); font-size: 0.875rem; line-height: 1.2; text-align: right; }
+.companies_track-dots { grid-area: dots; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.25rem; }
+.companies_dot { height: 0.375rem; border-radius: 1rem; background: rgb(255 255 255 / 14%); }
+.companies_dot.is-done { background: rgb(255 255 255 / 45%); }
+.companies_dot.is-current { background: #fff; }
+@media (min-width: 48rem) {
+  .companies_component { gap: 2rem; }
+  .companies_scheme-title { font-size: 1.5rem; }
+  .companies_step { padding-bottom: 1.75rem; }
+  .companies_step-title { font-size: 1.25rem; }
+  .companies_step-text { font-size: 1rem; }
+  .companies_final { gap: 1.5rem; padding: 1.5rem; }
+  .companies_final-title { font-size: 1.5rem; }
+  .companies_final-text { font-size: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .companies_steps { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2.5rem 1.5rem; }
+  .companies_step { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding-bottom: 0; }
+  .companies_step::before { top: 1.25rem; right: -1.5rem; bottom: auto; left: 2.5rem; border-top: 1px solid var(--line-strong); border-left: 0; }
+  .companies_step:nth-child(5)::before { display: none; }
+  .companies_copy { padding-top: 0; }
+  .companies_final { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3rem; padding: 2rem; }
+  .companies_example { padding: 1rem 1.25rem 0.5rem; }
+}
+
+/* ===== 3. «Для кого этот курс» — три белые карточки (тексты без изменений) =====
+   Телефон: друг под другом. Планшет: роль слева, текст справа. От 1025px: три колонки. */
+.audience-roles_list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap, 0.75rem); margin: 0; padding: 0; list-style: none; }
+.audience-roles_card { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; padding: 1.25rem 1rem; border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.audience-roles_title { color: var(--color-text-primary); font-size: 1.375rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.audience-roles_text { color: var(--color-text-secondary); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .audience-roles_card { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 2rem; padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .audience-roles_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .audience-roles_card { display: flex; gap: 1rem; padding: 1.5rem; }
+  .audience-roles_title { font-size: 1.625rem; }
+  .audience-roles_text { font-size: 1.0625rem; }
+}
+
+/* ===== 4. «Чем работа корпоративного психолога отличается от частной практики» — таблица (правка 5) =====
+   От 768px: белая карточка-таблица, слева тема серым, дальше психолог в частной практике и корпоративный
+   психолог — тёмная полоса #2B2334. До 768px композиция другая (поэтому здесь max-width): каждая строка —
+   маленькая серая подпись темы и под ней пара половин, светлая и тёмная, с плашкой «чей это вариант».
+   Шапка таблицы на телефоне остаётся только для скринридера. */
+.compare_table { width: 100%; border-collapse: separate; border-spacing: 0; color: var(--color-text-primary); text-align: left; }
+@media (max-width: 47.9375rem) {
+  .compare_table,
+  .compare_table tbody,
+  .compare_row,
+  .compare_topic,
+  .compare_cell { display: block; }
+  .compare_head { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .compare_table tbody { display: grid; gap: 1.5rem; }
+  .compare_topic { padding: 0 0.25rem 0.5rem; color: var(--color-text-secondary); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+  .compare_cell { padding: 0.875rem 1rem 1rem; font-size: 0.9375rem; line-height: 1.45; }
+  .compare_cell::before { content: attr(data-label); display: block; width: fit-content; margin-bottom: 0.5rem; padding: 0.25rem 0.5rem; border-radius: 6rem; font-size: 0.75rem; font-weight: 500; line-height: 1.2; }
+  .compare_cell.is-regular { border-radius: var(--radius-card) var(--radius-card) 0 0; background: var(--color-surface-primary); color: var(--color-text-secondary); }
+  .compare_cell.is-regular::before { background: var(--chip-surface); color: var(--color-text-primary); }
+  .compare_cell.is-corporate { border-radius: 0 0 var(--radius-card) var(--radius-card); background: var(--dark-field); color: #fff; }
+  .compare_cell.is-corporate::before { background: var(--dark-raise); color: var(--color-text-on-dark-muted); }
+}
+@media (min-width: 48rem) {
+  .compare_component { overflow: hidden; border-radius: var(--radius-card); background: var(--color-surface-primary); }
+  .compare_table { table-layout: fixed; }
+  .compare_th { padding: 1.25rem 1.25rem 1rem; font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; vertical-align: bottom; }
+  .compare_th.is-topic { width: 22%; color: var(--color-text-secondary); font-size: 0.9375rem; letter-spacing: 0; }
+  .compare_th.is-corporate { width: 42%; background: var(--dark-field); color: #fff; }
+  .compare_topic,
+  .compare_cell { padding: 1.125rem 1.25rem; border-top: 1px solid var(--line); vertical-align: top; }
+  .compare_topic { color: var(--color-text-secondary); font-size: 0.9375rem; font-weight: 500; line-height: 1.4; }
+  .compare_cell { font-size: 0.9375rem; line-height: 1.45; }
+  .compare_cell.is-regular { color: var(--color-text-primary); }
+  .compare_cell.is-corporate { border-top-color: var(--dark-line); background: var(--dark-field); color: #fff; }
+}
+@media (min-width: 64.0625rem) {
+  .compare_th { padding: 1.75rem 2rem 1.25rem; font-size: 1.5rem; }
+  .compare_th.is-topic { width: 20%; font-size: 1rem; }
+  .compare_topic,
+  .compare_cell { padding: 1.5rem 2rem; }
+  .compare_topic { font-size: 1rem; }
+  .compare_cell { font-size: 1.0625rem; }
+}
+
+/* ===== 5. «Как вы будете учиться» — вкладки и анимированные схемы (правка 6, 12.10.2026) =====
+   Белая панель. Слева вкладки-шаги столбиком: серая плашка «когда» и название; выбранная — тёмная #2B2334.
+   Текст выбранного шага — внизу карточки (просьба Дарьи 12.10.2026): на компьютере прижат к низу левой колонки,
+   справа светлая сцена со схемой (scenes.mjs). До 1025px всё в одну колонку: вкладки друг под другом, ниже схема,
+   текст последним (обёртка вкладок «прозрачная», порядок задаёт order). Без скрипта видны все тексты и все схемы. */
+.learning-tabs_layout { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding: var(--card-padding, 1rem); border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.learning-tabs_panel { display: contents; }
+.learning-tabs_list { display: flex; flex-direction: column; gap: 0.5rem; order: 1; }
+.learning-tabs_tab { display: grid; justify-items: start; gap: 0.5rem; width: 100%; padding: 0.875rem 1rem; border: 0; border-radius: 0.75rem; background: var(--color-page-background); color: var(--color-text-primary); font: inherit; text-align: left; cursor: pointer; transition: background-color var(--motion-duration) var(--motion-easing), color var(--motion-duration) var(--motion-easing); }
+.learning-tabs_tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.learning-tabs_when { padding: 0.25rem 0.5rem; border-radius: 6rem; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 0.8125rem; font-weight: 500; line-height: 1.2; transition: background-color var(--motion-duration) var(--motion-easing), color var(--motion-duration) var(--motion-easing); }
+.learning-tabs_title { font-size: 1.125rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; text-wrap: balance; }
+.learning-tabs_tab[aria-selected="true"] { background: var(--dark-field); color: #fff; }
+.learning-tabs_tab[aria-selected="true"] .learning-tabs_when { background: var(--dark-raise); color: var(--color-text-on-dark-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .learning-tabs_tab:not([aria-selected="true"]):hover { background: var(--chip-surface); }
+}
+.learning-tabs_copy { display: grid; order: 3; padding-inline: 0.25rem; color: var(--color-text-secondary); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+.learning-tabs_text[hidden],
+.learning-tabs_scene[hidden] { display: none; }
+.learning-tabs_stage { display: grid; min-width: 0; order: 2; gap: var(--card-grid-gap, 0.75rem); }
+.learning-tabs_scene { width: 100%; min-width: 0; aspect-ratio: 3 / 2; overflow: clip; border-radius: 0.75rem; background: var(--color-page-background); }
+@media (min-width: 48rem) {
+  .learning-tabs_layout { gap: 1.5rem; padding: 1.5rem; }
+  .learning-tabs_title { font-size: 1.25rem; }
+  .learning-tabs_copy { font-size: 1.0625rem; }
+}
+@media (min-width: 64.0625rem) {
+  .learning-tabs_layout { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: stretch; gap: 2.5rem; padding: 2rem; }
+  .learning-tabs_panel { display: flex; min-width: 0; flex-direction: column; gap: 1.5rem; }
+  .learning-tabs_copy { margin-top: auto; padding-bottom: 0.25rem; }
+  .learning-tabs_tab { padding: 1rem 1.25rem; }
+  .learning-tabs_title { font-size: 1.375rem; }
+  .learning-tabs_copy { padding-inline: 0.5rem; }
+  .learning-tabs_scene { height: 100%; min-height: 22rem; aspect-ratio: auto; }
+}
+
+/* Схемы (learning-scene) на светлой сцене: линии и подписи тёмные, стикеры доски — мягкие серый, сиреневый и зелёный.
+   Фиолетовый — только рамка «говорящего» на занятии. Цикл 10 секунд: элементы появляются по очереди (is-at-N,
+   4 % + 8 % × N цикла; is-late — ещё на 4 % позже), держатся и вместе гаснут перед новым кругом.
+   При «уменьшить движение» схема стоит в конечном виде. */
+.learning-scene { display: block; width: 100%; height: 100%; }
+.learning-scene_label { fill: var(--color-text-primary); font-size: 12.5px; font-weight: 500; letter-spacing: -0.01em; }
+.learning-scene_label.is-muted { fill: var(--color-text-secondary); font-weight: 444; }
+.learning-scene_label.is-strong { font-size: 14px; }
+.learning-scene_label.is-on-dark { fill: #fff; }
+.learning-scene_window,
+.learning-scene_card { fill: var(--color-surface-primary); stroke: var(--line-strong); stroke-width: 1; }
+.learning-scene_slide { fill: var(--color-page-background); }
+.learning-scene_tile,
+.learning-scene_tool { fill: var(--chip-surface); }
+.learning-scene_dot { fill: var(--line-strong); }
+.learning-scene_dot.is-dark { fill: var(--color-text-primary); }
+.learning-scene_avatar { fill: #dcdae3; }
+.learning-scene_head,
+.learning-scene_body { fill: var(--color-surface-primary); }
+.learning-scene_speaking { fill: none; stroke: var(--color-accent-primary); stroke-width: 2; }
+.learning-scene_bar { fill: none; stroke: #c9c6d3; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1; }
+.learning-scene_bar.is-title { stroke: var(--color-text-primary); stroke-width: 8; }
+.learning-scene_bar.is-static { stroke-dasharray: none; }
+.learning-scene_bar.is-thin { stroke: rgb(51 47 65 / 22%); stroke-width: 4; }
+.learning-scene_link { fill: none; stroke: var(--color-text-primary); stroke-opacity: 0.45; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+.learning-scene_link.is-dashed { stroke-opacity: 0.35; }
+.learning-scene_link.is-arrow { stroke-opacity: 0.6; }
+.learning-scene_chip { fill: var(--color-surface-primary); stroke: var(--line-strong); stroke-width: 1; }
+.learning-scene_check-dot { fill: var(--dark-field); }
+.learning-scene_check { fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.learning-scene_bubble { fill: var(--color-surface-primary); stroke: var(--line-strong); stroke-width: 1; }
+.learning-scene_badge { fill: var(--dark-field); }
+.learning-scene_note.is-task { fill: #ecebf0; }
+.learning-scene_note.is-tool { fill: var(--color-accent-soft); }
+.learning-scene_note.is-result { fill: #d3eee3; }
+.learning-scene_pointer { fill: var(--color-text-primary); stroke: #fff; stroke-width: 1.2; stroke-linejoin: round; }
+/* Курсор доски без анимации стоит у последнего стикера. */
+.learning-scene_cursor { transform-box: view-box; transform: translate(288px, 148px); }
+@media (prefers-reduced-motion: no-preference) {
+  .learning-scene :is(.learning-scene_pop, .learning-scene_bar:not(.is-static), .learning-scene_link, .learning-scene_speaking, .learning-scene_cursor) { animation-duration: 10000ms; animation-iteration-count: infinite; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); animation-fill-mode: both; }
+  .learning-scene_pop { transform-box: fill-box; transform-origin: center; }
+  .learning-scene_pop.is-at-0:not(.is-late) { animation-name: business-consulting-pop-0; }
+  .learning-scene_pop.is-at-0.is-late { animation-name: business-consulting-pop-0-late; }
+  .learning-scene_pop.is-at-1:not(.is-late) { animation-name: business-consulting-pop-1; }
+  .learning-scene_pop.is-at-1.is-late { animation-name: business-consulting-pop-1-late; }
+  .learning-scene_pop.is-at-2:not(.is-late) { animation-name: business-consulting-pop-2; }
+  .learning-scene_pop.is-at-2.is-late { animation-name: business-consulting-pop-2-late; }
+  .learning-scene_pop.is-at-3:not(.is-late) { animation-name: business-consulting-pop-3; }
+  .learning-scene_pop.is-at-3.is-late { animation-name: business-consulting-pop-3-late; }
+  .learning-scene_pop.is-at-4:not(.is-late) { animation-name: business-consulting-pop-4; }
+  .learning-scene_pop.is-at-4.is-late { animation-name: business-consulting-pop-4-late; }
+  .learning-scene_pop.is-at-5:not(.is-late) { animation-name: business-consulting-pop-5; }
+  .learning-scene_pop.is-at-5.is-late { animation-name: business-consulting-pop-5-late; }
+  .learning-scene_pop.is-at-6:not(.is-late) { animation-name: business-consulting-pop-6; }
+  .learning-scene_pop.is-at-6.is-late { animation-name: business-consulting-pop-6-late; }
+  .learning-scene_pop.is-at-7:not(.is-late) { animation-name: business-consulting-pop-7; }
+  .learning-scene_pop.is-at-7.is-late { animation-name: business-consulting-pop-7-late; }
+  .learning-scene_pop.is-at-8:not(.is-late) { animation-name: business-consulting-pop-8; }
+  .learning-scene_pop.is-at-8.is-late { animation-name: business-consulting-pop-8-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-0:not(.is-late) { animation-name: business-consulting-draw-0; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-0.is-late { animation-name: business-consulting-draw-0-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-1:not(.is-late) { animation-name: business-consulting-draw-1; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-1.is-late { animation-name: business-consulting-draw-1-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-2:not(.is-late) { animation-name: business-consulting-draw-2; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-2.is-late { animation-name: business-consulting-draw-2-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-3:not(.is-late) { animation-name: business-consulting-draw-3; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-3.is-late { animation-name: business-consulting-draw-3-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-4:not(.is-late) { animation-name: business-consulting-draw-4; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-4.is-late { animation-name: business-consulting-draw-4-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-5:not(.is-late) { animation-name: business-consulting-draw-5; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-5.is-late { animation-name: business-consulting-draw-5-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-6:not(.is-late) { animation-name: business-consulting-draw-6; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-6.is-late { animation-name: business-consulting-draw-6-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-7:not(.is-late) { animation-name: business-consulting-draw-7; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-7.is-late { animation-name: business-consulting-draw-7-late; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-8:not(.is-late) { animation-name: business-consulting-draw-8; }
+  :is(.learning-scene_bar, .learning-scene_link).is-at-8.is-late { animation-name: business-consulting-draw-8-late; }
+  .learning-scene_speaking { animation-name: business-consulting-speaking; animation-timing-function: ease-in-out; }
+  .learning-scene_cursor { animation-name: business-consulting-cursor; }
+}
+@keyframes business-consulting-pop-0 { 0%, 4% { opacity: 0; transform: translateY(4px) scale(0.96); } 9%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-0 { 0%, 4% { stroke-dashoffset: 1; opacity: 0; } 4.5% { opacity: 1; } 11%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-0-late { 0%, 8% { opacity: 0; transform: translateY(4px) scale(0.96); } 13%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-0-late { 0%, 8% { stroke-dashoffset: 1; opacity: 0; } 8.5% { opacity: 1; } 15%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-1 { 0%, 12% { opacity: 0; transform: translateY(4px) scale(0.96); } 17%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-1 { 0%, 12% { stroke-dashoffset: 1; opacity: 0; } 12.5% { opacity: 1; } 19%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-1-late { 0%, 16% { opacity: 0; transform: translateY(4px) scale(0.96); } 21%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-1-late { 0%, 16% { stroke-dashoffset: 1; opacity: 0; } 16.5% { opacity: 1; } 23%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-2 { 0%, 20% { opacity: 0; transform: translateY(4px) scale(0.96); } 25%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-2 { 0%, 20% { stroke-dashoffset: 1; opacity: 0; } 20.5% { opacity: 1; } 27%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-2-late { 0%, 24% { opacity: 0; transform: translateY(4px) scale(0.96); } 29%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-2-late { 0%, 24% { stroke-dashoffset: 1; opacity: 0; } 24.5% { opacity: 1; } 31%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-3 { 0%, 28% { opacity: 0; transform: translateY(4px) scale(0.96); } 33%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-3 { 0%, 28% { stroke-dashoffset: 1; opacity: 0; } 28.5% { opacity: 1; } 35%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-3-late { 0%, 32% { opacity: 0; transform: translateY(4px) scale(0.96); } 37%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-3-late { 0%, 32% { stroke-dashoffset: 1; opacity: 0; } 32.5% { opacity: 1; } 39%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-4 { 0%, 36% { opacity: 0; transform: translateY(4px) scale(0.96); } 41%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-4 { 0%, 36% { stroke-dashoffset: 1; opacity: 0; } 36.5% { opacity: 1; } 43%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-4-late { 0%, 40% { opacity: 0; transform: translateY(4px) scale(0.96); } 45%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-4-late { 0%, 40% { stroke-dashoffset: 1; opacity: 0; } 40.5% { opacity: 1; } 47%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-5 { 0%, 44% { opacity: 0; transform: translateY(4px) scale(0.96); } 49%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-5 { 0%, 44% { stroke-dashoffset: 1; opacity: 0; } 44.5% { opacity: 1; } 51%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-5-late { 0%, 48% { opacity: 0; transform: translateY(4px) scale(0.96); } 53%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-5-late { 0%, 48% { stroke-dashoffset: 1; opacity: 0; } 48.5% { opacity: 1; } 55%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-6 { 0%, 52% { opacity: 0; transform: translateY(4px) scale(0.96); } 57%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-6 { 0%, 52% { stroke-dashoffset: 1; opacity: 0; } 52.5% { opacity: 1; } 59%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-6-late { 0%, 56% { opacity: 0; transform: translateY(4px) scale(0.96); } 61%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-6-late { 0%, 56% { stroke-dashoffset: 1; opacity: 0; } 56.5% { opacity: 1; } 63%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-7 { 0%, 60% { opacity: 0; transform: translateY(4px) scale(0.96); } 65%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-7 { 0%, 60% { stroke-dashoffset: 1; opacity: 0; } 60.5% { opacity: 1; } 67%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-7-late { 0%, 64% { opacity: 0; transform: translateY(4px) scale(0.96); } 69%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-7-late { 0%, 64% { stroke-dashoffset: 1; opacity: 0; } 64.5% { opacity: 1; } 71%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-8 { 0%, 68% { opacity: 0; transform: translateY(4px) scale(0.96); } 73%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-8 { 0%, 68% { stroke-dashoffset: 1; opacity: 0; } 68.5% { opacity: 1; } 75%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-pop-8-late { 0%, 72% { opacity: 0; transform: translateY(4px) scale(0.96); } 77%, 86% { opacity: 1; transform: none; } 93%, 100% { opacity: 0; transform: none; } }
+@keyframes business-consulting-draw-8-late { 0%, 72% { stroke-dashoffset: 1; opacity: 0; } 72.5% { opacity: 1; } 79%, 86% { stroke-dashoffset: 0; opacity: 1; } 93%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes business-consulting-speaking { 0%, 100% { opacity: 0; } 6%, 30% { opacity: 1; } 18% { opacity: 0.35; } 40%, 92% { opacity: 0; } }
+@keyframes business-consulting-cursor {
+  0% { opacity: 0; transform: translate(300px, 214px); }
+  2%, 8% { opacity: 1; transform: translate(96px, 90px); }
+  10%, 16% { transform: translate(192px, 90px); }
+  18%, 24% { transform: translate(288px, 90px); }
+  26%, 32% { transform: translate(96px, 148px); }
+  34%, 40% { transform: translate(192px, 148px); }
+  42%, 52% { transform: translate(288px, 148px); }
+  58%, 86% { opacity: 1; transform: translate(300px, 200px); }
+  93%, 100% { opacity: 0; transform: translate(300px, 200px); }
+}
+
+/* ===== 6. Программа с результатом каждого модуля (правка 7) — на тёмном поле =====
+   Весь блок — тёмная панель #2B2334 (12.10.2026: светлые и тёмные блоки страницы чередуются). Над модулями
+   полупрозрачные плашки «старт», «дни и время» (из CMS), «онлайн». Карточка модуля чуть светлее поля: номер,
+   название и темы, разделённые только тонкими линиями (без точек). Результат модуля — белая плашка с иконкой
+   мишени: на тёмном она сразу читается как итог. До 1025px плашка встаёт под темы, иконка и подпись — одной
+   строкой, текст под ними во всю ширину. */
+.program-results_component { padding: 2.5rem 1rem 1rem; border-radius: 1.5rem; background: var(--dark-field); color: #fff; }
+.program-results_component .section-title_component { color: #fff; }
+.program-schedule_component { display: flex; max-width: 100%; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 0 auto; padding: 0; list-style: none; }
+.program-schedule_item { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0 0.375rem; padding: 0.5rem 0.875rem; border-radius: 6rem; background: rgb(255 255 255 / 9%); color: #fff; font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.program-schedule_time { color: var(--dark-muted); }
+.program-results_list { display: grid; width: 100%; gap: var(--card-grid-gap, 0.75rem); margin: 0; padding: 0; list-style: none; }
+.program-results_card { display: grid; min-width: 0; gap: 1.25rem; padding: 1rem; border-radius: var(--radius-card); background: var(--dark-raise); }
+.program-results_main { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+.program-results_badge { padding: 0.375rem 0.75rem; border-radius: 0.5rem; background: rgb(255 255 255 / 10%); color: var(--color-text-on-dark-muted); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.program-results_heading { color: #fff; font-size: 1.375rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.program-results_topics { display: grid; width: 100%; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+.program-results_topic { padding: 0.75rem 0; border-top: 1px solid var(--dark-line); color: var(--color-text-on-dark-muted); font-size: 1rem; line-height: 1.4; }
+.program-results_result { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); align-content: start; gap: 0.75rem; padding: 1rem; border-radius: 0.75rem; background: var(--color-surface-primary); color: var(--color-text-primary); }
+.program-results_result-icon { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; background: var(--dark-field); color: #fff; }
+.program-results_result-label { align-self: center; color: var(--color-text-secondary); font-size: 0.875rem; font-weight: 500; line-height: 1.3; }
+.program-results_result-text { grid-column: 1 / -1; color: var(--color-text-primary); font-size: 1.0625rem; font-weight: 500; line-height: 1.4; letter-spacing: -0.01em; text-wrap: pretty; }
+.program-results_action { width: 100%; align-self: center; justify-self: center; }
+@media (min-width: 48rem) {
+  .program-results_component { padding: 3.5rem 1.5rem 1.5rem; }
+  .program-schedule_item { padding: 0.625rem 1.125rem; font-size: 1rem; }
+  .program-results_card { padding: 1.5rem; }
+  .program-results_heading { font-size: 1.625rem; }
+  .program-results_result { padding: 1.25rem; }
+  .program-results_action { width: min(100%, 22.5rem); }
+}
+@media (min-width: 64.0625rem) {
+  .program-results_component { padding: 4.5rem 2.5rem 2.5rem; border-radius: 1.75rem; }
+  .program-results_card { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 2.5rem; padding: 2rem; }
+  .program-results_heading { font-size: 1.875rem; }
+  .program-results_result { grid-template-columns: minmax(0, 1fr); align-self: start; gap: 0.75rem; padding: 1.5rem; }
+  .program-results_result-label { align-self: auto; margin-top: 0.25rem; }
+  .program-results_result-text { font-size: 1.1875rem; }
+}
+
+/* ===== 7. Преподаватель: широкая карточка из /narrative-therapy =====
+   Фото на светло-серой подложке, имя, роль, методы серыми плашками, факты с тёмной галочкой через линии.
+   Телефон: фото сверху; от 768px фото слева. */
+.teacher_card { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; padding: var(--card-padding, 1rem); border-radius: var(--radius-card); background: var(--color-surface-primary); overflow-wrap: anywhere; }
+.teacher_portrait { position: relative; width: min(100%, 18rem); aspect-ratio: 1; overflow: clip; border-radius: var(--radius-card); background: var(--chip-surface); }
+.teacher_photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 12%; }
+.teacher_body { display: flex; min-width: 0; flex-direction: column; gap: 1.5rem; }
+.teacher_intro { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+.teacher_name { color: var(--color-text-primary); font-size: 1.5rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+.teacher_role { max-width: 36rem; color: var(--color-text-secondary); font-size: 1.0625rem; line-height: 1.4; }
+.teacher_tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+.teacher_tag { display: inline-flex; align-items: center; padding: 0.375rem 0.75rem; border-radius: 0.375rem; background: var(--chip-surface); color: var(--color-text-primary); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.teacher_facts { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 0 2rem; margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
+.teacher_fact { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; align-items: start; padding: 0.875rem 0; border-bottom: 1px solid var(--line); color: var(--color-text-primary); font-size: 1rem; line-height: 1.4; }
+.teacher_check { width: 1.25rem; height: 1.25rem; margin-top: 0.0625rem; color: var(--color-text-primary); }
+@media (min-width: 48rem) {
+  .teacher_card { grid-template-columns: 14rem minmax(0, 1fr); gap: 2rem; padding: 1.5rem; }
+  .teacher_portrait { width: 100%; }
+  .teacher_name { font-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .teacher_card { grid-template-columns: 18rem minmax(0, 1fr); gap: 3rem; padding: 2rem; }
+  .teacher_name { font-size: 2rem; }
+  .teacher_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ===== 7.1. Удостоверение — «Документ с фото человека» из библиотеки блоков (как на /narrative-therapy) =====
+   Белая карточка: слева заголовок с акцентом, условия с тёмной галочкой и лицензия; справа фото выпускницы.
+   Телефон: фото квадратом под текстом; от 768px две колонки, фото по высоте текста. */
+.document_component { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); overflow: clip; border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.document_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1.5rem 1rem; overflow-wrap: anywhere; }
+.document_heading { text-wrap: balance; }
+.document_terms { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.document_term { display: flex; align-items: flex-start; gap: 0.625rem; color: var(--color-text-primary); font-size: 1rem; line-height: 1.35; text-wrap: pretty; }
+.document_check { width: 1.25rem; height: 1.25rem; margin-top: 0.0625rem; color: var(--color-text-primary); }
+.document_license { --body-text-color: var(--color-text-secondary); }
+.document_media { position: relative; aspect-ratio: 1; background: var(--color-page-background); }
+.document_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+@media (min-width: 48rem) {
+  .document_component { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); }
+  .document_copy { justify-content: center; padding: 2.5rem; }
+  .document_term { font-size: 1.125rem; }
+  .document_media { aspect-ratio: auto; height: 100%; min-height: 22rem; }
+}
+@media (min-width: 64.0625rem) {
+  .document_copy { padding: 3.5rem; }
+  .document_term { font-size: 1.25rem; }
+}
+
+/* ===== 8. «Стоимость обучения» — «Одна цифра» из /pricing-scenarios =====
+   Горизонтальная карточка: слева курс, старт и цена; справа «Что входит». Крупно цена продажи, «₽» мелко
+   серым, зачёркнутая цена и жёлтый купон «−10 % до …» только при акции, рассрочка тихой строкой.
+   Повышение (если в CMS есть следующая цена) — серая плашка под ценой. Кнопок нет: запись в форме ниже. */
+.price-block_component { --promo-surface: #ffe110; --promo-text: #3d3a2a; --promo-bg-strong: color-mix(in srgb, var(--promo-surface) 80%, #ffffff); --promo-bg-soft: color-mix(in srgb, var(--promo-surface) 35%, #ffffff); --check: #0a6b4e;
+  display: flex; min-width: 0; flex-direction: column; gap: 2.25rem; color: var(--color-text-primary); }
+.price-icon { display: block; flex: none; }
+.price-tag { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.375rem; margin: 0; color: var(--color-text-primary); }
+.price-tag_number { font-size: clamp(2.5rem, 2rem + 1.6vw, 3.25rem); font-weight: 500; line-height: 1; letter-spacing: -0.045em; white-space: nowrap; }
+.price-tag_unit { color: var(--color-text-secondary); font-size: 1.75rem; font-weight: 444; line-height: 1; letter-spacing: -0.02em; }
+.price-tag_was { display: inline-flex; align-self: center; flex-direction: column; gap: 0.125rem; margin-left: 0.5rem; color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.2; }
+.price-old { text-decoration: line-through; text-decoration-thickness: 1px; }
+.price-caption { display: flex; flex-direction: column; gap: 0.125rem; margin-top: 0.75rem; color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-caption_benefit { color: var(--color-accent-text); font-weight: 600; }
+.price-rise { display: flex; align-items: center; gap: 0.75rem; margin: 0; color: var(--color-text-primary); }
+.price-rise_icon { box-sizing: content-box; width: 1.125rem; height: 1.125rem; flex: none; padding: 0.5rem; border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); }
+.price-rise_text { display: flex; min-width: 0; flex-direction: column; gap: 0.0625rem; }
+.price-rise_title { font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.price-rise_note { color: var(--color-text-secondary); font-size: 0.8125rem; line-height: 1.3; }
+.price-check { display: flex; flex-direction: column; gap: 0.75rem; margin: 0; padding: 0; list-style: none; color: var(--color-text-primary); font-size: 0.9375rem; line-height: 1.4; }
+.price-check_item { display: grid; grid-template-columns: 1.125rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
+.price-check_item .price-icon { width: 1.125rem; height: 1.125rem; margin-top: 0.125rem; color: var(--check); }
+.price-wide_component { position: relative; display: grid; grid-template-areas: "main" "side"; grid-template-columns: minmax(0, 1fr); width: 100%; max-width: 64rem; margin: 0 auto; border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.price-wide_main { display: flex; min-width: 0; flex-direction: column; grid-area: main; padding: 1.5rem 1rem; }
+.price-wide_chip { align-self: flex-start; padding: 0.4375rem 0.75rem; border-radius: 6rem; background: var(--color-page-background); color: var(--color-text-primary); font-size: 0.8125rem; font-weight: 500; line-height: 1; }
+.price-wide_title { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 1.25rem; }
+.price-wide_name { font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+.price-wide_sub { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-wide_money { margin-top: auto; padding-top: 2rem; }
+.price-wide_side { display: flex; min-width: 0; flex-direction: column; gap: 1rem; grid-area: side; padding: 1.5rem 1rem; border-top: 1px solid var(--line); }
+.price-wide_side-title { font-size: 1.0625rem; font-weight: 500; line-height: 1.25; }
+.price-wide_foot { margin-top: 1.5rem; padding: 0.875rem 1rem; border-radius: 0.75rem; background: var(--color-page-background); }
+@media (min-width: 48rem) {
+  .price-wide_component { grid-template-areas: "main side"; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .price-wide_main,
+  .price-wide_side { padding: 2rem; }
+  .price-wide_side { border-top: 0; border-left: 1px solid var(--line); }
+  .price-wide_foot { margin-top: 1.75rem; padding: 1rem 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .price-wide_component { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .price-wide_main,
+  .price-wide_side { padding: 2.25rem 2.5rem; }
+}
+/* Жёлтый купон курса месяца из расписания: слева скидка, справа срок, полукруглые вырезы на линии отрыва.
+   Наклеен на правый верхний угол карточки с наклоном. Жёлтый — вне палитры, утверждён Дарьей для акций. */
+.price-sticker_component { position: absolute; z-index: 2; top: -0.875rem; right: -0.5rem; transform: rotate(4deg); pointer-events: none; }
+.price-sticker_coupon { --cut: 3rem; display: inline-flex; overflow: hidden; border-radius: 0.5rem; color: var(--promo-text); font-size: 0.8125rem; line-height: 1.2; white-space: nowrap;
+  -webkit-mask: radial-gradient(circle at var(--cut) 0, transparent 0.25rem, black 0.2813rem), radial-gradient(circle at var(--cut) 100%, transparent 0.25rem, black 0.2813rem);
+  -webkit-mask-composite: source-in;
+  mask: radial-gradient(circle at var(--cut) 0, transparent 0.25rem, black 0.2813rem), radial-gradient(circle at var(--cut) 100%, transparent 0.25rem, black 0.2813rem);
+  mask-composite: intersect; }
+.price-sticker_value { width: var(--cut); padding: 0.375rem 0; background: var(--promo-bg-strong); font-weight: 600; text-align: center; }
+.price-sticker_until { padding: 0.375rem 0.75rem; background: var(--promo-bg-soft); }
+@media (min-width: 64.0625rem) {
+  .price-sticker_coupon { --cut: 3.5rem; font-size: 0.9375rem; }
+  .price-sticker_value,
+  .price-sticker_until { padding-block: 0.4375rem; }
+}
+
+/* ===== 9. «Гибкие условия оплаты» — утверждённый блок из /pricing-scenarios (12.10.2026) =====
+   Без иконок и без фиолетового: заголовок, под ним три колонки «заголовок, под ним текст» — рассрочка, скидки,
+   вычет — с вертикальными линиями между ними. На телефоне колонки встают друг под другом. */
+.price-terms_component { color: var(--color-text-primary); }
+.price-terms_list { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0; }
+/* Колонка — контейнер: в узкой колонке скидки перестраиваются (см. ниже). */
+.price-terms_row { display: flex; min-width: 0; flex-direction: column; gap: 0.875rem; padding-block: 1.25rem; container-type: inline-size; }
+.price-terms_row:first-child { padding-top: 0; }
+.price-terms_row:last-child { padding-bottom: 0; }
+.price-terms_row + .price-terms_row { border-top: 1px solid var(--line-strong); }
+.price-terms_title { font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-terms_body { min-width: 0; margin: 0; }
+.price-terms_text { max-width: 34rem; color: var(--color-text-secondary); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .price-terms_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .price-terms_row { padding: 0 1.5rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+  .price-terms_row + .price-terms_row { border-top: 0; border-left: 1px solid var(--line-strong); }
+}
+@media (min-width: 64.0625rem) {
+  .price-terms_row { padding-inline: 2rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+}
+/* Персональные скидки: процент на белой плашке, подпись рядом. Плашки одной ширины — по самой длинной
+   «до −20 %», поэтому подписи начинаются на одной вертикали. */
+.price-discounts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.625rem 0.875rem; margin: 0; padding: 0; list-style: none; }
+.price-discounts_item { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; }
+.price-discounts_value { display: inline-flex; align-items: baseline; justify-content: center; gap: 0.25rem; padding: 0.3125rem 0.625rem; border-radius: 0.5rem; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 1rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; white-space: nowrap; }
+.price-discounts_prefix { font-weight: 500; }
+.price-discounts_label { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; text-wrap: pretty; }
+/* В узкой колонке (планшет) подпись встаёт под процент, чтобы не рассыпаться по слову в строке. */
+@container (max-width: 15rem) {
+  .price-discounts { grid-template-columns: minmax(0, 1fr); row-gap: 0.875rem; }
+  .price-discounts_item { display: flex; flex-direction: column; align-items: flex-start; gap: 0.375rem; }
+}
+/* Обёртки отдельных секций не должны получать высоту целого экрана. */
+.academy-page[data-business-consulting-part] { min-height: 0; height: auto; }
+</style>
