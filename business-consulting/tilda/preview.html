@@ -3287,12 +3287,15 @@ body > .iti--detached-country-selector .iti__no-results {
 .hero-panel_row { position: relative; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0.75rem; align-items: center; padding: 0.75rem 0; color: #fff; font-size: 0.9375rem; line-height: 1.35; }
 .hero-panel_row + .hero-panel_row::before { content: ""; position: absolute; top: 0; right: 0; left: 3rem; border-top: 1px solid var(--dark-line); }
 .hero-panel_row-icon { position: relative; z-index: 1; display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--dark-field); color: var(--color-text-on-dark-muted); }
-.hero-panel_cta { grid-area: photo; z-index: 1; display: grid; align-content: end; gap: 0.75rem; padding: 8.5rem 0.875rem 1rem; border-radius: 1.25rem; background: linear-gradient(180deg, rgb(43 35 52 / 0%) 28%, rgb(43 35 52 / 86%) 56%, #2b2334 100%); }
-.hero-panel_tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
-.hero-panel_tile { display: flex; align-items: center; gap: 0.625rem; padding: 0.875rem; border-radius: 1rem; background: var(--dark-raise); color: #fff; font-size: 0.96875rem; font-weight: 500; line-height: 1.2; }
+.hero-panel_cta { grid-area: photo; z-index: 1; display: grid; align-content: end; gap: 0.75rem; padding: 8.5rem 0.875rem 1rem; border-radius: 1.25rem; background: linear-gradient(180deg, rgb(43 35 52 / 0%) 28%, rgb(43 35 52 / 86%) 56%, #2b2334 82%); }
+/* Плитка одна — «Старт», поэтому по ширине текста, а не на половину колонки. */
+.hero-panel_tiles { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.hero-panel_tile { display: flex; flex: 0 0 auto; align-items: center; gap: 0.625rem; padding: 0.875rem 1rem; border-radius: 1rem; background: var(--dark-raise); color: #fff; font-size: 0.96875rem; font-weight: 500; line-height: 1.2; }
 .hero-panel_tile .hero-icon { color: var(--color-text-on-dark-muted); }
 .hero-panel_actions { display: grid; gap: 0.75rem; }
 .hero-panel_button { width: 100%; }
+/* «Обучение онлайн» — тихой строкой под кнопкой. */
+.hero-panel_note { color: var(--dark-muted); font-size: 0.9375rem; line-height: 1.4; }
 /* Фото вертикальное (1012 × 1616), поэтому рамка задаёт свою пропорцию: на телефоне квадрат, на планшете 16 : 9,
    на компьютере фото по высоте текста в колонке шире, чем было, — иначе оно вытягивает первый экран. */
 .hero-panel_photo { grid-area: photo; display: block; align-self: stretch; width: 100%; height: auto; min-height: 0; aspect-ratio: 1 / 1; border-radius: 1.25rem; object-fit: cover; object-position: 50% 30%; }
@@ -3303,8 +3306,8 @@ body > .iti--detached-country-selector .iti__no-results {
   .hero-panel_row { font-size: 1rem; }
   .hero-panel_cta { padding: 10rem 1.25rem 1.25rem; gap: 1rem; }
   .hero-panel_tile { padding: 1rem 1.125rem; font-size: 1.125rem; }
-  .hero-panel_actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.875rem 1.375rem; }
-  .hero-panel_button { width: auto; flex: 0 1 18rem; }
+  .hero-panel_actions { justify-items: start; gap: 0.75rem; }
+  .hero-panel_button { width: min(100%, 18rem); }
   .hero-panel_photo { aspect-ratio: 16 / 9; object-position: 50% 32%; }
 }
 @media (min-width: 64.0625rem) {
@@ -3811,9 +3814,10 @@ body > .iti--detached-country-selector .iti__no-results {
           <ul class="hero-panel_rows" aria-label="Чему научитесь"><li class="hero-panel_row"><span class="hero-panel_row-icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg></span><span>Понимать, как устроен корпоративный рынок и&nbsp;где в&nbsp;нём ваше место</span></li><li class="hero-panel_row"><span class="hero-panel_row-icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span><span>Проектировать диагностику, групповые форматы и&nbsp;индивидуальную работу</span></li><li class="hero-panel_row"><span class="hero-panel_row-icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg></span><span>Презентовать результаты ЛПР на&nbsp;управленческом языке</span></li></ul>
         </div>
         <div class="hero-panel_cta">
-          <ul class="hero-panel_tiles" aria-label="Старт и расписание"><li class="hero-panel_tile"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg><span data-cms-start="Старт {date}">Старт 18&nbsp;ноября</span></li><li class="hero-panel_tile"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span data-cms-schedule-short>Ср, 18:00⁠–⁠21:00</span></li></ul>
+          <ul class="hero-panel_tiles" aria-label="Старт и расписание"><li class="hero-panel_tile"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg><span data-cms-start="Старт {date}">Старт 18&nbsp;ноября</span></li></ul>
           <div class="hero-panel_actions">
             <a class="button_component hero-panel_button is-light" href="#business-consulting-application">Оставить заявку</a>
+            <p class="hero-panel_note">Обучение онлайн</p>
           </div>
         </div>
       </div>

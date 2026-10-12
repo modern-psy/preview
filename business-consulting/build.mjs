@@ -86,7 +86,8 @@ const header = (id, heading, lead, {align = 'center'} = {}) => `<div class="sect
 
 /* Первый экран «Описание в плашке» — эталон В3/К4 (как на /treningi-dlya-detey): поле #2B2334, справа фото
    в рамке, слева заголовок, в светлой плашке подводка и три строки «чему научитесь» с иконками в кружках,
-   старт и время плитками и одна кнопка. На планшете и телефоне плитки и кнопка лежат на фото, низ фото
+   плитка старта, одна кнопка и под ней тихая строка «Обучение онлайн» (дни и время занятий здесь сняты
+   по просьбе Дарьи 12.10.2026 — они в программе). На планшете и телефоне плитка и кнопка лежат на фото, низ фото
    растворяется в поле. Дата старта обновляется из CMS (data-cms-start). Часы, формат и удостоверение —
    «кубиками» отдельным блоком сразу под первым экраном (renderFacts). */
 function renderHeroPanel(hero, stream) {
@@ -109,6 +110,7 @@ function renderHeroPanel(hero, stream) {
           <ul class="hero-panel_tiles" aria-label="Старт и расписание">${tiles}</ul>
           <div class="hero-panel_actions">
             <a class="button_component hero-panel_button is-light" href="${escapeHtml(main.href)}">${renderText(main.label)}</a>
+            ${panel.note ? `<p class="hero-panel_note">${renderText(panel.note)}</p>` : ''}
           </div>
         </div>
       </div>
