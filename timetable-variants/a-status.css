@@ -2,7 +2,11 @@
    🟢 Здесь можно менять раскладку; значения берём из дизайн-системы. */
 
 /* Мобильный: обложка ниже по высоте, метка вверху справа у названия. */
-[data-status] .timetable-row_heading { display: contents; }
+[data-status] .timetable-row_component { position: relative; }
+[data-status] .timetable-row_date { align-self: start; }
+[data-status] .timetable-row_heading {
+  padding-top: calc(var(--icon-md) + var(--space-xsmall));
+}
 /* Обычный перенос заполняет строку. pretty оставлял лишний воздух,
    а anywhere разрешал разрывать даже связку с неразрывным пробелом. */
 [data-status] .timetable-row_title {
@@ -14,12 +18,12 @@
   aspect-ratio: auto;
 }
 [data-status] .timetable-row_main .status-mark_component {
-  order: -1;
-  align-self: flex-end;
-  margin-bottom: var(--space-xsmall);
+  position: absolute;
+  top: var(--space-small);
+  right: var(--space-small);
 }
 
-/* Второй баннер для сравнения: фотография — подложка всего блока.
+/* Выбранный баннер: фотография — подложка всего блока.
    Светлый слой поддерживает контраст текста на узком экране. */
 [data-status] .featured-event_component.is-backdrop {
   position: relative;
@@ -77,10 +81,14 @@
     grid-column: 2;
   }
   [data-status] .timetable-row_main .status-mark_component {
-    order: 0;
-    align-self: flex-start;
-    margin-bottom: var(--space-0);
+    position: static;
+    display: inline-flex;
+    margin-left: var(--space-xsmall);
+    vertical-align: baseline;
   }
+  /* Метка остаётся с последним словом и на планшете, и на десктопе. */
+  [data-status] .timetable-row_tail { white-space: nowrap; }
+  [data-status] .timetable-row_heading { padding-top: var(--space-0); }
   [data-status] .featured-event_component.is-backdrop .featured-event_body {
     padding: var(--space-medium);
     background: linear-gradient(90deg, var(--bg-surface) 50%, transparent 100%);
@@ -93,12 +101,6 @@
 /* Десктоп: сохраняем исходный размер баннера и отдельную колонку стрелки.
    Статус продолжает последнюю строку названия. */
 @media (min-width: 64.0625rem) {
-  [data-status] .timetable-row_heading { display: block; }
-  [data-status] .timetable-row_heading .timetable-row_title { display: inline; }
-  [data-status] .timetable-row_heading .status-mark_component {
-    margin-left: var(--space-xsmall);
-    vertical-align: baseline;
-  }
   [data-status] .featured-event_component {
     grid-template-columns: minmax(0, 1fr) 24rem;
   }

@@ -86,9 +86,9 @@
     // Подпись типа не повторяем, если описание из CMS и так с неё начинается
     var showKind = FEATURED.kind && !(ev.description && ev.description.toLowerCase().indexOf(FEATURED.kind.toLowerCase()) === 0);
 
-    // 🟢 На странице с меткой показываем два оформления подряд для сравнения.
-    // Данные общие; на обычной странице A остаётся один баннер.
-    var variants = SHOW_STATUS ? ['', 'is-backdrop'] : [''];
+    // 🟢 На странице с меткой оставлен выбранный баннер с фотографией на фоне.
+    // На обычной странице A сохраняется её исходное оформление.
+    var variants = SHOW_STATUS ? ['is-backdrop'] : [''];
     box.innerHTML = variants.map(function (variant, index) {
       var titleId = index ? 'featuredBackdropTitle' : 'featuredTitle';
       return '<section class="card featured-event_component' + (variant ? ' ' + variant : '') + '" aria-labelledby="' + titleId + '">' +

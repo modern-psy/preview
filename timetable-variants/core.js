@@ -378,10 +378,15 @@
     }
     var meta = metaLine(it);
     var mark = opts.status ? statusMark(it) : '';
-    var heading = '<h3 class="timetable-row_title text-size-paragraph-md text-weight-medium text-color-heading text-style-break">' + title(it.title) + '</h3>';
-    // Одна группа названия и статуса: на десктопе метка продолжает строку,
-    // на мобильном CSS поднимает её в правый верхний угол.
-    if (mark) heading = '<div class="timetable-row_heading">' + heading + ' ' + mark + '</div>';
+    var titleText = title(it.title);
+    // Последнее слово и метка переносятся вместе. Разделяем только по обычному
+    // пробелу, чтобы не разорвать предлог, уже связанный со следующим словом.
+    if (mark) {
+      var split = titleText.lastIndexOf(' ');
+      titleText = titleText.slice(0, split + 1) + '<span class="timetable-row_tail">' + titleText.slice(split + 1) + ' ' + mark + '</span>';
+    }
+    var heading = '<h3 class="timetable-row_title text-size-paragraph-md text-weight-medium text-color-heading text-style-break">' + titleText + '</h3>';
+    if (mark) heading = '<div class="timetable-row_heading">' + heading + '</div>';
 
     return '<a class="timetable-row_component' + (d ? '' : ' is-nodate') + '" href="' + esc(it.url) + '" target="_blank" rel="noopener">' +
       date +
