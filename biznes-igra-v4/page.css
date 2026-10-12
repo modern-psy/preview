@@ -1,0 +1,2825 @@
+/* ============================================================================
+   СТИЛИ СТРАНИЦЫ «БИЗНЕС-ИГРА ДЛЯ ПСИХОЛОГОВ» — ПРОСТОЙ ВАРИАНТ (v4)
+   ============================================================================
+
+   Файл самодостаточный: дизайн-система из /design-system сюда не подключается.
+   Всё лежит внутри обёртки .game-page.
+
+   ИДЕЯ
+     Обычный лендинг, который просто листается. Мир тот же, что у «Колоды»:
+     тёмный стол цвета баклажана, фишки, монеты, рубашки карт. Блоки
+     чередуются: тёмные (#2b2334) и светлые (#f5f5f5) с белыми карточками.
+     Анимации небольшие: блоки мягко появляются при прокрутке, фишка идёт
+     по этапам игры, в примере трат две монеты улетают из стопки.
+
+   БРЕЙКПОИНТЫ (как в правилах Академии)
+     до 767px       телефон
+     от 768px       планшет — @media (min-width: 48rem)
+     от 1025px      десктоп — @media (min-width: 64.0625rem)
+     от 1280px      широкий — @media (min-width: 80rem), только для сетки ролей
+
+   ПАЛИТРА
+     Баклажан #2b2334 (тёмные блоки), плашки #3a3047, фиолетовый #7c5cdb
+     (только монеты, фишки и кнопка записи), лаванда #dad6ff, светлый фон
+     #f5f5f5, белый. Новых цветов нет.
+
+   ПОРЯДОК РАЗДЕЛОВ
+      0. Переменные и сброс
+      1. Каркас и общие блоки
+      2. Кнопки
+      3. Шапка
+      4. Первый экран
+      5. Карточки (для кого, суть, навыки)
+      6. Суть игры: вступление и вывод
+      7. Кто есть в игре
+      8. 100 монет
+      9. Как пройдёт игра
+     10. Кто проводит игру
+     11. Регистрация и билет
+     12. Блок записи (BotHelp + запасная форма) — копия с вебинаров
+     13. Подвал
+     14. Появление при прокрутке, уменьшенное движение, печать
+     15. Защита от общих стилей Тильды
+   ========================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   0. ПЕРЕМЕННЫЕ И СБРОС
+   ---------------------------------------------------------------------------
+   Цвета меняются только здесь. Кромки (*-edge) — «толщина» плашек и кнопок:
+   тот же цвет, только темнее.
+   --------------------------------------------------------------------------- */
+
+.game-page {
+  /* Палитра стола */
+  --ink: #2b2334;
+  --ink-raised: #3a3047;
+  --ink-raised-2: #463b56;
+  --ink-edge: #1b1522;
+  --violet: #7c5cdb;
+  --violet-hover: #6a49c9;
+  --violet-edge: #4e37a8;
+  --lavender: #dad6ff;
+  --lavender-edge: #b3a8ee;
+  --lavender-soft: #eeeeff;
+  --paper: #f5f5f5;
+  --white: #ffffff;
+  --line: #e6e3ed;
+  --line-strong: #d6d1e2;
+  --gray-soft: #efedf3;
+  --gray-photo: #e4e4e7;   /* подложка под фото ведущей */
+
+  /* Текст */
+  --text: #2b2334;
+  --text-2: #5b5468;
+  --on-dark: #ffffff;
+  --on-dark-2: #d6d0e2;
+  --on-dark-3: #aea6bf;
+
+  /* Углубление в столе */
+  --socket-face: rgb(18 12 26 / 38%);
+  --shadow-socket:
+    inset 0 0.1875rem 0.5rem rgb(6 3 10 / 50%),
+    inset 0 0 0 1px rgb(255 255 255 / 5%);
+
+  /* Толщина плашек */
+  --depth: 0.375rem;
+
+  /* Клетки игрового поля на первом экране (как на первой версии):
+     клетка стоит на своей толщине (--tile-depth) — снизу тёмная грань
+     и мягкая тень; нажатая опускается на эту толщину (*-pressed). */
+  --tile-depth: 0.4375rem;
+  --tile-face: linear-gradient(180deg, #41364f 0%, #382e45 100%);
+  --tile-radius: clamp(0.875rem, 1.2vw, 1.25rem);
+  --board-gap: clamp(0.5rem, 1.1vw, 1rem);
+  --press-shift: calc(var(--tile-depth) - 0.0625rem);
+  --plate-face: linear-gradient(180deg, #372d45 0%, #30273c 100%);
+  --plate-edge: #18121f;
+  --track-dot: #9e7ff0;
+  --shadow-raised:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 var(--tile-depth) 0 var(--ink-edge),
+    0 calc(var(--tile-depth) + 0.625rem) 1.25rem -0.25rem rgb(6 3 10 / 60%);
+  --shadow-raised-pressed:
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    0 0.0625rem 0 var(--ink-edge),
+    0 0.25rem 0.5rem -0.125rem rgb(6 3 10 / 55%);
+  --shadow-violet:
+    inset 0 1px 0 rgb(255 255 255 / 16%),
+    0 var(--tile-depth) 0 var(--violet-edge),
+    0 calc(var(--tile-depth) + 0.5rem) 1.5rem -0.25rem rgb(8 5 14 / 45%);
+  --shadow-violet-pressed:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 0.0625rem 0 var(--violet-edge),
+    0 0.25rem 0.5rem -0.125rem rgb(8 5 14 / 45%);
+  --shadow-lavender:
+    inset 0 1px 0 rgb(255 255 255 / 65%),
+    0 var(--tile-depth) 0 var(--lavender-edge),
+    0 calc(var(--tile-depth) + 0.5rem) 1.5rem -0.5rem rgb(43 35 52 / 28%);
+  --shadow-lavender-pressed:
+    inset 0 1px 0 rgb(255 255 255 / 50%),
+    0 0.0625rem 0 var(--lavender-edge),
+    0 0.25rem 0.5rem -0.25rem rgb(43 35 52 / 28%);
+
+  /* Шрифты и размеры */
+  --font-display: "Wix Madefor Display", "Wix Madefor Text", Arial, sans-serif;
+  --font-text: "Wix Madefor Text", Arial, sans-serif;
+  --text-hero: clamp(2.75rem, 6vw, 5.25rem);
+  --text-h2: clamp(1.875rem, 3.6vw, 3.25rem);
+  --text-h3: clamp(1.1875rem, 1.5vw, 1.375rem);
+  --text-lead: clamp(1.0625rem, 1.3vw, 1.3125rem);
+  --text-body: clamp(1rem, 1.12vw, 1.125rem);
+  --text-small: 0.9375rem;
+
+  /* Сетка и отступы */
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --section-padding: clamp(4rem, 8vw, 7rem);
+  --radius-button: 1rem;
+  --radius-card: 1.25rem;
+  --card-padding: clamp(1rem, 1.6vw, 1.5rem);
+  --grid-gap: 1rem;
+  --header-h: 4rem;
+
+  /* Движение */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 220ms;
+  --transition-site: 180ms ease;
+
+  /* Имена переменных, которыми пользуются блоки, перенесённые с вебинаров
+     (запись BotHelp + запасная форма, подвал). */
+  --color-page-background: var(--paper);
+  --color-surface-primary: #ffffff;
+  --color-surface-dark: var(--ink);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--text-2);
+  --color-text-on-dark: #ffffff;
+  --color-accent-primary: var(--violet);
+  --color-accent-hover: var(--violet-hover);
+  --color-accent-light: #c4b5fd;
+  --color-accent-deep: #5b3fb0;
+  --color-focus: var(--violet);
+
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--text);
+  background: var(--paper);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media screen and (min-width: 48rem) {
+  .game-page {
+    --header-h: 5rem;
+  }
+}
+
+/* Ниже 375px макет не тянется, а пропорционально уменьшается:
+   корневой размер шрифта считается от ширины экрана (всё в rem). */
+@media screen and (max-width: 23.4375rem) {
+  html {
+    font-size: calc(100vw / 23.4375);
+  }
+}
+
+.game-page,
+.game-page *,
+.game-page *::before,
+.game-page *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #2b2334;
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+}
+
+.game-page :where(h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, figure, blockquote) {
+  margin: 0;
+  padding: 0;
+}
+
+.game-page :where(ul, ol) {
+  list-style: none;
+}
+
+.game-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.game-page img,
+.game-page svg {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.game-page ::selection {
+  background: var(--lavender);
+  color: var(--ink);
+}
+
+/* Ссылка «перейти к содержимому» — видна только при переходе с клавиатуры */
+.skip-link {
+  position: absolute;
+  z-index: 100;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #2b2334;
+  font: 500 1rem/1.2 "Wix Madefor Text", Arial, sans-serif;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Атрибут hidden сильнее, чем display у компонентов */
+.game-page [hidden] {
+  display: none !important;
+}
+
+/* Текст только для скринридеров */
+.game-page .screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
+/* Спрайт с игровыми предметами: сам по себе не виден */
+.game-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Фокус с клавиатуры виден всегда: на светлом — фиолетовый,
+   на тёмном — лавандовый */
+.game-page :focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.game-page .section-dark :focus-visible,
+.game-page .site-header_component :focus-visible,
+.game-page .site-footer_component :focus-visible {
+  outline-color: var(--lavender);
+}
+
+.game-page .ticket_component :focus-visible {
+  outline-color: var(--violet);
+}
+
+.game-page .nowrap {
+  white-space: nowrap;
+}
+
+/* Слова для телефона и десктопа («Записаться» и «Зарегистрироваться») */
+.for-wide {
+  display: none;
+}
+
+@media screen and (min-width: 48rem) {
+  .for-narrow {
+    display: none;
+  }
+
+  .for-wide {
+    display: inline;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   1. КАРКАС И ОБЩИЕ БЛОКИ
+   ---------------------------------------------------------------------------
+   Секция → боковые поля → контейнер 1520px → содержимое.
+   Заголовок блока: заголовок и подводка (надзаголовков нет).
+   --------------------------------------------------------------------------- */
+
+.padding-global {
+  width: 100%;
+  padding-right: var(--page-padding);
+  padding-left: var(--page-padding);
+}
+
+.container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.main-wrapper {
+  display: block;
+}
+
+/* При переходе по якорю блок не прячется под липкой шапкой */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h, 4.5rem) + 1rem);
+}
+
+.section-light,
+.section-dark {
+  padding-top: var(--section-padding);
+  padding-bottom: var(--section-padding);
+}
+
+.section-light {
+  background: var(--paper);
+  color: var(--text);
+}
+
+.section-dark {
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+/* Два блока одного цвета подряд: второй начинается ближе — фон общий */
+.section-light + .section-light,
+.section-dark + .section-dark {
+  padding-top: 0;
+}
+
+.section_inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+.section-intro_component {
+  display: flex;
+  max-width: 52rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section_heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.section_lead {
+  max-width: 44rem;
+  color: var(--text-2);
+  font-size: var(--text-lead);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.section-dark .section_lead {
+  color: var(--on-dark-2);
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. КНОПКИ
+   ---------------------------------------------------------------------------
+   Кнопка — плашка с толщиной (грань снизу). При наведении и нажатии она
+   опускается на эту толщину, как настоящая кнопка. Тень одна, мягкая,
+   без свечения и без стрелок.
+   --------------------------------------------------------------------------- */
+
+.button {
+  --button-depth: 0.3125rem;
+  --button-edge: #c3bcd4;
+  display: inline-flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.75rem;
+  border: 0;
+  border-radius: var(--radius-button);
+  font-family: var(--font-text);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+  cursor: pointer;
+  box-shadow:
+    0 var(--button-depth) 0 var(--button-edge),
+    0 calc(var(--button-depth) + 0.375rem) 1rem -0.25rem rgb(8 5 14 / 35%);
+  transition:
+    translate 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out),
+    background-color var(--dur) ease,
+    opacity var(--dur) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button.is-light {
+  --button-edge: #c3bcd4;
+  background: var(--white);
+  color: var(--ink);
+}
+
+.button.is-accent {
+  --button-edge: var(--violet-edge);
+  background: var(--violet);
+  color: var(--on-dark);
+}
+
+.button.is-full-width {
+  width: 100%;
+}
+
+.button:active {
+  translate: 0 var(--button-depth);
+  box-shadow:
+    0 0 0 var(--button-edge),
+    0 0.125rem 0.375rem -0.125rem rgb(8 5 14 / 40%);
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  opacity: 0.38;
+  cursor: default;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    translate: 0 calc(var(--button-depth) - 0.0625rem);
+    box-shadow:
+      0 0.0625rem 0 var(--button-edge),
+      0 0.1875rem 0.5rem -0.125rem rgb(8 5 14 / 40%);
+  }
+
+  .button.is-light:hover {
+    background: #f6f5fb;
+  }
+
+  .button.is-accent:hover {
+    background: var(--violet-hover);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. ШАПКА
+   ---------------------------------------------------------------------------
+   Липкая на всех экранах. Разделы страницы — только на десктопе,
+   на телефоне и планшете — логотип и кнопка.
+   --------------------------------------------------------------------------- */
+
+.site-header_component {
+  position: sticky;
+  z-index: 40;
+  top: 0;
+  width: 100%;
+  background: rgb(43 35 52 / 94%);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 6%);
+  color: var(--on-dark);
+  -webkit-backdrop-filter: saturate(1.2) blur(10px);
+  backdrop-filter: saturate(1.2) blur(10px);
+}
+
+.site-header_bar {
+  display: flex;
+  height: var(--header-h);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-header_logo {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  color: var(--on-dark);
+}
+
+.site-header_logo svg {
+  display: block;
+  width: 3.25rem;
+  height: auto;
+  fill: currentColor;
+}
+
+.site-header_nav {
+  display: none;
+}
+
+.site-header_link {
+  color: var(--on-dark-2);
+  font-size: var(--text-small);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: color var(--transition-site);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-header_link:hover {
+    color: var(--on-dark);
+  }
+}
+
+/* Кнопка в шапке: широкая, с воздухом сверху и снизу (шапка выше кнопки
+   примерно на 1rem с каждой стороны) */
+.site-header_cta.button {
+  --button-depth: 0.25rem;
+  min-height: 2.5rem;
+  flex: none;
+  padding: 0.5rem 1.25rem;
+  font-size: var(--text-small);
+}
+
+@media screen and (min-width: 48rem) {
+  .site-header_logo svg {
+    width: 4.25rem;
+  }
+
+  .site-header_cta.button {
+    min-width: 15rem;
+    min-height: 3rem;
+    padding: 0.5rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .site-header_nav {
+    display: flex;
+    margin-left: auto;
+    gap: clamp(1rem, 2vw, 2rem);
+  }
+
+  .site-header_bar {
+    gap: clamp(2rem, 3.5vw, 3.5rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. ПЕРВЫЙ ЭКРАН — ИГРОВОЕ ПОЛЕ
+   ---------------------------------------------------------------------------
+   Перенесено с первой версии (/biznes-igra), без курсоров.
+   Телефон и планшет: сетка 3 колонки — три этапа, панель с заголовком,
+   ещё три этапа. Фишка и монеты лежат на углах клеток 1 и 2.
+   Десктоп: кольцо клеток вокруг панели, как у настольной игры
+   (1025–1439px — поле 8×6, от 1440px — 10×6). Высота клетки
+   подстраивается под экран, чтобы всё поле помещалось целиком.
+   Пунктир дорожки лежит под клетками этапов и поверх пустых клеток.
+   При загрузке клетки этапов по очереди встают на доску, фишка
+   спрыгивает на свою клетку — один раз.
+   --------------------------------------------------------------------------- */
+
+.section_hero {
+  padding-top: 0.75rem;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+.board_component {
+  /* --board-top — место над клетками для фишки и монет,
+     --plate-pad — насколько доска выступает за крайние клетки */
+  --board-top: 2.5rem;
+  --plate-pad: clamp(0.625rem, 1.2vw, 1.25rem);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
+  gap: var(--board-gap);
+  padding-top: var(--board-top);
+  margin-bottom: var(--plate-pad);
+}
+
+/* Доска: одна большая плита с толщиной и тенью, на которой лежат все
+   клетки поля. Нарисована псевдоэлементом, клетки сетки не занимает. */
+.board_component::before {
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--board-top) - var(--plate-pad));
+  right: calc(-1 * var(--plate-pad));
+  bottom: calc(-1 * var(--plate-pad));
+  left: calc(-1 * var(--plate-pad));
+  border-radius: calc(var(--tile-radius) + var(--plate-pad) * 0.6);
+  background: var(--plate-face);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 8%),
+    0 0.5rem 0 var(--plate-edge),
+    0 1.5rem 2.5rem -0.75rem rgb(6 3 10 / 70%);
+  content: "";
+  pointer-events: none;
+}
+
+/* --- Панель с заголовком ------------------------------------------------ */
+
+.board_panel {
+  z-index: 2;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  grid-area: 2 / 1 / 3 / 4;
+  gap: clamp(1.75rem, 3vw, 2.5rem);
+  padding: clamp(1.75rem, 2.2vw, 2.25rem) clamp(1rem, 3.2vw, 3.5rem);
+  border-radius: var(--tile-radius);
+  background: var(--tile-face);
+  box-shadow: var(--shadow-raised);
+  text-align: center;
+}
+
+/* Две группы панели: «о чём» и «как попасть». Внутри групп отступы
+   плотные, между группами — воздух (gap у панели). */
+.board_intro,
+.board_cta {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board_kicker {
+  margin-bottom: 0.75rem;
+  color: var(--lavender);
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.board_heading {
+  max-width: 14ch;
+  margin-bottom: clamp(1rem, 1.4vw, 1.25rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4.4vw, 4.25rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.board_lead {
+  max-width: 40rem;
+  color: var(--on-dark-2);
+  font-size: var(--text-lead);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.board_meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.board_meta li {
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+  color: var(--on-dark);
+  font-size: var(--text-small);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* «Бесплатно» — заметнее остальных */
+.board_meta li.is-free {
+  border-color: var(--lavender);
+  background: var(--lavender);
+  color: var(--ink);
+}
+
+.board_actions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.board_actions .button {
+  width: min(100%, 24rem);
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.board_note {
+  max-width: 34rem;
+  color: var(--on-dark-3);
+  font-size: var(--text-small);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+/* --- Клетки этапов ------------------------------------------------------ */
+
+.board_stage {
+  z-index: 3;
+  display: flex;
+  min-width: 0;
+  min-height: 6.25rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: var(--tile-radius);
+  transition:
+    translate 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+  animation: board-tile-in 700ms var(--ease-out) both;
+  animation-delay: calc(150ms + var(--i, 0) * 80ms);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.board_stage.is-violet {
+  background: var(--violet);
+  box-shadow: var(--shadow-violet);
+  color: var(--on-dark);
+}
+
+.board_stage.is-lavender {
+  background: var(--lavender);
+  box-shadow: var(--shadow-lavender);
+  color: var(--ink);
+}
+
+.board_stage.is-plain {
+  background: var(--tile-face);
+  box-shadow: var(--shadow-raised);
+  color: var(--on-dark);
+}
+
+.board_stage-number {
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 2.6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums;
+}
+
+.board_stage-label {
+  font-size: clamp(0.8125rem, 1vw, 1rem);
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+/* Нажатая клетка этапа опускается на свою толщину (и на телефоне) */
+.board_stage:active {
+  translate: 0 var(--tile-depth);
+}
+
+.board_stage.is-violet:active { box-shadow: var(--shadow-violet-pressed); }
+.board_stage.is-lavender:active { box-shadow: var(--shadow-lavender-pressed); }
+.board_stage.is-plain:active { box-shadow: var(--shadow-raised-pressed); }
+
+/* Панель с заголовком не нажимается: внутри неё кнопка регистрации */
+@media (hover: hover) and (pointer: fine) {
+  .board_stage:hover {
+    translate: 0 var(--press-shift);
+  }
+
+  .board_stage.is-violet:hover { box-shadow: var(--shadow-violet-pressed); }
+  .board_stage.is-lavender:hover { box-shadow: var(--shadow-lavender-pressed); }
+  .board_stage.is-plain:hover { box-shadow: var(--shadow-raised-pressed); }
+}
+
+.board_stage:focus-visible {
+  outline: 2px solid var(--lavender);
+  outline-offset: 3px;
+}
+
+.is-s1 { grid-area: 1 / 1; }
+.is-s2 { grid-area: 1 / 2; }
+.is-s3 { grid-area: 1 / 3; }
+.is-s6 { grid-area: 3 / 1; }
+.is-s5 { grid-area: 3 / 2; }
+.is-s4 { grid-area: 3 / 3; }
+
+/* --- Пустые клетки, фишка и монеты -------------------------------------- */
+
+/* Пустые клетки — углубления на доске, как напечатанные ячейки поля
+   настольной игры. На телефоне и планшете их нет. */
+.board_cell {
+  display: none;
+  min-width: 0;
+  border-radius: var(--tile-radius);
+  background: var(--socket-face);
+  box-shadow: var(--shadow-socket);
+}
+
+/* На телефоне фишка и монеты лежат на углах клеток 1 и 2 */
+.board_cell.is-pawn,
+.board_cell.is-coins {
+  z-index: 4;
+  display: block;
+  align-self: start;
+  justify-self: end;
+  background: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.board_cell.is-pawn {
+  width: 2.875rem;
+  grid-area: 1 / 1;
+  margin: -1.75rem -0.25rem 0 0;
+}
+
+.board_cell.is-coins {
+  width: 4.5rem;
+  grid-area: 1 / 2;
+  margin: -1.5rem -0.5rem 0 0;
+}
+
+.board_pawn,
+.board_coins {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.board_pawn {
+  animation: board-pawn-drop 700ms var(--ease-out) 800ms both;
+}
+
+.board_coins {
+  animation: board-tile-in 700ms var(--ease-out) 650ms both;
+}
+
+/* --- Пунктир дорожки ----------------------------------------------------
+   Абсолютный: так он не занимает клетки сетки, а только ложится поверх
+   нужного ряда или колонки. */
+
+.board_track {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.board_track.is-top,
+.board_track.is-bottom {
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 0.3125rem;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, var(--track-dot) 0 0.15rem, transparent 0.175rem) 0 50% / 0.75rem 0.3125rem repeat-x;
+}
+
+.board_track.is-top { grid-area: 1 / 1 / 2 / -1; }
+.board_track.is-bottom { grid-area: 3 / 1 / 4 / -1; }
+
+.board_track.is-right {
+  display: none;
+}
+
+/* Появление на доске */
+@keyframes board-tile-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes board-pawn-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translateY(0.1875rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Десктоп: кольцо клеток вокруг панели ------------------------------
+   1025–1439px — поле 8×6: клетки шире, подписи этапов не рвутся
+   посреди слова. От 1440px — поле 10×6.
+   ------------------------------------------------------------------------ */
+
+@media screen and (min-width: 64.0625rem) {
+  .section_hero {
+    padding-top: 1.25rem;
+  }
+
+  .board_component {
+    /* Клетка квадратная по ширине колонки, но не выше, чем позволяет
+       высота экрана: 6 рядов, шапка и края доски помещаются в один экран */
+    --board-cols: 8;
+    --board-top: 0.5rem;
+    --cell-w: calc((min(100vw - 2 * var(--page-padding), var(--container-xlarge)) - (var(--board-cols) - 1) * var(--board-gap)) / var(--board-cols));
+    --cell-h: calc((100vh - var(--header-h) - 4.5rem - 5 * var(--board-gap)) / 6);
+    --cell-h: calc((100dvh - var(--header-h) - 4.5rem - 5 * var(--board-gap)) / 6);
+    --cell: max(5.5rem, min(var(--cell-w), var(--cell-h)));
+    grid-template-columns: repeat(var(--board-cols), minmax(0, 1fr));
+    grid-template-rows: repeat(6, minmax(var(--cell), auto));
+  }
+
+  .board_panel {
+    grid-area: 2 / 2 / 6 / -2;
+    padding-top: clamp(1rem, 1.6vw, 1.75rem);
+    padding-bottom: clamp(1rem, 1.6vw, 1.75rem);
+  }
+
+  /* На десктопе подводка — в две строки, подпись под кнопкой — в одну:
+     так панель не раздувает клетки и поле помещается в экран */
+  .board_lead {
+    max-width: 46rem;
+  }
+
+  .board_note {
+    max-width: none;
+  }
+
+  .board_stage {
+    min-height: 0;
+    padding: 0.875rem 0.5rem 0.75rem 0.875rem;
+  }
+
+  .board_stage-label {
+    font-size: clamp(0.8125rem, 0.88vw, 0.9375rem);
+  }
+
+  .is-s1 { grid-area: 1 / 1; }
+  .is-s2 { grid-area: 1 / 4; }
+  .is-s3 { grid-area: 1 / -2; }
+  .is-s4 { grid-area: 6 / -2; }
+  .is-s5 { grid-area: 6 / 5; }
+  .is-s6 { grid-area: 6 / 1; }
+
+  .board_cell {
+    z-index: 1;
+    display: block;
+    min-height: 0;
+  }
+
+  /* Эти клетки есть только на поле 10×6 */
+  .board_cell.is-wide-only {
+    display: none;
+  }
+
+  /* Клетки с фишкой и монетами — такие же углубления на доске,
+     фишка и стопка стоят в них */
+  .board_cell.is-pawn,
+  .board_cell.is-coins {
+    z-index: 3;
+    display: grid;
+    width: auto;
+    margin: 0;
+    place-items: center;
+    align-self: stretch;
+    justify-self: stretch;
+    background: var(--socket-face);
+    box-shadow: var(--shadow-socket);
+  }
+
+  .board_cell.is-pawn { grid-area: 1 / 2; }
+  .board_cell.is-coins { grid-area: 1 / 5; }
+
+  .board_pawn {
+    width: 46%;
+    margin-top: -12%;
+  }
+
+  .board_coins {
+    width: 70%;
+    margin-top: -6%;
+  }
+
+  .board_track.is-top { grid-area: 1 / 1 / 2 / -1; }
+  .board_track.is-bottom { grid-area: 6 / 1 / 7 / -1; }
+
+  .board_track.is-right {
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0.3125rem;
+    grid-area: 1 / -2 / 7 / -1;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, var(--track-dot) 0 0.15rem, transparent 0.175rem) 50% 0 / 0.3125rem 0.75rem repeat-y;
+  }
+}
+
+/* Поле 10×6 на широких экранах */
+@media screen and (min-width: 90rem) {
+  .board_component {
+    --board-cols: 10;
+  }
+
+  .is-s2 { grid-area: 1 / 5; }
+  .is-s5 { grid-area: 6 / 6; }
+
+  .board_cell.is-wide-only {
+    display: block;
+  }
+
+  .board_cell.is-coins { grid-area: 1 / 6; }
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. КАРТОЧКИ (ДЛЯ КОГО, СУТЬ, НАВЫКИ)
+   ---------------------------------------------------------------------------
+   Белая карточка с тонкой рамкой на светлом фоне. Значок — тёмный,
+   на серой подложке (фиолетовый бережём для смысловых акцентов).
+   --------------------------------------------------------------------------- */
+
+.card-grid_component {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.card_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--white);
+}
+
+/* Карточка-условие («Формат — командный»): серая, как подложка
+   под фото ведущей */
+.card_component.is-soft {
+  border-color: var(--gray-photo);
+  background: var(--gray-photo);
+}
+
+.card_icon {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+  border-radius: 0.75rem;
+  background: var(--gray-soft);
+  color: var(--ink);
+}
+
+.card_component.is-soft .card_icon {
+  background: var(--white);
+}
+
+.card_icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.card_art {
+  display: block;
+  width: 9rem;
+  height: auto;
+  margin-bottom: 0.25rem;
+}
+
+.card_heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.card_text {
+  color: var(--text-2);
+  font-size: var(--text-body);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+@media screen and (min-width: 48rem) {
+  .card-grid_component.is-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card-grid_component.is-skills {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .card-grid_component.is-skills {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   6. СУТЬ ИГРЫ: ВСТУПЛЕНИЕ И ВЫВОД
+   --------------------------------------------------------------------------- */
+
+.problem_intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.problem_text {
+  display: flex;
+  max-width: 40rem;
+  flex-direction: column;
+  gap: 1rem;
+  color: var(--text);
+  font-size: var(--text-lead);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+/* Тёмная карточка-вывод с пьедесталом */
+.problem_finale {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.25rem, 2.6vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+.problem_finale-art {
+  display: block;
+  width: 9rem;
+  height: auto;
+  flex: none;
+}
+
+.problem_finale-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.problem_finale-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.2vw, 1.875rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.problem_finale-text {
+  max-width: 44rem;
+  color: var(--on-dark-2);
+  font-size: var(--text-body);
+  line-height: 1.45;
+}
+
+@media screen and (min-width: 48rem) {
+  .problem_finale {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .problem_finale-art {
+    width: 11rem;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .problem_intro {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(2rem, 4vw, 5rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   7. КТО ЕСТЬ В ИГРЕ
+   ---------------------------------------------------------------------------
+   Четыре плашки с толщиной, как карты на столе. Наверху — фигурка
+   в углублении стола, ниже — название, ярлык и три факта.
+   --------------------------------------------------------------------------- */
+
+.roles_list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.role_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card);
+  background: var(--ink-raised);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    0 var(--depth) 0 var(--ink-edge);
+}
+
+.role_art {
+  position: relative;
+  display: flex;
+  height: 6.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  background: var(--socket-face);
+  box-shadow: var(--shadow-socket);
+}
+
+.role_art svg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+}
+
+/* Подпись «Вы» над светлой фишкой команды */
+.role_you {
+  position: absolute;
+  top: 0.375rem;
+  left: 50%;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 0.375rem;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  transform: translateX(-50%);
+}
+
+.role_heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1.8vw, 1.625rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.role_tag {
+  color: var(--lavender);
+  font-size: var(--text-small);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.role_facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+}
+
+.role_facts li {
+  position: relative;
+  padding-left: 1.125rem;
+  color: var(--on-dark-2);
+  font-size: var(--text-body);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.role_facts li::before {
+  position: absolute;
+  top: 0.6em;
+  left: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 0.125rem;
+  background: var(--on-dark-3);
+  content: "";
+}
+
+@media screen and (min-width: 48rem) {
+  .roles_list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 80rem) {
+  .roles_list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   8. 100 МОНЕТ
+   ---------------------------------------------------------------------------
+   Слева — кошелёк команды: стопка из семи монет и число. Когда блок
+   показался на экране, скрипт разыгрывает пример по правилам: два вопроса
+   заказчику — две верхние монеты улетают, число 100 → 96 → 92.
+   Справа — заголовок и что сколько стоит.
+   --------------------------------------------------------------------------- */
+
+.coins_component {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+/* На телефоне и планшете кошелёк — после текста, как пример трат;
+   на десктопе — слева от него */
+.coins_wallet {
+  order: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--card-padding);
+  border-radius: 1.5rem;
+  background: var(--ink-raised);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    0 var(--depth) 0 var(--ink-edge);
+  text-align: center;
+}
+
+/* Стопка: монеты лежат друг на друге, верхняя — последняя в разметке */
+.coins_stack {
+  --coin-w: clamp(7rem, 22vw, 9rem);
+  --coin-step: calc(var(--coin-w) * 0.1);
+  position: relative;
+  width: var(--coin-w);
+  height: calc(var(--coin-w) * 0.55 + var(--coin-step) * 6 + 0.75rem);
+  margin-bottom: 0.5rem;
+}
+
+.coins_stack-shadow {
+  position: absolute;
+  bottom: 0;
+  left: -8%;
+  width: 116%;
+  height: calc(var(--coin-w) * 0.22);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(6 3 10 / 55%), transparent);
+}
+
+.coins_coin {
+  position: absolute;
+  bottom: calc(0.375rem + var(--i) * var(--coin-step));
+  left: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+  transition:
+    transform 700ms var(--ease-out),
+    opacity 500ms ease;
+}
+
+/* Потраченная монета улетает вверх и вправо и тает */
+.coins_wallet[data-state="spent-1"] .coins_coin.is-spend-1,
+.coins_wallet[data-state="spent-2"] .coins_coin.is-spend-1,
+.coins_wallet[data-state="spent-2"] .coins_coin.is-spend-2 {
+  opacity: 0;
+  transform: translate(3.5rem, -4rem) rotate(14deg);
+}
+
+.coins_value {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.coins_value-unit {
+  color: var(--on-dark-2);
+  font-size: 0.45em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.coins_caption {
+  min-height: 2.6em;
+  max-width: 18rem;
+  color: var(--on-dark-3);
+  font-size: var(--text-small);
+  line-height: 1.35;
+}
+
+.coins_copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.coins_note {
+  align-self: flex-start;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgb(218 214 255 / 30%);
+  border-radius: 999px;
+  color: var(--lavender);
+  font-size: var(--text-small);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Что сколько стоит */
+.price_list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+}
+
+.price_row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.375rem 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+}
+
+.price_name {
+  color: var(--on-dark);
+  font-size: var(--text-lead);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.price_cost {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgb(218 214 255 / 14%);
+  color: var(--lavender);
+  font-size: var(--text-small);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.price_cost.is-muted {
+  border: 1px solid rgb(255 255 255 / 18%);
+  background: transparent;
+  color: var(--on-dark-3);
+  font-weight: 500;
+}
+
+.price_text {
+  grid-column: 1 / -1;
+  max-width: 40rem;
+  color: var(--on-dark-2);
+  font-size: var(--text-body);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.coins_outro {
+  color: var(--on-dark);
+  font-size: var(--text-lead);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .coins_component {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+  }
+
+  .coins_wallet {
+    order: 0;
+    min-height: 30rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   9. КАК ПРОЙДЁТ ИГРА
+   ---------------------------------------------------------------------------
+   Десктоп: слева заголовок и подписи «где проходит» (липкие), справа этапы.
+   Телефон: всё в одну колонку.
+   У этапов слева — дорожка с номерами. Скрипт задаёт --progress (0…1):
+   на столько заполняется дорожка, туда же встаёт фишка, номера пройденных
+   этапов темнеют (data-state="done").
+   --------------------------------------------------------------------------- */
+
+.route_component,
+.route_layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+.route_intro {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.route_legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.route_legend-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.route_legend-text {
+  color: var(--text-2);
+  font-size: var(--text-small);
+  line-height: 1.35;
+}
+
+/* Где проходит этап: общий зал — тёмный ярлык, комната команды — серый */
+.place_tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3125rem 0.75rem 0.3125rem 0.5625rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.place_tag svg {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+}
+
+.place_tag.is-hall {
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+.place_tag.is-room {
+  background: var(--gray-soft);
+  color: var(--ink);
+}
+
+/* Дорожка */
+.route_track {
+  --rail-x: 1.25rem;
+  --rail-pad: 3.5rem;
+  position: relative;
+  min-width: 0;
+  padding-left: var(--rail-pad);
+}
+
+.route_line {
+  position: absolute;
+  top: var(--line-start, 1.5rem);
+  height: var(--line-length, calc(100% - 3rem));
+  left: calc(var(--rail-x) - 1px);
+  width: 2px;
+  background: repeating-linear-gradient(to bottom, var(--line-strong) 0 0.375rem, transparent 0.375rem 0.75rem);
+}
+
+.route_line-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--progress, 0) * 100%);
+  border-radius: 1px;
+  background: var(--ink);
+}
+
+/* Фишка стоит на конце заполненной дорожки и проходит под номерами
+   этапов — номер всегда читается. Без скрипта её не видно. */
+.route_pawn {
+  position: absolute;
+  z-index: 1;
+  top: var(--line-start, 1.5rem);
+  display: none;
+  left: calc(var(--rail-x) - 1rem);
+  width: 2rem;
+  height: 3rem;
+  pointer-events: none;
+  transform: translateY(calc(var(--pawn-y, 0px) - 2.75rem));
+  filter: drop-shadow(0 0.25rem 0.25rem rgb(6 3 10 / 25%));
+}
+
+.route_track.is-route-ready .route_pawn {
+  display: block;
+}
+
+.route_list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gap);
+}
+
+.route_step {
+  position: relative;
+  min-width: 0;
+}
+
+.route_number {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  left: calc(var(--rail-x) - var(--rail-pad) - 1.25rem);
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.75rem;
+  background: var(--white);
+  box-shadow: 0 0.1875rem 0 var(--line-strong);
+  color: var(--text-2);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    color 300ms ease;
+}
+
+.route_step[data-state="done"] .route_number {
+  border-color: var(--ink);
+  background: var(--ink);
+  box-shadow: 0 0.1875rem 0 var(--ink-edge);
+  color: var(--on-dark);
+}
+
+/* Финал: вместо номера — подарок */
+.route_step.is-finish .route_number {
+  padding: 0.25rem;
+  border-color: var(--lavender);
+  background: var(--lavender-soft);
+  box-shadow: 0 0.1875rem 0 var(--lavender-edge);
+}
+
+.route_step.is-finish[data-state="done"] .route_number {
+  border-color: var(--lavender);
+  background: var(--lavender);
+}
+
+.route_step.is-finish .route_number svg {
+  width: 100%;
+  height: 100%;
+}
+
+.route_card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--white);
+}
+
+.route_card.is-finish {
+  border-color: var(--lavender);
+  background: var(--lavender-soft);
+}
+
+.route_meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.route_stage {
+  margin-right: 0.25rem;
+  color: var(--text-2);
+  font-size: var(--text-small);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.route_heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.3125rem, 1.8vw, 1.625rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.route_text {
+  color: var(--text);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.route_bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.route_bullets li {
+  position: relative;
+  padding-left: 1.125rem;
+  color: var(--text);
+  font-size: var(--text-body);
+  line-height: 1.45;
+}
+
+.route_bullets li::before {
+  position: absolute;
+  top: 0.6em;
+  left: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 0.125rem;
+  background: var(--ink);
+  content: "";
+}
+
+/* Сколько монет на этапе */
+.route_coins {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  font-size: var(--text-small);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.route_coins-value {
+  display: inline-flex;
+  min-width: 2.75rem;
+  flex: none;
+  justify-content: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background: var(--lavender-soft);
+  box-shadow: inset 0 0 0 1px var(--lavender);
+  color: var(--violet-edge);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Важное примечание к этапу */
+.route_note {
+  padding: 0.75rem 1rem;
+  border-radius: 0.875rem;
+  background: var(--paper);
+  color: var(--text-2);
+  font-size: var(--text-small);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+/* Тёмная плашка-призыв после этапов */
+.cta-band_component {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border-radius: 1.5rem;
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+.cta-band_text {
+  max-width: 46rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.cta-band_component .button {
+  width: 100%;
+}
+
+@media screen and (min-width: 48rem) {
+  .route_track {
+    --rail-x: 1.5rem;
+    --rail-pad: 4.5rem;
+  }
+
+  .route_number {
+    width: 3rem;
+    height: 3rem;
+    left: calc(var(--rail-x) - var(--rail-pad) - 1.5rem);
+    font-size: 1.25rem;
+  }
+
+  .cta-band_component {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .cta-band_component .button {
+    width: auto;
+    flex: none;
+  }
+}
+
+@media screen and (min-width: 64.0625rem) {
+  .route_layout {
+    grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+    column-gap: clamp(2.5rem, 5vw, 6rem);
+    align-items: start;
+  }
+
+  /* Заголовок липнет, пока листаются этапы, и останавливается
+     вместе с последним этапом (границы — .route_layout) */
+  .route_intro {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   10. КТО ПРОВОДИТ ИГРУ
+   ---------------------------------------------------------------------------
+   Плоская серая подложка: фото обрезано по бокам и снизу по её краю
+   и выходит за неё только сверху (как на первой версии лендинга).
+   Справа — имя, роль и регалии на белой карточке.
+   --------------------------------------------------------------------------- */
+
+.host_component {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+}
+
+.host_media {
+  position: relative;
+  min-width: 0;
+  min-height: clamp(20rem, 70vw, 26rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-radius: var(--radius-card);
+  background: var(--gray-photo);
+  clip-path: inset(-60% 0 0 0 round 0 0 var(--radius-card) var(--radius-card));
+}
+
+/* Высота фото — 126% подложки: над краем остаётся около четверти головы */
+.host_photo {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  height: 126%;
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+.host_copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.875rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--white);
+}
+
+.host_name {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.host_role {
+  color: var(--text);
+  font-size: var(--text-lead);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.host_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.host_list li {
+  position: relative;
+  padding-left: 1.125rem;
+  color: var(--text-2);
+  font-size: var(--text-body);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.host_list li::before {
+  position: absolute;
+  top: 0.6em;
+  left: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 0.125rem;
+  background: var(--ink);
+  content: "";
+}
+
+@media screen and (min-width: 48rem) {
+  .host_component {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: stretch;
+  }
+
+  .host_media {
+    min-height: 24rem;
+  }
+
+  /* Карточка начинается вровень с подложкой фото, а не с макушкой */
+  .host_copy {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   11. РЕГИСТРАЦИЯ И БИЛЕТ
+   ---------------------------------------------------------------------------
+   Слева — «Участие бесплатное», три шага и бизнес-призы.
+   Справа — белый билет с вырезами по бокам и линией отрыва; внутри блок
+   записи с вебинаров.
+   --------------------------------------------------------------------------- */
+
+.signup_component {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.signup_info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.join_list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.join_step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.join_number {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: var(--lavender);
+  box-shadow: 0 0.1875rem 0 var(--lavender-edge);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.join_heading {
+  padding-top: 0.25rem;
+  color: var(--on-dark);
+  font-size: var(--text-lead);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.join_text {
+  margin-top: 0.25rem;
+  max-width: 34rem;
+  color: var(--on-dark-2);
+  font-size: var(--text-body);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.gift_component {
+  display: flex;
+  max-width: 34rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem 1rem 1rem;
+  border-radius: var(--radius-card);
+  background: var(--ink-raised);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    0 var(--depth) 0 var(--ink-edge);
+}
+
+.gift_image {
+  display: block;
+  width: 5rem;
+  height: auto;
+  flex: none;
+}
+
+.gift_label {
+  color: var(--on-dark-3);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+.gift_heading {
+  margin-top: 0.25rem;
+  color: var(--on-dark);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+/* Билет: тень — на обёртке, вырезы — на самом билете */
+.ticket_component {
+  width: 100%;
+  max-width: 32rem;
+  min-width: 0;
+  filter: drop-shadow(0 1.25rem 1.5rem rgb(6 3 10 / 45%));
+}
+
+.ticket_card {
+  --notch-y: 6.75rem;
+  overflow: hidden;
+  border-bottom: var(--depth) solid #d9d4e6;
+  border-radius: var(--radius-card);
+  background: var(--white);
+  color: var(--ink);
+  -webkit-mask:
+    radial-gradient(circle at 0 var(--notch-y), transparent 0.75rem, #000 0.8rem) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% var(--notch-y), transparent 0.75rem, #000 0.8rem) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle at 0 var(--notch-y), transparent 0.75rem, #000 0.8rem) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% var(--notch-y), transparent 0.75rem, #000 0.8rem) right / 51% 100% no-repeat;
+}
+
+.ticket_head {
+  display: flex;
+  height: var(--notch-y);
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem clamp(1.25rem, 4vw, 2rem);
+  border-bottom: 2px dashed #e4e0ee;
+}
+
+.ticket_title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.ticket_meta {
+  color: var(--text-2);
+  font-size: var(--text-small);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.ticket_body {
+  padding: 1.25rem clamp(1.25rem, 4vw, 2rem) 1.5rem;
+  container-type: inline-size;
+}
+
+/* Десктоп: блок уже контейнера и стоит по центру — описание и билет
+   рядом, а не по краям экрана */
+@media screen and (min-width: 64.0625rem) {
+  .signup_component {
+    max-width: 68rem;
+    margin-right: auto;
+    margin-left: auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+    align-items: start;
+    column-gap: clamp(2.5rem, 4vw, 4rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   12. БЛОК ЗАПИСИ (BOTHELP + ЗАПАСНАЯ ФОРМА)
+   ---------------------------------------------------------------------------
+   Копия с «Колоды» (а туда — с лендингов вебинаров) без изменений: кнопки
+   мессенджеров BotHelp, а если виджет не поднялся (или его ещё нет) —
+   запасная лид-форма.
+   --------------------------------------------------------------------------- */
+
+.lead-form_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+  color: var(--ink);
+}
+
+.lead-form_hint {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Виджет BotHelp: разметку внутри рисует чужой скрипт, поэтому правим её
+   по их классам — и через !important: часть размеров BotHelp проставляет
+   прямо в style="". */
+.lead-form_widget {
+  min-width: 0;
+}
+
+.lead-form_bh,
+.lead-form_bh .bh-widget-button,
+.lead-form_bh .bh-w-button-list {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+}
+
+.lead-form_bh .bh-widget-button {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.lead-form_bh .bh-w-button-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.625rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.lead-form_bh .bh-w-messenger-button {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 3.25rem !important;
+  max-height: none !important;
+  flex: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  margin: 0 !important;
+  padding: 0.875rem 1.25rem !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: var(--radius-button) !important;
+  background: var(--color-accent-primary) !important;
+  color: var(--color-text-on-dark) !important;
+  font-family: inherit !important;
+  font-size: 1.0625rem !important;
+  font-weight: 500 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: background-color var(--transition-site), opacity var(--transition-site) !important;
+}
+
+.lead-form_bh .bh-w-messenger-button:focus-visible {
+  outline: 2px solid var(--color-focus) !important;
+  outline-offset: 4px !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lead-form_bh .bh-w-messenger-button:hover {
+    background: var(--color-accent-hover) !important;
+  }
+}
+
+.lead-form_component[data-state="sending"] .lead-form_bh .bh-w-messenger-button {
+  opacity: 0.65 !important;
+  pointer-events: none !important;
+}
+
+.lead-form_bh .bh-w-button__icon {
+  position: static !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  flex: none !important;
+  margin: 0 !important;
+}
+
+.lead-form_bh .bh-w-button__title {
+  position: static !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+/* Виджет подписывает кнопку ВКонтакте латиницей — меняем на русское имя */
+.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title {
+  font-size: 0 !important;
+}
+
+.lead-form_bh .bh-w-messenger-button[data-type="vkontakte"] .bh-w-button__title::after {
+  content: "ВКонтакте";
+  font-size: 1.0625rem;
+}
+
+.lead-form_bh .bh-w-consent__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  cursor: pointer;
+}
+
+.lead-form_bh .bh-w-consent__checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-accent-primary);
+  cursor: pointer;
+}
+
+.lead-form_bh .bh-w-consent__label {
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.lead-form_bh .bh-w-consent__label a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.lead-form_bh .bh-w-consent__message,
+.lead-form_bh .bh-w-powered-by {
+  display: none;
+}
+
+/* Скелет, пока виджет не пришёл */
+.lead-form_widget-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.lead-form_widget-skeleton span {
+  height: 3.25rem;
+  border-radius: var(--radius-button);
+  background: linear-gradient(90deg, #f0f0f5 25%, #e6e5ee 37%, #f0f0f5 63%);
+  background-size: 400% 100%;
+  animation: lead-form-skeleton 1.4s ease infinite;
+}
+
+.lead-form_widget-skeleton span:last-child {
+  width: 70%;
+  height: 1rem;
+}
+
+@keyframes lead-form-skeleton {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+.lead-form_widget[data-bh-state="loading"] .lead-form_bh {
+  display: none;
+}
+
+.lead-form_note {
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.lead-form_status {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.lead-form_status[data-state="error"] {
+  color: #d92d20;
+}
+
+.lead-form_status[data-state="loading"] {
+  color: var(--color-text-secondary);
+}
+
+.lead-form_status:empty {
+  display: none;
+}
+
+.lead-form_manual {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.lead-form_manual a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* --- Запасная форма --------------------------------------------------------
+   Видна, только если виджет BotHelp не поднялся (см. page.js, блок
+   «ЗАПИСЬ НА ВЕБИНАР: BOTHELP + ЗАПАСНАЯ ФОРМА»).
+   -------------------------------------------------------------------------- */
+
+[data-signup] [hidden] {
+  display: none !important;
+}
+
+/* Скрытая форма Тильды: убираем с глаз, но не через display:none — скриптам
+   Тильды нужно измерять поля и ставить в них фокус */
+[data-signup-native-form-record] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+.lead-form_fallback,
+.lead-form_fields,
+.lead-form_messenger {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.lead-form_fallback {
+  gap: 1rem;
+}
+
+.lead-form_field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.lead-form_label {
+  display: block;
+  padding: 0;
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.lead-form_required {
+  margin-left: 0.125rem;
+  color: var(--color-accent-primary);
+}
+
+.lead-form_control {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  padding: 0 0.875rem;
+  border: 1px solid #d9d5e4;
+  border-radius: 0.875rem;
+  background: #ffffff;
+  transition: border-color var(--transition-site);
+}
+
+.lead-form_control:focus-within {
+  border-color: var(--color-accent-primary);
+}
+
+.lead-form_field[data-state="invalid"] .lead-form_control {
+  border-color: #d92d20;
+}
+
+.lead-form_input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0.625rem 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-primary);
+  caret-color: var(--violet);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.3;
+  appearance: none;
+}
+
+.lead-form_input::placeholder {
+  color: #8f879f;
+  opacity: 1;
+}
+
+.lead-form_input:focus {
+  outline: none;
+}
+
+.lead-form_error {
+  color: #d92d20;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.lead-form_error:empty {
+  display: none;
+}
+
+.lead-form_messenger > .lead-form_label {
+  margin-bottom: 0.375rem;
+}
+
+.lead-form_messenger-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.lead-form_messenger-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.lead-form_messenger-option {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem;
+  border: 1px solid transparent;
+  border-radius: 0.875rem;
+  background: #f3f1f8;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-site),
+    border-color var(--transition-site),
+    color var(--transition-site);
+}
+
+.lead-form_messenger-icon {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+.lead-form_messenger-input:checked + .lead-form_messenger-option {
+  border-color: var(--color-accent-primary);
+  background: #ffffff;
+  color: var(--color-accent-primary);
+}
+
+.lead-form_messenger-input:focus-visible + .lead-form_messenger-option {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.lead-form_contact-note {
+  margin-top: -0.375rem;
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.lead-form_check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  cursor: pointer;
+}
+
+.lead-form_check-input {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-accent-primary);
+  cursor: pointer;
+}
+
+.lead-form_check-label {
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+[data-signup] .lead-form_check-label a {
+  color: var(--color-accent-primary) !important;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.lead-form_submit.button {
+  min-height: 3.25rem;
+}
+
+.lead-form_submit[aria-busy="true"] {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.lead-form_success {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lead-form_success:focus {
+  outline: none;
+}
+
+/* Широкий билет: имя и телефон в один ряд — форма помещается без прокрутки */
+@container (min-width: 25rem) {
+  .lead-form_fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 0.75rem;
+  }
+
+  .lead-form_fallback {
+    gap: 0.875rem;
+  }
+}
+
+.lead-form_success-heading {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+
+/* ---------------------------------------------------------------------------
+   13. ПОДВАЛ
+   --------------------------------------------------------------------------- */
+
+.site-footer_component {
+  width: 100%;
+  padding: clamp(4.5rem, 9vw, 8rem) 0 clamp(2rem, 3vw, 3rem);
+  border-top: 1px solid rgb(255 255 255 / 8%);
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.site-footer_heading {
+  margin: 0 0 clamp(1.5rem, 2.4vw, 2.5rem);
+  font-size: clamp(1.75rem, 3.4vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.site-footer_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem var(--grid-gap, 1rem);
+}
+
+.site-footer_group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.site-footer_group-title {
+  color: #a29ab4;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+
+.site-footer_line {
+  color: #ffffff;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.site-footer_line a {
+  transition: color var(--transition-site);
+}
+
+.site-footer_bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: clamp(2rem, 3.4vw, 3rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+  color: #a29ab4;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-footer_line a:hover {
+    color: var(--color-accent-light);
+  }
+}
+
+@media screen and (min-width: 48rem) {
+  .site-footer_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-footer_bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   14. ПОЯВЛЕНИЕ ПРИ ПРОКРУТКЕ, УМЕНЬШЕННОЕ ДВИЖЕНИЕ, ПЕЧАТЬ
+   ---------------------------------------------------------------------------
+   Блоки с data-reveal мягко поднимаются, когда доходят до экрана. Прячем
+   их только после того, как скрипт запустился (класс is-reveal-ready):
+   если скрипт не загрузился, всё видно сразу. В группе (data-reveal-group)
+   карточки появляются по очереди — задержку ставит скрипт (--reveal-delay).
+   --------------------------------------------------------------------------- */
+
+.game-page [data-reveal] {
+  transition:
+    opacity 700ms ease var(--reveal-delay, 0ms),
+    transform 800ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+
+.game-page.is-reveal-ready [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(1.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .game-page *,
+  .game-page *::before,
+  .game-page *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .game-page.is-reveal-ready [data-reveal]:not(.is-revealed) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media print {
+  .site-header_component {
+    position: static;
+  }
+
+  .route_pawn {
+    display: none;
+  }
+
+  .game-page [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   15. ЗАЩИТА ОТ ОБЩИХ СТИЛЕЙ ТИЛЬДЫ
+   ---------------------------------------------------------------------------
+   В шапке сайта на Тильде стоит правило вида a { color: inherit !important }.
+   Оно сильнее обычных объявлений, поэтому у ссылок цвет повторён здесь
+   с !important. Меняете цвет выше — поменяйте и здесь.
+   --------------------------------------------------------------------------- */
+
+.game-page .button.is-light {
+  color: var(--ink) !important;
+}
+
+.game-page .button.is-accent {
+  color: #ffffff !important;
+}
+
+.game-page .site-header_logo,
+.game-page .site-footer_line a,
+.game-page .board_stage.is-violet,
+.game-page .board_stage.is-plain {
+  color: #ffffff !important;
+}
+
+.game-page .board_stage.is-lavender {
+  color: var(--ink) !important;
+}
+
+.game-page .site-header_link {
+  color: var(--on-dark-2) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .game-page .site-header_link:hover {
+    color: #ffffff !important;
+  }
+}
+
+.skip-link {
+  color: #2b2334 !important;
+}
