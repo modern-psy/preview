@@ -57,7 +57,8 @@ function patch(markup, from, to, what) {
 }
 
 const image = (media, className, {lazy = true} = {}) => {
-  if (!/^https:\/\//.test(media.src) || ![media.width, media.height].every(n => Number.isInteger(n) && n > 0)) throw new Error(`Изображение без CDN-ссылки или без размеров: ${media.src}`);
+  // Локальные картинки допустимы только из папки assets лендинга; для Тильды каждой нужна ссылка на CDN (S3).
+  if (!/^(https:\/\/|assets\/)/.test(media.src) || ![media.width, media.height].every(n => Number.isInteger(n) && n > 0)) throw new Error(`Изображение без CDN-ссылки (или файла в assets/) или без размеров: ${media.src}`);
   if (typeof media.alt !== 'string') throw new Error(`Нужен alt: ${media.src}`);
   return `<img class="${className}" src="${escapeHtml(media.src)}" width="${media.width}" height="${media.height}" alt="${escapeHtml(media.alt)}" draggable="false"${lazy ? ' loading="lazy" decoding="async"' : ''}>`;
 };
@@ -208,7 +209,8 @@ function renderInstructor(t, id) {
 
 /* Удостоверение: вариант «Документ с фото человека» из библиотеки блоков (/narrative-therapy, он же /rft, /ifs,
    /psihosomatika) вместо старого общего diploma — 12.10.2026 по просьбе Дарьи. Белая карточка: слева заголовок
-   с акцентом, условия получения с тёмной галочкой и лицензия, справа фото выпускницы с удостоверением.
+   с акцентом, условия получения с тёмной галочкой и лицензия, справа удостоверение в абстрактной 3D-сцене
+   (12.10.2026 вместо фото выпускницы: та обрезалась на средних ширинах; Generations/44-udost-a5/3d, вариант 1).
    Телефон: фото квадратом под текстом; от 768px две колонки, фото по высоте текста. */
 function renderDocuments(d, id) {
   const terms = d.terms.map(term => `<li class="document_term">${icon('check', 'document_check')}<span>${renderText(term)}</span></li>`).join('');
@@ -364,7 +366,11 @@ ${renderJsonLd(seo, teacher, model, course)}
   const duplicates = ids.filter((value, i) => ids.indexOf(value) !== i);
   if (duplicates.length) throw new Error(`Повторяющиеся id: ${duplicates.join(', ')}`);
   for (const link of html.matchAll(/href="#([a-z][a-z0-9-]*)"/g)) if (!ids.includes(link[1])) throw new Error(`Якорь без цели: #${link[1]}`);
-  if (/\.\.\/web-academy|localhost|127\.0\.0\.1|src="assets\//.test(html)) throw new Error('В index.html остались локальные ссылки');
+  if (/\.\.\/web-academy|localhost|127\.0\.0\.1/.test(html)) throw new Error('В index.html остались локальные ссылки');
+  for (const [, file] of html.matchAll(/src="(assets\/[^"]+)"/g)) {
+    await fs.access(new URL(file, root)).catch(() => { throw new Error(`Нет локального файла ${file}`); });
+    console.warn(`⚠️  Локальная картинка ${file}: для Тильды нужна ссылка на S3`);
+  }
   if ((html.match(/<h1\b/g) || []).length !== 1) throw new Error('На странице должен быть ровно один h1');
   return html;
 }
