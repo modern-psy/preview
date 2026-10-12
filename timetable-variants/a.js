@@ -48,6 +48,35 @@
   // В листе ожидания индикатора нет.
   var SHOW_STATUS = document.body.hasAttribute('data-status');
   var ROW_OPTS = { status: SHOW_STATUS };
+
+  // 🟢 Общие роли Web Academy только для A с индикаторами.
+  // Геометрию и дни недели сохраняем; остальные варианты используют старый кит.
+  function typeMarkup(html) {
+    if (!SHOW_STATUS) return html;
+    return html.replace(/class="([^"]*)"/g, function (attr, classes) {
+      if (/\b(?:week-days_component|week-days_note|timetable-row_weekday|day-picker_day)\b/.test(classes)) return attr;
+      var role = '';
+      if (/\b(?:timetable-row_title|timetable-row_amount|timetable-row_day|featured-event_day|featured-event_title)\b/.test(classes)) {
+        role = 'content-heading_component is-card';
+      } else if (/\bheading-style-h[123]\b/.test(classes)) {
+        role = 'section-title_component is-responsive';
+      } else if (/\bheading-style-h[456]\b/.test(classes)) {
+        role = 'content-heading_component is-card';
+      } else if (/\btext-size-paragraph-md\b/.test(classes)) {
+        role = 'body-text_component is-summary';
+      } else if (/\btext-size-paragraph-sm\b/.test(classes)) {
+        role = 'body-text_component';
+      } else if (/\btext-size-caption-md\b/.test(classes)) {
+        role = 'body-text_component is-caption';
+      } else if (/\btext-size-caption-sm\b/.test(classes)) {
+        role = 'body-text_component is-fine-print';
+      }
+      if (!role) return attr;
+      classes = classes.replace(/\b(?:heading-style-h[1-6]|text-size-[a-z-]+|text-weight-[a-z-]+)\b/g, '').replace(/\s+/g, ' ').trim();
+      return 'class="' + classes + ' ' + role + '"';
+    });
+  }
+
   var data = null;
 
   function hasDays() { return Object.keys(state.days).length > 0; }
@@ -90,7 +119,7 @@
     // 🟢 На странице с меткой оставлен выбранный баннер с фотографией на фоне.
     // На обычной странице A сохраняется её исходное оформление.
     var variants = SHOW_STATUS ? ['is-backdrop'] : [''];
-    box.innerHTML = variants.map(function (variant, index) {
+    box.innerHTML = typeMarkup(variants.map(function (variant, index) {
       var titleId = index ? 'featuredBackdropTitle' : 'featuredTitle';
       return '<section class="card featured-event_component' + (variant ? ' ' + variant : '') + '" aria-labelledby="' + titleId + '">' +
       (ev.cover ? '<img class="featured-event_cover" src="' + T.esc(ev.cover) + '" alt="" width="1920" height="960" />' : '') +
@@ -108,7 +137,7 @@
         '</div>' +
       '</div>' +
     '</section>';
-    }).join('');
+    }).join(''));
   }
 
   /* ---------- 2. НАВИГАТОР ---------- */
@@ -181,7 +210,7 @@
       html += captioned('Лист ожидания', 'Даты старта пока нет. Оставьте заявку — место можно забронировать.', rows(wait), 'waitlist');
     }
 
-    $('list').innerHTML = html;
+    $('list').innerHTML = typeMarkup(html);
     $('stickyText').textContent = hasDays() ? 'Свободные дни: ' + T.daysLabel(chosenDays()) : 'Все дни';
   }
 
@@ -233,6 +262,6 @@
       note.textContent = T.snapshotNote(d);
     }
   }).catch(function () {
-    $('list').innerHTML = T.failCard();
+    $('list').innerHTML = typeMarkup(T.failCard());
   });
 })();
