@@ -17,12 +17,13 @@
 
   ИДЕЯ СТРАНИЦЫ
     Сначала заставка, как у игры: название, одна фраза, дата и кнопка
-    «Узнать, как устроена игра». Дальше — игровой стол: в левом верхнем
-    углу ведущая, напротив сидит заказчик, в центре колода из 11 карт,
-    слева монеты команды, справа «Ваша команда», внизу лента открытых
-    карт. Карты по одной рассказывают, как устроена игра; на каждой
-    говорит ведущая или заказчик, монеты тратятся по правилам, фишка
-    в шапке идёт по этапам. Последняя карта — билет с записью.
+    «Узнать, как устроена игра». Дальше — игровой стол: сверху лента карт
+    (она же прогресс), в центре колода из 11 карт, слева ведущая и монеты
+    команды, справа заказчик, внизу «Ваша команда». Карты по одной
+    рассказывают, как устроена игра; на каждой говорит ведущая или
+    заказчик, монеты тратятся по правилам. Один жест колеса или тачпада —
+    один экран: заставка → стол → следующая карта; после билета обычная
+    прокрутка до подвала. Последняя карта — билет с записью.
     Макеты: apps/preview/.impeccable/mocks/biznes-igra/r3-*.png
 
   ПРАВИЛО СВЕТОФОРА (важно, если правите руками):
@@ -356,8 +357,8 @@
 <!-- ==========================================================================
      ШАПКА
      ==========================================================================
-     Липкая. В центре — шесть шагов игры: по нажатию колода переходит
-     к карте этого этапа, над текущим шагом стоит фишка.
+     Липкая: логотип и кнопка записи. Где мы в игре, показывает
+     лента карт над столом.
      ========================================================================== -->
 <header class="site-header_component">
   <div class="padding-global">
@@ -369,17 +370,6 @@
           <svg viewBox="0 0 84 30" focusable="false" aria-hidden="true"><use href="#g-logo" /></svg>
         </a>
 
-        <nav class="steps_component" aria-label="Этапы игры" data-steps>
-          <ol class="steps_list">
-            <li><button class="steps_item" type="button" data-step-target="1" data-state="todo" aria-label="Этап 1. Знакомство и правила"><span class="steps_number">1</span><span class="steps_label">Знакомство</span></button></li>
-            <li><button class="steps_item" type="button" data-step-target="2" data-state="todo" aria-label="Этап 2. Кейс и стартовый ресурс"><span class="steps_number">2</span><span class="steps_label">Кейс</span></button></li>
-            <li><button class="steps_item" type="button" data-step-target="3" data-state="todo" aria-label="Этап 3. Брифинг с заказчиком"><span class="steps_number">3</span><span class="steps_label">Брифинг</span></button></li>
-            <li><button class="steps_item" type="button" data-step-target="4" data-state="todo" aria-label="Этап 4. Ярмарка данных"><span class="steps_number">4</span><span class="steps_label">Ярмарка данных</span></button></li>
-            <li><button class="steps_item" type="button" data-step-target="5" data-state="todo" aria-label="Этап 5. Разработка стратегии"><span class="steps_number">5</span><span class="steps_label">Стратегия</span></button></li>
-            <li><button class="steps_item" type="button" data-step-target="6" data-state="todo" aria-label="Этап 6. Защита и итоги"><span class="steps_number">6</span><span class="steps_label">Защита</span></button></li>
-          </ol>
-          <svg class="steps_pawn" viewBox="0 0 64 96" aria-hidden="true" focusable="false" data-steps-pawn><use href="#g-pawn-lavender" /></svg>
-        </nav>
 
         <a class="button is-light site-header_cta" href="#bilet" data-go-ticket>
           <span class="for-narrow">Записаться</span><span class="for-wide">Зарегистрироваться</span>
@@ -420,28 +410,57 @@
             </ul>
           </div>
 
+          <!-- Иллюстрация «команда и заказчик» (макет: .impeccable/mocks/biznes-igra/hero-c-diorama.png).
+               Слева команда из пяти фишек (светлая — «вы»), в центре колода
+               и монеты, справа заказчик со знаком вопроса. Когда заставка
+               появляется, три монеты один раз перелетают от команды к заказчику.
+               Нарисовано кодом из тех же предметов, что на столе. -->
           <div class="splash_art" aria-hidden="true">
-            <svg viewBox="0 0 900 360" focusable="false">
-              <!-- Заказчик за столом -->
-              <use href="#g-client" x="408" y="0" width="84" height="98" />
-              <!-- Стопки монет слева и справа -->
-              <use href="#g-coins-plain" x="168" y="150" width="104" height="100" />
-              <use href="#g-coins-plain" x="96" y="206" width="98" height="94" />
-              <use href="#g-coins-plain" x="236" y="214" width="98" height="94" />
-              <use href="#g-coins-plain" x="630" y="160" width="104" height="100" />
-              <use href="#g-coins-plain" x="706" y="214" width="98" height="94" />
-              <!-- Колода в центре -->
-              <g transform="translate(450 205)">
-                <g transform="translate(-34 8) rotate(-11)"><use href="#g-card-back" x="-72" y="-99" width="144" height="198" /></g>
-                <g transform="translate(34 6) rotate(9)"><use href="#g-card-back" x="-72" y="-99" width="144" height="198" /></g>
-                <use href="#g-card-back" x="-72" y="-103" width="144" height="198" />
+            <svg viewBox="0 0 900 340" focusable="false">
+              <defs>
+                <linearGradient id="g-deck-top" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#8a6de6" />
+                  <stop offset="1" stop-color="#6a4fd0" />
+                </linearGradient>
+              </defs>
+
+              <!-- Команда: две фишки сзади, три спереди -->
+              <use href="#g-pawn-violet" x="132" y="86" width="68" height="102" />
+              <use href="#g-pawn-violet" x="232" y="80" width="68" height="102" />
+              <use href="#g-pawn-violet" x="78" y="130" width="78" height="117" />
+              <use href="#g-pawn-violet" x="268" y="128" width="78" height="117" />
+              <use href="#g-pawn-lavender" x="166" y="140" width="88" height="132" />
+
+              <!-- Колода лежит на столе: стопка и одна открытая карта -->
+              <ellipse cx="462" cy="292" rx="96" ry="14" fill="#0d0814" opacity="0.4" />
+              <g stroke-linejoin="round" stroke-width="10">
+                <path d="M413 262 L528 262 L528 280 L413 280 Z" fill="#3b2a86" stroke="#3b2a86" />
+                <path d="M505 226 L528 262 L528 280 L505 244 Z" fill="#4a3699" stroke="#4a3699" />
+                <path d="M390 226 L505 226 L528 262 L413 262 Z" fill="url(#g-deck-top)" stroke="url(#g-deck-top)" />
               </g>
-              <!-- Команда: пять фишек -->
-              <use href="#g-pawn-violet" x="294" y="282" width="44" height="66" />
-              <use href="#g-pawn-violet" x="356" y="290" width="44" height="66" />
-              <use href="#g-pawn-lavender" x="428" y="294" width="44" height="66" />
-              <use href="#g-pawn-violet" x="500" y="290" width="44" height="66" />
-              <use href="#g-pawn-violet" x="562" y="282" width="44" height="66" />
+              <ellipse cx="459" cy="244" rx="20" ry="7.5" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2" />
+              <g stroke-linejoin="round" stroke-width="8">
+                <path d="M356 296 L446 296 L446 302 L356 302 Z" fill="#4e37a8" stroke="#4e37a8" />
+                <path d="M340 272 L430 272 L446 296 L356 296 Z" fill="#9e86ee" stroke="#9e86ee" />
+              </g>
+              <ellipse cx="393" cy="284" rx="15" ry="5.5" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="2" />
+
+              <!-- Монеты команды -->
+              <use href="#g-coins-plain" x="540" y="200" width="74" height="72" />
+              <use href="#g-coins-plain" x="598" y="226" width="62" height="60" />
+              <use href="#g-coin" x="560" y="284" width="44" height="24" />
+
+              <!-- Монеты в полёте: от команды к заказчику -->
+              <use class="splash_coin is-1" href="#g-coin" x="378" y="140" width="44" height="24" />
+              <use class="splash_coin is-2" href="#g-coin" x="462" y="104" width="40" height="22" />
+              <use class="splash_coin is-3" href="#g-coin" x="548" y="122" width="36" height="20" />
+
+              <!-- Заказчик на подставке и его вопрос -->
+              <use href="#g-client" x="640" y="58" width="184" height="215" />
+              <g class="splash_question">
+                <path d="M792 30 h50 a16 16 0 0 1 16 16 v32 a16 16 0 0 1 -16 16 h-30 l-16 14 v-14 h-4 a16 16 0 0 1 -16 -16 v-32 a16 16 0 0 1 16 -16 z" fill="#3a3047" stroke="#dad6ff" stroke-opacity="0.22" stroke-width="1.5" />
+                <text x="817" y="76" fill="#b3a8ee" font-family="Wix Madefor Display, Arial, sans-serif" font-size="40" font-weight="700" text-anchor="middle">?</text>
+              </g>
             </svg>
           </div>
 
@@ -485,25 +504,36 @@
     <div class="table_track" data-table-track>
       <div class="table_stage" data-table-stage>
 
-        <!-- Ведущая (левый верхний угол) и заказчик (напротив).
+        <!-- Лента карт — она же прогресс: вытянутые открываются по нажатию,
+             остальные пока лежат в колоде (рубашкой вверх). Ленту строит скрипт. -->
+        <nav class="table_ribbon ribbon_component" aria-label="Карты колоды" data-ribbon>
+          <ol class="ribbon_list" data-ribbon-list></ol>
+        </nav>
+
+        <!-- Ведущая (слева от колоды) и заказчик (справа).
              На каждой карте говорит кто-то один: у него облачко с репликой,
              у второго — только подпись. Кто говорит и что — задают атрибуты
              data-speaker и data-line у карты. -->
         <div class="table_speakers speakers_component">
 
           <div class="speaker_component is-host" data-speaker="host" data-active="true">
-            <button class="speaker_avatar" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">
-              <img class="host_photo"
-                   src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/240x/-/format/webp/telegram-cloud-docum.png.webp"
-                   alt="" width="120" height="120" decoding="async" />
-              <span class="screen-reader-only">Ведущая Екатерина Исупова, открыть биографию</span>
-            </button>
-            <div class="speaker_bubble">
-              <p class="speaker_name">Екатерина Исупова<span class="speaker_role">, ведущая</span></p>
-              <p class="speaker_line" data-speaker-line>Я&nbsp;— ведущая игры. Сначала о&nbsp;том, что вы&nbsp;потренируете</p>
-              <button class="speaker_more" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">Биография</button>
+            <div class="speaker_head">
+              <button class="speaker_avatar" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">
+                <img class="host_photo"
+                     src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/240x/-/format/webp/telegram-cloud-docum.png.webp"
+                     alt="" width="120" height="120" decoding="async" />
+                <span class="screen-reader-only">Ведущая Екатерина Исупова, открыть биографию</span>
+              </button>
+              <div class="speaker_meta">
+                <p class="speaker_name">Екатерина Исупова</p>
+                <p class="speaker_role">ведущая · <button class="speaker_more" type="button" data-host-open aria-expanded="false" aria-controls="host-panel">биография</button></p>
+              </div>
             </div>
-            <div class="host-panel_component" id="host-panel" role="dialog" aria-modal="false" aria-labelledby="host-panel-name" data-host-panel hidden>
+            <div class="speaker_bubble">
+              <p class="speaker_bubble-name" aria-hidden="true">Екатерина Исупова</p>
+              <p class="speaker_line" data-speaker-line>Я&nbsp;— ведущая игры. Сначала о&nbsp;том, что вы&nbsp;потренируете</p>
+            </div>
+          <div class="host-panel_component" id="host-panel" role="dialog" aria-modal="false" aria-labelledby="host-panel-name" data-host-panel hidden>
               <img class="host-panel_photo"
                    src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/720x/-/format/webp/telegram-cloud-docum.png.webp"
                    alt="Екатерина Исупова, клинический и корпоративный психолог"
@@ -525,11 +555,17 @@
           </div>
 
           <div class="speaker_component is-client" data-speaker="client" data-active="false">
-            <span class="speaker_avatar">
-              <svg class="client_figure" viewBox="0 0 96 112" aria-hidden="true" focusable="false"><use href="#g-client" /></svg>
-            </span>
+            <div class="speaker_head">
+              <span class="speaker_avatar">
+                <svg class="client_figure" viewBox="0 0 96 112" aria-hidden="true" focusable="false"><use href="#g-client" /></svg>
+              </span>
+              <div class="speaker_meta">
+                <p class="speaker_name">Заказчик</p>
+                <p class="speaker_role">его кейс вы&nbsp;решаете</p>
+              </div>
+            </div>
             <div class="speaker_bubble">
-              <p class="speaker_name">Заказчик</p>
+              <p class="speaker_bubble-name" aria-hidden="true">Заказчик</p>
               <p class="speaker_line" data-speaker-line></p>
             </div>
           </div>
@@ -879,31 +915,22 @@
             <li class="team_seat">
               <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
               <span class="team_name">Участник</span>
-              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
             </li>
             <li class="team_seat">
               <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
               <span class="team_name">Участник</span>
-              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
             </li>
             <li class="team_seat">
               <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
               <span class="team_name">Участник</span>
-              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
             </li>
             <li class="team_seat">
               <span class="team_avatar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-person" /></svg></span>
               <span class="team_name">Участник</span>
-              <svg class="team_cursor" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><use href="#g-cursor" /></svg>
             </li>
           </ul>
         </div>
 
-        <!-- Лента открытых карт: вытянутые — открываются по нажатию,
-             остальные пока лежат в колоде (рубашкой вверх). Ленту строит скрипт. -->
-        <nav class="table_ribbon ribbon_component" aria-label="Карты колоды" data-ribbon>
-          <ol class="ribbon_list" data-ribbon-list></ol>
-        </nav>
 
         <!-- Объявление для скринридера: какая карта открыта -->
         <p class="screen-reader-only" aria-live="polite" data-deck-live></p>

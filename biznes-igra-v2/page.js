@@ -33,7 +33,7 @@
      5. Лента открытых карт
      6. Биография ведущей
      7. Вариант «кнопкой»: кнопки, свайп, клавиатура
-     8. Вариант «прокруткой»
+     8. Вариант «прокруткой»: один жест — один экран
      9. Переходы со всей страницы: «Узнать», «Зарегистрироваться», шаги
     10. Запуск
    ========================================================================== */
@@ -752,6 +752,7 @@
 
   let stepPx = 0;
   let trackStart = 0;
+  const snapMarks = [];
   let jumpTarget = null;
   let jumpTimer = 0;
   let scrollFrame = 0;
@@ -763,6 +764,21 @@
     stepPx = Math.max(window.innerHeight * 0.55, 320);
     track.style.height = `${stage.offsetHeight + stepPx * (TOTAL - 1)}px`;
     trackStart = track.getBoundingClientRect().top + window.scrollY - headerHeight();
+
+    // Точки, к которым на телефоне «примагничивается» прокрутка: по одной
+    // на карту (см. page.css, раздел 16 — scroll-snap только для тач-экранов)
+    if (!snapMarks.length) {
+      cards.forEach(() => {
+        const mark = document.createElement("span");
+        mark.className = "table_snap";
+        mark.setAttribute("aria-hidden", "true");
+        track.append(mark);
+        snapMarks.push(mark);
+      });
+    }
+    snapMarks.forEach((mark, i) => {
+      mark.style.top = `${i * stepPx}px`;
+    });
   };
 
   const indexFromScroll = () => clamp(Math.round((window.scrollY - trackStart) / stepPx), 0, TOTAL - 1);
@@ -783,6 +799,7 @@
     jumpTarget = target;
     goTo(target);
     window.scrollTo({ top: targetY, behavior: smooth ? "smooth" : "instant" });
+    lockedUntil = performance.now() + (smooth ? 900 : 100);
 
     // Пока страница едет к карте, промежуточные карты не показываем.
     // Отпускаем, когда доехали (или по таймеру, если прокрутку прервали)
@@ -803,11 +820,128 @@
     jumpTimer = window.setTimeout(release, smooth ? 1400 : 80);
   };
 
+  /* Один жест — один экран.
+     Колесо мыши, тачпад и клавиши не прокручивают страницу плавно,
+     а переключают экраны: заставка → стол → следующая карта. После билета
+     прокрутка снова обычная — до подвала. На телефоне листают пальцем,
+     а прокрутка «примагничивается» к картам (scroll-snap в page.css). */
+
+  const SLOT_SPLASH = -1;
+  let lockedUntil = 0;
+  let tween = 0;
+
+  const lastCardY = () => trackStart + (TOTAL - 1) * stepPx;
+  const slotY = (slot) => (slot === SLOT_SPLASH ? 0 : trackStart + slot * stepPx);
+
+  // На каком экране мы сейчас: заставка или карта номер N
+  const currentSlot = () => (window.scrollY < trackStart - 4 ? SLOT_SPLASH : indexFromScroll());
+
+  // Быстрая плавная смена экрана — своя, чтобы длительность была одинаковой
+  const glideTo = (y, duration = 560) => {
+    window.cancelAnimationFrame(tween);
+    const from = window.scrollY;
+    const distance = y - from;
+    if (Math.abs(distance) < 1) return 0;
+    if (reducedMotion()) {
+      window.scrollTo({ top: y, behavior: "instant" });
+      return 0;
+    }
+    const start = performance.now();
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const frame = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      window.scrollTo({ top: from + distance * ease(t), behavior: "instant" });
+      if (t < 1) tween = window.requestAnimationFrame(frame);
+    };
+    tween = window.requestAnimationFrame(frame);
+    return duration;
+  };
+
+  // Шаг вперёд или назад. Возвращает false, если шаг не наш (после билета)
+  const stepScreen = (direction) => {
+    const slot = currentSlot();
+    if (direction > 0 && slot === TOTAL - 1) return false;
+    if (direction < 0 && slot === SLOT_SPLASH) return false;
+    const target = direction > 0
+      ? (slot === SLOT_SPLASH ? 0 : slot + 1)
+      : (slot === 0 ? SLOT_SPLASH : slot - 1);
+    const duration = glideTo(slotY(target), target === 0 && slot === SLOT_SPLASH ? 640 : 520);
+    lockedUntil = performance.now() + duration + 120;
+    markStarted();
+    return true;
+  };
+
+  // Можно ли ещё прокрутить что-то внутри (форму в билете) в эту сторону
+  const roomInside = (target, dy) => {
+    for (let el = target instanceof Element ? target : null; el && el !== document.body; el = el.parentElement) {
+      if (el.scrollHeight > el.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowY)) {
+        const room = dy > 0 ? el.scrollHeight - el.clientHeight - el.scrollTop : el.scrollTop;
+        if (room > 1) return true;
+      }
+    }
+    return false;
+  };
+
+  // Тачпад после жеста ещё долго присылает затухающую инерцию — её
+  // пропускаем. Новый жест — это либо пауза, либо разгон.
+  const wheelLog = [];
+  const isNewGesture = (time, size) => {
+    const previous = wheelLog[wheelLog.length - 1];
+    wheelLog.push({ time, size });
+    if (wheelLog.length > 12) wheelLog.shift();
+    if (!previous || time - previous.time > 180) return true;
+    if (wheelLog.length < 6) return false;
+    const average = (list) => list.reduce((sum, item) => sum + item.size, 0) / list.length;
+    return average(wheelLog.slice(-3)) > average(wheelLog.slice(0, -3)) * 1.25;
+  };
+
+  // Экраны переключаются, только пока мы на заставке или на столе
+  const inScreens = () => window.scrollY <= lastCardY() + 4;
+
+  const onWheel = (event) => {
+    if (event.ctrlKey || !inScreens()) return;
+    const dy = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
+    if (!dy || Math.abs(dy) < Math.abs(event.deltaX)) return;
+    if (roomInside(event.target, dy)) {
+      wheelLog.length = 0;
+      return;
+    }
+    const direction = dy > 0 ? 1 : -1;
+    // После билета вниз — обычная прокрутка к подвалу
+    if (direction > 0 && currentSlot() === TOTAL - 1 && performance.now() >= lockedUntil) return;
+
+    event.preventDefault();
+    const now = performance.now();
+    const fresh = isNewGesture(now, Math.abs(dy));
+    if (!fresh || now < lockedUntil) return;
+    stepScreen(direction);
+  };
+
+  const onKey = (event) => {
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (isTyping(event.target) || !inScreens()) return;
+    let direction = 0;
+    if (event.key === "ArrowDown" || event.key === "PageDown") direction = 1;
+    else if (event.key === "ArrowUp" || event.key === "PageUp") direction = -1;
+    else if (event.key === " " && !(event.target instanceof Element && event.target.closest("button, a, summary"))) {
+      direction = event.shiftKey ? -1 : 1;
+    }
+    if (!direction) return;
+    if (performance.now() < lockedUntil) {
+      event.preventDefault();
+      return;
+    }
+    if (stepScreen(direction)) event.preventDefault();
+  };
+
   const setupScrollMode = () => {
     measureTrack();
+    document.documentElement.classList.add("is-deck-snap");
     window.addEventListener("scroll", () => {
       if (!scrollFrame) scrollFrame = window.requestAnimationFrame(onScroll);
     }, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: false });
+    document.addEventListener("keydown", onKey);
   };
 
 
