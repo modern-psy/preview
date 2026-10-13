@@ -1,0 +1,96 @@
+/* Создано из pricing-scenarios/page.css. Не править вручную. */
+.clinical-payment-terms_component {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  /* Проявление изменившихся цифр и строк при переключении табов, тарифов, акции и системы. */
+  --fade-duration: 220ms;
+  --color-accent-text: #644ab2;
+  --page-padding: 1rem;
+  /* Линии на светлом: как подложка табов Web Academy; при наведении — как обводка карточки каталога. */
+  --line: #e8e6ee;
+  --line-strong: #cfd1db;
+  /* Второстепенный текст на сером фоне страницы: #747476 там даёт меньше 4.5:1, поэтому темнее. */
+  --text-quiet: #5e5a6a;
+  /* Тёмная поверхность: те же оттенки, что в pricing-promo. */
+  --dark-text: var(--color-text-on-dark-muted);
+  --dark-muted: #bdb7b7;
+  --dark-faint: #99929f;
+  --dark-line: rgb(255 255 255 / 14%);
+  /* Полупрозрачная подложка ярлыка на тёмном — как чипсы в первых экранах курсов (утверждено 12.10.2026). */
+  --dark-chip: rgb(255 255 255 / 14%);
+  --dark-dash: rgb(255 255 255 / 24%);
+  --dark-raised: #3a2f48;
+  /* Галочки «входит» — зелёные, как метка «Идёт набор» в расписании (--success-text и --success-border
+     из design-system/tokens.css): тёмный оттенок на белом, светлый на тёмной карточке. */
+  --check: #0a6b4e;
+  --check-on-dark: #7fcfb4;
+  /* Плашка «Курс месяца»: цвет из каталога и лендингов, вне палитры Web Academy. */
+  --promo-surface: #ffe110;
+  --promo-text: #3d3a2a;
+  --controls-offset: 4.5rem;
+  font-variant-numeric: lining-nums proportional-nums;
+}
+
+.clinical-payment-terms_component ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+.clinical-payment-terms_component { caret-color: var(--color-accent-primary); }
+/* Сброс полей через :where — у него нулевой вес, поэтому отступы компонентов ниже его перекрывают. */
+.clinical-payment-terms_component :where(p, h1, h2, h3, h4, ul, dl, dd) { margin: 0; }
+.clinical-payment-terms_component button { font-family: inherit; }
+
+.screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* «Гибкие условия оплаты» — один блок под карточками во всех сценариях. Без иконок и без
+   фиолетового (решение Дарьи 12.10.2026): подзаголовок в одну строку, под ним три колонки
+   «заголовок, под ним текст» — рассрочка, скидки, вычет — с вертикальными линиями между ними.
+   На телефоне колонки встают друг под другом, и линии становятся горизонтальными. */
+.price-terms_component { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1rem; color: var(--color-text-primary); }
+/* По центру, как «Стоимость обучения» (на пробу: если не понравится, убрать text-align). */
+.price-terms_heading { font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem); font-weight: 444; line-height: 1.1; letter-spacing: -0.03em; text-align: center; }
+.price-terms_list { display: grid; grid-template-columns: minmax(0, 1fr); }
+/* Колонка — контейнер: в узкой колонке скидки перестраиваются (см. ниже). */
+.price-terms_row { display: flex; min-width: 0; flex-direction: column; gap: 0.875rem; padding-block: 1.25rem; container-type: inline-size; }
+.price-terms_row:first-child { padding-top: 0; }
+.price-terms_row:last-child { padding-bottom: 0; }
+.price-terms_row + .price-terms_row { border-top: 1px solid var(--line-strong); }
+.price-terms_title { font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-terms_body { min-width: 0; }
+.price-terms_text { max-width: 34rem; color: var(--text-quiet); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .price-terms_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .price-terms_row { padding: 0 1.5rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+  .price-terms_row + .price-terms_row { border-top: 0; border-left: 1px solid var(--line-strong); }
+}
+@media (min-width: 64.0625rem) {
+  .price-terms_component { gap: 2rem; padding-top: 1.5rem; }
+  .price-terms_row { padding-inline: 2rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+}
+
+/* Персональные скидки: процент жирным основным цветом на белой плашке, подпись рядом
+   (решение Дарьи 12.10.2026: небольшие, без фиолетового). Плашки одной ширины — по самой длинной
+   «до −20 %», поэтому подписи начинаются на одной вертикали и стоят на одной линии с процентом. */
+.price-discounts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.625rem 0.875rem; padding: 0; list-style: none; }
+.price-discounts_item { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; }
+.price-discounts_value { display: inline-flex; align-items: baseline; justify-content: center; gap: 0.25rem; padding: 0.3125rem 0.625rem; border-radius: 0.5rem; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 1rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; white-space: nowrap; }
+.price-discounts_prefix { font-weight: 500; }
+.price-discounts_label { color: var(--text-quiet); font-size: 0.9375rem; line-height: 1.4; text-wrap: pretty; }
+/* В узкой колонке (планшет) подпись встаёт под процент, чтобы не рассыпаться по слову в строке. */
+@container (max-width: 15rem) {
+  .price-discounts { grid-template-columns: minmax(0, 1fr); row-gap: 0.875rem; }
+  .price-discounts_item { display: flex; flex-direction: column; align-items: flex-start; gap: 0.375rem; }
+}
+

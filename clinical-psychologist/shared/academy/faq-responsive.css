@@ -1,0 +1,24 @@
+/* Opt-in adaptation of the existing FAQ + accordion, preserving its runtime. */
+.faq_component.is-responsive { --faq-padding: 1rem; --faq-answer-paragraph-gap: 0.25rem; }
+.faq_component.is-responsive .faq_question {
+  min-height: 2.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2rem;
+  padding: var(--faq-padding) var(--faq-padding) 1rem;
+}
+.faq_component.is-responsive .faq_answer-inner {
+  gap: var(--faq-answer-paragraph-gap);
+  padding: 0 var(--faq-padding) var(--faq-padding);
+}
+.faq_component.is-responsive .faq_answer p { max-width: none; color: inherit; font: inherit; letter-spacing: inherit; }
+.faq_support-action { display: inline; min-height: 2.75rem; padding: 0; border: 0; background: none; color: var(--color-accent-primary); font: inherit; font-weight: 500; cursor: pointer; }
+.faq_support-action:hover,
+.faq_support-action:focus-visible { color: var(--color-accent-text); text-decoration: underline; text-underline-offset: 0.15em; }
+.faq_support-action:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+@media (min-width: 32.5625rem) {
+  .faq_component.is-responsive { --faq-padding: 1.25rem; --faq-answer-paragraph-gap: 0.5rem; }
+}
+@media (min-width: 48rem) {
+  .faq_component.is-responsive { --faq-padding: 1.5rem; }
+}

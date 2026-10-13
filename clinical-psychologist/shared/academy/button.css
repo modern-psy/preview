@@ -1,0 +1,51 @@
+/* Opt-in action button. Geometry extracted from the approved dual-action Hero.
+   Page specificity intentionally supersedes legacy composition sizing. */
+.academy-page { --button-light-padding-inline: 0.75rem; }
+@media (min-width: 48rem) {
+  .academy-page { --button-light-padding-inline: 1.5rem; }
+}
+.academy-page .button_component {
+  --button-font-size: calc(1rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  --button-min-height: calc(3.125rem + clamp(0rem, 2.91560102vw - 1.09335038rem, 0.7125rem) + clamp(0rem, 0.31059507vw - 0.19237482rem, 0.13375rem));
+  display: inline-flex;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--button-min-height);
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: var(--button-font-size);
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 150ms ease-in-out),
+    box-shadow var(--transition-site, 150ms ease-in-out);
+}
+.academy-page .button_component.is-light { padding-inline: var(--button-light-padding-inline, 0.75rem); background: var(--color-surface-primary); color: var(--color-text-primary); }
+.button_component.is-light:where(:not(:disabled)):hover { background: var(--color-text-on-dark-muted); }
+.button_component.is-accent { background: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.button_component.is-accent:where(:not(:disabled)):hover { background: var(--color-accent-text); }
+.academy-page .button_component:where(.is-outline) {
+  border-color: var(--color-text-on-dark);
+  background: rgb(255 255 255 / 15%);
+  color: var(--color-text-on-dark);
+  backdrop-filter: blur(4px);
+}
+.button_component.is-outline:where(:not(:disabled)):hover { background: rgb(255 255 255 / 25%); }
+.button_component:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 85%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .academy-page .button_component { transition: none; }
+}

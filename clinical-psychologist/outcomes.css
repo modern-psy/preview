@@ -1,0 +1,42 @@
+/* Новая композиция из Figma; типографика и поля карточек остаются общими. */
+.section_outcomes { --color-accent-text: #644ab2; --outcomes-factor-background: #f5f5ff; --color-program-tag: #4d3d5f; --color-program-text: #ededed; }
+.outcomes_header { width: 100%; max-width: 44.25rem; align-self: center; }
+.outcomes_grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); padding: 0; margin: 0; list-style: none; }
+.outcomes_card { position: relative; border-radius: var(--radius-card); }
+.outcomes_card.is-dark { background: var(--color-surface-dark); color: var(--color-text-on-dark-muted); --body-text-color: #bdb7b7; }
+.outcomes_factors { display: grid; gap: 0.5rem; width: calc(100% + 2 * var(--card-padding)); margin-inline: calc(-1 * var(--card-padding)); flex: none; mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent); }
+.outcomes_factor-row { overflow: hidden; --outcomes-ticker-duration: 80s; }
+.outcomes_factor-row.is-slower { --outcomes-ticker-duration: 92s; }
+.outcomes_factor-track { display: flex; width: max-content; animation: outcomes-factors-drift var(--outcomes-ticker-duration) linear infinite; }
+.outcomes_factor-group { display: flex; flex: none; gap: 0.5rem; margin: 0; padding: 0 0.5rem 0 0; list-style: none; }
+.outcomes_factor { padding: 0.75rem 1.25rem; border-radius: 5.625rem; background: var(--outcomes-factor-background); font-weight: 400; white-space: nowrap; }
+@keyframes outcomes-factors-drift { to { transform: translateX(calc(-100% / 3)); } }
+/* При системном запросе уменьшить движение оставляем все подписи статичными и видимыми. */
+@media (prefers-reduced-motion: reduce) {
+  .outcomes_factors { width: 100%; margin-inline: 0; mask-image: none; }
+  .outcomes_factor-track { width: 100%; animation: none; }
+  .outcomes_factor-group { width: 100%; flex-wrap: wrap; justify-content: center; padding: 0; }
+  .outcomes_factor-group[aria-hidden="true"] { display: none; }
+}
+.outcomes_media { width: 100%; aspect-ratio: 464 / 330; overflow: hidden; border-radius: var(--radius-card); }
+.outcomes_image { display: block; width: 103.88%; max-width: none; height: 100%; object-fit: cover; object-position: center 32.7%; }
+.outcomes_card.is-team { gap: 1.75rem; }
+.outcomes_approaches { width: 100%; max-width: 32.75rem; margin: auto 0 0; padding: 0; list-style: none; }
+@media (min-width: 48rem) {
+  .outcomes_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .outcomes_grid { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: minmax(13.75rem, auto) minmax(4.875rem, auto) minmax(12.25rem, auto) minmax(12.5rem, auto); }
+  .outcomes_card.is-assessment { grid-column: 1 / span 2; grid-row: 1 / span 2; }
+  .outcomes_card.is-differential { grid-column: 3 / span 2; grid-row: 1; }
+  .outcomes_card.is-team { grid-column: 5 / span 2; grid-row: 1 / span 3; }
+  .outcomes_card.is-diagnostics { grid-column: 3 / span 2; grid-row: 2 / span 2; }
+  .outcomes_card.is-risks { grid-column: 1 / span 2; grid-row: 3; }
+  .outcomes_card.is-nosologies { grid-column: 1 / span 3; grid-row: 4; }
+  .outcomes_card.is-approaches { grid-column: 4 / span 3; grid-row: 4; }
+  .outcomes_factors { position: absolute; top: 11.375rem; left: 0; width: 100%; margin-inline: 0; }
+  .outcomes_media { min-height: 20.625rem; flex: 1; }
+}
+@media (min-width: 64.0625rem) and (prefers-reduced-motion: reduce) {
+  .outcomes_factors { position: static; margin-top: auto; }
+}

@@ -1,0 +1,65 @@
+/* Whole admission composition. Copy and media are supplied by the landing. */
+.admission_component.is-responsive {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--section-layout-gap);
+  overflow-wrap: anywhere;
+}
+.admission_intro { --section-title-line-height: 1.1; text-align: center; }
+.admission_documents {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--card-grid-gap, 0.75rem);
+  list-style: none;
+}
+.card_icon.is-document { width: 2.5rem; height: 2.5rem; padding: 0.625rem; }
+.admission_card {
+  position: relative;
+  min-height: 0;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: var(--card-padding, 0.75rem);
+  border-radius: var(--radius-card, 1rem);
+}
+.admission_card.is-diploma {
+  --admission-diploma-width: 12.5625rem;
+  --admission-diploma-right: 1rem;
+  --admission-diploma-bottom: 4.125rem;
+  grid-column: 1 / -1;
+  min-height: 10rem;
+  padding-bottom: 5.125rem;
+}
+.admission_diploma-heading { width: min(100%, 15.1875rem); max-width: 100%; }
+.admission_diploma {
+  position: absolute;
+  display: block;
+  right: calc(-1 * var(--admission-diploma-right));
+  bottom: calc(-1 * var(--admission-diploma-bottom));
+  width: var(--admission-diploma-width);
+  height: auto;
+  aspect-ratio: 201 / 142;
+}
+@media (min-width: 32.5625rem) {
+  .admission_heading-break { display: none; }
+  .admission_documents { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admission_card { min-height: 8rem; gap: 1rem; }
+  .admission_card.is-diploma { --admission-diploma-width: min(12.5625rem, 45%); --admission-diploma-right: 1.25rem; --admission-diploma-bottom: 2.375rem; padding-bottom: var(--card-padding, 0.75rem); }
+  /* Reserve the visible illustration width so longer/zoomed copy cannot cover it. */
+  .admission_diploma-heading { width: min(22.125rem, calc(100% - var(--admission-diploma-width) + var(--admission-diploma-right) - 0.5rem)); }
+}
+@media (min-width: 48rem) {
+  .admission_component.is-responsive { display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; }
+  .admission_intro { flex: 0.75 1 18.75rem; text-align: left; }
+  .admission_heading-break { display: block; }
+  .admission_documents { flex: 1 1 25rem; gap: var(--card-grid-gap, 1rem); }
+  .admission_card { min-height: 10.375rem; }
+  .admission_card.is-diploma { --admission-diploma-right: 1.5rem; --admission-diploma-bottom: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .admission_card { min-height: 9.375rem; }
+  .admission_card.is-diploma { --admission-diploma-right: 0.5rem; --admission-diploma-bottom: 2.4375rem; min-height: 9.375rem; }
+  .admission_diploma-heading { width: min(26.25rem, calc(100% - var(--admission-diploma-width) + var(--admission-diploma-right) - 0.5rem)); }
+}
