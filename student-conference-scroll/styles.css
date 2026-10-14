@@ -1287,7 +1287,9 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-talk_when { color: var(--violet-deep); font-weight: 500; font-size: 0.875rem; line-height: 1.3; }
 .sc-talk_title { margin-top: 0.375rem; color: var(--text); font: 700 1.25rem/1.15 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
 /* Чипы-подходы висят у фото */
-.sc-speaker_tags { position: absolute; top: 8.5rem; left: 0; z-index: 2; display: grid; justify-items: start; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.sc-speaker_tags { position: absolute; top: 8.5rem; left: 0; z-index: 2; display: grid; justify-items: start; gap: 0.5rem; margin: 0; padding: 0; list-style: none; pointer-events: none; }
+/* Десктоп: под карточкой не хватило места до вкладок треков — чипы не показываем (script.js) */
+.sc-speaker_tags.is-cramped { visibility: hidden; }
 .sc-speaker_tags li { padding: 0.5rem 0.875rem; border-radius: 999px; background: var(--white); color: var(--text); font-weight: 500; font-size: 0.875rem; line-height: 1.1; }
 .sc-speaker_tags li:nth-child(2) { margin-left: 1.5rem; }
 .sc-speakers_dots { display: flex; justify-content: center; gap: 0.25rem; margin-top: 1rem; }
@@ -1321,7 +1323,9 @@ body { margin: 0; background: var(--page, #f5f5f5); }
   /* Сцена — внутри контейнера страницы: карточки выравниваются по его краям */
   .sc-speakers_scene { position: relative; display: block; height: 100%; margin: 0 auto; padding: 0; overflow: visible; }
   .sc-speaker { position: absolute; inset: 0; display: block; width: auto; }
-  .sc-speaker_photo { position: absolute; left: 50%; bottom: 0; height: 100%; max-width: 48%; translate: -50% 0; }
+  /* Все фото во всю высоту сцены — так головы у спикеров на одной линии. Ширину ограничиваем с запасом:
+     при 48% «широкие» фото сжимались и голова опускалась. Плечи уходят под карточки — они лежат выше фото */
+  .sc-speaker_photo { position: absolute; left: 50%; bottom: 0; height: 100%; max-width: 64%; translate: -50% 0; }
   .sc-speaker_card { position: absolute; top: 18%; left: 0; width: min(27rem, 31%); margin: 0; padding: 1.75rem 2rem 2rem; rotate: -3deg; }
   .sc-speaker_name { font-size: clamp(3rem, 3.9vw, 4.25rem); }
   .sc-speaker_role { font-size: 1.0625rem; }
@@ -1386,8 +1390,6 @@ body { margin: 0; background: var(--page, #f5f5f5); }
   .sc-face[aria-pressed="true"] { color: var(--white); }
   .sc-face[aria-pressed="true"] img { background: var(--lavender-soft); filter: none; translate: 0 -0.375rem; scale: 1.14; }
   .sc-face_name { margin-top: 0.5rem; font: 700 0.9375rem/1.1 var(--font-display); letter-spacing: -0.01em; }
-  .sc-face_time { color: rgb(218 214 255 / 45%); font-size: 0.8125rem; line-height: 1.2; transition: color var(--dur) var(--ease); }
-  .sc-face[aria-pressed="true"] .sc-face_time { color: rgb(218 214 255 / 80%); }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1621,7 +1623,6 @@ body { margin: 0; background: var(--page, #f5f5f5); }
   translate: 0 -0.5rem;
   transition: opacity 300ms var(--ease), translate 450ms var(--ease);
 }
-.sc-out_time { color: var(--violet); font: 700 1.125rem/1 var(--font-display); letter-spacing: -0.02em; white-space: nowrap; }
 
 /* Активная карточка */
 /* Рисунок на тёмном — фиолетовый, чтобы белый текст поверх него читался */
@@ -1715,10 +1716,13 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 /* =========================================================================
    Регистрация
    Фиолетовый блок: форматы участия, форма, бейдж на шнурке.
-   На телефоне: форматы → бейдж → форма. На десктопе: форматы | форма | бейдж.
+   Телефон и планшет: форматы → форма → бейдж. Бейдж висит под формой, начало шнурка спрятано за ней —
+   карточка как будто выглядывает из-за формы. Десктоп: форматы | форма | бейдж.
    ========================================================================= */
 .sc-reg { position: relative; overflow: clip; padding-block: 4.5rem 5rem; background: var(--violet); color: var(--white); }
-.sc-reg_grid { display: grid; gap: 2.5rem; }
+.sc-reg_grid { display: grid; grid-template-areas: "plans" "form" "badge"; gap: 2.5rem; }
+.sc-reg_plans { grid-area: plans; }
+.sc-reg_grid > .sc-form { grid-area: form; }
 .sc-reg_title { font: 800 clamp(2.5rem, 11vw, 3.5rem)/0.98 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
 
 /* ---------- Форматы участия ---------- */
@@ -1733,7 +1737,8 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-reg_note { max-width: 30rem; margin-top: 1.25rem; color: rgb(255 255 255 / 88%); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
 
 /* ---------- Бейдж на шнурке ---------- */
-.sc-reg_badge-wrap { display: grid; justify-items: center; margin-block: -0.5rem; pointer-events: none; }
+/* Подтянут вверх под форму: верх шнурка уходит за неё (форма лежит выше — z-index) */
+.sc-reg_badge-wrap { grid-area: badge; display: grid; justify-items: center; margin-top: -6.5rem; pointer-events: none; }
 .sc-lanyard { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; width: 16.5rem; transform-origin: 50% 0; }
 /* Ленты длинные и сверху растворяются: при падении и покачивании не видно обрезанных концов */
 .sc-lanyard_strap { display: block; width: 7rem; height: 8rem; -webkit-mask-image: linear-gradient(transparent, #000 45%); mask-image: linear-gradient(transparent, #000 45%); }
@@ -1918,11 +1923,11 @@ body > .iti--detached-country-selector .iti__country-selector { overflow: hidden
 /* ---------- Планшет ---------- */
 @media (min-width: 48.0625rem) {
   .sc-reg { padding-block: 6rem; }
-  .sc-reg_grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "plans badge" "form form"; column-gap: 2rem; }
-  .sc-reg_plans { grid-area: plans; }
-  .sc-reg_badge-wrap { grid-area: badge; align-self: start; margin-block: -13rem 0; }
-  .sc-lanyard_strap { height: 16rem; }
-  .sc-form { grid-area: form; padding: 2rem; }
+  /* Планшет: тот же порядок, что на телефоне; тарифы встают в строку — бейдж больше не стоит справа */
+  .sc-plans { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .sc-reg_badge-wrap { margin-top: -9rem; }
+  .sc-lanyard_strap { height: 10rem; }
+  .sc-form { padding: 2rem; }
   .sc-reg_title { font-size: clamp(3.25rem, 7vw, 4.25rem); }
 }
 
@@ -1930,6 +1935,8 @@ body > .iti--detached-country-selector .iti__country-selector { overflow: hidden
 @media (min-width: 64.0625rem) {
   .sc-reg { padding-block: 7rem 8rem; }
   .sc-reg_grid { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr) minmax(0, 0.75fr); grid-template-areas: "plans form badge"; align-items: start; column-gap: clamp(1.5rem, 2.6vw, 3rem); }
+  .sc-plans { grid-template-columns: minmax(0, 1fr); }
+  .sc-reg_badge-wrap { align-self: start; }
   .sc-reg_title { font-size: clamp(3.5rem, 5vw, 5rem); }
   .sc-form { padding: 2.25rem 2rem; }
   .sc-form_title { font-size: clamp(1.875rem, 2.4vw, 2.375rem); }

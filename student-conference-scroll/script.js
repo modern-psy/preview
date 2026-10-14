@@ -77,7 +77,7 @@
      --------------------------------------------------------------------- */
   const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   // Полоса маркера — готовая картинка (отрисована из #sc-hl один раз, так быстрее в Safari)
-  const HL_SVG = '<svg viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><image href="assets/highlight.webp" x="-6" y="-6" width="412" height="52" preserveAspectRatio="none"/></svg>';
+  const HL_SVG = '<svg viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><image href="https://s3.twcstorage.ru/asp-media/highlight_3c80ea7f4f.webp" x="-6" y="-6" width="412" height="52" preserveAspectRatio="none"/></svg>';
   // Строки текста: прямоугольники, которые браузер отдаёт для каждой строки, склеенные по высоте
   const textLines = (node) => {
     const range = document.createRange();
@@ -312,6 +312,22 @@
     }));
   };
 
+  // Десктоп: чипы-подходы стоят под карточкой с именем. Карточка растёт с длиной подписи,
+  // поэтому чипы ставим от её низа (поправка — на наклон карточки). На телефоне чипы висят у фото, как в CSS
+  // Если между карточкой и вкладками треков места нет (невысокий экран, длинная подпись) — чипы прячем:
+  // это украшение, подходы и так названы в подписи
+  const speakersBar = speakersSection && $(".sc-speakers_bar", speakersSection);
+  const placeTags = (card) => {
+    const tags = card && $(".sc-speaker_tags", card);
+    const box = card && $(".sc-speaker_card", card);
+    if (!tags || !box) return;
+    if (!desktopQuery.matches) { tags.style.top = ""; tags.classList.remove("is-cramped"); return; }
+    const top = box.offsetTop + box.offsetHeight + 28;
+    const barTop = speakersBar ? speakersBar.getBoundingClientRect().top - card.getBoundingClientRect().top : Infinity;
+    tags.style.top = `${top}px`;
+    tags.classList.toggle("is-cramped", top + tags.offsetHeight + 16 > barTop);
+  };
+
   // Раскладка под текущую ширину экрана
   const applySpeakersLayout = () => {
     if (!speakersSection) return;
@@ -336,6 +352,7 @@
     if (!window.gsap || prefersReduce()) {
       prev.hidden = true;
       next.hidden = false;
+      placeTags(next);
       return;
     }
     const parts = (card) => ({
@@ -353,6 +370,7 @@
         prev.hidden = true;
         gsap.set([a.photo, a.card, ...a.talks, ...a.tags], { clearProps: "opacity,transform" });
         next.hidden = false;
+        placeTags(next);
       })
       .from(b.photo, { opacity: 0, y: 70, duration: 0.7 })
       .from(b.card, { opacity: 0, x: -50, rotation: -8, duration: 0.6 }, "<0.08")
@@ -377,8 +395,12 @@
     }
   }));
   if (speakersScene) on(speakersScene, "scroll", () => { if (!slideFrame) slideFrame = window.requestAnimationFrame(syncSlideDots); }, { passive: true });
-  on(desktopQuery, "change", () => { speakerTimeline?.progress(1).kill(); applySpeakersLayout(); });
+  on(desktopQuery, "change", () => { speakerTimeline?.progress(1).kill(); applySpeakersLayout(); placeTags(currentSpeaker); });
   applySpeakersLayout();
+  placeTags(currentSpeaker);
+  // Шрифты и ширина окна меняют высоту карточки — пересчитываем
+  on(window, "resize", () => placeTags(currentSpeaker));
+  document.fonts?.ready.then(() => placeTags(currentSpeaker));
   disposers.push(() => { speakerTimeline?.kill(); window.cancelAnimationFrame(slideFrame); });
 
   // Открыть экран спикера: выбрать его трек и его самого (на телефоне — долистать слайдер до него)
@@ -1106,7 +1128,10 @@
         if (lanyard) {
           gsap.from(lanyard, {
             y: () => -lanyard.offsetHeight * 0.55, rotation: 9, duration: 1.6, ease: "elastic.out(1, 0.4)",
-            scrollTrigger: { trigger: reg, start: "top 60%", once: true },
+            // Десктоп: бейдж виден сразу с блоком. Телефон и планшет: он под формой — падает, когда до него доскроллили
+            scrollTrigger: desktop
+              ? { trigger: reg, start: "top 60%", once: true }
+              : { trigger: lanyard.closest(".sc-reg_badge-wrap") || lanyard, start: "top 95%", once: true },
           });
         }
       }
