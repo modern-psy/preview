@@ -32,6 +32,27 @@
   .clinical-psychologist-document { font-size: calc(100vw / 23.4375); }
 }
 
+/* Первый экран на адаптивах (до 1024px). Текст лежит прямо на фотографии,
+   поэтому снизу добавлено затемнение: белый текст читается и на светлых местах.
+   Силу затемнения можно менять в последнем значении градиента (сейчас 80%).
+   На десктопе остаётся общее лёгкое затемнение. */
+@media (max-width: 64rem) {
+  .clinical-psychologist-page .hero_component.is-dual-action .hero_media::after {
+    background: linear-gradient(to bottom, rgb(0 0 0 / 15%) 25%, rgb(0 0 0 / 55%) 60%, rgb(0 0 0 / 80%) 100%);
+  }
+}
+
+/* Телефон (до 767px): общий компонент ставит текст по центру, а плашки
+   «Старт» и «Онлайн» всегда друг под другом. Здесь всё по левому краю,
+   как на планшете, а плашки стоят в одну строку и переносятся, только если не помещаются. */
+@media (max-width: 47.9375rem) {
+  .clinical-psychologist-page .hero_component.is-dual-action .meta-pill_list { flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 0.5rem; }
+  .clinical-psychologist-page .hero_component.is-dual-action .meta-pill_component.is-accent { order: 0; }
+  .clinical-psychologist-page .hero_component.is-dual-action .hero_content { text-align: left; align-items: flex-start; }
+  .clinical-psychologist-page .hero_component.is-dual-action .hero_copy { align-items: flex-start; }
+  .clinical-psychologist-page .hero_component.is-dual-action .hero_start-note { justify-content: flex-start; }
+}
+
 /* Тема общих CTA и ширина заголовка блока навыков из Figma. */
 .clinical-psychologist-page .cta_copy { color: var(--color-text-on-dark-muted); }
 .section_foundation { --color-accent-text: #644ab2; }
