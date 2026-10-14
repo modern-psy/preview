@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Академия Современной Психологии: обучение психологов доказательной практике</title>
+  <meta name="description" content="Онлайн-академия для психологов: профессиональная переподготовка с дипломом и повышение квалификации по доказательным методам психотерапии. Профессия психолога-консультанта с нуля.">
+  <!-- Превью: в поиск не попадает. На боевом сайте эту строку не переносить. -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Адрес и Open Graph — как на текущей главной modern-psy.ru. Картинки для соцсетей (og:image 1200×630) пока нет -->
+  <link rel="canonical" href="https://modern-psy.ru/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://modern-psy.ru/">
+  <meta property="og:title" content="Академия Современной Психологии: обучение психологов доказательной практике">
+  <meta property="og:description" content="Онлайн-академия для психологов: профессиональная переподготовка с дипломом и повышение квалификации по доказательным методам психотерапии. Профессия психолога-консультанта с нуля.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;444;500;600&display=swap">
+  <link rel="preconnect" href="https://s3.twcstorage.ru">
+  <!-- Сначала общие текстовые роли Web Academy, потом стили страницы -->
+  <link rel="stylesheet" href="type.css">
+  <link rel="stylesheet" href="page.css">
+</head>
+<body>
+
+<!-- ============================================================
+     ШАПКА САЙТА — копия блока apps/tilda/header (на Тильде она подключается
+     отдельной страницей-шапкой). Здесь только для превью; править в apps/tilda/header.
+     ============================================================ -->
+{{HEADER}}
+
+<!-- ============================================================
+     ГЛАВНАЯ · файл собирается: node glavnaya/build.mjs (из apps/preview)
+     Тексты можно править прямо в template.html, потом пересобрать.
+     Места вида {{…}} заполняет сборка из каталога CMS — их не трогать.
+     ============================================================ -->
+<main class="main-wrapper academy-page home-page" id="main-content" data-home data-api="{{API}}">
+
+  <!-- 1. Первый экран: заголовок, три факта, две двери, особенности обучения -->
+  <section class="section_home-hero" aria-labelledby="home-hero-title">
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="home-hero_component">
+
+          <h1 class="home-hero_title" id="home-hero-title">Обучаем психологов <span class="home-hero_title-accent">доказательной практике</span></h1>
+
+          <!-- Факты: цифры подтверждены Дарьей 12.10.2026 -->
+          <ul class="home-facts_list">
+            <li class="home-facts_item body-text_component is-caption"><b class="home-facts_value">2&#8239;000</b> выпускников</li>
+            <li class="home-facts_item body-text_component is-caption"><b class="home-facts_value">7&#8239;000</b> участников сообщества</li>
+            <li class="home-facts_item body-text_component is-caption">С&nbsp;2021 года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории</li>
+          </ul>
+
+          <div class="home-doors_component">
+
+            <!-- Дверь для практикующих психологов: методы и специализации -->
+            <article class="home-door_component is-practice">
+              <div class="home-door_content">
+                <h2 class="home-door_title content-heading_component is-prominent">Методы и&nbsp;специализации для&nbsp;практикующих психологов</h2>
+                <p class="home-door_text body-text_component">Профессиональная переподготовка с&nbsp;дипломом и&nbsp;повышение квалификации с&nbsp;удостоверением: <span data-home-count="methods">{{COUNT_METHODS}}</span> по&nbsp;методам психотерапии и&nbsp;<span data-home-count="specializations">{{COUNT_SPECIALIZATIONS}}</span> по&nbsp;специализациям</p>
+                <a class="home-button_component" href="https://modern-psy.ru/methods">Выбрать метод</a>
+                <!-- Бегущие ряды с краткими названиями курсов; ведут на страницы курсов.
+                     Список и подписи — в build.mjs (TICKER_ROWS). При наведении ряды останавливаются -->
+                <div class="door-ticker_component" role="group" aria-label="Методы и специализации">
+                  {{TICKER}}
+                </div>
+              </div>
+            </article>
+
+            <!-- Дверь для тех, кто начинает с нуля: профессия психолога-консультанта -->
+            <article class="home-door_component is-start">
+              <!-- Иллюстрация: вырезанный портрет (img/door-start-person.webp, 875 × 1200, до талии, взгляд влево —
+                   на текст). Фон за ней — стена с мягкими тенями листьев (img/door-start-wall.webp) — задан в стилях.
+                   Декоративно — скрыто от скринридера -->
+              <div class="home-door_media" aria-hidden="true">
+                <div class="home-door_figure">
+                  <img class="home-door_image" src="img/door-start-person.webp" alt="" width="875" height="1200" fetchpriority="high" decoding="async">
+                </div>
+              </div>
+              <div class="home-door_content">
+                <h2 class="home-door_title content-heading_component is-prominent">Нет психологического образования?</h2>
+                <!-- Предложение: грант на обучение прямо в тексте, сумма выделена плашкой.
+                     Сумма и условие — из данных каталога (catalog-extra.json); гранта нет — обычная подпись про профессию -->
+                <p class="home-door_text body-text_component">{{START_OFFER}}</p>
+                <!-- Цена и кнопки прижаты к низу карточки. Под ценой — рассрочка, дата старта и диплом -->
+                <p class="home-door_price">{{START_PRICE}}</p>
+                <!-- Главная кнопка ведёт сразу на бесплатный мини-курс «Путь в профессию», вторая — на страницу профессии -->
+                <div class="home-door_actions">
+                  <a class="home-button_component is-light" href="{{FREE_URL}}">Попробовать бесплатно</a>
+                  <a class="home-button_component is-ghost" href="{{START_URL}}">Программа курса</a>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Особенности обучения: четыре коротких пункта -->
+          <ul class="home-features_list">
+            <li class="home-features_item body-text_component is-caption"><span class="home-features_icon" aria-hidden="true">{{ICON_DOCUMENT}}</span>Диплом и&nbsp;удостоверение установленного образца</li>
+            <li class="home-features_item body-text_component is-caption"><span class="home-features_icon" aria-hidden="true">{{ICON_PRACTICE}}</span>70&nbsp;% занятий на&nbsp;практике</li>
+            <li class="home-features_item body-text_component is-caption"><span class="home-features_icon" aria-hidden="true">{{ICON_TEACHERS}}</span>Преподают практикующие специалисты</li>
+            <li class="home-features_item body-text_component is-caption"><span class="home-features_icon" aria-hidden="true">{{ICON_SUPERVISION}}</span>Супервизии по&nbsp;направлениям</li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Популярные направления: флагманы из CMS (галочка «флагман»), лентой-каруселью.
+       Листается пальцем, колесом с Shift и стрелками справа от заголовка (стрелки — с планшета) -->
+  <section class="section_home-flagships" aria-labelledby="home-flagships-title" data-home-slider>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="home-section_head is-row">
+          <h2 class="home-section_title section-title_component is-responsive" id="home-flagships-title">Популярные направления</h2>
+          <div class="slider-controls_component">
+            <button class="slider-controls_button" type="button" data-home-slider-prev aria-controls="home-flagships-track" aria-label="Предыдущие направления" disabled>{{ICON_PREV}}</button>
+            <button class="slider-controls_button" type="button" data-home-slider-next aria-controls="home-flagships-track" aria-label="Следующие направления">{{ICON_NEXT}}</button>
+          </div>
+        </div>
+        <ul class="flagships_list" id="home-flagships-track" data-home-flagships data-home-slider-track>
+          {{FLAGSHIPS}}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Последний шанс: статус «Последний шанс» в CMS. Нет таких курсов — блок скрыт -->
+  <section class="section_home-last-chance" aria-labelledby="home-last-chance-title" data-home-last-chance{{LAST_CHANCE_HIDDEN}}>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="home-section_head">
+          <h2 class="home-section_title section-title_component is-responsive" id="home-last-chance-title">Последний шанс</h2>
+          <p class="home-section_text section-subtitle_component">Поток уже идёт, но&nbsp;ещё можно присоединиться и&nbsp;догнать группу</p>
+        </div>
+        <ul class="last-chance_list" data-home-last-chance-list>
+          {{LAST_CHANCE}}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Все направления: разделы каталога на тёмном фоне -->
+  <section class="section_home-directions" aria-labelledby="home-directions-title">
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="directions_component">
+          <div class="home-section_head">
+            <h2 class="home-section_title section-title_component is-responsive is-inverse" id="home-directions-title">Все направления</h2>
+            <p class="home-section_text section-subtitle_component is-inverse"><span data-home-count="total">{{COUNT_TOTAL}}</span> программ: от&nbsp;профессии с&nbsp;нуля до&nbsp;узких специализаций</p>
+          </div>
+          <ul class="directions_list">
+            <li><a class="directions_tile" href="https://modern-psy.ru/professions"><span class="directions_name content-heading_component is-card">Профессии</span><span class="directions_count body-text_component is-caption" data-home-count="professions">{{COUNT_PROFESSIONS}}</span><span class="directions_caption body-text_component">С&nbsp;нуля до&nbsp;диплома</span></a></li>
+            <li><a class="directions_tile" href="https://modern-psy.ru/methods"><span class="directions_name content-heading_component is-card">Методы психотерапии</span><span class="directions_count body-text_component is-caption" data-home-count="methods">{{COUNT_METHODS}}</span><span class="directions_caption body-text_component">Подходы с&nbsp;доказательной базой</span></a></li>
+            <li><a class="directions_tile" href="https://modern-psy.ru/specializations"><span class="directions_name content-heading_component is-card">Специализации</span><span class="directions_count body-text_component is-caption" data-home-count="specializations">{{COUNT_SPECIALIZATIONS}}</span><span class="directions_caption body-text_component">Работа с&nbsp;конкретным запросом</span></a></li>
+            <!-- Мини-курсы пока живут на /webinars: страница /free отдаёт 404. Когда /free заработает — поменять адрес -->
+            <li><a class="directions_tile" href="https://modern-psy.ru/webinars"><span class="directions_name content-heading_component is-card">Бесплатные мини-курсы</span><span class="directions_count body-text_component is-caption" data-home-count="free">{{COUNT_FREE}}</span><span class="directions_caption body-text_component">Попробовать формат</span></a></li>
+            <!-- Мероприятия пока на старой странице /events: /afisha ещё не опубликована -->
+            <li><a class="directions_tile" href="https://modern-psy.ru/events"><span class="directions_name content-heading_component is-card">Вебинары и&nbsp;мероприятия</span><span class="directions_caption body-text_component">Эфиры и&nbsp;конференции</span></a></li>
+            <!-- Супервизий нет в CMS: число вписано руками -->
+            <li><a class="directions_tile" href="https://modern-psy.ru/supervisios"><span class="directions_name content-heading_component is-card">Супервизии</span><span class="directions_count body-text_component is-caption">4 направления</span><span class="directions_caption body-text_component">Разбор ваших случаев</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Учиться бесплатно: ближайшие мероприятия (строки работают как табы — клик показывает
+       мероприятие в большой карточке) и мини-курсы. Мероприятия — вебинары из CMS плюс список
+       в data/home-extra.json; прошедшие прячутся сами. Мини-курсы — раздел CMS «Бесплатные мини-курсы» -->
+  <section class="section_home-free" aria-labelledby="home-free-title" data-home-free>
+    <div class="padding-global">
+      <div class="container-home">
+        <h2 class="home-section_title section-title_component is-responsive" id="home-free-title">Учиться бесплатно</h2>
+        <div class="free_layout">
+
+          <div class="free-events_component" data-home-free-events{{EVENTS_HIDDEN}}>
+            <div class="free-event_component" id="home-event-panel" role="tabpanel" aria-labelledby="home-event-tab-0" data-home-event-panel>
+              {{EVENT_PANEL}}
+            </div>
+            <ul class="free-tabs_list" role="tablist" aria-label="Ближайшие бесплатные мероприятия" data-home-event-tabs>
+              {{EVENT_TABS}}
+            </ul>
+          </div>
+
+          <div class="free-mini_component">
+            <h3 class="free-mini_heading content-heading_component">Мини-курсы: старт в&nbsp;любое время</h3>
+            <ul class="free-mini_list" data-home-mini-list>
+              {{MINI_COURSES}}
+            </ul>
+          </div>
+
+        </div>
+        <script type="application/json" data-home-extra>{{HOME_EXTRA}}</script>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Преподаватели: слева подходы (табы), справа преподаватели выбранного подхода и ссылка на курс.
+       Состав, подходы и курсы — в data/teachers.json (правится руками, CMS не используется).
+       Список подходов длиннее блока — прокручивается внутри, на телефоне — лентой вбок -->
+  <section class="section_home-teachers" aria-labelledby="home-teachers-title" data-home-teachers-block>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="home-section_head">
+          <h2 class="home-section_title section-title_component is-responsive" id="home-teachers-title">Преподают практикующие специалисты</h2>
+          <p class="home-section_text section-subtitle_component">Выберите подход, и&nbsp;мы покажем, кто его преподаёт</p>
+        </div>
+        <div class="teachers_layout">
+          <div class="teachers-nav_component">
+            <ul class="teachers-nav_list" role="tablist" aria-label="Подходы" data-home-teachers-tabs>
+              {{TEACHERS_TABS}}
+            </ul>
+          </div>
+          <div class="teachers-panel_component" id="home-teachers-panel" role="tabpanel" aria-labelledby="home-teachers-tab-{{TEACHERS_ACTIVE}}" data-home-teachers-panel>
+            {{TEACHERS_PANEL}}
+          </div>
+        </div>
+        <script type="application/json" data-home-teachers-data>{{TEACHERS_DATA}}</script>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Как устроено обучение: бенто из плиток, в каждой — маленький живой интерфейс вместо картинки.
+       Большая плитка — практика: переключатель «Пара / Тройка / Группа», в паре и тройке роли меняются.
+       Тексты — из блоков «Форматы обучения» и «Почему выбирают нас» прежней главной.
+       Анимация идёт, только пока блок на экране; при «уменьшить движение» всё стоит, работают только клики -->
+  <section class="section_home-learning" aria-labelledby="home-learning-title" data-home-learning>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="home-section_head">
+          <h2 class="home-section_title section-title_component is-responsive" id="home-learning-title">Как устроено обучение</h2>
+          <p class="home-section_text section-subtitle_component">Учим только методам с&nbsp;доказательной базой и&nbsp;70&nbsp;% занятий отдаём практике</p>
+        </div>
+        <div class="learning_grid">
+
+          <!-- Практика: схема людей и ролей -->
+          <article class="learning-tile_component is-practice">
+            <div class="practice_head">
+              <div>
+                <h3 class="learning-tile_title content-heading_component is-prominent">Пары, тройки, группы</h3>
+                <p class="learning-tile_text body-text_component is-fine-print">Отрабатываем навыки на&nbsp;реальных случаях из&nbsp;практики</p>
+              </div>
+              <div class="practice-switch_component" role="group" aria-label="Формат отработки" data-practice-switch>
+                <button class="practice-switch_button" type="button" aria-pressed="false" data-mode="pair">Пара</button>
+                <button class="practice-switch_button" type="button" aria-pressed="true" data-mode="triad">Тройка</button>
+                <button class="practice-switch_button" type="button" aria-pressed="false" data-mode="group">Группа</button>
+              </div>
+            </div>
+            <div class="practice_body">
+              <div class="practice-stage_component" aria-hidden="true" data-practice-stage>
+                <svg class="practice-stage_links" viewBox="0 0 160 100" preserveAspectRatio="none" data-practice-links></svg>
+                <span class="practice-stage_teacher" data-practice-teacher>Преподаватель</span>
+                <span class="practice-stage_round" data-practice-round></span>
+              </div>
+              <div class="practice_info">
+                <p class="practice_mode content-heading_component is-card" data-practice-title>Тройка</p>
+                <p class="practice_text body-text_component is-fine-print" aria-live="polite" data-practice-text>К&nbsp;паре добавляется наблюдатель. За&nbsp;три раунда каждый побывает в&nbsp;каждой роли.</p>
+                <ul class="practice-legend_list body-text_component is-fine-print" data-practice-legend>
+                  <li class="practice-legend_item"><b>Терапевт:</b> ведёт сессию и&nbsp;пробует технику</li>
+                  <li class="practice-legend_item"><b>Клиент:</b> приносит запрос и&nbsp;говорит, что почувствовал</li>
+                  <li class="practice-legend_item"><b>Наблюдатель:</b> замечает, что сработало, и&nbsp;даёт обратную связь</li>
+                </ul>
+                <button class="practice_button" type="button" data-practice-next>Поменяться ролями</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Видео-лекции: темы открываются по очереди -->
+          <article class="learning-tile_component">
+            <div class="learning-ui_component" aria-hidden="true">
+              <div class="learning-lessons_list" data-learning-lessons>
+                <div class="learning-lesson_item"><span class="learning-lesson_icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Модель и&nbsp;принципы метода</span></div>
+                <div class="learning-lesson_item"><span class="learning-lesson_icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Первая сессия</span></div>
+                <div class="learning-lesson_item is-playing"><span class="learning-lesson_icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span><span>Работа с&nbsp;запросом</span><span class="learning-lesson_bar"><i></i></span></div>
+                <div class="learning-lesson_item is-locked"><span class="learning-lesson_icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span>Техники метода</span><span class="learning-lesson_note">через неделю</span></div>
+              </div>
+            </div>
+            <h3 class="learning-tile_title content-heading_component is-card">Видео-лекции</h3>
+            <p class="learning-tile_text body-text_component is-fine-print">Записаны заранее и&nbsp;открываются на&nbsp;платформе раз в&nbsp;неделю</p>
+          </article>
+
+          <!-- Вебинары: сетка камер, у преподавателя — полоски звука -->
+          <article class="learning-tile_component">
+            <div class="learning-ui_component" aria-hidden="true">
+              <div class="learning-cams_grid">
+                <span class="learning-cam_item"></span><span class="learning-cam_item is-teacher"><span class="learning-cam_wave"><i></i><i></i><i></i></span></span><span class="learning-cam_item"></span>
+                <span class="learning-cam_item"></span><span class="learning-cam_item"></span><span class="learning-cam_item"></span>
+              </div>
+              <span class="learning-cam_live">в&nbsp;эфире</span>
+            </div>
+            <h3 class="learning-tile_title content-heading_component is-card">Вебинары</h3>
+            <p class="learning-tile_text body-text_component is-fine-print">Вживую и&nbsp;с&nbsp;камерой: преподаватель отвечает на&nbsp;вопросы и&nbsp;проводит практику</p>
+          </article>
+
+          <!-- Домашние задания: пункты отмечаются по очереди -->
+          <article class="learning-tile_component">
+            <div class="learning-ui_component" aria-hidden="true">
+              <div class="learning-tasks_list" data-learning-tasks>
+                <div class="learning-task_item"><svg class="learning-task_check" viewBox="0 0 18 18" aria-hidden="true"><rect x="1" y="1" width="16" height="16" rx="4"/><path d="M5 9.5l2.6 2.5L13 6.5"/></svg>Прочитать главу</div>
+                <div class="learning-task_item"><svg class="learning-task_check" viewBox="0 0 18 18" aria-hidden="true"><rect x="1" y="1" width="16" height="16" rx="4"/><path d="M5 9.5l2.6 2.5L13 6.5"/></svg>Отработать технику в&nbsp;паре</div>
+                <div class="learning-task_item"><svg class="learning-task_check" viewBox="0 0 18 18" aria-hidden="true"><rect x="1" y="1" width="16" height="16" rx="4"/><path d="M5 9.5l2.6 2.5L13 6.5"/></svg>Написать эссе</div>
+                <span class="learning-task_stamp" data-learning-stamp>проверено преподавателем</span>
+              </div>
+            </div>
+            <h3 class="learning-tile_title content-heading_component is-card">Домашние задания</h3>
+            <p class="learning-tile_text body-text_component is-fine-print">Литература, отработка навыков и&nbsp;эссе с&nbsp;проверкой и&nbsp;обратной связью</p>
+          </article>
+
+          <!-- Супервизии: карточка случая и комментарий -->
+          <article class="learning-tile_component">
+            <div class="learning-ui_component" aria-hidden="true">
+              <div class="learning-case_card"><b>Случай клиентки, 3&nbsp;сессия</b><i style="width:92%"></i><i style="width:78%"></i><i style="width:86%"></i><i style="width:60%"></i></div>
+              <span class="learning-case_note" data-learning-note>Давайте посмотрим, что происходит в&nbsp;этот момент</span>
+            </div>
+            <h3 class="learning-tile_title content-heading_component is-card">Супервизии по&nbsp;направлениям</h3>
+            <p class="learning-tile_text body-text_component is-fine-print">Разбор ваших случаев с&nbsp;опытным специалистом: например, РПП или зависимости</p>
+          </article>
+
+          <!-- Документ: подпись дорисовывается -->
+          <article class="learning-tile_component">
+            <div class="learning-ui_component" aria-hidden="true">
+              <div class="learning-doc_card"><i style="width:60%"></i><i style="width:85%"></i><i style="width:72%"></i><i style="width:40%"></i><svg viewBox="0 0 56 24"><path d="M2 16c6-10 9 6 14-2s6-7 8 1 6 3 9-3 5 2 7 4 5-3 14-5"/></svg></div>
+            </div>
+            <h3 class="learning-tile_title content-heading_component is-card">Диплом или удостоверение</h3>
+            <p class="learning-tile_text body-text_component is-fine-print">Установленного образца. Лицензия Л035&#8209;01271&#8209;78/00176689</p>
+          </article>
+
+          <!-- Сообщество и кураторы: сеть людей -->
+          <article class="learning-tile_component is-wide">
+            <div class="learning-ui_component" aria-hidden="true">
+              <svg class="learning-net_svg" viewBox="0 0 1200 160" preserveAspectRatio="xMidYMid slice">
+                <line x1="600" y1="80" x2="470" y2="38"/><line x1="600" y1="80" x2="455" y2="122"/><line x1="600" y1="80" x2="730" y2="36"/><line x1="600" y1="80" x2="750" y2="120"/><line x1="600" y1="80" x2="545" y2="138"/><line x1="600" y1="80" x2="660" y2="22"/>
+                <line x1="470" y1="38" x2="330" y2="60"/><line x1="455" y1="122" x2="330" y2="60"/><line x1="330" y1="60" x2="210" y2="110"/><line x1="330" y1="60" x2="200" y2="28"/><line x1="210" y1="110" x2="80" y2="80"/>
+                <line x1="730" y1="36" x2="870" y2="62"/><line x1="750" y1="120" x2="870" y2="62"/><line x1="870" y1="62" x2="990" y2="112"/><line x1="870" y1="62" x2="1000" y2="26"/><line x1="990" y1="112" x2="1120" y2="78"/>
+                <circle class="learning-net_pulse" cx="600" cy="80" r="14"/><circle class="learning-net_hub" cx="600" cy="80" r="14"/>
+                <circle cx="470" cy="38" r="8"/><circle cx="455" cy="122" r="8"/><circle cx="730" cy="36" r="8"/><circle cx="750" cy="120" r="8"/><circle cx="545" cy="138" r="6"/><circle cx="660" cy="22" r="6"/>
+                <circle cx="330" cy="60" r="9"/><circle cx="870" cy="62" r="9"/><circle cx="210" cy="110" r="7"/><circle cx="200" cy="28" r="6"/><circle cx="80" cy="80" r="6"/><circle cx="990" cy="112" r="7"/><circle cx="1000" cy="26" r="6"/><circle cx="1120" cy="78" r="6"/>
+              </svg>
+            </div>
+            <h3 class="learning-tile_title content-heading_component is-card">Сообщество и&nbsp;кураторы</h3>
+            <p class="learning-tile_text body-text_component is-fine-print">Конференции, встречи и&nbsp;мастер-классы, сообщество выпускников. Для тех, кто учится с&nbsp;нуля, есть отдельный кураторский отдел</p>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Не только курсы: конференции (видеоотчёты по годам), АСП Практикум, сообщество выпускников, RO DBT.
+       Тексты — по страницам /about, /alumni, /ro-dbt-path, /act-petersburg-4 и lk.modern-psy.ru/practicum-asp.
+       Видео Kinescope грузится только по клику: до клика — фото-обложка (страница не тяжелеет).
+       Список конференций — табы: клик меняет обложку и видео. Ссылки на видео — data-conf-kin -->
+  <section class="section_home-beyond" aria-labelledby="home-beyond-title" data-home-beyond>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="home-section_head">
+          <h2 class="home-section_title section-title_component is-responsive" id="home-beyond-title">Мы за&nbsp;живое общение</h2>
+          <p class="home-section_text section-subtitle_component">Учиться вместе веселее. Поэтому вокруг курсов у&nbsp;нас есть конференции, открытые встречи и&nbsp;сообщество, где всегда подскажут</p>
+        </div>
+
+        <div class="conf_component">
+          <div class="conf-video_component" id="home-conf-video" role="tabpanel" aria-labelledby="home-conf-tab-0" data-conf-video>
+            <img class="conf-video_poster" src="https://static.tildacdn.com/tild6130-6135-4265-a138-356164663436/1.jpg" alt="" width="1248" height="831" loading="lazy" decoding="async" data-conf-poster-img>
+            <button class="conf-video_play" type="button" data-conf-play><span class="conf-video_play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span>Смотреть, как это было</button>
+            <span class="conf-video_caption" data-conf-caption>ACT-Petersburg. Episode 4 · 2026</span>
+          </div>
+          <div class="conf-info_component">
+            <h3 class="conf-info_title content-heading_component is-card">Встречаемся вживую</h3>
+            <p class="conf-info_text body-text_component is-fine-print">Четвёртый год подряд собираем сотни коллег на&nbsp;ACT-Petersburg: доклады, воркшопы и&nbsp;разговоры в&nbsp;перерывах, ради которых многие и&nbsp;приезжают</p>
+            <ul class="conf-list_list" role="tablist" aria-label="Видеоотчёты конференций" data-conf-tabs>
+                <li class="conf-list_item" role="presentation"><button class="conf-list_tab is-active" type="button" role="tab" id="home-conf-tab-0" aria-controls="home-conf-video" aria-selected="true" data-conf-kin="pkpLtBw6srpYpnqekxXMFp" data-conf-poster="https://static.tildacdn.com/tild6130-6135-4265-a138-356164663436/1.jpg" data-conf-name="ACT-Petersburg. Episode 4" data-conf-year="2026"><span class="conf-list_year">2026</span><span class="conf-list_text"><span class="conf-list_name">ACT-Petersburg. Episode 4</span><span class="conf-list_caption">20+ выступлений и&nbsp;три потока</span></span><span class="conf-list_play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span></button></li>
+                <li class="conf-list_item" role="presentation"><button class="conf-list_tab" type="button" role="tab" id="home-conf-tab-1" aria-controls="home-conf-video" aria-selected="false" tabindex="-1" data-conf-kin="0P8E9A3GdXnYyxggeyp4mT" data-conf-poster="https://static.tildacdn.com/tild6130-3039-4233-b863-616139336538/Rectangle_6.jpg" data-conf-name="Полимодальная конференция" data-conf-year="2025"><span class="conf-list_year">2025</span><span class="conf-list_text"><span class="conf-list_name">Полимодальная конференция</span><span class="conf-list_caption">для психологов разных подходов</span></span><span class="conf-list_play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span></button></li>
+                <li class="conf-list_item" role="presentation"><button class="conf-list_tab" type="button" role="tab" id="home-conf-tab-2" aria-controls="home-conf-video" aria-selected="false" tabindex="-1" data-conf-kin="hUGGWVehCTncumQ65GpxCJ" data-conf-poster="https://static.tildacdn.com/tild6662-6565-4966-b837-643435323762/Rectangle_8.jpg" data-conf-name="ACT-Petersburg. Episode 3" data-conf-year="2025"><span class="conf-list_year">2025</span><span class="conf-list_text"><span class="conf-list_name">ACT-Petersburg. Episode 3</span><span class="conf-list_caption">терапия принятия и&nbsp;ответственности</span></span><span class="conf-list_play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span></button></li>
+                <li class="conf-list_item" role="presentation"><button class="conf-list_tab" type="button" role="tab" id="home-conf-tab-3" aria-controls="home-conf-video" aria-selected="false" tabindex="-1" data-conf-kin="nTuAQuZeNwZuiadm5b9MjD" data-conf-poster="https://static.tildacdn.com/tild3135-6538-4662-b562-346666393830/Frame_981.jpg" data-conf-name="ACT-Petersburg. Episode 2" data-conf-year="2024"><span class="conf-list_year">2024</span><span class="conf-list_text"><span class="conf-list_name">ACT-Petersburg. Episode 2</span><span class="conf-list_caption">терапия принятия и&nbsp;ответственности</span></span><span class="conf-list_play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span></button></li>
+                <li class="conf-list_item" role="presentation"><button class="conf-list_tab" type="button" role="tab" id="home-conf-tab-4" aria-controls="home-conf-video" aria-selected="false" tabindex="-1" data-conf-kin="7VChdbAYbAtDtbEBTgT4iQ" data-conf-poster="https://static.tildacdn.com/tild6331-6464-4332-b338-633865336164/2.jpg" data-conf-name="Trauma Focused Weekend" data-conf-year="2024"><span class="conf-list_year">2024</span><span class="conf-list_text"><span class="conf-list_name">Trauma Focused Weekend</span><span class="conf-list_caption">терапия травмы</span></span><span class="conf-list_play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span></button></li>
+                <li class="conf-list_item" role="presentation"><button class="conf-list_tab" type="button" role="tab" id="home-conf-tab-5" aria-controls="home-conf-video" aria-selected="false" tabindex="-1" data-conf-kin="qJmeqP8B8uPpaVPA1o61Jm" data-conf-poster="https://static.tildacdn.com/tild6639-3632-4033-b261-323662393035/image.jpg" data-conf-name="ACT-Petersburg. Episode 1" data-conf-year="2023"><span class="conf-list_year">2023</span><span class="conf-list_text"><span class="conf-list_name">ACT-Petersburg. Episode 1</span><span class="conf-list_caption">первая конференция по&nbsp;ACT</span></span><span class="conf-list_play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span></button></li>
+                <li class="conf-list_item" role="presentation"><button class="conf-list_tab" type="button" role="tab" id="home-conf-tab-6" aria-controls="home-conf-video" aria-selected="false" tabindex="-1" data-conf-kin="nTuAQuZeNwZuiadm5b9MjD" data-conf-poster="https://static.tildacdn.com/tild6539-3032-4639-a537-346162363937/3.jpg" data-conf-name="Compassion Focused Weekend" data-conf-year="2022"><span class="conf-list_year">2022</span><span class="conf-list_text"><span class="conf-list_name">Compassion Focused Weekend</span><span class="conf-list_caption">терапия, сфокусированная на&nbsp;сострадании</span></span><span class="conf-list_play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span></button></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="beyond-cards_list">
+
+          <!-- АСП Практикум: открытые онлайн-встречи, мини-расписание -->
+          <article class="beyond-card_component is-practicum">
+            <div class="practicum-ui_component" aria-hidden="true">
+              <div class="practicum-ui_row"><span class="practicum-ui_day">вт</span><span class="practicum-ui_kind">Практика</span><span class="practicum-ui_btn">Записаться</span></div>
+              <div class="practicum-ui_row"><span class="practicum-ui_day">чт</span><span class="practicum-ui_kind">Супервизия</span><span class="practicum-ui_btn">Записаться</span></div>
+              <div class="practicum-ui_row"><span class="practicum-ui_day">чт</span><span class="practicum-ui_kind">Интервизия</span><span class="practicum-ui_btn">Записаться</span></div>
+            </div>
+            <h3 class="beyond-card_title content-heading_component is-card">АСП Практикум</h3>
+            <p class="beyond-card_text body-text_component is-fine-print">Открытые онлайн-встречи для психологов и&nbsp;студентов: практика, супервизии и&nbsp;интервизии с&nbsp;практикующими экспертами. Приходите, даже если ещё не&nbsp;учились у&nbsp;нас: это бесплатно</p>
+            <a class="beyond-card_link body-text_component is-caption" href="https://lk.modern-psy.ru/practicum-asp#events" target="_blank" rel="noopener">Смотреть расписание</a>
+          </article>
+
+          <!-- Сообщество выпускников: тёмная карточка с чатом -->
+          <article class="beyond-card_component is-alumni">
+            <div class="alumni-ui_component" aria-hidden="true">
+              <span class="alumni-ui_msg">Коллеги, кто работал с&nbsp;таким запросом?</span>
+              <span class="alumni-ui_msg is-reply">Давай разберём на&nbsp;интервизии в&nbsp;четверг</span>
+              <span class="alumni-ui_faces"><i>А</i><i>М</i><i>К</i><i>+</i></span>
+            </div>
+            <h3 class="beyond-card_title content-heading_component is-card">Сообщество выпускников</h3>
+            <p class="beyond-card_text body-text_component is-fine-print">Курс закончился, а&nbsp;коллеги остались. В&nbsp;закрытом чате разбираем случаи, проводим интервизии и&nbsp;обсуждаем свежие исследования. До&nbsp;20 встреч в&nbsp;месяц, и&nbsp;все бесплатные</p>
+            <a class="beyond-card_link body-text_component is-caption" href="https://modern-psy.ru/alumni">Как вступить</a>
+          </article>
+
+          <!-- RO DBT: лиловая карточка, фоном узор «Выход из круга» (как на обложке курса в каталоге),
+               текст на белой плашке. Узор рисует build.mjs (rodbtPattern) — в этом файле его не править -->
+          <article class="beyond-card_component is-rodbt">
+            {{RODBT_PATTERN}}
+            <span class="beyond-card_badge">Официальный партнёр Radically Open&nbsp;Ltd</span>
+            <div class="rodbt-card_plate">
+              <h3 class="beyond-card_title content-heading_component is-card">RO&nbsp;DBT в&nbsp;России</h3>
+              <p class="beyond-card_text body-text_component is-fine-print">Терапия для тех, кто «держит себя в&nbsp;руках», даже когда это мешает жить. Учим методу Томаса Линча из&nbsp;первых рук: мы&nbsp;первыми перевели его в&nbsp;России</p>
+              <a class="beyond-card_link body-text_component is-caption" href="https://modern-psy.ru/ro-dbt-path">Обучение RO&nbsp;DBT</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Нам доверяют: оценки на площадках отзывов, отзывы студентов на тёмной доске, бегущие ленты партнёров.
+       Все данные — в data/trust.json (оценки, отзывы, логотипы), разметку собирает build.mjs: здесь не править.
+       Видео грузится только по кнопке: до клика — фото. Полный текст длинных отзывов открывается в окне -->
+  <section class="section_home-trust" aria-labelledby="home-trust-title" data-home-trust>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="home-section_head">
+          <h2 class="home-section_title section-title_component is-responsive" id="home-trust-title">Нам доверяют</h2>
+          <p class="home-section_text section-subtitle_component">Оценки на&nbsp;независимых площадках, истории студентов и&nbsp;организации, с&nbsp;которыми мы&nbsp;работаем вместе</p>
+        </div>
+
+        <ul class="trust-scores_list" role="list">{{TRUST_SCORES}}</ul>
+
+        <div class="trust-board_component">
+          <div class="trust-board_head">
+            <h3 class="trust-board_title content-heading_component is-prominent">Истории студентов</h3>
+            <div class="slider-controls_component">
+              <button class="slider-controls_button" type="button" data-trust-prev aria-controls="home-trust-track" aria-label="Предыдущие отзывы" disabled>{{ICON_PREV}}</button>
+              <button class="slider-controls_button" type="button" data-trust-next aria-controls="home-trust-track" aria-label="Следующие отзывы">{{ICON_NEXT}}</button>
+            </div>
+          </div>
+          <ul class="trust-reviews_track" id="home-trust-track" role="list" data-trust-track>{{TRUST_REVIEWS}}</ul>
+        </div>
+
+        <div class="trust-partners_head">
+          <h3 class="content-heading_component is-prominent">Работаем вместе</h3>
+          <p class="trust-partners_text body-text_component is-fine-print">Профессиональные ассоциации, клиники, медиа и&nbsp;благотворительные проекты</p>
+        </div>
+      </div>
+    </div>
+    <!-- Ленты партнёров идут от края до края экрана. Наведение мышью ставит ленту на паузу,
+         при «уменьшении движения» в системе ленты стоят и листаются пальцем -->
+    <div class="trust-marquee_component" role="region" aria-label="Партнёры Академии">{{TRUST_PARTNERS}}</div>
+    {{TRUST_DIALOGS}}
+  </section>
+
+  <!-- 10. Поможем подобрать программу: вопрос «С чего хотите начать?» и короткая форма без почты.
+       Выбранный ответ уходит менеджеру вместе с заявкой (поле form_source), чтобы он подготовился к разговору.
+       Цифры в ответах (курсы по методам и специализациям) приходят из каталога и обновляются сами.
+       Заявка уходит в скрытую форму Тильды на этой же странице, её имя — в data-tilda-form-name.
+       🔴 Имя формы Тильды ещё не задано: на modern-psy.ru без него заявка не уйдёт, на превью так и должно быть -->
+  <section class="section_home-pick" aria-labelledby="home-pick-title" data-home-pick>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="pick-card_component">
+          <div class="pick-card_intro">
+            <h2 class="pick-card_title section-title_component is-responsive" id="home-pick-title">Поможем подобрать программу</h2>
+            <p class="pick-card_label" id="home-pick-question">С&nbsp;чего хотите начать?</p>
+            <ul class="pick-chip_list" role="list" aria-labelledby="home-pick-question">
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="zero">Стать психологом с&nbsp;нуля</button></li>
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="method">Освоить метод терапии</button></li>
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="skill">Повысить квалификацию</button></li>
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="unsure">Пока не&nbsp;знаю</button></li>
+            </ul>
+            <div class="pick-card_reply" aria-live="polite">
+              <p data-pick-reply="none">Выберите вариант, и&nbsp;менеджер подготовится к&nbsp;разговору заранее</p>
+              <p data-pick-reply="zero" hidden>{{PICK_ZERO_REPLY}}</p>
+              <p data-pick-reply="method" hidden>Подберём курс по&nbsp;подходу: у&nbsp;нас <span data-home-count="methods">{{COUNT_METHODS}}</span> по&nbsp;методам, от&nbsp;КПТ до&nbsp;схема-терапии</p>
+              <p data-pick-reply="skill" hidden>Покажем <span data-home-count="specializations">{{COUNT_SPECIALIZATIONS}}</span> по&nbsp;специализациям: травма, РПП, сексология и&nbsp;другие</p>
+              <p data-pick-reply="unsure" hidden>Зададим пару вопросов и&nbsp;предложим варианты под ваш опыт</p>
+            </div>
+          </div>
+          <div class="pick-card_form">
+            <form class="pick-form_component" data-pick-form data-tilda-form-name="" aria-labelledby="home-pick-title" novalidate>
+              <div class="pick-form_fields">
+                <div class="pick-field_component">
+                  <input class="pick-field_input" id="home-pick-name" type="text" name="name" autocomplete="name" placeholder=" " required>
+                  <label class="pick-field_label" for="home-pick-name">Как к&nbsp;вам обращаться</label>
+                </div>
+                <div class="pick-field_component">
+                  <input class="pick-field_input" id="home-pick-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" placeholder=" " required>
+                  <label class="pick-field_label" for="home-pick-phone">Телефон</label>
+                </div>
+              </div>
+              <fieldset class="pick-messenger_component">
+                <legend class="pick-messenger_legend">Где вам удобнее общаться?</legend>
+                <div class="pick-messenger_options">
+                  <input class="pick-messenger_input" type="radio" name="messenger" value="max" id="home-pick-max" checked>
+                  <label class="pick-messenger_option" for="home-pick-max"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M10.2 19.9c-2 0-2.9-.3-4.4-1.4-1 1.3-4.2 2.3-4.3.6 0-1.3-.3-2.4-.6-3.6C.5 14 0 12.4 0 10 0 4.4 4.7.1 10.2.1c5.5 0 9.8 4.5 9.8 10 0 2.6-1 5.1-2.8 6.9a9.9 9.9 0 0 1-7 2.9Zm.1-14.9C7.6 4.9 5.5 6.7 5.1 9.6c-.4 2.4.3 5.4.9 5.5.3.1 1-.5 1.4-.9.7.5 1.5.8 2.4.9a5 5 0 0 0 5.3-4.7 5 5 0 0 0-4.8-5.4Z"/></svg><span lang="en">MAX</span></label>
+                  <input class="pick-messenger_input" type="radio" name="messenger" value="telegram" id="home-pick-telegram">
+                  <label class="pick-messenger_option" for="home-pick-telegram"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.5 4.1a1.3 1.3 0 0 1 1.7 1.4l-1.9 11.4c-.2 1.1-1.4 1.7-2.4 1.2-.8-.5-2.1-1.2-3.2-1.9-.6-.4-2.3-1.6-2.1-2.4.2-.7 3.1-3.4 4.8-5.1.6-.6.3-1-.4-.4-1.9 1.4-5 3.6-6 4.3-.9.5-1.4.6-1.9.5-1-.2-2-.4-2.7-.8-1.1-.4-1-1.9 0-2.3l14.1-6Z"/></svg><span lang="en">Telegram</span></label>
+                </div>
+                <!-- Для MAX хватает телефона, для Telegram спрашиваем имя пользователя -->
+                <div class="pick-field_component pick-messenger_nick" data-pick-nick hidden>
+                  <input class="pick-field_input" id="home-pick-nick" type="text" name="telegram" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder=" " disabled required>
+                  <label class="pick-field_label" for="home-pick-nick">Имя пользователя с&nbsp;@</label>
+                </div>
+              </fieldset>
+              <button class="pick-form_submit" type="submit" disabled data-pick-submit>Подобрать программу</button>
+              <p class="pick-form_status" role="status" aria-live="polite" data-pick-status></p>
+              <p class="pick-form_legal">Нажимая на&nbsp;кнопку «Подобрать программу», я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener">согласие</a> на&nbsp;обработку моих персональных данных в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener">политикой обработки персональных данных</a></p>
+            </form>
+            <div class="pick-form_success" tabindex="-1" data-pick-success hidden>
+              <p class="pick-form_success-title content-heading_component is-card">Заявка отправлена</p>
+              <p class="body-text_component is-fine-print">Спасибо! Свяжемся с&nbsp;вами в&nbsp;рабочее время там, где вам удобно.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="page.js" defer></script>
+<!-- Микроразметка для поиска: организация и сайт. Только то, что известно точно;
+     адрес, телефон и соцсети добавить, когда будут данные (см. docs/seo.md, раздел 2.1) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://modern-psy.ru/#organization",
+      "name": "Академия Современной Психологии",
+      "url": "https://modern-psy.ru/",
+      "logo": "https://static.tildacdn.com/tild6537-6665-4335-a165-323438323634/logo.png",
+      "description": "Онлайн-образование для психологов: профессиональная переподготовка и повышение квалификации по доказательным методам психотерапии"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://modern-psy.ru/#website",
+      "url": "https://modern-psy.ru/",
+      "name": "Академия Современной Психологии",
+      "inLanguage": "ru",
+      "publisher": { "@id": "https://modern-psy.ru/#organization" }
+    }
+  ]
+}
+</script>
+</body>
+</html>

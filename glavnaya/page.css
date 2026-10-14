@@ -1,0 +1,1379 @@
+/* ============================================================
+   Главная modern-psy.ru · стили страницы
+   Дизайн-система web-academy: серая основа, белые карточки, один
+   фиолетовый акцент, шрифт Wix Madefor Text. Значения вшиты здесь
+   (файл должен работать сам по себе и переноситься в Тильду одним куском).
+   Ширина контента 1440 и поля — как у шапки сайта и каталога.
+   Брейкпоинты: до 520 · 521–767 · 768–1024 · от 1025.
+
+   Где можно править: цвета и размеры — в разделе 0 (переменные).
+   Остальные правила лучше не трогать без проверки на телефоне.
+   ============================================================ */
+
+/* ---------- 0. Переменные ---------- */
+.home-page {
+  --home-bg: #f5f5f5;            /* фон страницы */
+  --home-white: #ffffff;         /* белый: текст, обводки и кнопки на тёмных блоках */
+  --home-surface: var(--home-white); /* карточки */
+  --home-line: #e8e7ee;          /* тонкие границы */
+  --home-line-hover: #cfd1db;    /* граница карточки при наведении */
+  --home-text: #1d1d33;          /* основной текст, как в шапке */
+  --home-muted: #585873;         /* второстепенный текст (контраст 6:1) */
+  --home-accent: #644ab2;        /* фиолетовый Академии: кнопки, акцент заголовка */
+  --home-accent-hover: #4c3888;
+  --home-soft: #ebe8fb;          /* мягкая сиреневая подложка: чипы, иконки */
+  --home-soft-hover: #ddd6f7;
+  --home-soft-text: #4c3888;
+  --home-dark: #2b2334;          /* фон тёмных и акцентных блоков (web-academy), по умолчанию для всех тёмных плашек */
+  --home-on-dark-muted: #e6e5eb;   /* второстепенный текст на тёмном (web-academy) */
+  --home-focus: #977ee2;
+  --home-warn-bg: #fff8e6;       /* «Последний шанс» — тон warning из каталога */
+  --home-warn-text: #8a5a00;
+  --home-promo-bg: #ffe110;      /* плашка скидки — как в каталоге */
+  --home-promo-text: #3d3a2a;
+
+  --home-font: "Wix Madefor Text", Arial, sans-serif;
+  /* Переменные, которые читают текстовые роли Web Academy из type.css.
+     Цвет текста роли берут у родителя (currentColor), цвет задаёт страница.
+     Не inherit: в переменной это слово значит «взять переменную у родителя», а не цвет. */
+  --font-family-body: var(--home-font);
+  --body-text-color: currentColor;
+  --color-text-primary: var(--home-text);
+  --color-text-secondary-large: var(--home-muted);
+  --color-accent-primary: var(--home-accent);
+  --section-heading-description-size: clamp(1rem, 2.149vw, 1.375rem);
+  --section-subtitle-color: var(--home-muted);
+  --home-pad: clamp(1rem, 4.7619vw, 5rem);       /* поля страницы */
+  --home-section: 3.5rem;                         /* отступ между секциями */
+  --home-radius: 1rem;
+  --home-radius-lg: 1.25rem;
+  --home-gap: 0.75rem;                            /* промежуток между карточками */
+  --home-card-pad: 1rem;                          /* отступ до края карточки: от 16 px, как в web-academy */
+  --home-card-pad-lg: 1rem;                       /* крупные плашки: двери хиро, тёмные блоки — до 24 px на десктопе */
+  --home-motion: 150ms ease-in-out;
+
+  /* Размеры текста. Основные тексты и заголовки — роли Web Academy из type.css
+     (section-title, content-heading, body-text) — классы стоят прямо в разметке.
+     Здесь только то, чего в ролях нет: главный заголовок и мелкие метки на плашках. */
+  --home-size-hero: clamp(2.5rem, 1.8398rem + 2.8169vw, 4.375rem);      /* 40 → 70, главный заголовок — докрутим отдельно */
+  --home-size-small: 0.875rem;                                          /* дата на плашке-табе */
+  --home-size-tiny: 0.8125rem;                                          /* бейдж скидки, как бейдж на странице цен */
+
+  background-color: var(--home-bg);
+  color: var(--home-text);
+  font-family: var(--home-font);
+  font-variant-numeric: lining-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: calc(var(--home-section) * 1.5);
+}
+
+@media (min-width: 48rem) {
+  .home-page { --home-section: 4.5rem; --home-gap: 1rem; --home-card-pad-lg: 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .home-page { --home-section: 6rem; --home-card-pad-lg: 1.5rem; }
+}
+
+body:has(.home-page) {
+  margin: 0;
+  background-color: #f5f5f5;
+}
+
+.home-page *,
+.home-page *::before,
+.home-page *::after { box-sizing: border-box; }
+
+.home-page ::selection { background-color: #d0c4f2; color: #1d1535; }
+
+.home-page :focus-visible {
+  outline: 2px solid var(--home-focus);
+  outline-offset: 3px;
+}
+
+/* Сброс браузерных отступов. :where() не добавляет веса, поэтому классы компонентов ниже его перекрывают */
+.home-page :where(h1, h2, h3, p, ul) { margin: 0; }
+.home-page :where(ul) { padding: 0; list-style: none; }
+.home-page :where(img) { display: block; max-width: 100%; }
+.home-page :where(a) { color: inherit; text-decoration: none; }
+
+.padding-global { padding-inline: var(--home-pad); }
+.container-home { max-width: 90rem; margin-inline: auto; }
+
+/* ---------- 1. Первый экран ---------- */
+.home-hero_component { padding-top: clamp(2.5rem, 1.6rem + 3.8vw, 5.5rem); }
+
+.home-hero_title {
+  font-size: var(--home-size-hero);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.home-hero_title-accent { display: block; color: var(--home-accent); }
+
+/* Факты — тихой строкой, без карточек */
+.home-facts_list {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  color: var(--home-muted);
+}
+.home-facts_value { color: var(--home-text); font-weight: 500; }
+
+@media (min-width: 48rem) {
+  .home-hero_title { text-align: center; }
+  .home-facts_list {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    margin-top: 2.25rem;
+    text-align: left;
+  }
+  .home-facts_item { padding-inline: 1.5rem; }
+  .home-facts_item + .home-facts_item { border-left: 1px solid var(--home-line-hover); }
+  .home-facts_item:last-child { max-width: 23rem; }
+}
+
+/* Две двери */
+.home-doors_component {
+  display: grid;
+  gap: var(--home-gap);
+  /* когда двери стоят друг под другом, голова на иллюстрации выходит за верх карточки —
+     промежуток больше, чтобы она не упиралась в карточку выше */
+  row-gap: 2.5rem;
+  margin-top: 2rem;
+}
+@media (min-width: 48rem) { .home-doors_component { margin-top: 3rem; } }
+@media (min-width: 64.0625rem) {
+  .home-doors_component { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+}
+
+.home-door_component {
+  border-radius: var(--home-radius-lg);
+  padding: var(--home-card-pad-lg);
+  min-width: 0;
+}
+
+/* Размеры текстов — роли Web Academy (классы в разметке), здесь только отступы и цвет */
+.home-door_title { text-wrap: balance; }
+/* Подводка двери — основной текст Web Academy (15 → 20 px): между фактами под заголовком (подпись, до 18)
+   и заголовком двери (до 36). Отступ от заголовка больше, чтобы подводка не липла к нему */
+.home-door_text {
+  margin-top: 1.25rem;
+  max-width: 34rem;
+}
+
+/* Дверь для практиков: белая, без картинки */
+.home-door_component.is-practice {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--home-surface);
+}
+.is-practice .home-door_content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+/* Кнопка сразу под текстом, той же ширины, что кнопки соседней двери; бегущие ряды прижаты к низу карточки */
+.is-practice .home-door_content .home-button_component { margin-top: 1.75rem; width: min(100%, 24rem); }
+.is-practice .door-ticker_component { margin-top: auto; padding-top: 2rem; margin-bottom: 0; }
+.is-practice .home-door_text { color: var(--home-muted); }
+
+/* Бегущие ряды курсов в двери для практиков.
+   Три ряда светло-серых плашек едут справа налево с разной скоростью и сдвигом, по краям
+   карточки мягко растворяются (маска), а не обрезаются. Наведение или фокус — ряды стоят.
+   Каждый ряд — два одинаковых набора: сдвиг на половину ленты зацикливается без шва.
+   Если в системе включено «уменьшить движение» — ряды стоят, их можно листать пальцем. */
+.door-ticker_component {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.25rem calc(var(--home-card-pad-lg) * -1) 1.5rem;
+  /* растворение по краям: 12 % ширины, но не меньше 2,5rem и не больше 7rem */
+  --door-ticker-fade: clamp(2.5rem, 12%, 7rem);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--door-ticker-fade), #000 calc(100% - var(--door-ticker-fade)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--door-ticker-fade), #000 calc(100% - var(--door-ticker-fade)), transparent);
+}
+.door-ticker_row { overflow: hidden; }
+.door-ticker_track {
+  display: flex;
+  width: max-content;
+  animation: door-ticker-move var(--door-ticker-time, 60s) linear infinite;
+  animation-delay: var(--door-ticker-shift, 0s);
+}
+.door-ticker_row:nth-child(1) .door-ticker_track { --door-ticker-time: 64s; --door-ticker-shift: -8s; }
+.door-ticker_row:nth-child(2) .door-ticker_track { --door-ticker-time: 76s; --door-ticker-shift: -30s; }
+.door-ticker_row:nth-child(3) .door-ticker_track { --door-ticker-time: 70s; --door-ticker-shift: -17s; }
+.door-ticker_component:hover .door-ticker_track,
+.door-ticker_component:focus-within .door-ticker_track { animation-play-state: paused; }
+@keyframes door-ticker-move {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+/* отступ справа у каждой плашки (а не gap), чтобы половина ленты была ровно одним набором */
+.door-ticker_item { flex: 0 0 auto; padding-right: 0.5rem; }
+.door-ticker_link {
+  display: flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  background-color: var(--home-bg);
+  color: var(--home-text);
+  font-size: 0.9375rem;     /* как плашки-метки Web Academy (meta-pill) */
+  font-weight: 444;
+  line-height: 1.3;
+  white-space: nowrap;
+  transition: background-color var(--home-motion), color var(--home-motion);
+}
+@media (prefers-reduced-motion: reduce) {
+  .door-ticker_track { animation: none; }
+  .door-ticker_row { overflow-x: auto; scrollbar-width: none; }
+  .door-ticker_row::-webkit-scrollbar { display: none; }
+}
+
+/* Дверь «с нуля»: тёмная (#2b2334), с крупным человеком.
+   Человек — вырезанный портрет до талии с прозрачным фоном.
+   Голова выходит за верхний край карточки на --home-door-pop, низ обрезан нижним краем.
+   До 520 — человек сверху во всю ширину, низ растворяется в фоне, текст под ним.
+   С 521 — человек справа во всю высоту, текст и кнопки в левой колонке.
+   Ширина колонки текста = 100% минус ширина человека (--home-person-w), чтобы текст на него не наезжал. */
+.home-door_component.is-start {
+  --home-door-pop: 1.5rem;
+  --home-person-ratio: 0.7292;  /* ширина / высота портрета img/door-start-person.webp (875 × 1200) */
+  position: relative;
+  isolation: isolate;          /* картинка уходит под текст, но остаётся над фоном карточки */
+  background-color: var(--home-dark);
+  color: var(--home-white);
+}
+/* Фон за человеком: стена с мягкими тенями листьев (img/door-start-wall.webp).
+   Базовый цвет картинки совпадает с цветом карточки, поэтому край не виден; маска
+   дополнительно гасит пятна света к тексту. На телефоне — сверху, за фото, с 521 — справа */
+.home-door_component.is-start::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: 0 0 auto 0;
+  height: 16rem;
+  border-radius: inherit;
+  background: url("img/door-start-wall.webp") right top / cover no-repeat;
+  -webkit-mask-image: linear-gradient(#000 55%, transparent);
+  mask-image: linear-gradient(#000 55%, transparent);
+  pointer-events: none;
+}
+.is-start .home-door_text { color: var(--home-on-dark-muted); }
+.is-start :focus-visible { outline-color: var(--home-white); }
+
+.home-door_media { position: relative; pointer-events: none; }
+/* Рамка фигуры с портретом: держит пропорции картинки */
+.home-door_figure {
+  position: absolute;
+  aspect-ratio: var(--home-person-ratio);
+}
+.home-door_image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Телефон: человек сверху, во всю ширину карточки */
+.is-start .home-door_media {
+  height: 13rem;
+  margin: calc((var(--home-card-pad-lg) + var(--home-door-pop)) * -1) calc(var(--home-card-pad-lg) * -1) 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 72%, transparent);
+  mask-image: linear-gradient(#000 72%, transparent);
+}
+.is-start .home-door_figure { top: 0; right: 6%; height: 125%; }
+
+/* С 521: человек справа, стоит на нижнем крае карточки (обрезан по талии ровно краем).
+   Если текст короче роста человека, голова выходит за верх, но не больше чем на --home-door-pop.
+   Ширина человека --home-person-w считается от ширины самой карточки (cqw — % ширины карточки),
+   поэтому на узком ноутбуке и на широком экране пропорции одинаковые, без лишних брейкпоинтов.
+   Колонка текста = ширина карточки минус человек. */
+@media (min-width: 32.5625rem) {
+  .home-door_component.is-start {
+    --home-person-w: clamp(12rem, 43cqw, 20rem);
+    --home-person-shift: calc(var(--home-person-w) * 0.08);   /* насколько фигура заходит за правый край */
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    /* обрезка по карточке со скруглением снизу; сверху запас, чтобы голова была видна.
+       overflow-x: clip — чтобы фигура, заходящая за правый край, не давала прокрутку вбок */
+    clip-path: inset(calc(var(--home-door-pop) * -1 - 1rem) 0 0 0 round 0 0 var(--home-radius-lg) var(--home-radius-lg));
+    overflow-x: clip;
+  }
+  .is-start .home-door_content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(100cqw + var(--home-card-pad-lg) + var(--home-person-shift) - var(--home-person-w) - 0.75rem);
+    min-height: calc(var(--home-person-w) / var(--home-person-ratio) - var(--home-door-pop) - var(--home-card-pad-lg) * 2);
+  }
+  .is-start .home-door_media {
+    position: absolute;
+    z-index: -1;
+    bottom: 0;
+    right: calc(var(--home-person-shift) * -1);
+    width: var(--home-person-w);
+    aspect-ratio: var(--home-person-ratio);
+    height: auto;
+    margin: 0;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .is-start .home-door_figure { inset: 0; height: auto; aspect-ratio: auto; }
+  /* стена с листьями — на всю высоту правой части карточки, к тексту растворяется */
+  .home-door_component.is-start::before {
+    inset: 0 0 0 auto;
+    width: calc(var(--home-person-w) * 1.9);
+    height: auto;
+    background-position: right center;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 45%);
+    mask-image: linear-gradient(to right, transparent, #000 45%);
+  }
+}
+
+/* Цена — как малая цена на странице цен (pricing-scenarios: price-tag is-small).
+   В двери «с нуля» цена с кнопками прижаты к низу карточки (margin-top: auto), от текста — не меньше 1,5rem */
+.home-door_price {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.home-door_price-terms {
+  display: block;
+  margin-top: 0.375rem;
+  color: var(--home-on-dark-muted);
+}
+/* Грант в тексте двери «с нуля»: сумма на фиолетовой плашке прямо в строке */
+.home-door_grant {
+  display: inline-block;
+  padding: 0 0.375rem;
+  border-radius: 0.375rem;
+  background-color: var(--home-accent);
+  color: var(--home-white);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
+/* Две кнопки двери «с нуля» */
+.home-door_actions {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+.home-door_actions .home-button_component { margin-top: 0; }
+
+/* Кнопка: одна на всю страницу, размеры — из кнопки Web Academy (shared/academy/button.css):
+   высота 50 → 64 px, текст 16 → 19 px, растут с шириной экрана */
+.home-button_component {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(3.125rem + clamp(0rem, 2.91560102vw - 1.09335038rem, 0.7125rem) + clamp(0rem, 0.31059507vw - 0.19237482rem, 0.13375rem));
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--home-radius);
+  background-color: var(--home-accent);
+  color: var(--home-white);
+  font-size: calc(1rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  font-weight: 500;
+  line-height: 1.07;
+  text-align: center;
+  transition: background-color var(--home-motion);
+}
+.home-button_component.is-light { background-color: var(--home-white); color: var(--home-dark); }
+/* Второстепенная кнопка на тёмном: светлее фона на 12 % белого. Сплошным цветом, а не прозрачностью:
+   под ней проходит лента фона, и прозрачная кнопка стала бы разноцветной */
+.home-button_component.is-ghost { background-color: #443d4c; color: var(--home-white); }
+@media (max-width: 47.9375rem) {
+  .home-button_component { width: 100%; }
+}
+
+/* Особенности обучения */
+/* На телефоне до 520 — одна колонка: в половине экрана «установленного» не помещается */
+.home-features_list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+@media (min-width: 32.5625rem) {
+  .home-features_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+}
+.home-features_item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.home-features_icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+  color: var(--home-accent);
+}
+.home-features_icon svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.75; }
+@media (min-width: 64.0625rem) {
+  .home-features_list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 2rem; }
+  .home-features_item { padding-inline: 1.5rem; }
+  .home-features_item:first-child { padding-left: 0.5rem; }
+  .home-features_item + .home-features_item { border-left: 1px solid var(--home-line); }
+}
+
+/* ---------- Заголовки секций ---------- */
+/* Заголовок секции — роль section-title Web Academy, подпись — section-subtitle */
+.home-section_title.is-inverse { color: var(--home-white); }
+.home-section_text { margin-top: 0.75rem; }
+.home-section_text.is-inverse { color: var(--home-on-dark-muted); }
+.home-section_head { margin-bottom: 1.25rem; }
+
+/* ---------- 2. Популярные направления ---------- */
+.section_home-flagships {
+  padding-top: var(--home-section);
+  overflow-x: clip; /* лента выходит за поля до края экрана, но страница вбок не листается */
+}
+
+/* Заголовок и стрелки в одну строку */
+.home-section_head.is-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 48rem) { .home-section_head.is-row { margin-bottom: 1.75rem; } }
+
+/* Стрелки карусели: незаметные — серый круг, тёмно-серая иконка. На телефоне листают пальцем */
+.slider-controls_component { display: none; gap: 0.5rem; flex: 0 0 auto; }
+@media (min-width: 48rem) { .slider-controls_component { display: flex; } }
+.slider-controls_button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: #e8e7ee;
+  color: #2b2b36;
+  cursor: pointer;
+  transition: background-color var(--home-motion), opacity var(--home-motion);
+}
+.slider-controls_button svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.75; }
+.slider-controls_button:disabled { opacity: 0.4; cursor: default; }
+
+/* Лента: карточки прилипают к началу при прокрутке.
+   Отступ ленты = поле страницы + запас по краям на широких экранах, чтобы лента доходила до края окна */
+.flagships_list {
+  --home-bleed: calc(var(--home-pad) + max(0px, (100vw - 2 * var(--home-pad) - 90rem) / 2));
+  display: flex;
+  gap: var(--home-gap);
+  margin-inline: calc(var(--home-bleed) * -1);
+  padding-inline: var(--home-bleed);
+  scroll-padding-inline: var(--home-bleed);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.flagships_list::-webkit-scrollbar { display: none; }
+.flagships_item {
+  display: flex;
+  flex: 0 0 84%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+@media (min-width: 32.5625rem) { .flagships_item { flex-basis: 58%; } }
+@media (min-width: 48rem) { .flagships_item { flex-basis: calc((100% - var(--home-gap)) / 2.2); } }
+/* На десктопе ровно три карточки в ширине контента, четвёртая выглядывает за полем */
+@media (min-width: 64.0625rem) { .flagships_item { flex-basis: calc((100% - 2 * var(--home-gap)) / 3); } }
+@media (prefers-reduced-motion: no-preference) { .flagships_list { scroll-behavior: smooth; } }
+
+.flagship-card_component {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--home-radius);
+  background-color: var(--home-surface);
+}
+.flagship-card_media {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background-color: var(--home-soft);
+}
+/* Картинка лежит поверх рамки 16:7 и не растягивает её своей высотой */
+.flagship-card_image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; }
+.flagship-card_promo {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background-color: var(--home-promo-bg);
+  color: var(--home-promo-text);
+  font-size: var(--home-size-tiny);
+  font-weight: 500;
+}
+.flagship-card_body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: var(--home-card-pad);
+}
+.flagship-card_type { color: var(--home-muted); }
+.flagship-card_title {
+  transition: color var(--home-motion);
+  overflow-wrap: break-word;
+}
+.flagship-card_meta { color: var(--home-muted); }
+.flagship-card_meta i,
+.last-chance_kind i { margin-inline: 0.375rem; font-style: normal; }
+.flagship-card_price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.125rem 0.5rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+.flagship-card_price-old { color: var(--home-muted); }
+/* цена — как на странице цен: Medium, плотный трекинг */
+.flagship-card_price-main { font-size: clamp(1.25rem, 1.206rem + 0.1878vw, 1.375rem); font-weight: 500; letter-spacing: -0.03em; }
+.flagship-card_price-terms { flex-basis: 100%; color: var(--home-muted); }
+
+/* ---------- 3. Последний шанс ---------- */
+.section_home-last-chance { padding-top: calc(var(--home-section) * 0.75); }
+.section_home-last-chance[hidden] { display: none; }
+
+.last-chance_list {
+  display: grid;
+  gap: var(--home-gap);
+}
+@media (min-width: 48rem) { .last-chance_list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64.0625rem) { .last-chance_list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.last-chance_item { display: flex; min-width: 0; }
+
+.last-chance_card {
+  display: flex;
+  gap: 0.875rem;
+  width: 100%;
+  padding: var(--home-card-pad);
+  border-radius: var(--home-radius);
+  background-color: var(--home-surface);
+}
+.last-chance_thumb {
+  flex: 0 0 auto;
+  width: 5rem;
+  height: 5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+}
+.last-chance_image { width: 100%; height: 100%; object-fit: cover; object-position: 78% 14%; }
+.last-chance_body { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.last-chance_status {
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+  background-color: var(--home-warn-bg);
+  color: var(--home-warn-text);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.last-chance_title {
+  transition: color var(--home-motion);
+  margin-top: 0.5rem;
+  overflow-wrap: break-word;
+}
+.last-chance_kind { margin-top: 0.375rem; color: var(--home-muted); }
+.last-chance_price { display: flex; flex-direction: column; margin-top: auto; padding-top: 0.75rem; }
+.last-chance_price-old { color: var(--home-muted); }
+.last-chance_price-main { font-size: 1.125rem; font-weight: 500; letter-spacing: -0.03em; }
+.last-chance_price-terms { color: var(--home-muted); }
+
+/* ---------- 4. Все направления (тёмный блок) ---------- */
+.section_home-directions { padding-top: var(--home-section); }
+.directions_component {
+  padding: var(--home-card-pad-lg);
+  border-radius: 1.5rem;
+  background-color: var(--home-dark);
+  color: var(--home-white);
+}
+@media (min-width: 64.0625rem) { .directions_component { padding: 2rem; } }
+.directions_component .home-section_head { margin-bottom: 1.5rem; }
+.directions_component :focus-visible { outline-color: var(--home-white); }
+
+.directions_list {
+  display: grid;
+  gap: var(--home-gap);
+}
+@media (min-width: 32.5625rem) { .directions_list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64.0625rem) { .directions_list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.directions_tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 100%;
+  min-height: 6.5rem;
+  padding: var(--home-card-pad);
+  border: 1px solid color-mix(in srgb, var(--home-white) 12%, transparent);
+  border-radius: var(--home-radius);
+  background-color: color-mix(in srgb, var(--home-white) 8%, transparent);
+  transition: background-color var(--home-motion), border-color var(--home-motion);
+}
+.directions_count { color: var(--home-on-dark-muted); }
+.directions_caption { margin-top: auto; padding-top: 0.5rem; color: var(--home-on-dark-muted); }
+
+/* ---------- 5. Учиться бесплатно ---------- */
+.section_home-free { padding-top: var(--home-section); }
+.section_home-free > .padding-global > .container-home > .home-section_title { margin-bottom: 1.25rem; }
+@media (min-width: 48rem) { .section_home-free > .padding-global > .container-home > .home-section_title { margin-bottom: 1.75rem; } }
+
+.free_layout { display: grid; gap: var(--home-gap); }
+@media (min-width: 64.0625rem) {
+  .free_layout { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; }
+}
+.free-events_component[hidden] { display: none; }
+
+/* Левая колонка: белая плашка с большой карточкой и строками-табами */
+.free-events_component {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+
+/* Большая карточка выбранного мероприятия: картинка и текст на мягкой сиреневой подложке */
+.free-event_component {
+  display: grid;
+  overflow: hidden;
+  border-radius: var(--home-radius);
+  background-color: var(--home-soft);
+}
+@media (min-width: 48rem) {
+  .free-event_component { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr); min-height: 17rem; }
+}
+.free-event_media { position: relative; aspect-ratio: 16 / 9; background-color: #dcd6f5; }
+@media (min-width: 48rem) { .free-event_media { aspect-ratio: auto; } }
+.free-event_image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 18%; }
+.free-event_content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: var(--home-card-pad);
+}
+@media (min-width: 48rem) { .free-event_content { justify-content: center; padding: var(--home-card-pad-lg); } }
+.free-event_meta { color: var(--home-muted); }
+.free-event_title {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.free-event_button { margin-top: 0.5rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .free-event_content, .free-event_image { animation: free-event-in 220ms ease-out; }
+}
+@keyframes free-event-in { from { opacity: 0.35; } to { opacity: 1; } }
+
+/* Строки ближайших мероприятий — табы */
+.free-tabs_list { display: grid; }
+.free-tabs_tab {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background-color: transparent;
+  color: var(--home-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--home-motion);
+}
+/* Тонкая линия между строками; у выбранной строки и под ней линии нет — её заменяет подложка */
+.free-tabs_item + .free-tabs_item .free-tabs_tab { box-shadow: inset 0 1px 0 var(--home-line); }
+.free-tabs_item:has(.is-active) .free-tabs_tab,
+.free-tabs_item:has(.is-active) + .free-tabs_item .free-tabs_tab { box-shadow: none; }
+.free-tabs_tab.is-active { background-color: var(--home-bg); }
+.free-tabs_date {
+  flex: 0 0 auto;
+  min-width: 6.5rem;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--home-soft);
+  color: var(--home-soft-text);
+  font-size: var(--home-size-small);
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+.free-tabs_tab.is-active .free-tabs_date { background-color: var(--home-accent); color: var(--home-white); }
+.free-tabs_title { min-width: 0; }
+
+/* Правая колонка: мини-курсы */
+.free-mini_component {
+  padding: var(--home-card-pad-lg);
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+.free-mini_heading {
+  margin: 0 0 0.75rem;
+  text-wrap: balance;
+}
+.free-mini_list { display: grid; }
+.free-mini_item + .free-mini_item .free-mini_link { border-top: 1px solid var(--home-line); }
+.free-mini_link { display: flex; align-items: center; gap: 1rem; padding-block: 0.75rem; }
+.free-mini_thumb {
+  flex: 0 0 auto;
+  width: 4rem;
+  height: 4rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+}
+.free-mini_image { width: 100%; height: 100%; object-fit: cover; object-position: 80% 14%; }
+.free-mini_body { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.free-mini_title { transition: color var(--home-motion); }
+.free-mini_meta { color: var(--home-muted); }
+
+/* ---------- 6. Преподаватели ---------- */
+.section_home-teachers { padding-top: var(--home-section); }
+.teachers_layout { display: grid; gap: 0.75rem; }
+.teachers_layout > * { min-width: 0; }
+@media (min-width: 64.0625rem) {
+  .teachers_layout { grid-template-columns: 15rem minmax(0, 1fr); gap: 1.5rem; }
+}
+
+/* Подходы. На телефоне и планшете — лента вбок от края до края экрана.
+   С десктопа — столбик высотой с карточку справа: лишнее прокручивается внутри,
+   внизу растворение, которое гаснет, когда список докручен до конца (класс is-scroll-end) */
+.teachers-nav_component { position: relative; }
+.teachers-nav_list {
+  display: flex;
+  gap: 0.375rem;
+  overflow-x: auto;
+  margin-inline: calc(var(--home-pad) * -1);
+  padding-inline: var(--home-pad);
+  scrollbar-width: none;
+}
+.teachers-nav_list::-webkit-scrollbar { display: none; }
+.teachers-nav_item { flex: 0 0 auto; }
+.teachers-nav_tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.875rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background-color: var(--home-surface);
+  color: var(--home-text);
+  font: 444 0.9375rem/1.3 var(--home-font);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--home-motion), color var(--home-motion);
+}
+.teachers-nav_count { color: var(--home-muted); font-variant-numeric: tabular-nums; }
+.teachers-nav_tab.is-active { background-color: var(--home-dark); color: var(--home-white); }
+.teachers-nav_tab.is-active .teachers-nav_count { color: var(--home-on-dark-muted); }
+@media (min-width: 64.0625rem) {
+  .teachers-nav_list {
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0 0 2.5rem;
+    -webkit-mask-image: linear-gradient(#000 calc(100% - 4rem), transparent);
+    mask-image: linear-gradient(#000 calc(100% - 4rem), transparent);
+  }
+  .teachers-nav_list.is-scroll-end { -webkit-mask-image: none; mask-image: none; }
+}
+
+/* Панель выбранного подхода: название, ссылка на курс, лента карточек */
+.teachers-panel_component {
+  padding: var(--home-card-pad-lg);
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+.teachers-panel_head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.teachers-panel_link {
+  color: var(--home-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+/* Карточки одной лентой: высота блока не зависит от числа людей в подходе */
+.teachers-panel_list {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.teachers-panel_list::-webkit-scrollbar { display: none; }
+.teacher-card_component { flex: 0 0 64%; scroll-snap-align: start; }
+@media (min-width: 32.5625rem) { .teacher-card_component { flex-basis: 42%; } }
+@media (min-width: 48rem) { .teacher-card_component { flex-basis: calc((100% - 1.5rem) / 3.3); } }
+@media (min-width: 64.0625rem) {
+  .teachers-panel_list { gap: 1rem; }
+  .teacher-card_component { flex-basis: calc((100% - 3rem) / 4.3); }
+}
+.teacher-card_photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+}
+.teacher-card_image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+.teacher-card_name { margin-top: 0.75rem; }
+.teacher-card_role { margin-top: 0.25rem; color: var(--home-muted); }
+.teacher-card_bio { margin-top: 0.5rem; color: var(--home-muted); }
+
+/* ---------- 7. Как устроено обучение: бенто с живыми мини-интерфейсами ----------
+   Плитки белые; внутри серая «сцена» с маленьким интерфейсом. Большая плитка — практика.
+   Анимации крутятся, только когда у секции есть класс is-run (секция на экране) */
+.section_home-learning { padding-top: var(--home-section); }
+.learning_grid { display: grid; gap: var(--home-gap); }
+.learning_grid > * { min-width: 0; }
+/* На планшете две колонки: «Сообщество» встаёт рядом с «Дипломом», а не отдельной строкой — без дыры в сетке.
+   С десктопа три колонки, и «Сообщество» растягивается на всю ширину последней строкой */
+@media (min-width: 48rem) {
+  .learning_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .learning-tile_component.is-practice { grid-column: 1 / -1; }
+}
+@media (min-width: 64.0625rem) {
+  .learning_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .learning-tile_component.is-practice { grid-column: span 2; grid-row: span 2; }
+  .learning-tile_component.is-wide { grid-column: 1 / -1; }
+}
+.learning-tile_component {
+  display: flex;
+  flex-direction: column;
+  padding: var(--home-card-pad-lg);
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+.learning-tile_title { margin-top: 1rem; }
+.learning-tile_text { margin-top: 0.375rem; color: var(--home-muted); }
+.learning-ui_component {
+  position: relative;
+  min-height: 11rem;
+  border-radius: 0.875rem;
+  background-color: var(--home-bg);
+  overflow: hidden;
+}
+.learning-tile_component.is-wide .learning-ui_component { min-height: 9rem; }
+
+/* Практика */
+.practice_head { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 1rem 1.5rem; }
+.practice_head .learning-tile_title { margin-top: 0; }
+.practice-switch_component { display: inline-flex; gap: 0.25rem; padding: 0.25rem; border-radius: 0.75rem; background-color: var(--home-bg); }
+.practice-switch_button {
+  min-height: 2.5rem;
+  padding: 0.375rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--home-text);
+  font: 444 0.9375rem/1.2 var(--home-font);
+  cursor: pointer;
+  transition: background-color var(--home-motion);
+}
+.practice-switch_button[aria-pressed="true"] { background-color: var(--home-surface); box-shadow: 0 1px 2px rgba(29, 29, 51, 0.08); }
+.practice_body { display: grid; gap: 1rem; flex: 1 1 auto; margin-top: 1rem; }
+@media (min-width: 48rem) { .practice_body { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: stretch; } }
+.practice-stage_component {
+  position: relative;
+  min-height: 17rem;
+  border-radius: 0.875rem;
+  background-color: var(--home-bg);
+  overflow: hidden;
+}
+.practice-stage_links { position: absolute; inset: 0; width: 100%; height: 100%; }
+.practice-stage_link { stroke: #cfcbd6; stroke-width: 2; stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; }
+.is-run .practice-stage_link { animation: learning-flow 1.6s linear infinite; }
+@keyframes learning-flow { to { stroke-dashoffset: -20; } }
+.practice-person_component {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 0.375rem;
+  transform: translate(-50%, -50%);
+  transition: left 700ms cubic-bezier(0.16, 1, 0.3, 1), top 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.practice-person_face {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  background-color: var(--home-surface);
+  font-weight: 500;
+  transition: background-color var(--home-motion), color var(--home-motion);
+}
+.practice-person_role {
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background-color: var(--home-surface);
+  font: 444 0.8125rem/1.2 var(--home-font);
+  white-space: nowrap;
+  transition: background-color var(--home-motion), color var(--home-motion);
+}
+.practice-person_component.is-therapist .practice-person_face,
+.practice-person_component.is-therapist .practice-person_role { background-color: var(--home-dark); color: var(--home-white); }
+.practice-person_component.is-observer .practice-person_role { background-color: var(--home-soft); color: var(--home-soft-text); }
+.practice-stage_teacher {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--home-accent);
+  color: var(--home-white);
+  font: 444 0.8125rem/1.2 var(--home-font);
+  opacity: 0;
+  transition: opacity var(--home-motion);
+}
+.practice-stage_teacher.is-on { opacity: 1; }
+.practice-stage_round { position: absolute; right: 0.75rem; bottom: 0.625rem; color: var(--home-muted); font-size: 0.8125rem; }
+.practice_info { display: flex; flex-direction: column; gap: 0.75rem; }
+.practice_text { color: var(--home-muted); }
+.practice-legend_list { display: grid; gap: 0.5rem; margin-top: 0.25rem; padding-top: 0.75rem; border-top: 1px solid var(--home-line); color: var(--home-muted); }
+.practice-legend_item b { color: var(--home-text); font-weight: 500; }
+.practice_button {
+  align-self: flex-start;
+  margin-top: auto;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+  color: var(--home-soft-text);
+  font: 500 0.9375rem/1.2 var(--home-font);
+  cursor: pointer;
+  transition: background-color var(--home-motion);
+}
+
+/* Лекции */
+.learning-lessons_list { position: absolute; inset: 0.75rem; display: grid; gap: 0.375rem; align-content: center; }
+.learning-lesson_item {
+  display: grid;
+  grid-template-columns: 1.625rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.625rem;
+  background-color: var(--home-surface);
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+.learning-lesson_icon { display: grid; place-items: center; width: 1.625rem; height: 1.625rem; border-radius: 50%; background-color: var(--home-soft); color: var(--home-accent); }
+.learning-lesson_icon svg { width: 0.8125rem; height: 0.8125rem; }
+.learning-lesson_item.is-locked { opacity: 0.55; }
+.learning-lesson_note { color: var(--home-muted); font-size: 0.75rem; white-space: nowrap; }
+.learning-lesson_bar { width: 3.5rem; height: 0.25rem; border-radius: 999px; background-color: #e8e7ee; overflow: hidden; }
+.learning-lesson_bar i { display: block; width: 0; height: 100%; background-color: var(--home-accent); }
+.is-run .learning-lesson_item.is-playing .learning-lesson_bar i { animation: learning-fill 5.5s linear infinite; }
+@keyframes learning-fill { to { width: 100%; } }
+
+/* Вебинары */
+.learning-cams_grid { position: absolute; inset: 0.75rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.375rem; }
+.learning-cam_item { position: relative; display: grid; place-items: center; border-radius: 0.5rem; background-color: var(--home-surface); }
+.learning-cam_item::before { content: ""; width: 38%; aspect-ratio: 1; border-radius: 50%; background-color: #e8e7ee; }
+.learning-cam_item.is-teacher { background-color: var(--home-dark); }
+.learning-cam_item.is-teacher::before { background-color: #4a4152; }
+.learning-cam_wave { position: absolute; left: 0.375rem; bottom: 0.375rem; display: flex; align-items: end; gap: 2px; height: 0.75rem; }
+.learning-cam_wave i { width: 3px; height: 30%; border-radius: 2px; background-color: var(--home-white); }
+.is-run .learning-cam_wave i { animation: learning-wave 900ms ease-in-out infinite alternate; }
+.learning-cam_wave i:nth-child(2) { animation-delay: -300ms; }
+.learning-cam_wave i:nth-child(3) { animation-delay: -600ms; }
+@keyframes learning-wave { to { height: 100%; } }
+.learning-cam_live { position: absolute; right: 1.125rem; top: 1.125rem; display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.125rem 0.5rem; border-radius: 999px; background-color: var(--home-surface); font-size: 0.75rem; }
+.learning-cam_live::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 50%; background-color: var(--home-accent); }
+.is-run .learning-cam_live::before { animation: learning-blink 1.4s ease-in-out infinite; }
+@keyframes learning-blink { 50% { opacity: 0.25; } }
+
+/* Домашние задания */
+.learning-tasks_list { position: absolute; inset: 0.75rem; display: grid; gap: 0.375rem; align-content: center; }
+.learning-task_item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4375rem 0.625rem; border-radius: 0.625rem; background-color: var(--home-surface); font-size: 0.8125rem; line-height: 1.25; }
+.learning-task_check { flex: 0 0 auto; width: 1.125rem; height: 1.125rem; }
+.learning-task_check rect { fill: none; stroke: #cfcbd6; stroke-width: 1.5; }
+.learning-task_check path { fill: none; stroke: var(--home-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 14; stroke-dashoffset: 14; transition: stroke-dashoffset 400ms ease; }
+.learning-task_item.is-done .learning-task_check path { stroke-dashoffset: 0; }
+.learning-task_stamp { justify-self: start; padding: 0.25rem 0.625rem; border-radius: 999px; background-color: var(--home-dark); color: var(--home-white); font-size: 0.75rem; opacity: 0; transform: translateY(0.25rem); transition: opacity 300ms ease, transform 300ms ease; }
+.learning-task_stamp.is-on { opacity: 1; transform: none; }
+
+/* Супервизии */
+.learning-case_card { position: absolute; inset: 0.75rem 3rem 0.75rem 0.75rem; display: grid; align-content: start; gap: 0.5rem; padding: 0.75rem; border-radius: 0.625rem; background-color: var(--home-surface); }
+.learning-case_card b { font-size: 0.8125rem; font-weight: 500; }
+.learning-case_card i { display: block; height: 0.5rem; border-radius: 999px; background-color: #e8e7ee; }
+.learning-case_note { position: absolute; right: 0.75rem; bottom: 0.75rem; max-width: 72%; padding: 0.5rem 0.75rem; border-radius: 0.75rem 0.75rem 0.25rem 0.75rem; background-color: var(--home-dark); color: var(--home-white); font-size: 0.8125rem; line-height: 1.3; opacity: 0; transform: translateY(0.5rem); transition: opacity 400ms ease, transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+.learning-case_note.is-on { opacity: 1; transform: none; }
+
+/* Документ */
+.learning-doc_card { position: absolute; left: 50%; top: 50%; width: 9rem; height: 6.25rem; display: grid; align-content: start; gap: 0.375rem; padding: 0.75rem; border-radius: 0.375rem; background-color: var(--home-surface); transform: translate(-50%, -50%) rotate(-3deg); }
+.learning-doc_card i { display: block; height: 0.375rem; border-radius: 999px; background-color: #e8e7ee; }
+.learning-doc_card svg { position: absolute; right: 0.5rem; bottom: 0.375rem; width: 3.5rem; height: 1.5rem; }
+.learning-doc_card path { fill: none; stroke: var(--home-accent); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 120; stroke-dashoffset: 0; }
+.is-run .learning-doc_card path { animation: learning-sign 3.5s ease-in-out infinite; }
+@keyframes learning-sign { 0% { stroke-dashoffset: 120; } 45%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 120; } }
+
+/* Сообщество */
+.learning-net_svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.learning-net_svg line { stroke: #cfcbd6; stroke-width: 1.5; }
+.learning-net_svg circle { fill: var(--home-surface); stroke: #cfcbd6; stroke-width: 1.5; }
+.learning-net_svg .learning-net_hub { fill: var(--home-dark); stroke: none; }
+.learning-net_svg .learning-net_pulse { fill: none; stroke: var(--home-accent); opacity: 0; transform-box: fill-box; transform-origin: center; }
+.is-run .learning-net_pulse { animation: learning-ring 2.8s ease-out infinite; }
+@keyframes learning-ring { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 0; transform: scale(2.4); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .section_home-learning * { animation: none !important; }
+  .practice-person_component { transition: none; }
+}
+
+/* ---------- 8. Не только курсы ---------- */
+.section_home-beyond { padding-top: var(--home-section); } /* снизу без отступа: его даёт следующая секция, иначе зазор двойной */
+
+/* Конференции: видео слева, список по годам справа */
+.conf_component {
+  display: grid;
+  gap: 1rem;
+  padding: var(--home-card-pad-lg);
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+.conf_component > * { min-width: 0; }
+@media (min-width: 64.0625rem) { .conf_component { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 1.5rem; } }
+.conf-video_component {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.875rem;
+  background-color: #1d1724;
+}
+@media (min-width: 64.0625rem) { .conf-video_component { aspect-ratio: auto; min-height: 100%; } }
+.conf-video_poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 300ms ease; }
+.conf-video_component::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 50%, rgba(23, 18, 30, 0.72)); pointer-events: none; }
+.conf-video_component iframe { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; border: 0; }
+.conf-video_play {
+  position: absolute;
+  z-index: 2;
+  left: var(--home-card-pad-lg);
+  bottom: var(--home-card-pad-lg);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 3rem;
+  padding: 0.5rem 1.125rem 0.5rem 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background-color: var(--home-surface);
+  color: var(--home-text);
+  font: 500 0.9375rem/1.2 var(--home-font);
+  cursor: pointer;
+}
+.conf-video_play-icon { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background-color: var(--home-dark); color: var(--home-white); }
+.conf-video_play-icon svg { width: 0.75rem; height: 0.75rem; margin-left: 2px; }
+.conf-video_caption { position: absolute; z-index: 2; right: var(--home-card-pad-lg); bottom: calc(var(--home-card-pad-lg) + 0.875rem); max-width: 45%; color: var(--home-white); font-size: 0.875rem; line-height: 1.3; text-align: right; }
+@media (max-width: 32.5rem) { .conf-video_caption { display: none; } }
+
+.conf-info_text { margin-top: 0.375rem; color: var(--home-muted); }
+/* Список по годам: строки, разделённые линиями; год пишется только у первой строки года */
+.conf-list_list { margin-top: 1rem; border-top: 1px solid var(--home-line); }
+.conf-list_item { border-bottom: 1px solid var(--home-line); }
+.conf-list_tab {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) 2rem;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.5rem 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--home-text);
+  font-family: var(--home-font);
+  text-align: left;
+  cursor: pointer;
+}
+.conf-list_year { color: var(--home-muted); font-size: 1rem; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.conf-list_text { display: grid; gap: 0.125rem; min-width: 0; }
+.conf-list_name { font-size: 0.9375rem; font-weight: 500; line-height: 1.25; transition: color var(--home-motion); }
+.conf-list_caption { color: var(--home-muted); font-size: 0.8125rem; line-height: 1.3; }
+.conf-list_play { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background-color: var(--home-bg); color: var(--home-muted); transition: background-color var(--home-motion), color var(--home-motion); }
+.conf-list_play svg { width: 0.625rem; height: 0.625rem; margin-left: 1px; }
+.conf-list_tab.is-active .conf-list_name { color: var(--home-accent); }
+.conf-list_tab.is-active .conf-list_year { color: var(--home-text); }
+.conf-list_tab.is-active .conf-list_play { background-color: var(--home-dark); color: var(--home-white); }
+
+/* Три карточки — каждая в своём характере: белая с расписанием, тёмная с чатом, лиловая с узором */
+.beyond-cards_list { display: grid; gap: var(--home-gap); margin-top: var(--home-gap); }
+.beyond-cards_list > * { min-width: 0; }
+@media (min-width: 48rem) {
+  .beyond-cards_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .beyond-card_component.is-rodbt { grid-column: 1 / -1; }
+}
+@media (min-width: 64.0625rem) {
+  .beyond-cards_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .beyond-card_component.is-rodbt { grid-column: auto; }
+}
+.beyond-card_component {
+  display: flex;
+  flex-direction: column;
+  padding: var(--home-card-pad-lg);
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+.beyond-card_title { margin-top: 1rem; }
+.beyond-card_text { margin-top: 0.375rem; color: var(--home-muted); }
+.beyond-card_link {
+  margin-top: auto;
+  padding-top: 1rem;
+  align-self: flex-start;
+  color: var(--home-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+/* Практикум: мини-расписание */
+.practicum-ui_component { display: grid; gap: 0.375rem; padding: 0.75rem; border-radius: 0.875rem; background-color: var(--home-bg); }
+.practicum-ui_row { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr) auto; align-items: center; gap: 0.625rem; padding: 0.375rem 0.375rem 0.375rem 0.5rem; border-radius: 0.625rem; background-color: var(--home-surface); font-size: 0.8125rem; }
+.practicum-ui_day { display: grid; place-items: center; height: 2rem; border-radius: 0.5rem; background-color: var(--home-soft); color: var(--home-soft-text); font-weight: 500; }
+.practicum-ui_btn { padding: 0.25rem 0.625rem; border-radius: 0.5rem; background-color: var(--home-dark); color: var(--home-white); font-size: 0.75rem; }
+.practicum-ui_row:nth-child(2) .practicum-ui_btn { background-color: var(--home-soft); color: var(--home-soft-text); }
+
+/* Выпускники: тёмная карточка, чат и лица */
+.beyond-card_component.is-alumni { background-color: var(--home-dark); color: var(--home-white); }
+.is-alumni .beyond-card_text { color: var(--home-on-dark-muted); }
+.is-alumni .beyond-card_link { color: var(--home-white); }
+.is-alumni :focus-visible { outline-color: var(--home-white); }
+.alumni-ui_component { display: grid; gap: 0.375rem; padding: 0.75rem; border-radius: 0.875rem; background-color: color-mix(in srgb, var(--home-white) 6%, transparent); }
+.alumni-ui_msg { justify-self: start; max-width: 85%; padding: 0.4375rem 0.75rem; border-radius: 0.875rem 0.875rem 0.875rem 0.25rem; background-color: color-mix(in srgb, var(--home-white) 12%, transparent); font-size: 0.8125rem; line-height: 1.3; }
+.alumni-ui_msg.is-reply { justify-self: end; border-radius: 0.875rem 0.875rem 0.25rem 0.875rem; background-color: var(--home-accent); }
+.alumni-ui_faces { display: flex; margin-top: 0.25rem; }
+.alumni-ui_faces i { display: grid; place-items: center; width: 1.875rem; height: 1.875rem; margin-right: -0.375rem; border: 2px solid var(--home-dark); border-radius: 50%; background-color: #4a4152; font-size: 0.75rem; font-style: normal; font-weight: 500; }
+.alumni-ui_faces i:last-child { background-color: var(--home-soft); color: var(--home-soft-text); }
+
+/* RO DBT: лиловая карточка, фоном узор «Выход из круга» (геометрию рисует build.mjs), текст на белой плашке.
+   Цвет узора — фиолетовый Академии, кольца приглушены до тона подложки; одна точка залита целиком */
+.beyond-card_component.is-rodbt { position: relative; overflow: hidden; background-color: var(--home-soft); }
+.rodbt-card_pattern { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--home-accent); fill: currentColor; }
+.rodbt-card_tone { opacity: 0.3; }
+.rodbt-card_rings { fill: none; stroke: currentColor; stroke-width: 3.6; stroke-linecap: round; }
+.is-rodbt > :not(.rodbt-card_pattern) { position: relative; }
+/* под бейджем оставляем место, чтобы узор был виден между ним и плашкой */
+.is-rodbt .beyond-card_badge { margin-bottom: 6rem; }
+.rodbt-card_plate { display: flex; flex-direction: column; margin-top: auto; padding: 1rem; border-radius: 0.875rem; background-color: var(--home-surface); }
+/* на планшете карточка во всю ширину: плашка слева, справа остаётся узор с залитой точкой */
+@media (min-width: 48rem) { .rodbt-card_plate { max-width: 28rem; } }
+.is-rodbt .beyond-card_title { margin-top: 0; }
+.is-rodbt .beyond-card_text { color: var(--home-soft-text); }
+.is-rodbt .beyond-card_link { padding-top: 0.75rem; }
+.beyond-card_badge { align-self: flex-start; padding: 0.375rem 0.75rem; border-radius: 999px; background-color: var(--home-surface); color: var(--home-soft-text); font: 500 0.8125rem/1.25 var(--home-font); }
+
+/* ---------- 9. Нам доверяют ---------- */
+.section_home-trust { padding-top: var(--home-section); padding-bottom: var(--home-section); overflow-x: clip; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Оценки площадок: тёмная плитка с общим числом отзывов и плитки-ссылки на площадки (2×2 на телефоне, в ряд с 768) */
+.trust-scores_list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--home-gap); margin: 0; padding: 0; list-style: none; }
+@media (min-width: 48rem) { .trust-scores_list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.trust-scores_list > li { display: flex; min-width: 0; }
+.trust-score_tile { display: flex; flex-direction: column; gap: 0.25rem; width: 100%; padding: var(--home-card-pad-lg); border-radius: var(--home-radius-lg); background-color: var(--home-surface); color: inherit; text-decoration: none; }
+.trust-score_tile.is-summary { background-color: var(--home-dark); color: var(--home-white); }
+.trust-score_value { font-size: clamp(2.5rem, 2rem + 1.6vw, 3.5rem); font-weight: 500; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.trust-score_count { color: var(--home-muted); transition: color var(--home-motion); }
+.trust-score_tile.is-summary .trust-score_count { color: var(--home-on-dark-muted); }
+.trust-score_logo { width: auto; height: 1.5rem; max-width: 100%; margin-top: auto; padding-top: 1.25rem; box-sizing: content-box; object-fit: contain; object-position: left center; }
+
+/* Отзывы: тёмная доска с лентой. Видео — отдельная колонка, текстовые отзывы — по два в колонке */
+.trust-board_component { margin-top: 2rem; padding: var(--home-card-pad-lg); overflow: hidden; border-radius: var(--home-radius-lg); background-color: var(--home-dark); color: var(--home-white); }
+.trust-board_head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.trust-board_component .slider-controls_button { background-color: color-mix(in srgb, var(--home-white) 10%, transparent); color: var(--home-white); }
+.trust-board_component :focus-visible { outline-color: var(--home-white); }
+.trust-reviews_track {
+  position: relative;
+  display: flex;
+  gap: var(--home-gap);
+  margin: 0 calc(var(--home-card-pad-lg) * -1);
+  padding: 0 var(--home-card-pad-lg);
+  scroll-padding-inline: var(--home-card-pad-lg);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.trust-reviews_track::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: no-preference) { .trust-reviews_track { scroll-behavior: smooth; } }
+.trust-reviews_item { display: flex; flex-direction: column; flex: 0 0 76%; gap: var(--home-gap); min-width: 0; scroll-snap-align: start; }
+.trust-reviews_item.is-quotes { flex-basis: 86%; }
+@media (min-width: 32.5625rem) { .trust-reviews_item { flex-basis: 17rem; } .trust-reviews_item.is-quotes { flex-basis: 22rem; } }
+@media (min-width: 64.0625rem) { .trust-reviews_item { flex-basis: 18rem; } .trust-reviews_item.is-quotes { flex-basis: 24rem; } }
+
+.trust-video_component { position: relative; flex: 1 1 auto; overflow: hidden; aspect-ratio: 4 / 5; border-radius: var(--home-radius); background-color: #3a3142; }
+.trust-video_poster, .trust-video_component video, .trust-video_component iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.trust-video_component video, .trust-video_component iframe { background-color: #000000; object-fit: contain; }
+.trust-video_play { position: absolute; inset: 0; display: grid; place-items: center; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+.trust-video_play-icon { display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; background-color: var(--home-white); color: var(--home-dark); transition: transform var(--home-motion); }
+.trust-video_play-icon svg { width: 1.125rem; height: 1.125rem; margin-left: 2px; }
+.trust-video_caption { padding: 0 0.25rem; font-size: 0.9375rem; line-height: 1.35; }
+.trust-video_caption span { display: block; margin-top: 0.25rem; color: var(--home-on-dark-muted); font-size: 0.8125rem; }
+
+.trust-quote_card { display: flex; flex: 1 1 auto; flex-direction: column; gap: 0.875rem; padding: var(--home-card-pad-lg); border-radius: var(--home-radius); background-color: color-mix(in srgb, var(--home-white) 7%, transparent); }
+.trust-quote_text { font-size: 1.125rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; }
+.trust-quote_more { color: var(--home-on-dark-muted); }
+.trust-quote_card .trust-person_component { margin-top: auto; }
+.trust-quote_open { align-self: flex-start; padding: 0; border: 0; background: none; color: var(--home-white); font: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; cursor: pointer; }
+.trust-person_component { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.trust-person_photo { flex: 0 0 auto; width: 2.75rem; height: 2.75rem; border-radius: 50%; object-fit: cover; background-color: #3a3142; }
+.trust-person_photo.is-large { width: 4rem; height: 4rem; background-color: var(--home-soft); }
+.trust-person_name { font-size: 0.9375rem; font-weight: 500; line-height: 1.25; }
+.trust-person_course { color: var(--home-on-dark-muted); font-size: 0.8125rem; line-height: 1.3; }
+
+/* Окно с полным отзывом */
+.trust-dialog_component { width: min(40rem, calc(100% - 2rem)); max-height: min(44rem, calc(100dvh - 2rem)); padding: 1.5rem; border: 0; border-radius: var(--home-radius-lg); background-color: var(--home-surface); color: var(--home-text); overflow: auto; }
+.trust-dialog_component::backdrop { background-color: rgba(43, 35, 52, 0.6); }
+.trust-dialog_head { display: flex; align-items: center; gap: 1rem; padding-right: 3rem; }
+.trust-dialog_component .trust-person_course { color: var(--home-muted); }
+.trust-dialog_text { display: grid; gap: 0.75rem; margin-top: 1.25rem; }
+.trust-dialog_close { position: absolute; top: 1rem; right: 1rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 0; border-radius: 50%; background-color: #e8e7ee; color: #2b2b36; cursor: pointer; }
+.trust-dialog_close svg { width: 1.125rem; height: 1.125rem; }
+
+/* Партнёры: две бегущие ленты от края до края, вторая едет в обратную сторону */
+.trust-partners_head { display: grid; gap: 0.375rem; margin: 3rem 0 1.25rem; }
+.trust-partners_text { color: var(--home-muted); }
+.trust-marquee_component { display: grid; gap: var(--home-gap); }
+.trust-marquee_row {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 clamp(2.5rem, 10%, 7rem), #000 calc(100% - clamp(2.5rem, 10%, 7rem)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 clamp(2.5rem, 10%, 7rem), #000 calc(100% - clamp(2.5rem, 10%, 7rem)), transparent);
+}
+.trust-marquee_list { display: flex; gap: var(--home-gap); width: max-content; margin: 0; padding: 0; list-style: none; }
+.trust-marquee_item { display: grid; place-items: center; width: 11rem; height: 5.5rem; padding: 1rem; border-radius: var(--home-radius); background-color: var(--home-surface); }
+@media (min-width: 48rem) { .trust-marquee_item { width: 13rem; height: 6rem; } }
+.trust-partner_logo { display: block; width: auto; height: var(--logo-h); max-width: 100%; }
+.trust-partner_name { color: #3c234f; font-size: 1.25rem; font-weight: 500; letter-spacing: 0.04em; }
+@media (prefers-reduced-motion: no-preference) {
+  .trust-marquee_list { animation: trust-marquee 70s linear infinite; }
+  .trust-marquee_row.is-reverse .trust-marquee_list { animation-direction: reverse; }
+  .trust-marquee_row:hover .trust-marquee_list { animation-play-state: paused; }
+}
+/* Сдвиг ровно на половину ленты (список + копия): вторая половина встаёт на место первой, шов не виден */
+@keyframes trust-marquee { to { transform: translateX(calc(-50% - var(--home-gap) / 2)); } }
+@media (prefers-reduced-motion: reduce) { .trust-marquee_row { overflow-x: auto; } }
+
+/* ---------- 10. Поможем подобрать программу ---------- */
+/* Тёмная плашка: слева вопрос с вариантами и ответ на выбор, справа форма (как форма курсов Академии, без почты) */
+.section_home-pick { padding-bottom: var(--home-section); }
+.pick-card_component { display: grid; gap: 2rem; padding: 1.25rem; border-radius: var(--home-radius-lg); background-color: var(--home-dark); color: var(--home-white); }
+@media (min-width: 48rem) { .pick-card_component { padding: 1.5rem; } }
+@media (min-width: 64.0625rem) { .pick-card_component { grid-template-columns: minmax(0, 1fr) minmax(0, 27rem); gap: 3rem; padding: 2rem; } }
+.pick-card_component :focus-visible { outline-color: var(--home-white); }
+.pick-card_intro { display: flex; flex-direction: column; min-width: 0; }
+.pick-card_title { color: var(--home-white); }
+.pick-card_label { margin-top: 1.75rem; font-size: 1.0625rem; font-weight: 500; }
+.pick-chip_list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.875rem 0 0; padding: 0; list-style: none; }
+.pick-chip_button { min-height: 2.75rem; padding: 0.625rem 1rem; border: 1px solid color-mix(in srgb, var(--home-white) 28%, transparent); border-radius: 999px; background: none; color: var(--home-white); font: inherit; font-size: 0.9375rem; line-height: 1.2; text-align: left; cursor: pointer; transition: background-color var(--home-motion), color var(--home-motion), border-color var(--home-motion); }
+.pick-chip_button[aria-pressed="true"] { border-color: var(--home-white); background-color: var(--home-white); color: var(--home-dark); }
+/* Ответ на выбор: до выбора — подсказка приглушённым цветом */
+.pick-card_reply { margin-top: 1.5rem; padding: 0.875rem 1rem; border-radius: var(--home-radius); background-color: color-mix(in srgb, var(--home-white) 7%, transparent); font-size: 0.9375rem; line-height: 1.4; }
+.pick-card_reply [data-pick-reply="none"] { color: var(--home-on-dark-muted); }
+.pick-card_reply [hidden] { display: none; }
+/* На десктопе ответ прижат к низу колонки — вровень с концом формы справа */
+@media (min-width: 64.0625rem) { .pick-card_reply { margin-top: auto; } .pick-chip_list { margin-bottom: 1.5rem; } }
+
+/* Поля: подпись внутри поля, при вводе уменьшается и уезжает вверх */
+.pick-form_component { display: grid; gap: 1rem; }
+.pick-form_component[hidden], .pick-form_success[hidden], .pick-messenger_nick[hidden] { display: none; }
+.pick-form_fields { display: grid; gap: 0.5rem; }
+.pick-field_component { position: relative; }
+.pick-field_input { display: block; width: 100%; height: 3.75rem; padding: 1.375rem 1rem 0.375rem; border: 1px solid color-mix(in srgb, var(--home-white) 28%, transparent); border-radius: 0.75rem; background: transparent; color: var(--home-white); font: inherit; font-size: 1rem; transition: border-color var(--home-motion); }
+.pick-field_input:focus { border-color: var(--home-white); outline: none; }
+.pick-field_label { position: absolute; top: 50%; left: 1rem; max-width: calc(100% - 2rem); overflow: hidden; color: color-mix(in srgb, var(--home-white) 62%, transparent); font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; transform: translateY(-50%); transform-origin: left center; pointer-events: none; transition: transform var(--home-motion), top var(--home-motion); }
+.pick-field_input:focus + .pick-field_label, .pick-field_input:not(:placeholder-shown) + .pick-field_label { top: 0.875rem; transform: translateY(-15%) scale(0.78); }
+.pick-messenger_component { margin: 0; padding: 0; border: 0; }
+.pick-messenger_legend { margin-bottom: 0.625rem; padding: 0; color: var(--home-on-dark-muted); font-size: 0.9375rem; }
+.pick-messenger_options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.pick-messenger_input { position: absolute; opacity: 0; pointer-events: none; }
+.pick-messenger_option { display: flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3rem; padding: 0.5rem 1rem; border: 1px solid color-mix(in srgb, var(--home-white) 28%, transparent); border-radius: 0.75rem; color: var(--home-white); cursor: pointer; transition: background-color var(--home-motion), color var(--home-motion), border-color var(--home-motion); }
+.pick-messenger_option svg { width: 1.125rem; height: 1.125rem; }
+.pick-messenger_input:checked + .pick-messenger_option { border-color: var(--home-white); background-color: var(--home-white); color: var(--home-dark); }
+.pick-messenger_input:focus-visible + .pick-messenger_option { outline: 2px solid var(--home-white); outline-offset: 2px; }
+.pick-messenger_nick { margin-top: 0.5rem; }
+/* Кнопка становится активной, когда всё заполнено (как в форме курсов) */
+.pick-form_submit { min-height: 3.5rem; padding: 0.75rem 1.5rem; border: 0; border-radius: 1rem; background-color: var(--home-accent); color: var(--home-white); font: inherit; font-size: 1.0625rem; font-weight: 500; cursor: pointer; transition: background-color var(--home-motion), color var(--home-motion); }
+.pick-form_submit:disabled { background-color: color-mix(in srgb, var(--home-white) 14%, transparent); color: color-mix(in srgb, var(--home-white) 60%, transparent); cursor: default; }
+.pick-form_submit[aria-busy="true"] { cursor: progress; }
+.pick-form_status:empty { display: none; }
+.pick-form_status { color: #ffb4b4; font-size: 0.875rem; line-height: 1.4; }
+.pick-form_legal { color: color-mix(in srgb, var(--home-white) 62%, transparent); font-size: 0.75rem; line-height: 1.4; }
+.pick-form_legal a { color: inherit; }
+.pick-form_success { display: grid; gap: 0.5rem; padding: 1.5rem; border-radius: var(--home-radius); background-color: color-mix(in srgb, var(--home-white) 7%, transparent); }
+.pick-form_success .body-text_component { color: var(--home-on-dark-muted); }
+
+/* ---------- Наведение: только на устройствах с мышью ---------- */
+@media (hover: hover) and (pointer: fine) {
+  .home-button_component:hover { background-color: var(--home-accent-hover); }
+  .home-button_component.is-light:hover { background-color: #efedf8; }
+  .door-ticker_link:hover { background-color: var(--home-soft); color: var(--home-soft-text); }
+  .home-button_component.is-ghost:hover { background-color: #554e5d; }
+  .slider-controls_button:not(:disabled):hover { background-color: #dcdbe3; }
+  .flagship-card_component:hover .flagship-card_title,
+  .last-chance_card:hover .last-chance_title { color: var(--home-accent); }
+  .free-tabs_tab:not(.is-active):hover { background-color: var(--home-bg); }
+  .free-mini_link:hover .free-mini_title { color: var(--home-accent); }
+  .teachers-nav_tab:not(.is-active):hover { background-color: var(--home-soft); color: var(--home-soft-text); }
+  .teachers-panel_link:hover { color: var(--home-accent-hover); }
+  .practice-switch_button[aria-pressed="false"]:hover { background-color: #ecebf0; }
+  .practice_button:hover { background-color: #dcd7f7; }
+  .conf-list_tab:not(.is-active):hover .conf-list_name { color: var(--home-accent); }
+  .conf-video_play:hover { background-color: #efedf8; }
+  .beyond-card_link:hover { color: var(--home-accent-hover); }
+  .is-alumni .beyond-card_link:hover { color: var(--home-on-dark-muted); }
+  .trust-score_tile:not(.is-summary):hover .trust-score_count { color: var(--home-accent); }
+  .trust-video_play:hover .trust-video_play-icon { transform: scale(1.06); }
+  .trust-quote_open:hover { color: var(--home-on-dark-muted); }
+  .trust-board_component .slider-controls_button:not(:disabled):hover { background-color: color-mix(in srgb, var(--home-white) 18%, transparent); }
+  .pick-chip_button[aria-pressed="false"]:hover { border-color: var(--home-white); }
+  .pick-messenger_input:not(:checked) + .pick-messenger_option:hover { border-color: var(--home-white); }
+  .pick-form_submit:not(:disabled):hover { background-color: var(--home-accent-hover); }
+  .directions_tile:hover { background-color: color-mix(in srgb, var(--home-white) 14%, transparent); border-color: color-mix(in srgb, var(--home-white) 20%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-page * { transition: none !important; }
+}

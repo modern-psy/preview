@@ -1,0 +1,635 @@
+<!-- ============================================================
+     ШАПКА САЙТА · один блок T123 на страницу-шапку Тильды
+     Разделы и курсы в меню приходят из CMS (/api/public/catalog):
+     курс попадает в меню, когда ему выбран раздел каталога.
+     Курсы внутри — снимок на 12.10.2026: его видят поисковики и посетители,
+     если API не ответил; руками его не править.
+     Что можно править прямо здесь:
+       — заголовок правой колонки («Выбор Академии») и data-soon-slug="…"
+         у её карточек: слаг курса из CMS;
+         пустой или неверный слаг заменится ближайшим стартом;
+       — ручная карточка там же (data-soon-manual): адрес, название,
+         картинка;
+       — ссылки Проекты / Акции / О нас / Новости / конференция и кнопки.
+     Надёжнее править apps/tilda/header/src/nav.json и пересобрать:
+       node apps/tilda/header/build.mjs
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+.site-header{--sh-page: #f5f5f5;--sh-surface: #fff;--sh-border: #e8e7ee;--sh-border-strong: #d4d2dd;--sh-text: #332f41;--sh-muted: #747476;--sh-accent: #7c5cdb;--sh-accent-hover: #6a49c9;--sh-accent-dark: #644ab2;--sh-accent-soft: #dad6ff;--sh-light-hover: #e6e5eb;--sh-focus: #7c5cdb;--sh-shadow: 0 1.5rem 2.5rem -1.5rem rgba(51,47,65,0.28);--sh-shadow-small: 0 0.25rem 0.75rem -0.25rem rgba(51,47,65,0.12);--sh-radius: 1rem;--sh-radius-small: 0.75rem;--sh-radius-button: 0.5rem;--sh-padding: clamp(1rem,4.7619vw,5rem);--sh-bar: 4rem;--sh-duration: 180ms;--sh-ease: cubic-bezier(0.22,1,0.36,1);--sh-z: 9000;position: relative;z-index: var(--sh-z);width: 100%;background-color: var(--sh-surface);color: var(--sh-text);font-family: "Wix Madefor Text",Arial,sans-serif;font-size: 1rem;line-height: 1.3;font-variant-numeric: lining-nums proportional-nums;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale}.site-header *,.site-header *::before,.site-header *::after{box-sizing: border-box}.site-header :where(a){color: inherit !important;text-decoration: none !important}.site-header :where(ul){margin: 0;padding: 0;list-style: none}
+.site-header :where(li)::before{content: none}.site-header :where(p,h3){margin: 0;font: inherit;color: inherit}.site-header :where(button){margin: 0;padding: 0;border: 0;background: none;color: inherit;font: inherit;cursor: pointer;-webkit-tap-highlight-color: transparent}.site-header :where(svg){display: block;flex: 0 0 auto}.site-header :focus-visible{outline: 0.125rem solid var(--sh-focus);outline-offset: 0.125rem;border-radius: 0.375rem}.site-header ::selection{background-color: var(--sh-accent-soft);color: var(--sh-accent-dark)}.site-header .site-sr{position: absolute;width: 1px;height: 1px;margin: -1px;padding: 0;overflow: hidden;clip: rect(0 0 0 0);white-space: nowrap;border: 0}.site-header_bar{position: relative;border-bottom: 1px solid var(--sh-border);background-color: var(--sh-surface)}.site-header_inner{display: flex;align-items: center;gap: 0.5rem;max-width: 90rem;min-height: var(--sh-bar);margin: 0 auto;padding: 0 var(--sh-padding)}.site-header_brand{display: flex;align-items: center;flex: 0 0 auto;margin-right: auto;color: #2c1d59}.site-header_brand svg{width: 4.75rem;height: 1.6rem}.site-header_toggle{order: 5;flex: 0 0 auto;display: inline-flex;align-items: center;justify-content: center;gap: 0.625rem;min-width: 2.75rem;min-height: 2.75rem;padding: 0 0.5rem;border: 1px solid transparent;border-radius: var(--sh-radius-small);color: var(--sh-text);font-weight: 500;transition: background-color var(--sh-duration) var(--sh-ease),border-color var(--sh-duration) var(--sh-ease),color var(--sh-duration) var(--sh-ease)}.site-header_toggle-icon{position: relative;display: block;width: 1.25rem;height: 1.25rem}.site-header_toggle-icon span{position: absolute;left: 0;width: 100%;height: 2px;border-radius: 2px;background-color: currentColor;transition: transform var(--sh-duration) var(--sh-ease),top var(--sh-duration) var(--sh-ease)}
+.site-header_toggle-icon span:nth-child(1){top: 0.3125rem}
+.site-header_toggle-icon span:nth-child(2){top: 0.8125rem}
+.site-header_toggle-label{white-space: nowrap}
+.site-header_toggle-label:not(.is-mobile){display: none}.site-header_toggle[aria-expanded="true"] .site-header_toggle-icon span:nth-child(1){top: 0.5625rem;transform: rotate(45deg)}.site-header_toggle[aria-expanded="true"] .site-header_toggle-icon span:nth-child(2){top: 0.5625rem;transform: rotate(-45deg)}.site-button{display: inline-flex;align-items: center;justify-content: center;min-height: 3rem;padding: 0.75rem 1.5rem;border: 0;border-radius: var(--sh-radius-button);background-color: var(--sh-accent);color: #fff !important;font-size: 1rem;font-weight: 500;line-height: 1.1;letter-spacing: -0.02em;text-align: center;text-decoration: none !important;transition: background-color var(--sh-duration) var(--sh-ease),color var(--sh-duration) var(--sh-ease)}.site-button.is-secondary{background-color: var(--sh-page);color: var(--sh-text) !important}.site-header_cta{flex: 0 0 auto;min-height: 2.5rem;padding: 0.5rem 0.875rem;font-size: 0.875rem}.site-nav{position: fixed;inset: 0;z-index: 2;display: none;flex-direction: column;overflow-y: auto;overscroll-behavior: contain;-webkit-overflow-scrolling: touch;background-color: var(--sh-surface)}
+.site-header.is-nav-open .site-nav{display: flex}.site-nav_head{position: sticky;top: 0;z-index: 2;display: flex;align-items: center;justify-content: space-between;min-height: var(--sh-bar);padding: 0 var(--sh-padding);border-bottom: 1px solid var(--sh-border);background-color: var(--sh-surface)}.site-nav_head-title{font-size: 1.125rem;font-weight: 600}.site-nav_close{display: inline-flex;align-items: center;justify-content: center;width: 2.75rem;height: 2.75rem;margin-right: -0.75rem;border-radius: var(--sh-radius-small);color: var(--sh-text)}.site-nav_close svg{width: 1.25rem;height: 1.25rem}.site-nav_catalog-inner{display: flex;flex-direction: column}.site-nav_rail{padding: 0.5rem var(--sh-padding) 1.25rem}.site-nav_rail-title{padding: 1rem 0 0.5rem;color: var(--sh-muted);font-size: 0.8125rem;font-weight: 600}.site-nav_tabs{display: flex;flex-direction: column}.site-nav_tab{display: flex;align-items: center;gap: 0.75rem;width: 100%;min-height: 3.25rem;padding: 0.75rem 0;border-bottom: 1px solid var(--sh-border);text-align: left;font-size: 1.0625rem;font-weight: 500;transition: background-color var(--sh-duration) var(--sh-ease),color var(--sh-duration) var(--sh-ease)}
+.site-nav_tab-label{flex: 1 1 auto}.site-nav_tab-count{display: inline-flex;min-width: 1.75rem;height: 1.625rem;align-items: center;justify-content: center;padding: 0 0.5rem;border-radius: 0.5rem;background-color: var(--sh-page);color: var(--sh-muted);font-size: 0.8125rem;font-weight: 600;font-variant-numeric: tabular-nums}
+.site-nav_tab-count:empty{display: none}.site-nav_tab::after{content: "";flex: 0 0 auto;width: 0.5rem;height: 0.5rem;margin: 0 0.5rem 0 0.25rem;border-right: 1.5px solid var(--sh-muted);border-bottom: 1.5px solid var(--sh-muted);transform: rotate(-45deg)}.site-nav_rail-actions{display: grid;gap: 0.5rem;padding-top: 1.25rem}
+.site-nav_rail-actions .site-button{width: 100%}.site-nav_panel{position: fixed;inset: 0;z-index: 3;display: none;flex-direction: column;overflow-y: auto;overscroll-behavior: contain;-webkit-overflow-scrolling: touch;background-color: var(--sh-surface)}
+.site-nav_panel.is-open{display: flex}.site-nav_back{position: sticky;top: 0;z-index: 2;display: flex;align-items: center;gap: 0.5rem;min-height: var(--sh-bar);padding: 0 var(--sh-padding);border-bottom: 1px solid var(--sh-border);background-color: var(--sh-surface);color: var(--sh-muted);font-size: 1rem;font-weight: 500;text-align: left}.site-nav_back::before{content: "";width: 0.5rem;height: 0.5rem;margin: 0 0.25rem 0 0.125rem;border-right: 1.5px solid currentColor;border-bottom: 1.5px solid currentColor;transform: rotate(135deg)}.site-nav_panel-body{padding: 1.25rem var(--sh-padding) calc(2rem + env(safe-area-inset-bottom,0px))}.site-nav_panel-head{display: flex;flex-wrap: wrap;align-items: baseline;justify-content: space-between;gap: 0.375rem 1.5rem}.site-nav_panel-title{font-size: 1.25rem;font-weight: 600;line-height: 1.2;letter-spacing: -0.01em}.site-nav_panel-count{margin-left: 0.25rem;color: var(--sh-muted);font-size: 0.875rem;font-weight: 500;white-space: nowrap}.site-nav_more{color: var(--sh-accent) !important;font-size: 0.9375rem;font-weight: 500;text-decoration: underline !important;text-decoration-thickness: 1px;text-underline-offset: 0.2em;transition: color var(--sh-duration) var(--sh-ease)}.site-nav_empty{margin-top: 1rem;color: var(--sh-muted);font-size: 0.9375rem;line-height: 1.45}
+.site-nav_group{margin-top: 1.5rem}.site-nav_group-title{padding-bottom: 0.25rem;color: var(--sh-muted);font-size: 0.8125rem;font-weight: 600;line-height: 1.3}.site-nav_courses{display: grid;grid-template-columns: minmax(0,1fr);row-gap: 0.125rem}.site-nav_course-link{display: flex;flex-direction: column;gap: 0.125rem;padding: 0.75rem 0;transition: color var(--sh-duration) var(--sh-ease),background-color var(--sh-duration) var(--sh-ease)}.site-nav_course-title{font-size: 0.9375rem;font-weight: 500;line-height: 1.3;text-wrap: pretty;overflow-wrap: anywhere}.site-nav_course-meta{color: var(--sh-muted);font-size: 0.8125rem;line-height: 1.3;font-variant-numeric: tabular-nums}.site-nav_soon{margin: 0 var(--sh-padding) 1.5rem;padding: 1.25rem;border-radius: var(--sh-radius);background-color: var(--sh-page)}.site-nav_soon-title{font-size: 1.125rem;font-weight: 600;line-height: 1.2}.site-nav_soon-list{display: grid;grid-template-columns: repeat(2,minmax(0,1fr));gap: 0.75rem;margin-top: 1rem}.site-nav_soon-card{display: flex;flex-direction: column;gap: 0.375rem;height: 100%;padding: 0.625rem;border: 1px solid var(--sh-border);border-radius: var(--sh-radius-small);background-color: var(--sh-surface);transition: border-color var(--sh-duration) var(--sh-ease)}.site-nav_soon-image{display: block;width: 100%;height: auto;aspect-ratio: 16 / 10;margin-bottom: 0.25rem;border-radius: 0.5rem;background-color: var(--sh-accent-soft);object-fit: cover;object-position: center}.site-nav_soon-name{font-size: 0.9375rem;font-weight: 600;line-height: 1.3;text-wrap: pretty;overflow-wrap: anywhere;hyphens: auto}.site-nav_soon-meta{color: var(--sh-muted);font-size: 0.8125rem;line-height: 1.3}.site-nav_links{padding: 0.25rem var(--sh-padding) calc(1.5rem + env(safe-area-inset-bottom,0px));border-top: 1px solid var(--sh-border)}
+.site-nav_item{border-bottom: 1px solid var(--sh-border)}.site-nav_link{display: flex;align-items: center;justify-content: space-between;gap: 0.75rem;width: 100%;min-height: 3.25rem;padding: 0.75rem 0;font-size: 1.0625rem;font-weight: 500;line-height: 1.2;text-align: left;transition: color var(--sh-duration) var(--sh-ease)}.site-nav_link-text{position: relative;display: inline-block}.site-nav_link.is-event{color: var(--sh-accent-dark) !important;font-weight: 600}.site-nav_link-chevron{width: 1.25rem;height: 1.25rem;color: var(--sh-muted);transition: transform var(--sh-duration) var(--sh-ease)}
+.site-nav_link[aria-expanded="true"] .site-nav_link-chevron{transform: rotate(180deg)}.site-nav_submenu{display: none;padding: 0 0 0.75rem}
+.site-nav_link[aria-expanded="true"] + .site-nav_submenu{display: block}.site-nav_sublink{display: block;padding: 0.625rem 0 0.625rem 1rem;color: var(--sh-text);font-size: 1rem;line-height: 1.3;transition: color var(--sh-duration) var(--sh-ease)}.site-header_scrim{position: fixed;inset: 0;z-index: -1;display: none;background-color: rgba(29,29,51,0.24)}html.site-header-lock,html.site-header-lock body{overflow: hidden !important;overscroll-behavior: none}@media (min-width: 32.5625rem){.site-header_cta{min-height: 2.75rem;padding: 0.5rem 1.125rem;font-size: 0.9375rem}}@media (min-width: 48rem){
+.site-header{--sh-bar: 4.5rem}.site-nav_catalog-inner{display: grid;grid-template-columns: 14rem minmax(0,1fr);column-gap: 2rem;padding: 0 var(--sh-padding)}.site-nav_rail{padding: 0.5rem 0 1.5rem;border-right: 1px solid var(--sh-border)}
+.site-nav_tabs{padding-right: 1.5rem}.site-nav_tab{min-height: 3rem;padding: 0.625rem 0.875rem;border: 0;border-radius: var(--sh-radius-small);font-size: 1rem}.site-nav_tab.is-active{background-color: var(--sh-page);color: var(--sh-text);font-weight: 600}
+.site-nav_tab.is-active .site-nav_tab-count{background-color: var(--sh-surface)}
+.site-nav_tab::after{display: none}.site-nav_rail-actions{margin-right: 1.5rem;margin-top: 1rem;padding-top: 1.25rem;border-top: 1px solid var(--sh-border)}.site-nav_panels{grid-column: 2;grid-row: 1;padding-top: 1.5rem}.site-nav_panel{position: static;display: none;overflow: visible;background: none}
+.site-nav_panel.is-active{display: block}
+.site-nav_back{display: none}
+.site-nav_panel-body{padding: 0 0 1.5rem}.site-nav_soon{grid-column: 1 / -1;margin: 0 0 1.5rem}
+.site-nav_soon-list{gap: 1rem}
+.site-nav_soon-card{flex-direction: row;align-items: center;gap: 0.25rem 1rem;flex-wrap: wrap}
+.site-nav_soon-image{width: 7.5rem;margin: 0}
+.site-nav_soon-name,.site-nav_soon-meta{flex: 1 1 100%}
+.site-nav_soon-image + .site-nav_soon-name{flex: 1 1 10rem}
+.site-nav_soon-meta{padding-left: 8.5rem;margin-top: -0.25rem}.site-nav_links{display: flex;flex-wrap: wrap;column-gap: 2rem;padding-top: 0.5rem;padding-bottom: calc(2rem + env(safe-area-inset-bottom,0px))}
+.site-nav_item{position: relative;border: 0}
+.site-nav_submenu{position: static}}@media (min-width: 56rem){.site-nav_courses{grid-template-columns: repeat(2,minmax(0,1fr));column-gap: 1.5rem}}@media (min-width: 64.0625rem){
+.site-header{--sh-bar: 5rem}
+.site-header_inner{gap: 1rem}
+.site-header_brand{margin-right: 0.5rem}.site-header_brand svg{width: 5.5rem;height: 1.85rem}.site-header_toggle{order: 0;min-height: 3rem;padding: 0 1.125rem 0 0.875rem;border-color: var(--sh-border-strong);border-radius: var(--sh-radius-button)}
+.site-header_toggle-label:not(.is-mobile){display: inline}
+.site-header_toggle-label.is-mobile{display: none}.site-header_toggle[aria-expanded="true"]{border-color: var(--sh-text);background-color: var(--sh-page)}.site-header_cta{order: 3;min-height: 3rem;padding: 0.625rem 2rem;font-size: 1rem}.site-nav{position: static;display: flex;flex: 1 1 auto;flex-direction: row;align-items: center;justify-content: flex-end;min-width: 0;overflow: visible;background: none}
+.site-nav_head{display: none}.site-nav_catalog{position: absolute;top: 100%;right: 0;left: 0;display: none;border-top: 1px solid var(--sh-border);background-color: var(--sh-surface);box-shadow: var(--sh-shadow)}.site-header.is-catalog-open .site-nav_catalog{display: block;animation: site-nav-reveal var(--sh-duration) var(--sh-ease)}.site-nav_catalog-inner{grid-template-columns: 15.5rem minmax(0,1fr) 18rem;column-gap: 2.5rem;align-items: start;max-width: 90rem;margin: 0 auto;padding: 1.5rem var(--sh-padding) 2rem}.site-nav_rail{padding: 0 0 0.5rem;border-right: 0}
+.site-nav_rail-title{display: none}
+.site-nav_tabs{padding-right: 0}
+.site-nav_tab{padding: 0.6875rem 0.875rem}.site-nav_tab::after{display: block;margin-right: 0.125rem;opacity: 0;transition: opacity var(--sh-duration) var(--sh-ease)}.site-nav_tab.is-active::after{opacity: 1;border-color: var(--sh-text)}
+.site-nav_rail-actions{margin-right: 0}.site-nav_panels{align-self: stretch;height: 0;min-height: 100%;padding: 0.25rem 1rem 0 0;overflow-y: auto;overscroll-behavior: contain;scrollbar-width: thin;scrollbar-color: var(--sh-border-strong) transparent}
+.site-nav_panels::-webkit-scrollbar{width: 0.375rem}
+.site-nav_panels::-webkit-scrollbar-thumb{border-radius: 0.1875rem;background-color: var(--sh-border-strong)}
+.site-nav_panel-body{padding-bottom: 0.5rem}
+.site-nav_courses{column-gap: 2rem}.site-nav_course-link{margin: 0 -0.625rem;padding: 0.625rem 0.625rem;border-radius: 0.5rem}.site-nav_soon{grid-column: 3;grid-row: 1;margin: 0;padding: 1.25rem}.site-nav_soon-list{grid-template-columns: minmax(0,1fr);gap: 0.75rem}
+.site-nav_soon-card{flex-direction: column;align-items: stretch;gap: 0.375rem;flex-wrap: nowrap}
+.site-nav_soon-image{width: 100%;margin-bottom: 0.25rem;aspect-ratio: 2 / 1}
+.site-nav_soon-image + .site-nav_soon-name{flex: 0 0 auto}
+.site-nav_soon-meta{padding-left: 0;margin-top: 0}.site-nav_links{display: flex;flex-wrap: nowrap;align-items: center;column-gap: clamp(1rem,2vw,2rem);margin-right: clamp(1rem,2vw,2rem);padding: 0;border: 0}
+.site-nav_item{border: 0}.site-nav_link{gap: 0.25rem;width: auto;min-height: 3rem;padding: 0.5rem 0;font-size: 1rem;letter-spacing: -0.005em;white-space: nowrap}.site-nav_link-text::after{content: "";position: absolute;right: 0;bottom: -0.375rem;left: 0;height: 1px;background-color: currentColor;opacity: 0;transform: scaleX(0.6);transform-origin: left center;transition: opacity var(--sh-duration) var(--sh-ease),transform var(--sh-duration) var(--sh-ease)}.site-nav_link[aria-expanded="true"] .site-nav_link-text::after{opacity: 1;transform: scaleX(1)}.site-nav_link-chevron{width: 1rem;height: 1rem}.site-nav_submenu{position: absolute;top: calc(100% + 0.5rem);left: -0.75rem;min-width: 19rem;padding: 0.5rem;border: 1px solid var(--sh-border);border-radius: var(--sh-radius-small);background-color: var(--sh-surface);box-shadow: var(--sh-shadow-small)}.site-nav_link[aria-expanded="true"] + .site-nav_submenu{animation: site-nav-reveal var(--sh-duration) var(--sh-ease)}.site-nav_sublink{padding: 0.625rem 0.75rem;border-radius: 0.5rem;font-size: 0.9375rem;font-weight: 500;letter-spacing: -0.005em;transition: background-color var(--sh-duration) var(--sh-ease),color var(--sh-duration) var(--sh-ease)}
+.site-header.is-catalog-open .site-header_scrim{display: block}}@media (min-width: 48rem){#t-header{position: sticky !important;top: 0 !important;z-index: 9000 !important;background-color: #fff}
+.t-records{overflow: visible !important}}@media (min-width: 64.0625rem) and (max-width: 74.9375rem){
+.site-header_inner{gap: 0.75rem}
+.site-header_toggle{padding: 0 0.875rem 0 0.75rem}
+.site-nav_links{column-gap: 0.875rem;margin-right: 0.5rem}
+.site-nav_link{font-size: 0.9375rem}
+.site-header_cta{padding-inline: 1.25rem}}@media (min-width: 90rem){
+.site-nav_catalog-inner{column-gap: 3rem}
+.site-nav_courses{grid-template-columns: repeat(3,minmax(0,1fr))}}@keyframes site-nav-reveal{
+from{opacity: 0;transform: translateY(-0.375rem)}
+to{opacity: 1;transform: translateY(0)}}@media (hover: hover) and (pointer: fine){
+.site-header_toggle:hover{border-color: var(--sh-text)}
+.site-button:hover{background-color: var(--sh-accent-hover)}
+.site-button.is-secondary:hover{background-color: var(--sh-light-hover)}
+.site-nav_tab:not(.is-active):hover{background-color: var(--sh-page)}
+.site-nav_course-link:hover{background-color: var(--sh-page)}
+.site-nav_more:hover{color: var(--sh-accent-hover) !important}
+.site-nav_soon-card:hover{border-color: var(--sh-focus)}
+.site-nav_link:hover .site-nav_link-text::after{opacity: 1;transform: scaleX(1)}
+.site-nav_sublink:hover{background-color: var(--sh-page)}
+.site-nav_back:hover{color: var(--sh-text)}}@media (prefers-reduced-motion: reduce){.site-header *,.site-header *::before,.site-header *::after{transition: none !important;animation: none !important}}</style>
+<header class="site-header" data-site-header data-api="https://modern-psy-asp-prod-8ceb.twc1.net" data-utm="utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">
+  <div class="site-header_bar">
+    <div class="site-header_inner">
+      <a class="site-header_brand" href="https://modern-psy.ru/" aria-label="Академия современной психологии — на главную"><svg viewBox="0 0 95 32" aria-hidden="true" focusable="false"><path d="M49.3529 32C44.7678 32 40.9968 30.4982 38.0397 27.4945C35.0495 24.457 33.5599 20.6265 33.5599 16.0028C33.5599 11.3792 35.055 7.5486 38.0397 4.51116C41.0023 1.50185 44.7678 0 49.3529 0C53.938 0 57.8088 1.51872 60.799 4.55054C61.3196 5.07928 61.8567 5.73176 62.4105 6.49675L58.4511 9.41044C57.9306 8.64546 57.4931 8.09984 57.1443 7.7736C55.1729 5.77114 52.6035 4.76991 49.4415 4.76991C46.2796 4.76991 43.7434 5.78801 41.7388 7.8186C39.6512 9.93918 38.6046 12.6673 38.6046 15.9972C38.6046 19.3271 39.6512 22.0552 41.7388 24.1758C43.7379 26.2064 46.3073 27.2245 49.4415 27.2245C52.5758 27.2245 55.4885 26.0601 57.842 23.7314L58.7114 22.7583L62.5434 25.4976C62.0505 26.1445 61.5411 26.752 61.0205 27.3088C57.9472 30.4307 54.0598 31.9944 49.3585 31.9944L49.3529 32Z" fill="currentColor"/><path d="M70.9333 0.761905H94.5778V32H89.7544V5.58305H75.7567V32H70.9333V0.761905Z" fill="currentColor"/><path d="M18.0133 0.761905H11.7329L0 32H5.11591L8.14572 23.7444H17.6435L15.8886 18.9728H9.90069L11.1038 15.692L11.1203 15.6977L14.829 5.6238L21.159 22.632L24.691 32H29.7462L18.0133 0.761905Z" fill="currentColor"/></svg></a>
+
+      <button class="site-header_toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span class="site-header_toggle-icon" aria-hidden="true"><span></span><span></span></span>
+        <span class="site-header_toggle-label">Все курсы</span>
+        <span class="site-header_toggle-label is-mobile site-sr">Меню</span>
+      </button>
+
+      <a class="site-button site-header_cta" href="https://modernpsy.academy/timetable">Календарь обучения</a>
+
+      <nav class="site-nav" id="site-nav" aria-label="Меню сайта" data-nav>
+        <div class="site-nav_head">
+          <p class="site-nav_head-title">Меню</p>
+          <button class="site-nav_close" type="button" aria-label="Закрыть меню" data-nav-close><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+        </div>
+
+        <div class="site-nav_catalog" id="site-nav-catalog" data-catalog-menu>
+          <div class="site-nav_catalog-inner">
+            <div class="site-nav_rail">
+              <p class="site-nav_rail-title">Все курсы</p>
+              <div class="site-nav_tabs" role="tablist" aria-orientation="vertical" aria-label="Разделы каталога">
+          <button class="site-nav_tab is-active" type="button" role="tab" id="site-nav-tab-methods" aria-controls="site-nav-panel-methods" aria-selected="true" tabindex="0" data-section-tab="Методы психотерапии">
+            <span class="site-nav_tab-label">Методы психотерапии</span>
+            <span class="site-nav_tab-count" data-count>16</span>
+          </button>
+          <button class="site-nav_tab" type="button" role="tab" id="site-nav-tab-specializations" aria-controls="site-nav-panel-specializations" aria-selected="false" tabindex="-1" data-section-tab="Специализации">
+            <span class="site-nav_tab-label">Специализации</span>
+            <span class="site-nav_tab-count" data-count>23</span>
+          </button>
+          <button class="site-nav_tab" type="button" role="tab" id="site-nav-tab-professions" aria-controls="site-nav-panel-professions" aria-selected="false" tabindex="-1" data-section-tab="Профессии">
+            <span class="site-nav_tab-label">Профессии</span>
+            <span class="site-nav_tab-count" data-count>2</span>
+          </button>
+          <button class="site-nav_tab" type="button" role="tab" id="site-nav-tab-webinars" aria-controls="site-nav-panel-webinars" aria-selected="false" tabindex="-1" data-section-tab="Вебинары">
+            <span class="site-nav_tab-label">Вебинары</span>
+            <span class="site-nav_tab-count" data-count>2</span>
+          </button>
+          <button class="site-nav_tab" type="button" role="tab" id="site-nav-tab-free" aria-controls="site-nav-panel-free" aria-selected="false" tabindex="-1" data-section-tab="Бесплатные мини-курсы">
+            <span class="site-nav_tab-label">Бесплатные мини-курсы</span>
+            <span class="site-nav_tab-count" data-count>5</span>
+          </button>
+              </div>
+              <div class="site-nav_rail-actions">
+            <a class="site-button" href="https://modern-psy.ru/free?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Учиться бесплатно</a>
+            <a class="site-button is-secondary" href="https://modern-psy.ru/courses?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Перейти в каталог</a>
+              </div>
+            </div>
+
+            <div class="site-nav_panels">
+          <section class="site-nav_panel is-active" role="tabpanel" id="site-nav-panel-methods" aria-labelledby="site-nav-tab-methods" data-section-panel="Методы психотерапии" data-label="" data-url="https://modern-psy.ru/methods" data-noun="курс|курса|курсов">
+            <button class="site-nav_back" type="button" data-panel-back>Все разделы</button>
+            <div class="site-nav_panel-body" data-panel-body data-sig="1x8tg2p-5414"><div class="site-nav_panel-head"><p class="site-nav_panel-title">Методы психотерапии <span class="site-nav_panel-count">16 курсов</span></p><a class="site-nav_more" href="https://modern-psy.ru/methods">Перейти в раздел</a></div><section class="site-nav_group"><h3 class="site-nav_group-title">Ближайшие старты</h3><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/act?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">АСТ: Терапия принятия и ответственности</span><span class="site-nav_course-meta">26 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/cbt-oxford?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">КПТ: Когнитивно-поведенческая терапия. Оксфордская модель</span><span class="site-nav_course-meta">6 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/kpt?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">КПТ: Когнитивно-поведенческая терапия. Модель Бека</span><span class="site-nav_course-meta">19 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/obuchenie-emdr-dpdg-terapii?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Базовый тренинг EMDR/ДПДГ-терапии</span><span class="site-nav_course-meta">19 февраля 2027</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/cft?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">CFT: Введение в терапию, сфокусированную на сострадании</span><span class="site-nav_course-meta">19 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/fap?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">FAP: Функциональная аналитическая терапия</span><span class="site-nav_course-meta">3 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/schema-terapiya-neklinicheskie-zaprosy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Схема-терапия для неклинических запросов</span><span class="site-nav_course-meta">10 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/client-centered-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Основы клиент-центрированной психотерапии</span><span class="site-nav_course-meta">15 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/rodbt-live?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Первый уровень РО ДБТ: старт для практикующих психологов</span><span class="site-nav_course-meta">17 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/ifs?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">IFS: Терапия внутренних семейных систем</span><span class="site-nav_course-meta">11 января 2027</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/rft?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">RFT: Теория реляционных фреймов</span><span class="site-nav_course-meta">19 января 2027</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/narrative-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Основы нарративной терапии</span><span class="site-nav_course-meta">26 января 2027</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/schema-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Схема-терапия</span><span class="site-nav_course-meta">4 февраля 2027</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/orkt?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">ОРКТ: ориентированная на решение краткосрочная терапия</span><span class="site-nav_course-meta">1 марта 2027</span></a></li></ul></section><section class="site-nav_group"><h3 class="site-nav_group-title">Старт в любое время</h3><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/rodbt-lvl2?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Обучение для терапевтов РО ДБТ: уровень 2</span></a></li></ul></section><section class="site-nav_group"><h3 class="site-nav_group-title">Лист ожидания</h3><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/oct?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">ОСТ: Односессионная терапия</span></a></li></ul></section></div>
+          </section>
+          <section class="site-nav_panel" role="tabpanel" id="site-nav-panel-specializations" aria-labelledby="site-nav-tab-specializations" data-section-panel="Специализации" data-label="" data-url="https://modern-psy.ru/specializations" data-noun="курс|курса|курсов">
+            <button class="site-nav_back" type="button" data-panel-back>Все разделы</button>
+            <div class="site-nav_panel-body" data-panel-body data-sig="5fdw32-7156"><div class="site-nav_panel-head"><p class="site-nav_panel-title">Специализации <span class="site-nav_panel-count">23 курса</span></p><a class="site-nav_more" href="https://modern-psy.ru/specializations">Перейти в раздел</a></div><section class="site-nav_group"><h3 class="site-nav_group-title">Ближайшие старты</h3><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/child-psy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Детская психология</span><span class="site-nav_course-meta">последний шанс · 18 сентября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/battle-trauma-ptsd?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Военная травма и ПТСР: работа с ветеранами и их близкими</span><span class="site-nav_course-meta">последний шанс · 28 сентября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/logic?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Логика и теория аргументации в работе психолога</span><span class="site-nav_course-meta">последний шанс · 29 сентября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/couple-requests?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Работа с темой отношений в практике психолога</span><span class="site-nav_course-meta">последний шанс · 8 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/sportivnaya-psihologiya?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Спортивная психология</span><span class="site-nav_course-meta">20 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/autistic-disorders?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Расстройства аутистического спектра (РАС) в практике психолога</span><span class="site-nav_course-meta">28 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/rpp?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Консультирование расстройств пищевого поведения</span><span class="site-nav_course-meta">29 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/sexology?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Сексология</span><span class="site-nav_course-meta">17 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/business-consulting?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Основы бизнес-консультирования для психологов</span><span class="site-nav_course-meta">18 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/couples-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Терапия пар</span><span class="site-nav_course-meta">23 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/trauma-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Терапия травмы: ПТСР и кПТСР</span><span class="site-nav_course-meta">24 ноября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/navyki-konsultirovaniya-dlya-psihologov?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Навыки консультирования для психологов</span><span class="site-nav_course-meta">2 декабря</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/abuse-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Терапия взрослых, переживших сексуализированное насилие в детстве</span><span class="site-nav_course-meta">22 января 2027</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/neurodivergence?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Психотерапия нейроотличных клиентов: РАС и СДВГ</span><span class="site-nav_course-meta">23 января 2027</span></a></li></ul></section><section class="site-nav_group"><h3 class="site-nav_group-title">Лист ожидания</h3><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/bar?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Биполярное расстройство (БАР) в практике психолога</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/womens-care?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Комплексный подход в работе с женщинами: гинекология, психология, психиатрия</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/adhd-adult?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Коучинг взрослых людей с СДВГ</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/s-risk?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Оценка и управление суицидальным риском</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/mother?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Психотерапия для матерей с применением АСТ и CFT</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/course-rl?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Современная интегративная психотерапия расстройств личности</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/addiction-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Техники терапии зависимостей</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/adult-adhd-therapy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Тонкости работы со взрослыми с СДВГ</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/feminist-lens?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Феминистская оптика в психотерапии</span></a></li></ul></section></div>
+          </section>
+          <section class="site-nav_panel" role="tabpanel" id="site-nav-panel-professions" aria-labelledby="site-nav-tab-professions" data-section-panel="Профессии" data-label="" data-url="https://modern-psy.ru/professions" data-noun="программа|программы|программ">
+            <button class="site-nav_back" type="button" data-panel-back>Все разделы</button>
+            <div class="site-nav_panel-body" data-panel-body data-sig="1iav0xm-899"><div class="site-nav_panel-head"><p class="site-nav_panel-title">Профессии <span class="site-nav_panel-count">2 программы</span></p><a class="site-nav_more" href="https://modern-psy.ru/professions">Перейти в раздел</a></div><section class="site-nav_group"><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/clinical_psychology?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Клиническая психология</span><span class="site-nav_course-meta">20 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/psyeducation?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Профессия: Психолог-консультант</span><span class="site-nav_course-meta">9 декабря</span></a></li></ul></section></div>
+          </section>
+          <section class="site-nav_panel" role="tabpanel" id="site-nav-panel-webinars" aria-labelledby="site-nav-tab-webinars" data-section-panel="Вебинары" data-label="" data-url="https://modern-psy.ru/webinars" data-noun="вебинар|вебинара|вебинаров">
+            <button class="site-nav_back" type="button" data-panel-back>Все разделы</button>
+            <div class="site-nav_panel-body" data-panel-body data-sig="1yxnxne-895"><div class="site-nav_panel-head"><p class="site-nav_panel-title">Вебинары <span class="site-nav_panel-count">2 вебинара</span></p><a class="site-nav_more" href="https://modern-psy.ru/webinars">Перейти в раздел</a></div><section class="site-nav_group"><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/hudet-snova-modno?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Худеть снова модно</span><span class="site-nav_course-meta">15 октября</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/cft-spiderman-webinar?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Ловушка сверхответственности</span><span class="site-nav_course-meta">16 октября</span></a></li></ul></section></div>
+          </section>
+          <section class="site-nav_panel" role="tabpanel" id="site-nav-panel-free" aria-labelledby="site-nav-tab-free" data-section-panel="Бесплатные мини-курсы" data-label="" data-url="https://modern-psy.ru/free" data-noun="мини-курс|мини-курса|мини-курсов">
+            <button class="site-nav_back" type="button" data-panel-back>Все разделы</button>
+            <div class="site-nav_panel-body" data-panel-body data-sig="nbbl9b-1562"><div class="site-nav_panel-head"><p class="site-nav_panel-title">Бесплатные мини-курсы <span class="site-nav_panel-count">5 мини-курсов</span></p><a class="site-nav_more" href="https://modern-psy.ru/free">Перейти в раздел</a></div><section class="site-nav_group"><ul class="site-nav_courses" role="list"><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/clinical-psychology-start?utm_source=catalog&amp;utm_medium=banner&amp;utm_campaign=organic"><span class="site-nav_course-title">Введение в клиническую психологию</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/act-base?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Первое знакомство с ACT</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/cbt-first-steps?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Первые шаги в КПТ</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/put-v-professiyu?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Путь в профессию психолога-консультанта</span></a></li><li class="site-nav_course"><a class="site-nav_course-link" href="https://modern-psy.ru/rpp-start?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_course-title">Современная терапия расстройств пищевого поведения</span></a></li></ul></section></div>
+          </section>
+            </div>
+
+            <aside class="site-nav_soon" aria-labelledby="site-nav-soon-title">
+              <p class="site-nav_soon-title" id="site-nav-soon-title">Выбор Академии</p>
+              <ul class="site-nav_soon-list" data-soon-list>
+            <li class="site-nav_soon-item" data-soon-slug="cbt-first-steps" data-sig="eruuj4-413"><a class="site-nav_soon-card" href="https://modern-psy.ru/cbt-first-steps?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><img class="site-nav_soon-image" src="https://s3.twcstorage.ru/asp-media/cbt_first_steps_b9bc4c7f12.webp" alt="" width="640" height="400" loading="lazy" decoding="async"><span class="site-nav_soon-name">Первые шаги в КПТ</span><span class="site-nav_soon-meta">бесплатно</span></a></li>
+            <li class="site-nav_soon-item" data-soon-manual>
+              <a class="site-nav_soon-card" href="https://modern-psy.ru/masterskaya-professionalnogo-kontenta?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">
+                <img class="site-nav_soon-image" src="https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp" alt="" width="640" height="400" loading="lazy" decoding="async">
+                <span class="site-nav_soon-name">Мастерская профессионального контента</span>
+                <span class="site-nav_soon-meta">проект Академии</span>
+              </a>
+            </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+
+        <ul class="site-nav_links">
+        <li class="site-nav_item has-menu">
+          <button class="site-nav_link" type="button" aria-expanded="false" aria-controls="site-nav-sub-проекты" data-submenu-toggle><span class="site-nav_link-text">Проекты</span><svg class="site-nav_link-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <ul class="site-nav_submenu" id="site-nav-sub-проекты">
+            <li><a class="site-nav_sublink" href="https://modern-psy.ru/alumni?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Сообщество выпускников</a></li>
+            <li><a class="site-nav_sublink" href="https://modern-psy.ru/events?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Конференции</a></li>
+            <li><a class="site-nav_sublink" href="https://lk.modern-psy.ru/practicum-asp">АСП Практикум</a></li>
+            <li><a class="site-nav_sublink" href="https://modern-psy.ru/ro-dbt-path?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Обучение РО ДБТ в России</a></li>
+            <li><a class="site-nav_sublink" href="https://modern-psy.ru/referal?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Реферальная программа</a></li>
+            <li><a class="site-nav_sublink" href="https://modern-psy.ru/lectorium-spb?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Живой лекторий</a></li>
+            <li><a class="site-nav_sublink" href="https://modern-psy.ru/masterskaya-professionalnogo-kontenta?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header">Мастерская профессионального контента</a></li>
+          </ul>
+        </li>
+        <li class="site-nav_item"><a class="site-nav_link" href="https://modern-psy.ru/discounts?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_link-text">Акции</span></a></li>
+        <li class="site-nav_item"><a class="site-nav_link" href="https://modern-psy.ru/about?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_link-text">О нас</span></a></li>
+        <li class="site-nav_item"><a class="site-nav_link" href="https://modern-psy.ru/academy-news?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_link-text">Новости</span></a></li>
+        <li class="site-nav_item"><a class="site-nav_link is-event" href="https://modern-psy.ru/anti-crisis-conference?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=header"><span class="site-nav_link-text">Антикризисная конфа</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <div class="site-header_scrim" data-nav-scrim hidden></div>
+</header>
+<script>
+(function (global) {
+'use strict';
+var NBSP = ' ';
+var MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+function esc(value) {
+return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
+return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+});
+}
+function rub(value) {
+return new Intl.NumberFormat('ru-RU').format(Number(value)).replace(/\s/g, NBSP) + NBSP + '₽';
+}
+function day(iso, now) {
+var p = String(iso || '').split('-');
+if (p.length !== 3) return null;
+var text = Number(p[2]) + NBSP + MONTHS[Number(p[1]) - 1];
+var year = (now || new Date()).getFullYear();
+if (Number(p[0]) !== year) text += NBSP + p[0];
+return text;
+}
+function plural(n, forms) {
+n = Math.abs(n) % 100;
+var n1 = n % 10;
+if (n > 10 && n < 20) return forms[2];
+if (n1 > 1 && n1 < 5) return forms[1];
+if (n1 === 1) return forms[0];
+return forms[2];
+}
+function withUtm(url, utm) {
+if (!url || !utm || /[?&]utm_/.test(url)) return url || '#';
+return url + (url.indexOf('?') === -1 ? '?' : '&') + utm;
+}
+function select(cards, section) {
+return (cards || []).filter(function (c) { return c.section === section; });
+}
+function group(cards) {
+var dated = [], anytime = [], waitlist = [];
+cards.forEach(function (c) {
+if (c.mode === 'waitlist') waitlist.push(c);
+else if (c.startDate) dated.push(c);
+else anytime.push(c);
+});
+return [
+{ key: 'dated', title: 'Ближайшие старты', items: dated },
+{ key: 'anytime', title: 'Старт в любое время', items: anytime },
+{ key: 'waitlist', title: 'Лист ожидания', items: waitlist },
+].filter(function (g) { return g.items.length; });
+}
+function courseHtml(card, utm, now) {
+var meta = '';
+if (card.mode !== 'waitlist' && card.startDate) {
+meta = day(card.startDate, now);
+if (card.status === 'Последний шанс') meta = 'последний шанс · ' + meta;
+}
+return '<li class="site-nav_course">'
++ '<a class="site-nav_course-link" href="' + esc(withUtm(card.url, utm)) + '">'
++ '<span class="site-nav_course-title">' + esc(card.title) + '</span>'
++ (meta ? '<span class="site-nav_course-meta">' + esc(meta) + '</span>' : '')
++ '</a></li>';
+}
+function panelHtml(cfg, cards, utm, now) {
+var noun = cfg.noun && cfg.noun.length >= 3 ? cfg.noun : ['курс', 'курса', 'курсов', 'курсы'];
+var out = '<div class="site-nav_panel-head">'
++ '<p class="site-nav_panel-title">' + esc(cfg.label || cfg.section)
++ ' <span class="site-nav_panel-count">' + cards.length + NBSP + plural(cards.length, noun) + '</span></p>'
++ '<a class="site-nav_more" href="' + esc(cfg.url) + '">Перейти в' + NBSP + 'раздел</a>'
++ '</div>';
+if (!cards.length) {
+return out + '<p class="site-nav_empty">В' + NBSP + 'этом разделе пока нет ' + esc(noun[2]) + '. Посмотрите <a class="site-nav_more" href="' + esc(cfg.url) + '">страницу раздела</a>.</p>';
+}
+var groups = group(cards);
+groups.forEach(function (g) {
+out += '<section class="site-nav_group">'
++ (groups.length > 1 ? '<h3 class="site-nav_group-title">' + g.title + '</h3>' : '')
++ '<ul class="site-nav_courses" role="list">'
++ g.items.map(function (c) { return courseHtml(c, utm, now); }).join('')
++ '</ul></section>';
+});
+return out;
+}
+function soonMeta(card, now) {
+var parts = [];
+if (card.mode === 'waitlist') return 'лист ожидания';
+if (card.startDate) parts.push(day(card.startDate, now));
+var p = card.price;
+if (p) {
+if (p.free) parts.push('бесплатно');
+else {
+var sum = p.discounted != null ? p.discounted : p.full;
+if (sum) parts.push((p.from ? 'от' + NBSP : '') + rub(sum));
+}
+}
+return parts.join(' · ');
+}
+function soonCardHtml(card, utm, now) {
+var cover = card.cover && card.cover.url
+? '<img class="site-nav_soon-image" src="' + esc(card.cover.url) + '" alt="" width="640" height="400" loading="lazy" decoding="async">'
+: '<span class="site-nav_soon-image"></span>';
+var meta = soonMeta(card, now);
+return '<a class="site-nav_soon-card" href="' + esc(withUtm(card.url, utm)) + '">'
++ cover
++ '<span class="site-nav_soon-name">' + esc(card.title) + '</span>'
++ (meta ? '<span class="site-nav_soon-meta">' + esc(meta) + '</span>' : '')
++ '</a>';
+}
+function pickSoon(cards, slots) {
+var used = {};
+var picked = slots.map(function (slug) {
+if (!slug) return null;
+var card = (cards || []).filter(function (c) { return c.slug === slug; })[0] || null;
+if (card) used[card.slug] = true;
+return card;
+});
+var queue = (cards || []).filter(function (c) {
+return c.mode !== 'waitlist' && c.startDate && !used[c.slug];
+}).sort(function (a, b) { return String(a.startDate).localeCompare(String(b.startDate)); });
+return picked.map(function (card) {
+if (card) return card;
+var next = queue.shift() || null;
+if (next) used[next.slug] = true;
+return next;
+});
+}
+function signature(html) {
+var h = 5381;
+for (var i = 0; i < html.length; i++) h = ((h * 33) ^ html.charCodeAt(i)) >>> 0;
+return h.toString(36) + '-' + html.length;
+}
+global.AspHeader = {
+select: select, group: group, panelHtml: panelHtml, soonCardHtml: soonCardHtml,
+pickSoon: pickSoon, signature: signature, plural: plural, day: day, rub: rub, withUtm: withUtm, esc: esc,
+};
+})(typeof globalThis !== 'undefined' ? globalThis : window);
+(function () {
+'use strict';
+var DESKTOP = window.matchMedia('(min-width: 64.0625rem)');
+var TABLET_UP = window.matchMedia('(min-width: 48rem)');
+var FINE_POINTER = window.matchMedia('(hover: hover) and (pointer: fine)');
+var TIMEOUT_MS = 8000;
+var HOVER_OPEN_MS = 80;
+var HOVER_CLOSE_MS = 220;
+function loadCatalog(api) {
+window.__aspCatalogLoad = window.__aspCatalogLoad || {};
+if (!window.__aspCatalogLoad[api]) {
+window.__aspCatalogLoad[api] = fetch(api + '/api/public/catalog', { headers: { Accept: 'application/json' } })
+.then(function (r) {
+if (!r.ok) throw new Error('HTTP ' + r.status);
+return r.json();
+});
+}
+return window.__aspCatalogLoad[api];
+}
+function withTimeout(promise) {
+return new Promise(function (resolve, reject) {
+var timer = setTimeout(function () { reject(new Error('timeout')); }, TIMEOUT_MS);
+promise.then(function (v) { clearTimeout(timer); resolve(v); }, function (e) { clearTimeout(timer); reject(e); });
+});
+}
+var lockedAt = null;
+function lockPage(lock) {
+var html = document.documentElement;
+if (lock && lockedAt === null) {
+lockedAt = window.scrollY || window.pageYOffset || 0;
+html.classList.add('site-header-lock');
+} else if (!lock && lockedAt !== null) {
+html.classList.remove('site-header-lock');
+window.scrollTo(0, lockedAt);
+lockedAt = null;
+}
+}
+function initHeader(root) {
+if (root.__siteHeaderDone) return; // Тильда может запустить скрипт повторно
+root.__siteHeaderDone = true;
+var toggle = root.querySelector('[data-nav-toggle]');
+var nav = root.querySelector('[data-nav]');
+var catalog = root.querySelector('[data-catalog-menu]');
+var scrim = root.querySelector('[data-nav-scrim]');
+var closeButton = root.querySelector('[data-nav-close]');
+var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-section-tab]'));
+var panels = Array.prototype.slice.call(root.querySelectorAll('[data-section-panel]'));
+var submenus = Array.prototype.slice.call(root.querySelectorAll('[data-submenu-toggle]'));
+if (!toggle || !nav || !catalog) return;
+var hoverTimer = null;
+function panelFor(tab) {
+var id = tab.getAttribute('aria-controls');
+return id ? document.getElementById(id) : null;
+}
+function activeTab() {
+return tabs.filter(function (t) { return t.classList.contains('is-active'); })[0] || tabs[0];
+}
+function selectTab(tab) {
+tabs.forEach(function (t) {
+var on = t === tab;
+t.classList.toggle('is-active', on);
+t.setAttribute('aria-selected', on ? 'true' : 'false');
+t.tabIndex = on ? 0 : -1;
+});
+panels.forEach(function (p) { p.classList.toggle('is-active', p === panelFor(tab)); });
+}
+function openPanel(tab) {
+selectTab(tab);
+var panel = panelFor(tab);
+if (!panel) return;
+panels.forEach(function (p) { p.classList.toggle('is-open', p === panel); });
+panel.scrollTop = 0;
+var back = panel.querySelector('[data-panel-back]');
+if (back) back.focus({ preventScroll: true });
+}
+function closePanels(returnFocus) {
+var open = panels.filter(function (p) { return p.classList.contains('is-open'); })[0];
+panels.forEach(function (p) { p.classList.remove('is-open'); });
+if (open && returnFocus) activeTab().focus({ preventScroll: true });
+}
+function closeSubmenus(except) {
+submenus.forEach(function (b) {
+if (b !== except) b.setAttribute('aria-expanded', 'false');
+});
+}
+function openCatalog() {
+if (root.classList.contains('is-catalog-open')) return;
+closeSubmenus();
+root.classList.add('is-catalog-open');
+toggle.setAttribute('aria-expanded', 'true');
+if (scrim) scrim.hidden = false;
+if (!tabs.some(function (t) { return t.classList.contains('is-active'); })) selectTab(tabs[0]);
+}
+function closeCatalog() {
+if (!root.classList.contains('is-catalog-open')) return;
+root.classList.remove('is-catalog-open');
+toggle.setAttribute('aria-expanded', 'false');
+if (scrim) scrim.hidden = true;
+}
+function openNav() {
+if (root.classList.contains('is-nav-open')) return;
+root.classList.add('is-nav-open');
+toggle.setAttribute('aria-expanded', 'true');
+nav.scrollTop = 0;
+lockPage(true);
+if (TABLET_UP.matches && !tabs.some(function (t) { return t.classList.contains('is-active'); })) selectTab(tabs[0]);
+if (closeButton) closeButton.focus({ preventScroll: true });
+}
+function closeNav(returnFocus) {
+if (!root.classList.contains('is-nav-open')) return;
+root.classList.remove('is-nav-open');
+toggle.setAttribute('aria-expanded', 'false');
+closePanels(false);
+closeSubmenus();
+lockPage(false);
+if (returnFocus) toggle.focus({ preventScroll: true });
+}
+function closeAll(returnFocus) {
+closeCatalog();
+closeNav(returnFocus);
+closeSubmenus();
+}
+function isOpen() {
+return root.classList.contains('is-catalog-open') || root.classList.contains('is-nav-open');
+}
+function applyLayout() {
+toggle.setAttribute('aria-controls', DESKTOP.matches ? catalog.id : nav.id);
+toggle.setAttribute('aria-haspopup', DESKTOP.matches ? 'true' : 'dialog');
+closeAll(false);
+selectTab(activeTab());
+}
+toggle.addEventListener('click', function () {
+if (DESKTOP.matches) {
+if (root.classList.contains('is-catalog-open')) closeCatalog();
+else {
+openCatalog();
+activeTab().focus({ preventScroll: true });
+}
+} else if (root.classList.contains('is-nav-open')) closeNav(true);
+else openNav();
+});
+if (closeButton) closeButton.addEventListener('click', function () { closeNav(true); });
+if (scrim) scrim.addEventListener('click', function () { closeCatalog(); });
+function scheduleClose() {
+clearTimeout(hoverTimer);
+hoverTimer = setTimeout(function () {
+if (!DESKTOP.matches || !FINE_POINTER.matches) return;
+if (toggle.matches(':hover') || catalog.matches(':hover')) return;
+if (catalog.contains(document.activeElement)) return;
+closeCatalog();
+}, HOVER_CLOSE_MS);
+}
+toggle.addEventListener('mouseenter', function () {
+if (!DESKTOP.matches || !FINE_POINTER.matches) return;
+clearTimeout(hoverTimer);
+hoverTimer = setTimeout(openCatalog, HOVER_OPEN_MS);
+});
+toggle.addEventListener('mouseleave', function () {
+if (!DESKTOP.matches || !FINE_POINTER.matches) return;
+scheduleClose();
+});
+catalog.addEventListener('mouseenter', function () { clearTimeout(hoverTimer); });
+catalog.addEventListener('mouseleave', function () {
+if (!DESKTOP.matches || !FINE_POINTER.matches) return;
+scheduleClose();
+});
+tabs.forEach(function (tab, index) {
+tab.addEventListener('mouseenter', function () {
+if (DESKTOP.matches && FINE_POINTER.matches) selectTab(tab);
+});
+tab.addEventListener('click', function () {
+if (TABLET_UP.matches) selectTab(tab);
+else openPanel(tab);
+});
+tab.addEventListener('keydown', function (e) {
+var next = null;
+if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = tabs[(index + 1) % tabs.length];
+else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = tabs[(index - 1 + tabs.length) % tabs.length];
+else if (e.key === 'Home') next = tabs[0];
+else if (e.key === 'End') next = tabs[tabs.length - 1];
+if (!next) return;
+e.preventDefault();
+selectTab(next);
+next.focus({ preventScroll: true });
+});
+});
+panels.forEach(function (panel) {
+var back = panel.querySelector('[data-panel-back]');
+if (back) back.addEventListener('click', function () { closePanels(true); });
+});
+submenus.forEach(function (button) {
+var item = button.parentNode;
+var timer = null;
+button.addEventListener('click', function () {
+var open = button.getAttribute('aria-expanded') === 'true';
+closeSubmenus(button);
+if (DESKTOP.matches) closeCatalog();
+button.setAttribute('aria-expanded', open ? 'false' : 'true');
+});
+item.addEventListener('mouseenter', function () {
+if (!DESKTOP.matches || !FINE_POINTER.matches) return;
+clearTimeout(timer);
+closeSubmenus(button);
+button.setAttribute('aria-expanded', 'true');
+});
+item.addEventListener('mouseleave', function () {
+if (!DESKTOP.matches || !FINE_POINTER.matches) return;
+timer = setTimeout(function () {
+if (!item.contains(document.activeElement)) button.setAttribute('aria-expanded', 'false');
+}, HOVER_CLOSE_MS);
+});
+item.addEventListener('focusout', function (e) {
+if (!DESKTOP.matches) return;
+if (!item.contains(e.relatedTarget)) button.setAttribute('aria-expanded', 'false');
+});
+});
+document.addEventListener('keydown', function (e) {
+if (e.key !== 'Escape') return;
+if (!DESKTOP.matches && panels.some(function (p) { return p.classList.contains('is-open'); })) {
+closePanels(true);
+return;
+}
+if (isOpen() || submenus.some(function (b) { return b.getAttribute('aria-expanded') === 'true'; })) closeAll(true);
+});
+document.addEventListener('pointerdown', function (e) {
+if (!DESKTOP.matches) return;
+if (root.contains(e.target)) return;
+closeCatalog();
+closeSubmenus();
+});
+root.addEventListener('focusout', function (e) {
+if (!DESKTOP.matches) return;
+if (e.relatedTarget && !root.contains(e.relatedTarget)) closeCatalog();
+});
+var onLayoutChange = function () { applyLayout(); };
+if (DESKTOP.addEventListener) DESKTOP.addEventListener('change', onLayoutChange);
+else DESKTOP.addListener(onLayoutChange);
+if (TABLET_UP.addEventListener) TABLET_UP.addEventListener('change', onLayoutChange);
+else TABLET_UP.addListener(onLayoutChange);
+applyLayout();
+loadLiveData(root, tabs, panels);
+}
+function loadLiveData(root, tabs, panels) {
+var api = (root.getAttribute('data-api') || '').replace(/[/]+$/, '');
+var utm = root.getAttribute('data-utm') || '';
+if (!api || !window.fetch || !window.AspHeader) return;
+var H = window.AspHeader;
+root.setAttribute('data-cms-state', 'loading');
+withTimeout(loadCatalog(api)).then(function (data) {
+var cards = (data && data.cards) || [];
+if (!cards.length) throw new Error('API вернул пустой каталог');
+var now = new Date();
+panels.forEach(function (panel) {
+var cfg = {
+section: panel.getAttribute('data-section-panel'),
+label: panel.getAttribute('data-label') || '',
+url: panel.getAttribute('data-url'),
+noun: (panel.getAttribute('data-noun') || '').split('|').filter(Boolean),
+};
+var body = panel.querySelector('[data-panel-body]');
+if (!body) return;
+var html = H.panelHtml(cfg, H.select(cards, cfg.section), utm, now);
+var sig = H.signature(html);
+if (body.getAttribute('data-sig') !== sig) {
+body.innerHTML = html;
+body.setAttribute('data-sig', sig);
+}
+});
+tabs.forEach(function (tab) {
+var count = tab.querySelector('[data-count]');
+if (count) count.textContent = String(H.select(cards, tab.getAttribute('data-section-tab')).length || '');
+});
+var slots = Array.prototype.slice.call(root.querySelectorAll('[data-soon-slug]'));
+var picked = H.pickSoon(cards, slots.map(function (li) { return li.getAttribute('data-soon-slug') || ''; }));
+slots.forEach(function (li, i) {
+var card = picked[i];
+if (!card) { li.hidden = true; return; }
+var html = H.soonCardHtml(card, utm, now);
+var sig = H.signature(html);
+li.hidden = false;
+if (li.getAttribute('data-sig') !== sig) {
+li.innerHTML = html;
+li.setAttribute('data-sig', sig);
+}
+});
+root.setAttribute('data-cms-state', 'ready');
+}).catch(function (err) {
+console.warn('[site-header] меню из CMS не обновлено, остаётся снимок.', err);
+root.setAttribute('data-cms-state', 'error');
+});
+}
+function init() {
+document.querySelectorAll('[data-site-header]').forEach(initHeader);
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+})();</script>
