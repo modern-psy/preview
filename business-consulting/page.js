@@ -16,6 +16,18 @@
   var OPEN = ['Идет набор', 'Идёт набор', 'Последний шанс', 'Старт в любое время'];
   var MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 
+  // Часы из каталога CMS с правильным окончанием: 81 академический час, 72 академических часа, 58 академических часов.
+  function hoursPhrase(n) {
+    var m10 = n % 10, m100 = n % 100;
+    var word = m10 === 1 && m100 !== 11 ? 'академический час' : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? 'академических часа' : 'академических часов';
+    return n + NBSP + word;
+  }
+  // Строка с {hours} (например, «{hours} живых занятий») — в span с шаблоном, чтобы её можно было обновить из CMS.
+  function withHours(item, hours) {
+    if (item.indexOf('{hours}') === -1) return esc(item);
+    return '<span data-cms-hours="' + esc(item) + '">' + esc(item.replace('{hours}', hours ? hoursPhrase(hours) : '')) + '</span>';
+  }
+
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); };
   var digits = function (n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, NBSP); };
   var rub = function (n) { return digits(n) + NBSP + '₽'; };
@@ -99,7 +111,7 @@
     if (model.next && model.next.price > model.sale) {
       rise = '<div class="price-wide_foot"><p class="price-rise">' + ICON_RISE + '<span class="price-rise_text"><span class="price-rise_title">С ' + esc(model.next.label) + ': ' + rub(model.next.price) + '</span><span class="price-rise_note">подорожает на ' + rub(model.next.price - model.sale) + '</span></span></p></div>';
     }
-    var includes = '<ul class="price-check" role="list">' + text.includes.map(function (item) { return '<li class="price-check_item">' + ICON_CHECK + '<span>' + esc(item) + '</span></li>'; }).join('') + '</ul>';
+    var includes = '<ul class="price-check" role="list">' + text.includes.map(function (item) { return '<li class="price-check_item">' + ICON_CHECK + '<span>' + withHours(item, text.hours) + '</span></li>'; }).join('') + '</ul>';
     return '<div class="price-wide_component" data-price-card="' + esc(signature(model)) + '">' + sticker
       + '<div class="price-wide_main"><span class="price-wide_chip">' + esc(text.chip) + '</span>'
       + '<div class="price-wide_title"><p class="price-wide_name">' + esc(text.title) + '</p>' + (model.start ? '<p class="price-wide_sub">старт ' + esc(model.start) + '</p>' : '') + '</div>'
@@ -108,7 +120,7 @@
       + '</div>';
   }
 
-  var api = {fromApi: fromApi, render: render, dayMonth: dayMonth, splitSchedule: splitSchedule};
+  var api = {fromApi: fromApi, render: render, dayMonth: dayMonth, splitSchedule: splitSchedule, hoursPhrase: hoursPhrase};
   globalThis.BusinessConsultingPrice = api;
   if (typeof document === 'undefined') return;
 
@@ -152,6 +164,28 @@
       });
     })
     .catch(function () { /* API недоступен — на странице остаётся снимок цены со сборки */ });
+
+  /* Объём курса в академических часах — из каталога CMS (в ответе курса его нет): «кубик» под первым экраном
+     и строка «Что входит» в карточке цены. Каталог не ответил — остаются часы со сборки. */
+  fetch(root.getAttribute('data-api') + '/api/public/catalog', {headers: {Accept: 'application/json'}})
+    .then(function (response) { return response.ok ? response.json() : null; })
+    .then(function (catalog) {
+      var slug = root.getAttribute('data-course');
+      var found = null;
+      (function walk(o) {
+        if (found || !o || typeof o !== 'object') return;
+        if (Array.isArray(o)) { o.forEach(walk); return; }
+        if (o.slug === slug && o.hours) { found = o; return; }
+        Object.keys(o).forEach(function (k) { walk(o[k]); });
+      })(catalog);
+      var hours = found && Number(found.hours);
+      if (!hours) return;
+      text.hours = hours;
+      document.querySelectorAll('[data-cms-hours]').forEach(function (el) {
+        el.textContent = el.getAttribute('data-cms-hours').replace('{hours}', hoursPhrase(hours));
+      });
+    })
+    .catch(function () { /* каталог недоступен — часы со сборки */ });
 })();
 
 /* Вкладки блока «Как вы будете учиться». Выбранная вкладка показывает свой текст и свою схему; схема начинается

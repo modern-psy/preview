@@ -124,10 +124,14 @@ function renderHeroPanel(hero, stream) {
 /* «Кубики» под первым экраном — три плитки со старой страницы (возвращены 12.10.2026 по просьбе Дарьи):
    часы, форматы обучения, удостоверение. Общий компонент Академии benefits (тот же, что под Hero
    «Психолога-консультанта»), отдельной секцией, чтобы в Тильде это был свой T123. */
-function renderFacts(facts) {
+function renderFacts(facts, hoursText) {
+  // Плитка с часами (cms: hours) берёт число из каталога CMS: при сборке из снимка, в браузере заново (page.js, data-cms-hours).
+  const cards = facts.cards.map(card => card.cms === 'hours' ? {...card, heading: hoursText} : card);
+  let markup = renderBenefits({...facts, cards}, {}, 2);
+  if (facts.cards.some(card => card.cms === 'hours')) markup = patch(markup, `<h2 class="card_heading">${hoursText}</h2>`, `<h2 class="card_heading" data-cms-hours="{hours}">${hoursText}</h2>`, 'Кубики: часы');
   return `<section class="section_facts" aria-label="${escapeHtml(facts.label)}">
   <div class="padding-global"><div class="container-xlarge">
-    ${renderBenefits(facts, {}, 2)}
+    ${markup}
   </div></div>
 </section>`;
 }
@@ -223,7 +227,7 @@ function renderDocuments(d, id) {
    здесь из снимка API на момент сборки, в браузере — заново из API. Кнопок в блоке нет: запись в форме ниже. */
 function renderPrice(p, model, priceApi, id) {
   if (!model) throw new Error('Цена: в снимке API нет открытого потока без тарифов');
-  const text = {chip: p.chip, title: p.title, sideTitle: p.sideTitle, includes: p.includes};
+  const text = {chip: p.chip, title: p.title, sideTitle: p.sideTitle, includes: p.includes, hours: p.hours};
   return section('price', id, `<div class="price-block_component" data-price-block data-course="${escapeHtml(p.slug)}" data-api="${escapeHtml(p.api)}" data-price-text="${escapeHtml(JSON.stringify(text))}"><div class="price-block_head">${header(id, p.heading)}</div>${priceApi.render(model, text)}</div>`);
 }
 
@@ -289,6 +293,22 @@ async function courseSnapshot(pricing) {
   return JSON.parse(await fs.readFile(file, 'utf8'));
 }
 
+// Снимок часов курса из каталога CMS: data/api-catalog-entry.json (в ответе курса часов нет). --refresh берёт заново.
+async function catalogSnapshot(pricing) {
+  const file = new URL('data/api-catalog-entry.json', root);
+  if (process.argv.includes('--refresh')) {
+    const response = await fetch(`${pricing.api}/api/public/catalog`, {headers: {Accept: 'application/json'}});
+    if (!response.ok) throw new Error(`Каталог API ответил ${response.status}`);
+    let entry = null;
+    const walk = o => { if (entry || !o || typeof o !== 'object') return; if (Array.isArray(o)) return o.forEach(walk); if (o.slug === pricing.slug) { entry = o; return; } Object.values(o).forEach(walk); };
+    walk(await response.json());
+    if (!entry) throw new Error(`В каталоге нет курса ${pricing.slug}`);
+    await fs.writeFile(file, `${JSON.stringify(entry, null, 4)}\n`);
+    console.log('Снимок каталога обновлён из API');
+  }
+  return JSON.parse(await fs.readFile(file, 'utf8'));
+}
+
 async function buildHtml() {
   const seo = await json('seo');
   const pricing = await data('pricing');
@@ -297,6 +317,10 @@ async function buildHtml() {
   vm.runInNewContext(await read(root, 'page.js'), sandbox);
   const priceApi = sandbox.BusinessConsultingPrice;
   const model = priceApi.fromApi(course);
+  const catalogEntry = await catalogSnapshot(pricing);
+  if (!catalogEntry.hours) throw new Error('В снимке каталога нет часов курса');
+  pricing.hours = catalogEntry.hours;
+  const hoursText = priceApi.hoursPhrase(catalogEntry.hours);
 
   // Блок об Академии: тексты и фото общие для лендингов, свечения из assets эталона как data URL.
   // Заголовок — «Почему выбирают нас» без акцентной второй строки, как на /treningi-dlya-detey.
@@ -318,7 +342,7 @@ async function buildHtml() {
   // Порядок секций по правкам Дарьи от 12.10.2026.
   const sections = [
     renderHeroPanel(await data('hero'), model),
-    renderFacts(await data('facts')),
+    renderFacts(await data('facts'), hoursText),
     renderCompanies(await data('companies'), `${SLUG}-companies`),
     renderAudience(await data('audience'), `${SLUG}-audience`),
     renderCompare(await data('compare'), `${SLUG}-compare`),
