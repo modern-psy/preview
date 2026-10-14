@@ -115,7 +115,7 @@ function renderHeroPanel(hero, stream) {
           </div>
         </div>
       </div>
-      <img class="hero-panel_photo" src="${escapeHtml(panel.photo.src)}" width="${panel.photo.width}" height="${panel.photo.height}" alt="" draggable="false" fetchpriority="high">
+      <div class="hero-panel_media"><img class="hero-panel_photo" src="${escapeHtml(panel.photo.src)}" width="${panel.photo.width}" height="${panel.photo.height}" alt="" draggable="false" fetchpriority="high"></div>
     </div>
   </div></div>
 </section>`;
@@ -146,7 +146,9 @@ function renderCompanies(c, id) {
     return `<li class="companies_track"><span class="companies_track-name">${renderText(company.name)}</span><span class="companies_track-dots" aria-hidden="true">${dots}</span><span class="companies_track-stage">${renderText(stage)}</span></li>`;
   }).join('');
   const final = `<li class="companies_final"><div class="companies_final-copy"><span class="companies_node is-final" aria-hidden="true">${total + 1}</span><div class="companies_copy"><h4 class="companies_final-title">${renderText(c.final.title)}</h4><p class="companies_final-text">${renderText(c.final.text)}</p></div></div><div class="companies_example"><p class="companies_example-label">${renderText(c.final.companiesLabel)}</p><ul class="companies_tracks">${tracks}</ul></div></li>`;
-  return section('companies', id, `<div class="section-layout_component is-responsive">${header(id, c.heading, c.lead)}<div class="companies_component"><h3 class="companies_scheme-title">${renderText(c.schemeHeading)}</h3><ol class="companies_steps" aria-label="${escapeHtml(c.listLabel)}">${steps}${final}</ol></div></div>`);
+  // «Стабильный доход» — фиолетовым акцентом в заголовке (просьба Дарьи 15.10.2026 по комментарию Тамары: заголовок выглядел фоновым).
+  const heading = `<div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(c.heading)} <span class="section-title_accent">${renderText(c.headingAccent)}</span></h2><p class="section-subtitle_component">${renderText(c.lead)}</p></div>`;
+  return section('companies', id, `<div class="section-layout_component is-responsive">${heading}<div class="companies_component"><h3 class="companies_scheme-title">${renderText(c.schemeHeading)}</h3><ol class="companies_steps" aria-label="${escapeHtml(c.listLabel)}">${steps}${final}</ol></div></div>`);
 }
 
 /* «Для кого этот курс» — тексты без изменений (правка 4). Три белые карточки: роль и для чего ей курс. */
