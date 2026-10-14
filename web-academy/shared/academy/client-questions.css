@@ -1,0 +1,34 @@
+/* «Вопросы на небе» — общий блок. CTA и подсветка сетки приходят из общего CTA.
+   Лендинг может поменять: --client-questions-min-height (высота неба на desktop),
+   --client-questions-image-position (кадр фото), --client-questions-bubble-background (цвет реплик). */
+.client-questions_component { max-width: 79rem; margin-inline: auto; }
+.client-questions_header { width: 100%; max-width: 74.875rem; align-self: center; }
+.client-questions_intro { width: 100%; max-width: 44.875rem; }
+.section_client-questions .section-subtitle_component { --section-subtitle-color: var(--color-text-secondary-on-accent); }
+.client-questions_body { display: flex; flex-direction: column; gap: var(--card-grid-gap); min-width: 0; }
+.client-questions_sky { position: relative; display: flex; flex-direction: column; gap: 2rem; isolation: isolate; overflow: clip; border-radius: var(--radius-card); padding: 2rem 1rem; }
+.client-questions_image { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--client-questions-image-position, center 64.6%); }
+.client-questions_shade { position: absolute; z-index: -1; inset: 0; background: linear-gradient(to bottom, rgb(0 0 0 / 50%), rgb(0 0 0 / 15%) 35%, transparent); }
+.client-questions_title { color: var(--color-text-on-dark); }
+.client-questions_list { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+.client-questions_bubble { max-width: 100%; padding: 1rem; border: 0.015625rem solid rgb(239 242 249 / 80%); border-radius: var(--radius-card); color: var(--color-text-on-dark); background: var(--client-questions-bubble-background, rgb(17 99 149 / 90%)); backdrop-filter: blur(1.5625rem); }
+.client-questions_bubble:nth-child(even) { align-self: flex-end; }
+/* Без JS контент виден. JS добавляет подготовку только вне экрана. */
+.client-questions_sky.is-reveal-ready .client-questions_bubble { opacity: 0; transform: translateY(0.75rem); }
+.client-questions_sky.is-reveal-ready .client-questions_bubble.is-revealed { opacity: 1; transform: none; transition: opacity 400ms ease-in-out, transform 400ms ease-in-out; }
+@media (min-width: 48rem) {
+  .client-questions_sky { padding: 3.125rem 2rem; gap: 3rem; }
+  .client-questions_list { gap: 1rem; }
+  .client-questions_bubble { padding: 1rem 2.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .client-questions_sky.is-parallax .client-questions_image { inset-block: -2rem; height: calc(100% + 4rem); transform: translateY(var(--sky-shift, 0rem)); }
+  .client-questions_shade { background: linear-gradient(to bottom, rgb(0 0 0 / 15%), transparent); }
+  .client-questions_sky { min-height: var(--client-questions-min-height, 42.875rem); }
+  .client-questions_list { display: block; }
+  .client-questions_bubble { position: absolute; top: var(--bubble-y); left: var(--bubble-x); display: flex; align-items: center; min-height: 5rem; max-width: calc(100% - var(--bubble-x) - 2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .client-questions_sky.is-parallax .client-questions_image { transform: none; }
+  .client-questions_sky.is-reveal-ready .client-questions_bubble { opacity: 1; transform: none; transition: none; }
+}

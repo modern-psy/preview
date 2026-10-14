@@ -1,0 +1,458 @@
+/* Тема лендинга «Практика создания и проведения тренингов для детей и подростков» и его проектные дополнения.
+   Общие блоки Академии приходят из web-academy/shared/academy при сборке (node treningi-dlya-detey/build.mjs)
+   и лежат выше этого файла в style.css. Здесь только переменные темы на .treningi-dlya-detey-page
+   и то, чего нет в общих блоках: первый экран «Описание в плашке», «Кому подойдёт» (две двери на фото), сообщения и ответ Академии, «Тренинг о тренинге» на фото, «После курса» с листом «Мой тренинг», программа табами на тёмной плашке,
+   карточки преподавателей (фото сверху, биография под ним), удостоверение «Документ с фото человека», стоимость «Одна цифра» и «Гибкие условия оплаты». Цвета и размеры менять здесь, тексты — в data/*.json. */
+
+.treningi-dlya-detey-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-page-background: #f5f5f5;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-text: #644ab2;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  /* Вторичный текст #6b6970: 4,96:1 на фоне страницы #f5f5f5 и 5,41:1 на белом (как в narrative-therapy). */
+  --color-text-secondary-large: #6b6970;
+  --color-text-on-dark-muted: #e6e5eb;
+  --hero-section-offset: 2rem;
+  --page-padding: 1rem;
+  --hero-section-end: var(--section-space);
+  --hero-section-end-desktop: var(--section-space);
+  overflow: visible;
+}
+@media (min-width: 48rem) {
+  .treningi-dlya-detey-page { --hero-section-offset: 3rem; --page-padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .treningi-dlya-detey-page { --page-padding: clamp(1.5rem, 4.7619vw, 5rem); }
+}
+
+.treningi-dlya-detey-page :where(a, button) { cursor: pointer; }
+
+/* Тёмные поверхности отвечают за контраст подписей формы, как в эталоне. */
+.treningi-dlya-detey-page .lead-form_component { --section-subtitle-color: var(--color-form-muted); }
+@media (prefers-reduced-motion: reduce) {
+  .treningi-dlya-detey-page .button_component { transition: none; }
+}
+
+/* Точечная защита цветов от глобальных правил Тильды (только эти варианты, с их состояниями). */
+.treningi-dlya-detey-page a.button_component.is-light,
+.treningi-dlya-detey-page a.button_component.is-light:hover,
+.treningi-dlya-detey-page a.button_component.is-light:focus-visible { color: var(--color-text-primary) !important; }
+.treningi-dlya-detey-page a.button_component.is-accent,
+.treningi-dlya-detey-page a.button_component.is-accent:hover,
+.treningi-dlya-detey-page a.button_component.is-accent:focus-visible { color: var(--color-text-on-dark) !important; }
+
+/* ===== Первый экран «Описание в плашке» (стиль эталонов В3 и К4, выбран 12.10.2026) =====
+   Поле #2B2334. Телефон и планшет: заголовок, плашка с пользой, ниже фото, а плитка старта и кнопка лежат
+   прямо на фото — его низ растворяется в поле, поэтому мелкий белый текст стоит на тёмном.
+   От 1025px: слева заголовок, плашка, плитка старта и кнопка; справа фото в рамке на всю высоту. */
+.hero-panel_component { --hero-panel-field: #2b2334; --hero-panel-raise: #383041; --hero-panel-line: rgb(255 255 255 / 12%); --hero-panel-text: #e6e5eb; --hero-panel-muted: #bdb7c9; --hero-panel-dash: rgb(255 255 255 / 26%);
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "panel" "photo"; gap: 1rem; padding: 1rem; border-radius: 1.5rem; background: var(--hero-panel-field); color: #fff; }
+.hero-panel_text { display: contents; }
+.hero-panel_heading { grid-area: title; margin: 0; padding: 0.5rem 0.25rem 0; color: #fff; font-size: clamp(1.75rem, 7vw, 2.875rem); font-weight: 500; line-height: 1; letter-spacing: -0.035em; text-wrap: balance; }
+.hero-panel_panel { grid-area: panel; display: grid; gap: 0.5rem; padding: 1rem 1rem 0.25rem; border-radius: 1.25rem; background: var(--hero-panel-raise); }
+.hero-panel_lead { color: var(--hero-panel-text); font-size: 0.96875rem; line-height: 1.4; }
+/* Строки — как поля «откуда / куда» у Uber: иконки в кружках, между ними пунктир, строки разделены тонкой линией. */
+.hero-panel_rows { position: relative; display: grid; margin: 0; padding: 0; list-style: none; }
+.hero-panel_rows::before { content: ""; position: absolute; top: 1.75rem; bottom: 1.75rem; left: 1.0625rem; border-left: 1.5px dashed var(--hero-panel-dash); }
+.hero-panel_row { position: relative; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0.75rem; align-items: center; padding: 0.75rem 0; color: #fff; font-size: 0.9375rem; line-height: 1.35; }
+.hero-panel_row + .hero-panel_row::before { content: ""; position: absolute; top: 0; right: 0; left: 3rem; border-top: 1px solid var(--hero-panel-line); }
+.hero-panel_row-icon { position: relative; z-index: 1; display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--hero-panel-field); color: var(--hero-panel-text); }
+.hero-panel_cta { grid-area: photo; z-index: 1; display: grid; align-content: end; gap: 0.75rem; padding: 11.875rem 0.875rem 1rem; border-radius: 1.25rem; background: linear-gradient(180deg, rgb(43 35 52 / 0%) 28%, rgb(43 35 52 / 86%) 56%, #2b2334 100%); }
+.hero-panel_tiles { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.hero-panel_tile { display: flex; align-items: center; gap: 0.625rem; padding: 0.875rem; border-radius: 1rem; background: var(--hero-panel-raise); color: #fff; font-size: 0.96875rem; font-weight: 500; line-height: 1.2; }
+.hero-panel_tile .hero-icon { color: var(--hero-panel-text); }
+.hero-panel_actions { display: grid; gap: 0.75rem; }
+.hero-panel_button { width: 100%; }
+.hero-panel_photo { grid-area: photo; display: block; width: 100%; height: 100%; min-height: 0; border-radius: 1.25rem; object-fit: cover; object-position: 50% 30%; }
+@media (min-width: 48rem) {
+  .hero-panel_component { gap: 1.25rem; padding: 1.5rem; }
+  .hero-panel_panel { padding: 1.25rem 1.5rem 0.375rem; }
+  .hero-panel_lead { font-size: 1.0625rem; }
+  .hero-panel_row { font-size: 1rem; }
+  .hero-panel_cta { padding: 15.625rem 1.25rem 1.25rem; gap: 1rem; }
+  .hero-panel_tile { padding: 1rem 1.125rem; font-size: 1.125rem; }
+  .hero-panel_actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.875rem 1.375rem; }
+  .hero-panel_button { width: auto; flex: 0 1 18rem; }
+}
+@media (min-width: 64.0625rem) {
+  .hero-panel_component { grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr); grid-template-areas: "text photo"; gap: 3.5rem; padding: 3rem; border-radius: 1.75rem; }
+  .hero-panel_text { grid-area: text; display: grid; align-content: start; gap: 1.5rem; }
+  .hero-panel_heading { grid-area: auto; padding: 0; font-size: clamp(2.5rem, 3.6vw, 3.75rem); }
+  .hero-panel_panel { grid-area: auto; padding: 1.25rem 1.5rem 0.625rem; }
+  .hero-panel_lead { font-size: 1.0625rem; }
+  .hero-panel_cta { grid-area: auto; gap: 1.5rem; padding: 0; background: none; }
+}
+/* Под тёмной карточкой первого экрана — длительность, часы и документ (14.10.2026 по просьбе Дарьи, как факты
+   эталона К4): иконка Lucide в белом кружке с тонкой обводкой и подпись рядом. Телефон: столбиком.
+   С 768px в строку по ширине текста, без растягивания на всю карточку; не помещается — переносится. */
+.hero-facts_list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; margin: 1.25rem 0 0; padding: 0.25rem; list-style: none; }
+.hero-facts_item { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); align-items: center; gap: 0.75rem; color: var(--color-text-primary); font-size: 0.9375rem; line-height: 1.3; }
+.hero-facts_icon { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; background: var(--color-surface-primary); box-shadow: inset 0 0 0 1px #e3e0ec; color: var(--color-text-primary); }
+@media (min-width: 48rem) {
+  .hero-facts_list { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; padding: 0.25rem 0.5rem; }
+  .hero-facts_item { font-size: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .hero-facts_list { margin-top: 1.125rem; }
+}
+/* Иконки Lucide: 20 px, цвет как у текста рядом. */
+.hero-icon { display: block; width: 1.25rem; height: 1.25rem; flex: none; }
+
+
+/* ===== «Кому подойдёт курс» — две двери на фото (выбран 12.10.2026) =====
+   Две карточки рядом, каждая целиком — фото; внизу светлая матовая плашка (белая 88 % с размытием) с тёмным текстом:
+   название группы и роли через тонкие линии, во второй — тёмная плашка «Опыт ведения групп не нужен».
+   Заголовка на фото нет. Фото видно сверху и по краям плашки. До 1025px карточки друг под другом. */
+.audience-nowrap { white-space: nowrap; }
+.audience-doors_component { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.audience-doors_door { position: relative; display: flex; min-width: 0; flex-direction: column; justify-content: flex-end; overflow: hidden; padding: 13rem 0.75rem 0.75rem; border-radius: 1.5rem; background: #e8e6ee; isolation: isolate; }
+.audience-doors_image { position: absolute; z-index: -1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+.audience-doors_panel { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; border-radius: 1rem; background: rgb(255 255 255 / 88%); -webkit-backdrop-filter: blur(1rem) saturate(1.1); backdrop-filter: blur(1rem) saturate(1.1); color: var(--color-text-primary); }
+.audience-doors_title { margin: 0; font-size: 1.375rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; }
+.audience-doors_list { display: grid; margin: 0; padding: 0; list-style: none; }
+.audience-doors_item { display: grid; align-content: start; gap: 0.125rem; padding: 0.75rem 0; border-top: 1px solid rgb(51 47 65 / 12%); }
+.audience-doors_role { font-size: 1.0625rem; font-weight: 500; line-height: 1.25; }
+.audience-doors_benefit { color: var(--color-text-secondary-large); font-size: 0.9375rem; line-height: 1.35; }
+.audience-doors_note { align-self: flex-start; margin-top: 0.25rem; padding: 0.5rem 0.875rem; border-radius: 62.5rem; background: #2b2334; color: #fff; font-size: 0.9375rem; line-height: 1.3; }
+@media (min-width: 48rem) {
+  .audience-doors_door { padding: 18rem 1rem 1rem; border-radius: 1.75rem; }
+  .audience-doors_panel { padding: 1.25rem 1.5rem; }
+  .audience-doors_title { font-size: 1.625rem; }
+  .audience-doors_list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; }
+  .audience-doors_role { font-size: 1.125rem; }
+  .audience-doors_benefit { font-size: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .audience-doors_component { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .audience-doors_door { min-height: 38rem; padding: 1rem; }
+}
+
+/* ===== «Когда упражнения есть, а тренинга не получается» — макет В «Пачка сообщений и один ответ» (выбран 12.10.2026) =====
+   Две панели рядом, как в «Кому подойдёт»: белая с шестью серыми сообщениями лесенкой (нечётные слева, чётные справа)
+   и тёмная #2B2334 с ответом Академии, модулями плашками и белой кнопкой. На компьютере 3 к 2, ниже 1025px — друг под другом.
+   Появление по очереди включает page.js; без скрипта и при «уменьшить движение» видно всё сразу. */
+.pains-reply_heading { max-width: 46rem; }
+.pains-reply_component { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.pains-reply_chat { padding: 1rem; border-radius: var(--radius-card, 1rem); background: #fff; }
+.pains-reply_list { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.pains-reply_message { display: flex; }
+.pains-reply_message:nth-child(even) { justify-content: flex-end; }
+.pains-reply_bubble { max-width: 88%; padding: 0.75rem 1rem; border-radius: 1.125rem 1.125rem 1.125rem 0.375rem; background: rgb(43 35 52 / 7%); color: var(--color-text-primary); font-size: 1rem; line-height: 1.35; }
+.pains-reply_message:nth-child(even) .pains-reply_bubble { border-radius: 1.125rem 1.125rem 0.375rem 1.125rem; }
+.pains-reply_answer { display: flex; flex-direction: column; gap: 1rem; padding: 1.25rem 1rem; border-radius: var(--radius-card, 1rem); background: #2b2334; color: #fff; }
+.pains-reply_author { color: #bdb7c9; font-size: 0.9375rem; line-height: 1.3; }
+.pains-reply_text { color: #fff; font-size: 1.5rem; font-weight: 500; line-height: 1.12; letter-spacing: -0.02em; text-wrap: balance; }
+.pains-reply_modules { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+.pains-reply_module { padding: 0.5rem 0.75rem; border-radius: 0.75rem; background: rgb(255 255 255 / 10%); color: #e6e5eb; font-size: 0.9375rem; line-height: 1.25; }
+.pains-reply_button { width: 100%; margin-top: 0.5rem; }
+/* Появление: сообщения по очереди, затем ответ. */
+.pains-reply_component.is-reveal-ready .pains-reply_bubble, .pains-reply_component.is-reveal-ready .pains-reply_answer { opacity: 0; transform: translateY(0.5rem); }
+.pains-reply_component.is-reveal-ready.is-revealed .pains-reply_bubble, .pains-reply_component.is-reveal-ready.is-revealed .pains-reply_answer { opacity: 1; transform: none; transition: opacity 300ms ease-out, transform 300ms ease-out; transition-delay: calc(var(--message-index, 0) * 110ms); }
+@media (min-width: 48rem) {
+  .pains-reply_chat { padding: 1.5rem; }
+  .pains-reply_list { gap: 0.75rem; }
+  .pains-reply_bubble { max-width: 75%; font-size: 1.125rem; }
+  .pains-reply_answer { padding: 1.5rem; gap: 1.25rem; }
+  .pains-reply_text { font-size: 2rem; }
+  .pains-reply_module { font-size: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .pains-reply_component { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: stretch; }
+  .pains-reply_chat { display: flex; align-items: center; padding: 2rem; }
+  .pains-reply_list { width: 100%; }
+  .pains-reply_bubble { font-size: 1.1875rem; }
+  .pains-reply_answer { padding: 2rem; }
+  .pains-reply_text { font-size: 2.25rem; }
+  .pains-reply_modules { flex-direction: column; align-items: flex-start; }
+  .pains-reply_button { margin-top: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pains-reply_component.is-reveal-ready .pains-reply_bubble, .pains-reply_component.is-reveal-ready .pains-reply_answer { opacity: 1; transform: none; transition: none; }
+}
+
+/* ===== «Тренинг о тренинге» — фото на фоне и путь стеклянными карточками (выбран 12.10.2026) =====
+   Фото приглушено: чуть меньше насыщенности и затемнение в тон поля #2B2334 (слева и снизу плотнее — там белый текст,
+   фон под мелким текстом не светлее #767676). Стеклянные карточки тёмные с размытием, финал — белая карточка.
+   Шаги соединены тонкой линией. Телефон и до 767px: фото сверху, его низ растворяется в поле, ниже текст и шаги
+   столбиком. 768–1024px: шаги 2 × 2 поверх фото. От 1025px: шаги в один ряд. */
+.format-path_component { position: relative; display: grid; overflow: hidden; border-radius: 1.5rem; background: #2b2334; color: #fff; isolation: isolate; }
+.format-path_media { position: relative; aspect-ratio: 4 / 3; }
+.format-path_media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(43 35 52 / 15%) 0%, rgb(43 35 52 / 35%) 55%, #2b2334 100%); }
+.format-path_image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 62% 40%; filter: saturate(0.8); }
+.format-path_content { position: relative; z-index: 1; display: grid; gap: 1.5rem; margin-top: -2.5rem; padding: 0 1rem 1rem; }
+.format-path_header { display: grid; gap: 0.75rem; }
+.format-path_heading { color: #fff; }
+.format-path_lead { max-width: 34rem; color: #e6e5eb; font-size: 1rem; line-height: 1.4; }
+.format-path_steps { position: relative; display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.format-path_step { position: relative; display: grid; align-content: start; gap: 0.25rem; padding: 0.875rem 1rem; border: 1px solid rgb(255 255 255 / 12%); border-radius: 1rem; background: rgb(56 48 65 / 92%); }
+.format-path_title { color: #fff; font-size: 1.125rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
+.format-path_text { color: #e6e5eb; font-size: 0.9375rem; line-height: 1.35; }
+.format-path_step.is-final { border-color: #fff; background: #fff; }
+.format-path_step.is-final .format-path_title { color: var(--color-text-primary); }
+.format-path_step.is-final .format-path_text { color: var(--color-text-secondary-large); }
+@media (min-width: 48rem) {
+  .format-path_component { min-height: 36rem; border-radius: 1.75rem; }
+  .format-path_media { position: absolute; inset: 0; aspect-ratio: auto; }
+  .format-path_media::after { background: linear-gradient(180deg, rgb(43 35 52 / 72%) 0%, rgb(43 35 52 / 0%) 45%), linear-gradient(90deg, rgb(43 35 52 / 88%) 0%, rgb(43 35 52 / 62%) 42%, rgb(43 35 52 / 30%) 72%, rgb(43 35 52 / 22%) 100%), linear-gradient(0deg, rgb(43 35 52 / 92%) 0%, rgb(43 35 52 / 40%) 40%, rgb(43 35 52 / 0%) 65%); }
+  .format-path_lead { color: #fff; }
+  .format-path_content { align-content: space-between; gap: 6rem; margin-top: 0; padding: 2.5rem 2rem 2rem; }
+  .format-path_lead { font-size: 1.125rem; }
+  .format-path_steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .format-path_step { padding: 1rem 1.25rem; background: rgb(43 35 52 / 66%); -webkit-backdrop-filter: blur(0.875rem) saturate(1.1); backdrop-filter: blur(0.875rem) saturate(1.1); }
+  .format-path_step.is-final { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (min-width: 64.0625rem) {
+  /* На компьютере текст занимает левую половину — верхнее затемнение можно ослабить. */
+  .format-path_media::after { background: linear-gradient(180deg, rgb(43 35 52 / 55%) 0%, rgb(43 35 52 / 0%) 38%), linear-gradient(90deg, rgb(43 35 52 / 88%) 0%, rgb(43 35 52 / 62%) 42%, rgb(43 35 52 / 30%) 72%, rgb(43 35 52 / 22%) 100%), linear-gradient(0deg, rgb(43 35 52 / 92%) 0%, rgb(43 35 52 / 40%) 40%, rgb(43 35 52 / 0%) 65%); }
+  .format-path_component { min-height: 40rem; }
+  .format-path_content { padding: 3rem; }
+  .format-path_lead { font-size: 1.25rem; }
+  .format-path_steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+  /* Линия пути: короткий отрезок между соседними карточками. */
+  .format-path_step:not(:last-child)::after { content: ""; position: absolute; top: 50%; left: 100%; width: 1.5rem; border-top: 1px solid rgb(255 255 255 / 45%); }
+  .format-path_step.is-final { transform: translateY(-0.25rem); }
+  .format-path_title { font-size: 1.25rem; }
+  .format-path_text { font-size: 1rem; }
+}
+
+/* ===== «После курса вы сможете» — лист «Мой тренинг» и навыки вокруг (выбран 12.10.2026) =====
+   Лист нарисован HTML и CSS: белый, чуть повёрнут, за ним второй лист для объёма, мягкая тень со смещением.
+   Строки на листе — условные полоски, внизу фиолетовая печать «готов к работе» с галочкой. Навыки — заголовок и пояснение серым.
+   Телефон: лист сверху, навыки столбиком. 768–1024px: лист сверху, навыки в две колонки. От 1025px: навыки по бокам. */
+.outcomes-doc_component { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "visual" "left" "right"; gap: 1.5rem 2rem; }
+.outcomes-doc_list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.outcomes-doc_list.is-left { grid-area: left; }
+.outcomes-doc_list.is-right { grid-area: right; margin-top: -1.5rem; }
+.outcomes-doc_skill { display: grid; gap: 0.25rem; padding: 1rem 0; border-top: 1px solid rgb(51 47 65 / 12%); }
+.outcomes-doc_skill-title { color: var(--color-text-primary); font-size: 1.375rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; }
+.outcomes-doc_skill-text { color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.4; text-wrap: pretty; }
+.outcomes-doc_visual { position: relative; grid-area: visual; justify-self: center; width: min(100%, 16rem); aspect-ratio: 4 / 5; margin: 0.5rem 0 1rem; }
+.outcomes-doc_sheet { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 0.625rem; padding: 1.5rem 1.375rem; border-radius: 0.75rem; background: #fff; box-shadow: 0 1.5rem 3rem -1rem rgb(43 35 52 / 22%), 0 0.25rem 0.75rem rgb(43 35 52 / 6%); transform: rotate(-4deg); }
+.outcomes-doc_sheet.is-back { background: #ebeaf0; box-shadow: none; transform: rotate(3deg) translate(0.5rem, 0.25rem); }
+.outcomes-doc_title { margin-bottom: 0.375rem; color: var(--color-text-primary); font-size: 1.375rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+.outcomes-doc_line { display: block; width: 70%; height: 0.5rem; border-radius: 1rem; background: #e3e1e8; }
+.outcomes-doc_line.is-long { width: 88%; }
+.outcomes-doc_plan { display: grid; gap: 0.625rem; margin: 0.75rem 0 0; padding: 0; list-style: none; }
+.outcomes-doc_plan li { display: flex; align-items: center; gap: 0.5rem; }
+.outcomes-doc_dot { width: 0.625rem; height: 0.625rem; flex: none; border-radius: 50%; background: #d4d1db; }
+.outcomes-doc_bar { display: block; height: 0.5rem; flex: 1; border-radius: 1rem; background: #ebeaf0; }
+.outcomes-doc_plan li:nth-child(2) .outcomes-doc_bar { flex: 0 1 80%; }
+.outcomes-doc_plan li:nth-child(4) .outcomes-doc_bar { flex: 0 1 65%; }
+.outcomes-doc_plan li:nth-child(5) .outcomes-doc_bar { flex: 0 1 90%; }
+.outcomes-doc_plan li:nth-child(6) .outcomes-doc_bar { flex: 0 1 55%; }
+/* Печать — единственное цветное пятно на листе: фиолетовая, повёрнута сильнее листа и заходит за его правый край
+   (на телефоне чуть-чуть, чтобы не вылезти за экран),
+   как настоящий оттиск. multiply даёт эффект краски там, где печать ложится на серый фон и задний лист. */
+.outcomes-doc_stamp { position: absolute; right: -0.5rem; bottom: 0.75rem; width: 6.5rem; height: 6.5rem; color: var(--color-accent-primary); transform: rotate(-16deg); mix-blend-mode: multiply; overflow: visible; }
+.outcomes-doc_stamp-text { font-weight: 600; }
+.outcomes-doc_closing { align-self: center; max-width: 40rem; padding: 0.75rem 1.25rem; border-radius: 1rem; background: #2b2334; color: #fff; font-size: 1rem; font-weight: 500; line-height: 1.35; text-align: center; text-wrap: balance; }
+@media (min-width: 48rem) {
+  .outcomes-doc_component { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "visual visual" "left right"; column-gap: 2.5rem; }
+  .outcomes-doc_list.is-right { margin-top: 0; }
+  .outcomes-doc_visual { width: 18rem; margin-bottom: 1.5rem; }
+  .outcomes-doc_skill-title { font-size: 1.5rem; }
+  .outcomes-doc_skill-text { font-size: 1.0625rem; }
+  .outcomes-doc_closing { padding: 0.875rem 1.5rem; font-size: 1.125rem; }
+  .outcomes-doc_stamp { right: -1.5rem; width: 7.5rem; height: 7.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .outcomes-doc_component { grid-template-columns: minmax(0, 1fr) minmax(0, 22rem) minmax(0, 1fr); grid-template-areas: "left visual right"; align-items: center; column-gap: 4rem; }
+  .outcomes-doc_visual { width: 100%; margin: 0; }
+  .outcomes-doc_skill { padding: 1.25rem 0; }
+  .outcomes-doc_skill:first-child { border-top: 0; }
+  .outcomes-doc_sheet { padding: 2rem 1.75rem; }
+  .outcomes-doc_title { font-size: 1.625rem; }
+  .outcomes-doc_stamp { right: -2rem; bottom: 1.25rem; width: 8.75rem; height: 8.75rem; }
+}
+
+/* ===== Программа курса — табы модулей на тёмной плашке (выбран 13.10.2026, как на /rodbt и «Психосоматике») =====
+   Тёмное поле, слева кнопки модулей (активная — фиолетовая), справа белая панель: заголовок, темы, сиреневая
+   плашка «Результат». До 1025px колонки складываются: модули сверху, панель под ними.
+   Внизу две кнопки: на телефоне друг под другом во всю ширину, с 768px рядом по центру. */
+.treningi-dlya-detey-page .program-tabs_component { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: var(--space-section-content); padding: var(--section-inset-space) var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.treningi-dlya-detey-page .program-tabs_component .section-title_component { color: var(--color-text-on-dark); }
+.treningi-dlya-detey-page .program-tabs_component .section-subtitle_component { color: var(--color-text-on-dark-muted); text-align: center; }
+.treningi-dlya-detey-page .program-tabs_actions { display: flex; width: 100%; flex-direction: column; align-items: stretch; gap: 0.75rem; }
+.treningi-dlya-detey-page .program-tabs_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.treningi-dlya-detey-page .program-tabs_nav { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.treningi-dlya-detey-page .program-tabs_tab { display: flex; min-width: 0; flex-direction: column; gap: 0.375rem; padding: 1rem; border: 0; border-radius: var(--radius-card, 1rem); background: #3a2f48; color: var(--color-text-on-dark); font-family: inherit; text-align: left; cursor: pointer; transition: background-color var(--transition-site); }
+.treningi-dlya-detey-page .program-tabs_tab[aria-selected="true"] { background: var(--color-accent-primary); }
+.treningi-dlya-detey-page .program-tabs_tab:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 2px; }
+.treningi-dlya-detey-page .program-tabs_tab-label { color: var(--color-accent-soft); font-size: 0.9375rem; font-weight: 500; line-height: 1.2; }
+.treningi-dlya-detey-page .program-tabs_tab[aria-selected="true"] .program-tabs_tab-label { color: var(--color-text-on-dark); }
+.treningi-dlya-detey-page .program-tabs_tab-title { font-size: 1.125rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; text-wrap: pretty; }
+.treningi-dlya-detey-page .program-tabs_panels { display: grid; min-width: 0; }
+.treningi-dlya-detey-page .program-tabs_panel { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); color: var(--color-text-primary); }
+.treningi-dlya-detey-page .program-tabs_panel[hidden] { display: none; }
+.treningi-dlya-detey-page .program-tabs_panel.is-entering { animation: treningi-program-slide-in 320ms var(--motion-easing); }
+@keyframes treningi-program-slide-in { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: none; } }
+.treningi-dlya-detey-page .program-tabs_title { color: var(--color-text-primary); font-size: 1.5rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; text-wrap: balance; }
+.treningi-dlya-detey-page .program-tabs_panel-copy { display: flex; min-width: 0; flex-direction: column; gap: 0.625rem; }
+.treningi-dlya-detey-page .program-tabs_list-title { color: var(--color-text-secondary-large); font-size: 1rem; font-weight: 600; line-height: 1.3; }
+.treningi-dlya-detey-page .program-tabs_topics { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.treningi-dlya-detey-page .program-tabs_topic { position: relative; padding-left: 1.25rem; color: var(--color-text-primary); font-size: 1.125rem; line-height: 1.35; text-wrap: pretty; }
+.treningi-dlya-detey-page .program-tabs_topic::before { position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
+.treningi-dlya-detey-page .program-tabs_result { display: flex; flex-direction: column; gap: 0.375rem; margin-top: auto; padding: 1rem; border-radius: 0.75rem; background: rgb(124 92 219 / 12%); }
+.treningi-dlya-detey-page .program-tabs_result-label { color: var(--color-accent-text); font-size: 1rem; font-weight: 600; line-height: 1.3; }
+.treningi-dlya-detey-page .program-tabs_result-text { color: var(--color-text-primary); font-size: 1.125rem; line-height: 1.35; text-wrap: pretty; }
+/* Без скрипта видны все модули друг под другом, кнопки-табы скрыты. */
+.treningi-dlya-detey-page [data-program-tabs]:not([data-ready]) .program-tabs_nav { display: none; }
+.treningi-dlya-detey-page [data-program-tabs]:not([data-ready]) .program-tabs_panels { gap: var(--card-grid-gap); }
+@media (min-width: 48rem) {
+  .treningi-dlya-detey-page .program-tabs_actions { flex-direction: row; justify-content: center; gap: 1rem; }
+  .treningi-dlya-detey-page .program-tabs_button { flex: 0 1 22.5rem; }
+  .treningi-dlya-detey-page .program-tabs_component { padding-inline: 1.5rem; }
+  .treningi-dlya-detey-page .program-tabs_panel { padding: 1.5rem; gap: 1.5rem; }
+  .treningi-dlya-detey-page .program-tabs_tab { padding: 1.125rem 1.25rem; }
+  .treningi-dlya-detey-page .program-tabs_result { padding: 1.25rem 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .treningi-dlya-detey-page .program-tabs_component { padding-inline: 2.5rem; }
+  /* Панель тянется на высоту колонки модулей; сама колонка остаётся на месте при прокрутке. */
+  .treningi-dlya-detey-page .program-tabs_layout { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: stretch; }
+  .treningi-dlya-detey-page .program-tabs_nav { position: sticky; top: 2rem; align-self: start; }
+  .treningi-dlya-detey-page .program-tabs_panel { padding: 2.5rem; }
+  .treningi-dlya-detey-page .program-tabs_tab-title { font-size: 1.25rem; }
+  .treningi-dlya-detey-page .program-tabs_title { font-size: 1.75rem; }
+  .treningi-dlya-detey-page .program-tabs_topic, .treningi-dlya-detey-page .program-tabs_result-text { font-size: 1.25rem; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .treningi-dlya-detey-page .program-tabs_tab:not([aria-selected="true"]):hover { background: #463a56; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .treningi-dlya-detey-page .program-tabs_panel.is-entering { animation: none; }
+  .treningi-dlya-detey-page .program-tabs_tab { transition: none; }
+}
+
+/* ===== Преподаватели — вертикальная карточка (выбрана 13.10.2026, основа — широкая карточка «Нарративной практики») =====
+   Сверху фото 4:3 (лицо не обрезается: кадр прижат к верху), под ним имя, роль, сиреневые плашки регалий,
+   факты с галочками через тонкие линии. Телефон: карточки друг под другом. С 768px две рядом, одной высоты.
+   Пока фото нет — инициалы на сиреневой подложке того же размера. */
+.teachers-bio_list { display: grid; width: 100%; max-width: 64rem; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0 auto; padding: 0; list-style: none; }
+.teachers-bio_item { display: flex; min-width: 0; }
+.teachers-bio_card { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); overflow-wrap: anywhere; }
+.teachers-bio_photo { display: block; width: 100%; aspect-ratio: 4 / 3; overflow: clip; border-radius: 0.75rem; object-fit: cover; object-position: center top; }
+.teachers-bio_photo.is-placeholder { display: grid; place-items: center; background: var(--color-accent-soft); color: var(--color-accent-text); font-size: 3rem; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+.teachers-bio_intro { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+.teachers-bio_name { color: var(--color-text-primary); font-size: 1.5rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+.teachers-bio_role { color: var(--color-text-secondary-large); font-size: 1.125rem; line-height: 1.3; }
+.teachers-bio_tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+.teachers-bio_tag { display: inline-flex; align-items: center; padding: 0.375rem 0.75rem; border-radius: 0.375rem; background: var(--color-accent-soft); color: var(--color-accent-text); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.teachers-bio_facts { display: flex; min-width: 0; flex-direction: column; margin: 0; padding: 0; border-top: 1px solid rgb(51 47 65 / 12%); list-style: none; }
+.teachers-bio_fact { display: flex; align-items: flex-start; gap: 0.625rem; padding: 0.875rem 0; border-bottom: 1px solid rgb(51 47 65 / 12%); color: var(--color-text-primary); font-size: 1.125rem; line-height: 1.35; }
+.teachers-bio_fact .hero-icon { margin-top: 0.0625rem; }
+@media (min-width: 48rem) {
+  .teachers-bio_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .teachers-bio_card { gap: 1.5rem; padding: 1.5rem; }
+  .teachers-bio_name { font-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .teachers-bio_card { padding: 2rem; }
+  .teachers-bio_photo.is-placeholder { font-size: 4rem; }
+}
+
+/* ===== Удостоверение — «Документ с фото человека» из библиотеки (13.10.2026, как на «Нарративной практике») =====
+   Белая карточка: текст слева, фото выпускницы справа. Телефон: фото квадратом под текстом. С 768px две колонки,
+   фото тянется на высоту текста. Галочки условий тёмные, сиреневый — только акцент в заголовке. */
+.document_component { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); overflow: clip; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.document_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1.5rem; overflow-wrap: anywhere; }
+.document_heading { text-wrap: balance; }
+.document_terms { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.document_term { display: flex; align-items: flex-start; gap: 0.625rem; color: var(--color-text-primary); font-size: 1rem; line-height: 1.35; text-wrap: pretty; }
+.document_term .hero-icon { margin-top: 0.0625rem; }
+.document_license { --body-text-color: var(--color-text-secondary-large); }
+.document_media { position: relative; aspect-ratio: 1; background: var(--color-page-background); }
+.document_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+@media (min-width: 48rem) {
+  .document_component { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); }
+  .document_copy { justify-content: center; padding: 2.5rem; }
+  .document_term { font-size: 1.125rem; }
+  .document_media { aspect-ratio: auto; height: 100%; min-height: 22rem; }
+  /* Кадр смещён вниз, чтобы удостоверение в руках не обрезалось, когда фото ниже своей ширины. */
+  .document_image { object-position: center 70%; }
+}
+@media (min-width: 64.0625rem) {
+  .document_copy { padding: 3.5rem; }
+  .document_term { font-size: 1.25rem; }
+  /* Условий получения в ТЗ нет, текст короткий: без запаса высоты фото обрезало бы удостоверение в руках. */
+  .document_media { min-height: 32rem; }
+}
+
+/* ===== Стоимость — утверждённый блок «Одна цифра» с витрины /pricing-scenarios (сценарий «одна цена») =====
+   Заголовок секции, горизонтальная белая карточка, под ней «Гибкие условия оплаты» подзаголовком.
+   Карточка: телефон — цена сверху, «Что входит» под линией; с 768px две половины через вертикальную линию.
+   Цена спокойного размера, «₽» мельче и серым; выгода — единственный фиолетовый акцент. Кнопок в блоке нет. */
+.price-block_component { gap: 2rem; color: var(--color-text-primary); }
+.price-wide_component { display: grid; width: 100%; min-width: 0; grid-template-areas: "main" "side"; grid-template-columns: minmax(0, 1fr); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.price-wide_main { display: flex; min-width: 0; flex-direction: column; grid-area: main; padding: 1.5rem; }
+.price-wide_chip { align-self: flex-start; padding: 0.4375rem 0.75rem; border-radius: 6rem; background: var(--color-page-background); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; line-height: 1; }
+.price-wide_title { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 1.25rem; }
+.price-wide_name { font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+.price-wide_sub { color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.4; }
+.price-wide_money { margin-top: auto; padding-top: 2rem; }
+.price-wide_side { display: flex; min-width: 0; flex-direction: column; gap: 1rem; grid-area: side; padding: 1.5rem; border-top: 1px solid rgb(51 47 65 / 12%); }
+.price-wide_side-title { font-size: 1.125rem; font-weight: 500; line-height: 1.25; }
+.price-tag { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.375rem; margin: 0; color: var(--color-text-primary); }
+.price-tag_number { font-size: clamp(2.5rem, 2rem + 1.6vw, 3.25rem); font-weight: 500; line-height: 1; letter-spacing: -0.045em; white-space: nowrap; }
+.price-tag_unit { color: var(--color-text-secondary-large); font-size: 1.75rem; font-weight: 444; line-height: 1; letter-spacing: -0.02em; }
+.price-caption { display: flex; flex-direction: column; gap: 0.125rem; margin-top: 0.75rem; color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.4; }
+.price-caption_benefit { color: var(--color-accent-text); font-weight: 600; }
+.price-check { display: flex; flex-direction: column; gap: 0.75rem; margin: 0; padding: 0; list-style: none; color: var(--color-text-primary); font-size: 1rem; line-height: 1.4; }
+.price-check_item { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); align-items: start; gap: 0.625rem; }
+.price-check_item .hero-icon { margin-top: 0.0625rem; }
+.price-terms_heading { font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem); font-weight: 444; line-height: 1.1; letter-spacing: -0.03em; text-align: center; }
+@media (min-width: 48rem) {
+  .price-wide_component { grid-template-areas: "main side"; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .price-wide_main, .price-wide_side { padding: 2rem; }
+  .price-wide_side { border-top: 0; border-left: 1px solid rgb(51 47 65 / 12%); }
+  .price-check { font-size: 1.0625rem; }
+}
+@media (min-width: 64.0625rem) {
+  .price-wide_component { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .price-wide_main, .price-wide_side { padding: 2.25rem 2.5rem; }
+}
+
+/* «Гибкие условия оплаты» — утверждённый блок из витрины /pricing-scenarios (12.10.2026). Без иконок и без
+   фиолетового: заголовок, под ним три колонки «заголовок, под ним текст» — рассрочка, скидки, вычет —
+   с вертикальными линиями между ними. На телефоне колонки встают друг под другом, линии становятся горизонтальными. */
+.price-terms_component { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1rem; color: var(--color-text-primary); }
+.price-terms_list { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0; }
+/* Колонка — контейнер: в узкой колонке скидки перестраиваются (см. ниже). */
+.price-terms_row { display: flex; min-width: 0; flex-direction: column; gap: 0.875rem; padding-block: 1.25rem; container-type: inline-size; }
+.price-terms_row:first-child { padding-top: 0; }
+.price-terms_row:last-child { padding-bottom: 0; }
+.price-terms_row + .price-terms_row { border-top: 1px solid #cfd1db; }
+.price-terms_title { font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-terms_body { min-width: 0; margin: 0; }
+.price-terms_text { max-width: 34rem; color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .price-terms_component { gap: 2rem; padding-top: 1.5rem; }
+  .price-terms_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .price-terms_row { padding: 0 1.5rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+  .price-terms_row + .price-terms_row { border-top: 0; border-left: 1px solid #cfd1db; }
+}
+@media (min-width: 64.0625rem) {
+  .price-terms_row { padding-inline: 2rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+}
+/* Персональные скидки: процент на белой плашке, подпись рядом. Плашки одной ширины — по самой длинной
+   «до −20 %», поэтому подписи начинаются на одной вертикали. */
+.price-discounts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.625rem 0.875rem; margin: 0; padding: 0; list-style: none; }
+.price-discounts_item { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; }
+.price-discounts_value { display: inline-flex; align-items: baseline; justify-content: center; gap: 0.25rem; padding: 0.3125rem 0.625rem; border-radius: 0.5rem; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 1rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; white-space: nowrap; }
+.price-discounts_prefix { font-weight: 500; }
+.price-discounts_label { color: var(--color-text-secondary-large); font-size: 0.9375rem; line-height: 1.4; text-wrap: pretty; }
+/* В узкой колонке (планшет) подпись встаёт под процент, чтобы не рассыпаться по слову в строке. */
+@container (max-width: 15rem) {
+  .price-discounts { grid-template-columns: minmax(0, 1fr); row-gap: 0.875rem; }
+  .price-discounts_item { display: flex; flex-direction: column; align-items: flex-start; gap: 0.375rem; }
+}

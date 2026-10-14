@@ -54,6 +54,7 @@
 | Practice path | `practice-path-render.mjs`, `practice-path_*`; [contract](practice-path.md) | none | whole section is static HTML | copy, media, action and unique ID |
 | Trial lectures | `trial-lectures-render.mjs`, `renderTrialLectures`, standalone `renderLecturePreview`, `trial-lectures_*`, `lecture-preview_*`; [contract](trial-lectures.md) | none | card, benefits and editable lecture previews remain HTML | text, icons, action and unique ID |
 | Foundation | `foundation-render.mjs`, common icon-card, triple grid, CTA; [contract](foundation.md) | shared CTA grid | full content remains visible | copy, icons, CTA and unique ID |
+| Вопросы на небе | `client-questions-render.mjs`, `client-questions_*`; [contract](client-questions.md) | `client-questions.js`: появление реплик, параллакс фона на desktop | реплики, фото и CTA видны | заголовок, фото, реплики с координатами, CTA, ID |
 | Recognition section | `recognition-render.mjs`, `recognition_component`, `card_component.is-icon-statement`, `card-grid_component.is-paired`; [contract](recognition.md) | shared CTA grid only | full section is rendered HTML | copy, icons, CTA and unique ID |
 | Section spacing | `section-spacing_component`; [contract](section-spacing.md) | none | identical rhythm without JS | opt-in stylesheet |
 | Compatibility: section intro/heading | `.section-intro_*`, `.section-heading_*` | none | heading order and copy unchanged | alignment, copy and section placement |
