@@ -14,8 +14,10 @@
     disposers.push(() => target.removeEventListener(type, handler, options));
   };
 
-  const $ = (selector, root = page) => root.querySelector(selector);
-  const $$ = (selector, root = page) => [...root.querySelectorAll(selector)];
+  // Ищем по всему документу, а не только внутри .sc-page: на Тильде разметка лендинга разбита
+  // на несколько блоков «HTML-код», и у каждого своя обёртка .sc-page
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
   const lerp = (a, b, t) => a + (b - a) * t;
   const smooth = (t) => t * t * (3 - 2 * t);
