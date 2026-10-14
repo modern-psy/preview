@@ -41,7 +41,7 @@
       if (!Number.isFinite(date.getTime())) throw new Error('Нет даты старта CMS.');
       const start = new Intl.DateTimeFormat('ru-RU', {day: 'numeric', month: 'long', timeZone: 'UTC'}).format(date).replace(' ', '\u00a0');
       ctas.forEach(root => fill(root, {'enrollment-start': `Занятия начнутся ${start}`}));
-      const heroValues = {'start': `Старт ${start}`, 'hero-start-note': `Ближайший старт потока\u00a0— ${start}`};
+      const heroValues = {'start': `Старт ${start}`, 'hero-start-note': `Ближайший старт потока: ${start}`};
       if (typeof course.title === 'string' && course.title.trim()) heroValues['course-title'] = copy(course.title);
       if (typeof course.description === 'string' && course.description.trim()) heroValues['course-description'] = copy(course.description);
       const diploma = course.documents?.find(text => typeof text === 'string' && /^Диплом\s+/i.test(text))?.match(/^(Диплом)\s+(.+)$/i);
