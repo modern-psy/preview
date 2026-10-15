@@ -1,7 +1,7 @@
 /* Данные курса из CMS (Strapi) через Public API: название, дата старта, объём в академических часах и цена.
    Где на странице они стоят, отмечено атрибутами:
      data-cms-start="… {date}"  — дата старта, {date} заменяется на «4 марта»;
-     data-cms-hours="… {hours}" — часы, {hours} заменяется на «60 академических часов»;
+     data-cms-hours="… {hours}" — часы, {hours} заменяется на «60 академических часов» (data-cms-hours-short — «60 ак. часов»);
      data-cms-price / data-cms-benefit / data-cms-installment — цена и строки под ней в карточке цены.
    Настройки (адрес API и слаг курса) — атрибуты data-cms-api и data-cms-course на секции цены.
 
@@ -29,6 +29,10 @@
     var m10 = n % 10, m100 = n % 100;
     var word = m10 === 1 && m100 !== 11 ? 'академический час' : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? 'академических часа' : 'академических часов';
     return n + NBSP + word;
+  }
+  // Коротко для строки фактов первого экрана: «52 ак. часа», «81 ак. час», «60 ак. часов».
+  function hoursShort(n) {
+    return hoursPhrase(n).replace('академических', 'ак.').replace('академический', 'ак.');
   }
   // Дата из CMS («2027-03-04» или ISO-время) → «4 марта» по московскому времени.
   function dayMonth(value) {
@@ -78,7 +82,7 @@
     return price.perMonth ? 'или ' + digits(price.perMonth) + NBSP + '₽' + JOIN + '/' + JOIN + 'мес в' + NBSP + 'рассрочку на' + NBSP + price.months + NBSP + 'мес' : '';
   }
 
-  var api = {fromApi: fromApi, dayMonth: dayMonth, hoursPhrase: hoursPhrase, benefitHtml: benefitHtml, installmentHtml: installmentHtml, digits: digits, nb: nb, esc: esc};
+  var api = {fromApi: fromApi, dayMonth: dayMonth, hoursPhrase: hoursPhrase, hoursShort: hoursShort, benefitHtml: benefitHtml, installmentHtml: installmentHtml, digits: digits, nb: nb, esc: esc};
   globalThis.SchemaCms = api;
   if (typeof document === 'undefined') return;
 
@@ -129,7 +133,7 @@
       })(catalog);
       if (!found) return null;
       var hours = Number(found.hours);
-      if (hours) fill('data-cms-hours', '{hours}', hoursPhrase(hours));
+      if (hours) { fill('data-cms-hours', '{hours}', hoursPhrase(hours)); fill('data-cms-hours-short', '{hours}', hoursShort(hours)); }
       return json('/api/public/course/' + slug).then(applyCourse);
     })
     .catch(function () { /* API недоступен — значения со сборки */ });

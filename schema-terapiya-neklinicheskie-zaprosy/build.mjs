@@ -60,14 +60,7 @@ const cmsHours = template => `<span data-cms-hours="${escapeHtml(template)}">${r
 
 /* Иконки Lucide: 20 px, линия 2 из 24, цвет как у текста рядом. */
 const ICONS = {
-  'file-text': '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
-  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
-  'list-checks': '<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
-  calendar: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
-  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
-  video: '<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
-  'graduation-cap': '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
 };
 const icon = name => {
   if (!ICONS[name]) throw new Error(`Нет иконки ${name}`);
@@ -81,34 +74,81 @@ const wrap = (name, id, inner, {width = 'wide'} = {}) => `<section class="sectio
 </section>`;
 const header = (id, heading, description, align = 'center') => `<div class="section-header_component is-${align} is-responsive"><h2 class="section-title_component is-${align} is-responsive" id="${id}-heading">${renderText(heading)}</h2>${description ? `<p class="section-subtitle_component">${renderText(description)}</p>` : ''}</div>`;
 
-/* Первый экран — «Описание в плашке» из библиотеки (эталоны В3 и К4, как на /treningi-dlya-detey и /business-consulting):
-   поле #2B2334, справа фото в рамке, слева заголовок, польза курса в чуть более светлой плашке строками с иконками,
-   плитка старта, одна кнопка. На планшете и телефоне фото уходит вниз, плитка и кнопка лежат на нём.
-   Под карточкой — факты иконками в белых кружках (часы из CMS, формат, документ). */
-function renderHeroPanel(hero, {headingLevel = 1, headingId = hero.heading_id} = {}) {
-  const {panel} = hero;
-  const rows = panel.rows.map(row => `<li class="hero-panel_row"><span class="hero-panel_row-icon">${icon(row.icon)}</span><span>${renderText(row.text)}</span></li>`).join('');
-  const tiles = panel.tiles.map(tile => `<li class="hero-panel_tile">${icon(tile.icon)}${tile.template ? cmsStart(tile.template) : renderText(tile.text)}</li>`).join('');
-  const main = hero.actions[0];
+/* Первый экран — по образцу Дарьи «Психиатрия для психологов» (15.10.2026). Тёмная карточка #2B2334: слева плашка уровня,
+   заголовок из двух частей (крупно метод, ниже обещание курса — это один h1 с полным названием, двоеточие видно только
+   скринридеру), подводка, строка форматов через точку, две кнопки (белая и полупрозрачная) и три факта под тонкой линией.
+   Справа иллюстрация «хаос → план» (макет А .impeccable/mocks/schema-hero/comp-a-chaos-plan.png, Дарья: «стиль ок, только
+   меньше текста»): облако частиц и пустые плашки-запросы без слов, от них линии стекаются в план из десяти строк без
+   подписей; одна строка обведена фиолетовым, обводка переходит по строкам. Единственная надпись — «план на 7–10 встреч».
+   Рисунок — SVG прямо в разметке (масштабируется целиком, без картинок), декоративный, скрыт от скринридера.
+   На телефоне и планшете иллюстрация под текстом, на компьютере справа. */
+// Иллюстрация в системе координат 640 × 520. Частицы детерминированные: одинаковые при каждой сборке.
+function renderPlanVisual() {
+  let seed = 11;
+  const rand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  const r1 = n => n.toFixed(1);
+  const particles = Array.from({length: 72}, () => {
+    const angle = rand() * Math.PI * 2;
+    const dist = Math.pow(rand(), 0.7);
+    const x = 175 + Math.cos(angle) * dist * 165;
+    const y = 270 + Math.sin(angle) * dist * 215;
+    const r = 0.8 + rand() * 1.5;
+    const o = (0.18 + rand() * 0.55).toFixed(2);
+    const cls = `hero-plan_particle is-drift-${1 + Math.floor(rand() * 3)}${rand() < 0.25 ? ' is-twinkle' : ''}`;
+    return `<circle class="${cls}" cx="${r1(x)}" cy="${r1(y)}" r="${r1(r)}" opacity="${o}" style="animation-delay:-${Math.round(rand() * 9000)}ms"/>`;
+  }).join('');
+  const hub = {x: 438, y: 268};
+  const pills = [[128, 132, 118, -14], [214, 198, 96, 9], [104, 266, 138, -5], [206, 338, 108, 12], [120, 410, 128, -9]];
+  const pillMarkup = pills.map(([cx, cy, w, a], i) => `<g transform="translate(${cx} ${cy}) rotate(${a})"><g class="hero-plan_pill-float is-float-${(i % 3) + 1}"><rect class="hero-plan_pill" x="${-w / 2}" y="-16" width="${w}" height="32" rx="16"/><rect class="hero-plan_pill-bar" x="${-w / 2 + 16}" y="-3" width="${r1((w - 32) * (0.55 + (i % 3) * 0.15))}" height="6" rx="3"/></g></g>`).join('');
+  const curves = pills.map(([cx, cy, w, a], i) => {
+    const rad = a * Math.PI / 180;
+    const x0 = cx + Math.cos(rad) * w / 2 + 6;
+    const y0 = cy + Math.sin(rad) * w / 2;
+    return `<path id="hero-plan-curve-${i + 1}" class="hero-plan_curve" d="M${r1(x0)} ${r1(y0)} C${r1(x0 + 110)} ${r1(y0)} ${hub.x - 90} ${hub.y} ${hub.x} ${hub.y}"/>`;
+  }).join('');
+  const travellers = pills.map((_, i) => `<circle class="hero-plan_traveller" r="2.4"><animateMotion dur="2800ms" begin="${i * 560}ms" repeatCount="indefinite" rotate="auto"><mpath href="#hero-plan-curve-${i + 1}"/></animateMotion></circle>`).join('');
+  const top = 82, rowH = 30, gap = 8, x = 470, width = 150;
+  const bars = [92, 70, 84, 60, 96, 74, 66, 88, 58, 80];
+  const rows = bars.map((bar, i) => {
+    const y = top + i * (rowH + gap);
+    return `<g class="hero-plan_row" style="--row:${i}"><rect class="hero-plan_row-box" x="${x}" y="${y}" width="${width}" height="${rowH}" rx="8"/><circle class="hero-plan_row-dot" cx="${x + 17}" cy="${y + rowH / 2}" r="4"/><rect class="hero-plan_row-bar" x="${x + 31}" y="${y + rowH / 2 - 3}" width="${bar}" height="6" rx="3"/></g>`;
+  }).join('');
+  return `<svg class="hero-plan_svg" viewBox="0 0 640 520" focusable="false">
+          <g class="hero-plan_cloud">${particles}</g>
+          <g class="hero-plan_curves">${curves}</g>
+          ${travellers}
+          ${pillMarkup}
+          <line class="hero-plan_curve" x1="${hub.x}" y1="${hub.y}" x2="${x - 4}" y2="${hub.y}"/>
+          <circle class="hero-plan_hub" cx="${hub.x}" cy="${hub.y}" r="3.5"/>
+          ${rows}
+          <rect class="hero-plan_focus" x="${x - 2}" y="${top - 2}" width="${width + 4}" height="${rowH + 4}" rx="9.5"/>
+        </svg>`;
+}
+function renderHero(hero, {headingId = hero.heading_id} = {}) {
+  const [main, second] = hero.actions;
+  const facts = hero.facts.items.map(f => {
+    const value = f.start ? cmsStart(f.start) : f.hours ? `<span data-cms-hours-short="${escapeHtml(f.hours)}">${renderText(f.hours.replace('{hours}', CMS.hoursShort))}</span>` : renderText(f.text);
+    return `<div class="hero-plan_fact"><dt class="hero-plan_fact-term">${renderText(f.term)}</dt><dd class="hero-plan_fact-value">${value}</dd></div>`;
+  }).join('');
   return `<section class="section_hero" aria-labelledby="${sectionId(headingId)}">
   <div class="padding-global"><div class="container-xlarge">
-    <div class="hero-panel_component">
-      <div class="hero-panel_text">
-        <h${headingLevel} class="hero-panel_heading" id="${headingId}">${renderText(CMS.title)}</h${headingLevel}>
-        <div class="hero-panel_panel">
-          <p class="hero-panel_lead">${renderText(hero.lead)}</p>
-          <ul class="hero-panel_rows" aria-label="${escapeHtml(panel.rowsLabel)}">${rows}</ul>
+    <div class="hero-plan_component">
+      <div class="hero-plan_text">
+        <p class="hero-plan_chip">${renderText(hero.chip)}</p>
+        <h1 class="hero-plan_heading" id="${headingId}"><span class="hero-plan_title">${renderText(hero.title.main)}<span class="hero-plan_colon">: </span></span><span class="hero-plan_subtitle">${renderText(hero.title.sub)}</span></h1>
+        <p class="hero-plan_lead">${renderText(hero.lead)}</p>
+        <p class="hero-plan_formats">${hero.formats.map(renderText).join('<span class="hero-plan_sep" aria-hidden="true"> · </span>')}</p>
+        <div class="hero-plan_actions">
+          <a class="button_component is-light hero-plan_button" href="${escapeHtml(main.href)}">${renderText(main.label)}</a>
+          <a class="button_component hero-plan_button is-glass" href="${escapeHtml(second.href)}">${renderText(second.label)}</a>
         </div>
-        <div class="hero-panel_cta">
-          <ul class="hero-panel_tiles" aria-label="Старт">${tiles}</ul>
-          <div class="hero-panel_actions">
-            <a class="button_component hero-panel_button is-light" href="${escapeHtml(main.href)}">${renderText(main.label)}</a>
-          </div>
-        </div>
+        <dl class="hero-plan_facts" aria-label="${escapeHtml(hero.facts.label)}">${facts}</dl>
       </div>
-      <img class="hero-panel_photo" src="${escapeHtml(panel.photo.src)}" width="${panel.photo.width}" height="${panel.photo.height}" alt="" draggable="false" fetchpriority="high">
+      <div class="hero-plan_visual" aria-hidden="true">
+        ${renderPlanVisual()}
+        <span class="hero-plan_label">${renderText(hero.visual.label)}</span>
+      </div>
     </div>
-    <ul class="hero-facts_list" aria-label="${escapeHtml(hero.facts.label)}">${hero.facts.items.map(item => `<li class="hero-facts_item"><span class="hero-facts_icon">${icon(item.icon)}</span>${item.template ? cmsHours(item.template) : `<span>${renderText(item.text)}</span>`}</li>`).join('')}</ul>
   </div></div>
 </section>`;
 }
@@ -312,6 +352,7 @@ async function buildHtml() {
     start: fromCms?.start || pricingData.start,
     startDate: fromCms?.startDate || seo.course.startDate,
     hoursText: cmsApi.hoursPhrase(hours),
+    hoursShort: cmsApi.hoursShort(hours),
     price: fromCms?.price || {sale: once ?? list, list, perMonth: Math.round(list / months), months},
     fromCms: Boolean(fromCms),
   };
@@ -332,7 +373,7 @@ async function buildHtml() {
   const teachers = await json('teachers');
   // Порядок секций — как на старой странице; цена добавлена перед формой (решение Дарьи 15.10.2026).
   const sections = [
-    renderHeroPanel(await data('hero')),
+    renderHero(await data('hero')),
     renderPains(await data('pains'), `${SLUG}-situations`),
     renderGains(await data('gains'), `${SLUG}-gains`),
     renderAudience(await data('audience'), `${SLUG}-audience`),
