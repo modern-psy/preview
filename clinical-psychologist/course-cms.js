@@ -64,6 +64,7 @@
           'installment-schedule': `Официальная цена, ${months}\u00a0ежемесячных платежа`,
           'installment-caption': `или ${rub(monthly)}\u2060/\u2060мес в\u00a0рассрочку на\u00a0${months}\u00a0мес`,
           'benefit-inline': `Выгода ${rub(gain)}`, 'benefit-badge': `Выгода ${rub(gain)}`,
+          'pricing-title': `Курс «${copy(course.title)}»`, 'plan-title': copy(course.title),
           'start': `Старт ${start}`, 'course-lead': `${copy(course.title)}, старт ${start}, ${copy(course.educationLevel?.toLowerCase() || 'профессиональная переподготовка')}`,
         };
         prices.forEach(root => fill(root, values));
@@ -76,7 +77,8 @@
       roots.forEach(root => { root.dataset.cmsState = 'error'; });
       console.error('[clinical-cms] Курс не загружен, сохранена запаска.', error);
     });
-  const hoursNodes = heroes.flatMap(root => [...root.querySelectorAll('[data-cms="course-hours"]')]);
+  // Часы есть в Hero и в списке блока цены; оба места берут одно значение из каталога.
+  const hoursNodes = [...heroes, ...prices].flatMap(root => [...root.querySelectorAll('[data-cms="course-hours"]')]);
   if (hoursNodes.length) {
     hoursNodes.forEach(node => { node.dataset.cmsState = 'loading'; });
     load('/api/public/catalog', `${api}|/api/public/catalog`)
