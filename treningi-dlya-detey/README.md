@@ -156,6 +156,7 @@ JavaScript первому экрану не нужен. Фото (15.10.2026, в
 | `assets/format.webp` (1344×752) | `data/format.json` → `image.src` |
 | `assets/audience-kids.webp` | `data/audience.json` → первая группа `image.src` |
 | `assets/audience-adults.webp` | `data/audience.json` → вторая группа `image.src` |
+| `assets/teacher-sudakova.webp` (1040×780) | `data/teachers.json` → Екатерина Судакова → `photo.src` |
 | `assets/teacher-tkachenko.webp` (1040×780) | `data/teachers.json` → Екатерина Ткаченко → `photo.src` |
 | `assets/og-image.jpg` (1200×630) | `data/seo.json` → `ogImage` (и в настройках страницы Тильды) |
 
@@ -165,7 +166,6 @@ JavaScript первому экрану не нужен. Фото (15.10.2026, в
 - Условия получения удостоверения (`data/documents.json` → `terms`), если они есть.
 - Формат занятий (онлайн или очно, будет ли запись): для FAQ (`data/faq.json`).
 - Ссылки на S3 для всех файлов из `assets/` (см. «Что загрузить на S3»).
-- Фото Екатерины Судаковой: сейчас инициалы (`data/teachers.json` → `photo`). Фото Ткаченко стоит (15.10.2026).
 - Файл полной программы для кнопки «Скачать полную программу» (`data/program.json` → `download.href`).
 - Имя нативной формы Тильды: сейчас `treningi-dlya-detey` (`data/lead-form.json` → `nativeMarker`), подтвердить.
 - Адрес страницы: в canonical стоит `modern-psy.ru/treningi-dlya-detey`; год старта в разметке — 2027.
