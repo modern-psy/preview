@@ -390,7 +390,16 @@ function renderJsonLd(seo, teachers, faq) {
 
 /* Скрипт формы Академии рассчитан на обязательную почту. Поля почты на лендингах курсов больше нет
    (как в rodbt-live и narrative-therapy), поэтому три места скрипта делаются терпимыми к его отсутствию. */
+/* Поля телефона для MAX на этом лендинге нет: контакт для MAX — основной номер телефона. */
+function withoutMaxContact(source) {
+  const from = '            : maxContactController.getNumber(),';
+  if (!source.includes(from)) throw new Error('lead-form.js: не найден фрагмент контакта MAX');
+  return source.replace(from, '            : (maxContactController || phoneController).getNumber(),');
+}
+
 function withoutEmail(source) {
+  // Новая версия общего скрипта сама умеет форму без почты (email: null) — тогда заплатки не нужны.
+  if (source.includes('const needsEmail')) return source;
   const patches = [
     ['      !(emailInput instanceof HTMLInputElement) ||\n', ''],
     ['    setNativeInputValue(emailInput, formData.email);', '    if (emailInput instanceof HTMLInputElement) setNativeInputValue(emailInput, formData.email);'],
@@ -457,6 +466,10 @@ async function buildHtml() {
   const emailField = /<div class="lead-form_field" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="email"[\s\S]*?data-lead-error><\/p><\/div>/;
   const fullForm = renderLeadFormSection({...leadForm, emailLabel: 'Почта'}, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
   if (!emailField.test(fullForm)) throw new Error('Lead form: не найдено поле email в разметке формы');
+  // MAX (15.10.2026, Дарья): отдельного поля телефона для MAX нет — ищем человека в MAX по основному номеру.
+  // Для Telegram остаётся поле ника, начиная с @. Скрипт формы при этом берёт основной номер (см. buildJs).
+  const maxField = /<div class="lead-form_field is-phone" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="tel" id="[^"]*-max-contact"[\s\S]*?-max-contact-error" aria-live="polite" data-lead-error><\/p><\/div>/;
+  if (!maxField.test(fullForm)) throw new Error('Lead form: не найдено поле телефона для MAX');
 
   const teachers = await json('teachers');
   // Порядок секций по ТЗ.
@@ -472,7 +485,7 @@ async function buildHtml() {
     showcase,
     renderRatings(await data('ratings'), {id: `${SLUG}-ratings`}),
     renderPricing(pricingData, await data('payment'), `${SLUG}-pricing`),
-    patch(fullForm.replace(emailField, ''), renderText(leadForm.heading), cmsStart(leadForm.headingTemplate), 'Форма: заголовок с датой старта'),
+    patch(fullForm.replace(emailField, '').replace(maxField, ''), renderText(leadForm.heading), cmsStart(leadForm.headingTemplate), 'Форма: заголовок с датой старта'),
     // Вопросы и ответы — общий блок Академии (аккордеон, как на /narrative-therapy), после формы.
     patch(renderFaq(await data('faq'), {id: `${SLUG}-faq`}), renderText(typography('13 недель, 60 академических часов. Старт 4 марта,')), `${renderText(typography('13 недель, '))}${cmsHours('{hours}')}. ${cmsStart('Старт {date}')},`, 'FAQ: часы и старт'),
   ];
@@ -543,7 +556,7 @@ async function buildJs() {
   const parts = [];
   for (const name of order) {
     let source = (await read(shared, name)).trim();
-    if (name === 'lead-form.js') source = withoutEmail(source);
+    if (name === 'lead-form.js') source = withoutMaxContact(withoutEmail(source));
     parts.push(`/* === web-academy/shared/academy/${name} === */\n${source}`);
   }
   parts.push(`/* === treningi-dlya-detey/cms.js === */\n${(await read(root, 'cms.js')).trim()}`);
