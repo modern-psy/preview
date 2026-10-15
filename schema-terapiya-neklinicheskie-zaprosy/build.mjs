@@ -179,10 +179,13 @@ function renderGains(g, id) {
 }
 
 /* «Для кого этот курс» — «Светлая и тёмная карточки» из библиотеки (как на /rft и /sport-psy-start): две группы рядом,
-   у каждой ярлык, заголовок и текст. С 768px карточки рядом одной высоты, на телефоне друг под другом. */
+   у каждой ярлык, заголовок и текст. С 768px карточки рядом одной высоты, на телефоне друг под другом.
+   Под карточками — четыре пункта «вы…» с галочками (15.10.2026): телефон — столбиком, с 768px — 2 × 2, с 1025px — в ряд. */
 function renderAudience(a, id) {
   const cards = a.groups.map(g => `<li class="audience-pair_card${g.dark ? ' is-dark' : ''}"><p class="audience-pair_label">${renderText(g.label)}</p><h3 class="audience-pair_title">${renderText(g.title)}</h3><p class="audience-pair_text">${renderText(g.text)}</p></li>`).join('');
-  return wrap('audience-pair', id, `<div class="section-layout_component is-responsive">${header(id, a.heading)}<ul class="audience-pair_list">${cards}</ul></div>`);
+  // Четыре пункта Дарьи (15.10.2026) — под карточками строкой: галочка в светлом кружке и текст, без цветных акцентов.
+  const points = a.points?.length ? `<ul class="audience-pair_points" aria-label="${escapeHtml(a.pointsLabel)}">${a.points.map(t => `<li class="audience-pair_point"><span class="audience-pair_check">${icon('check')}</span><span>${renderText(t)}</span></li>`).join('')}</ul>` : '';
+  return wrap('audience-pair', id, `<div class="section-layout_component is-responsive">${header(id, a.heading)}<ul class="audience-pair_list">${cards}</ul>${points}</div>`);
 }
 
 /* «Чему вы научитесь на курсе» — «Светлые карточки без иконок» из библиотеки (как на /narrative-therapy, /cft-intro):
@@ -232,7 +235,7 @@ function renderTeachers(t, id) {
       <div class="teachers-bio_intro"><h3 class="teachers-bio_name" id="${id}-name-${i + 1}">${renderText(r.name)}</h3><p class="teachers-bio_role">${renderText(r.role)}</p><ul class="teachers-bio_tags">${r.tags.map(tag => `<li class="teachers-bio_tag">${renderText(tag)}</li>`).join('')}</ul></div>
       <ul class="teachers-bio_facts">${r.facts.map(f => `<li class="teachers-bio_fact">${icon('check')}<span>${renderText(f)}</span></li>`).join('')}</ul>
     </article></li>`).join('\n');
-  return wrap('teachers', id, `<div class="section-layout_component is-responsive">${header(id, t.heading)}<ul class="teachers-bio_list" aria-label="${escapeHtml(t.listLabel)}">${cards}</ul></div>`);
+  return wrap('teachers', id, `<div class="section-layout_component is-responsive">${header(id, t.heading, t.description)}<ul class="teachers-bio_list" aria-label="${escapeHtml(t.listLabel)}">${cards}</ul></div>`);
 }
 
 /* Стоимость — утверждённый блок «Одна цифра» из витрины /pricing-scenarios (сценарий «одна цена»),
