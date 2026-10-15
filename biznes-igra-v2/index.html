@@ -5,7 +5,8 @@
   ============================================================================
 
   Бесплатная онлайн-встреча с командной практикой: 24 октября, 14:00 МСК,
-  90 минут, команды до 5 человек. Ведущая — Екатерина Исупова.
+  90 минут, команды до 5 человек. Ведущая игры — Екатерина Сотникова,
+  заказчик, чей кейс решают команды, — Екатерина Исупова.
 
   ВАРИАНТЫ (выбираем по итогу из трёх):
     /biznes-igra     — первая версия: игровое поле из клеток (не трогаем);
@@ -18,7 +19,7 @@
   ИДЕЯ СТРАНИЦЫ
     Сначала заставка, как у игры: название, одна фраза, дата и кнопка
     «Узнать, как устроена игра». Дальше — игровой стол: сверху лента карт
-    (она же прогресс), в центре колода из 12 карт, слева ведущая и монеты
+    (она же прогресс), в центре колода из 13 карт, слева ведущая и монеты
     команды, справа заказчик, внизу «Ваша команда». Карты по одной
     рассказывают, как устроена игра; на каждой говорит ведущая или
     заказчик, монеты тратятся по правилам. Один жест колеса или тачпада —
@@ -414,13 +415,13 @@
               <a class="button is-light splash_start" href="#kak-ustroena" data-start>Узнать, как устроена игра</a>
             </div>
 
-            <!-- Монеты и фишки перед картой. 🟡 Картинки можно заменить,
-                 сохранив прозрачный фон. -->
+            <!-- Монеты и фишки перед картой. Картинки лежат на S3 Академии.
+                 🟡 Их можно заменить, сохранив прозрачный фон. -->
             <div class="splash_props" aria-hidden="true">
-              <img class="splash_coins is-left" src="img/splash-coins-left.webp" alt="" width="483" height="520" />
-              <img class="splash_coins is-right" src="img/splash-coins-right.webp" alt="" width="440" height="389" />
-              <img class="splash_pawn is-big" src="img/splash-pawn.webp" alt="" width="190" height="360" />
-              <img class="splash_pawn is-small" src="img/splash-pawn.webp" alt="" width="190" height="360" />
+              <img class="splash_coins is-left" src="https://s3.twcstorage.ru/asp-media/splash_coins_left_86b41fbdad.webp" alt="" width="483" height="520" />
+              <img class="splash_coins is-right" src="https://s3.twcstorage.ru/asp-media/splash_coins_right_efbd2d8c01.webp" alt="" width="440" height="389" />
+              <img class="splash_pawn is-big" src="https://s3.twcstorage.ru/asp-media/splash_pawn_1aec6461a8.webp" alt="" width="190" height="360" />
+              <img class="splash_pawn is-small" src="https://s3.twcstorage.ru/asp-media/splash_pawn_1aec6461a8.webp" alt="" width="190" height="360" />
             </div>
           </div>
 
@@ -477,38 +478,42 @@
 
           <div class="speaker_component is-host" data-speaker="host" data-active="true">
             <div class="speaker_head">
-              <button class="speaker_avatar" type="button" data-host-open>
-                <img class="speaker_photo host_photo"
-                     src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/240x/-/format/webp/telegram-cloud-docum.png.webp"
-                     alt="" width="120" height="120" decoding="async" />
-                <span class="screen-reader-only">Ведущая Екатерина Исупова, показать карту с её биографией</span>
+              <!-- Ведущая игры — Екатерина Сотникова. Фото и ссылка «биография»
+                   открывают карту «Кто будет вас направлять».
+                   🟡 Фото лежит в img/; для Тильды залить на S3 и поставить ссылку. -->
+              <button class="speaker_avatar" type="button" data-bio-open="host">
+                <img class="speaker_photo host_photo" src="img/sotnikova.webp"
+                     alt="" width="400" height="500" decoding="async" />
+                <span class="screen-reader-only">Ведущая Екатерина Сотникова, показать карту с её биографией</span>
               </button>
               <div class="speaker_meta">
-                <p class="speaker_name">Екатерина Исупова</p>
-                <p class="speaker_role">ведущая · <button class="speaker_more" type="button" data-host-open>биография</button></p>
+                <p class="speaker_name">Екатерина Сотникова</p>
+                <p class="speaker_role">ведущая игры · <button class="speaker_more" type="button" data-bio-open="host">биография</button></p>
               </div>
             </div>
             <div class="speaker_bubble">
-              <p class="speaker_bubble-name" aria-hidden="true">Екатерина Исупова</p>
+              <p class="speaker_bubble-name" aria-hidden="true">Екатерина Сотникова</p>
               <p class="speaker_line" data-speaker-line>Я&nbsp;— ведущая игры. Сначала о&nbsp;том, что вы&nbsp;потренируете</p>
             </div>
           </div>
 
           <div class="speaker_component is-client" data-speaker="client" data-active="false">
             <div class="speaker_head">
-              <!-- 🟡 Аватар заказчика — силуэт инкогнито (сгенерирован, лежит в img/).
-                   Для Тильды файл нужно залить на CDN и поставить сюда ссылку. -->
-              <span class="speaker_avatar">
-                <img class="speaker_photo client_photo" src="img/client.webp" alt=""
-                     width="120" height="120" decoding="async" />
-              </span>
+              <!-- Заказчик — Екатерина Исупова. Фото и ссылка «биография»
+                   открывают карту «Кто ваш заказчик» с её регалиями. -->
+              <button class="speaker_avatar" type="button" data-bio-open="client">
+                <img class="speaker_photo client_photo"
+                     src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/240x/-/format/webp/telegram-cloud-docum.png.webp"
+                     alt="" width="120" height="120" decoding="async" />
+                <span class="screen-reader-only">Заказчик Екатерина Исупова, показать карту с её биографией</span>
+              </button>
               <div class="speaker_meta">
-                <p class="speaker_name">Заказчик</p>
-                <p class="speaker_role">его кейс вы&nbsp;решаете</p>
+                <p class="speaker_name">Екатерина Исупова</p>
+                <p class="speaker_role">заказчик · <button class="speaker_more" type="button" data-bio-open="client">биография</button></p>
               </div>
             </div>
             <div class="speaker_bubble">
-              <p class="speaker_bubble-name" aria-hidden="true">Заказчик</p>
+              <p class="speaker_bubble-name" aria-hidden="true">Екатерина Исупова</p>
               <p class="speaker_line" data-speaker-line></p>
             </div>
           </div>
@@ -559,13 +564,37 @@
               </article>
             </li>
 
-            <!-- 1б. Ведущая. Фото и регалии — с лендинга курса
-                 modern-psy.ru/business-consulting, слово в слово. -->
-            <li class="deck_item" data-card data-kind="paper" data-host-card data-wallet="none" data-short="Ведущая"
+            <!-- 1б. Ведущая — Екатерина Сотникова. Описание — от Академии.
+                 🟡 Фото лежит в img/; для Тильды залить на S3 и поставить ссылку. -->
+            <li class="deck_item" data-card data-kind="paper" data-bio-card="host" data-wallet="none" data-short="Ведущая"
                 data-speaker="host" data-line="Давайте познакомимся: я&nbsp;буду вести игру">
               <article class="card_component is-paper is-light-card" aria-labelledby="card-host">
                 <p class="card_tag">Перед игрой</p>
                 <h3 class="card_title" id="card-host">Кто будет вас направлять</h3>
+                <div class="card_person">
+                  <img class="card_person-photo" src="img/sotnikova.webp"
+                       alt="Екатерина Сотникова, ведущая игры"
+                       width="400" height="500" loading="lazy" decoding="async" />
+                  <div class="card_person-text">
+                    <p class="card_person-name">Екатерина Сотникова</p>
+                    <p class="card_person-role">Ведущая игры</p>
+                  </div>
+                </div>
+                <ul class="card_list">
+                  <li>Ведущая встреч в&nbsp;АСП.Практикум</li>
+                  <li>Преподаватель английского для&nbsp;психологов</li>
+                  <li>Методист образовательных программ в&nbsp;АСП</li>
+                </ul>
+              </article>
+            </li>
+
+            <!-- 1в. Заказчик — Екатерина Исупова. Фото и регалии — с лендинга
+                 курса modern-psy.ru/business-consulting, слово в слово. -->
+            <li class="deck_item" data-card data-kind="paper" data-bio-card="client" data-wallet="none" data-short="Заказчик"
+                data-speaker="client" data-line="Давайте познакомимся: это мой кейс вы&nbsp;будете решать">
+              <article class="card_component is-paper is-light-card" aria-labelledby="card-client">
+                <p class="card_tag">Перед игрой</p>
+                <h3 class="card_title" id="card-client">Кто ваш заказчик</h3>
                 <div class="card_person">
                   <img class="card_person-photo"
                        src="https://optim.tildacdn.com/tild3438-3835-4130-b764-646461646562/-/resize/720x/-/format/webp/telegram-cloud-docum.png.webp"
@@ -593,7 +622,7 @@
                 <p class="card_tag">Этап&nbsp;1</p>
                 <h3 class="card_title" id="card-2">Знакомство и&nbsp;правила</h3>
                 <span class="card_rule" aria-hidden="true"></span>
-                <p class="card_text">Ведущий объяснит механику игры и&nbsp;распределит участников по&nbsp;командам до&nbsp;5&nbsp;человек. В&nbsp;отдельной комнате Zoom вы&nbsp;познакомитесь, выберете название команды и&nbsp;договоритесь, как будете работать вместе.</p>
+                <p class="card_text">Ведущая объяснит механику игры и&nbsp;распределит участников по&nbsp;командам до&nbsp;5&nbsp;человек. В&nbsp;отдельной комнате Zoom вы&nbsp;познакомитесь, выберете название команды и&nbsp;договоритесь, как будете работать вместе.</p>
                 <p class="card_note">Общие этапы&nbsp;— в&nbsp;общем зале Zoom</p>
               </article>
             </li>
@@ -641,7 +670,7 @@
                 <p class="card_tag">Этап&nbsp;4</p>
                 <h3 class="card_title" id="card-6">«Ярмарка данных»</h3>
                 <span class="card_rule" aria-hidden="true"></span>
-                <p class="card_text">Команда решает, какие материалы помогут с&nbsp;кейсом, и&nbsp;формирует заказ. Ведущий придёт в&nbsp;комнату, примет заказ и&nbsp;передаст оплаченные материалы:</p>
+                <p class="card_text">Команда решает, какие материалы помогут с&nbsp;кейсом, и&nbsp;формирует заказ. Ведущая придёт в&nbsp;комнату, примет заказ и&nbsp;передаст оплаченные материалы:</p>
                 <ul class="card_list">
                   <li>расшифровку скрытого запроса</li>
                   <li>подсказки и&nbsp;инструменты</li>
@@ -670,7 +699,7 @@
                 <p class="card_tag">Этап&nbsp;5</p>
                 <h3 class="card_title" id="card-8">Разработка стратегии</h3>
                 <span class="card_rule" aria-hidden="true"></span>
-                <p class="card_text">Команда проанализирует собранную информацию, определит подход к&nbsp;работе с&nbsp;запросом и&nbsp;подготовит выступление. Если нужно, можно снова обратиться к&nbsp;ведущему и&nbsp;докупить материалы.</p>
+                <p class="card_text">Команда проанализирует собранную информацию, определит подход к&nbsp;работе с&nbsp;запросом и&nbsp;подготовит выступление. Если нужно, можно снова обратиться к&nbsp;ведущей и&nbsp;докупить материалы.</p>
                 <svg class="card_art is-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-strategy" /></svg>
               </article>
             </li>
@@ -860,7 +889,7 @@
             <button class="button is-light controls_next" type="button" data-deck-next>
               <span class="for-narrow">Дальше</span><span class="for-wide">Тянуть карту</span>
             </button>
-            <p class="controls_counter" data-deck-counter><b>1</b> из&nbsp;12</p>
+            <p class="controls_counter" data-deck-counter><b>1</b> из&nbsp;13</p>
             <p class="controls_swipe" data-deck-swipe>Смахните карту или нажмите «Дальше»</p>
 
             <div class="hint-cursor" data-hint-cursor aria-hidden="true">
@@ -986,7 +1015,10 @@
   "eventStatus": "https://schema.org/EventScheduled",
   "isAccessibleForFree": true,
   "location": { "@type": "VirtualLocation", "url": "https://modern-psy.ru/biznes-igra" },
-  "performer": { "@type": "Person", "name": "Екатерина Исупова" },
+  "performer": [
+    { "@type": "Person", "name": "Екатерина Сотникова" },
+    { "@type": "Person", "name": "Екатерина Исупова" }
+  ],
   "organizer": { "@type": "EducationalOrganization", "name": "Академия современной психологии", "url": "https://modern-psy.ru" },
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB", "availability": "https://schema.org/InStock", "url": "https://modern-psy.ru/biznes-igra" }
 }

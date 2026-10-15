@@ -85,7 +85,7 @@
   const ribbonList = page.querySelector("[data-ribbon-list]");
 
   const team = page.querySelector(".team_component[data-team]");
-  const hostOpeners = [...page.querySelectorAll("[data-host-open]")];
+  const bioOpeners = [...page.querySelectorAll("[data-bio-open]")];
   const hostPhoto = page.querySelector(".host_photo");
 
   const live = page.querySelector("[data-deck-live]");
@@ -597,17 +597,17 @@
 
 
   /* --------------------------------------------------------------------------
-     6. БИОГРАФИЯ ВЕДУЩЕЙ
+     6. БИОГРАФИИ ВЕДУЩЕЙ И ЗАКАЗЧИКА
      --------------------------------------------------------------------------
-     Биография — отдельная карта колоды («Кто будет вас направлять»).
-     Фото ведущей и ссылка «биография» у её портрета открывают эту карту.
+     У каждой — своя карта колоды: «Кто будет вас направлять» (ведущая)
+     и «Кто ваш заказчик». Фото и ссылка «биография» у портрета открывают
+     карту того же человека: data-bio-open="host" → data-bio-card="host".
      -------------------------------------------------------------------------- */
 
-  const hostCardIndex = items.findIndex((item) => item.hasAttribute("data-host-card"));
-
-  hostOpeners.forEach((button) => {
+  bioOpeners.forEach((button) => {
+    const index = items.findIndex((item) => item.dataset.bioCard === button.dataset.bioOpen);
     button.addEventListener("click", () => {
-      if (hostCardIndex >= 0) showCard(hostCardIndex);
+      if (index >= 0) showCard(index);
     });
   });
 
