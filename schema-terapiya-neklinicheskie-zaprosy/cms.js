@@ -1,0 +1,136 @@
+/* Данные курса из CMS (Strapi) через Public API: название, дата старта, объём в академических часах и цена.
+   Где на странице они стоят, отмечено атрибутами:
+     data-cms-start="… {date}"  — дата старта, {date} заменяется на «4 марта»;
+     data-cms-hours="… {hours}" — часы, {hours} заменяется на «60 академических часов»;
+     data-cms-price / data-cms-benefit / data-cms-installment — цена и строки под ней в карточке цены.
+   Настройки (адрес API и слаг курса) — атрибуты data-cms-api и data-cms-course на секции цены.
+
+   Один и тот же код работает дважды: при сборке (build.mjs берёт отсюда SchemaCms и вшивает в страницу снимок
+   из data/api-course.json, если он есть) и в браузере (после загрузки страница один раз спрашивает API и подменяет
+   значения). Курс ищется сначала в каталоге (там же часы); курса в каталоге CMS нет или API не ответил —
+   на странице остаются значения со сборки. Поэтому в CMS у курса должно стоять «показывать в каталоге».
+   Правила цены — как в утверждённом блоке «Одна цифра»: крупно цена при оплате сразу, официальная цена —
+   в рассрочку, разница — «выгода N ₽ при оплате сразу», платёж в месяц тихой строкой. */
+(function () {
+  var NBSP = ' ';
+  var JOIN = '⁠';
+  var OPEN = ['Идет набор', 'Идёт набор', 'Последний шанс', 'Старт в любое время'];
+  var MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  var SHORT = /(^|[\s(«])(а|в|и|к|о|с|у|я|во|до|за|из|на|не|ни|но|об|от|по|со|без|для|над|под|при|про|\d+) /gi;
+
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); };
+  // Неразрывный пробел после коротких слов и чисел, как в текстах со сборки.
+  var nb = function (text) { return String(text).replace(SHORT, function (m, before, word) { return before + word + NBSP; }); };
+  var digits = function (n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, NBSP); };
+  var rub = function (n) { return digits(n) + NBSP + '₽'; };
+
+  // «60 академических часов», «81 академический час», «72 академических часа».
+  function hoursPhrase(n) {
+    var m10 = n % 10, m100 = n % 100;
+    var word = m10 === 1 && m100 !== 11 ? 'академический час' : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? 'академических часа' : 'академических часов';
+    return n + NBSP + word;
+  }
+  // Дата из CMS («2027-03-04» или ISO-время) → «4 марта» по московскому времени.
+  function dayMonth(value) {
+    if (!value) return '';
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    var d = m ? {day: Number(m[3]), month: Number(m[2]) - 1} : null;
+    if (!d) {
+      var t = new Date(new Date(value).getTime() + 3 * 3600 * 1000);
+      if (isNaN(t)) return '';
+      d = {day: t.getUTCDate(), month: t.getUTCMonth()};
+    }
+    return d.day + NBSP + MONTHS[d.month];
+  }
+
+  /* Ответ /api/public/course/:slug → то, что нужно странице. Берётся ближайший открытый поток.
+     Тарифы этот лендинг не показывает: курс с тарифами оставляет цену со сборки. */
+  function fromApi(course) {
+    if (!course || !course.slug) return null;
+    var open = (course.streams || []).filter(function (s) { return OPEN.indexOf(s.status) !== -1; })
+      .sort(function (a, b) { return new Date(a.startDate || 0) - new Date(b.startDate || 0); });
+    var stream = open[0] || course.nearestStream || null;
+    var p = stream && stream.pricing;
+    var price = null;
+    if (p && !p.hasTariffs && p.currentPrice != null) {
+      var list = p.currentPrice;
+      var sale = p.fullPaymentPrice != null ? p.fullPaymentPrice : list;
+      price = {
+        sale: sale,
+        list: list,
+        perMonth: p.installmentPerMonth || (list > 0 ? Math.round(list / 24) : null),
+        months: p.installmentPerMonth ? p.installmentMonths : 24,
+      };
+    }
+    return {
+      title: course.title || null,
+      start: stream ? dayMonth(stream.startDate) : '',
+      startDate: stream && stream.startDate || null,
+      price: price,
+    };
+  }
+
+  // Строки под ценой: выгода (если есть отдельная цена при оплате сразу) и платёж в рассрочку.
+  function benefitHtml(price) {
+    return price.list > price.sale ? '<b class="price-caption_benefit">выгода ' + rub(price.list - price.sale) + '</b> при оплате сразу' : '';
+  }
+  function installmentHtml(price) {
+    return price.perMonth ? 'или ' + digits(price.perMonth) + NBSP + '₽' + JOIN + '/' + JOIN + 'мес в' + NBSP + 'рассрочку на' + NBSP + price.months + NBSP + 'мес' : '';
+  }
+
+  var api = {fromApi: fromApi, dayMonth: dayMonth, hoursPhrase: hoursPhrase, benefitHtml: benefitHtml, installmentHtml: installmentHtml, digits: digits, nb: nb, esc: esc};
+  globalThis.SchemaCms = api;
+  if (typeof document === 'undefined') return;
+
+  var root = document.querySelector('[data-cms-course]');
+  if (!root || !window.fetch) return;
+  var base = root.getAttribute('data-cms-api');
+  var slug = root.getAttribute('data-cms-course');
+  var each = function (selector, fn) { Array.prototype.forEach.call(document.querySelectorAll(selector), fn); };
+  var fill = function (attr, key, value) {
+    each('[' + attr + ']', function (el) { el.textContent = el.getAttribute(attr).replace(key, value); });
+  };
+
+  function applyCourse(course) {
+    var model = fromApi(course);
+    if (!model) return;
+    // Название из CMS не подставляем: в CMS курс пока под старым именем, новое название вшито при сборке.
+    if (model.start) fill('data-cms-start', '{date}', model.start);
+    if (model.price) {
+      each('[data-cms-price]', function (el) { el.textContent = digits(model.price.sale); });
+      each('[data-cms-benefit]', function (el) { var html = benefitHtml(model.price); el.innerHTML = html; el.hidden = !html; });
+      each('[data-cms-installment]', function (el) { var html = installmentHtml(model.price); el.innerHTML = html; el.hidden = !html; });
+    }
+    // Микроразметка курса: цена и дата старта те же, что на странице.
+    each('script[type="application/ld+json"]', function (el) {
+      try {
+        var ld = JSON.parse(el.textContent);
+        if (ld['@type'] !== 'Course') return;
+        if (model.startDate && ld.hasCourseInstance) ld.hasCourseInstance.startDate = model.startDate;
+        if (model.price) ld.offers = {'@type': 'Offer', price: String(model.price.sale), priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: ld.url};
+        el.textContent = JSON.stringify(ld);
+      } catch (error) { /* разметка не тронута */ }
+    });
+  }
+
+  /* Сначала каталог: в нём часы курса, и по нему видно, заведён ли курс. Курса в каталоге нет — данные курса
+     не запрашиваем (иначе API ответит 404 и в консоли будет ошибка), на странице остаются значения со сборки. */
+  var json = function (path) {
+    return fetch(base + path, {headers: {Accept: 'application/json'}}).then(function (response) { return response.ok ? response.json() : null; });
+  };
+  json('/api/public/catalog')
+    .then(function (catalog) {
+      var found = null;
+      (function walk(o) {
+        if (found || !o || typeof o !== 'object') return;
+        if (Array.isArray(o)) { o.forEach(walk); return; }
+        if (o.slug === slug) { found = o; return; }
+        Object.keys(o).forEach(function (k) { walk(o[k]); });
+      })(catalog);
+      if (!found) return null;
+      var hours = Number(found.hours);
+      if (hours) fill('data-cms-hours', '{hours}', hoursPhrase(hours));
+      return json('/api/public/course/' + slug).then(applyCourse);
+    })
+    .catch(function () { /* API недоступен — значения со сборки */ });
+})();
