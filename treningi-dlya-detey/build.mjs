@@ -4,6 +4,7 @@
 // Вход: data/*.json (тексты), page.css (тема и проектные блоки), общие компоненты web-academy/shared/academy (только при сборке).
 // Выход: index.html, style.css, script.js — самодостаточные, без runtime-ссылок на web-academy.
 import fs from 'node:fs/promises';
+import vm from 'node:vm';
 import {renderAcademyShowcase} from '../web-academy/shared/academy/academy-showcase-render.mjs';
 import {renderRatings} from '../web-academy/shared/academy/ratings-render.mjs';
 import {renderLeadFormSection} from '../web-academy/shared/academy/lead-form-render.mjs';
@@ -49,6 +50,13 @@ function patch(markup, from, to, what) {
   return markup.replace(from, () => to);
 }
 
+/* Данные курса из CMS: название, старт, часы и цена (cms.js, атрибуты data-cms-*). При сборке в страницу
+   вшивается снимок: значения из data/pricing.json, поверх — data/api-course.json и data/api-catalog-entry.json,
+   если курс уже есть в CMS (node treningi-dlya-detey/build.mjs --refresh). В браузере cms.js обновляет их из API. */
+let CMS = null;
+const cmsStart = template => `<span data-cms-start="${escapeHtml(template)}">${renderText(template.replace('{date}', CMS.start))}</span>`;
+const cmsHours = template => `<span data-cms-hours="${escapeHtml(template)}">${renderText(template.replace('{hours}', CMS.hoursText))}</span>`;
+
 /* Иконки Lucide: 20 px, линия 2 из 24, цвет как у текста рядом. */
 const ICONS = {
   'file-text': '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
@@ -74,13 +82,13 @@ const icon = name => {
 function renderHeroPanel(hero, {headingLevel = 1, headingId = hero.heading_id} = {}) {
   const {panel} = hero;
   const rows = panel.rows.map(row => `<li class="hero-panel_row"><span class="hero-panel_row-icon">${icon(row.icon)}</span><span>${renderText(row.text)}</span></li>`).join('');
-  const tiles = panel.tiles.map(tile => `<li class="hero-panel_tile">${icon(tile.icon)}${renderText(tile.text)}</li>`).join('');
+  const tiles = panel.tiles.map(tile => `<li class="hero-panel_tile">${icon(tile.icon)}${tile.template ? cmsStart(tile.template) : renderText(tile.text)}</li>`).join('');
   const main = hero.actions[0];
   return `<section class="section_hero" aria-labelledby="${sectionId(headingId)}">
   <div class="padding-global"><div class="container-xlarge">
     <div class="hero-panel_component">
       <div class="hero-panel_text">
-        <h${headingLevel} class="hero-panel_heading" id="${headingId}">${renderText(hero.heading)}</h${headingLevel}>
+        <h${headingLevel} class="hero-panel_heading" id="${headingId}" data-cms-title>${renderText(CMS.title)}</h${headingLevel}>
         <div class="hero-panel_panel">
           <p class="hero-panel_lead">${renderText(hero.lead)}</p>
           <ul class="hero-panel_rows" aria-label="${escapeHtml(panel.rowsLabel)}">${rows}</ul>
@@ -94,7 +102,7 @@ function renderHeroPanel(hero, {headingLevel = 1, headingId = hero.heading_id} =
       </div>
       <img class="hero-panel_photo" src="${escapeHtml(panel.photo.src)}" width="${panel.photo.width}" height="${panel.photo.height}" alt="" draggable="false" fetchpriority="high">
     </div>
-    <ul class="hero-facts_list" aria-label="${escapeHtml(hero.facts.label)}">${hero.facts.items.map(item => `<li class="hero-facts_item"><span class="hero-facts_icon">${icon(item.icon)}</span><span>${renderText(item.text)}</span></li>`).join('')}</ul>
+    <ul class="hero-facts_list" aria-label="${escapeHtml(hero.facts.label)}">${hero.facts.items.map(item => `<li class="hero-facts_item"><span class="hero-facts_icon">${icon(item.icon)}</span>${item.template ? cmsHours(item.template) : `<span>${renderText(item.text)}</span>`}</li>`).join('')}</ul>
   </div></div>
 </section>`;
 }
@@ -329,28 +337,23 @@ function renderDocuments(d, id) {
    Горизонтальная карточка: слева уровень, название, старт и цена при оплате сразу (крупно), под ней серым
    «выгода N ₽ при оплате сразу» и платёж в рассрочку; справа «Что входит» галочками.
    Официальная цена — в рассрочку (price.list), оплата сразу (price.once) — выгода от неё; платёж = list ÷ months.
-   Сейчас цены ПРИМЕРНЫЕ (data/pricing.json → note): реальных в ТЗ нет. */
-const JOIN = '⁠'; // «₽/мес» не разрывается переносом
-const money = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, NBSP);
+   Цена, старт, название и часы — из CMS (cms.js); пока курса в CMS нет, цены ПРИМЕРНЫЕ (data/pricing.json → note). */
 function renderPricing(pricing, payment, id) {
-  const {list, once, months} = pricing.price;
-  const sale = once ?? list;
-  const benefit = list - sale;
-  const caption = [
-    benefit > 0 ? `<b class="price-caption_benefit">выгода ${money(benefit)}${NBSP}₽</b> при оплате сразу` : '',
-    `или ${money(list / months)}${NBSP}₽${JOIN}/${JOIN}мес в${NBSP}рассрочку на${NBSP}${months}${NBSP}мес`,
-  ].filter(Boolean).map(line => `<span class="price-caption_line">${line}</span>`).join('');
-  const includes = pricing.includes.map(text => `<li class="price-check_item">${icon('check')}<span>${renderText(text)}</span></li>`).join('');
+  const price = CMS.price;
+  const benefit = CMS.api.benefitHtml(price);
+  const installment = CMS.api.installmentHtml(price);
+  const caption = `<span class="price-caption_line" data-cms-benefit${benefit ? '' : ' hidden'}>${benefit}</span><span class="price-caption_line" data-cms-installment${installment ? '' : ' hidden'}>${installment}</span>`;
+  const includes = pricing.includes.map(item => `<li class="price-check_item">${icon('check')}${item.template ? cmsHours(item.template) : `<span>${renderText(item)}</span>`}</li>`).join('');
   const card = `<div class="price-wide_component">
-      <div class="price-wide_main"><span class="price-wide_chip">${renderText(pricing.level)}</span><div class="price-wide_title"><p class="price-wide_name">${renderText(pricing.title)}</p><p class="price-wide_sub">старт ${renderText(pricing.start)}</p></div>
-        <div class="price-wide_money"><p class="price-tag"><span class="price-tag_number">${money(sale)}</span><span class="price-tag_unit">₽</span></p><p class="price-caption">${caption}</p></div>
+      <div class="price-wide_main"><span class="price-wide_chip">${renderText(pricing.level)}</span><div class="price-wide_title"><p class="price-wide_name" data-cms-title>${renderText(CMS.title)}</p><p class="price-wide_sub">${cmsStart('старт {date}')}</p></div>
+        <div class="price-wide_money"><p class="price-tag"><span class="price-tag_number" data-cms-price>${CMS.api.digits(price.sale)}</span><span class="price-tag_unit">₽</span></p><p class="price-caption">${caption}</p></div>
       </div>
       <div class="price-wide_side"><p class="price-wide_side-title">${renderText(pricing.includesTitle)}</p><ul class="price-check" role="list">${includes}</ul></div>
     </div>`;
   const row = (title, body) => `<div class="price-terms_row"><dt class="price-terms_title">${renderText(title)}</dt><dd class="price-terms_body">${body}</dd></div>`;
   const discounts = `<ul class="price-discounts" role="list">${payment.discounts.items.map(d => `<li class="price-discounts_item"><p class="price-discounts_value">${d.prefix ? `<span class="price-discounts_prefix">${renderText(d.prefix)}</span>` : ''}<span class="price-discounts_number">${renderText(d.value)}&nbsp;%</span></p><p class="price-discounts_label">${renderText(d.text)}</p></li>`).join('')}</ul>`;
   const terms = `<div class="price-terms_component"><h3 class="price-terms_heading" id="${id}-terms">${renderText(payment.heading)}</h3><dl class="price-terms_list" aria-labelledby="${id}-terms">${row(payment.installment.title, `<p class="price-terms_text">${renderText(payment.installment.text)}</p>`)}${row(payment.discounts.title, discounts)}${row(payment.tax.title, `<p class="price-terms_text">${renderText(payment.tax.text)}</p>`)}</dl></div>`;
-  return wrap('pricing', id, `<div class="section-layout_component is-responsive price-block_component">${header(id, pricing.heading)}${card}${terms}</div>`);
+  return wrap('pricing', id, `<div class="section-layout_component is-responsive price-block_component" data-cms-api="${escapeHtml(pricing.api)}" data-cms-course="${escapeHtml(pricing.slug)}">${header(id, pricing.heading)}${card}${terms}</div>`);
 }
 
 /* SEO по docs/seo.md: canonical, Open Graph и JSON-LD из тех же данных, что и страница.
@@ -374,10 +377,13 @@ function renderJsonLd(seo, teachers, faq) {
   const orgId = `${org.url}/#organization`;
   const organization = {'@context': 'https://schema.org', '@type': 'EducationalOrganization', '@id': orgId, name: org.name, url: org.url, logo: org.logo, telephone: org.telephone, email: org.email,
     address: {'@type': 'PostalAddress', addressCountry: 'RU', ...org.address}};
-  const course = {'@context': 'https://schema.org', '@type': 'Course', '@id': `${seo.canonical}#course`, name: seo.course.name, description: seo.course.description, url: seo.canonical, inLanguage: 'ru',
-    provider: {'@id': orgId}, educationalCredentialAwarded: seo.course.credential,
-    hasCourseInstance: {'@type': 'CourseInstance', startDate: seo.course.startDate, instructor: teachers.records.map(t => ({'@type': 'Person', name: t.name, jobTitle: t.tag}))}};
   const plain = text => String(text).replace(/\u00a0/g, ' ');
+  // Название, старт и цена — из снимка CMS, если он есть. Примерная цена в разметку не попадает: offers появятся
+  // вместе с ценой из CMS (при сборке со снимком или в браузере через cms.js).
+  const course = {'@context': 'https://schema.org', '@type': 'Course', '@id': `${seo.canonical}#course`, name: CMS.fromCms ? plain(CMS.title) : seo.course.name, description: seo.course.description, url: seo.canonical, inLanguage: 'ru',
+    provider: {'@id': orgId}, educationalCredentialAwarded: seo.course.credential,
+    hasCourseInstance: {'@type': 'CourseInstance', startDate: CMS.startDate, instructor: teachers.records.map(t => ({'@type': 'Person', name: t.name, jobTitle: t.tag}))},
+    ...(CMS.fromCms && CMS.price ? {offers: {'@type': 'Offer', price: String(CMS.price.sale), priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: seo.canonical}} : {})};
   const faqPage = {'@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.items.map(item => ({'@type': 'Question', name: plain(item.question), acceptedAnswer: {'@type': 'Answer', text: item.answer.map(plain).join(' ')}}))};
   return [organization, course, faqPage].map(ldScript).join('\n');
 }
@@ -397,8 +403,47 @@ function withoutEmail(source) {
   return source;
 }
 
+// Снимки CMS: data/api-course.json (ответ /api/public/course/:slug) и data/api-catalog-entry.json (часы из каталога).
+// С флагом --refresh берутся заново; если курса в CMS ещё нет (404 или нет в каталоге), снимка нет и сборка
+// оставляет значения из data/pricing.json.
+async function cmsSnapshot(pricing) {
+  const courseFile = new URL('data/api-course.json', root);
+  const catalogFile = new URL('data/api-catalog-entry.json', root);
+  if (process.argv.includes('--refresh')) {
+    const response = await fetch(`${pricing.api}/api/public/course/${pricing.slug}`, {headers: {Accept: 'application/json'}});
+    if (response.ok) { await fs.writeFile(courseFile, `${JSON.stringify(await response.json(), null, 2)}\n`); console.log('Снимок курса обновлён из API'); }
+    else { await fs.rm(courseFile, {force: true}); console.warn(`Курса ${pricing.slug} в CMS нет (API ${response.status}): на странице значения из data/pricing.json`); }
+    const catalog = await fetch(`${pricing.api}/api/public/catalog`, {headers: {Accept: 'application/json'}}).then(r => r.ok ? r.json() : null);
+    let entry = null;
+    const walk = o => { if (entry || !o || typeof o !== 'object') return; if (Array.isArray(o)) return o.forEach(walk); if (o.slug === pricing.slug) { entry = o; return; } Object.values(o).forEach(walk); };
+    walk(catalog);
+    if (entry) { await fs.writeFile(catalogFile, `${JSON.stringify(entry, null, 2)}\n`); console.log('Снимок каталога обновлён из API'); }
+    else { await fs.rm(catalogFile, {force: true}); console.warn(`В каталоге CMS нет курса ${pricing.slug}: часы из data/pricing.json`); }
+  }
+  const load = file => fs.readFile(file, 'utf8').then(JSON.parse, () => null);
+  return {course: await load(courseFile), catalog: await load(catalogFile)};
+}
+
 async function buildHtml() {
   const seo = await json('seo');
+  // Данные курса: значения по умолчанию из data/pricing.json, поверх — снимок CMS, если он есть.
+  const pricingData = await data('pricing');
+  const sandbox = {};
+  vm.runInNewContext(await read(root, 'cms.js'), sandbox);
+  const cmsApi = sandbox.TreningiCms;
+  const snapshot = await cmsSnapshot(pricingData);
+  const fromCms = cmsApi.fromApi(snapshot.course);
+  const {list, once, months} = pricingData.price;
+  const hours = Number(snapshot.catalog?.hours) || pricingData.hours;
+  CMS = {
+    api: cmsApi,
+    title: fromCms?.title ? typography(fromCms.title) : pricingData.title,
+    start: fromCms?.start || pricingData.start,
+    startDate: fromCms?.startDate || seo.course.startDate,
+    hoursText: cmsApi.hoursPhrase(hours),
+    price: fromCms?.price || {sale: once ?? list, list, perMonth: Math.round(list / months), months},
+    fromCms: Boolean(fromCms),
+  };
   // Блок об Академии: тексты и фото общие для лендингов, свечения из assets эталона как data URL.
   // Заголовок по ТЗ — «Почему выбирают нас» без акцентной второй строки.
   const academy = await data('academy');
@@ -426,10 +471,10 @@ async function buildHtml() {
     renderDocuments(await data('documents'), `${SLUG}-documents`),
     showcase,
     renderRatings(await data('ratings'), {id: `${SLUG}-ratings`}),
-    renderPricing(await data('pricing'), await data('payment'), `${SLUG}-pricing`),
-    fullForm.replace(emailField, ''),
+    renderPricing(pricingData, await data('payment'), `${SLUG}-pricing`),
+    patch(fullForm.replace(emailField, ''), renderText(leadForm.heading), cmsStart(leadForm.headingTemplate), 'Форма: заголовок с датой старта'),
     // Вопросы и ответы — общий блок Академии (аккордеон, как на /narrative-therapy), после формы.
-    renderFaq(await data('faq'), {id: `${SLUG}-faq`}),
+    patch(renderFaq(await data('faq'), {id: `${SLUG}-faq`}), renderText(typography('13 недель, 60 академических часов. Старт 4 марта,')), `${renderText(typography('13 недель, '))}${cmsHours('{hours}')}. ${cmsStart('Старт {date}')},`, 'FAQ: часы и старт'),
   ];
 
   const body = sections.join('\n').replaceAll(NBSP, '&nbsp;');
@@ -501,6 +546,7 @@ async function buildJs() {
     if (name === 'lead-form.js') source = withoutEmail(source);
     parts.push(`/* === web-academy/shared/academy/${name} === */\n${source}`);
   }
+  parts.push(`/* === treningi-dlya-detey/cms.js === */\n${(await read(root, 'cms.js')).trim()}`);
   parts.push(`/* === treningi-dlya-detey/page.js === */\n${(await read(root, 'page.js')).trim()}`);
   const js = `/* Сгенерировано: node treningi-dlya-detey/build.mjs. Общие скрипты Академии в порядке зависимостей. Руками не править. */\n\n${parts.join('\n\n')}\n`;
   assertResponsiveContract(js, 'script.js');
