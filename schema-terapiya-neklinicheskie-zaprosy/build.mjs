@@ -77,52 +77,44 @@ const header = (id, heading, description, align = 'center') => `<div class="sect
 /* Первый экран — по образцу Дарьи «Психиатрия для психологов» (15.10.2026). Тёмная карточка #2B2334: слева плашка уровня,
    заголовок из двух частей (крупно метод, ниже обещание курса — это один h1 с полным названием, двоеточие видно только
    скринридеру), подводка, строка форматов через точку, две кнопки (белая и полупрозрачная) и три факта под тонкой линией.
-   Справа иллюстрация «хаос → план» (макет А .impeccable/mocks/schema-hero/comp-a-chaos-plan.png, Дарья: «стиль ок, только
-   меньше текста»): облако частиц и пустые плашки-запросы без слов, от них линии стекаются в план из десяти строк без
-   подписей; одна строка обведена фиолетовым, обводка переходит по строкам. Единственная надпись — «план на 7–10 встреч».
-   Рисунок — SVG прямо в разметке (масштабируется целиком, без картинок), декоративный, скрыт от скринридера.
-   На телефоне и планшете иллюстрация под текстом, на компьютере справа. */
-// Иллюстрация в системе координат 640 × 520. Частицы детерминированные: одинаковые при каждой сборке.
-function renderPlanVisual() {
-  let seed = 11;
+   Справа иллюстрация «стержень и готовые сценарии» (идея Дарьи после двух кругов макетов): волнистый стержень проходит
+   за верхний и нижний край карточки, к гребням волны по очереди прикрепляются листы и карточки — готовые, отработанные
+   сценарии — и вместе с волной уплывают вверх, по кругу. Листы полупрозрачные с тонкой светлой обводкой (цвет как у плашек
+   из прошлой версии, 15.10.2026), вокруг редкие частицы. Без текста, декоративная, скрыта от скринридера.
+   HTML и CSS плюс SVG волны; анимация в page.css. */
+// Листы-сценарии: стороны строго чередуются, начиная с правой, и их ровно 8 — тогда каждый лист садится на гребень волны
+// (у волны 4 периода на круг; расчёт в комментарии к .hero-spine_wave в page.css). Один лист с фиолетовой полоской.
+const SPINE_CARDS = [
+  {side: 'right', type: 'sheet', rot: 3, lines: 4},
+  {side: 'left', type: 'index', rot: -4, lines: 3, accent: true},
+  {side: 'right', type: 'index', rot: -2, lines: 2},
+  {side: 'left', type: 'sheet', rot: 2.5, lines: 5},
+  {side: 'right', type: 'sheet', rot: 4, lines: 3},
+  {side: 'left', type: 'index', rot: -3, lines: 2},
+  {side: 'right', type: 'index', rot: 1.5, lines: 3},
+  {side: 'left', type: 'sheet', rot: -2, lines: 4},
+];
+// Волна: 8 периодов по 100 единиц, гребень вправо в начале каждого периода (x = 15 + 10·cos). Полупериод — одна кубическая кривая.
+function wavePath() {
+  let d = 'M25 0';
+  for (let k = 0; k < 16; k += 1) {
+    const y0 = k * 50;
+    const [from, to] = k % 2 === 0 ? [25, 5] : [5, 25];
+    d += ` C${from} ${y0 + 18.2} ${to} ${y0 + 31.8} ${to} ${y0 + 50}`;
+  }
+  return d;
+}
+function renderSpineVisual() {
+  if (SPINE_CARDS.length !== 8 || SPINE_CARDS.some((c, i) => c.side !== (i % 2 ? 'left' : 'right'))) throw new Error('Иллюстрация первого экрана: нужно 8 листов, стороны чередуются с правой');
+  let seed = 5;
   const rand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
-  const r1 = n => n.toFixed(1);
-  const particles = Array.from({length: 72}, () => {
-    const angle = rand() * Math.PI * 2;
-    const dist = Math.pow(rand(), 0.7);
-    const x = 175 + Math.cos(angle) * dist * 165;
-    const y = 270 + Math.sin(angle) * dist * 215;
-    const r = 0.8 + rand() * 1.5;
-    const o = (0.18 + rand() * 0.55).toFixed(2);
-    const cls = `hero-plan_particle is-drift-${1 + Math.floor(rand() * 3)}${rand() < 0.25 ? ' is-twinkle' : ''}`;
-    return `<circle class="${cls}" cx="${r1(x)}" cy="${r1(y)}" r="${r1(r)}" opacity="${o}" style="animation-delay:-${Math.round(rand() * 9000)}ms"/>`;
+  const particles = Array.from({length: 30}, () => `<i class="hero-spine_particle is-drift-${1 + Math.floor(rand() * 3)}" style="left:${(4 + rand() * 92).toFixed(1)}%;top:${(3 + rand() * 94).toFixed(1)}%;opacity:${(0.18 + rand() * 0.45).toFixed(2)};animation-delay:-${Math.round(rand() * 9000)}ms"></i>`).join('');
+  const widths = [86, 64, 78, 52, 70];
+  const cards = SPINE_CARDS.map((c, i) => {
+    const lines = Array.from({length: c.lines}, (_, k) => `<span class="hero-spine_line" style="width:${widths[(i + k) % widths.length]}%"></span>`).join('');
+    return `<div class="hero-spine_slot is-${c.side}" style="--i:${i};--rot:${c.rot}deg"><div class="hero-spine_item is-${c.type}"><span class="hero-spine_link"></span><span class="hero-spine_node"></span><div class="hero-spine_card is-${c.type}${c.accent ? ' is-accent' : ''}"><span class="hero-spine_head"></span>${lines}</div></div></div>`;
   }).join('');
-  const hub = {x: 438, y: 268};
-  const pills = [[128, 132, 118, -14], [214, 198, 96, 9], [104, 266, 138, -5], [206, 338, 108, 12], [120, 410, 128, -9]];
-  const pillMarkup = pills.map(([cx, cy, w, a], i) => `<g transform="translate(${cx} ${cy}) rotate(${a})"><g class="hero-plan_pill-float is-float-${(i % 3) + 1}"><rect class="hero-plan_pill" x="${-w / 2}" y="-16" width="${w}" height="32" rx="16"/><rect class="hero-plan_pill-bar" x="${-w / 2 + 16}" y="-3" width="${r1((w - 32) * (0.55 + (i % 3) * 0.15))}" height="6" rx="3"/></g></g>`).join('');
-  const curves = pills.map(([cx, cy, w, a], i) => {
-    const rad = a * Math.PI / 180;
-    const x0 = cx + Math.cos(rad) * w / 2 + 6;
-    const y0 = cy + Math.sin(rad) * w / 2;
-    return `<path id="hero-plan-curve-${i + 1}" class="hero-plan_curve" d="M${r1(x0)} ${r1(y0)} C${r1(x0 + 110)} ${r1(y0)} ${hub.x - 90} ${hub.y} ${hub.x} ${hub.y}"/>`;
-  }).join('');
-  const travellers = pills.map((_, i) => `<circle class="hero-plan_traveller" r="2.4"><animateMotion dur="2800ms" begin="${i * 560}ms" repeatCount="indefinite" rotate="auto"><mpath href="#hero-plan-curve-${i + 1}"/></animateMotion></circle>`).join('');
-  const top = 82, rowH = 30, gap = 8, x = 470, width = 150;
-  const bars = [92, 70, 84, 60, 96, 74, 66, 88, 58, 80];
-  const rows = bars.map((bar, i) => {
-    const y = top + i * (rowH + gap);
-    return `<g class="hero-plan_row" style="--row:${i}"><rect class="hero-plan_row-box" x="${x}" y="${y}" width="${width}" height="${rowH}" rx="8"/><circle class="hero-plan_row-dot" cx="${x + 17}" cy="${y + rowH / 2}" r="4"/><rect class="hero-plan_row-bar" x="${x + 31}" y="${y + rowH / 2 - 3}" width="${bar}" height="6" rx="3"/></g>`;
-  }).join('');
-  return `<svg class="hero-plan_svg" viewBox="0 0 640 520" focusable="false">
-          <g class="hero-plan_cloud">${particles}</g>
-          <g class="hero-plan_curves">${curves}</g>
-          ${travellers}
-          ${pillMarkup}
-          <line class="hero-plan_curve" x1="${hub.x}" y1="${hub.y}" x2="${x - 4}" y2="${hub.y}"/>
-          <circle class="hero-plan_hub" cx="${hub.x}" cy="${hub.y}" r="3.5"/>
-          ${rows}
-          <rect class="hero-plan_focus" x="${x - 2}" y="${top - 2}" width="${width + 4}" height="${rowH + 4}" rx="9.5"/>
-        </svg>`;
+  return `<div class="hero-spine_track" style="--count:${SPINE_CARDS.length}">${particles}<svg class="hero-spine_wave" viewBox="0 0 30 800" preserveAspectRatio="none" focusable="false"><path d="${wavePath()}"/></svg>${cards}</div>`;
 }
 function renderHero(hero, {headingId = hero.heading_id} = {}) {
   const [main, second] = hero.actions;
@@ -145,8 +137,7 @@ function renderHero(hero, {headingId = hero.heading_id} = {}) {
         <dl class="hero-plan_facts" aria-label="${escapeHtml(hero.facts.label)}">${facts}</dl>
       </div>
       <div class="hero-plan_visual" aria-hidden="true">
-        ${renderPlanVisual()}
-        <span class="hero-plan_label">${renderText(hero.visual.label)}</span>
+        ${renderSpineVisual()}
       </div>
     </div>
   </div></div>

@@ -76,41 +76,51 @@
 .hero-plan_fact { display: grid; min-width: 0; grid-template-columns: 6.5rem minmax(0, 1fr); align-items: baseline; gap: 0.75rem; padding: 0.75rem 0; border-top: 1px solid var(--hero-plan-line); }
 .hero-plan_fact-term { color: var(--hero-plan-muted); font-size: 0.8125rem; line-height: 1.3; }
 .hero-plan_fact-value { margin: 0; color: #fff; font-size: 1rem; font-weight: 500; line-height: 1.25; }
-.hero-plan_visual { position: relative; width: min(100%, 34rem); aspect-ratio: 640 / 520; margin: 1.75rem auto 0; }
-.hero-plan_svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; }
-.hero-plan_particle { fill: #fff; }
-.hero-plan_particle.is-drift-1 { animation: hero-plan-drift-1 7000ms ease-in-out infinite alternate; }
-.hero-plan_particle.is-drift-2 { animation: hero-plan-drift-2 9000ms ease-in-out infinite alternate; }
-.hero-plan_particle.is-drift-3 { animation: hero-plan-drift-3 11000ms ease-in-out infinite alternate; }
-.hero-plan_particle.is-twinkle { animation-name: hero-plan-twinkle; animation-duration: 2600ms; }
-@keyframes hero-plan-drift-1 { to { transform: translate(6px, -8px); } }
-@keyframes hero-plan-drift-2 { to { transform: translate(-8px, 6px); } }
-@keyframes hero-plan-drift-3 { to { transform: translate(5px, 9px); } }
-@keyframes hero-plan-twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.8; } }
-.hero-plan_pill { fill: rgb(255 255 255 / 7%); stroke: rgb(255 255 255 / 24%); stroke-width: 1; }
-.hero-plan_pill-bar { fill: rgb(255 255 255 / 32%); }
-.hero-plan_pill-float { animation: hero-plan-float 6000ms ease-in-out infinite alternate; }
-.hero-plan_pill-float.is-float-2 { animation-duration: 7400ms; animation-delay: -2400ms; }
-.hero-plan_pill-float.is-float-3 { animation-duration: 5200ms; animation-delay: -1200ms; }
-@keyframes hero-plan-float { from { transform: translateY(-4px); } to { transform: translateY(5px); } }
-.hero-plan_curve { fill: none; stroke: rgb(255 255 255 / 26%); stroke-width: 1.25; }
-.hero-plan_traveller { fill: #fff; opacity: 0.85; }
-.hero-plan_hub { fill: #fff; }
-.hero-plan_row-box { fill: rgb(255 255 255 / 8%); stroke: rgb(255 255 255 / 12%); stroke-width: 1; }
-.hero-plan_row-dot { fill: rgb(255 255 255 / 42%); }
-.hero-plan_row-bar { fill: rgb(255 255 255 / 28%); }
-.hero-plan_row { animation: hero-plan-row-in 520ms ease-out both; animation-delay: calc(400ms + var(--row) * 90ms); }
-@keyframes hero-plan-row-in { from { opacity: 0; transform: translateX(10px); } }
-/* Фокус переходит со строки на строку: шаг строки 38 единиц рисунка, по 1,5 секунды на строку. */
-.hero-plan_focus { fill: none; stroke: var(--color-accent-primary); stroke-width: 1.75; animation: hero-plan-focus 15000ms ease-in-out 1400ms infinite both; }
-@keyframes hero-plan-focus {
-  0%, 8.5% { transform: translateY(0); } 10%, 18.5% { transform: translateY(38px); } 20%, 28.5% { transform: translateY(76px); }
-  30%, 38.5% { transform: translateY(114px); } 40%, 48.5% { transform: translateY(152px); } 50%, 58.5% { transform: translateY(190px); }
-  60%, 68.5% { transform: translateY(228px); } 70%, 78.5% { transform: translateY(266px); } 80%, 88.5% { transform: translateY(304px); }
-  90%, 98.5% { transform: translateY(342px); } 100% { transform: translateY(0); }
+/* Иллюстрация «стержень и готовые сценарии». Телефон и планшет: полоса под текстом во всю ширину карточки и до её низа,
+   сверху растворяется, чтобы листы не наезжали на факты. Компьютер: правая колонка на всю высоту карточки, волна
+   и листы уходят за её верхний и нижний край. Листы садятся на гребни волны и уплывают вверх вместе с ней по кругу:
+   один круг — 40 секунд, новый лист каждые 5. Цвет листов — как у полупрозрачных плашек: заливка 7 % белого,
+   тонкая обводка, светлые условные строки; фиолетовая полоска только у одного. */
+.hero-plan_visual { position: relative; height: 24rem; overflow: hidden; margin: 1.5rem calc(-1 * var(--hero-plan-pad)) calc(-1 * var(--hero-plan-pad));
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%); mask-image: linear-gradient(180deg, transparent 0, #000 22%); }
+.hero-spine_track { --loop: 40000ms; --amp: 0.75rem; --link: 1.25rem; --sheet-w: 6.75rem; --sheet-h: 7rem; --index-w: 8.5rem; --index-h: 4.75rem; position: absolute; inset: 0; }
+.hero-spine_particle { position: absolute; display: block; width: 0.1875rem; height: 0.1875rem; border-radius: 50%; background: #fff; }
+.hero-spine_particle.is-drift-1 { animation: hero-spine-drift-1 7000ms ease-in-out infinite alternate; }
+.hero-spine_particle.is-drift-2 { animation: hero-spine-drift-2 9000ms ease-in-out infinite alternate; }
+.hero-spine_particle.is-drift-3 { animation: hero-spine-drift-3 11000ms ease-in-out infinite alternate; }
+@keyframes hero-spine-drift-1 { to { transform: translate(0.375rem, -0.5rem); } }
+@keyframes hero-spine-drift-2 { to { transform: translate(-0.5rem, 0.375rem); } }
+@keyframes hero-spine-drift-3 { to { transform: translate(0.3125rem, 0.5625rem); } }
+/* Волна. Лист проходит путь от низа блока (translateY 100 %) до −42 % — это 142 % высоты блока за круг, листов 8,
+   значит соседние листы идут через 17,75 % высоты. Волна — 8 периодов на 284 % высоты (2 круга), сдвигается на половину
+   своей высоты за круг: 4 периода на круг, полпериода на лист. Каждый лист поэтому всегда на гребне: правые — на правом,
+   левые — на левом. Ширина волны — три амплитуды (гребни на 1/6 и 5/6 ширины рисунка). */
+.hero-spine_wave { position: absolute; top: -42%; left: 50%; width: calc(var(--amp) * 3); height: 284%; overflow: visible; transform: translateX(-50%); animation: hero-spine-wave var(--loop) linear infinite; }
+.hero-spine_wave path { fill: none; stroke: rgb(255 255 255 / 24%); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+@keyframes hero-spine-wave { from { transform: translate(-50%, 0); } to { transform: translate(-50%, -50%); } }
+.hero-spine_slot { --dir: 1; position: absolute; inset: 0; animation: hero-spine-rise var(--loop) linear infinite; animation-delay: calc(var(--loop) / var(--count) * var(--i) * -1); }
+.hero-spine_slot.is-left { --dir: -1; }
+@keyframes hero-spine-rise { from { transform: translateY(100%); } to { transform: translateY(-42%); } }
+/* Середина листа стоит ровно на верхнем крае своей полосы — там, где гребень волны. */
+.hero-spine_item { position: absolute; top: calc(var(--sheet-h) / -2); right: 0; left: 0; height: var(--sheet-h); }
+.hero-spine_item.is-index { top: calc(var(--index-h) / -2); height: var(--index-h); }
+.hero-spine_link { position: absolute; top: 50%; width: var(--link); height: 1px; background: rgb(255 255 255 / 30%); transform-origin: left center; animation: hero-spine-link var(--loop) linear infinite; animation-delay: calc(var(--loop) / var(--count) * var(--i) * -1); }
+.is-right > .hero-spine_item .hero-spine_link { left: calc(50% + var(--amp)); }
+.is-left > .hero-spine_item .hero-spine_link { right: calc(50% + var(--amp)); transform-origin: right center; }
+.hero-spine_node { position: absolute; top: 50%; left: calc(50% + var(--amp) * var(--dir)); width: 0.4375rem; height: 0.4375rem; border-radius: 50%; background: #e6e5eb; transform: translate(-50%, -50%); }
+@keyframes hero-spine-link { 0% { transform: scaleX(0); } 8%, 100% { transform: scaleX(1); } }
+.hero-spine_card { position: absolute; top: 0; display: flex; width: var(--sheet-w); height: 100%; flex-direction: column; gap: 0.5rem; padding: 0.875rem 0.875rem 0; border: 1px solid rgb(255 255 255 / 22%); border-radius: 0.625rem; background: rgb(255 255 255 / 7%); transform: rotate(var(--rot)); animation: hero-spine-emerge var(--loop) linear infinite; animation-delay: calc(var(--loop) / var(--count) * var(--i) * -1); }
+.hero-spine_card.is-index { width: var(--index-w); }
+.is-right .hero-spine_card { left: calc(50% + var(--amp) + var(--link)); }
+.is-left .hero-spine_card { right: calc(50% + var(--amp) + var(--link)); }
+.hero-spine_head { width: 58%; height: 0.5rem; border-radius: 62.5rem; background: rgb(255 255 255 / 38%); }
+.hero-spine_card.is-accent .hero-spine_head { background: var(--color-accent-primary); }
+.hero-spine_line { height: 0.3125rem; border-radius: 62.5rem; background: rgb(255 255 255 / 20%); }
+@keyframes hero-spine-emerge {
+  0% { opacity: 0; transform: translateX(calc(var(--dir) * -2rem)) rotate(0deg) scale(0.86); }
+  12% { opacity: 1; transform: translateX(0) rotate(var(--rot)) scale(1); }
+  100% { opacity: 1; transform: rotate(var(--rot)); }
 }
-/* Подпись над колонкой плана: правый край совпадает с планом (он кончается на 620 из 640 единиц рисунка). */
-.hero-plan_label { position: absolute; top: 4%; right: 3%; padding: 0.3125rem 0.75rem; border-radius: 62.5rem; background: rgb(255 255 255 / 10%); -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem); color: var(--hero-plan-text); font-size: 0.75rem; font-weight: 500; line-height: 1.2; white-space: nowrap; }
 @media (min-width: 32.5625rem) {
   .hero-plan_actions { display: flex; flex-wrap: wrap; }
   .hero-plan_button { width: auto; flex: 0 1 16rem; white-space: nowrap; }
@@ -131,19 +141,21 @@
   .hero-plan_fact { padding: 0 1.25rem; }
   .hero-plan_fact-term { font-size: 0.875rem; }
   .hero-plan_fact-value { font-size: 1.125rem; }
-  .hero-plan_visual { width: min(100%, 38rem); margin-top: 2rem; }
-  .hero-plan_label { font-size: 0.875rem; }
+  .hero-plan_visual { height: 30rem; margin-top: 2rem; }
+  .hero-spine_track { --amp: 0.875rem; --link: 1.75rem; --sheet-w: 8.5rem; --sheet-h: 9rem; --index-w: 11rem; --index-h: 6rem; }
 }
 @media (min-width: 64.0625rem) {
   .hero-plan_component { --hero-plan-pad: 3rem; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); min-height: 40rem; padding-bottom: var(--hero-plan-pad); }
   .hero-plan_title { font-size: clamp(4rem, 5.2vw, 5rem); }
   .hero-plan_subtitle { font-size: clamp(1.625rem, 2.1vw, 2rem); }
-  .hero-plan_component { column-gap: 3rem; }
-  .hero-plan_visual { align-self: center; width: 100%; margin: 0; }
+  .hero-plan_visual { position: absolute; top: 0; right: 0; bottom: 0; width: 46%; height: auto; margin: 0; -webkit-mask-image: none; mask-image: none; }
+  .hero-spine_track { --amp: 1rem; --link: 2rem; --sheet-w: 10rem; --sheet-h: 11.5rem; --index-w: 12.5rem; --index-h: 7.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-plan_particle, .hero-plan_pill-float, .hero-plan_row, .hero-plan_focus { animation: none; }
-  .hero-plan_traveller { display: none; }
+  /* Без движения: пять листов стоят на гребнях волны лесенкой (те же места, что и в движении), частицы не плывут. */
+  .hero-spine_wave, .hero-spine_slot, .hero-spine_card, .hero-spine_link, .hero-spine_particle { animation: none; }
+  .hero-spine_slot { transform: translateY(calc(100% - var(--i) * 17.75%)); }
+  .hero-spine_slot:nth-of-type(1), .hero-spine_slot:nth-of-type(n + 7) { display: none; }
 }
 /* Иконки Lucide: 20 px, цвет как у текста рядом. */
 .hero-icon { display: block; width: 1.25rem; height: 1.25rem; flex: none; }
