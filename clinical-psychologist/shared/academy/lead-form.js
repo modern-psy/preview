@@ -297,9 +297,13 @@
       ".t-input-group_contact_method",
     );
 
+    // E-mail is optional per landing: a form rendered without the field sends
+    // email: null and then the native form may omit the e-mail input too.
+    const needsEmail = formData.email !== null;
+
     if (
       !(nameInput instanceof HTMLInputElement) ||
-      !(emailInput instanceof HTMLInputElement) ||
+      (needsEmail && !(emailInput instanceof HTMLInputElement)) ||
       !(phoneGroup instanceof HTMLElement) ||
       !(messengerGroup instanceof HTMLElement)
     ) {
@@ -307,7 +311,7 @@
     }
 
     setNativeInputValue(nameInput, formData.name);
-    setNativeInputValue(emailInput, formData.email);
+    if (needsEmail) setNativeInputValue(emailInput, formData.email);
     fillTildaPhoneGroup(phoneGroup, formData.phone, "Phone");
     selectTildaMessenger(messengerGroup, formData.messenger);
 
@@ -687,7 +691,7 @@
       const phoneController = phoneControllers.get(mainPhoneInput);
       const maxContactController = phoneControllers.get(maxContactInput);
       const formData = {
-        email: form.elements.email.value.trim(),
+        email: form.elements.email ? form.elements.email.value.trim() : null,
         messenger: selectedMessenger,
         messengerContact:
           selectedMessenger === "telegram"
