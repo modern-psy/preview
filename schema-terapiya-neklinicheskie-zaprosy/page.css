@@ -162,8 +162,8 @@
 
 
 /* ===== «В реальной практике клиенты приходят не с „клиникой“» — «Три ситуации и тёмная заметка» из библиотеки =====
-   Как на /cft-intro и /sport-psy-start: белые карточки с фото 16:10 сверху, заголовком и текстом; серая подпись-следствие
-   прижата к низу карточки. Под карточками тёмная заметка-вывод. Телефон — столбиком, 768–1024px — по две, с 1025px — в ряд. */
+   Как на /cft-intro и /sport-psy-start: белые карточки с фото 16:10 сверху, заголовком и текстом (серая подпись-следствие
+   у низа карточки появится, только если задать note в data/pains.json; с 16.10.2026 их нет). Под карточками тёмная заметка-вывод. Телефон — столбиком, 768–1024px — по две, с 1025px — в ряд. */
 .situations_list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
 .situations_card { display: flex; min-width: 0; flex-direction: column; gap: 1rem; padding: 0.75rem 0.75rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
 .situations_media { overflow: hidden; aspect-ratio: 16 / 10; border-radius: 0.75rem; background: #ebeaf0; }
@@ -308,6 +308,9 @@
    «Из чего состоит каждый протокол» с серыми плашками; тёмная плашка #2B2334 итоговой аттестации с белыми карточками
    и фиолетовой кнопкой — единственный фиолетовый в блоке. Протоколы: до 1025px — строки «номер слева, название справа»
    (телефон — столбиком, с 521px — в две колонки), с 1025px — карточки 5 × 2, номер над названием. */
+/* Расписание под описанием программы — белая плашка, текст основным цветом. */
+.program-protocols_basis { max-width: 44rem; text-wrap: balance; }
+.program-protocols_schedule { align-self: center; margin-top: 0.25rem; padding: 0.5rem 1rem; border-radius: 1rem; text-wrap: balance; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; text-align: center; }
 .program-protocols_component { display: grid; gap: 1.5rem; }
 .program-protocols_intro { display: grid; gap: 0.375rem; padding: 1.125rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
 .program-protocols_label { color: var(--color-text-secondary-large); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
@@ -360,6 +363,30 @@
   .program-protocols_attestation-title { font-size: 1.75rem; }
   .program-protocols_check { padding: 1.5rem 1.75rem; }
   .program-protocols_check-text { font-size: 1.0625rem; }
+}
+
+/* ===== Удостоверение — последний вариант блока «Документ» из библиотеки (16.10.2026, как на /business-consulting) =====
+   Белая карточка: слева заголовок с акцентом, описание, условие с тёмной галочкой и лицензия; справа удостоверение в 3D-сцене.
+   Телефон: картинка 3 : 2 под текстом (сверху и снизу у сцены пустой фон, его срезаем); с 768px две колонки,
+   картинка по высоте текста. Удостоверение стоит по центру квадратного кадра с запасом, обрезка его не задевает. */
+.document_component { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); overflow: clip; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.document_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1.5rem 1rem; overflow-wrap: anywhere; }
+.document_heading { text-wrap: balance; }
+.document_terms { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.document_term { display: flex; align-items: flex-start; gap: 0.625rem; color: var(--color-text-primary); font-size: 1rem; line-height: 1.35; text-wrap: pretty; }
+.document_term .hero-icon { margin-top: 0.0625rem; }
+.document_license { --body-text-color: var(--color-text-secondary-large); }
+.document_media { position: relative; aspect-ratio: 3 / 2; background: #ecebef; }
+.document_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+@media (min-width: 48rem) {
+  .document_component { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); }
+  .document_copy { justify-content: center; padding: 2.5rem; }
+  .document_term { font-size: 1.125rem; }
+  .document_media { aspect-ratio: auto; height: 100%; min-height: 22rem; }
+}
+@media (min-width: 64.0625rem) {
+  .document_copy { padding: 3.5rem; }
+  .document_term { font-size: 1.25rem; }
 }
 
 /* ===== Стоимость — утверждённый блок «Одна цифра» с витрины /pricing-scenarios (сценарий «одна цена») =====

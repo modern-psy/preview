@@ -1,0 +1,469 @@
+<!-- ОБЩИЕ СТИЛИ 3/3. Один раз на странице, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<style>
+/* === schema-terapiya-neklinicheskie-zaprosy/page.css === */
+/* Тема лендинга «Схема-терапия: 10 краткосрочных протоколов для повседневных запросов» и его проектные блоки.
+   Общие блоки Академии приходят из web-academy/shared/academy при сборке (node schema-terapiya-neklinicheskie-zaprosy/build.mjs)
+   и лежат выше этого файла в style.css. Здесь переменные темы на .schema-terapiya-neklinicheskie-zaprosy-page и блоки
+   библиотеки, которых нет в shared: первый экран «Точечный портрет» (по образцу Дарьи), «Три ситуации и тёмная заметка», «Фото-фон со стеклянными
+   карточками», «Светлая и тёмная карточки», «Светлые карточки без иконок», карточки преподавателей, программа «Витрина 10 протоколов»,
+   «Одна цифра» и «Гибкие условия оплаты». Цвета и размеры менять здесь, тексты — в data/*.json. */
+
+.schema-terapiya-neklinicheskie-zaprosy-page {
+  --motion-duration: 150ms;
+  --slider-duration: 400ms;
+  --accordion-duration: 300ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --color-page-background: #f5f5f5;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-text: #644ab2;
+  --color-accent-soft: #dad6ff;
+  --color-text-primary: #332f41;
+  /* Вторичный текст #6b6970: 4,96:1 на фоне страницы #f5f5f5 и 5,41:1 на белом (как в narrative-therapy). */
+  --color-text-secondary-large: #6b6970;
+  --color-text-on-dark-muted: #e6e5eb;
+  --hero-section-offset: 2rem;
+  --page-padding: 1rem;
+  --hero-section-end: var(--section-space);
+  --hero-section-end-desktop: var(--section-space);
+  overflow: visible;
+}
+@media (min-width: 48rem) {
+  .schema-terapiya-neklinicheskie-zaprosy-page { --hero-section-offset: 3rem; --page-padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .schema-terapiya-neklinicheskie-zaprosy-page { --page-padding: clamp(1.5rem, 4.7619vw, 5rem); }
+}
+
+.schema-terapiya-neklinicheskie-zaprosy-page :where(a, button) { cursor: pointer; }
+
+/* Тёмные поверхности отвечают за контраст подписей формы, как в эталоне. */
+.schema-terapiya-neklinicheskie-zaprosy-page .lead-form_component { --section-subtitle-color: var(--color-form-muted); }
+@media (prefers-reduced-motion: reduce) {
+  .schema-terapiya-neklinicheskie-zaprosy-page .button_component { transition: none; }
+}
+
+/* Точечная защита цветов от глобальных правил Тильды (только эти варианты, с их состояниями). */
+.schema-terapiya-neklinicheskie-zaprosy-page a.button_component.is-light,
+.schema-terapiya-neklinicheskie-zaprosy-page a.button_component.is-light:hover,
+.schema-terapiya-neklinicheskie-zaprosy-page a.button_component.is-light:focus-visible { color: var(--color-text-primary) !important; }
+.schema-terapiya-neklinicheskie-zaprosy-page a.button_component.is-accent,
+.schema-terapiya-neklinicheskie-zaprosy-page a.button_component.is-accent:hover,
+.schema-terapiya-neklinicheskie-zaprosy-page a.button_component.is-accent:focus-visible { color: var(--color-text-on-dark) !important; }
+
+/* ===== Первый экран по образцу Дарьи («Психиатрия для психологов», 15.10.2026) с иллюстрацией «хаос → план» =====
+   Тёмная карточка #2B2334. Текст слева: полупрозрачная плашка уровня, заголовок из двух частей (крупно метод,
+   ниже обещание курса светлее), подводка, форматы через точку, белая и полупрозрачная кнопки, три факта под линией.
+   Справа иллюстрация SVG (рисует build.mjs): облако частиц и пустые плашки-запросы, линии стекаются в план из десяти
+   строк; обводка-фокус переходит по строкам. Фиолетовый в экране только у обводки. Надпись одна — «план на 7–10 встреч».
+   Телефон и планшет: иллюстрация под текстом; от 1025px — справа, по центру высоты.
+   Анимации — только transform и opacity (плюс бегущие по линиям точки SVG); при «уменьшить движение» всё стоит. */
+.hero-plan_component { --hero-plan-field: #2b2334; --hero-plan-text: #e6e5eb; --hero-plan-muted: #bdb7c9; --hero-plan-line: rgb(255 255 255 / 14%); --hero-plan-pad: 1.25rem;
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; padding: var(--hero-plan-pad); border-radius: 1.5rem; background: var(--hero-plan-field); color: #fff; isolation: isolate; }
+.hero-plan_text { position: relative; z-index: 1; display: flex; min-width: 0; flex-direction: column; align-items: flex-start; }
+.hero-plan_chip { padding: 0.375rem 0.75rem; border-radius: 62.5rem; background: rgb(255 255 255 / 10%); -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem); color: var(--hero-plan-text); font-size: 0.875rem; font-weight: 500; line-height: 1.25; }
+.hero-plan_heading { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0 0; font-weight: 500; }
+.hero-plan_title { color: #fff; font-size: clamp(2.25rem, 10.5vw, 3.25rem); line-height: 1; letter-spacing: -0.04em; white-space: nowrap; }
+/* Двоеточие в полном названии курса слышно скринридеру, но не видно: строки уже разделяют части заголовка. */
+.hero-plan_colon { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.hero-plan_subtitle { max-width: 30rem; color: var(--hero-plan-text); font-size: clamp(1.25rem, 5.4vw, 1.5rem); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+.hero-plan_lead { max-width: 34rem; margin-top: 1.25rem; color: var(--hero-plan-text); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+.hero-plan_formats { max-width: 34rem; margin-top: 1rem; color: var(--hero-plan-muted); font-size: 0.9375rem; line-height: 1.5; }
+.hero-plan_sep { color: rgb(255 255 255 / 40%); }
+.hero-plan_actions { display: grid; width: 100%; gap: 0.625rem; margin-top: 1.5rem; }
+.hero-plan_button { width: 100%; }
+.schema-terapiya-neklinicheskie-zaprosy-page .hero-plan_button.is-glass { background: rgb(255 255 255 / 12%); -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem); color: #fff; }
+.schema-terapiya-neklinicheskie-zaprosy-page a.hero-plan_button.is-glass, .schema-terapiya-neklinicheskie-zaprosy-page a.hero-plan_button.is-glass:hover { color: #fff !important; }
+/* Телефон: факты строками «подпись слева, значение справа» через тонкие линии; с 521px — три колонки. */
+.hero-plan_facts { display: grid; width: 100%; grid-template-columns: minmax(0, 1fr); margin: 1.5rem 0 0; }
+.hero-plan_fact { display: grid; min-width: 0; grid-template-columns: 6.5rem minmax(0, 1fr); align-items: baseline; gap: 0.75rem; padding: 0.75rem 0; border-top: 1px solid var(--hero-plan-line); }
+.hero-plan_fact-term { color: var(--hero-plan-muted); font-size: 0.8125rem; line-height: 1.3; }
+.hero-plan_fact-value { margin: 0; color: #fff; font-size: 1rem; font-weight: 500; line-height: 1.25; }
+/* Иллюстрация «стержень и готовые сценарии». Телефон и планшет: полоса под текстом во всю ширину карточки и до её низа,
+   сверху растворяется, чтобы листы не наезжали на факты. Компьютер: правая колонка на всю высоту карточки, волна
+   и листы уходят за её верхний и нижний край. Листы садятся на гребни волны и уплывают вверх вместе с ней по кругу:
+   один круг — 40 секунд, новый лист каждые 5. Цвет листов — как у полупрозрачных плашек: заливка 7 % белого,
+   тонкая обводка, светлые условные строки; фиолетовая полоска только у одного. */
+.hero-plan_visual { position: relative; height: 24rem; overflow: hidden; margin: 1.5rem calc(-1 * var(--hero-plan-pad)) calc(-1 * var(--hero-plan-pad));
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%); mask-image: linear-gradient(180deg, transparent 0, #000 22%); }
+.hero-spine_track { --loop: 40000ms; --amp: 0.75rem; --link: 1.25rem; --sheet-w: 6.75rem; --sheet-h: 7rem; --index-w: 8.5rem; --index-h: 4.75rem; position: absolute; inset: 0; }
+.hero-spine_particle { position: absolute; display: block; width: 0.1875rem; height: 0.1875rem; border-radius: 50%; background: #fff; }
+.hero-spine_particle.is-drift-1 { animation: hero-spine-drift-1 7000ms ease-in-out infinite alternate; }
+.hero-spine_particle.is-drift-2 { animation: hero-spine-drift-2 9000ms ease-in-out infinite alternate; }
+.hero-spine_particle.is-drift-3 { animation: hero-spine-drift-3 11000ms ease-in-out infinite alternate; }
+@keyframes hero-spine-drift-1 { to { transform: translate(0.375rem, -0.5rem); } }
+@keyframes hero-spine-drift-2 { to { transform: translate(-0.5rem, 0.375rem); } }
+@keyframes hero-spine-drift-3 { to { transform: translate(0.3125rem, 0.5625rem); } }
+/* Волна. Лист проходит путь от низа блока (translateY 100 %) до −42 % — это 142 % высоты блока за круг, листов 8,
+   значит соседние листы идут через 17,75 % высоты. Волна — 8 периодов на 284 % высоты (2 круга), сдвигается на половину
+   своей высоты за круг: 4 периода на круг, полпериода на лист. Каждый лист поэтому всегда на гребне: правые — на правом,
+   левые — на левом. Ширина волны — три амплитуды (гребни на 1/6 и 5/6 ширины рисунка). */
+.hero-spine_wave { position: absolute; top: -42%; left: 50%; width: calc(var(--amp) * 3); height: 284%; overflow: visible; transform: translateX(-50%); animation: hero-spine-wave var(--loop) linear infinite; }
+.hero-spine_wave path { fill: none; stroke: rgb(255 255 255 / 24%); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+@keyframes hero-spine-wave { from { transform: translate(-50%, 0); } to { transform: translate(-50%, -50%); } }
+.hero-spine_slot { --dir: 1; position: absolute; inset: 0; animation: hero-spine-rise var(--loop) linear infinite; animation-delay: calc(var(--loop) / var(--count) * var(--i) * -1); }
+.hero-spine_slot.is-left { --dir: -1; }
+@keyframes hero-spine-rise { from { transform: translateY(100%); } to { transform: translateY(-42%); } }
+/* Середина листа стоит ровно на верхнем крае своей полосы — там, где гребень волны. */
+.hero-spine_item { position: absolute; top: calc(var(--sheet-h) / -2); right: 0; left: 0; height: var(--sheet-h); }
+.hero-spine_item.is-index { top: calc(var(--index-h) / -2); height: var(--index-h); }
+.hero-spine_link { position: absolute; top: 50%; width: var(--link); height: 1px; background: rgb(255 255 255 / 30%); transform-origin: left center; animation: hero-spine-link var(--loop) linear infinite; animation-delay: calc(var(--loop) / var(--count) * var(--i) * -1); }
+.is-right > .hero-spine_item .hero-spine_link { left: calc(50% + var(--amp)); }
+.is-left > .hero-spine_item .hero-spine_link { right: calc(50% + var(--amp)); transform-origin: right center; }
+.hero-spine_node { position: absolute; top: 50%; left: calc(50% + var(--amp) * var(--dir)); width: 0.4375rem; height: 0.4375rem; border-radius: 50%; background: #e6e5eb; transform: translate(-50%, -50%); }
+@keyframes hero-spine-link { 0% { transform: scaleX(0); } 8%, 100% { transform: scaleX(1); } }
+.hero-spine_card { position: absolute; top: 0; display: flex; width: var(--sheet-w); height: 100%; flex-direction: column; gap: 0.5rem; padding: 0.875rem 0.875rem 0; border: 1px solid rgb(255 255 255 / 22%); border-radius: 0.625rem; background: rgb(255 255 255 / 7%); transform: rotate(var(--rot)); animation: hero-spine-emerge var(--loop) linear infinite; animation-delay: calc(var(--loop) / var(--count) * var(--i) * -1); }
+.hero-spine_card.is-index { width: var(--index-w); }
+.is-right .hero-spine_card { left: calc(50% + var(--amp) + var(--link)); }
+.is-left .hero-spine_card { right: calc(50% + var(--amp) + var(--link)); }
+.hero-spine_head { width: 58%; height: 0.5rem; border-radius: 62.5rem; background: rgb(255 255 255 / 38%); }
+.hero-spine_card.is-accent .hero-spine_head { background: var(--color-accent-primary); }
+.hero-spine_line { height: 0.3125rem; border-radius: 62.5rem; background: rgb(255 255 255 / 20%); }
+@keyframes hero-spine-emerge {
+  0% { opacity: 0; transform: translateX(calc(var(--dir) * -2rem)) rotate(0deg) scale(0.86); }
+  12% { opacity: 1; transform: translateX(0) rotate(var(--rot)) scale(1); }
+  100% { opacity: 1; transform: rotate(var(--rot)); }
+}
+@media (min-width: 32.5625rem) {
+  .hero-plan_actions { display: flex; flex-wrap: wrap; }
+  .hero-plan_button { width: auto; flex: 0 1 16rem; white-space: nowrap; }
+  .hero-plan_facts { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.75rem; padding-top: 1rem; border-top: 1px solid var(--hero-plan-line); }
+  .hero-plan_fact { display: flex; flex-direction: column; gap: 0.25rem; padding: 0 0.75rem; border-top: 0; }
+  .hero-plan_fact:first-child { padding-left: 0; }
+  .hero-plan_fact + .hero-plan_fact { border-left: 1px solid var(--hero-plan-line); }
+}
+@media (min-width: 48rem) {
+  .hero-plan_component { --hero-plan-pad: 2rem; border-radius: 1.75rem; }
+  .hero-plan_chip { font-size: 0.9375rem; }
+  .hero-plan_title { font-size: 4rem; }
+  .hero-plan_subtitle { font-size: 1.75rem; }
+  .hero-plan_lead { font-size: 1.125rem; }
+  .hero-plan_formats { font-size: 1rem; }
+  .hero-plan_actions { gap: 0.75rem; margin-top: 2rem; }
+  .hero-plan_facts { width: min(100%, 36rem); margin-top: 2rem; padding-top: 1.25rem; }
+  .hero-plan_fact { padding: 0 1.25rem; }
+  .hero-plan_fact-term { font-size: 0.875rem; }
+  .hero-plan_fact-value { font-size: 1.125rem; }
+  .hero-plan_visual { height: 30rem; margin-top: 2rem; }
+  .hero-spine_track { --amp: 0.875rem; --link: 1.75rem; --sheet-w: 8.5rem; --sheet-h: 9rem; --index-w: 11rem; --index-h: 6rem; }
+}
+@media (min-width: 64.0625rem) {
+  .hero-plan_component { --hero-plan-pad: 3rem; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); min-height: 40rem; padding-bottom: var(--hero-plan-pad); }
+  .hero-plan_title { font-size: clamp(4rem, 5.2vw, 5rem); }
+  .hero-plan_subtitle { font-size: clamp(1.625rem, 2.1vw, 2rem); }
+  .hero-plan_visual { position: absolute; top: 0; right: 0; bottom: 0; width: 46%; height: auto; margin: 0; -webkit-mask-image: none; mask-image: none; }
+  .hero-spine_track { --amp: 1rem; --link: 2rem; --sheet-w: 10rem; --sheet-h: 11.5rem; --index-w: 12.5rem; --index-h: 7.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Без движения: пять листов стоят на гребнях волны лесенкой (те же места, что и в движении), частицы не плывут. */
+  .hero-spine_wave, .hero-spine_slot, .hero-spine_card, .hero-spine_link, .hero-spine_particle { animation: none; }
+  .hero-spine_slot { transform: translateY(calc(100% - var(--i) * 17.75%)); }
+  .hero-spine_slot:nth-of-type(1), .hero-spine_slot:nth-of-type(n + 7) { display: none; }
+}
+/* Иконки Lucide: 20 px, цвет как у текста рядом. */
+.hero-icon { display: block; width: 1.25rem; height: 1.25rem; flex: none; }
+
+
+/* ===== «В реальной практике клиенты приходят не с „клиникой“» — «Три ситуации и тёмная заметка» из библиотеки =====
+   Как на /cft-intro и /sport-psy-start: белые карточки с фото 16:10 сверху, заголовком и текстом (серая подпись-следствие
+   у низа карточки появится, только если задать note в data/pains.json; с 16.10.2026 их нет). Под карточками тёмная заметка-вывод. Телефон — столбиком, 768–1024px — по две, с 1025px — в ряд. */
+.situations_list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.situations_card { display: flex; min-width: 0; flex-direction: column; gap: 1rem; padding: 0.75rem 0.75rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.situations_media { overflow: hidden; aspect-ratio: 16 / 10; border-radius: 0.75rem; background: #ebeaf0; }
+.situations_image { display: block; width: 100%; height: 100%; object-fit: cover; }
+.situations_body { display: flex; flex: 1; flex-direction: column; gap: 0.625rem; padding: 0 0.25rem; }
+.situations_title { color: var(--color-text-primary); font-size: 1.375rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.situations_text { color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+.situations_note { margin-top: auto; padding: 0.75rem 1rem; border-radius: 0.75rem; background: var(--color-page-background); color: var(--color-text-primary); font-size: 1rem; line-height: 1.4; text-wrap: pretty; }
+.situations_summary { padding: 1rem 1.25rem; border-radius: var(--radius-card, 1rem); background: #2b2334; color: #fff; font-size: 1.125rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; text-wrap: balance; }
+@media (min-width: 48rem) {
+  .situations_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .situations_card { padding: 1rem 1rem 1.25rem; }
+  .situations_body { padding: 0 0.5rem; }
+  .situations_summary { padding: 1.25rem 1.75rem; font-size: 1.375rem; }
+}
+@media (min-width: 64.0625rem) {
+  .situations_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .situations_title { font-size: 1.5rem; }
+  .situations_text { font-size: 1.0625rem; }
+  .situations_summary { padding: 1.5rem 2rem; font-size: 1.625rem; text-align: center; }
+}
+
+/* ===== «Что вы получаете на курсе» — «Фото-фон со стеклянными карточками» из библиотеки (вариант с /treningi-dlya-detey) =====
+   Фото приглушено: чуть меньше насыщенности и затемнение в тон поля #2B2334 (слева и снизу плотнее — там белый текст,
+   фон под мелким текстом не светлее #767676). Карточки тёмные стеклянные с размытием, «10 протоколов» — белая.
+   Телефон: фото сверху, его низ растворяется в поле, ниже заголовок и карточки столбиком. 768–1024px: 2 × 2 поверх фото.
+   От 1025px: карточки в один ряд. */
+.gains-glass_component { position: relative; display: grid; overflow: hidden; border-radius: 1.5rem; background: #2b2334; color: #fff; isolation: isolate; }
+.gains-glass_media { position: relative; aspect-ratio: 4 / 3; }
+.gains-glass_media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(43 35 52 / 15%) 0%, rgb(43 35 52 / 35%) 55%, #2b2334 100%); }
+.gains-glass_image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; filter: saturate(0.8); }
+.gains-glass_content { position: relative; z-index: 1; display: grid; gap: 1.5rem; margin-top: -2.5rem; padding: 0 1rem 1rem; }
+.gains-glass_heading { color: #fff; }
+.gains-glass_list { position: relative; display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.gains-glass_item { position: relative; display: grid; align-content: start; gap: 0.25rem; padding: 0.875rem 1rem; border: 1px solid rgb(255 255 255 / 12%); border-radius: 1rem; background: rgb(56 48 65 / 92%); }
+.gains-glass_title { color: #fff; font-size: 1.125rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
+.gains-glass_text { color: #e6e5eb; font-size: 0.9375rem; line-height: 1.35; }
+.gains-glass_item.is-accent { border-color: #fff; background: #fff; }
+.gains-glass_item.is-accent .gains-glass_title { color: var(--color-text-primary); }
+.gains-glass_item.is-accent .gains-glass_text { color: var(--color-text-secondary-large); }
+@media (min-width: 48rem) {
+  .gains-glass_component { min-height: 36rem; border-radius: 1.75rem; }
+  .gains-glass_media { position: absolute; inset: 0; aspect-ratio: auto; }
+  .gains-glass_media::after { background: linear-gradient(180deg, rgb(43 35 52 / 72%) 0%, rgb(43 35 52 / 0%) 45%), linear-gradient(90deg, rgb(43 35 52 / 88%) 0%, rgb(43 35 52 / 62%) 42%, rgb(43 35 52 / 30%) 72%, rgb(43 35 52 / 22%) 100%), linear-gradient(0deg, rgb(43 35 52 / 92%) 0%, rgb(43 35 52 / 40%) 40%, rgb(43 35 52 / 0%) 65%); }
+  .gains-glass_content { align-content: space-between; gap: 6rem; margin-top: 0; padding: 2.5rem 2rem 2rem; }
+  .gains-glass_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .gains-glass_item { padding: 1rem 1.25rem; background: rgb(43 35 52 / 66%); -webkit-backdrop-filter: blur(0.875rem) saturate(1.1); backdrop-filter: blur(0.875rem) saturate(1.1); }
+  .gains-glass_item.is-accent { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (min-width: 64.0625rem) {
+  /* На компьютере текст занимает левую половину — верхнее затемнение можно ослабить. */
+  .gains-glass_media::after { background: linear-gradient(180deg, rgb(43 35 52 / 55%) 0%, rgb(43 35 52 / 0%) 38%), linear-gradient(90deg, rgb(43 35 52 / 88%) 0%, rgb(43 35 52 / 62%) 42%, rgb(43 35 52 / 30%) 72%, rgb(43 35 52 / 22%) 100%), linear-gradient(0deg, rgb(43 35 52 / 92%) 0%, rgb(43 35 52 / 40%) 40%, rgb(43 35 52 / 0%) 65%); }
+  .gains-glass_component { min-height: 40rem; }
+  .gains-glass_content { padding: 3rem; }
+  .gains-glass_list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+  .gains-glass_title { font-size: 1.25rem; }
+  .gains-glass_text { font-size: 1rem; }
+}
+
+/* ===== «Для кого этот курс» — «Светлая и тёмная карточки» из библиотеки (как на /rft, /sport-psy-start) =====
+   Две группы рядом: белая и тёмная #2B2334. В каждой ярлык-плашка, заголовок и текст. Ярлык на светлой — серый,
+   на тёмной — полупрозрачный белый: фиолетового в блоке нет. С 768px карточки рядом одной высоты. */
+.audience-pair_list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.audience-pair_card { display: flex; min-width: 0; flex-direction: column; gap: 0.875rem; padding: 1.25rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); color: var(--color-text-primary); }
+.audience-pair_card.is-dark { background: #2b2334; color: #fff; }
+.audience-pair_label { align-self: flex-start; padding: 0.375rem 0.75rem; border-radius: 62.5rem; background: var(--color-page-background); color: var(--color-text-primary); font-size: 0.9375rem; font-weight: 500; line-height: 1.25; }
+.audience-pair_card.is-dark .audience-pair_label { background: rgb(255 255 255 / 12%); color: #fff; }
+.audience-pair_title { margin-top: 0.5rem; font-size: 1.625rem; font-weight: 500; line-height: 1.12; letter-spacing: -0.025em; text-wrap: balance; }
+.audience-pair_text { color: var(--color-text-secondary-large); font-size: 1.0625rem; line-height: 1.45; text-wrap: pretty; }
+.audience-pair_card.is-dark .audience-pair_text { color: #e6e5eb; }
+.audience-pair_points { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 0; padding: 0; list-style: none; }
+.audience-pair_point { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); align-items: start; gap: 0.75rem; padding: 1rem 0.25rem; border-top: 1px solid rgb(51 47 65 / 12%); color: var(--color-text-primary); font-size: 1.0625rem; line-height: 1.4; text-wrap: pretty; }
+.audience-pair_check { display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); }
+@media (min-width: 48rem) {
+  .audience-pair_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .audience-pair_points { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; }
+  .audience-pair_card { padding: 1.75rem 1.5rem; }
+  .audience-pair_title { font-size: 1.875rem; }
+}
+@media (min-width: 64.0625rem) {
+  .audience-pair_card { gap: 1rem; padding: 2.5rem; min-height: 20rem; }
+  .audience-pair_title { margin-top: auto; font-size: 2.25rem; }
+  .audience-pair_text { font-size: 1.1875rem; }
+  .audience-pair_points { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 2rem; }
+  .audience-pair_point { grid-template-columns: minmax(0, 1fr); align-content: start; gap: 0.875rem; padding: 1.25rem 0 0; font-size: 1.125rem; }
+}
+
+
+/* ===== «Чему вы научитесь на курсе» — «Светлые карточки без иконок» из библиотеки (как на /narrative-therapy, /cft-intro) =====
+   Шесть белых карточек: заголовок «глагол + что» и пояснение серым. Без иконок и цветных акцентов.
+   Телефон — столбиком, 768–1024px — по две, с 1025px — 3 × 2. */
+.skills-plain_list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.skills-plain_card { display: flex; min-width: 0; flex-direction: column; gap: 0.625rem; padding: 1.25rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.skills-plain_title { color: var(--color-text-primary); font-size: 1.375rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.skills-plain_text { color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .skills-plain_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .skills-plain_card { padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .skills-plain_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .skills-plain_card { padding: 2rem; gap: 0.875rem; }
+  .skills-plain_title { font-size: 1.5rem; }
+  .skills-plain_text { font-size: 1.0625rem; }
+}
+
+/* ===== Преподаватели — вертикальная карточка (выбрана 13.10.2026, основа — широкая карточка «Нарративной практики») =====
+   Сверху фото (на телефоне квадрат 9.5rem слева, с 768px 4:3 на всю ширину; кадр прижат к верху), под ним имя, роль, сиреневые плашки регалий,
+   факты с галочками через тонкие линии. Телефон: карточки друг под другом. С 768px две рядом, одной высоты.
+   Пока фото нет — инициалы на сиреневой подложке того же размера. Круглые портреты со старой страницы (is-round) —
+   небольшим кругом 8–10rem: исходники 300–400 px, растягивать их на ширину карточки нельзя. */
+.teachers-bio_list { display: grid; width: 100%; max-width: 64rem; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); margin: 0 auto; padding: 0; list-style: none; }
+.teachers-bio_item { display: flex; min-width: 0; }
+.teachers-bio_card { display: flex; width: 100%; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); overflow-wrap: anywhere; }
+/* Телефон: фото небольшим квадратом слева, чтобы не занимало весь экран; с 768px — на всю ширину карточки, 4:3. */
+.teachers-bio_photo { display: block; width: 9.5rem; height: auto; aspect-ratio: 1; overflow: clip; border-radius: 0.75rem; object-fit: cover; object-position: center top; }
+.teachers-bio_photo.is-round { width: 8rem; aspect-ratio: 1; border-radius: 50%; object-position: center; }
+.teachers-bio_photo.is-placeholder { display: grid; place-items: center; background: var(--color-accent-soft); color: var(--color-accent-text); font-size: 2.25rem; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+.teachers-bio_intro { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+.teachers-bio_name { color: var(--color-text-primary); font-size: 1.5rem; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+.teachers-bio_role { color: var(--color-text-secondary-large); font-size: 1.125rem; line-height: 1.3; }
+.teachers-bio_tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+.teachers-bio_tag { display: inline-flex; align-items: center; padding: 0.375rem 0.75rem; border-radius: 0.375rem; background: var(--color-accent-soft); color: var(--color-accent-text); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.teachers-bio_facts { display: flex; min-width: 0; flex-direction: column; margin: 0; padding: 0; border-top: 1px solid rgb(51 47 65 / 12%); list-style: none; }
+.teachers-bio_fact { display: flex; align-items: flex-start; gap: 0.625rem; padding: 0.875rem 0; border-bottom: 1px solid rgb(51 47 65 / 12%); color: var(--color-text-primary); font-size: 1.125rem; line-height: 1.35; }
+.teachers-bio_fact .hero-icon { margin-top: 0.0625rem; }
+@media (min-width: 48rem) {
+  .teachers-bio_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .teachers-bio_photo { width: 100%; aspect-ratio: 4 / 3; }
+  .teachers-bio_photo.is-round { width: 10rem; aspect-ratio: 1; }
+  .teachers-bio_photo.is-placeholder { font-size: 3rem; }
+  .teachers-bio_card { gap: 1.5rem; padding: 1.5rem; }
+  .teachers-bio_name { font-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .teachers-bio_card { padding: 2rem; }
+  .teachers-bio_photo.is-placeholder { font-size: 4rem; }
+}
+
+/* ===== Программа курса — «Витрина 10 протоколов» (выбрана 15.10.2026: макет А и карточка состава протокола из макета В) =====
+   Узкая белая карточка модуля 1; подпись модуля 2; десять протоколов белыми карточками с бледным номером; белая строка
+   «Из чего состоит каждый протокол» с серыми плашками; тёмная плашка #2B2334 итоговой аттестации с белыми карточками
+   и фиолетовой кнопкой — единственный фиолетовый в блоке. Протоколы: до 1025px — строки «номер слева, название справа»
+   (телефон — столбиком, с 521px — в две колонки), с 1025px — карточки 5 × 2, номер над названием. */
+/* Расписание под описанием программы — белая плашка, текст основным цветом. */
+.program-protocols_basis { max-width: 44rem; text-wrap: balance; }
+.program-protocols_schedule { align-self: center; margin-top: 0.25rem; padding: 0.5rem 1rem; border-radius: 1rem; text-wrap: balance; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; text-align: center; }
+.program-protocols_component { display: grid; gap: 1.5rem; }
+.program-protocols_intro { display: grid; gap: 0.375rem; padding: 1.125rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.program-protocols_label { color: var(--color-text-secondary-large); font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.program-protocols_intro-text { color: var(--color-text-primary); font-size: 1.1875rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.015em; text-wrap: balance; }
+.program-protocols_module { display: grid; gap: 0.75rem; }
+.program-protocols_module-head { display: grid; gap: 0.25rem; padding: 0 0.25rem; }
+.program-protocols_module-text { max-width: 44rem; color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.4; text-wrap: pretty; }
+.program-protocols_grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.program-protocols_item { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); align-items: baseline; gap: 0.75rem; padding: 0.875rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.program-protocols_number { color: #8f8c98; font-size: 1.375rem; font-weight: 400; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.program-protocols_name { color: var(--color-text-primary); font-size: 1.0625rem; font-weight: 500; line-height: 1.3; text-wrap: pretty; }
+.program-protocols_anatomy { display: grid; gap: 0.75rem; padding: 1.125rem 1rem; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.program-protocols_anatomy-title { color: var(--color-text-primary); font-size: 1.125rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
+.program-protocols_parts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.program-protocols_part { padding: 0.5rem 0.875rem; border-radius: 62.5rem; background: var(--color-page-background); color: var(--color-text-primary); font-size: 0.9375rem; line-height: 1.25; }
+.program-protocols_attestation { display: grid; gap: 1rem; padding: 1.25rem 1rem 1rem; border-radius: var(--radius-card, 1rem); background: #2b2334; color: #fff; }
+.program-protocols_attestation-title { color: #fff; font-size: 1.5rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.program-protocols_checks { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.program-protocols_check { display: grid; align-content: start; gap: 0.375rem; padding: 1rem; border-radius: 0.75rem; background: var(--color-surface-primary); color: var(--color-text-primary); }
+.program-protocols_check-title { font-size: 1.125rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; }
+.program-protocols_check-text { color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.4; text-wrap: pretty; }
+.program-protocols_button { width: 100%; margin-top: 0.25rem; }
+@media (min-width: 32.5625rem) {
+  .program-protocols_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 48rem) {
+  .program-protocols_component { gap: 2rem; }
+  .program-protocols_intro { padding: 1.25rem 1.5rem; }
+  .program-protocols_intro-text { font-size: 1.3125rem; }
+  .program-protocols_module { gap: 1rem; }
+  .program-protocols_grid { gap: 0.75rem; }
+  .program-protocols_item { padding: 1rem 1.25rem; }
+  .program-protocols_anatomy { padding: 1.25rem 1.5rem; }
+  .program-protocols_attestation { gap: 1.25rem; padding: 1.75rem 1.5rem 1.5rem; }
+  .program-protocols_checks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .program-protocols_check { padding: 1.25rem 1.5rem; }
+  .schema-terapiya-neklinicheskie-zaprosy-page .program-protocols_button { justify-self: center; width: auto; min-width: 18rem; }
+}
+@media (min-width: 64.0625rem) {
+  .program-protocols_intro { padding: 1.5rem 2rem; }
+  .program-protocols_intro-text { font-size: 1.5rem; }
+  .program-protocols_grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .program-protocols_item { grid-template-columns: minmax(0, 1fr); align-content: start; gap: 0.875rem; min-height: 9.5rem; padding: 1.25rem 1.25rem 1.5rem; }
+  .program-protocols_number { font-size: 2.25rem; }
+  .program-protocols_name { font-size: 1.125rem; }
+  /* Состав протокола одной строкой: заголовок слева, плашки справа. */
+  .program-protocols_anatomy { grid-template-columns: 15rem minmax(0, 1fr); align-items: center; gap: 1.5rem; padding: 1.5rem 2rem; }
+  .program-protocols_part { padding: 0.5625rem 1rem; font-size: 1rem; }
+  .program-protocols_attestation { padding: 2rem 2rem 2rem; }
+  .program-protocols_attestation-title { font-size: 1.75rem; }
+  .program-protocols_check { padding: 1.5rem 1.75rem; }
+  .program-protocols_check-text { font-size: 1.0625rem; }
+}
+
+/* ===== Удостоверение — последний вариант блока «Документ» из библиотеки (16.10.2026, как на /business-consulting) =====
+   Белая карточка: слева заголовок с акцентом, описание, условие с тёмной галочкой и лицензия; справа удостоверение в 3D-сцене.
+   Телефон: картинка 3 : 2 под текстом (сверху и снизу у сцены пустой фон, его срезаем); с 768px две колонки,
+   картинка по высоте текста. Удостоверение стоит по центру квадратного кадра с запасом, обрезка его не задевает. */
+.document_component { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); overflow: clip; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.document_copy { display: flex; min-width: 0; flex-direction: column; gap: 1.25rem; padding: 1.5rem 1rem; overflow-wrap: anywhere; }
+.document_heading { text-wrap: balance; }
+.document_terms { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.document_term { display: flex; align-items: flex-start; gap: 0.625rem; color: var(--color-text-primary); font-size: 1rem; line-height: 1.35; text-wrap: pretty; }
+.document_term .hero-icon { margin-top: 0.0625rem; }
+.document_license { --body-text-color: var(--color-text-secondary-large); }
+.document_media { position: relative; aspect-ratio: 3 / 2; background: #ecebef; }
+.document_image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+@media (min-width: 48rem) {
+  .document_component { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); }
+  .document_copy { justify-content: center; padding: 2.5rem; }
+  .document_term { font-size: 1.125rem; }
+  .document_media { aspect-ratio: auto; height: 100%; min-height: 22rem; }
+}
+@media (min-width: 64.0625rem) {
+  .document_copy { padding: 3.5rem; }
+  .document_term { font-size: 1.25rem; }
+}
+
+/* ===== Стоимость — утверждённый блок «Одна цифра» с витрины /pricing-scenarios (сценарий «одна цена») =====
+   Заголовок секции, горизонтальная белая карточка, под ней «Гибкие условия оплаты» подзаголовком.
+   Карточка: телефон — цена сверху, «Что входит» под линией; с 768px две половины через вертикальную линию.
+   Цена спокойного размера, «₽» мельче и серым; выгода — единственный фиолетовый акцент. Кнопок в блоке нет. */
+.price-block_component { gap: 2rem; color: var(--color-text-primary); }
+.price-wide_component { display: grid; width: 100%; min-width: 0; grid-template-areas: "main" "side"; grid-template-columns: minmax(0, 1fr); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.price-wide_main { display: flex; min-width: 0; flex-direction: column; grid-area: main; padding: 1.5rem; }
+.price-wide_chip { align-self: flex-start; padding: 0.4375rem 0.75rem; border-radius: 6rem; background: var(--color-page-background); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; line-height: 1; }
+.price-wide_title { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 1.25rem; }
+.price-wide_name { font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+.price-wide_sub { color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.4; }
+.price-wide_money { margin-top: auto; padding-top: 2rem; }
+.price-wide_side { display: flex; min-width: 0; flex-direction: column; gap: 1rem; grid-area: side; padding: 1.5rem; border-top: 1px solid rgb(51 47 65 / 12%); }
+.price-wide_side-title { font-size: 1.125rem; font-weight: 500; line-height: 1.25; }
+.price-tag { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.375rem; margin: 0; color: var(--color-text-primary); }
+.price-tag_number { font-size: clamp(2.5rem, 2rem + 1.6vw, 3.25rem); font-weight: 500; line-height: 1; letter-spacing: -0.045em; white-space: nowrap; }
+.price-tag_unit { color: var(--color-text-secondary-large); font-size: 1.75rem; font-weight: 444; line-height: 1; letter-spacing: -0.02em; }
+.price-caption { display: flex; flex-direction: column; gap: 0.125rem; margin-top: 0.75rem; color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.4; }
+.price-caption_benefit { color: var(--color-accent-text); font-weight: 600; }
+.price-check { display: flex; flex-direction: column; gap: 0.75rem; margin: 0; padding: 0; list-style: none; color: var(--color-text-primary); font-size: 1rem; line-height: 1.4; }
+.price-check_item { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); align-items: start; gap: 0.625rem; }
+.price-check_item .hero-icon { margin-top: 0.0625rem; }
+.price-terms_heading { font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem); font-weight: 444; line-height: 1.1; letter-spacing: -0.03em; text-align: center; }
+@media (min-width: 48rem) {
+  .price-wide_component { grid-template-areas: "main side"; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .price-wide_main, .price-wide_side { padding: 2rem; }
+  .price-wide_side { border-top: 0; border-left: 1px solid rgb(51 47 65 / 12%); }
+  .price-check { font-size: 1.0625rem; }
+}
+@media (min-width: 64.0625rem) {
+  .price-wide_component { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .price-wide_main, .price-wide_side { padding: 2.25rem 2.5rem; }
+}
+
+/* «Гибкие условия оплаты» — утверждённый блок из витрины /pricing-scenarios (12.10.2026). Без иконок и без
+   фиолетового: заголовок, под ним три колонки «заголовок, под ним текст» — рассрочка, скидки, вычет —
+   с вертикальными линиями между ними. На телефоне колонки встают друг под другом, линии становятся горизонтальными. */
+.price-terms_component { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1rem; color: var(--color-text-primary); }
+.price-terms_list { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0; }
+/* Колонка — контейнер: в узкой колонке скидки перестраиваются (см. ниже). */
+.price-terms_row { display: flex; min-width: 0; flex-direction: column; gap: 0.875rem; padding-block: 1.25rem; container-type: inline-size; }
+.price-terms_row:first-child { padding-top: 0; }
+.price-terms_row:last-child { padding-bottom: 0; }
+.price-terms_row + .price-terms_row { border-top: 1px solid #cfd1db; }
+.price-terms_title { font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-terms_body { min-width: 0; margin: 0; }
+.price-terms_text { max-width: 34rem; color: var(--color-text-secondary-large); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .price-terms_component { gap: 2rem; padding-top: 1.5rem; }
+  .price-terms_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .price-terms_row { padding: 0 1.5rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+  .price-terms_row + .price-terms_row { border-top: 0; border-left: 1px solid #cfd1db; }
+}
+@media (min-width: 64.0625rem) {
+  .price-terms_row { padding-inline: 2rem; }
+  .price-terms_row:first-child { padding-left: 0; }
+  .price-terms_row:last-child { padding-right: 0; }
+}
+/* Персональные скидки: процент на белой плашке, подпись рядом. Плашки одной ширины — по самой длинной
+   «до −20 %», поэтому подписи начинаются на одной вертикали. */
+.price-discounts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.625rem 0.875rem; margin: 0; padding: 0; list-style: none; }
+.price-discounts_item { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; }
+.price-discounts_value { display: inline-flex; align-items: baseline; justify-content: center; gap: 0.25rem; padding: 0.3125rem 0.625rem; border-radius: 0.5rem; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 1rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; white-space: nowrap; }
+.price-discounts_prefix { font-weight: 500; }
+.price-discounts_label { color: var(--color-text-secondary-large); font-size: 0.9375rem; line-height: 1.4; text-wrap: pretty; }
+/* В узкой колонке (планшет) подпись встаёт под процент, чтобы не рассыпаться по слову в строке. */
+@container (max-width: 15rem) {
+  .price-discounts { grid-template-columns: minmax(0, 1fr); row-gap: 0.875rem; }
+  .price-discounts_item { display: flex; flex-direction: column; align-items: flex-start; gap: 0.375rem; }
+}
+/* Обёртки отдельных секций не должны получать высоту целого экрана. */
+.academy-page[data-schema-terapiya-neklinicheskie-zaprosy-part] { min-height: 0; height: auto; }
+</style>

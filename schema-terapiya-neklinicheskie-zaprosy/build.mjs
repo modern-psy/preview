@@ -146,7 +146,7 @@ function renderHero(hero, {headingId = hero.heading_id} = {}) {
 
 /* «В реальной практике клиенты приходят не с „клиникой“» — «Три ситуации и тёмная заметка» из библиотеки
    (как на /cft-intro, /seksologiya-dlya-psihologov, /sport-psy-start). Три белые карточки: фото 16:10, заголовок, текст,
-   серая подпись-следствие; под карточками тёмная заметка-вывод. Телефон — столбиком, 768–1024 — по две, с 1025 — в ряд. */
+   серая подпись-следствие, если задан note (с 16.10.2026 по просьбе Дарьи подписей нет); под карточками тёмная заметка-вывод. Телефон — столбиком, 768–1024 — по две, с 1025 — в ряд. */
 function renderPains(p, id) {
   const cards = p.cards.map(c => `<li class="situations_card">
         <div class="situations_media"><img class="situations_image" src="${escapeHtml(c.image.src)}" width="${c.image.width}" height="${c.image.height}" alt="${escapeHtml(c.image.alt)}" loading="lazy" decoding="async"></div>
@@ -180,7 +180,8 @@ function renderGains(g, id) {
 
 /* «Для кого этот курс» — «Светлая и тёмная карточки» из библиотеки (как на /rft и /sport-psy-start): две группы рядом,
    у каждой ярлык, заголовок и текст. С 768px карточки рядом одной высоты, на телефоне друг под другом.
-   Под карточками — четыре пункта «вы…» с галочками (15.10.2026): телефон — столбиком, с 768px — 2 × 2, с 1025px — в ряд. */
+   С 16.10.2026 карточек четыре (сетка 2 × 2): две со старой страницы и две из пунктов Дарьи; тёмная только верхняя правая.
+   Пункты с галочками (points) рисуются, только если заданы в data/audience.json — сейчас их нет. */
 function renderAudience(a, id) {
   const cards = a.groups.map(g => `<li class="audience-pair_card${g.dark ? ' is-dark' : ''}"><p class="audience-pair_label">${renderText(g.label)}</p><h3 class="audience-pair_title">${renderText(g.title)}</h3><p class="audience-pair_text">${renderText(g.text)}</p></li>`).join('');
   // Четыре пункта Дарьи (15.10.2026) — под карточками строкой: галочка в светлом кружке и текст, без цветных акцентов.
@@ -196,7 +197,8 @@ function renderSkills(s, id) {
 }
 
 /* Программа курса — «Витрина 10 протоколов» (выбрана Дарьей 15.10.2026: макет А .impeccable/mocks/schema-program/comp-a-grid.png
-   с карточкой «Из чего состоит каждый протокол» из макета В). Сверху узкая белая карточка модуля 1, ниже подпись модуля 2
+   с карточкой «Из чего состоит каждый протокол» из макета В). Под заголовком — описание (основа программы, 16.10.2026)
+   и расписание белой плашкой. Сверху узкая белая карточка модуля 1, ниже подпись модуля 2
    и десять протоколов карточками с бледным номером, под ними строка состава протокола, внизу тёмная плашка итоговой
    аттестации с двумя белыми карточками и кнопкой заявки. Протоколы: телефон — строками, с 521px — по два,
    с 1025px — 5 × 2. Номера декоративные (порядок передаёт сам нумерованный список). */
@@ -206,7 +208,7 @@ function renderProgramProtocols(p, id) {
   const anatomy = p.anatomy.items.map(item => `<li class="program-protocols_part">${renderText(item)}</li>`).join('');
   const checks = p.attestation.items.map(item => `<li class="program-protocols_check"><h4 class="program-protocols_check-title">${renderText(item.title)}</h4><p class="program-protocols_check-text">${renderText(item.text)}</p></li>`).join('');
   return wrap('program-protocols', id, `<div class="section-layout_component is-responsive">
-      ${header(id, p.heading, p.schedule)}
+      <div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(p.heading)}</h2><p class="section-subtitle_component program-protocols_basis">${renderText(p.basis)}</p><p class="program-protocols_schedule">${renderText(p.schedule)}</p></div>
       <div class="program-protocols_component">
         <div class="program-protocols_intro"><h3 class="program-protocols_label">${renderText(p.intro.badge)} · ${renderText(p.intro.title)}</h3><p class="program-protocols_intro-text">${renderText(p.intro.topics[0])}</p></div>
         <div class="program-protocols_module">
@@ -236,6 +238,22 @@ function renderTeachers(t, id) {
       <ul class="teachers-bio_facts">${r.facts.map(f => `<li class="teachers-bio_fact">${icon('check')}<span>${renderText(f)}</span></li>`).join('')}</ul>
     </article></li>`).join('\n');
   return wrap('teachers', id, `<div class="section-layout_component is-responsive">${header(id, t.heading, t.description)}<ul class="teachers-bio_list" aria-label="${escapeHtml(t.listLabel)}">${cards}</ul></div>`);
+}
+
+/* Удостоверение — последний вариант блока «Документ» из библиотеки (16.10.2026; как на /business-consulting и «Психиатрии
+   для психологов»): белая карточка, слева заголовок с акцентом, описание, условие получения с тёмной галочкой и лицензия;
+   справа удостоверение в 3D-сцене (S3). Телефон: картинка 3 : 2 под текстом; с 768px две колонки, картинка по высоте текста. */
+function renderDocuments(d, id) {
+  const terms = d.terms?.length ? `<ul class="document_terms">${d.terms.map(t => `<li class="document_term">${icon('check')}<span>${renderText(t)}</span></li>`).join('')}</ul>` : '';
+  const img = d.image;
+  return `<section class="section_documents section-spacing_component" id="${sectionId(id)}" aria-labelledby="${id}-heading">
+  <div class="padding-global"><div class="container-xlarge"><div class="column-grid_component"><div class="column-grid_content is-content-wide">
+    <div class="document_component">
+      <div class="document_copy"><h2 class="section-title_component is-left is-responsive document_heading" id="${id}-heading">${renderText(d.heading)} <span class="section-title_accent">${renderText(d.headingAccent)}</span></h2><p class="body-text_component is-summary is-regular">${renderText(d.description)}</p>${terms}<p class="body-text_component is-fine-print document_license">${d.license.map(renderText).join('<br>')}</p></div>
+      <div class="document_media"><img class="document_image" src="${escapeHtml(img.src)}" width="${img.width}" height="${img.height}" alt="${escapeHtml(img.alt)}" draggable="false" loading="lazy" decoding="async"></div>
+    </div>
+  </div></div></div></div>
+</section>`;
 }
 
 /* Стоимость — утверждённый блок «Одна цифра» из витрины /pricing-scenarios (сценарий «одна цена»),
@@ -374,6 +392,7 @@ async function buildHtml() {
     renderSkills(await data('skills'), `${SLUG}-skills`),
     renderTeachers(await data('teachers'), `${SLUG}-teachers`),
     renderProgramProtocols(await data('program'), `${SLUG}-program`),
+    renderDocuments(await data('documents'), `${SLUG}-documents`),
     showcase,
     renderPricing(pricingData, await data('payment'), `${SLUG}-pricing`),
     patch(fullForm.replace(emailField, '').replace(maxField, ''), renderText(leadForm.heading), cmsStart(leadForm.headingTemplate), 'Форма: заголовок с датой старта'),
