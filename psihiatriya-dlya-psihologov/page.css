@@ -254,22 +254,19 @@ body { margin: 0; background: #f5f5f5; }
 
 /* ---------- 7 · Преподаватель: широкая карточка ---------- */
 .tc { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 1rem 1.25rem; align-items: center; }
-.tc-photo { aspect-ratio: 1; border-radius: 0.75rem; background: var(--wa-grey); display: grid; place-items: center; align-content: center; gap: 0.25rem; color: var(--wa-ink-3); }
-.tc-photo b { font-size: 1.5rem; font-weight: 500; letter-spacing: 0.02em; }
-.tc-photo small { display: none; font-size: 0.8125rem; }
+.tc-photo { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 0.75rem; background: var(--wa-grey); }
 .tc-id { display: grid; gap: 0.35rem; }
 .tc-name { font-size: var(--big); font-weight: 400; letter-spacing: -0.04em; line-height: 1.05; }
 .tc-role { font-size: var(--body); color: var(--wa-ink-3); }
-.tc-more { grid-column: 1 / -1; display: grid; gap: 0.5rem; padding: 1rem 1.25rem; border: 1px dashed var(--wa-grey-2); border-radius: 0.75rem; color: var(--wa-ink-3); font-size: 0.9375rem; line-height: 1.4; }
-.tc-more i { display: block; height: 0.5rem; border-radius: 999px; background: var(--wa-grey); }
-.tc-more i:nth-child(2) { width: 92%; } .tc-more i:nth-child(3) { width: 78%; } .tc-more i:nth-child(4) { width: 64%; }
+/* регалии строками с галочкой, как в широкой карточке библиотеки */
+.tc-facts { grid-column: 1 / -1; display: grid; gap: 0.625rem; padding-top: 1rem; border-top: 1px solid var(--wa-line); }
+.tc-facts li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--wa-ink); text-wrap: pretty; }
+.tc-facts .ic { margin-top: 0.1rem; color: var(--wa-ink-2); }
 @container stage (min-width: 48rem) {
   .tc { grid-template-columns: 13rem minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 1.5rem 2rem; align-items: start; padding: 1.5rem; }
   .tc-photo { grid-row: 1 / 3; }
-  .tc-photo small { display: block; }
-  .tc-photo b { font-size: 2.5rem; }
   .tc-id { padding-top: 0.75rem; }
-  .tc-more { grid-column: 2; }
+  .tc-facts { grid-column: 2; }
 }
 
 /* ---------- 8 · Документы: удостоверение и сертификат ---------- */
