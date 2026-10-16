@@ -289,19 +289,23 @@ body { margin: 0; background: #f5f5f5; }
 }
 
 /* ---------- 9 · Стоимость: «Одна цифра» и «Гибкие условия оплаты» (утверждённые) ---------- */
+/* карточка цены как утверждённая «Одна цифра» с составом: слева курс и цена, справа «Что входит» */
 .pr { background: #fff; border-radius: var(--r); display: grid; }
-.pr-zone { padding: var(--card-pad); display: grid; gap: 0.75rem; align-content: start; }
-.pr-zone + .pr-zone { border-top: 1px solid var(--wa-line); }
-.pr-chip { justify-self: start; font-size: 0.8125rem; line-height: 1; padding: 0.45rem 0.75rem; border-radius: 999px; background: var(--wa-chip); color: var(--wa-ink); }
-.pr-name { font-size: var(--big); font-weight: 400; letter-spacing: -0.04em; line-height: 1.1; text-wrap: balance; }
-.pr-start { font-size: var(--body); color: var(--wa-ink-3); }
-.pr-price { font-size: 2.5rem; font-weight: 400; letter-spacing: -0.04em; line-height: 1; color: var(--wa-ink); font-variant-numeric: tabular-nums; }
-.pr-price small { font-size: 0.5em; color: var(--wa-ink-3); letter-spacing: 0; margin-left: 0.15em; }
-.pr-alt { font-size: 0.9375rem; line-height: 1.35; color: var(--wa-ink-3); }
-.pr-rise { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0.75rem; align-items: center; margin-top: 0.5rem; padding: 0.75rem 1rem; border-radius: 0.75rem; background: var(--wa-page); }
-.pr-rise-ic { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: #fff; color: var(--wa-ink); }
-.pr-rise b { display: block; font-weight: 500; font-size: 0.9375rem; color: var(--wa-ink); }
-.pr-rise span { font-size: 0.8125rem; color: var(--wa-ink-3); }
+.pr-zone { padding: 1.5rem; min-width: 0; }
+.pr-main { display: flex; flex-direction: column; }
+.pr-side { display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--wa-line); }
+.pr-chip { align-self: flex-start; font-size: 0.8125rem; font-weight: 500; line-height: 1; padding: 0.4375rem 0.75rem; border-radius: 999px; background: var(--wa-page); color: var(--wa-ink); }
+.pr-title { display: grid; gap: 0.375rem; margin-top: 1.25rem; }
+.pr-name { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; text-wrap: balance; }
+.pr-start { font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-3); }
+.pr-money { margin-top: auto; padding-top: 2rem; }
+.pr-price { display: flex; align-items: baseline; gap: 0.375rem; font-size: 2.5rem; font-weight: 500; letter-spacing: -0.045em; line-height: 1; color: var(--wa-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pr-price small { font-size: 1.75rem; font-weight: 400; letter-spacing: -0.02em; color: var(--wa-ink-3); }
+.pr-alt { margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-3); }
+.pr-side-title { font-size: 1.0625rem; font-weight: 500; line-height: 1.25; color: var(--wa-ink); }
+.pr-check { display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink); }
+.pr-check li { display: grid; grid-template-columns: 1.125rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
+.pr-check .ic { width: 1.125rem; height: 1.125rem; margin-top: 0.125rem; color: #0a6b4e; }
 .terms { margin-top: var(--head-gap); }
 .terms-title { text-align: center; font-size: var(--big); font-weight: 400; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem; }
 .terms-cols { display: grid; }
@@ -314,8 +318,9 @@ body { margin: 0; background: #f5f5f5; }
 .terms-disc b { display: block; text-align: center; padding: 0.35rem 0.25rem; border-radius: 0.5rem; background: #fff; font-weight: 600; font-size: 0.875rem; color: var(--wa-ink); white-space: nowrap; }
 @container stage (min-width: 48rem) {
   .pr { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .pr-zone { padding: 2rem 2.5rem 2.25rem; }
-  .pr-zone + .pr-zone { border-top: 0; border-left: 1px solid var(--wa-line); }
+  .pr-zone { padding: 2rem; }
+  .pr-side { border-top: 0; border-left: 1px solid var(--wa-line); }
+  .pr-name { font-size: 1.75rem; }
   .pr-price { font-size: 3rem; }
   .terms-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .terms-col { padding: 0 1.75rem; border-top: 0; }
@@ -357,6 +362,10 @@ body { margin: 0; background: #f5f5f5; }
   .lf-submit { min-height: 4rem; font-size: 1.25rem; }
 }
 @container stage (min-width: 64.0625rem) {
+  .pr { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .pr-zone { padding: 2.25rem 2.5rem; }
+  .pr-name { font-size: 1.875rem; }
+  .pr-price { font-size: 3.25rem; }
   .lf { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 3.5rem 4rem; gap: 4rem; }
 }
 
