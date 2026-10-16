@@ -3262,7 +3262,10 @@ body > .iti--detached-country-selector .iti__no-results {
 }
 @media (min-width: 32.5625rem) {
   .hero-plan_actions { display: flex; flex-wrap: wrap; }
-  .hero-plan_button { width: auto; flex: 0 1 16rem; white-space: nowrap; }
+  /* Кнопки по ширине текста, но не уже 16rem, текст в одну строку: на больших экранах шрифт кнопки дорастает до 22 px
+     и «Посмотреть программу» не помещалась в 16rem (16.10.2026, замечание Дарьи с Тильды). Правило с классом страницы —
+     иначе его перебивает общее .academy-page .button_component { white-space: normal }. */
+  .schema-terapiya-neklinicheskie-zaprosy-page .hero-plan_button { width: auto; min-width: 16rem; flex: 0 0 auto; padding-inline: 1.75rem; white-space: nowrap; }
   .hero-plan_facts { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.75rem; padding-top: 1rem; border-top: 1px solid var(--hero-plan-line); }
   .hero-plan_fact { display: flex; flex-direction: column; gap: 0.25rem; padding: 0 0.75rem; border-top: 0; }
   .hero-plan_fact:first-child { padding-left: 0; }
@@ -3275,7 +3278,8 @@ body > .iti--detached-country-selector .iti__no-results {
   .hero-plan_subtitle { font-size: 1.75rem; }
   .hero-plan_lead { font-size: 1.125rem; }
   .hero-plan_formats { font-size: 1rem; }
-  .hero-plan_actions { gap: 0.75rem; margin-top: 2rem; }
+  /* С 768px кнопки одной ширины — по самой широкой надписи (сетка из равных колонок шириной по содержимому). */
+  .hero-plan_actions { display: grid; width: max-content; max-width: 100%; grid-auto-columns: 1fr; grid-auto-flow: column; gap: 0.75rem; margin-top: 2rem; }
   .hero-plan_facts { width: min(100%, 36rem); margin-top: 2rem; padding-top: 1.25rem; }
   .hero-plan_fact { padding: 0 1.25rem; }
   .hero-plan_fact-term { font-size: 0.875rem; }
