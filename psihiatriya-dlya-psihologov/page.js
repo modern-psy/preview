@@ -1,13 +1,172 @@
 /* Лендинг «Психиатрия для психологов»: колода ситуаций, лист разбора случая, точечная иллюстрация первого экрана, форма. */
 (() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* форма: на превью никуда не отправляет, на сайте её подключим к форме Тильды */
-  document.querySelectorAll('[data-mock-form]').forEach(f => f.addEventListener('submit', e => {
-    e.preventDefault();
-    const btn = f.querySelector('.lf-submit'), was = btn.textContent;
-    btn.textContent = 'Форма заработает на сайте';
-    setTimeout(() => { btn.textContent = was; }, 2200);
-  }));
+  /* ---------- Заявка: отправка через скрытую форму Тильды ----------
+     На modern-psy.ru на странице стоит обычный блок с формой Тильды, его имя указано в data-tilda-form-name у <form>.
+     Эта форма и есть канал в AmoCRM: скрипт прячет её, переносит в неё имя, телефон и мессенджер и отправляет.
+     На превью формы Тильды нет: заявка никуда не уходит, сразу показываем ответ «Заявка отправлена», чтобы его было видно.
+     🟡 Имена полей ниже должны совпадать с настройками формы в Тильде буква в букву.
+        Если поля с таким именем в форме нет, скрипт добавит его скрытым. */
+  const LEAD = {
+    fields: { name: 'Name', phone: 'Phone', messenger: 'messenger', source: 'form_source', clientId: 'ym_client_id' },
+    utm: ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'],
+    messengers: { max: 'MAX', telegram: 'Telegram' },
+    errors: { name: 'Напишите, как к вам обращаться', phone: 'Проверьте номер телефона', send: 'Не получилось отправить заявку. Проверьте интернет и попробуйте ещё раз.' },
+    timeout: 10000
+  };
+  const isProduction = /(^|\.)modern-psy\.ru$/.test(location.hostname);
+  const normalizePhone = v => {
+    const raw = String(v || '').trim(), d = raw.replace(/\D/g, '');
+    if (!d) return '';
+    if (raw.startsWith('+')) return '+' + d;
+    if (d.length === 11 && d.startsWith('8')) return '+7' + d.slice(1);
+    if (d.length === 10) return '+7' + d;
+    return '+' + d;
+  };
+  const phoneOk = p => { const d = p.replace(/\D/g, ''); return d.startsWith('7') ? d.length === 11 : d.length >= 10 && d.length <= 15; };
+  /* метки utm живут в адресе только на первом шаге, запоминаем их на время визита */
+  const readUtm = () => {
+    let saved = {};
+    try { saved = JSON.parse(sessionStorage.getItem('psy-utm') || '{}') || {}; } catch (e) { saved = {}; }
+    const q = new URLSearchParams(location.search), fresh = {};
+    LEAD.utm.forEach(k => { const v = (q.get(k) || '').trim(); if (v) fresh[k] = v; });
+    const all = Object.assign({}, saved, fresh);
+    if (Object.keys(fresh).length) { try { sessionStorage.setItem('psy-utm', JSON.stringify(all)); } catch (e) { /* приватный режим */ } }
+    return all;
+  };
+  /* номер посетителя Метрики лежит в куке _ym_uid */
+  const ymClientId = () => (document.cookie.match(/(?:^|;\s*)_ym_uid=([^;]+)/) || [])[1] || '';
+  /* форму ищем по имени; если имя не совпало, но форма на странице одна, берём её и предупреждаем в консоли */
+  const findTildaForm = name => {
+    const forms = [...document.querySelectorAll('form.t-form')];
+    const byName = forms.find(f => f.querySelector('input[name="tildaspec-formname"]')?.value === name);
+    if (byName) return byName;
+    if (forms.length === 1) {
+      console.warn('[заявка] Формы «' + name + '» на странице нет, работаем с единственной формой Тильды. Поправьте data-tilda-form-name или имя формы в Тильде.');
+      return forms[0];
+    }
+    return null;
+  };
+  const hideTildaForm = name => {
+    const form = findTildaForm(name);
+    if (!form) return null;
+    const rec = form.closest('.t-rec') || form;
+    rec.setAttribute('data-psy-native-form', '');
+    rec.setAttribute('aria-hidden', 'true');
+    return form;
+  };
+  /* значение ставим «родным» сеттером и шлём input/change, иначе скрипты Тильды не заметят заполненное поле */
+  const setValue = (input, value) => {
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+    if (setter) setter.call(input, value); else input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+  const setField = (form, name, value) => {
+    let input = form.querySelector('input[name="' + name + '"]');
+    if (!(input instanceof HTMLInputElement)) {
+      input = document.createElement('input');
+      input.type = 'hidden'; input.name = name;
+      form.appendChild(input);
+    }
+    setValue(input, value);
+  };
+  /* телефон с маской Тильды заполняем через саму Тильду, иначе она пересчитает номер из пустой маски */
+  const setPhone = (form, phone) => {
+    const group = form.querySelector('.t-input-group_ph');
+    if (group && typeof window.t_form_phonemask__setValue === 'function') {
+      try { window.t_form_phonemask__setValue(group, phone, undefined, { noFocus: true }); } catch (e) { console.warn('[заявка] Тильда не приняла номер в поле с маской.', e); }
+    }
+    setField(form, LEAD.fields.phone, phone);
+  };
+  /* обязательные поля формы Тильды, которых нет на странице, не дали бы отправить заявку: снимаем обязательность только с пустых */
+  const relax = form => form.querySelectorAll('[required], [data-tilda-rule], [data-tilda-req]').forEach(f => {
+    if (String(f.value || '').trim()) return;
+    f.removeAttribute('required'); f.removeAttribute('data-tilda-rule'); f.removeAttribute('data-tilda-req');
+  });
+  /* ответ Тильды приходит событием: success, error или timeout, если не ответила */
+  let waits = 0;
+  const waitTilda = (form, ms) => new Promise(resolve => {
+    const ns = '.psyLead' + (++waits);
+    let done = false, timer = 0;
+    const mine = (e, passed) => { const f = passed instanceof HTMLFormElement ? passed : e?.detail?.form || e?.target; return !(f instanceof HTMLFormElement) || f === form; };
+    const ok = (e, f) => { if (mine(e, f)) finish('success'); };
+    const fail = (e, f) => { if (mine(e, f)) finish('error'); };
+    const finish = r => {
+      if (done) return; done = true; clearTimeout(timer);
+      document.removeEventListener('tildaform:aftersuccess', ok); document.removeEventListener('tildaform:aftererror', fail);
+      if (typeof window.jQuery === 'function') window.jQuery(document).off(ns);
+      resolve(r);
+    };
+    document.addEventListener('tildaform:aftersuccess', ok); document.addEventListener('tildaform:aftererror', fail);
+    if (typeof window.jQuery === 'function') { window.jQuery(document).on('tildaform:aftersuccess' + ns, ok); window.jQuery(document).on('tildaform:aftererror' + ns, fail); }
+    timer = setTimeout(() => finish('timeout'), ms);
+  });
+  const sendToTilda = async (formName, values) => {
+    const native = hideTildaForm(formName);
+    if (!native) {
+      const msg = '[заявка] Формы Тильды «' + formName + '» на странице нет, заявка не отправлена.';
+      if (isProduction) console.error(msg); else console.info(msg + ' Это превью, так и должно быть.', values);
+      return 'skipped';
+    }
+    Object.entries(values).forEach(([k, v]) => k === LEAD.fields.phone ? setPhone(native, v) : setField(native, k, v));
+    const utm = readUtm();
+    setField(native, LEAD.fields.clientId, ymClientId());
+    LEAD.utm.forEach(k => setField(native, k, utm[k] || ''));
+    relax(native);
+    const answer = waitTilda(native, LEAD.timeout);
+    const btn = native.querySelector('button[type="submit"]:not(:disabled), input[type="submit"]:not(:disabled)');
+    if (btn) native.requestSubmit(btn); else native.requestSubmit();
+    return answer;
+  };
+  document.querySelectorAll('[data-lead-form]').forEach(form => {
+    const box = form.parentElement, name = form.dataset.tildaFormName || '', source = form.dataset.leadSource || document.title;
+    const nameInput = form.querySelector('input[name="name"]'), phoneInput = form.querySelector('input[name="phone"]');
+    const submit = form.querySelector('.lf-submit'), status = form.querySelector('[data-lead-status]');
+    const done = box.querySelector('[data-lead-success]'), doneMessenger = box.querySelector('[data-lead-success-messenger]');
+    const label = submit.textContent;
+    let busy = false;
+    readUtm();
+    /* форму Тильды прячем сразу, как она появится на странице */
+    if (name && !hideTildaForm(name)) {
+      const mo = new MutationObserver(() => { if (hideTildaForm(name)) mo.disconnect(); });
+      mo.observe(document.body, { childList: true, subtree: true });
+      setTimeout(() => mo.disconnect(), 10000);
+    }
+    const checks = { name: () => nameInput.value.trim() ? '' : LEAD.errors.name, phone: () => phoneOk(normalizePhone(phoneInput.value)) ? '' : LEAD.errors.phone };
+    const inputs = { name: nameInput, phone: phoneInput };
+    const setStatus = (text = '') => { status.textContent = text; };
+    Object.entries(inputs).forEach(([k, input]) => input.addEventListener('input', () => {
+      if (input.getAttribute('aria-invalid') === 'true' && !checks[k]()) { input.removeAttribute('aria-invalid'); setStatus(); }
+    }));
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (busy) return;
+      const bad = Object.keys(checks).filter(k => checks[k]());
+      Object.keys(inputs).forEach(k => bad.includes(k) ? inputs[k].setAttribute('aria-invalid', 'true') : inputs[k].removeAttribute('aria-invalid'));
+      if (bad.length) { setStatus(checks[bad[0]]()); inputs[bad[0]].focus(); return; }
+      const messenger = form.querySelector('input[name="messenger"]:checked')?.value || 'max';
+      busy = true; submit.disabled = true; submit.textContent = 'Отправляем…'; setStatus();
+      let result = 'error';
+      try {
+        result = await sendToTilda(name, {
+          [LEAD.fields.name]: nameInput.value.trim(),
+          [LEAD.fields.phone]: normalizePhone(phoneInput.value),
+          [LEAD.fields.messenger]: LEAD.messengers[messenger] || messenger,
+          [LEAD.fields.source]: source
+        });
+      } catch (err) { console.error('[заявка] Не получилось отправить заявку в Тильду.', err); }
+      busy = false; submit.disabled = false; submit.textContent = label;
+      if (result === 'success' || (result === 'skipped' && !isProduction)) {
+        if (doneMessenger) doneMessenger.textContent = LEAD.messengers[messenger] || 'мессенджер';
+        form.hidden = true;
+        if (done) { done.hidden = false; done.focus(); }
+        return;
+      }
+      if (result === 'timeout') console.warn('[заявка] Тильда не ответила вовремя.');
+      setStatus(LEAD.errors.send);
+    });
+  });
 
   const watch = (el, on, off, threshold = 0.35) => {
     if (!('IntersectionObserver' in window)) { on(); return; }

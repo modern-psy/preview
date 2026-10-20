@@ -263,7 +263,9 @@
           <h2 class="lf-title">Оставьте заявку, и&nbsp;мы свяжемся с&nbsp;вами</h2>
           <p class="lf-desc">Пришлём полную программу курса и&nbsp;ответим на&nbsp;вопросы о&nbsp;поступлении</p>
         </div>
-        <form class="lf-form" data-mock-form novalidate>
+        <!-- Заявка уходит через скрытую форму Тильды с именем из data-tilda-form-name (см. page.js, раздел «Заявка»).
+             data-lead-source: подпись для отдела продаж в поле form_source. -->
+        <form class="lf-form" data-lead-form data-tilda-form-name="psihiatriya-dlya-psihologov" data-lead-source="ПК «Психиатрия для психологов»" novalidate>
           <fieldset class="lf-fields">
             <legend class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Контактные данные</legend>
             <div class="lf-field"><input class="lf-input" type="text" id="lf-name" name="name" autocomplete="name" placeholder=" " required><label class="lf-label" for="lf-name">Имя *</label></div>
@@ -277,8 +279,13 @@
             </div>
           </fieldset>
           <button class="lf-submit" type="submit" id="lf-submit">Оставить заявку</button>
+          <p class="lf-status" data-lead-status role="status" aria-live="polite"></p>
           <p class="lf-legal">Нажимая на&nbsp;кнопку, вы соглашаетесь с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p>
         </form>
+        <div class="lf-done" data-lead-success tabindex="-1" hidden>
+          <p class="lf-done-title">Заявка отправлена</p>
+          <p class="lf-done-text">Напишем вам в&nbsp;<span data-lead-success-messenger>MAX</span>, пришлём полную программу курса и&nbsp;ответим на&nbsp;вопросы.</p>
+        </div>
       </div>
     </div></section>
 
