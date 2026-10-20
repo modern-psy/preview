@@ -45,14 +45,19 @@ class Sections(HTMLParser):
         if tag == 'section':
             self.depth -= 1
             if self.depth == 0:
-                self.sections.append((self.attrs, source[self.start:self.position() + len('</section>')]))
+                self.sections.append((self.attrs, source[self.start:self.position() + len('</section>')], self.start))
 
 
 parser = Sections(source)
 parser.feed(source)
 names = ['Первый экран', 'Кому подойдёт мини-курс', 'После мини-курса вы сможете',
-         'Как устроен мини-курс', 'Программа', 'Ведущие мини-курса', 'Грант', 'Форма заявки', 'Об Академии']
+         'Как устроен мини-курс', 'Программа', 'Ведущие мини-курса', 'Грант на программу', 'Форма заявки',
+         'Об Академии']
 assert len(parser.sections) == len(names) == 9, len(parser.sections)
+
+# Отключённые секции (комментарий «ОТКЛЮЧЕНО …» в index.html) не пропадают из сборки:
+# их код кладётся закомментированным в T123 следующей за ними секции, чтобы его можно было вернуть.
+disabled = [(m.start(), m.end(), m.group(0)) for m in re.finditer(r'      <!-- ОТКЛЮЧЕНО.*?\n      -->', source, re.S)]
 
 files = []
 
@@ -95,10 +100,14 @@ for index, chunk in enumerate(css_chunks):
 
 blocks = []
 offset = len(style_blocks)
-for index, ((attrs, markup), title) in enumerate(zip(parser.sections, names), 1):
+previous_end = 0
+for index, ((attrs, markup, start), title) in enumerate(zip(parser.sections, names), 1):
     slug = attrs['class'].split()[0].removeprefix('section_')
     anchor = ' id="main-content" tabindex="-1"' if index == 1 else ''
+    hidden = ''.join(text + '\n' for begin, end, text in disabled if previous_end <= begin and end <= start)
+    previous_end = start + len(markup)
     text = (f'<!-- СЕКЦИЯ {index:02d}: {title}. Вставить целиком в отдельный T123, поля T123 сверху и снизу — 0. -->\n'
+            f'{hidden}'
             f'<div class="main-wrapper academy-page {PAGE_CLASS}" {PART}="{slug}"{anchor}>\n{markup}\n</div>\n')
     blocks.append(write(f'{index + offset - 1:02d}-{slug}.html', text, title, 'body'))
 

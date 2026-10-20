@@ -978,8 +978,8 @@ body > .iti--detached-country-selector .iti__no-results {
   --hero-section-offset: 1rem;
   --hero-section-end: var(--section-space);
   --hero-section-end-desktop: var(--section-space);
-  --hero-image-position: 72% center;
-  --hero-image-position-desktop: center 30%;
+  --hero-image-position: 74% 30%;
+  --hero-image-position-desktop: center;
 }
 @media (min-width: 48rem) {
   .cbt-oxford-intro-page { --page-padding: 1.5rem; --hero-section-offset: 1.5rem; }
@@ -1006,6 +1006,263 @@ body > .iti--detached-country-selector .iti__no-results {
   line-height: 1.15;
   letter-spacing: -0.01em;
   text-wrap: pretty;
+}
+
+/* Первый экран на телефоне и планшете (до 1024px): плашка, заголовок, описание и кнопка по левому краю,
+   как на десктопе. Здесь max-width, потому что меняем только адаптивы, десктоп уже выровнен влево.
+   Поля текста совпадают с полем плашки (1rem на телефоне, 1.5rem с 768px), чтобы левый край был один. */
+@media (max-width: 64rem) {
+  .cbt-oxford-intro-page .meta-pill_list { align-items: flex-start; }
+  .cbt-oxford-intro-page .hero_content { align-items: flex-start; text-align: left; }
+  .cbt-oxford-intro-page .hero_copy { align-items: flex-start; }
+}
+@media (max-width: 47.9375rem) {
+  .cbt-oxford-intro-page .hero_content { padding-inline: 1rem; }
+}
+
+/* Первый экран: карточка с фото на тёмном фоне #2B2334. Пока фото грузится или если оно не загрузилось,
+   белый текст всё равно стоит на тёмном. */
+.cbt-oxford-intro-page .hero_media { background: var(--color-surface-dark); }
+
+/* Телефон и планшет, до 1024px: здесь наоборот (max-width), потому что композиция другая, чем на десктопе.
+   Фото лежит полосой сверху и внизу растворяется в сплошном #2B2334; заголовок и описание стоят
+   на сплошном фоне, а не поверх лиц. Высота полосы: 16:9 от ширины карточки, но не меньше 17rem.
+   Можно менять: высоту полосы (--hero-strip) и кадр фото (--hero-image-position в начале темы). */
+@media (max-width: 64rem) {
+  .cbt-oxford-intro-page { --hero-strip: max(17rem, calc((100vw - 2 * var(--page-padding)) * 9 / 16)); }
+  .cbt-oxford-intro-page .hero_media {
+    min-height: 0;
+    grid-template-rows: auto minmax(calc(var(--hero-strip) * 0.66 - 4rem), 1fr) auto;
+  }
+  .cbt-oxford-intro-page .hero_image { bottom: auto; height: var(--hero-strip); }
+  .cbt-oxford-intro-page .hero_media::after {
+    background: linear-gradient(180deg, transparent calc(var(--hero-strip) * 0.4), var(--color-surface-dark) var(--hero-strip));
+  }
+  .cbt-oxford-intro-page .hero_content { grid-row: 3; }
+}
+
+/* Не переносить слово внутри (например, «мини-курса» в заголовке). */
+.cbt-oxford-intro-page .text-style-nowrap { white-space: nowrap; }
+
+/* «После мини-курса вы сможете»: слева тёмная карточка со схемой «порочный круг», справа список.
+   На телефоне и планшете схема сверху, список под ней; с 1025px — две колонки.
+   Цвета только из переменных страницы. Можно менять: размер схемы (max-width у .outcomes-orbit_diagram),
+   поля карточек. Нельзя менять: viewBox и координаты внутри схемы — по ним считается движение точки. */
+.cbt-oxford-intro-page .outcomes-orbit_component {
+  display: grid;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+.cbt-oxford-intro-page .outcomes-orbit_stage {
+  display: grid;
+  place-items: center;
+  padding: 2rem 0.5rem 1.5rem;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+.cbt-oxford-intro-page .outcomes-orbit_diagram { display: block; width: 100%; max-width: 30rem; height: auto; overflow: visible; }
+.cbt-oxford-intro-page .outcomes-orbit_ring { fill: none; stroke: rgb(255 255 255 / 40%); stroke-width: 1.5; }
+.cbt-oxford-intro-page .outcomes-orbit_head { fill: rgb(255 255 255 / 70%); }
+.cbt-oxford-intro-page .outcomes-orbit_node rect {
+  fill: var(--color-surface-dark);
+  stroke: rgb(255 255 255 / 70%);
+  stroke-width: 1.5;
+  transition: fill var(--transition-site), stroke var(--transition-site);
+}
+.cbt-oxford-intro-page .outcomes-orbit_node text {
+  fill: var(--color-text-on-dark);
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  transition: fill var(--transition-site);
+}
+/* Узел, по которому сейчас проходит точка */
+.cbt-oxford-intro-page .outcomes-orbit_node.is-lit rect { fill: var(--color-text-on-dark); stroke: var(--color-text-on-dark); }
+.cbt-oxford-intro-page .outcomes-orbit_node.is-lit text { fill: var(--color-surface-dark); }
+.cbt-oxford-intro-page .outcomes-orbit_dot { fill: var(--color-accent-primary); stroke: var(--color-surface-dark); stroke-width: 3; }
+.cbt-oxford-intro-page .outcomes-orbit_center {
+  fill: var(--color-text-on-dark-muted);
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  text-anchor: middle;
+}
+.cbt-oxford-intro-page .outcomes-orbit_center-title { fill: var(--color-text-on-dark); font-size: 16px; font-weight: 500; }
+.cbt-oxford-intro-page .outcomes-orbit_list {
+  display: grid;
+  margin: 0;
+  padding: 0.5rem 1rem 0.75rem;
+  list-style: none;
+}
+.cbt-oxford-intro-page .outcomes-orbit_item {
+  --body-text-color: var(--color-text-primary);
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  gap: 0.875rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgb(51 47 65 / 12%);
+  color: var(--color-text-primary);
+}
+.cbt-oxford-intro-page .outcomes-orbit_item:last-child { border-bottom: 0; }
+.cbt-oxford-intro-page .outcomes-orbit_item .body-text_component { line-height: 1.3; }
+.cbt-oxford-intro-page .outcomes-orbit_check { display: block; margin-top: 0.05rem; }
+@media (min-width: 32.5625rem) {
+  .cbt-oxford-intro-page .outcomes-orbit_list { padding-inline: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .cbt-oxford-intro-page .outcomes-orbit_component { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cbt-oxford-intro-page .outcomes-orbit_stage { padding: 3rem 2rem; }
+  .cbt-oxford-intro-page .outcomes-orbit_list { align-content: center; padding: 1.5rem 2.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cbt-oxford-intro-page .outcomes-orbit_spinner { display: none; }
+}
+
+/* Финал: грант на программу. Тёмный блок, слева текст и кнопка, справа «кладка» из подарочных карт:
+   все карты под одним углом, ряды сдвинуты на полкарты, как кирпичи. Яркая одна, остальные в тон фону.
+   Кладка — часть самой карточки: её обрезают только внешние края блока, а со стороны текста край
+   ступенчатый, из целых карт. На телефоне и планшете кладка сверху, последний ряд целиком, текст под ним.
+   Можно менять: размер карт (--card-w), зазор (--card-gap), угол (--wall-angle), где стоит кладка
+   (--wall-x, --wall-y) и сдвиги рядов (--row-0 … --row-3, в половинах карты).
+   Нельзя: убирать или переставлять карты в разметке — яркая карта стоит первой в третьем ряду. */
+.cbt-oxford-intro-page .grant-gift_component {
+  --gift-pad: 1rem;
+  --card-w: 10.5rem;
+  --card-gap: 0.875rem;
+  --card-step: calc((var(--card-w) + var(--card-gap)) / 2);
+  --wall-angle: -16deg;
+  --wall-height: 15rem;
+  --wall-x: -3rem;
+  --wall-y: 5.5rem;
+  --row-0: 1;
+  --row-1: 0;
+  --row-2: 1;
+  --row-3: 0;
+  --card-muted: color-mix(in srgb, var(--color-accent-text) 30%, var(--color-surface-dark));
+  --card-muted-line: color-mix(in srgb, var(--color-accent-soft) 18%, var(--card-muted));
+  --card-muted-text: color-mix(in srgb, var(--color-accent-soft) 38%, var(--card-muted));
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+/* Поля текста — как у формы заявки ниже (16 px на телефоне, 20 px с 521 px, 24 px с 768 px), чтобы левые края совпадали */
+.cbt-oxford-intro-page .grant-gift_copy { position: relative; z-index: 1; display: grid; gap: 2rem; padding: var(--gift-pad); }
+.cbt-oxford-intro-page .grant-gift_copy .section-subtitle_component { max-width: 36rem; color: var(--color-text-on-dark-muted); }
+.cbt-oxford-intro-page .grant-gift_button { width: 100%; }
+/* Название программы в абзаце: белым и полужирным */
+.cbt-oxford-intro-page .grant-gift_program { color: var(--color-text-on-dark); font-weight: 600; }
+/* Место под кладку: сама кладка не обрезается этим блоком, только краями карточки */
+.cbt-oxford-intro-page .grant-gift_visual { position: relative; height: var(--wall-height); }
+/* Кладка поворачивается вокруг левой середины; ряды сдвигаются на целое число половин карты */
+.cbt-oxford-intro-page .grant-gift_wall {
+  position: absolute;
+  top: var(--wall-y);
+  left: var(--wall-x);
+  display: grid;
+  gap: var(--card-gap);
+  transform-origin: 0 50%;
+  transform: translateY(-50%) rotate(var(--wall-angle));
+}
+.cbt-oxford-intro-page .grant-gift_row { display: flex; gap: var(--card-gap); }
+.cbt-oxford-intro-page .grant-gift_row:nth-child(1) { margin-left: calc(var(--card-step) * var(--row-0)); }
+.cbt-oxford-intro-page .grant-gift_row:nth-child(2) { margin-left: calc(var(--card-step) * var(--row-1)); }
+.cbt-oxford-intro-page .grant-gift_row:nth-child(3) { margin-left: calc(var(--card-step) * var(--row-2)); }
+.cbt-oxford-intro-page .grant-gift_row:nth-child(4) { margin-left: calc(var(--card-step) * var(--row-3)); }
+/* На телефоне и планшете три ряда: четвёртый ушёл бы под текст */
+.cbt-oxford-intro-page .grant-gift_row:nth-child(4) { display: none; }
+/* Карта: лента крест-накрест рисуется фоном, бантик — маской; цвета задаются переменными */
+.cbt-oxford-intro-page .grant-gift_card {
+  --card-bg: var(--card-muted);
+  --card-line: var(--card-muted-line);
+  --card-text: var(--card-muted-text);
+  position: relative;
+  flex: none;
+  width: var(--card-w);
+  aspect-ratio: 1.586;
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(90deg, transparent calc(32% - 0.125rem), var(--card-line) calc(32% - 0.125rem) calc(32% + 0.125rem), transparent calc(32% + 0.125rem)),
+    linear-gradient(180deg, transparent calc(40% - 0.125rem), var(--card-line) calc(40% - 0.125rem) calc(40% + 0.125rem), transparent calc(40% + 0.125rem)),
+    var(--card-bg);
+  color: var(--card-text);
+}
+.cbt-oxford-intro-page .grant-gift_card::before {
+  position: absolute;
+  top: 40%;
+  left: 32%;
+  width: 30%;
+  aspect-ratio: 100 / 72;
+  background: var(--card-line);
+  content: "";
+  transform: translate(-50%, -52%);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 72'%3E%3Cg fill='none' stroke='%23000' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 38 C45 22 27 11 20 19 C13 28 30 41 50 38'/%3E%3Cpath d='M50 38 C55 22 73 11 80 19 C87 28 70 41 50 38'/%3E%3Cpath d='M50 38 L35 66'/%3E%3Cpath d='M50 38 L65 66'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 72'%3E%3Cg fill='none' stroke='%23000' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 38 C45 22 27 11 20 19 C13 28 30 41 50 38'/%3E%3Cpath d='M50 38 C55 22 73 11 80 19 C87 28 70 41 50 38'/%3E%3Cpath d='M50 38 L35 66'/%3E%3Cpath d='M50 38 L65 66'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+}
+.cbt-oxford-intro-page .grant-gift_card-value {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+}
+.cbt-oxford-intro-page .grant-gift_card-mark { position: absolute; top: 0.625rem; left: 0.75rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; }
+/* Яркая карта: фиолетовая, лента и текст белые; размер как у остальных */
+.cbt-oxford-intro-page .grant-gift_card.is-bright {
+  --card-bg: var(--color-accent-primary);
+  --card-line: var(--color-text-on-dark);
+  --card-text: var(--color-text-on-dark);
+}
+@media (min-width: 32.5625rem) {
+  .cbt-oxford-intro-page .grant-gift_component { --gift-pad: 1.25rem; --card-w: 13rem; --card-gap: 1rem; --wall-height: 18rem; --wall-x: calc(50% - 15.5rem); --wall-y: 6.7rem; }
+  .cbt-oxford-intro-page .grant-gift_card { border-radius: 0.875rem; }
+  .cbt-oxford-intro-page .grant-gift_card-value { right: 0.875rem; bottom: 0.625rem; font-size: 1.75rem; }
+  .cbt-oxford-intro-page .grant-gift_card-mark { top: 0.75rem; left: 0.875rem; font-size: 0.875rem; }
+  .cbt-oxford-intro-page .grant-gift_button { justify-self: start; width: auto; padding-inline: 3rem; }
+}
+@media (min-width: 48rem) {
+  .cbt-oxford-intro-page .grant-gift_component { --gift-pad: 1.5rem; }
+}
+/* Десктоп: кладка справа, четыре ряда; ряды сдвинуты так, что левый край идёт ступеньками
+   сверху справа вниз налево и не заходит на колонку с текстом */
+@media (min-width: 64.0625rem) {
+  .cbt-oxford-intro-page .grant-gift_component {
+    --card-w: clamp(12rem, 16.6vw, 15rem);
+    --card-gap: 1.125rem;
+    --wall-x: 1.5rem;
+    --wall-y: 50%;
+    --row-0: 2;
+    --row-1: 1;
+    --row-2: 0;
+    --row-3: -1;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+    align-items: stretch;
+  }
+  .cbt-oxford-intro-page .grant-gift_copy { grid-row: 1; align-content: center; padding-right: 1rem; }
+  .cbt-oxford-intro-page .grant-gift_copy .section-subtitle_component { max-width: 44rem; text-wrap: balance; }
+  .cbt-oxford-intro-page .grant-gift_visual { height: auto; min-height: 26rem; }
+  .cbt-oxford-intro-page .grant-gift_row:nth-child(4) { display: flex; }
+  .cbt-oxford-intro-page .grant-gift_card-value { font-size: calc(var(--card-w) * 0.133); }
+}
+/* Появление: карты по очереди вылетают справа по диагонали вниз, вдоль своего наклона
+   (сдвиг идёт по направлению ряда). Яркая карта вылетает сразу в своём цвете.
+   Классы добавляет скрипт; без него всё видно сразу. */
+.cbt-oxford-intro-page .grant-gift_component.is-motion .grant-gift_card {
+  opacity: 0;
+  transform: translateX(8rem);
+  transition: opacity 350ms ease-out calc(var(--o) * 70ms), transform 800ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--o) * 70ms);
+}
+.cbt-oxford-intro-page .grant-gift_component.is-shown .grant-gift_card { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .cbt-oxford-intro-page .grant-gift_component.is-motion .grant-gift_card { opacity: 1; transform: none; transition: none; }
 }
 
 /* Ведущие: статичная сетка карточек без слайдера, две карточки не растягиваются на всю ширину. */

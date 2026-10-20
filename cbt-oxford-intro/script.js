@@ -945,7 +945,100 @@
   };
 })();
 
-/* ===== shared/academy/lead-form.js (локальные правки: без e-mail, мессенджер ВКонтакте) ===== */
+/* ===== Лендинг: схема «порочный круг» в блоке «После мини-курса вы сможете» ===== */
+// Точка бежит по кругу за 8 секунд; узел, мимо которого она проходит, подсвечивается.
+// Работает только пока блок на экране. При «уменьшить движение» точка скрыта стилями, скрипт не запускается.
+(() => {
+  window.__cbtOutcomesOrbitCleanup?.();
+  const orbits = [...document.querySelectorAll('[data-outcomes-orbit]')];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!orbits.length || reduced.matches || typeof IntersectionObserver !== 'function') return;
+
+  const PERIOD = 8000; // время одного оборота, мс
+  const LIT_ANGLE = 16; // на сколько градусов до и после узла он подсвечен
+  const states = orbits.map(orbit => ({
+    spinner: orbit.querySelector('[data-orbit-spinner]'),
+    nodes: [...orbit.querySelectorAll('[data-orbit-node]')].map(node => [node, Number(node.dataset.angle)]),
+    offset: 0,
+    started: 0,
+    frame: 0,
+    visible: false,
+  }));
+
+  const tick = state => now => {
+    const angle = ((now - state.started + state.offset) % PERIOD) / PERIOD * 360;
+    state.spinner?.setAttribute('transform', `rotate(${angle.toFixed(2)} 200 200)`);
+    state.nodes.forEach(([node, nodeAngle]) => {
+      const distance = Math.abs(((angle - nodeAngle + 540) % 360) - 180);
+      node.classList.toggle('is-lit', distance < LIT_ANGLE);
+    });
+    state.frame = requestAnimationFrame(tick(state));
+  };
+  const start = state => {
+    if (state.frame) return;
+    state.started = performance.now();
+    state.frame = requestAnimationFrame(tick(state));
+  };
+  const stop = state => {
+    if (!state.frame) return;
+    cancelAnimationFrame(state.frame);
+    state.offset = (performance.now() - state.started + state.offset) % PERIOD;
+    state.frame = 0;
+  };
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const state = states[orbits.indexOf(entry.target)];
+      state.visible = entry.isIntersecting;
+      if (state.visible && !document.hidden) start(state); else stop(state);
+    });
+  });
+  orbits.forEach(orbit => observer.observe(orbit));
+  const onVisibility = () => states.forEach(state => (document.hidden || !state.visible ? stop(state) : start(state)));
+  document.addEventListener('visibilitychange', onVisibility);
+  const onReduced = () => { if (reduced.matches) window.__cbtOutcomesOrbitCleanup?.(); };
+  reduced.addEventListener('change', onReduced);
+
+  window.__cbtOutcomesOrbitCleanup = () => {
+    observer.disconnect();
+    states.forEach(state => {
+      stop(state);
+      state.spinner?.removeAttribute('transform');
+      state.nodes.forEach(([node]) => node.classList.remove('is-lit'));
+    });
+    document.removeEventListener('visibilitychange', onVisibility);
+    reduced.removeEventListener('change', onReduced);
+    window.__cbtOutcomesOrbitCleanup = undefined;
+  };
+})();
+
+/* ===== Лендинг: блок гранта с «кладкой» подарочных карт ===== */
+// Когда блок доходит до экрана, кладка из карт въезжает на место и центральная карта «загорается». Один раз.
+// Без скрипта и при «уменьшить движение» блок сразу виден целиком.
+(() => {
+  window.__cbtGrantGiftCleanup?.();
+  const gifts = [...document.querySelectorAll('[data-grant-gift]')];
+  if (!gifts.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof IntersectionObserver !== 'function') return;
+  gifts.forEach(gift => gift.classList.add('is-motion'));
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-shown');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.35 });
+  gifts.forEach(gift => observer.observe(gift));
+  window.__cbtGrantGiftCleanup = () => {
+    observer.disconnect();
+    gifts.forEach(gift => gift.classList.remove('is-motion', 'is-shown'));
+    window.__cbtGrantGiftCleanup = undefined;
+  };
+})();
+
+/* ===== shared/academy/lead-form.js (снимок 20.10.2026) ===== */
+// Две правки лендинга: у MAX нет отдельного поля, контактом MAX уходит номер из поля «Телефон»;
+// надпись кнопки берётся из разметки, а не заменяется на «Отправить заявку».
+// Поля формы: имя, почта, телефон; мессенджер Telegram или MAX (ВКонтакте убран).
 // Academy lead form: opt-in UI and Tilda bridge. Integration: lead-form.md.
 (() => {
   if (typeof window.__academyLeadFormCleanup === "function") {
@@ -957,11 +1050,12 @@
 
   const INTL_TEL_INPUT_UTILS_URL =
     "https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/utils.js";
+  // Longest wait for the utils module before phone validation falls back to the
+  // plausibility check; exact validation takes over once the module arrives.
+  const INTL_TEL_INPUT_UTILS_WAIT_MS = 1500;
   const ASCII_EMAIL_PATTERN =
     /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
   const TELEGRAM_USERNAME_PATTERN = /^@[A-Za-z0-9_]{3,32}$/;
-  // Ссылка vk.com/…, короткое имя, @имя или id123 — локальная ветка ВКонтакте этого лендинга.
-  const VK_CONTACT_PATTERN = /^(?:(?:https?:\/\/)?(?:m\.)?vk\.com\/)?@?[A-Za-z0-9_.]{2,64}\/?$/i;
   const formControllers = [];
   const observedTildaFormNames = new Set();
 
@@ -1111,13 +1205,23 @@
           },
         },
       });
-      ready = instance.promise
-        .then(() => {
-          utilsReady = true;
-        })
-        .catch(() => {
-          utilsReady = false;
-        });
+      // The library defers the utils download until the window "load" event. On
+      // pages with heavy third-party widgets (modern-psy.ru: the Jivo chat arrives
+      // after ~6 s) that kept phone validation and the submit button pending.
+      // Start the download now; a repeated call is a no-op inside the library.
+      window.intlTelInput.attachUtils?.(() => import(INTL_TEL_INPUT_UTILS_URL))?.catch(() => {});
+      ready = Promise.race([
+        instance.promise
+          .then(() => {
+            utilsReady = true;
+          })
+          .catch(() => {
+            utilsReady = false;
+          }),
+        new Promise((resolve) => {
+          window.setTimeout(resolve, INTL_TEL_INPUT_UTILS_WAIT_MS);
+        }),
+      ]);
     }
 
     return {
@@ -1205,10 +1309,12 @@
       ...group.querySelectorAll('input[type="radio"][name="messenger-type"]'),
     ];
     const telegramRadio = radios.find((radio) => radio.value === "telegram");
+    // MAX slot differs between Tilda blocks: `max`, `max_messenger` (newer contact
+    // block) or a reused `whatsapp`. Never fall back to the Telegram radio.
     const maxRadio =
-      radios.find((radio) => radio.value === "max") ||
+      radios.find((radio) => radio.value === "max" || radio.value === "max_messenger") ||
       radios.find((radio) => radio.value === "whatsapp") ||
-      radios[0];
+      radios.find((radio) => radio.value !== "telegram");
 
     if (maxRadio && !maxRadio.dataset.academyOriginalValue) {
       maxRadio.dataset.academyOriginalValue = maxRadio.value;
@@ -1218,17 +1324,14 @@
       maxRadio.value = maxRadio.dataset.academyOriginalValue;
     }
 
-    const vkRadio = radios.find((radio) => radio.value === "vk");
-    const selectedRadio =
-      messenger === "telegram"
-        ? telegramRadio
-        : messenger === "vk"
-          ? vkRadio || telegramRadio
-          : maxRadio;
+    const selectedRadio = messenger === "telegram" ? telegramRadio : maxRadio;
 
     if (!(selectedRadio instanceof HTMLInputElement)) {
-      return;
+      return "";
     }
+
+    // Native type before the whatsapp → max rename: it names the matching value field.
+    const selectedType = selectedRadio.value;
 
     selectedRadio.checked = true;
     selectedRadio.dispatchEvent(new Event("input", { bubbles: true }));
@@ -1237,6 +1340,8 @@
     if (messenger === "max" && selectedRadio.value === "whatsapp") {
       selectedRadio.value = "max";
     }
+
+    return selectedType;
   };
 
   const syncTildaForm = async (nativeForm, formData) => {
@@ -1253,8 +1358,13 @@
       ".t-input-group_contact_method",
     );
 
+    // E-mail is optional per landing: a form rendered without the field sends
+    // email: null and then the native form may omit the e-mail input too.
+    const needsEmail = formData.email !== null;
+
     if (
       !(nameInput instanceof HTMLInputElement) ||
+      (needsEmail && !(emailInput instanceof HTMLInputElement)) ||
       !(phoneGroup instanceof HTMLElement) ||
       !(messengerGroup instanceof HTMLElement)
     ) {
@@ -1262,11 +1372,9 @@
     }
 
     setNativeInputValue(nameInput, formData.name);
-    if (emailInput instanceof HTMLInputElement) {
-      setNativeInputValue(emailInput, formData.email);
-    }
+    if (needsEmail) setNativeInputValue(emailInput, formData.email);
     fillTildaPhoneGroup(phoneGroup, formData.phone, "Phone");
-    selectTildaMessenger(messengerGroup, formData.messenger);
+    const selectedType = selectTildaMessenger(messengerGroup, formData.messenger);
 
     await new Promise((resolve) => window.requestAnimationFrame(resolve));
 
@@ -1275,10 +1383,37 @@
         'input[name="messenger-id"], input[name="tildaspec-phone-part[]"], input[name="tildaspec-phone-part[]-iso"]',
       )
       .forEach((input) => {
+        // Hidden hybrid groups are already reset and disabled by Tilda; an input
+        // event there would make its hybrid handler re-enable an empty text field.
+        if (input.closest(".t-contact-method__hybrid.t-contact-method__hidden")) {
+          return;
+        }
+
         setNativeInputValue(input, "");
       });
 
-    if (formData.messenger === "telegram" || formData.messenger === "vk") {
+    // Newer hybrid contact block: every messenger has its own text field marked
+    // with data-contact-method (Telegram «Имя пользователя или телефон», MAX
+    // «Ссылка или телефон»). Fill exactly the field of the selected type.
+    const typedContactInput = [
+      ...messengerGroup.querySelectorAll(
+        'input[name="messenger-id"][data-contact-method]',
+      ),
+    ].find((input) => input.dataset.contactMethod === selectedType);
+
+    if (typedContactInput instanceof HTMLInputElement) {
+      const valueGroup = typedContactInput.closest(".t-phonemask-input-group");
+      const isPhoneContact = /^[+0-9]/.test(formData.messengerContact);
+
+      if (isPhoneContact && valueGroup?.querySelector("input.t-input-phonemask")) {
+        // Hybrid field: Tilda drops the text and switches to its phone mask as soon
+        // as the text starts with + or a digit, so switch first, then fill the mask.
+        setNativeInputValue(typedContactInput, "+");
+        fillTildaPhoneGroup(valueGroup, formData.messengerContact, "messenger-id");
+      } else {
+        setNativeInputValue(typedContactInput, formData.messengerContact);
+      }
+    } else if (formData.messenger === "telegram") {
       const telegramInput = messengerGroup.querySelector(
         'input[name="messenger-id"]:not([type="hidden"]):not(:disabled)',
       );
@@ -1322,11 +1457,9 @@
     const telegramContactField = form.querySelector(
       "[data-lead-telegram-field]",
     );
-    const vkContactInput = form.querySelector("[data-lead-vk-contact]");
-    const vkContactField = form.querySelector("[data-lead-vk-field]");
     const submit = form.querySelector("[data-lead-submit]");
     const submitLabel = form.querySelector("[data-lead-submit-label]");
-    // Подпись кнопки в покое берём из разметки, а не из общего текста «Отправить заявку».
+    // Правка лендинга: надпись кнопки берётся из разметки («Получить доступ»), её же называет текст согласия.
     const idleSubmitLabel = submitLabel?.textContent.trim() || "Отправить заявку";
     const status = form.querySelector("[data-lead-status]");
     const contentParts = [...form.querySelectorAll("[data-lead-content]")];
@@ -1431,10 +1564,6 @@
         message = ASCII_EMAIL_PATTERN.test(value)
           ? ""
           : "Введите корректный e-mail";
-      } else if (input.name === "vkContact") {
-        message = VK_CONTACT_PATTERN.test(value)
-          ? ""
-          : "Введите ссылку на страницу, id или короткое имя";
       } else if (input.name === "telegramContact") {
         message = TELEGRAM_USERNAME_PATTERN.test(value)
           ? ""
@@ -1489,17 +1618,20 @@
 
     const renderMessengerField = () => {
       const selectedMessenger = messengerInputs.find((input) => input.checked)?.value;
-      const toggleContact = (field, input, active) => {
-        if (field instanceof HTMLElement && input) {
-          field.hidden = !active;
-          input.disabled = !active;
-          setFieldState(input);
-        }
-      };
+      const isTelegram = selectedMessenger === "telegram";
 
-      toggleContact(maxContactField, maxContactInput, selectedMessenger === "max");
-      toggleContact(telegramContactField, telegramContactInput, selectedMessenger === "telegram");
-      toggleContact(vkContactField, vkContactInput, selectedMessenger === "vk");
+      if (maxContactField instanceof HTMLElement && maxContactInput) {
+        maxContactField.hidden = isTelegram;
+        maxContactInput.disabled = isTelegram;
+        setFieldState(maxContactInput);
+      }
+
+      if (telegramContactField instanceof HTMLElement && telegramContactInput) {
+        telegramContactField.hidden = !isTelegram;
+        telegramContactInput.disabled = !isTelegram;
+        setFieldState(telegramContactInput);
+      }
+
       setStatus();
     };
 
@@ -1649,14 +1781,12 @@
       const phoneController = phoneControllers.get(mainPhoneInput);
       const maxContactController = phoneControllers.get(maxContactInput);
       const formData = {
-        email: form.elements.email?.value.trim() ?? "",
+        email: form.elements.email ? form.elements.email.value.trim() : null,
         messenger: selectedMessenger,
         messengerContact:
           selectedMessenger === "telegram"
             ? telegramContactInput.value.trim()
-            : selectedMessenger === "vk"
-              ? vkContactInput.value.trim()
-              : maxContactController.getNumber(),
+            : (maxContactController || phoneController).getNumber(),
         name: form.elements.name.value.trim(),
         phone: phoneController.getNumber(),
       };
