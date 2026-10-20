@@ -1319,6 +1319,34 @@ body > .iti--detached-country-selector .iti__no-results {
   list-style: disc;
 }
 .cbt-oxford-intro-page .stage-card_list li { padding-left: 0.125rem; }
+
+/* Программа: уроки раскрываются (общий аккордеон из components.js на details/summary).
+   У карточки нет своих полей: поля есть у строки-заголовка и у раскрытой части, поэтому нажимается вся строка.
+   На телефоне плашка и плюс сверху, название под ними; с 768px всё в одну строку.
+   Расстояние от заголовка до текста как было: 1.25rem на телефоне, 2rem с 768px. */
+.cbt-oxford-intro-page .card_component.is-stage.is-collapsible { gap: 0; padding: 0; }
+.cbt-oxford-intro-page .stage-card_item { width: 100%; }
+.cbt-oxford-intro-page .stage-card_summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "badge icon" "heading heading";
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+.cbt-oxford-intro-page .stage-card_summary .stage-card_badge { grid-area: badge; justify-self: start; }
+.cbt-oxford-intro-page .stage-card_summary .stage-card_heading { grid-area: heading; }
+.cbt-oxford-intro-page .stage-card_icon { grid-area: icon; width: 2rem; height: 2rem; }
+.cbt-oxford-intro-page .stage-card_item .accordion_panel > .stage-card_body { padding: 0.5rem 0.75rem 0.75rem; }
+@media (min-width: 48rem) {
+  .cbt-oxford-intro-page .stage-card_summary {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "badge heading icon";
+    column-gap: 0.75rem;
+    padding: 1rem;
+  }
+  .cbt-oxford-intro-page .stage-card_item .accordion_panel > .stage-card_body { padding: 1rem; }
+}
 .cbt-oxford-intro-page .stage-card_list li::marker { color: var(--color-accent-primary); }
 .cbt-oxford-intro-page .stage-card_duration {
   color: var(--color-text-secondary-large);
