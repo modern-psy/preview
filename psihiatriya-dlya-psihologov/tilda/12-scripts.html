@@ -172,6 +172,14 @@ const init = () => {
     });
   });
 
+  /* ---------- FAQ: открыт один вопрос за раз ---------- */
+  document.querySelectorAll('[data-faq]').forEach(list => {
+    const items = [...list.querySelectorAll('[data-faq-item]')];
+    items.forEach(item => item.addEventListener('toggle', () => {
+      if (item.open) items.forEach(other => { if (other !== item) other.open = false; });
+    }));
+  });
+
   const watch = (el, on, off, threshold = 0.35) => {
     if (!('IntersectionObserver' in window)) { on(); return; }
     new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting ? on() : off && off()), { threshold }).observe(el);

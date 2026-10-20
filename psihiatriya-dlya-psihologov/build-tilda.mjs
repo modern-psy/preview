@@ -34,6 +34,7 @@ const titles = {
   documents: 'Удостоверение о повышении квалификации',
   price: 'Стоимость обучения и гибкие условия оплаты',
   signup: 'Форма заявки',
+  faq: 'Ответы на популярные вопросы',
 };
 if (sections.length !== Object.keys(titles).length) throw new Error(`Ожидалось ${Object.keys(titles).length} секций, найдено ${sections.length}`);
 for (const markup of sections) if ((markup.match(/<section\b/g) || []).length !== 1) throw new Error('Вложенные <section> не поддерживаются');
@@ -75,9 +76,9 @@ for (const markup of sections) {
 // 3. Скрипт страницы: ждёт, пока все секции появятся в документе.
 await write('scripts', `<!-- СКРИПТ СТРАНИЦЫ. После всех секций и после блока с формой Тильды. -->\n<script>\n(() => {\nconst init = () => {\n${js.trim()}\n};\nif (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once: true});\nelse init();\n})();\n</script>\n`, 'Скрипт страницы', 'FOOTER');
 
-// 4. Микроразметка JSON-LD: организация и курс. Цена в разметке должна совпадать с ценой на странице.
+// 4. Микроразметка JSON-LD: организация, курс и FAQ. Цена в разметке должна совпадать с ценой на странице.
 const jsonLd = [...source.matchAll(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g)].map(m => m[0]);
-if (jsonLd.length !== 2) throw new Error(`Ожидалось 2 блока JSON-LD, найдено ${jsonLd.length}`);
+if (jsonLd.length !== 3) throw new Error(`Ожидалось 3 блока JSON-LD, найдено ${jsonLd.length}`);
 await write('seo-jsonld', `<!-- МИКРОРАЗМЕТКА JSON-LD. Последний T123 страницы. Title, description, canonical и Open Graph задаются в настройках страницы (см. README). -->\n${jsonLd.join('\n')}\n`, 'Микроразметка JSON-LD', 'FOOTER');
 
 // Проверки: локальные ссылки, сохранность и уникальность id, целостность якорей.
