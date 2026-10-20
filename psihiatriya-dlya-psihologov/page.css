@@ -478,12 +478,15 @@ body { margin: 0; background: #f5f5f5; }
 /* ---------- 5А · Путь сверху вниз ---------- */
 .pa { display: grid; gap: var(--head-gap); }
 .pa-aside { display: grid; gap: 1.25rem; align-content: start; }
-.pa-route { position: relative; display: grid; gap: var(--gap); padding-left: 2.25rem; }
-.pa-route::before { content: ""; position: absolute; left: 0.6875rem; top: 0.75rem; bottom: 0.75rem; width: 1px; background: var(--wa-grey-2); }
+/* маршрут: линия из коротких отрезков между кружками, заканчивается на последней остановке.
+   --pa-x — центр кружков относительно текста, --pa-mt — отступ кружка сверху, --pa-ms — его размер */
+.pa-route { --pa-x: -1.53125rem; --pa-mt: 1.25rem; --pa-ms: 1.4375rem; position: relative; display: grid; gap: var(--gap); padding-left: 2.25rem; }
+.pa-end::after, .pa-stop::before, .pa-stop:not(:last-child)::after { content: ""; position: absolute; left: calc(var(--pa-x) - 0.5px); width: 1px; background: var(--wa-grey-2); }
+.pa-end::after { top: calc(50% + var(--pa-ms) / 2); height: calc(50% - var(--pa-ms) / 2 + var(--gap)); }
+.pa-stop::before { top: calc(-1 * var(--gap)); height: calc(var(--gap) + var(--pa-mt)); }
+.pa-stop:not(:last-child)::after { top: calc(var(--pa-mt) + var(--pa-ms)); bottom: 0; }
 .pa-end { position: relative; font-size: var(--body); font-weight: 500; color: var(--wa-ink-2); line-height: 1.2; padding-block: 0.25rem; }
 .pa-end::before { content: ""; position: absolute; left: -2.25rem; top: 50%; width: 1.4375rem; height: 1.4375rem; border-radius: 50%; transform: translateY(-50%); background: var(--wa-page); border: 1px solid var(--wa-ink-3); }
-.pa-end.is-finish { color: var(--wa-ink); }
-.pa-end.is-finish::before { background: var(--wa-accent); border-color: var(--wa-accent); box-shadow: inset 0 0 0 0.3125rem var(--wa-page); }
 .pa-stops { display: grid; gap: var(--gap); }
 .pa-stop { position: relative; }
 .pa-mark { position: absolute; left: -2.25rem; top: 1.25rem; display: grid; place-items: center; width: 1.4375rem; height: 1.4375rem; border-radius: 50%; background: var(--wa-dark); color: #fff; font-size: 0.75rem; font-weight: 500; font-variant-numeric: tabular-nums; }
@@ -501,8 +504,7 @@ body { margin: 0; background: #f5f5f5; }
 .pa-stop.is-final .pa-res p:last-child { color: var(--wa-on-dark-2); }
 .pa-stop.is-final .pa-mark { background: var(--wa-accent); }
 @container stage (min-width: 48rem) {
-  .pa-route { padding-left: 3rem; }
-  .pa-route::before { left: 0.875rem; }
+  .pa-route { padding-left: 3rem; --pa-x: -2.09375rem; --pa-mt: 1.6rem; --pa-ms: 1.8125rem; }
   .pa-end::before, .pa-mark { left: -3rem; width: 1.8125rem; height: 1.8125rem; }
   .pa-mark { font-size: 0.875rem; top: 1.6rem; }
   .pa-res { padding: 1.125rem 1.25rem; }
