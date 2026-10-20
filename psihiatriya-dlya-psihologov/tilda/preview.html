@@ -361,7 +361,10 @@ body { margin: 0; background: #f5f5f5; }
 .lf-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
 .lf-opt { position: relative; }
 .lf-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.lf-opt span { display: flex; min-height: 3.125rem; align-items: center; justify-content: center; border: 1px solid #8e8899; border-radius: 0.375rem; color: var(--wa-on-dark-3); font-weight: 500; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+.lf-opt > span { display: flex; min-height: 3.125rem; align-items: center; justify-content: center; border: 1px solid #8e8899; border-radius: 0.375rem; color: var(--wa-on-dark-3); font-weight: 500; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+/* значки мессенджеров, как в формах других лендингов: красятся цветом текста кнопки */
+.lf-opt > span { gap: 0.5rem; }
+.lf-opt-icon { width: 1.25rem; height: 1.25rem; flex: none; }
 .lf-opt input:checked + span { background: #c7c7c7; border-color: #c7c7c7; color: var(--wa-ink); }
 .lf-opt input:focus-visible + span { outline: 2px solid var(--wa-on-dark-2); outline-offset: 3px; }
 @media (hover: hover) and (pointer: fine) { .lf-opt input:not(:checked) + span:hover { border-color: #fff; color: #fff; } .lf-submit:hover { background: var(--wa-on-dark-2); } }
@@ -757,12 +760,12 @@ body { margin: 0; background: #f5f5f5; }
         <article class="sp-before">
           <div class="sp-player" aria-hidden="true"><span class="sp-tag">лекция в&nbsp;записи</span><span class="sp-play"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg></span><span class="sp-bar"></span></div>
           <h3 class="wa-h3">Заранее, в&nbsp;удобное время</h3>
-          <p class="wa-body">Смотрите записанную лекцию по&nbsp;теме без привязки к&nbsp;расписанию и&nbsp;выполняете задания на&nbsp;понимание ключевых понятий.</p>
+          <p class="wa-body">Смотрите лекцию по&nbsp;теме и&nbsp;закрепляете теорию тестированием.</p>
         </article>
         <article class="sp-meet">
           <div class="sp-call"><span class="sp-tiles" aria-hidden="true"><i><b>ЕС</b></i><i><b>МВ</b></i><i><b>ОП</b></i><i><b>ДН</b></i><i class="is-speaking"><b>АБ</b></i><i><b>ИР</b></i></span></div>
           <h3 class="wa-h3">На&nbsp;встречах по&nbsp;четвергам</h3>
-          <p class="wa-body">Разбираете учебные случаи, обсуждаете гипотезы, составляете уточняющие вопросы и&nbsp;обосновываете дальнейшие действия. В&nbsp;отдельных темах предусмотрены видеодемонстрации и&nbsp;ролевые упражнения.</p>
+          <p class="wa-body">Разбираете учебные случаи, обсуждаете гипотезы, составляете уточняющие вопросы и&nbsp;обосновываете дальнейшие действия.</p>
         </article>
       </div>
       <div class="sp-make">
@@ -916,8 +919,8 @@ body { margin: 0; background: #f5f5f5; }
           <fieldset class="lf-msg">
             <legend>Где удобнее общаться</legend>
             <div class="lf-opts">
-              <label class="lf-opt"><input type="radio" id="lf-msg-max" name="messenger" value="max" checked><span>MAX</span></label>
-              <label class="lf-opt"><input type="radio" id="lf-msg-tg" name="messenger" value="telegram"><span>Telegram</span></label>
+              <label class="lf-opt"><input type="radio" id="lf-msg-max" name="messenger" value="max" checked><span><svg class="lf-opt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor" /></svg><span lang="en">MAX</span></span></label>
+              <label class="lf-opt"><input type="radio" id="lf-msg-tg" name="messenger" value="telegram"><span><svg class="lf-opt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor" /></svg><span lang="en">Telegram</span></span></label>
             </div>
           </fieldset>
           <button class="lf-submit" type="submit" id="lf-submit">Оставить заявку</button>
@@ -954,7 +957,7 @@ body { margin: 0; background: #f5f5f5; }
           </details>
           <details class="fq-item" data-faq-item>
             <summary class="fq-q"><h3 class="fq-title">Это живые занятия или всё в&nbsp;записи?</h3><span class="fq-icon" aria-hidden="true"></span></summary>
-            <div class="fq-a"><p>Лекции в&nbsp;записи: смотрите их без&nbsp;привязки к&nbsp;расписанию и&nbsp;выполняете задания на&nbsp;понимание ключевых понятий. Практические занятия проходят онлайн по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00&nbsp;по&nbsp;Москве, с&nbsp;включёнными камерой и&nbsp;микрофоном: разбираете учебные случаи, обсуждаете гипотезы и&nbsp;обосновываете дальнейшие действия.</p></div>
+            <div class="fq-a"><p>Лекции в&nbsp;записи: смотрите их без&nbsp;привязки к&nbsp;расписанию и&nbsp;закрепляете теорию тестированием. Практические занятия проходят онлайн по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00&nbsp;по&nbsp;Москве, с&nbsp;включёнными камерой и&nbsp;микрофоном: разбираете учебные случаи, обсуждаете гипотезы и&nbsp;обосновываете дальнейшие действия.</p></div>
           </details>
           <details class="fq-item" data-faq-item>
             <summary class="fq-q"><h3 class="fq-title">Какой документ я получу?</h3><span class="fq-icon" aria-hidden="true"></span></summary>
@@ -1365,58 +1368,7 @@ else init();
 </script>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- МИКРОРАЗМЕТКА JSON-LD. Последний T123 страницы. Title, description, canonical и Open Graph задаются в настройках страницы (см. README). -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  "@id": "https://modern-psy.ru/#organization",
-  "name": "Академия современной психологии",
-  "url": "https://modern-psy.ru",
-  "logo": "https://static.tildacdn.com/tild3039-3066-4030-a135-626366333435/logo.png",
-  "telephone": "+7 812 250-44-93",
-  "email": "info@modern-psy.ru",
-  "address": {
-    "@type": "PostalAddress",
-    "addressCountry": "RU",
-    "postalCode": "197198",
-    "addressLocality": "Санкт-Петербург",
-    "streetAddress": "пр-т Большой П.С., д. 7/4, литера А, помещ. 2-Н"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Course",
-  "@id": "https://modern-psy.ru/psihiatriya-dlya-psihologov#course",
-  "name": "Психиатрия для психологов",
-  "description": "Научитесь замечать клинически значимые проявления и «красные флаги», формулировать рабочие гипотезы и определять, когда нужна консультация психиатра.",
-  "url": "https://modern-psy.ru/psihiatriya-dlya-psihologov",
-  "inLanguage": "ru",
-  "provider": {
-    "@id": "https://modern-psy.ru/#organization"
-  },
-  "educationalCredentialAwarded": "Удостоверение о повышении квалификации",
-  "hasCourseInstance": {
-    "@type": "CourseInstance",
-    "instructor": [
-      {
-        "@type": "Person",
-        "name": "Анжела Баззаева",
-        "jobTitle": "Врач-психиатр"
-      }
-    ]
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "30000",
-    "priceCurrency": "RUB",
-    "availability": "https://schema.org/InStock",
-    "url": "https://modern-psy.ru/psihiatriya-dlya-psihologov"
-  }
-}
-</script>
+<!-- МИКРОРАЗМЕТКА FAQ. Отдельный T123 в конце страницы. Курс и организацию размечает блок микроразметки из генератора цен, его не трогать. Тексты совпадают с блоком 11-faq. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1451,7 +1403,7 @@ else init();
       "name": "Это живые занятия или всё в записи?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Лекции в записи: смотрите их без привязки к расписанию и выполняете задания на понимание ключевых понятий. Практические занятия проходят онлайн по четвергам с 17:00 до 20:00 по Москве, с включёнными камерой и микрофоном: разбираете учебные случаи, обсуждаете гипотезы и обосновываете дальнейшие действия."
+        "text": "Лекции в записи: смотрите их без привязки к расписанию и закрепляете теорию тестированием. Практические занятия проходят онлайн по четвергам с 17:00 до 20:00 по Москве, с включёнными камерой и микрофоном: разбираете учебные случаи, обсуждаете гипотезы и обосновываете дальнейшие действия."
       }
     },
     {

@@ -76,10 +76,14 @@ for (const markup of sections) {
 // 3. Скрипт страницы: ждёт, пока все секции появятся в документе.
 await write('scripts', `<!-- СКРИПТ СТРАНИЦЫ. После всех секций и после блока с формой Тильды. -->\n<script>\n(() => {\nconst init = () => {\n${js.trim()}\n};\nif (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once: true});\nelse init();\n})();\n</script>\n`, 'Скрипт страницы', 'FOOTER');
 
-// 4. Микроразметка JSON-LD: организация, курс и FAQ. Цена в разметке должна совпадать с ценой на странице.
+// 4. Микроразметка FAQ. Курс и организацию на сайте размечает блок микроразметки из генератора цен
+//    (apps/preview/pricing, курс psychiatry-for-psy, цены из CMS), поэтому в пакет идёт только FAQPage:
+//    иначе курс оказался бы размечен дважды. В index.html для превью остаются все три разметки.
 const jsonLd = [...source.matchAll(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g)].map(m => m[0]);
 if (jsonLd.length !== 3) throw new Error(`Ожидалось 3 блока JSON-LD, найдено ${jsonLd.length}`);
-await write('seo-jsonld', `<!-- МИКРОРАЗМЕТКА JSON-LD. Последний T123 страницы. Title, description, canonical и Open Graph задаются в настройках страницы (см. README). -->\n${jsonLd.join('\n')}\n`, 'Микроразметка JSON-LD', 'FOOTER');
+const faqLd = jsonLd.filter(block => block.includes('"FAQPage"'));
+if (faqLd.length !== 1) throw new Error('В index.html не найдена микроразметка FAQPage');
+await write('seo-faq', `<!-- МИКРОРАЗМЕТКА FAQ. Отдельный T123 в конце страницы. Курс и организацию размечает блок микроразметки из генератора цен, его не трогать. Тексты совпадают с блоком 11-faq. -->\n${faqLd[0]}\n`, 'Микроразметка FAQ', 'FOOTER');
 
 // Проверки: локальные ссылки, сохранность и уникальность id, целостность якорей.
 const all = blocks.join('\n');
