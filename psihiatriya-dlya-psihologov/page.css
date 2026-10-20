@@ -158,16 +158,11 @@ body { margin: 0; background: #f5f5f5; }
   transition: background-color 0.3s ease;
 }
 .hr-text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 1rem 1.25rem; }
-/* телефон: кнопки сразу после описания, строка формата под ними — чтобы заголовок, описание и кнопка были в первом экране */
-.hr-actions { order: 1; }
-.hr-format { order: 2; }
-.hr-facts { order: 3; }
 .hr-pills { display: flex; flex-wrap: wrap; gap: 0.375rem; }
 .hr-pills li { font-size: 0.8125rem; line-height: 1; padding: 0.45rem 0.7rem; border-radius: 999px; background: var(--hr-pill); color: var(--hr-pill-ink); white-space: nowrap; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 .hr-title { font-family: var(--font-display); font-weight: 500; font-size: 2.25rem; line-height: 0.98; letter-spacing: -0.035em; color: var(--hr-head); text-wrap: balance; }
 .hr-sub { display: block; margin-top: 0.5em; font-family: var(--font); font-weight: 400; font-size: 1.125rem; line-height: 1.2; letter-spacing: -0.01em; color: var(--hr-text); text-wrap: balance; }
 .hr-lead { font-size: 1rem; line-height: 1.4; color: var(--hr-text); max-width: 46ch; text-wrap: pretty; }
-.hr-format { font-size: 0.875rem; line-height: 1.5; color: var(--hr-muted); word-spacing: 0.08em; text-wrap: pretty; }
 .hr-actions { display: flex; flex-wrap: wrap; gap: 0.625rem; }
 .hb { display: inline-flex; flex: 1 1 13.75rem; align-items: center; justify-content: center; min-height: 3.25rem; padding: 0.875rem 1.625rem; border-radius: 0.875rem; font: 500 1rem/1.2 var(--font); text-align: center; text-decoration: none; transition: background-color 0.15s ease; }
 .hb.is-main { background: var(--hr-main); color: var(--hr-main-ink); }
@@ -177,11 +172,12 @@ body { margin: 0; background: #f5f5f5; }
   .hb.is-glass:hover { background: var(--hr-glass-hover); }
 }
 .hb:focus-visible { outline: 2px solid var(--fl-end); outline-offset: 3px; }
-.hr-facts { display: grid; margin: 0; border-top: 1px solid var(--hr-line); }
-.hr-facts div { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.625rem 0; }
-.hr-facts div + div { border-top: 1px solid var(--hr-line); }
-.hr-facts dt { font-size: 0.8125rem; color: var(--hr-muted); }
-.hr-facts dd { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 1rem; line-height: 1.2; letter-spacing: -0.01em; color: var(--hr-head); }
+/* Факты о курсе: отдельная полоса под текстом. На телефоне столбиком, на планшете по два, на десктопе в ряд во всю ширину карточки */
+.hr-facts { position: relative; z-index: 1; display: grid; margin: 0 1rem 0.5rem; }
+.hr-facts div { display: grid; gap: 0.25rem; align-content: start; padding: 0.75rem 0; border-top: 1px solid var(--hr-line); }
+.hr-facts dt { font-size: 0.8125rem; line-height: 1.3; color: var(--hr-muted); }
+.hr-facts dd { margin: 0; font-size: 1rem; line-height: 1.35; color: var(--hr-head); text-wrap: pretty; }
+.hr-facts b { font-weight: inherit; white-space: nowrap; }
 .hr-art { position: relative; height: 15rem; }
 .hr-art canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 /* А: поток в своей колонке справа, как коллаж в К1 */
@@ -194,11 +190,7 @@ body { margin: 0; background: #f5f5f5; }
 @container stage (min-width: 32.5625rem) {
   .hr-b .hr-art.is-tall { height: 22rem; }
   .hr-text { gap: 1.25rem; }
-  .hr-actions, .hr-format, .hr-facts { order: 0; }
-  .hr-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .hr-facts div { display: grid; gap: 0.2rem; align-content: start; justify-content: stretch; padding: 0.875rem 0.75rem 0.25rem; }
-  .hr-facts div:first-child { padding-left: 0; }
-  .hr-facts div + div { border-top: 0; border-left: 1px solid var(--hr-line); }
+  .hr-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; margin-bottom: 0.75rem; }
   .hr-title { font-size: 2.75rem; }
   .hr-sub { font-size: 1.25rem; }
   .hr-lead { font-size: 1.0625rem; }
@@ -211,9 +203,9 @@ body { margin: 0; background: #f5f5f5; }
   .hr-title { font-size: 3.5rem; }
   .hr-sub { font-size: 1.375rem; }
   .hr-lead { font-size: 1.125rem; }
-  .hr-format { font-size: 0.9375rem; }
+  .hr-facts { margin: 0 2rem 1rem; column-gap: 2rem; }
   .hr-facts dt { font-size: 0.875rem; }
-  .hr-facts dd { font-size: 1.1875rem; }
+  .hr-facts dd { font-size: 1.0625rem; }
   .hr-a .hr-art { height: 17rem; margin: -1rem 0 0; }
   .hr-b .hr-art, .hr-b .hr-art.is-tall { height: 25rem; }
 }
@@ -225,11 +217,16 @@ body { margin: 0; background: #f5f5f5; }
   .hr-a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); min-height: 41rem; }
   .hr-a .hr-text { padding: 3rem 0 2.75rem 3rem; }
   .hr-a .hr-art { height: auto; margin: 0; }
-  .hr-text .hr-format { margin-top: auto; }
-  .hr-b { display: block; min-height: 42rem; }
+  /* верхняя зона: текст слева, точки на всю ширину за ним; полоса фактов ниже, точки под неё не заходят */
+  .hr-b .hr-text, .hr-b .hr-art { grid-area: 1 / 1 / 2 / 2; }
   .hr-b .hr-art, .hr-b .hr-art.is-tall { position: absolute; inset: 0; height: auto; }
-  .hr-b .hr-text { min-height: 42rem; max-width: 40rem; padding: 3rem 0 2.75rem 3rem; }
-  .hr-b .hr-facts { max-width: 34rem; }
+  .hr-b .hr-text { min-height: 38rem; max-width: 40rem; padding: 3rem 0 2.5rem 3rem; }
+  .hr-b .hr-lead { margin-top: auto; }
+  .hr-b .hr-facts { grid-area: 2 / 1; margin: 0 3rem 2.5rem; grid-template-columns: minmax(11rem, 0.8fr) minmax(0, 1.45fr) minmax(0, 1.1fr) minmax(0, 0.85fr); column-gap: 0; border-top: 1px solid var(--hr-line); }
+  .hr-b .hr-facts div { border-top: 0; padding: 1rem 1.25rem 0; }
+  .hr-b .hr-facts div:first-child { padding-left: 0; }
+  .hr-b .hr-facts div:last-child { padding-right: 0; }
+  .hr-b .hr-facts div + div { border-left: 1px solid var(--hr-line); }
 }
 
 

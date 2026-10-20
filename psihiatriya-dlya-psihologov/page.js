@@ -120,7 +120,8 @@
           const field = reduce ? 1 : 0.85 + 0.15 * Math.sin(x * 0.021 + t * 0.5) * Math.cos(y * 0.018 - t * 0.4);
           let r = rmax * (0.16 + 0.84 * f) * p.s * breath * field;
           if (r < 0.35) continue;
-          const mask = S.wide ? 0.1 + 0.9 * ss(S.W * 0.4, S.W * 0.6, x) : 1;
+          /* на десктопе левый край под текстом почти прозрачный, нижний край тает над полосой фактов */
+          const mask = S.wide ? (0.1 + 0.9 * ss(S.W * 0.4, S.W * 0.6, x)) * (1 - ss(S.H * 0.8, S.H * 0.99, y)) : 1;
           const a = (0.4 + 0.6 * f) * col.k * mask;
           const depth = 1 - Math.hypot(x - O.x, y - O.y) / R;
           let v = 0;
@@ -132,8 +133,9 @@
       return {
         setup() {
           const b = S.box;
-          /* на десктопе круги в своей зоне справа, на адаптивах крупнее: мягкий край может уходить за поле */
-          R = S.wide ? S.H * 0.39 : S.short ? S.W * 0.34 : Math.min(b.h / 2.2, b.w / 2.5);
+          /* на десктопе круги в своей зоне справа, на адаптивах крупнее: мягкий край может уходить за поле.
+             Зона на десктопе ниже карточки на полосу фактов, поэтому доля 0.47: размер кругов прежний, около 290 px */
+          R = S.wide ? S.H * 0.47 : S.short ? S.W * 0.34 : Math.min(b.h / 2.2, b.w / 2.5);
           gap = S.wide ? 22 : b.w > 500 ? 18 : 15;
           const n = Math.round(Math.PI * R * R / (gap * gap)), minD = gap / R * 0.78;
           A = cloud(n, minD); B = cloud(n, minD);
