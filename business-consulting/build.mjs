@@ -234,7 +234,7 @@ function renderPrice(p, model, priceApi, id) {
 /* «Гибкие условия оплаты»: утверждённый универсальный блок из /pricing-scenarios (12.10.2026). */
 function renderPayment(payment, id) {
   const row = (title, body) => `<div class="price-terms_row"><dt class="price-terms_title">${renderText(title)}</dt><dd class="price-terms_body">${body}</dd></div>`;
-  const discounts = `<ul class="price-discounts" role="list">${payment.discounts.items.map(d => `<li class="price-discounts_item"><p class="price-discounts_value">${d.prefix ? `<span class="price-discounts_prefix">${renderText(d.prefix)}</span>` : ''}<span class="price-discounts_number">${renderText(d.value)}&nbsp;%</span></p><p class="price-discounts_label">${renderText(d.text)}</p></li>`).join('')}</ul>`;
+  const discounts = `<ul class="price-discounts" role="list">${payment.discounts.items.map(d => `<li class="price-discounts_item"><p class="price-discounts_value">${d.prefix ? `<span class="price-discounts_prefix">${renderText(d.prefix)}</span>` : ''}<span class="price-discounts_number">${renderText(d.value)}&nbsp;%</span></p><p class="price-discounts_label">${renderText(d.text)}${d.note ? `<span class="price-discounts_note">${renderText(d.note)}</span>` : ''}</p></li>`).join('')}</ul>`;
   return section('payment-terms', id, `<div class="section-layout_component is-responsive price-terms_component">${header(id, payment.heading)}<dl class="price-terms_list">${row(payment.installment.title, `<p class="price-terms_text">${renderText(payment.installment.text)}</p>`)}${row(payment.discounts.title, discounts)}${row(payment.tax.title, `<p class="price-terms_text">${renderText(payment.tax.text)}</p>`)}</dl></div>`);
 }
 
