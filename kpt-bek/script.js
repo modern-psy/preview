@@ -1001,6 +1001,9 @@
 
   const INTL_TEL_INPUT_UTILS_URL =
     "https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/utils.js";
+  // Longest wait for the utils module before phone validation falls back to the
+  // plausibility check; exact validation takes over once the module arrives.
+  const INTL_TEL_INPUT_UTILS_WAIT_MS = 1500;
   const ASCII_EMAIL_PATTERN =
     /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
   const TELEGRAM_USERNAME_PATTERN = /^@[A-Za-z0-9_]{3,32}$/;
@@ -1153,13 +1156,23 @@
           },
         },
       });
-      ready = instance.promise
-        .then(() => {
-          utilsReady = true;
-        })
-        .catch(() => {
-          utilsReady = false;
-        });
+      // The library defers the utils download until the window "load" event. On
+      // pages with heavy third-party widgets (modern-psy.ru: the Jivo chat arrives
+      // after ~6 s) that kept phone validation and the submit button pending.
+      // Start the download now; a repeated call is a no-op inside the library.
+      window.intlTelInput.attachUtils?.(() => import(INTL_TEL_INPUT_UTILS_URL))?.catch(() => {});
+      ready = Promise.race([
+        instance.promise
+          .then(() => {
+            utilsReady = true;
+          })
+          .catch(() => {
+            utilsReady = false;
+          }),
+        new Promise((resolve) => {
+          window.setTimeout(resolve, INTL_TEL_INPUT_UTILS_WAIT_MS);
+        }),
+      ]);
     }
 
     return {
@@ -1978,7 +1991,7 @@
     if (next) {
       var nextOnce = num(next.fullPaymentPrice), nextList = num(next.price);
       var nextSale = nextOnce != null && (nextList == null || nextOnce < nextList) ? nextOnce : nextList;
-      if (nextSale != null && nextSale > sale) p.next = { day: dayLabel(next.at, now), price: nextSale, diff: nextSale - sale };
+      if (nextSale != null && nextSale > sale) p.next = { at: next.at, day: dayLabel(next.at, now), price: nextSale, diff: nextSale - sale };
     }
     return p;
   }
@@ -2012,6 +2025,7 @@
       if (items.length) {
         streams.push({
           id: s.startDate || 'stream-' + index,
+          startDate: s.startDate || null,
           start: anytime ? null : dayLabel(s.startDate, now),
           anytime: anytime,
           lastChance: s.status === 'Последний шанс',
@@ -2084,11 +2098,15 @@
   }
 
   // Список «что входит»: строка или { text, has }. Чего нет в тарифе — серым с крестиком.
+  // Пояснение мелким серым под пунктом пишется после « | »: «Лекции в записи | Смотрите без привязки к расписанию».
   function checklist(list) {
     return '<ul class="price-check" role="list">' + list.map(function (row) {
       var r = typeof row === 'string' ? { text: row, has: true } : row;
+      var parts = String(r.text).split(' | ');
+      var note = r.note || parts[1] || '';
       return '<li class="price-check_item' + (r.has ? '' : ' is-off') + '">' + (r.has ? ICON_CHECK : ICON_CROSS)
-        + '<span>' + t(r.text) + (r.has ? '' : '<span class="price-auto_sr">, не входит</span>') + '</span></li>';
+        + '<span>' + t(parts[0]) + (note ? '<span class="price-check_note">' + t(note) + '</span>' : '')
+        + (r.has ? '' : '<span class="price-auto_sr">, не входит</span>') + '</span></li>';
     }).join('') + '</ul>';
   }
 
@@ -2220,7 +2238,48 @@
     return frame({ heading: TEXT.heading, controls: controls, body: wideCard(m, stream, first, opts.includes), terms: showTerms, uid: uid });
   }
 
-  var api = { model: model, render: render, scenarioOf: scenarioOf };
+  /* ---------- 8. Микроразметка курса (schema.org) ---------- */
+  // Потоки и цены для блока микроразметки (второй блок из генератора /pricing), по шаблону docs/seo.md:
+  // один открытый поток — один CourseInstance, в нём цена, которую человек видит на странице.
+  // Ближайшее повышение — срок действия цены (priceValidUntil, день до повышения).
+  function dayBefore(iso) {
+    var d = moscow(Date.parse(iso) - DAY_MS);
+    return d.y + '-' + String(d.m).padStart(2, '0') + '-' + String(d.d).padStart(2, '0');
+  }
+  function offerLd(p, url, name) {
+    var o = { '@type': 'Offer', price: String(p.sale), priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: url };
+    if (name) o.name = name;
+    if (p.next && p.next.at) o.priceValidUntil = dayBefore(p.next.at);
+    return o;
+  }
+  function instancesLd(m, url, instructor) {
+    return m.streams.map(function (s) {
+      var i = { '@type': 'CourseInstance', courseMode: 'online', location: { '@type': 'VirtualLocation', url: url } };
+      if (s.start) i.name = 'Поток ' + s.start;
+      if (s.startDate) i.startDate = s.startDate;
+      if (instructor) i.instructor = instructor;
+      i.offers = s.items.length > 1
+        ? s.items.map(function (item) { return offerLd(item.price, url, item.name); })
+        : offerLd(s.items[0].price, url);
+      return i;
+    });
+  }
+  // Свежие цены пришли — переписываем потоки в блоке микроразметки этого курса, остальное не трогаем.
+  function updateLd(slug, m) {
+    if (typeof document === 'undefined' || !slug) return;
+    Array.prototype.forEach.call(document.querySelectorAll('script[type="application/ld+json"][data-price-auto-ld]'), function (el) {
+      if (el.getAttribute('data-price-auto-ld') !== slug) return;
+      try {
+        var data = JSON.parse(el.textContent);
+        var old = Array.isArray(data.hasCourseInstance) ? data.hasCourseInstance[0] : data.hasCourseInstance;
+        var list = instancesLd(m, data.url, old && old.instructor);
+        if (list.length) data.hasCourseInstance = list; else delete data.hasCourseInstance;
+        el.textContent = JSON.stringify(data, null, 2);
+      } catch (e) { /* разметку не трогаем, если её не прочитать */ }
+    });
+  }
+
+  var api = { model: model, render: render, scenarioOf: scenarioOf, instancesLd: instancesLd };
 
   /* ---------- 8. Живой блок на странице ---------- */
   if (typeof document === 'undefined') { global.PriceAuto = api; return; }
@@ -2296,6 +2355,7 @@
     function show(course, fade) {
       current = model(course, Date.now());
       paint(fade);
+      updateLd(slug, current);
     }
 
     body.addEventListener('change', function (event) {

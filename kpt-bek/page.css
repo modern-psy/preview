@@ -112,23 +112,44 @@ body:has(.kpt-bek-page) { background: #eff2f9; }
   .kpt-facts_value { font-size: 1.125rem; }
 }
 
-/* ---------- 3. Почему КПТ: тёмная плашка ---------- */
-.kpt-why_component { --section-subtitle-color: #c9c8de; display: grid; gap: 1.5rem; padding: 1.5rem 1rem 1rem; border-radius: var(--radius-card); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
-.kpt-why_media { overflow: hidden; aspect-ratio: 4 / 3; border-radius: 0.75rem; }
-.kpt-why_image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
-.kpt-why_list { display: grid; gap: 0.5rem; }
-.kpt-why_card { padding: 1.25rem 1rem; color: var(--color-text-primary); }
+/* ---------- 3. Почему КПТ: тёмная плашка, «Карта запросов» ----------
+   Заголовок сверху. Первый довод — панель с сиреневыми чипсами расстройств (сиреневый тот же, что
+   у программы и фактов о курсе). Три других довода строками под ней, на десктопе тремя колонками. */
+.kpt-why_component { --section-subtitle-color: #c9c8de; --body-text-color: #c9c8de; display: grid; gap: 2rem; padding: 1.5rem 1rem 1rem; border-radius: var(--radius-card); background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.kpt-why_map { display: grid; align-content: start; gap: 1.5rem; padding: 1.25rem 1rem; border-radius: 0.75rem; background: rgb(215 214 239 / 8%); box-shadow: inset 0 0 0 1px rgb(215 214 239 / 18%); }
+.kpt-why_chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+/* радиус равен половине высоты: однострочный чипс — пилюля, перенесённый на узком экране — скруглённый прямоугольник */
+.kpt-why_chip { display: inline-flex; align-items: center; min-height: 2.5rem; padding: 0.5rem 0.875rem; border-radius: 1.25rem; background: var(--kpt-lilac); color: var(--color-surface-dark); font-size: 0.9375rem; font-weight: 500; line-height: 1.15; letter-spacing: -0.01em; }
+.kpt-why_chip abbr { text-decoration: none; }
+.kpt-why_list { display: grid; margin: 0; padding: 0; list-style: none; }
+.kpt-why_item { display: grid; align-content: start; gap: 0.5rem; padding-block: 1.25rem; border-top: 1px solid rgb(255 255 255 / 14%); }
+.kpt-why_item:first-child { padding-top: 0; border-top: 0; }
 @media (min-width: 48rem) {
-  .kpt-why_component { gap: 2rem; padding: 2.5rem; }
-  .kpt-why_media { aspect-ratio: 16 / 9; }
-  .kpt-why_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--card-grid-gap); }
-  .kpt-why_card { padding: 1.5rem; }
+  .kpt-why_component { gap: 2.5rem; padding: 2.5rem; }
+  .kpt-why_map { gap: 2rem; padding: 2rem; }
+  .kpt-why_chips { gap: 0.625rem; }
+  .kpt-why_chip { min-height: 3rem; padding: 0.625rem 1.125rem; font-size: 1rem; }
+  .kpt-why_item { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); column-gap: 2rem; padding-block: 1.5rem; }
+  .kpt-why_item:first-child { padding-top: 1.5rem; border-top: 1px solid rgb(255 255 255 / 14%); }
 }
 @media (min-width: 64.0625rem) {
-  .kpt-why_component { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); grid-template-rows: auto 1fr; column-gap: 3rem; row-gap: 2rem; padding: 3.5rem; }
-  .kpt-why_intro { grid-column: 1; grid-row: 1; }
-  .kpt-why_media { grid-column: 1; grid-row: 2; aspect-ratio: auto; min-height: 20rem; }
-  .kpt-why_list { grid-column: 2; grid-row: 1 / 3; align-content: start; }
+  .kpt-why_component { row-gap: 3rem; padding: 3.5rem; }
+  /* заголовок слева, подзаголовок справа на одной линии снизу */
+  .kpt-why_head .section-header_component { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; column-gap: 3rem; }
+  .kpt-why_map { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); align-items: start; column-gap: 3rem; padding: 2.5rem; }
+  .kpt-why_chip { min-height: 3.25rem; padding: 0.625rem 1.25rem; font-size: 1.125rem; }
+  .kpt-why_list { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 2.5rem; }
+  .kpt-why_item, .kpt-why_item:first-child { grid-template-columns: minmax(0, 1fr); padding-block: 1.5rem 0; border-top: 1px solid rgb(255 255 255 / 14%); }
+}
+
+/* Светлая версия блока (класс is-light у .kpt-why_component, сейчас на странице она): белая плашка,
+   панель сиреневая, чипсы белые, как плашка с фактами о курсе. Без класса блок тёмный. */
+.kpt-why_component.is-light { --section-subtitle-color: var(--kpt-ink-muted); --body-text-color: var(--kpt-ink-muted); background: var(--color-surface-primary); color: var(--color-text-primary); }
+.kpt-why_component.is-light .kpt-why_map { background: var(--kpt-lilac); box-shadow: none; }
+.kpt-why_component.is-light .kpt-why_chip { background: var(--color-surface-primary); }
+.kpt-why_component.is-light .kpt-why_item { border-top-color: var(--kpt-line); }
+@media (min-width: 48rem) {
+  .kpt-why_component.is-light .kpt-why_item:first-child { border-top-color: var(--kpt-line); }
 }
 
 /* ---------- 4. Чему научитесь ---------- */

@@ -94,10 +94,17 @@ function renderFit(d) {
   return section('kpt-fit', ids.fit, `<div class="section-layout_component is-responsive">${header(ids.fit, d.heading, {subtitle: d.subtitle})}<div class="kpt-fit_layout"><ol class="kpt-fit_list" aria-label="Модули курса">${cards}</ol><aside class="kpt-facts_component" aria-label="Коротко о курсе"><dl class="kpt-facts_list">${facts}</dl><a class="button_component is-light kpt-button" href="#${ids.program}">${t(d.button)}</a></aside></div></div>`);
 }
 
-/* 3. Почему КПТ: тёмная плашка, слева заголовок и фото, справа четыре карточки. */
+/* 3. Почему КПТ: белая плашка, вариант «Карта запросов» (выбран Дарьей 20.10.2026 из пяти компоновок).
+   Первый довод — панель, где расстройства из его текста стоят сиреневыми чипсами; три других довода
+   строками под ней (на десктопе колонками). Фото в блоке больше нет. */
 function renderWhy(d) {
-  const cards = d.cards.map(c => `<li class="card_component kpt-why_card"><div class="content-header_component"><h3 class="content-heading_component is-card">${t(c.heading)}</h3><p class="body-text_component">${t(c.text)}</p></div></li>`).join('');
-  return section('kpt-why', ids.why, `<div class="kpt-why_component"><div class="kpt-why_intro">${header(ids.why, d.heading, {subtitle: d.subtitle})}</div><div class="kpt-why_media">${img(d.photo, 'kpt-why_image')}</div><ul class="kpt-why_list">${cards}</ul></div>`);
+  const [map, ...rest] = d.cards;
+  if (!map.chips?.length) throw new Error('Почему КПТ: у первого довода нет чипсов');
+  const chip = c => typeof c === 'string' ? `<li class="kpt-why_chip">${t(c)}</li>` : `<li class="kpt-why_chip"><abbr title="${escapeHtml(c.title)}">${t(c.label)}</abbr></li>`;
+  const panel = `<div class="kpt-why_map"><h3 class="content-heading_component is-card">${t(map.heading)}</h3><ul class="kpt-why_chips" aria-label="${escapeHtml(d.chipsLabel)}">${map.chips.map(chip).join('')}</ul></div>`;
+  const items = rest.map(c => `<li class="kpt-why_item"><h3 class="content-heading_component is-card">${t(c.heading)}</h3><p class="body-text_component">${t(c.text)}</p></li>`).join('');
+  // is-light — белая плашка (выбор Дарьи 20.10.2026); без этого класса блок становится тёмным.
+  return section('kpt-why', ids.why, `<div class="kpt-why_component is-light"><div class="kpt-why_head">${header(ids.why, d.heading, {subtitle: d.subtitle})}</div>${panel}<ul class="kpt-why_list">${items}</ul></div>`);
 }
 
 /* 4. Чему научитесь: четыре карточки 2×2, в каждой два пункта с галочкой. */
@@ -191,8 +198,17 @@ async function renderPricing(d) {
   return {html, css, js, scenario, start};
 }
 
+/* Форма заявки без почты (решение Дарьи 20.10.2026): как на старой /kpt — имя, телефон, MAX или Telegram.
+   Шаблон библиотеки всегда рисует поле почты, поэтому подпись для него передаём служебную и сразу убираем
+   поле из разметки. Скрипт формы штатно работает без него: отправляет заявку без почты и не ищет её
+   в нативной форме Тильды (web-academy/shared/academy/lead-form.md). */
 function renderForm(d, start) {
-  const html = renderLeadFormSection(d, {id: ids.form, formId: `${SLUG}-form`});
+  const formId = `${SLUG}-form`;
+  const rendered = renderLeadFormSection({...d, emailLabel: 'Почта'}, {id: ids.form, formId});
+  const emailField = new RegExp(`<div class="lead-form_field" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="email" id="${formId}-email"[\\s\\S]*?id="${formId}-email-error"[^>]*></p></div>`);
+  if (!emailField.test(rendered)) throw new Error('Форма: не найдено поле почты, чтобы его убрать');
+  const html = rendered.replace(emailField, '');
+  if (/type="email"|name="email"/.test(html)) throw new Error('Форма: поле почты осталось в разметке');
   // Дата в заголовке формы та же, что «Ближайший старт»: page.js обновит её из CMS.
   const date = start || d.heading.replace(/^.*?начнутся\s+/u, '');
   const heading = t(d.heading);

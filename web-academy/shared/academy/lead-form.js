@@ -9,6 +9,9 @@
 
   const INTL_TEL_INPUT_UTILS_URL =
     "https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/utils.js";
+  // Longest wait for the utils module before phone validation falls back to the
+  // plausibility check; exact validation takes over once the module arrives.
+  const INTL_TEL_INPUT_UTILS_WAIT_MS = 1500;
   const ASCII_EMAIL_PATTERN =
     /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
   const TELEGRAM_USERNAME_PATTERN = /^@[A-Za-z0-9_]{3,32}$/;
@@ -161,13 +164,23 @@
           },
         },
       });
-      ready = instance.promise
-        .then(() => {
-          utilsReady = true;
-        })
-        .catch(() => {
-          utilsReady = false;
-        });
+      // The library defers the utils download until the window "load" event. On
+      // pages with heavy third-party widgets (modern-psy.ru: the Jivo chat arrives
+      // after ~6 s) that kept phone validation and the submit button pending.
+      // Start the download now; a repeated call is a no-op inside the library.
+      window.intlTelInput.attachUtils?.(() => import(INTL_TEL_INPUT_UTILS_URL))?.catch(() => {});
+      ready = Promise.race([
+        instance.promise
+          .then(() => {
+            utilsReady = true;
+          })
+          .catch(() => {
+            utilsReady = false;
+          }),
+        new Promise((resolve) => {
+          window.setTimeout(resolve, INTL_TEL_INPUT_UTILS_WAIT_MS);
+        }),
+      ]);
     }
 
     return {
@@ -255,10 +268,12 @@
       ...group.querySelectorAll('input[type="radio"][name="messenger-type"]'),
     ];
     const telegramRadio = radios.find((radio) => radio.value === "telegram");
+    // MAX slot differs between Tilda blocks: `max`, `max_messenger` (newer contact
+    // block) or a reused `whatsapp`. Never fall back to the Telegram radio.
     const maxRadio =
-      radios.find((radio) => radio.value === "max") ||
+      radios.find((radio) => radio.value === "max" || radio.value === "max_messenger") ||
       radios.find((radio) => radio.value === "whatsapp") ||
-      radios[0];
+      radios.find((radio) => radio.value !== "telegram");
 
     if (maxRadio && !maxRadio.dataset.academyOriginalValue) {
       maxRadio.dataset.academyOriginalValue = maxRadio.value;
@@ -271,8 +286,11 @@
     const selectedRadio = messenger === "telegram" ? telegramRadio : maxRadio;
 
     if (!(selectedRadio instanceof HTMLInputElement)) {
-      return;
+      return "";
     }
+
+    // Native type before the whatsapp → max rename: it names the matching value field.
+    const selectedType = selectedRadio.value;
 
     selectedRadio.checked = true;
     selectedRadio.dispatchEvent(new Event("input", { bubbles: true }));
@@ -281,6 +299,8 @@
     if (messenger === "max" && selectedRadio.value === "whatsapp") {
       selectedRadio.value = "max";
     }
+
+    return selectedType;
   };
 
   const syncTildaForm = async (nativeForm, formData) => {
@@ -297,9 +317,13 @@
       ".t-input-group_contact_method",
     );
 
+    // E-mail is optional per landing: a form rendered without the field sends
+    // email: null and then the native form may omit the e-mail input too.
+    const needsEmail = formData.email !== null;
+
     if (
       !(nameInput instanceof HTMLInputElement) ||
-      !(emailInput instanceof HTMLInputElement) ||
+      (needsEmail && !(emailInput instanceof HTMLInputElement)) ||
       !(phoneGroup instanceof HTMLElement) ||
       !(messengerGroup instanceof HTMLElement)
     ) {
@@ -307,9 +331,9 @@
     }
 
     setNativeInputValue(nameInput, formData.name);
-    setNativeInputValue(emailInput, formData.email);
+    if (needsEmail) setNativeInputValue(emailInput, formData.email);
     fillTildaPhoneGroup(phoneGroup, formData.phone, "Phone");
-    selectTildaMessenger(messengerGroup, formData.messenger);
+    const selectedType = selectTildaMessenger(messengerGroup, formData.messenger);
 
     await new Promise((resolve) => window.requestAnimationFrame(resolve));
 
@@ -318,10 +342,37 @@
         'input[name="messenger-id"], input[name="tildaspec-phone-part[]"], input[name="tildaspec-phone-part[]-iso"]',
       )
       .forEach((input) => {
+        // Hidden hybrid groups are already reset and disabled by Tilda; an input
+        // event there would make its hybrid handler re-enable an empty text field.
+        if (input.closest(".t-contact-method__hybrid.t-contact-method__hidden")) {
+          return;
+        }
+
         setNativeInputValue(input, "");
       });
 
-    if (formData.messenger === "telegram") {
+    // Newer hybrid contact block: every messenger has its own text field marked
+    // with data-contact-method (Telegram «Имя пользователя или телефон», MAX
+    // «Ссылка или телефон»). Fill exactly the field of the selected type.
+    const typedContactInput = [
+      ...messengerGroup.querySelectorAll(
+        'input[name="messenger-id"][data-contact-method]',
+      ),
+    ].find((input) => input.dataset.contactMethod === selectedType);
+
+    if (typedContactInput instanceof HTMLInputElement) {
+      const valueGroup = typedContactInput.closest(".t-phonemask-input-group");
+      const isPhoneContact = /^[+0-9]/.test(formData.messengerContact);
+
+      if (isPhoneContact && valueGroup?.querySelector("input.t-input-phonemask")) {
+        // Hybrid field: Tilda drops the text and switches to its phone mask as soon
+        // as the text starts with + or a digit, so switch first, then fill the mask.
+        setNativeInputValue(typedContactInput, "+");
+        fillTildaPhoneGroup(valueGroup, formData.messengerContact, "messenger-id");
+      } else {
+        setNativeInputValue(typedContactInput, formData.messengerContact);
+      }
+    } else if (formData.messenger === "telegram") {
       const telegramInput = messengerGroup.querySelector(
         'input[name="messenger-id"]:not([type="hidden"]):not(:disabled)',
       );
@@ -687,7 +738,7 @@
       const phoneController = phoneControllers.get(mainPhoneInput);
       const maxContactController = phoneControllers.get(maxContactInput);
       const formData = {
-        email: form.elements.email.value.trim(),
+        email: form.elements.email ? form.elements.email.value.trim() : null,
         messenger: selectedMessenger,
         messengerContact:
           selectedMessenger === "telegram"
