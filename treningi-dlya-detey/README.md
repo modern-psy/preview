@@ -145,27 +145,26 @@ JavaScript первому экрану не нужен. Фото (15.10.2026, в
 Проверено 15.10.2026 подменой ответа API: обновляются название (2 места), старт (4), часы (3), цена, выгода, рассрочка
 и микроразметка курса.
 
-## Что загрузить на S3
+## Картинки на S3
 
-Все 7 файлов лежат в `assets/`, уже сжаты (webp 47–119 КБ, og-image jpg 147 КБ) и названы с префиксом `treningi-`,
-чтобы не перезаписать чужие файлы в общем бакете. Загружать как есть. После загрузки ссылки вписываются в данные,
-и пакет Тильды собирается без флага `--allow-local`:
+21.10.2026 все семь картинок загружены в `s3.twcstorage.ru/asp-media` и стоят в данных ссылками (файлы на S3 побайтно
+совпадают с `assets/`). Локальные копии в `assets/` оставлены как исходники. og-image — `data/seo.json` → `ogImage`;
+его же загрузить в настройках страницы в Тильде.
 
-| Файл | Куда вписать ссылку |
+| Файл | Ссылка |
 |---|---|
-| `assets/treningi-hero.webp` (1200×1200) | `data/hero.json` → `panel.photo.src` |
-| `assets/treningi-format.webp` (1344×752) | `data/format.json` → `image.src` |
-| `assets/treningi-audience-kids.webp` (1168×880) | `data/audience.json` → первая группа `image.src` |
-| `assets/treningi-audience-adults.webp` (1168×880) | `data/audience.json` → вторая группа `image.src` |
-| `assets/treningi-teacher-sudakova.webp` (1040×780) | `data/teachers.json` → Екатерина Судакова → `photo.src` |
-| `assets/treningi-teacher-tkachenko.webp` (1040×780) | `data/teachers.json` → Екатерина Ткаченко → `photo.src` |
-| `assets/treningi-og-image.jpg` (1200×630) | `data/seo.json` → `ogImage` (и в настройках страницы Тильды) |
+| первый экран | `treningi_hero_3d3aada881.webp` |
+| «Тренинг о тренинге» | `treningi_format_d21de54363.webp` |
+| «Кому подойдёт», дверь 1 | `treningi_audience_kids_2df2d7017c.webp` |
+| «Кому подойдёт», дверь 2 | `treningi_audience_adults_2ca74cf243.webp` |
+| Екатерина Судакова | `treningi_teacher_sudakova_e7968f960a.webp` |
+| Екатерина Ткаченко | `treningi_teacher_tkachenko_054064bc3f.webp` |
+| og:image | `treningi_og_image_0f59d5a705.jpg` |
 
 ## Что ждём
 
 - Курс в CMS со слагом `treningi-dlya-detey` (название, старт, часы, цена — см. «Данные из CMS»); до этого цены примерные.
 - Формат занятий (онлайн или очно, будет ли запись): для FAQ (`data/faq.json`).
-- Ссылки на S3 для всех файлов из `assets/` (см. «Что загрузить на S3»).
 - Имя нативной формы Тильды: сейчас `treningi-dlya-detey` (`data/lead-form.json` → `nativeMarker`), подтвердить.
 - Адрес страницы: в canonical стоит `modern-psy.ru/treningi-dlya-detey`; год старта в разметке — 2027.
 - В ТЗ у «Тренинга о тренинге» написано «6 карточек», а пунктов четыре — сверстаны четыре.
