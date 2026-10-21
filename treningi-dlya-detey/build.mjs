@@ -230,11 +230,12 @@ function renderOutcomesDoc(o, id) {
 }
 
 const programHeading = p => `${p.heading.accentStart} ${p.heading.text}`.trim();
-// Две кнопки из ТЗ. Файла программы пока нет: «Скачать» в состоянии превью (aria-disabled), пока не появится download.href.
+// Две кнопки. Вторая — «Получить полную программу»: якорь на форму заявки (21.10.2026); если в download.href
+// положить ссылку на файл, кнопка станет скачиванием; без href — в состоянии превью (aria-disabled).
 const programButtons = p => {
   const main = `<a class="button_component button is-accent program-tabs_button" href="${escapeHtml(p.action.href)}">${renderText(p.action.label)}</a>`;
   const second = p.download.href
-    ? `<a class="button_component button is-light program-tabs_button" href="${escapeHtml(p.download.href)}" download>${renderText(p.download.label)}</a>`
+    ? `<a class="button_component button is-light program-tabs_button" href="${escapeHtml(p.download.href)}"${p.download.href.startsWith('#') ? '' : ' download'}>${renderText(p.download.label)}</a>`
     : `<button class="button_component button is-light program-tabs_button" type="button" aria-disabled="true" data-action="download-program">${renderText(p.download.label)}</button>`;
   return `<div class="program-tabs_actions">${main}${second}</div>`;
 };
