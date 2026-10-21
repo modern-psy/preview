@@ -246,12 +246,13 @@ const programSection = (id, inner) => `<section class="section_program-tabs sect
 /* Программа курса — «Табы модулей на тёмной плашке» (выбран Дарьей 13.10.2026 из трёх готовых блоков библиотеки;
    тот же блок на «Психосоматике», IFS, RFT и /rodbt, разметка и скрипт перенесены оттуда). Тёмное поле #2B2334,
    слева модули-кнопки, справа белая панель выбранного модуля: темы из ТЗ и сиреневая плашка «Результат».
-   Под табами две кнопки из ТЗ. Без скрипта все модули видны друг под другом, кнопки-табы скрыты. */
+   Под табами две кнопки из ТЗ. Без скрипта все модули видны друг под другом, кнопки-табы скрыты.
+   У модуля можно убрать подпись «Темы модуля»: "topicsLabel": null в data/program.json (так у итоговой практики). */
 function renderProgramTabs(p, id) {
   const tabs = p.stages.map((s, i) => `<button class="program-tabs_tab" type="button" role="tab" id="${id}-tab-${i + 1}" aria-controls="${id}-panel-${i + 1}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-program-tab><span class="program-tabs_tab-label">${renderText(s.badge)}</span><span class="program-tabs_tab-title">${renderText(s.heading)}</span></button>`).join('\n');
   const panels = p.stages.map((s, i) => `<div class="program-tabs_panel" role="tabpanel" id="${id}-panel-${i + 1}" aria-labelledby="${id}-tab-${i + 1}" data-program-panel${i === 0 ? '' : ' hidden'}>
       <h3 class="program-tabs_title">${renderText(s.heading)}</h3>
-      <div class="program-tabs_panel-copy"><p class="program-tabs_list-title">${renderText(p.topicsLabel)}</p><ul class="program-tabs_topics">${s.topics.map(t => `<li class="program-tabs_topic">${renderText(t)}</li>`).join('')}</ul></div>
+      <div class="program-tabs_panel-copy">${(s.topicsLabel === undefined ? p.topicsLabel : s.topicsLabel) ? `<p class="program-tabs_list-title">${renderText(s.topicsLabel ?? p.topicsLabel)}</p>` : ''}<ul class="program-tabs_topics">${s.topics.map(t => `<li class="program-tabs_topic">${renderText(t)}</li>`).join('')}</ul></div>
       <div class="program-tabs_result"><p class="program-tabs_result-label">${renderText(p.resultLabel)}</p><p class="program-tabs_result-text">${renderText(s.result)}</p></div>
     </div>`).join('\n');
   return programSection(id, `<div class="program-tabs_component">
