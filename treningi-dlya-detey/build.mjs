@@ -56,6 +56,14 @@ function patch(markup, from, to, what) {
 let CMS = null;
 const cmsStart = template => `<span data-cms-start="${escapeHtml(template)}">${renderText(template.replace('{date}', CMS.start))}</span>`;
 const cmsHours = template => `<span data-cms-hours="${escapeHtml(template)}">${renderText(template.replace('{hours}', CMS.hoursText))}</span>`;
+const cmsSchedule = template => `<span data-cms-schedule="${escapeHtml(template)}">${renderText(template.replace('{schedule}', CMS.schedule))}</span>`;
+const cmsDocument = () => `<span data-cms-document>${renderText(CMS.document)}</span>`;
+// Пункт списка из данных: строка — как есть; {template} — часы, {schedule} — дни занятий, {cms: "document"} — документ.
+const cmsItem = item => typeof item === 'string' ? `<span>${renderText(item)}</span>`
+  : item.cms === 'document' ? cmsDocument()
+  : item.schedule ? cmsSchedule(item.schedule)
+  : item.template ? cmsHours(item.template)
+  : `<span>${renderText(item.text)}</span>`;
 
 /* Иконки Lucide: 20 px, линия 2 из 24, цвет как у текста рядом. */
 const ICONS = {
@@ -102,7 +110,7 @@ function renderHeroPanel(hero, {headingLevel = 1, headingId = hero.heading_id} =
       </div>
       <img class="hero-panel_photo" src="${escapeHtml(panel.photo.src)}" width="${panel.photo.width}" height="${panel.photo.height}" alt="" draggable="false" fetchpriority="high">
     </div>
-    <ul class="hero-facts_list" aria-label="${escapeHtml(hero.facts.label)}">${hero.facts.items.map(item => `<li class="hero-facts_item"><span class="hero-facts_icon">${icon(item.icon)}</span>${item.template ? cmsHours(item.template) : `<span>${renderText(item.text)}</span>`}</li>`).join('')}</ul>
+    <ul class="hero-facts_list" aria-label="${escapeHtml(hero.facts.label)}">${hero.facts.items.map(item => `<li class="hero-facts_item"><span class="hero-facts_icon">${icon(item.icon)}</span>${cmsItem(item)}</li>`).join('')}</ul>
   </div></div>
 </section>`;
 }
@@ -257,7 +265,7 @@ function renderProgramTabs(p, id) {
       <div class="program-tabs_result"><p class="program-tabs_result-label">${renderText(p.resultLabel)}</p><p class="program-tabs_result-text">${renderText(s.result)}</p></div>
     </div>`).join('\n');
   return programSection(id, `<div class="program-tabs_component">
-      <div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(programHeading(p))}</h2><p class="section-subtitle_component">${renderText(p.subtitles[0])}</p></div>
+      <div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(programHeading(p))}</h2><p class="section-subtitle_component">${p.scheduleTemplate ? cmsSchedule(p.scheduleTemplate) : renderText(p.subtitles[0])}</p></div>
       <div class="program-tabs_layout" data-program-tabs><div class="program-tabs_nav" role="tablist" aria-label="${escapeHtml(p.listLabel)}" aria-orientation="vertical">${tabs}</div><div class="program-tabs_panels">${panels}</div></div>
       ${programButtons(p)}
     </div>`);
@@ -339,16 +347,18 @@ function renderDocuments(d, id) {
    Горизонтальная карточка: слева уровень, название, старт и цена при оплате сразу (крупно), под ней серым
    «выгода N ₽ при оплате сразу» и платёж в рассрочку; справа «Что входит» галочками.
    Официальная цена — в рассрочку (price.list), оплата сразу (price.once) — выгода от неё; платёж = list ÷ months.
-   Цена, старт, название и часы — из CMS (cms.js); пока курса в CMS нет, цены ПРИМЕРНЫЕ (data/pricing.json → note). */
+   Название, старт, дни занятий, документ, часы, цена и ближайшее повышение — из CMS (cms.js, слаг child-training-practice);
+   data/pricing.json — значения на случай, если поле в CMS пустое или API не ответил. */
 function renderPricing(pricing, payment, id) {
   const price = CMS.price;
   const benefit = CMS.api.benefitHtml(price);
   const installment = CMS.api.installmentHtml(price);
+  const rise = CMS.api.riseHtml(price);
   const caption = `<span class="price-caption_line" data-cms-benefit${benefit ? '' : ' hidden'}>${benefit}</span><span class="price-caption_line" data-cms-installment${installment ? '' : ' hidden'}>${installment}</span>`;
-  const includes = pricing.includes.map(item => `<li class="price-check_item">${icon('check')}${item.template ? cmsHours(item.template) : `<span>${renderText(item)}</span>`}</li>`).join('');
+  const includes = pricing.includes.map(item => `<li class="price-check_item">${icon('check')}${cmsItem(item)}</li>`).join('');
   const card = `<div class="price-wide_component">
       <div class="price-wide_main"><span class="price-wide_chip">${renderText(pricing.level)}</span><div class="price-wide_title"><p class="price-wide_name" data-cms-title>${renderText(CMS.title)}</p><p class="price-wide_sub">${cmsStart('старт {date}')}</p></div>
-        <div class="price-wide_money"><p class="price-tag"><span class="price-tag_number" data-cms-price>${CMS.api.digits(price.sale)}</span><span class="price-tag_unit">₽</span></p><p class="price-caption">${caption}</p></div>
+        <div class="price-wide_money"><p class="price-tag"><span class="price-tag_number" data-cms-price>${CMS.api.digits(price.sale)}</span><span class="price-tag_unit">₽</span></p><p class="price-caption">${caption}</p><div class="price-wide_foot" data-cms-rise${rise ? '' : ' hidden'}>${rise}</div></div>
       </div>
       <div class="price-wide_side"><p class="price-wide_side-title">${renderText(pricing.includesTitle)}</p><ul class="price-check" role="list">${includes}</ul></div>
     </div>`;
@@ -452,6 +462,9 @@ async function buildHtml() {
     start: fromCms?.start || pricingData.start,
     startDate: fromCms?.startDate || seo.course.startDate,
     hoursText: cmsApi.hoursPhrase(hours),
+    // Дни из CMS без времени не затирают запасную строку с теми же днями и временем.
+    schedule: fromCms?.schedule && !pricingData.schedule.replace(/\u00a0/g, ' ').startsWith(fromCms.schedule.replace(/[\u00a0\u2060]/g, ' ')) ? fromCms.schedule : pricingData.schedule,
+    document: fromCms?.document ? typography(fromCms.document) : pricingData.document,
     price: fromCms?.price || {sale: once ?? list, list, perMonth: Math.round(list / months), months},
     fromCms: Boolean(fromCms),
   };
@@ -489,7 +502,7 @@ async function buildHtml() {
     renderPricing(pricingData, await data('payment'), `${SLUG}-pricing`),
     patch(fullForm.replace(emailField, '').replace(maxField, ''), renderText(leadForm.heading), cmsStart(leadForm.headingTemplate), 'Форма: заголовок с датой старта'),
     // Вопросы и ответы — общий блок Академии (аккордеон, как на /narrative-therapy), после формы.
-    patch(renderFaq(await data('faq'), {id: `${SLUG}-faq`}), renderText(typography('13 недель, 60 академических часов. Старт 4 марта,')), `${renderText(typography('13 недель, '))}${cmsHours('{hours}')}. ${cmsStart('Старт {date}')},`, 'FAQ: часы и старт'),
+    patch(renderFaq(await data('faq'), {id: `${SLUG}-faq`}), renderText(typography('13 недель, 60 академических часов. Старт 4 марта, занятия по четвергам с 17:00 до 20:00.')), `${renderText(typography('13 недель, '))}${cmsHours('{hours}')}. ${cmsStart('Старт {date}')}, ${cmsSchedule('занятия {schedule}')}.`, 'FAQ: часы, старт и дни'),
   ];
 
   const body = sections.join('\n').replaceAll(NBSP, '&nbsp;');

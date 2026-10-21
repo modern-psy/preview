@@ -3,20 +3,23 @@
 (() => {
 const initialize = () => {
 /* === treningi-dlya-detey/cms.js === */
-/* Данные курса из CMS (Strapi) через Public API: название, дата старта, объём в академических часах и цена.
-   Где на странице они стоят, отмечено атрибутами:
-     data-cms-title             — название курса (заголовок первого экрана, карточка цены);
-     data-cms-start="… {date}"  — дата старта, {date} заменяется на «4 марта»;
-     data-cms-hours="… {hours}" — часы, {hours} заменяется на «60 академических часов»;
-     data-cms-price / data-cms-benefit / data-cms-installment — цена и строки под ней в карточке цены.
+/* Данные курса из CMS (Strapi) через Public API: название, дата старта, дни занятий, документ, объём
+   в академических часах и цена. Где на странице они стоят, отмечено атрибутами:
+     data-cms-title                  — название курса (заголовок первого экрана, карточка цены);
+     data-cms-start="… {date}"       — дата старта, {date} → «4 марта» (первый экран, цена, форма, FAQ);
+     data-cms-schedule="… {schedule}"— дни и время занятий, {schedule} → «по четвергам 17:00–20:00» (программа, цена, FAQ);
+     data-cms-document               — документ об окончании (факты под первым экраном, цена);
+     data-cms-hours="… {hours}"      — часы, {hours} → «60 академических часов» (первый экран, цена, FAQ);
+     data-cms-price / data-cms-benefit / data-cms-installment / data-cms-rise — цена, строки под ней и повышение.
    Настройки (адрес API и слаг курса) — атрибуты data-cms-api и data-cms-course на секции цены.
 
    Один и тот же код работает дважды: при сборке (build.mjs берёт отсюда TreningiCms и вшивает в страницу снимок
-   из data/api-course.json, если он есть) и в браузере (после загрузки страница один раз спрашивает API и подменяет
-   значения). Курс ищется сначала в каталоге (там же часы); курса в каталоге CMS нет или API не ответил —
-   на странице остаются значения со сборки. Поэтому в CMS у курса должно стоять «показывать в каталоге».
+   из data/api-course.json и data/api-catalog-entry.json) и в браузере (страница один раз спрашивает API
+   и подменяет значения). Пустое поле в CMS или API не ответил — остаётся значение со сборки.
+   Часы есть только в каталоге (/api/public/catalog), а туда попадают курсы с «показывать в каталоге».
    Правила цены — как в утверждённом блоке «Одна цифра»: крупно цена при оплате сразу, официальная цена —
-   в рассрочку, разница — «выгода N ₽ при оплате сразу», платёж в месяц тихой строкой. */
+   в рассрочку, разница — «выгода N ₽ при оплате сразу», платёж в месяц тихой строкой, ближайшее
+   повышение — серой плашкой «С 26 ноября: 32 000 ₽ / подорожает на 2 000 ₽». */
 (function () {
   var NBSP = ' ';
   var JOIN = '⁠';
@@ -49,6 +52,21 @@ const initialize = () => {
     return d.day + NBSP + MONTHS[d.month];
   }
 
+  // Дни и время из CMS: «По средам 18:00–21:00» → «по средам 18:00–21:00»; если строки нет — по дням занятий
+  // («Четверг» → «по четвергам»). Время не рвётся на тире.
+  var DAY_PLURAL = {'Понедельник': 'понедельникам', 'Вторник': 'вторникам', 'Среда': 'средам', 'Четверг': 'четвергам', 'Пятница': 'пятницам', 'Суббота': 'субботам', 'Воскресенье': 'воскресеньям'};
+  function schedulePhrase(stream) {
+    if (!stream) return '';
+    var text = String(stream.schedule || '').trim();
+    if (!text) {
+      var days = (stream.lessonDays || []).map(function (d) { return DAY_PLURAL[d]; }).filter(Boolean);
+      if (!days.length) return '';
+      text = 'по ' + (days.length === 1 ? days[0] : days.slice(0, -1).join(', ') + ' и ' + days[days.length - 1]);
+    }
+    text = text.replace(/\s*[–—-]\s*(?=\d{1,2}:\d{2})/g, JOIN + '–' + JOIN);
+    return text.charAt(0).toLowerCase() + text.slice(1);
+  }
+
   /* Ответ /api/public/course/:slug → то, что нужно странице. Берётся ближайший открытый поток.
      Тарифы этот лендинг не показывает: курс с тарифами оставляет цену со сборки. */
   function fromApi(course) {
@@ -61,17 +79,21 @@ const initialize = () => {
     if (p && !p.hasTariffs && p.currentPrice != null) {
       var list = p.currentPrice;
       var sale = p.fullPaymentPrice != null ? p.fullPaymentPrice : list;
+      var next = p.nextPriceChange && p.nextPriceChange.at ? p.nextPriceChange : null;
       price = {
         sale: sale,
         list: list,
         perMonth: p.installmentPerMonth || (list > 0 ? Math.round(list / 24) : null),
         months: p.installmentPerMonth ? p.installmentMonths : 24,
+        next: next ? {label: dayMonth(next.at), price: next.fullPaymentPrice != null ? next.fullPaymentPrice : next.price} : null,
       };
     }
     return {
       title: course.title || null,
       start: stream ? dayMonth(stream.startDate) : '',
       startDate: stream && stream.startDate || null,
+      schedule: schedulePhrase(stream),
+      document: (course.documents || [])[0] || '',
       price: price,
     };
   }
@@ -84,7 +106,14 @@ const initialize = () => {
     return price.perMonth ? 'или ' + digits(price.perMonth) + NBSP + '₽' + JOIN + '/' + JOIN + 'мес в' + NBSP + 'рассрочку на' + NBSP + price.months + NBSP + 'мес' : '';
   }
 
-  var api = {fromApi: fromApi, dayMonth: dayMonth, hoursPhrase: hoursPhrase, benefitHtml: benefitHtml, installmentHtml: installmentHtml, digits: digits, nb: nb, esc: esc};
+  // Ближайшее повышение цены: серая плашка под ценой, только если новая цена выше текущей.
+  var ICON_RISE = '<svg class="price-rise_icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function riseHtml(price) {
+    if (!price.next || !(price.next.price > price.sale) || !price.next.label) return '';
+    return '<p class="price-rise">' + ICON_RISE + '<span class="price-rise_text"><span class="price-rise_title">С' + NBSP + price.next.label + ': ' + rub(price.next.price) + '</span><span class="price-rise_note">подорожает на' + NBSP + rub(price.next.price - price.sale) + '</span></span></p>';
+  }
+
+  var api = {fromApi: fromApi, riseHtml: riseHtml, schedulePhrase: schedulePhrase, dayMonth: dayMonth, hoursPhrase: hoursPhrase, benefitHtml: benefitHtml, installmentHtml: installmentHtml, digits: digits, nb: nb, esc: esc};
   globalThis.TreningiCms = api;
   if (typeof document === 'undefined') return;
 
@@ -102,7 +131,16 @@ const initialize = () => {
     if (!model) return;
     if (model.title) each('[data-cms-title]', function (el) { el.textContent = nb(model.title); });
     if (model.start) fill('data-cms-start', '{date}', model.start);
+    // Дни из CMS без времени («по четвергам») не затирают более подробную строку со сборки
+    // («по четвергам с 17:00 до 20:00»): заменяем, только если в CMS что-то другое.
+    if (model.schedule) each('[data-cms-schedule]', function (el) {
+      var next = el.getAttribute('data-cms-schedule').replace('{schedule}', model.schedule);
+      var flat = function (t) { return String(t).replace(/[\s\u00a0\u2060]+/g, ' ').trim(); };
+      if (flat(el.textContent).indexOf(flat(next)) !== 0) el.textContent = next;
+    });
+    if (model.document) each('[data-cms-document]', function (el) { el.textContent = nb(model.document); });
     if (model.price) {
+      each('[data-cms-rise]', function (el) { var html = riseHtml(model.price); el.innerHTML = html; el.hidden = !html; });
       each('[data-cms-price]', function (el) { el.textContent = digits(model.price.sale); });
       each('[data-cms-benefit]', function (el) { var html = benefitHtml(model.price); el.innerHTML = html; el.hidden = !html; });
       each('[data-cms-installment]', function (el) { var html = installmentHtml(model.price); el.innerHTML = html; el.hidden = !html; });
@@ -120,11 +158,12 @@ const initialize = () => {
     });
   }
 
-  /* Сначала каталог: в нём часы курса, и по нему видно, заведён ли курс. Курса в каталоге нет — данные курса
-     не запрашиваем (иначе API ответит 404 и в консоли будет ошибка), на странице остаются значения со сборки. */
   var json = function (path) {
     return fetch(base + path, {headers: {Accept: 'application/json'}}).then(function (response) { return response.ok ? response.json() : null; });
   };
+  // Курс: название, старт, дни, документ, цена.
+  json('/api/public/course/' + slug).then(applyCourse).catch(function () { /* API недоступен — значения со сборки */ });
+  // Часы — из каталога; курса там нет (не показывается в каталоге) — часы со сборки.
   json('/api/public/catalog')
     .then(function (catalog) {
       var found = null;
@@ -134,12 +173,10 @@ const initialize = () => {
         if (o.slug === slug) { found = o; return; }
         Object.keys(o).forEach(function (k) { walk(o[k]); });
       })(catalog);
-      if (!found) return null;
-      var hours = Number(found.hours);
+      var hours = found && Number(found.hours);
       if (hours) fill('data-cms-hours', '{hours}', hoursPhrase(hours));
-      return json('/api/public/course/' + slug).then(applyCourse);
     })
-    .catch(function () { /* API недоступен — значения со сборки */ });
+    .catch(function () { /* каталог недоступен — часы со сборки */ });
 })();
 
 /* === treningi-dlya-detey/page.js === */

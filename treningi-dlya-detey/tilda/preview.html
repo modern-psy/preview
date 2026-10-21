@@ -3762,12 +3762,21 @@ body > .iti--detached-country-selector .iti__no-results {
 .price-check { display: flex; flex-direction: column; gap: 0.75rem; margin: 0; padding: 0; list-style: none; color: var(--color-text-primary); font-size: 1rem; line-height: 1.4; }
 .price-check_item { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); align-items: start; gap: 0.625rem; }
 .price-check_item .hero-icon { margin-top: 0.0625rem; }
+/* Ближайшее повышение цены из CMS: серая плашка под ценой (как на «Корпоративном консультировании»). */
+.price-wide_foot { margin-top: 1.5rem; padding: 0.875rem 1rem; border-radius: 0.75rem; background: var(--color-page-background); }
+.price-wide_foot[hidden] { display: none; }
+.price-rise { display: flex; align-items: center; gap: 0.75rem; margin: 0; color: var(--color-text-primary); }
+.price-rise_icon { box-sizing: content-box; width: 1.125rem; height: 1.125rem; flex: none; padding: 0.5rem; border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); }
+.price-rise_text { display: flex; min-width: 0; flex-direction: column; gap: 0.0625rem; }
+.price-rise_title { font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.price-rise_note { color: var(--color-text-secondary-large); font-size: 0.875rem; line-height: 1.3; }
 .price-terms_heading { font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem); font-weight: 444; line-height: 1.1; letter-spacing: -0.03em; text-align: center; }
 @media (min-width: 48rem) {
   .price-wide_component { grid-template-areas: "main side"; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .price-wide_main, .price-wide_side { padding: 2rem; }
   .price-wide_side { border-top: 0; border-left: 1px solid rgb(51 47 65 / 12%); }
   .price-check { font-size: 1.0625rem; }
+  .price-wide_foot { margin-top: 1.75rem; padding: 1rem 1.25rem; }
 }
 @media (min-width: 64.0625rem) {
   .price-wide_component { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
@@ -3839,7 +3848,7 @@ body > .iti--detached-country-selector .iti__no-results {
       </div>
       <img class="hero-panel_photo" src="https://s3.twcstorage.ru/asp-media/treningi_hero_3d3aada881.webp" width="1200" height="1200" alt="" draggable="false" fetchpriority="high">
     </div>
-    <ul class="hero-facts_list" aria-label="Коротко о курсе"><li class="hero-facts_item"><span class="hero-facts_icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span><span>13&nbsp;недель обучения</span></li><li class="hero-facts_item"><span class="hero-facts_icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span data-cms-hours="{hours}">60&nbsp;академических часов</span></li><li class="hero-facts_item"><span class="hero-facts_icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><span>Удостоверение о&nbsp;повышении квалификации</span></li></ul>
+    <ul class="hero-facts_list" aria-label="Коротко о курсе"><li class="hero-facts_item"><span class="hero-facts_icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span><span>13&nbsp;недель обучения</span></li><li class="hero-facts_item"><span class="hero-facts_icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span data-cms-hours="{hours}">60&nbsp;академических часов</span></li><li class="hero-facts_item"><span class="hero-facts_icon"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><span data-cms-document>Удостоверение о&nbsp;повышении квалификации</span></li></ul>
   </div></div>
 </section>
 </div>
@@ -3932,7 +3941,7 @@ body > .iti--detached-country-selector .iti__no-results {
 <section class="section_program-tabs section-spacing_component" id="treningi-dlya-detey-program" aria-labelledby="treningi-dlya-detey-program-heading">
   <div class="padding-global"><div class="container-xlarge">
     <div class="program-tabs_component">
-      <div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="treningi-dlya-detey-program-heading">Программа курса</h2><p class="section-subtitle_component">Занятия по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00</p></div>
+      <div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="treningi-dlya-detey-program-heading">Программа курса</h2><p class="section-subtitle_component"><span data-cms-schedule="Занятия {schedule}">Занятия по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00</span></p></div>
       <div class="program-tabs_layout" data-program-tabs><div class="program-tabs_nav" role="tablist" aria-label="Модули курса" aria-orientation="vertical"><button class="program-tabs_tab" type="button" role="tab" id="treningi-dlya-detey-program-tab-1" aria-controls="treningi-dlya-detey-program-panel-1" aria-selected="true" tabindex="0" data-program-tab><span class="program-tabs_tab-label">Модуль 1</span><span class="program-tabs_tab-title">Тренер и&nbsp;формат тренинга</span></button>
 <button class="program-tabs_tab" type="button" role="tab" id="treningi-dlya-detey-program-tab-2" aria-controls="treningi-dlya-detey-program-panel-2" aria-selected="false" tabindex="-1" data-program-tab><span class="program-tabs_tab-label">Модуль 2</span><span class="program-tabs_tab-title">Возраст и&nbsp;адаптация</span></button>
 <button class="program-tabs_tab" type="button" role="tab" id="treningi-dlya-detey-program-tab-3" aria-controls="treningi-dlya-detey-program-panel-3" aria-selected="false" tabindex="-1" data-program-tab><span class="program-tabs_tab-label">Модуль 3</span><span class="program-tabs_tab-title">Работа с&nbsp;детским коллективом</span></button>
@@ -4070,11 +4079,11 @@ body > .iti--detached-country-selector .iti__no-results {
 <div class="main-wrapper academy-page treningi-dlya-detey-page" data-treningi-dlya-detey-part="pricing" data-academy-anchor-scroll>
 <section class="section_pricing section-spacing_component" id="treningi-dlya-detey-pricing" aria-labelledby="treningi-dlya-detey-pricing-heading">
   <div class="padding-global"><div class="container-xlarge"><div class="column-grid_component"><div class="column-grid_content is-content-wide">
-    <div class="section-layout_component is-responsive price-block_component" data-cms-api="https://modern-psy-asp-prod-8ceb.twc1.net" data-cms-course="treningi-dlya-detey"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="treningi-dlya-detey-pricing-heading">Стоимость обучения</h2></div><div class="price-wide_component">
+    <div class="section-layout_component is-responsive price-block_component" data-cms-api="https://modern-psy-asp-prod-8ceb.twc1.net" data-cms-course="child-training-practice"><div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="treningi-dlya-detey-pricing-heading">Стоимость обучения</h2></div><div class="price-wide_component">
       <div class="price-wide_main"><span class="price-wide_chip">Повышение квалификации</span><div class="price-wide_title"><p class="price-wide_name" data-cms-title>Практика создания и&nbsp;проведения тренингов для&nbsp;детей и&nbsp;подростков</p><p class="price-wide_sub"><span data-cms-start="старт {date}">старт 4&nbsp;марта</span></p></div>
-        <div class="price-wide_money"><p class="price-tag"><span class="price-tag_number" data-cms-price>48&nbsp;000</span><span class="price-tag_unit">₽</span></p><p class="price-caption"><span class="price-caption_line" data-cms-benefit><b class="price-caption_benefit">выгода 6&nbsp;000&nbsp;₽</b> при оплате сразу</span><span class="price-caption_line" data-cms-installment>или 2&nbsp;250&nbsp;₽⁠/⁠мес в&nbsp;рассрочку на&nbsp;24&nbsp;мес</span></p></div>
+        <div class="price-wide_money"><p class="price-tag"><span class="price-tag_number" data-cms-price>30&nbsp;000</span><span class="price-tag_unit">₽</span></p><p class="price-caption"><span class="price-caption_line" data-cms-benefit hidden></span><span class="price-caption_line" data-cms-installment>или 1&nbsp;250&nbsp;₽⁠/⁠мес в&nbsp;рассрочку на&nbsp;24&nbsp;мес</span></p><div class="price-wide_foot" data-cms-rise><p class="price-rise"><svg class="price-rise_icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="price-rise_text"><span class="price-rise_title">С&nbsp;26&nbsp;ноября: 32&nbsp;000&nbsp;₽</span><span class="price-rise_note">подорожает на&nbsp;2&nbsp;000&nbsp;₽</span></span></p></div></div>
       </div>
-      <div class="price-wide_side"><p class="price-wide_side-title">Что входит</p><ul class="price-check" role="list"><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span data-cms-hours="{hours} за&nbsp;13&nbsp;недель">60&nbsp;академических часов за&nbsp;13&nbsp;недель</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Занятия по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Работа в&nbsp;мини-группах</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Итоговая практика: свой тренинг с&nbsp;обратной связью преподавателей</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Удостоверение о&nbsp;повышении квалификации</span></li></ul></div>
+      <div class="price-wide_side"><p class="price-wide_side-title">Что входит</p><ul class="price-check" role="list"><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span data-cms-hours="{hours} за&nbsp;13&nbsp;недель">60&nbsp;академических часов за&nbsp;13&nbsp;недель</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span data-cms-schedule="Занятия {schedule}">Занятия по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Работа в&nbsp;мини-группах</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Итоговая практика: свой тренинг с&nbsp;обратной связью преподавателей</span></li><li class="price-check_item"><svg class="hero-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span data-cms-document>Удостоверение о&nbsp;повышении квалификации</span></li></ul></div>
     </div><div class="price-terms_component"><h3 class="price-terms_heading" id="treningi-dlya-detey-pricing-terms">Гибкие условия оплаты</h3><dl class="price-terms_list" aria-labelledby="treningi-dlya-detey-pricing-terms"><div class="price-terms_row"><dt class="price-terms_title">Рассрочка до&nbsp;24&nbsp;месяцев</dt><dd class="price-terms_body"><p class="price-terms_text">От&nbsp;банков-партнёров. Платёж делится на&nbsp;равные части, платите со&nbsp;второго месяца обучения.</p></dd></div><div class="price-terms_row"><dt class="price-terms_title">Персональные скидки</dt><dd class="price-terms_body"><ul class="price-discounts" role="list"><li class="price-discounts_item"><p class="price-discounts_value"><span class="price-discounts_number">−10&nbsp;%</span></p><p class="price-discounts_label">новым студентам</p></li><li class="price-discounts_item"><p class="price-discounts_value"><span class="price-discounts_number">−20&nbsp;%</span></p><p class="price-discounts_label">вам и&nbsp;коллеге, которого вы пригласили<span class="price-discounts_note">если он ещё не&nbsp;учился у&nbsp;нас</span></p></li><li class="price-discounts_item"><p class="price-discounts_value"><span class="price-discounts_prefix">до</span><span class="price-discounts_number">−20&nbsp;%</span></p><p class="price-discounts_label">нашим выпускникам за&nbsp;отзыв</p></li></ul></dd></div><div class="price-terms_row"><dt class="price-terms_title">Налоговый вычет 13&nbsp;%</dt><dd class="price-terms_body"><p class="price-terms_text">Подробно расскажем, как оформить документы, чтобы вернуть 13&nbsp;% от&nbsp;стоимости обучения.</p></dd></div></dl></div></div>
   </div></div></div></div>
 </section>
@@ -4103,7 +4112,7 @@ body > .iti--detached-country-selector .iti__no-results {
         </details>
         <details class="faq_item accordion_item" data-accordion-item>
           <summary class="faq_question accordion_summary" data-accordion-trigger><h3 class="content-heading_component is-card">Сколько длится обучение и&nbsp;когда проходят занятия?</h3><span class="toggle-icon_component accordion_icon" aria-hidden="true"><span class="toggle-icon_glyph"></span></span></summary>
-          <div class="faq_answer accordion_panel" data-accordion-panel><div class="faq_answer-inner accordion_panel-inner body-text_component"><p>13&nbsp;недель, <span data-cms-hours="{hours}">60&nbsp;академических часов</span>. <span data-cms-start="Старт {date}">Старт 4&nbsp;марта</span>, занятия по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00.</p></div></div>
+          <div class="faq_answer accordion_panel" data-accordion-panel><div class="faq_answer-inner accordion_panel-inner body-text_component"><p>13&nbsp;недель, <span data-cms-hours="{hours}">60&nbsp;академических часов</span>. <span data-cms-start="Старт {date}">Старт 4&nbsp;марта</span>, <span data-cms-schedule="занятия {schedule}">занятия по&nbsp;четвергам с&nbsp;17:00&nbsp;до&nbsp;20:00</span>.</p></div></div>
         </details>
         <details class="faq_item accordion_item" data-accordion-item>
           <summary class="faq_question accordion_summary" data-accordion-trigger><h3 class="content-heading_component is-card">Что у&nbsp;меня будет в&nbsp;конце курса?</h3><span class="toggle-icon_component accordion_icon" aria-hidden="true"><span class="toggle-icon_glyph"></span></span></summary>
@@ -5988,20 +5997,23 @@ else initialize();
 (() => {
 const initialize = () => {
 /* === treningi-dlya-detey/cms.js === */
-/* Данные курса из CMS (Strapi) через Public API: название, дата старта, объём в академических часах и цена.
-   Где на странице они стоят, отмечено атрибутами:
-     data-cms-title             — название курса (заголовок первого экрана, карточка цены);
-     data-cms-start="… {date}"  — дата старта, {date} заменяется на «4 марта»;
-     data-cms-hours="… {hours}" — часы, {hours} заменяется на «60 академических часов»;
-     data-cms-price / data-cms-benefit / data-cms-installment — цена и строки под ней в карточке цены.
+/* Данные курса из CMS (Strapi) через Public API: название, дата старта, дни занятий, документ, объём
+   в академических часах и цена. Где на странице они стоят, отмечено атрибутами:
+     data-cms-title                  — название курса (заголовок первого экрана, карточка цены);
+     data-cms-start="… {date}"       — дата старта, {date} → «4 марта» (первый экран, цена, форма, FAQ);
+     data-cms-schedule="… {schedule}"— дни и время занятий, {schedule} → «по четвергам 17:00–20:00» (программа, цена, FAQ);
+     data-cms-document               — документ об окончании (факты под первым экраном, цена);
+     data-cms-hours="… {hours}"      — часы, {hours} → «60 академических часов» (первый экран, цена, FAQ);
+     data-cms-price / data-cms-benefit / data-cms-installment / data-cms-rise — цена, строки под ней и повышение.
    Настройки (адрес API и слаг курса) — атрибуты data-cms-api и data-cms-course на секции цены.
 
    Один и тот же код работает дважды: при сборке (build.mjs берёт отсюда TreningiCms и вшивает в страницу снимок
-   из data/api-course.json, если он есть) и в браузере (после загрузки страница один раз спрашивает API и подменяет
-   значения). Курс ищется сначала в каталоге (там же часы); курса в каталоге CMS нет или API не ответил —
-   на странице остаются значения со сборки. Поэтому в CMS у курса должно стоять «показывать в каталоге».
+   из data/api-course.json и data/api-catalog-entry.json) и в браузере (страница один раз спрашивает API
+   и подменяет значения). Пустое поле в CMS или API не ответил — остаётся значение со сборки.
+   Часы есть только в каталоге (/api/public/catalog), а туда попадают курсы с «показывать в каталоге».
    Правила цены — как в утверждённом блоке «Одна цифра»: крупно цена при оплате сразу, официальная цена —
-   в рассрочку, разница — «выгода N ₽ при оплате сразу», платёж в месяц тихой строкой. */
+   в рассрочку, разница — «выгода N ₽ при оплате сразу», платёж в месяц тихой строкой, ближайшее
+   повышение — серой плашкой «С 26 ноября: 32 000 ₽ / подорожает на 2 000 ₽». */
 (function () {
   var NBSP = ' ';
   var JOIN = '⁠';
@@ -6034,6 +6046,21 @@ const initialize = () => {
     return d.day + NBSP + MONTHS[d.month];
   }
 
+  // Дни и время из CMS: «По средам 18:00–21:00» → «по средам 18:00–21:00»; если строки нет — по дням занятий
+  // («Четверг» → «по четвергам»). Время не рвётся на тире.
+  var DAY_PLURAL = {'Понедельник': 'понедельникам', 'Вторник': 'вторникам', 'Среда': 'средам', 'Четверг': 'четвергам', 'Пятница': 'пятницам', 'Суббота': 'субботам', 'Воскресенье': 'воскресеньям'};
+  function schedulePhrase(stream) {
+    if (!stream) return '';
+    var text = String(stream.schedule || '').trim();
+    if (!text) {
+      var days = (stream.lessonDays || []).map(function (d) { return DAY_PLURAL[d]; }).filter(Boolean);
+      if (!days.length) return '';
+      text = 'по ' + (days.length === 1 ? days[0] : days.slice(0, -1).join(', ') + ' и ' + days[days.length - 1]);
+    }
+    text = text.replace(/\s*[–—-]\s*(?=\d{1,2}:\d{2})/g, JOIN + '–' + JOIN);
+    return text.charAt(0).toLowerCase() + text.slice(1);
+  }
+
   /* Ответ /api/public/course/:slug → то, что нужно странице. Берётся ближайший открытый поток.
      Тарифы этот лендинг не показывает: курс с тарифами оставляет цену со сборки. */
   function fromApi(course) {
@@ -6046,17 +6073,21 @@ const initialize = () => {
     if (p && !p.hasTariffs && p.currentPrice != null) {
       var list = p.currentPrice;
       var sale = p.fullPaymentPrice != null ? p.fullPaymentPrice : list;
+      var next = p.nextPriceChange && p.nextPriceChange.at ? p.nextPriceChange : null;
       price = {
         sale: sale,
         list: list,
         perMonth: p.installmentPerMonth || (list > 0 ? Math.round(list / 24) : null),
         months: p.installmentPerMonth ? p.installmentMonths : 24,
+        next: next ? {label: dayMonth(next.at), price: next.fullPaymentPrice != null ? next.fullPaymentPrice : next.price} : null,
       };
     }
     return {
       title: course.title || null,
       start: stream ? dayMonth(stream.startDate) : '',
       startDate: stream && stream.startDate || null,
+      schedule: schedulePhrase(stream),
+      document: (course.documents || [])[0] || '',
       price: price,
     };
   }
@@ -6069,7 +6100,14 @@ const initialize = () => {
     return price.perMonth ? 'или ' + digits(price.perMonth) + NBSP + '₽' + JOIN + '/' + JOIN + 'мес в' + NBSP + 'рассрочку на' + NBSP + price.months + NBSP + 'мес' : '';
   }
 
-  var api = {fromApi: fromApi, dayMonth: dayMonth, hoursPhrase: hoursPhrase, benefitHtml: benefitHtml, installmentHtml: installmentHtml, digits: digits, nb: nb, esc: esc};
+  // Ближайшее повышение цены: серая плашка под ценой, только если новая цена выше текущей.
+  var ICON_RISE = '<svg class="price-rise_icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function riseHtml(price) {
+    if (!price.next || !(price.next.price > price.sale) || !price.next.label) return '';
+    return '<p class="price-rise">' + ICON_RISE + '<span class="price-rise_text"><span class="price-rise_title">С' + NBSP + price.next.label + ': ' + rub(price.next.price) + '</span><span class="price-rise_note">подорожает на' + NBSP + rub(price.next.price - price.sale) + '</span></span></p>';
+  }
+
+  var api = {fromApi: fromApi, riseHtml: riseHtml, schedulePhrase: schedulePhrase, dayMonth: dayMonth, hoursPhrase: hoursPhrase, benefitHtml: benefitHtml, installmentHtml: installmentHtml, digits: digits, nb: nb, esc: esc};
   globalThis.TreningiCms = api;
   if (typeof document === 'undefined') return;
 
@@ -6087,7 +6125,16 @@ const initialize = () => {
     if (!model) return;
     if (model.title) each('[data-cms-title]', function (el) { el.textContent = nb(model.title); });
     if (model.start) fill('data-cms-start', '{date}', model.start);
+    // Дни из CMS без времени («по четвергам») не затирают более подробную строку со сборки
+    // («по четвергам с 17:00 до 20:00»): заменяем, только если в CMS что-то другое.
+    if (model.schedule) each('[data-cms-schedule]', function (el) {
+      var next = el.getAttribute('data-cms-schedule').replace('{schedule}', model.schedule);
+      var flat = function (t) { return String(t).replace(/[\s\u00a0\u2060]+/g, ' ').trim(); };
+      if (flat(el.textContent).indexOf(flat(next)) !== 0) el.textContent = next;
+    });
+    if (model.document) each('[data-cms-document]', function (el) { el.textContent = nb(model.document); });
     if (model.price) {
+      each('[data-cms-rise]', function (el) { var html = riseHtml(model.price); el.innerHTML = html; el.hidden = !html; });
       each('[data-cms-price]', function (el) { el.textContent = digits(model.price.sale); });
       each('[data-cms-benefit]', function (el) { var html = benefitHtml(model.price); el.innerHTML = html; el.hidden = !html; });
       each('[data-cms-installment]', function (el) { var html = installmentHtml(model.price); el.innerHTML = html; el.hidden = !html; });
@@ -6105,11 +6152,12 @@ const initialize = () => {
     });
   }
 
-  /* Сначала каталог: в нём часы курса, и по нему видно, заведён ли курс. Курса в каталоге нет — данные курса
-     не запрашиваем (иначе API ответит 404 и в консоли будет ошибка), на странице остаются значения со сборки. */
   var json = function (path) {
     return fetch(base + path, {headers: {Accept: 'application/json'}}).then(function (response) { return response.ok ? response.json() : null; });
   };
+  // Курс: название, старт, дни, документ, цена.
+  json('/api/public/course/' + slug).then(applyCourse).catch(function () { /* API недоступен — значения со сборки */ });
+  // Часы — из каталога; курса там нет (не показывается в каталоге) — часы со сборки.
   json('/api/public/catalog')
     .then(function (catalog) {
       var found = null;
@@ -6119,12 +6167,10 @@ const initialize = () => {
         if (o.slug === slug) { found = o; return; }
         Object.keys(o).forEach(function (k) { walk(o[k]); });
       })(catalog);
-      if (!found) return null;
-      var hours = Number(found.hours);
+      var hours = found && Number(found.hours);
       if (hours) fill('data-cms-hours', '{hours}', hoursPhrase(hours));
-      return json('/api/public/course/' + slug).then(applyCourse);
     })
-    .catch(function () { /* API недоступен — значения со сборки */ });
+    .catch(function () { /* каталог недоступен — часы со сборки */ });
 })();
 
 /* === treningi-dlya-detey/page.js === */
@@ -6265,6 +6311,13 @@ else initialize();
         "jobTitle": "Клинический психолог, тренер, фасилитатор, игропрактик"
       }
     ]
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "30000",
+    "priceCurrency": "RUB",
+    "availability": "https://schema.org/InStock",
+    "url": "https://modern-psy.ru/treningi-dlya-detey"
   }
 }
 </script>
