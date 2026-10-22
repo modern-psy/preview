@@ -151,7 +151,7 @@ function renderPainsReply(p, id) {
   const quotes = p.quotes.map(quote => `<li class="pains-reply_message"><p class="pains-reply_bubble">${renderText(quote)}</p></li>`).join('');
   const modules = p.reply.modules.map(m => `<li class="pains-reply_module">${renderText(m)}</li>`).join('');
   return `<section class="section_pains-reply section-spacing_component" id="${sectionId(id)}" aria-labelledby="${id}-heading">
-  <div class="padding-global"><div class="container-xlarge">
+  <div class="padding-global"><div class="container-xlarge"><div class="column-grid_component"><div class="column-grid_content is-content-wide">
     <div class="section-layout_component is-responsive">
       <div class="section-header_component is-left is-responsive"><h2 class="section-title_component is-left is-responsive pains-reply_heading" id="${id}-heading">${renderText(p.heading)}</h2></div>
       <div class="pains-reply_component" data-js="pains-reply">
@@ -164,7 +164,7 @@ function renderPainsReply(p, id) {
         </div>
       </div>
     </div>
-  </div></div>
+  </div></div></div></div>
 </section>`;
 }
 
