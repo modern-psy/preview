@@ -382,14 +382,15 @@
   .document_copy { justify-content: center; padding: 2.5rem; }
   .document_term { font-size: 1.125rem; }
   .document_media { aspect-ratio: auto; height: 100%; min-height: 22rem; }
-  /* Кадр смещён вниз, чтобы удостоверение в руках не обрезалось, когда фото ниже своей ширины. */
-  .document_image { object-position: center 70%; }
+  /* Кадр чуть ниже верха: на широких экранах, где фото ниже своей ширины, видна и голова, и удостоверение
+     в руках (при 70 % на 1920 срезалась голова, 22.10.2026). */
+  .document_image { object-position: center 20%; }
 }
 @media (min-width: 64.0625rem) {
   .document_copy { padding: 3.5rem; }
   .document_term { font-size: 1.25rem; }
-  /* Условий получения в ТЗ нет, текст короткий: без запаса высоты фото обрезало бы удостоверение в руках. */
-  .document_media { min-height: 32rem; }
+  /* Запас высоты: на широких экранах фото шире блока, и без него обрезались бы голова или удостоверение в руках. */
+  .document_media { min-height: 36rem; }
 }
 
 /* ===== Стоимость — утверждённый блок «Одна цифра» с витрины /pricing-scenarios (сценарий «одна цена») =====
