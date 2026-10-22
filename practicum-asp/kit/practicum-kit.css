@@ -1,0 +1,2309 @@
+/* ==========================================================================
+   АСП Практикум · UI-кит
+   Версия 1.0 · 22.10.2026
+
+   Что это: все цвета, шрифты, отступы и компоненты Практикума в одном файле.
+   Основа компонентов: Untitled UI, перекрашенный в гамму Практикума
+   (лес, песок, олива, мёд). Адаптив и анимации взяты из web-academy:
+   четыре полосы ширины и спокойный профиль движения.
+
+   Как подключить на GetCourse:
+   1. В <head> страницы шрифты:
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@500;600&family=Wix+Madefor+Text:wght@400;500;600&display=swap" rel="stylesheet">
+   2. Этот файл целиком.
+   3. Всю вёрстку завернуть в <div class="practicum-page">…</div>.
+      Все стили кита живут только внутри этого класса и не трогают
+      остальной GetCourse.
+
+   Где можно править: раздел 1 (токены). Цвет, размер или отступ меняется
+   в одном месте и расходится по всем компонентам.
+   Где нельзя: разделы 2–6 без договорённости с Дарьей. Новый цвет или
+   новый размер не придумываем, а добавляем в токены осознанно.
+
+   Полосы ширины (как в web-academy):
+     до 520px        телефон, базовые стили
+     521–767px       @media (min-width: 32.5625rem)
+     768–1024px      @media (min-width: 48rem)
+     от 1025px       @media (min-width: 64.0625rem)
+   ========================================================================== */
+
+
+/* ==========================================================================
+   0. GetCourse: корневой размер шрифта
+   Bootstrap 3 на GetCourse ставит html { font-size: 10px }, и тогда 1rem
+   равен 10px вместо 16px: весь кит сжимается на треть. Возвращаем 16px
+   только на страницах, где есть кит. Не удалять.
+   ========================================================================== */
+
+html:has(.practicum-page) {
+  font-size: 100%;
+}
+
+body:has(.practicum-page) {
+  margin: 0;
+  background-color: #F0EBE3; /* = --color-bg-page, продублировано: body живёт вне кита */
+}
+
+
+/* ==========================================================================
+   1. Токены
+   Слой 1 — палитра: «какой это цвет». Шкалы 25–950, как в Untitled UI.
+   Слой 2 — назначение: «для чего этот цвет». В вёрстке блоков используем
+   только слой 2. Писать var(--forest-600) в стилях блока нельзя.
+   ========================================================================== */
+
+.practicum-page {
+  /* --- 1.1. Палитра: лес (основной цвет бренда) --- */
+  --forest-25: #F6FCF7;
+  --forest-50: #EDF8EF;
+  --forest-100: #DCF0DF;
+  --forest-200: #BFE0C5;
+  --forest-300: #9BC8A3;
+  --forest-400: #6EA47A;
+  --forest-500: #4A8257;
+  --forest-600: #2E5D3A; /* фирменный, кнопки и тёмные блоки */
+  --forest-700: #264E30;
+  --forest-800: #1E3D26;
+  --forest-900: #172F1D;
+  --forest-950: #0A1A0E;
+
+  /* --- 1.2. Палитра: олива (акцент на тёмном) --- */
+  --olive-25: #FBFDF4;
+  --olive-50: #F5FAE3;
+  --olive-100: #EAF5C7;
+  --olive-200: #D9E99C;
+  --olive-300: #C7D977;
+  --olive-400: #B5C952; /* кнопка на тёмно-зелёном */
+  --olive-500: #85AE51;
+  --olive-600: #719346; /* олива из гайда бренда */
+  --olive-700: #61803A; /* выделение в заголовке на светлом фоне */
+  --olive-800: #425827;
+  --olive-900: #354620;
+  --olive-950: #1D2810;
+
+  /* --- 1.3. Палитра: мёд (тёплое выделение) --- */
+  --honey-25: #FFFBF4;
+  --honey-50: #FFF6E4;
+  --honey-100: #FEEDC9;
+  --honey-200: #FADC9E;
+  --honey-300: #F3CB7A;
+  --honey-400: #E6BC63; /* мёд из гайда бренда */
+  --honey-500: #D7A035;
+  --honey-600: #B7801E;
+  --honey-700: #8F6114;
+  --honey-800: #714D14;
+  --honey-900: #5B3F13;
+  --honey-950: #352206;
+
+  /* --- 1.4. Палитра: песок (нейтральная, несёт 80% макета) --- */
+  --sand-25: #FEFDFA;
+  --sand-50: #F9F6F1;
+  --sand-100: #F0EBE3; /* фон страницы */
+  --sand-200: #E1DED4;
+  --sand-300: #D2D2C6; /* рамки полей и вторичных кнопок, мягкие */
+  --sand-400: #A5A69A;
+  --sand-500: #6F7266;
+  --sand-600: #5C5F54;
+  --sand-700: #464940;
+  --sand-800: #2C2F28;
+  --sand-900: #191C17; /* основной текст */
+  --sand-950: #0E100C;
+
+  /* --- 1.5. Палитра: ошибка (из Untitled UI, только для ошибок) --- */
+  --error-50: #FEF3F2;
+  --error-100: #FEE4E2;
+  --error-200: #FECDCA;
+  --error-300: #FDA29B;
+  --error-500: #F04438;
+  --error-600: #D92D20;
+  --error-700: #B42318;
+
+  /* --- 1.6. Назначение: фоны --- */
+  --color-bg-page: var(--sand-100);
+  --color-bg-surface: #FFFFFF;           /* карточки, поля, шапка */
+  --color-bg-surface-muted: var(--sand-50);
+  --color-bg-sunken: var(--sand-200);    /* дорожка табов, плашка даты */
+  --color-bg-hover: var(--sand-50);
+  --color-bg-brand: var(--forest-600);
+  --color-bg-brand-soft: var(--forest-50);
+  --color-bg-inverse: var(--forest-600); /* тёмные блоки — лес, не серый */
+  --color-bg-disabled: var(--sand-200);
+
+  /* --- 1.7. Назначение: текст --- */
+  --color-text-primary: var(--sand-900);    /* 14.5:1 на песке */
+  --color-text-secondary: var(--sand-600);  /* 5.5:1 на песке, подписи и абзацы второго плана */
+  --color-text-tertiary: var(--sand-500);   /* 4.1:1 на песке: только от 18px или на белом (4.9:1) */
+  --color-text-disabled: var(--sand-400);
+  --color-text-brand: var(--forest-600);    /* 6.45:1 на песке */
+  --color-text-on-brand: #FFFFFF;           /* 7.66:1 на лесе */
+  --color-text-on-inverse: #FFFFFF;
+  --color-text-on-inverse-secondary: var(--forest-100); /* 6.4:1 на лесе */
+  --color-text-highlight: var(--olive-700);             /* 3.8:1 на песке, 4.5:1 на белом: только заголовки от 24px */
+  --color-text-highlight-on-inverse: var(--olive-300);  /* 5:1 на лесе */
+  --color-text-error: var(--error-700);     /* 5.7:1 на песке; error-600 даёт только 4.1 */
+
+  /* --- 1.8. Назначение: границы и фокус --- */
+  --color-border-primary: var(--sand-300);   /* поля, вторичные кнопки */
+  --color-border-secondary: var(--sand-200); /* карточки, разделители */
+  --color-border-brand: var(--forest-600);
+  --color-border-error: var(--error-300);
+  --color-border-on-inverse: rgb(255 255 255 / 0.28);
+  --color-focus-ring: var(--forest-500);     /* 3.8:1 к песку, видно всегда */
+  --color-focus-ring-on-inverse: var(--olive-300);
+
+  /* --- 1.9. Назначение: акценты и статусы --- */
+  --color-accent: var(--forest-600);
+  --color-accent-hover: var(--forest-700);
+  --color-accent-press: var(--forest-800);
+  --color-accent-on-inverse: var(--olive-400);
+  --color-accent-on-inverse-hover: var(--olive-300);
+
+  /* Цветные маркеры: точки бейджей и пунктов списка. Цвет кодирует
+     формат или группу, текст рядом всегда тёмный */
+  --color-marker-brand: var(--forest-500);
+  --color-marker-olive: var(--olive-600);
+  --color-marker-honey: var(--honey-500);
+  --color-marker-gray: var(--sand-500);
+  --color-marker-error: var(--error-500);
+
+  /* --- 1.10. Шрифты --- */
+  --font-family-display: "Wix Madefor Display", "Wix Madefor Text", Arial, sans-serif;
+  --font-family-text: "Wix Madefor Text", Arial, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;   /* все заголовки Практикума и надписи кнопок */
+  --font-weight-semibold: 600; /* выделение в тексте, не заголовки */
+
+  /* --- 1.11. Кегли по полосам. Ниже — значения телефона,
+         в разделе 1.17 они растут на 521, 768 и 1025px --- */
+  --text-display-2xl: 2.25rem;   /* 36 → 44 → 56 → 64, заголовок первого экрана */
+  --text-display-xl: 2rem;       /* 32 → 36 → 44 → 52, заголовок секции */
+  --text-display-lg: 1.75rem;    /* 28 → 30 → 36 → 40, тёмный блок, крупная плашка */
+  --text-display-md: 1.5rem;     /* 24 → 26 → 28 → 32, крупная карточка */
+  --text-display-sm: 1.25rem;    /* 20 → 22 → 24 → 24, карточка, встреча */
+  --text-display-xs: 1.125rem;   /* 18 → 20 → 20 → 20, плотный список */
+  --text-xl: 1.125rem;           /* 18 → 18 → 20 → 22, подводка */
+  --text-lg: 0.9375rem;          /* 15 → 16 → 18 → 20, основной текст */
+  --text-md: 1rem;               /* 16 везде: интерфейс, поля, кнопки */
+  --text-sm: 0.875rem;           /* 14 везде: подписи */
+  --text-xs: 0.75rem;            /* 12 везде: метки бейджей */
+
+  /* --- 1.12. Отступы: шкала Untitled UI (шаг 4px) --- */
+  --spacing-xxs: 0.125rem;  /* 2 */
+  --spacing-xs: 0.25rem;    /* 4 */
+  --spacing-sm: 0.375rem;   /* 6 */
+  --spacing-md: 0.5rem;     /* 8 */
+  --spacing-lg: 0.75rem;    /* 12 */
+  --spacing-xl: 1rem;       /* 16 */
+  --spacing-2xl: 1.25rem;   /* 20 */
+  --spacing-3xl: 1.5rem;    /* 24 */
+  --spacing-4xl: 2rem;      /* 32 */
+  --spacing-5xl: 2.5rem;    /* 40 */
+  --spacing-6xl: 3rem;      /* 48 */
+  --spacing-7xl: 4rem;      /* 64 */
+  --spacing-8xl: 5rem;      /* 80 */
+  --spacing-9xl: 6rem;      /* 96 */
+  --spacing-10xl: 8rem;     /* 128 */
+
+  /* --- 1.13. Отступы по ролям (из web-academy, растут по полосам) --- */
+  --page-padding: clamp(1rem, 4.7619vw, 5rem); /* боковые поля, минимум 16px */
+  --container-max: 80rem;                      /* 1280px */
+  --section-space: 3.75rem;        /* 60 → 80 → 100 → 150, между секциями */
+  --section-inset-space: 2.5rem;   /* 40 → 40 → 50 → 70, поля тёмного блока */
+  --space-heading-copy: 1.25rem;   /* 20 → 20 → 24 → 28, заголовок → подзаголовок */
+  --space-section-content: 2rem;   /* 32 → 36 → 42 → 64, шапка секции → содержимое */
+  --card-padding: 1rem;            /* 16 → 16 → 20 → 24, поля карточки */
+  --grid-gap: 0.75rem;             /* 12 → 12 → 16 → 20, промежуток между карточками */
+
+  /* --- 1.14. Радиусы: шкала Untitled UI и роли --- */
+  --radius-xs: 0.25rem;   /* 4 */
+  --radius-sm: 0.375rem;  /* 6 */
+  --radius-md: 0.5rem;    /* 8 */
+  --radius-lg: 0.625rem;  /* 10 */
+  --radius-xl: 0.75rem;   /* 12 */
+  --radius-2xl: 1rem;     /* 16 */
+  --radius-3xl: 1.25rem;  /* 20 */
+  --radius-4xl: 1.5rem;   /* 24 */
+  --radius-full: 624.9375rem;
+  --radius-button: var(--radius-xl);
+  --radius-input: var(--radius-lg);
+  --radius-card: var(--radius-2xl);
+  --radius-block: var(--radius-4xl);
+
+  /* --- 1.15. Тени: Untitled UI, тон взят из леса, а не из синего --- */
+  --shadow-xs: 0 1px 2px rgb(10 26 14 / 0.05);
+  --shadow-sm: 0 1px 3px rgb(10 26 14 / 0.1), 0 1px 2px -1px rgb(10 26 14 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(10 26 14 / 0.1), 0 2px 4px -2px rgb(10 26 14 / 0.06);
+  --shadow-lg: 0 12px 16px -4px rgb(10 26 14 / 0.08), 0 4px 6px -2px rgb(10 26 14 / 0.03);
+  --shadow-xl: 0 20px 24px -4px rgb(10 26 14 / 0.08), 0 8px 8px -4px rgb(10 26 14 / 0.03);
+  /* Кнопки плоские, как во всех проектах Академии. Только едва заметная
+     внутренняя тень по нижней кромке у залитых кнопок */
+  --shadow-button: inset 0 -1px 0 rgb(10 26 14 / 0.14);
+  --shadow-button-secondary: none;
+
+  /* --- 1.16. Движение (профиль web-academy). Только ms, без голых чисел --- */
+  --motion-duration: 150ms;      /* наведение, фокус, смена цвета */
+  --accordion-duration: 300ms;   /* раскрытие «Подробнее», аккордеон */
+  --slider-duration: 400ms;      /* ленты карточек */
+  --reveal-duration: 600ms;      /* появление блока при прокрутке */
+  --motion-easing: ease-in-out;
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-site: var(--motion-duration) var(--motion-easing);
+
+  /* --- 1.18. Слои --- */
+  --z-raised: 1;
+  --z-sticky: 10;
+  --z-dropdown: 20;
+  --z-overlay: 40;
+}
+
+/* --- 1.17. Рост токенов по полосам --- */
+@media (min-width: 32.5625rem) {
+  .practicum-page {
+    --text-display-2xl: 2.75rem;
+    --text-display-xl: 2.25rem;
+    --text-display-lg: 1.875rem;
+    --text-display-md: 1.625rem;
+    --text-display-sm: 1.375rem;
+    --text-display-xs: 1.25rem;
+    --text-lg: 1rem;
+    --section-space: 5rem;
+    --space-section-content: 2.25rem;
+  }
+}
+
+@media (min-width: 48rem) {
+  .practicum-page {
+    --text-display-2xl: 3.5rem;
+    --text-display-xl: 2.75rem;
+    --text-display-lg: 2.25rem;
+    --text-display-md: 1.75rem;
+    --text-display-sm: 1.5rem;
+    --text-xl: 1.25rem;
+    --text-lg: 1.125rem;
+    --section-space: 6.25rem;
+    --section-inset-space: 3.125rem;
+    --space-heading-copy: 1.5rem;
+    --space-section-content: 2.625rem;
+    --card-padding: 1.25rem;
+    --grid-gap: 1rem;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page {
+    --text-display-2xl: 4rem;
+    --text-display-xl: 3.25rem;
+    --text-display-lg: 2.5rem;
+    --text-display-md: 2rem;
+    --text-xl: 1.375rem;
+    --text-lg: 1.25rem;
+    --section-space: 9.375rem;
+    --section-inset-space: 4.375rem;
+    --space-heading-copy: 1.75rem;
+    --space-section-content: 4rem;
+    --card-padding: 1.5rem;
+    --grid-gap: 1.25rem;
+  }
+}
+
+
+/* ==========================================================================
+   2. База
+   Сброс внутри .practicum-page: гасит стили GetCourse и Bootstrap
+   (жирные label, синие ссылки, отступы заголовков).
+   ========================================================================== */
+
+.practicum-page {
+  min-width: 0;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-page);
+  font-family: var(--font-family-text);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+  overflow-wrap: break-word;
+}
+
+.practicum-page *,
+.practicum-page *::before,
+.practicum-page *::after {
+  box-sizing: border-box;
+}
+
+.practicum-page :where(h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, blockquote, dl, dd, fieldset, legend) {
+  margin: 0;
+  padding: 0;
+}
+
+.practicum-page :where(ul, ol) {
+  list-style: none;
+}
+
+.practicum-page :where(h1, h2, h3, h4, h5, h6) {
+  color: inherit;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-medium);
+  text-wrap: balance;
+}
+
+.practicum-page :where(p) {
+  text-wrap: pretty;
+}
+
+.practicum-page :where(img, svg, video, picture) {
+  display: block;
+  max-width: 100%;
+}
+
+.practicum-page :where(img) {
+  height: auto;
+}
+
+.practicum-page :where(button, input, select, textarea) {
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.practicum-page :where(button) {
+  cursor: pointer;
+}
+
+.practicum-page :where(label) {
+  display: block;
+  max-width: none;
+  margin: 0;
+  font-weight: inherit;
+}
+
+/* Ссылки без класса: цвет текста вокруг. У ссылок с классом свои правила */
+.practicum-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.practicum-page a:not([class]):hover,
+.practicum-page a:not([class]):focus {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Фокус с клавиатуры виден всегда. Убирать нельзя */
+.practicum-page :focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.practicum-page :focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Выделение текста и каретка — тоже в цветах бренда */
+.practicum-page ::selection {
+  color: var(--forest-950);
+  background-color: var(--olive-200);
+}
+
+.practicum-page :where(input, textarea) {
+  caret-color: var(--color-accent);
+}
+
+/* Скрыть визуально, оставить для скринридера */
+.practicum-page .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ==========================================================================
+   3. Каркас страницы
+   page → section_<имя> → padding-global → container-large → <имя>_component
+   ========================================================================== */
+
+.practicum-page .padding-global {
+  width: 100%;
+  padding-inline: var(--page-padding);
+}
+
+.practicum-page .container-large {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+
+/* Отступ снизу секции. Один владелец вертикали: не добавлять второй gap */
+.practicum-page .section-spacing_component {
+  padding-bottom: var(--section-space);
+}
+
+/* Первая секция после шапки или тёмного блока получает отступ сверху */
+.practicum-page .section-spacing_component.is-first {
+  padding-top: var(--section-space);
+}
+
+/* Шапка секции: заголовок, подзаголовок, кнопки. Без надзаголовков */
+.practicum-page .section-header_component {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-heading-copy);
+  max-width: 48rem;
+  margin-bottom: var(--space-section-content);
+}
+
+.practicum-page .section-header_component.is-center {
+  align-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.practicum-page .section-header_supporting {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xl);
+  line-height: 1.35;
+}
+
+/* Читаемая длина строки для абзацев */
+.practicum-page .text-measure {
+  max-width: 65ch;
+}
+
+
+/* ==========================================================================
+   4. Типографика
+   Размер, начертание и цвет — три отдельных класса.
+   font-size в стилях блока не задаём, только классы text-size-*.
+   ========================================================================== */
+
+/* Заголовки: Wix Madefor Display, вес 500, плотный трекинг */
+.practicum-page .text-size-display-2xl,
+.practicum-page .text-size-display-xl,
+.practicum-page .text-size-display-lg,
+.practicum-page .text-size-display-md,
+.practicum-page .text-size-display-sm,
+.practicum-page .text-size-display-xs {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-medium);
+  text-wrap: balance;
+}
+
+.practicum-page .text-size-display-2xl { font-size: var(--text-display-2xl); line-height: 1.04; letter-spacing: -0.035em; }
+.practicum-page .text-size-display-xl  { font-size: var(--text-display-xl);  line-height: 1.08; letter-spacing: -0.03em; }
+.practicum-page .text-size-display-lg  { font-size: var(--text-display-lg);  line-height: 1.1;  letter-spacing: -0.025em; }
+.practicum-page .text-size-display-md  { font-size: var(--text-display-md);  line-height: 1.15; letter-spacing: -0.02em; }
+.practicum-page .text-size-display-sm  { font-size: var(--text-display-sm);  line-height: 1.2;  letter-spacing: -0.01em; }
+.practicum-page .text-size-display-xs  { font-size: var(--text-display-xs);  line-height: 1.25; letter-spacing: -0.005em; }
+
+/* Текст: Wix Madefor Text */
+.practicum-page .text-size-xl { font-family: var(--font-family-text); font-size: var(--text-xl); line-height: 1.35; letter-spacing: -0.005em; }
+.practicum-page .text-size-lg { font-family: var(--font-family-text); font-size: var(--text-lg); line-height: 1.45; }
+.practicum-page .text-size-md { font-family: var(--font-family-text); font-size: var(--text-md); line-height: 1.5; }
+.practicum-page .text-size-sm { font-family: var(--font-family-text); font-size: var(--text-sm); line-height: 1.45; }
+.practicum-page .text-size-xs { font-family: var(--font-family-text); font-size: var(--text-xs); line-height: 1.4; }
+
+.practicum-page .text-weight-regular  { font-weight: var(--font-weight-regular); }
+.practicum-page .text-weight-medium   { font-weight: var(--font-weight-medium); }
+.practicum-page .text-weight-semibold { font-weight: var(--font-weight-semibold); }
+
+.practicum-page .text-color-primary   { color: var(--color-text-primary); }
+.practicum-page .text-color-secondary { color: var(--color-text-secondary); }
+.practicum-page .text-color-tertiary  { color: var(--color-text-tertiary); }
+.practicum-page .text-color-brand     { color: var(--color-text-brand); }
+.practicum-page .text-color-on-inverse           { color: var(--color-text-on-inverse); }
+.practicum-page .text-color-on-inverse-secondary { color: var(--color-text-on-inverse-secondary); }
+
+/* Выделенное слово в заголовке: цветом, не жирностью. Два варианта:
+   на светлом фоне олива-700, на тёмном блоке олива-300.
+   Только в заголовках от 24px: для мелкого текста контраста мало */
+.practicum-page .text-highlight {
+  color: var(--color-text-highlight);
+}
+
+.practicum-page .is-inverse .text-highlight,
+.practicum-page .inverse-block_component .text-highlight {
+  color: var(--color-text-highlight-on-inverse);
+}
+
+/* Цифры в таблицах и расписании одной ширины */
+.practicum-page .text-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Длинные названия курсов из CMS переносятся, а не вылезают */
+.practicum-page .text-style-break {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Ссылка в тексте: всегда подчёркнута */
+.practicum-page .text-link {
+  color: var(--color-text-brand);
+  font-weight: var(--font-weight-medium);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--forest-300);
+  transition: color var(--transition-site), text-decoration-color var(--transition-site);
+}
+
+.practicum-page .text-link:hover {
+  color: var(--color-accent-press);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+.practicum-page .text-link.is-inverse {
+  color: var(--olive-200);
+  text-decoration-color: rgb(217 233 156 / 0.5);
+}
+
+.practicum-page .text-link.is-inverse:hover {
+  color: var(--olive-100);
+  text-decoration-color: currentColor;
+}
+
+
+/* ==========================================================================
+   5. Компоненты
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   5.1. Иконки
+   Инлайн-svg с stroke="currentColor": красятся цветом текста родителя.
+   Квадрат 24×24, линия 2px, скругления на концах (как в Untitled UI).
+   -------------------------------------------------------------------------- */
+
+.practicum-page .icon_component {
+  display: block;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: inherit;
+}
+
+.practicum-page .icon_component.is-sm { width: 1rem;    height: 1rem; }
+.practicum-page .icon_component.is-lg { width: 1.5rem;  height: 1.5rem; }
+.practicum-page .icon_component.is-xl { width: 2rem;    height: 2rem; }
+
+
+/* --------------------------------------------------------------------------
+   5.2. Кнопки
+   Три измерения: вид (primary по умолчанию, is-secondary, is-tertiary,
+   is-link), размер (is-sm 36, is-md 40, is-lg 44, is-xl 48, is-2xl 60),
+   фон (is-inverse — на тёмно-зелёном блоке).
+   Ссылка на другую страницу — <a class="button_component">,
+   действие на текущей — <button class="button_component">.
+   Кнопки не сдвигаются и не увеличиваются при наведении.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .button_component {
+  --button-height: 2.75rem;
+  --button-padding-inline: 1rem;
+  --button-font-size: var(--text-md);
+  --button-gap: var(--spacing-sm);
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--button-height);
+  align-items: center;
+  justify-content: center;
+  gap: var(--button-gap);
+  padding: var(--spacing-md) var(--button-padding-inline);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-button);
+  color: var(--color-text-on-brand);
+  background-color: var(--color-accent);
+  box-shadow: var(--shadow-button);
+  font-family: var(--font-family-text);
+  font-size: var(--button-font-size);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--transition-site),
+    border-color var(--transition-site),
+    color var(--transition-site),
+    box-shadow var(--transition-site);
+}
+
+.practicum-page .button_component:hover,
+.practicum-page .button_component:focus {
+  color: var(--color-text-on-brand);
+  text-decoration: none;
+}
+
+/* Наведение только для мыши: на телефоне эффект залипает после касания */
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .button_component:where(:not(:disabled, [aria-disabled="true"])):hover {
+    border-color: var(--color-accent-hover);
+    background-color: var(--color-accent-hover);
+  }
+}
+
+/* Нажатие: цвет темнее. Кнопка не двигается */
+.practicum-page .button_component:where(:not(:disabled, [aria-disabled="true"])):active {
+  border-color: var(--color-accent-press);
+  background-color: var(--color-accent-press);
+}
+
+.practicum-page .button_component:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Размеры */
+.practicum-page .button_component.is-sm  { --button-height: 2.25rem; --button-padding-inline: 0.75rem;  --button-font-size: var(--text-sm); --button-gap: var(--spacing-xs); }
+.practicum-page .button_component.is-md  { --button-height: 2.5rem;  --button-padding-inline: 0.875rem; --button-font-size: var(--text-sm); --button-gap: var(--spacing-xs); }
+.practicum-page .button_component.is-lg  { --button-height: 2.75rem; --button-padding-inline: 1rem; }
+.practicum-page .button_component.is-xl  { --button-height: 3rem;    --button-padding-inline: 1.125rem; }
+.practicum-page .button_component.is-2xl { --button-height: 3.75rem; --button-padding-inline: 1.375rem; --button-font-size: 1.125rem; --button-gap: var(--spacing-md); }
+
+/* Маленькие кнопки визуально 36–40px, но палец попадает в 44px */
+.practicum-page .button_component.is-sm::after,
+.practicum-page .button_component.is-md::after {
+  position: absolute;
+  inset: 50% 0 auto;
+  min-height: 2.75rem;
+  height: 100%;
+  transform: translateY(-50%);
+  content: "";
+}
+
+/* Во всю ширину, например на телефоне в карточке */
+.practicum-page .button_component.is-full {
+  width: 100%;
+}
+
+/* Вторичная: белая с границей */
+.practicum-page .button_component.is-secondary,
+.practicum-page .button_component.is-secondary:hover,
+.practicum-page .button_component.is-secondary:focus {
+  border-color: var(--color-border-primary);
+  color: var(--sand-700);
+  background-color: var(--color-bg-surface);
+  box-shadow: var(--shadow-button-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .button_component.is-secondary:where(:not(:disabled, [aria-disabled="true"])):hover {
+    border-color: var(--sand-400);
+    color: var(--sand-800);
+    background-color: var(--color-bg-hover);
+  }
+}
+
+.practicum-page .button_component.is-secondary:where(:not(:disabled, [aria-disabled="true"])):active {
+  background-color: var(--sand-100);
+}
+
+/* Третичная: без фона и рамки, для «Подробнее» и второстепенных действий */
+.practicum-page .button_component.is-tertiary,
+.practicum-page .button_component.is-tertiary:hover,
+.practicum-page .button_component.is-tertiary:focus {
+  border-color: transparent;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .button_component.is-tertiary:where(:not(:disabled, [aria-disabled="true"])):hover {
+    color: var(--sand-800);
+    background-color: rgb(225 222 212 / 0.6);
+  }
+}
+
+.practicum-page .button_component.is-tertiary:where(:not(:disabled, [aria-disabled="true"])):active {
+  background-color: var(--sand-200);
+}
+
+/* Кнопка-ссылка: без полей, по высоте строки, подчёркивается при наведении */
+.practicum-page .button_component.is-link,
+.practicum-page .button_component.is-link:hover,
+.practicum-page .button_component.is-link:focus {
+  --button-height: auto;
+  padding: 0;
+  border-color: transparent;
+  border-radius: var(--radius-xs);
+  color: var(--color-text-brand);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.practicum-page .button_component.is-link:where(:not(:disabled, [aria-disabled="true"])):active {
+  border-color: transparent;
+  color: var(--forest-900);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .button_component.is-link:where(:not(:disabled, [aria-disabled="true"])):hover {
+    color: var(--color-accent-press);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* На тёмно-зелёном блоке: основная кнопка оливковая */
+.practicum-page .button_component.is-inverse,
+.practicum-page .button_component.is-inverse:hover,
+.practicum-page .button_component.is-inverse:focus {
+  border-color: var(--color-accent-on-inverse);
+  color: var(--forest-950);
+  background-color: var(--color-accent-on-inverse);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .button_component.is-inverse:where(:not(:disabled, [aria-disabled="true"])):hover {
+    border-color: var(--color-accent-on-inverse-hover);
+    background-color: var(--color-accent-on-inverse-hover);
+  }
+}
+
+.practicum-page .button_component.is-inverse:where(:not(:disabled, [aria-disabled="true"])):active {
+  border-color: var(--olive-500);
+  background-color: var(--olive-500);
+}
+
+.practicum-page .button_component.is-inverse.is-secondary,
+.practicum-page .button_component.is-inverse.is-secondary:hover,
+.practicum-page .button_component.is-inverse.is-secondary:focus {
+  border-color: var(--color-border-on-inverse);
+  color: var(--color-text-on-inverse);
+  background-color: rgb(255 255 255 / 0.06);
+  box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .button_component.is-inverse.is-secondary:where(:not(:disabled, [aria-disabled="true"])):hover {
+    border-color: rgb(255 255 255 / 0.45);
+    background-color: rgb(255 255 255 / 0.12);
+  }
+}
+
+.practicum-page .button_component.is-inverse.is-secondary:where(:not(:disabled, [aria-disabled="true"])):active {
+  border-color: rgb(255 255 255 / 0.45);
+  background-color: rgb(255 255 255 / 0.18);
+}
+
+.practicum-page .button_component.is-inverse:focus-visible {
+  outline-color: var(--color-focus-ring-on-inverse);
+}
+
+/* Отключена: совсем плоская, без тени */
+.practicum-page .button_component:disabled,
+.practicum-page .button_component[aria-disabled="true"] {
+  border-color: var(--color-bg-disabled);
+  color: var(--color-text-disabled);
+  background-color: var(--color-bg-disabled);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Отключённая вторичная сохраняет свою форму: белая, рамка бледнее, текст серый */
+.practicum-page .button_component.is-secondary:disabled,
+.practicum-page .button_component.is-secondary[aria-disabled="true"] {
+  border-color: var(--color-border-secondary);
+  color: var(--color-text-disabled);
+  background-color: var(--color-bg-surface);
+  box-shadow: none;
+}
+
+.practicum-page .button_component.is-tertiary:disabled,
+.practicum-page .button_component.is-link:disabled {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.practicum-page .button_component.is-inverse:disabled,
+.practicum-page .button_component.is-inverse[aria-disabled="true"] {
+  border-color: rgb(255 255 255 / 0.12);
+  color: rgb(255 255 255 / 0.45);
+  background-color: rgb(255 255 255 / 0.12);
+}
+
+/* Загрузка: крутится иконка, ширина кнопки не меняется */
+.practicum-page .button_component.is-loading {
+  cursor: progress;
+}
+
+.practicum-page .button_component.is-loading .button_spinner {
+  animation: practicum-spin 800ms linear infinite;
+}
+
+.practicum-page .button_component .button_spinner {
+  display: none;
+}
+
+.practicum-page .button_component.is-loading .button_spinner {
+  display: block;
+}
+
+.practicum-page .button_component.is-loading .button_icon {
+  display: none;
+}
+
+/* Только иконка: квадратная, aria-label обязателен */
+.practicum-page .button_component.is-icon-only {
+  width: var(--button-height);
+  padding: 0;
+}
+
+.practicum-page .button_icon,
+.practicum-page .button_spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+/* Иконка в конце сдвигается на 2px при наведении: тихий знак действия */
+.practicum-page .button_icon.is-trailing {
+  transition: transform var(--transition-site);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .button_component:where(:not(:disabled, [aria-disabled="true"])):hover .button_icon.is-trailing {
+    transform: translateX(0.125rem);
+  }
+}
+
+@keyframes practicum-spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* --------------------------------------------------------------------------
+   5.3. Бейджи
+   Метка формата или статуса: цветная точка и текст, без подложки и обводки.
+   Точка рисуется сама, отдельный элемент для неё не нужен.
+   Цвет точки: is-gray (по умолчанию), is-brand, is-olive, is-honey, is-error.
+   Вместо точки можно поставить иконку badge_icon. На тёмном блоке is-inverse.
+   Размеры: is-sm 12px, is-md 14px (по умолчанию), is-lg 16px.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .badge_component {
+  --badge-dot: var(--color-marker-gray);
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-block: var(--spacing-xxs);
+  color: var(--sand-700);
+  font-family: var(--font-family-text);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.43;
+  white-space: nowrap;
+}
+
+.practicum-page .badge_component::before {
+  width: 0.375rem;
+  height: 0.375rem;
+  flex: none;
+  border-radius: 50%;
+  background-color: var(--badge-dot);
+  content: "";
+}
+
+/* С иконкой точка не нужна */
+.practicum-page .badge_component:has(.badge_icon)::before {
+  content: none;
+}
+
+.practicum-page .badge_component.is-sm { gap: var(--spacing-xs); font-size: var(--text-xs); line-height: 1.5; }
+.practicum-page .badge_component.is-lg { gap: var(--spacing-md); font-size: var(--text-md); }
+.practicum-page .badge_component.is-lg::before { width: 0.5rem; height: 0.5rem; }
+
+.practicum-page .badge_component.is-gray  { --badge-dot: var(--color-marker-gray); }
+.practicum-page .badge_component.is-brand { --badge-dot: var(--color-marker-brand); }
+.practicum-page .badge_component.is-olive { --badge-dot: var(--color-marker-olive); }
+.practicum-page .badge_component.is-honey { --badge-dot: var(--color-marker-honey); }
+.practicum-page .badge_component.is-error { --badge-dot: var(--color-marker-error); }
+
+.practicum-page .badge_component.is-inverse {
+  color: var(--color-text-on-inverse-secondary);
+}
+
+.practicum-page .badge_icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: none;
+  color: var(--sand-500);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.4. Теги
+   Перечни и фильтры: «Супервизии», «Библиотека». В отличие от бейджа
+   тег крупнее, может быть кнопкой-фильтром (aria-pressed).
+   Песочная заливка sand-200 без обводки: работает и на песке,
+   и на белой карточке.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .tag-list_component {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.practicum-page .tag_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--sand-800);
+  background-color: var(--sand-200);
+  font-family: var(--font-family-text);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  transition: background-color var(--transition-site), color var(--transition-site);
+}
+
+.practicum-page .tag_icon {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  color: var(--color-text-brand);
+}
+
+.practicum-page .tag_count {
+  padding: 0 var(--spacing-sm);
+  border-radius: var(--radius-full);
+  color: var(--sand-600);
+  background-color: rgb(255 255 255 / 0.7);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+/* Тег-фильтр */
+.practicum-page button.tag_component {
+  position: relative;
+  cursor: pointer;
+}
+
+.practicum-page button.tag_component::after {
+  position: absolute;
+  inset: 50% 0 auto;
+  min-height: 2.75rem;
+  height: 100%;
+  transform: translateY(-50%);
+  content: "";
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page button.tag_component:hover {
+    background-color: var(--sand-300);
+  }
+}
+
+.practicum-page button.tag_component[aria-pressed="true"] {
+  color: var(--color-text-on-brand);
+  background-color: var(--forest-600);
+}
+
+.practicum-page button.tag_component[aria-pressed="true"] .tag_icon { color: var(--olive-300); }
+.practicum-page button.tag_component[aria-pressed="true"] .tag_count { color: var(--forest-700); background-color: var(--forest-100); }
+
+/* На тёмно-зелёном блоке: светлая полупрозрачная заливка без рамки */
+.practicum-page .tag_component.is-inverse {
+  color: var(--color-text-on-inverse);
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.practicum-page .tag_component.is-inverse .tag_icon {
+  color: var(--olive-300);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.5. Поля формы
+   field_component = подпись + поле + подсказка. Поля плоские, без тени,
+   с мягкой рамкой. Кегль поля 16px:
+   меньше нельзя, иначе iPhone увеличивает страницу при вводе.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .field_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.practicum-page .field_label {
+  color: var(--sand-700);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.43;
+}
+
+.practicum-page .field_required {
+  color: var(--color-text-brand);
+}
+
+.practicum-page .field_hint {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.43;
+}
+
+.practicum-page .field_hint .icon_component {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+}
+
+.practicum-page .field_component.is-error .field_hint {
+  color: var(--color-text-error);
+}
+
+/* Обёртка для поля с иконкой или приставкой (+7) */
+.practicum-page .input_wrapper {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.practicum-page .input_component {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-input);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-surface);
+  font-family: var(--font-family-text);
+  font-size: 1rem;
+  line-height: 1.5;
+  appearance: none;
+  transition: border-color var(--transition-site), box-shadow var(--transition-site);
+}
+
+.practicum-page .input_component::placeholder {
+  color: var(--color-text-tertiary); /* 4.9:1 на белом */
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .input_component:hover:not(:disabled):not(:focus) {
+    border-color: var(--sand-400);
+  }
+}
+
+/* Фокус: рамка леса + мягкое кольцо. Обводку outline не дублируем */
+.practicum-page .input_component:focus,
+.practicum-page .input_component:focus-visible {
+  border-color: var(--color-border-brand);
+  outline: none;
+  box-shadow: 0 0 0 4px var(--forest-100);
+}
+
+.practicum-page .field_component.is-error .input_component,
+.practicum-page .input_component[aria-invalid="true"] {
+  border-color: var(--color-border-error);
+}
+
+.practicum-page .field_component.is-error .input_component:focus,
+.practicum-page .input_component[aria-invalid="true"]:focus {
+  border-color: var(--error-500);
+  box-shadow: 0 0 0 4px var(--error-100);
+}
+
+.practicum-page .input_component:disabled {
+  border-color: var(--color-border-secondary);
+  color: var(--color-text-disabled);
+  background-color: var(--color-bg-surface-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Поле с иконкой слева */
+.practicum-page .input_wrapper.has-leading-icon .input_component {
+  padding-left: 2.625rem;
+}
+
+.practicum-page .input_icon {
+  position: absolute;
+  top: 50%;
+  left: 0.875rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--sand-500);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+/* Приставка слева: +7, https:// */
+.practicum-page .input_addon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding: 0 0.75rem 0 0.875rem;
+  border: 1px solid var(--color-border-primary);
+  border-right: 0;
+  border-radius: var(--radius-input) 0 0 var(--radius-input);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-surface);
+  font-size: 1rem;
+}
+
+.practicum-page .input_addon + .input_component {
+  border-radius: 0 var(--radius-input) var(--radius-input) 0;
+}
+
+.practicum-page .input_component.is-textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+/* Выпадающий список: родной select, своя стрелка */
+.practicum-page .input_component.is-select {
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236F7266' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1.25rem;
+  cursor: pointer;
+}
+
+/* --- Флажок, переключатель, радиокнопка --- */
+.practicum-page .choice_component {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  cursor: pointer;
+}
+
+.practicum-page .choice_text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding-top: 0.0625rem;
+  color: var(--sand-700);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.43;
+}
+
+.practicum-page .choice_supporting {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-regular);
+}
+
+.practicum-page .checkbox_input,
+.practicum-page .radio_input {
+  position: relative;
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+  margin: 0;
+  place-content: center;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-surface);
+  appearance: none;
+  cursor: pointer;
+  transition: background-color var(--transition-site), border-color var(--transition-site);
+}
+
+.practicum-page .radio_input {
+  border-radius: 50%;
+}
+
+/* Галочка рисуется маской, красится цветом */
+.practicum-page .checkbox_input::before {
+  width: 0.875rem;
+  height: 0.875rem;
+  background-color: #FFFFFF;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: scale(0);
+  transition: transform var(--transition-site);
+  content: "";
+}
+
+.practicum-page .radio_input::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  transform: scale(0);
+  transition: transform var(--transition-site);
+  content: "";
+}
+
+.practicum-page .checkbox_input:checked,
+.practicum-page .radio_input:checked {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+}
+
+.practicum-page .checkbox_input:checked::before,
+.practicum-page .radio_input:checked::before {
+  transform: scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .choice_component:hover .checkbox_input:not(:checked):not(:disabled),
+  .practicum-page .choice_component:hover .radio_input:not(:checked):not(:disabled) {
+    border-color: var(--forest-500);
+    background-color: var(--forest-25);
+  }
+}
+
+.practicum-page .checkbox_input:focus-visible,
+.practicum-page .radio_input:focus-visible,
+.practicum-page .toggle_input:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.practicum-page .checkbox_input:disabled,
+.practicum-page .radio_input:disabled,
+.practicum-page .toggle_input:disabled {
+  border-color: var(--color-border-primary);
+  background-color: var(--color-bg-disabled);
+  cursor: not-allowed;
+}
+
+.practicum-page .choice_component:has(:disabled) {
+  cursor: not-allowed;
+}
+
+.practicum-page .choice_component:has(:disabled) .choice_text {
+  color: var(--color-text-disabled);
+}
+
+.practicum-page .checkbox_input:checked:disabled,
+.practicum-page .radio_input:checked:disabled {
+  background-color: var(--sand-300);
+}
+
+/* Переключатель */
+.practicum-page .toggle_input {
+  position: relative;
+  width: 2.25rem;
+  height: 1.25rem;
+  flex: none;
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--sand-200);
+  box-shadow: inset 0 0 0 1px rgb(10 26 14 / 0.06);
+  appearance: none;
+  cursor: pointer;
+  transition: background-color var(--transition-site);
+}
+
+.practicum-page .toggle_input::before {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-site);
+  content: "";
+}
+
+.practicum-page .toggle_input:checked {
+  background-color: var(--color-accent);
+}
+
+.practicum-page .toggle_input:checked::before {
+  transform: translateX(1rem);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.6. Табы
+   is-segmented — кнопки на песочной дорожке (месяцы, форматы).
+   is-underline — черта под активным (разделы внутри блока).
+   Разметка: role="tablist" / "tab" / "tabpanel", стрелки — в practicum-kit.js.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .tabs_list {
+  display: flex;
+  max-width: 100%;
+  gap: var(--spacing-xs);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.practicum-page .tabs_list::-webkit-scrollbar {
+  display: none;
+}
+
+.practicum-page .tabs_tab {
+  position: relative;
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 0.875rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  background: transparent;
+  font-family: var(--font-family-text);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--transition-site), background-color var(--transition-site), box-shadow var(--transition-site);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .tabs_tab:hover {
+    color: var(--sand-800);
+  }
+}
+
+/* Сегменты */
+.practicum-page .tabs_component.is-segmented .tabs_list {
+  width: fit-content;
+  padding: var(--spacing-xs);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-sunken);
+}
+
+.practicum-page .tabs_component.is-segmented .tabs_tab {
+  min-height: 2.5rem;
+}
+
+.practicum-page .tabs_component.is-segmented .tabs_tab[aria-selected="true"] {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-surface);
+}
+
+/* Подчёркивание */
+.practicum-page .tabs_component.is-underline .tabs_list {
+  gap: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.practicum-page .tabs_component.is-underline .tabs_tab {
+  padding-inline: var(--spacing-xs);
+  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+}
+
+.practicum-page .tabs_component.is-underline .tabs_tab::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transition: transform var(--transition-site);
+  content: "";
+}
+
+.practicum-page .tabs_component.is-underline .tabs_tab[aria-selected="true"] {
+  color: var(--color-text-brand);
+}
+
+.practicum-page .tabs_component.is-underline .tabs_tab[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+.practicum-page .tabs_count {
+  padding: 0 var(--spacing-sm);
+  border-radius: var(--radius-full);
+  color: var(--sand-600);
+  background-color: var(--sand-100);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+.practicum-page .tabs_tab[aria-selected="true"] .tabs_count {
+  color: var(--forest-700);
+  background-color: var(--forest-50);
+}
+
+.practicum-page .tabs_panel {
+  padding-top: var(--spacing-3xl);
+}
+
+.practicum-page .tabs_panel[hidden] {
+  display: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   5.7. Раскрытие: аккордеон и «Подробнее»
+   Высота анимируется через grid-template-rows 0fr → 1fr, 300ms.
+   Разметка: кнопка с aria-expanded и aria-controls, панель
+   .disclosure_panel с тем же id. Логика — в practicum-kit.js.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .disclosure_panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--accordion-duration) var(--motion-easing),
+    visibility 0ms linear var(--accordion-duration);
+}
+
+.practicum-page .disclosure_panel.is-open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--accordion-duration) var(--motion-easing),
+    visibility 0ms linear 0ms;
+}
+
+.practicum-page .disclosure_inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Значок «плюс», поворачивается в «крестик» */
+.practicum-page .disclosure_icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+  transition: transform var(--accordion-duration) var(--motion-easing);
+}
+
+.practicum-page [aria-expanded="true"] > .disclosure_icon {
+  transform: rotate(180deg);
+}
+
+.practicum-page [aria-expanded="true"] > .disclosure_icon.is-plus {
+  transform: rotate(45deg);
+}
+
+.practicum-page .accordion_component {
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.practicum-page .accordion_item {
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.practicum-page .accordion_trigger {
+  display: flex;
+  width: 100%;
+  min-height: 2.75rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-2xl) 0;
+  border: 0;
+  color: var(--color-text-primary);
+  background: transparent;
+  font-family: var(--font-family-display);
+  font-size: var(--text-display-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.practicum-page .accordion_trigger .disclosure_icon {
+  margin-top: 0.125rem;
+  color: var(--color-text-brand);
+}
+
+.practicum-page .accordion_body {
+  max-width: 65ch;
+  padding-bottom: var(--spacing-2xl);
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+}
+
+
+/* --------------------------------------------------------------------------
+   5.8. Аватар и персона
+   Фото спикера или инициалы. Размеры: is-xs 24, is-sm 32, is-md 40
+   (по умолчанию), is-lg 48, is-xl 56, is-2xl 64.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .avatar_component {
+  --avatar-size: 2.5rem;
+  position: relative;
+  display: inline-grid;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  color: var(--forest-700);
+  background-color: var(--forest-100);
+  font-family: var(--font-family-text);
+  font-size: calc(var(--avatar-size) * 0.4);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+}
+
+/* Тонкая внутренняя кромка, чтобы светлое фото не сливалось с фоном */
+.practicum-page .avatar_component::after {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(10 26 14 / 0.08);
+  border-radius: inherit;
+  content: "";
+}
+
+.practicum-page .avatar_component img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.practicum-page .avatar_component.is-xs  { --avatar-size: 1.5rem; }
+.practicum-page .avatar_component.is-sm  { --avatar-size: 2rem; }
+.practicum-page .avatar_component.is-lg  { --avatar-size: 3rem; }
+.practicum-page .avatar_component.is-xl  { --avatar-size: 3.5rem; }
+.practicum-page .avatar_component.is-2xl { --avatar-size: 4rem; }
+
+.practicum-page .avatar_component.is-olive { color: var(--olive-800); background-color: var(--olive-100); }
+.practicum-page .avatar_component.is-honey { color: var(--honey-800); background-color: var(--honey-100); }
+
+/* Группа аватаров внахлёст */
+.practicum-page .avatar-group_component {
+  display: flex;
+  align-items: center;
+}
+
+.practicum-page .avatar-group_component > .avatar_component {
+  box-shadow: 0 0 0 2px var(--color-bg-surface);
+}
+
+.practicum-page .avatar-group_component > .avatar_component + .avatar_component {
+  margin-left: calc(var(--avatar-size) * -0.25);
+}
+
+/* Персона: аватар + имя + роль */
+.practicum-page .person_component {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.practicum-page .person_text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.practicum-page .person_name {
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.43;
+}
+
+.practicum-page .person_role {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.43;
+}
+
+
+/* --------------------------------------------------------------------------
+   5.9. Значок в кругах (featured icon из Untitled UI)
+   Вид: is-light (заливка), is-outline (концентрические кольца),
+   is-modern (белый квадрат с рамкой). Цвет: is-brand (по умолчанию),
+   is-olive, is-honey, is-gray, is-error. Размер: is-sm 32 … is-xl 56.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .featured-icon_component {
+  --fi-size: 2.5rem;
+  --fi-icon: 1.25rem;
+  --fi-bg: var(--forest-100);
+  --fi-fg: var(--forest-600);
+  position: relative;
+  display: inline-grid;
+  width: var(--fi-size);
+  height: var(--fi-size);
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--fi-fg);
+  background-color: var(--fi-bg);
+}
+
+.practicum-page .featured-icon_component > .icon_component {
+  width: var(--fi-icon);
+  height: var(--fi-icon);
+}
+
+.practicum-page .featured-icon_component.is-sm { --fi-size: 2rem;   --fi-icon: 1rem; }
+.practicum-page .featured-icon_component.is-lg { --fi-size: 3rem;   --fi-icon: 1.5rem; }
+.practicum-page .featured-icon_component.is-xl { --fi-size: 3.5rem; --fi-icon: 1.75rem; }
+
+.practicum-page .featured-icon_component.is-olive { --fi-bg: var(--olive-100); --fi-fg: var(--olive-700); }
+.practicum-page .featured-icon_component.is-honey { --fi-bg: var(--honey-100); --fi-fg: var(--honey-700); }
+.practicum-page .featured-icon_component.is-gray  { --fi-bg: var(--sand-200);  --fi-fg: var(--sand-600); }
+.practicum-page .featured-icon_component.is-error { --fi-bg: var(--error-100); --fi-fg: var(--error-600); }
+
+/* Кольца: две обводки цветом значка, 30% и 10% */
+.practicum-page .featured-icon_component.is-outline {
+  background-color: transparent;
+}
+
+.practicum-page .featured-icon_component.is-outline::before,
+.practicum-page .featured-icon_component.is-outline::after {
+  position: absolute;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  content: "";
+}
+
+.practicum-page .featured-icon_component.is-outline::before {
+  inset: calc(var(--fi-size) * 0.15);
+  opacity: 0.3;
+}
+
+.practicum-page .featured-icon_component.is-outline::after {
+  inset: 0;
+  opacity: 0.1;
+}
+
+/* Белый квадрат с рамкой, для нейтральных мест */
+.practicum-page .featured-icon_component.is-modern {
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  color: var(--sand-700);
+  background-color: var(--color-bg-surface);
+  box-shadow: var(--shadow-button-secondary);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.10. Уведомление
+   Сообщение в потоке страницы: «Расписание обновится в конце месяца».
+   Цветной полосы слева нет: цвет несёт значок.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .alert_component {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.practicum-page .alert_component.is-brand { border-color: var(--forest-200); background-color: var(--forest-25); }
+.practicum-page .alert_component.is-honey { border-color: var(--honey-200);  background-color: var(--honey-25); }
+.practicum-page .alert_component.is-error { border-color: var(--error-200);  background-color: #FFFBFA; }
+
+.practicum-page .alert_content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-xxs);
+}
+
+.practicum-page .alert_title {
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.43;
+}
+
+.practicum-page .alert_text {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.43;
+}
+
+.practicum-page .alert_actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+  font-size: var(--text-sm);
+}
+
+.practicum-page .alert_close {
+  margin: calc(var(--spacing-md) * -1) calc(var(--spacing-md) * -1) 0 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   5.11. Карточка и разделитель
+   Белая карточка на песке: тонкая граница, радиус 16, поля от 16px.
+   Карточку в карточку не вкладываем. Сетку одинаковых карточек
+   «значок + заголовок + текст» как структуру страницы не строим:
+   перечень форматов или преимуществ собираем списком или тегами.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .card_component {
+  min-width: 0;
+  padding: var(--card-padding);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg-surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.practicum-page .card_component.is-muted {
+  background-color: var(--color-bg-surface-muted);
+  box-shadow: none;
+}
+
+.practicum-page .divider_component {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background-color: var(--color-border-primary);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.12. Плашка даты
+   День крупно, месяц строчными, ниже день недели и время.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .date-tile_component {
+  display: flex;
+  width: 5rem;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-lg) var(--spacing-xs);
+  border-radius: var(--radius-xl);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-sunken);
+  text-align: center;
+}
+
+.practicum-page .date-tile_day {
+  font-family: var(--font-family-display);
+  font-size: 1.875rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.practicum-page .date-tile_month {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+.practicum-page .date-tile_time {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ближайшая встреча в списке: плашка даты на лесе */
+.practicum-page .date-tile_component.is-today {
+  color: var(--color-text-on-brand);
+  background-color: var(--color-bg-brand);
+}
+
+.practicum-page .date-tile_component.is-today .date-tile_time {
+  color: var(--color-text-on-inverse-secondary);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.13. Карточка встречи
+   Главный компонент расписания. Одна разметка на все ширины:
+   на десктопе дата слева, действия справа; на телефоне дата становится
+   строкой над заголовком, кнопки — во всю ширину внизу.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .event-card_component {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "date main"
+    "actions actions"
+    "details details";
+  column-gap: var(--spacing-xl);
+  row-gap: var(--spacing-xl);
+  padding: var(--card-padding);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg-surface);
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--transition-site), box-shadow var(--transition-site);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .event-card_component:hover {
+    border-color: var(--color-border-primary);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.practicum-page .event-card_component .date-tile_component {
+  grid-area: date;
+  align-self: start;
+}
+
+.practicum-page .event-card_main {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  grid-area: main;
+}
+
+.practicum-page .event-card_badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.practicum-page .event-card_title {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-display);
+  font-size: var(--text-display-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.practicum-page .event-card_speaker {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.43;
+}
+
+.practicum-page .event-card_actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--spacing-md);
+  grid-area: actions;
+}
+
+.practicum-page .event-card_details {
+  grid-area: details;
+}
+
+.practicum-page .event-card_details-inner {
+  display: grid;
+  gap: var(--spacing-3xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-border-secondary);
+}
+
+.practicum-page .event-card_description {
+  display: flex;
+  max-width: 65ch;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--text-md);
+  line-height: 1.55;
+}
+
+.practicum-page .event-card_description ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.practicum-page .event-card_description li {
+  position: relative;
+  padding-left: var(--spacing-2xl);
+}
+
+.practicum-page .event-card_description li::before {
+  position: absolute;
+  top: 0.6em;
+  left: var(--spacing-xs);
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: var(--olive-500);
+  content: "";
+}
+
+/* Закрытая регистрация или прошедшая встреча */
+.practicum-page .event-card_component.is-past {
+  background-color: var(--color-bg-surface-muted);
+  box-shadow: none;
+}
+
+.practicum-page .event-card_component.is-past .event-card_title,
+.practicum-page .event-card_component.is-past .date-tile_component {
+  color: var(--color-text-secondary);
+}
+
+/* На телефоне дата — строка-пилюля, а не квадрат */
+@media (max-width: 32.5rem) {
+  /* Здесь max-width осознанно: на узком экране у карточки другая композиция */
+  .practicum-page .event-card_component {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "date"
+      "main"
+      "actions"
+      "details";
+    row-gap: var(--spacing-lg);
+  }
+
+  .practicum-page .event-card_component .date-tile_component {
+    width: auto;
+    flex-direction: row;
+    align-items: baseline;
+    justify-self: start;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-lg);
+    border-radius: var(--radius-full);
+  }
+
+  .practicum-page .event-card_component .date-tile_day {
+    font-size: var(--text-md);
+    letter-spacing: 0;
+  }
+
+  .practicum-page .event-card_component .date-tile_month {
+    font-size: var(--text-md);
+  }
+
+  .practicum-page .event-card_component .date-tile_time {
+    font-size: var(--text-sm);
+  }
+
+  .practicum-page .event-card_actions .button_component {
+    width: 100%;
+  }
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .event-card_component {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "date main actions"
+      "details details details";
+    column-gap: var(--spacing-3xl);
+    row-gap: 0;
+  }
+
+  .practicum-page .event-card_actions {
+    flex-direction: row;
+    align-items: center;
+    align-self: center;
+  }
+
+  .practicum-page .event-card_details-inner {
+    margin-top: var(--spacing-xl);
+  }
+
+  .practicum-page .event-card_details-inner.has-person {
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
+    align-items: start;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   5.14. Тёмный блок
+   Акцентная секция на лесе: призыв вступить, итог страницы.
+   Внутри: заголовок с медовым выделением, теги is-inverse,
+   кнопка is-inverse.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .inverse-block_component {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-heading-copy);
+  overflow: hidden;
+  padding: var(--section-inset-space) var(--card-padding);
+  border-radius: var(--radius-block);
+  color: var(--color-text-on-inverse);
+  background-color: var(--color-bg-inverse);
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .inverse-block_component {
+    padding-inline: var(--section-inset-space);
+  }
+}
+
+.practicum-page .inverse-block_text {
+  max-width: 40rem;
+  color: var(--color-text-on-inverse-secondary);
+  font-size: var(--text-xl);
+  line-height: 1.4;
+}
+
+.practicum-page .inverse-block_actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.15. Пустое состояние
+   Когда данных нет: «Расписание на ноябрь появится в конце октября».
+   -------------------------------------------------------------------------- */
+
+.practicum-page .empty-state_component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-5xl) var(--card-padding);
+  border: 1px dashed var(--color-border-primary);
+  border-radius: var(--radius-card);
+  text-align: center;
+}
+
+.practicum-page .empty-state_text {
+  display: flex;
+  max-width: 26rem;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.practicum-page .empty-state_title {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-display);
+  font-size: var(--text-display-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+.practicum-page .empty-state_supporting {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+
+/* --------------------------------------------------------------------------
+   5.16. Скелетон
+   Место под данные, которые ещё грузятся с сервера. Той же высоты,
+   что и настоящее содержимое, чтобы страница не дёргалась.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .skeleton_component {
+  display: block;
+  min-height: 1em;
+  border-radius: var(--radius-sm);
+  background-color: var(--sand-200);
+  background-image: linear-gradient(90deg, rgb(255 255 255 / 0) 0%, rgb(255 255 255 / 0.55) 50%, rgb(255 255 255 / 0) 100%);
+  background-repeat: no-repeat;
+  background-size: 40% 100%;
+  animation: practicum-shimmer 1400ms var(--motion-easing) infinite;
+}
+
+@keyframes practicum-shimmer {
+  from { background-position: -40% 0; }
+  to   { background-position: 140% 0; }
+}
+
+
+/* --------------------------------------------------------------------------
+   5.17. Фото
+   Рамка для снимка: радиус крупного блока, пропорция задаётся классом.
+   Поверх можно положить плашку media_chip («Участие бесплатное»).
+   -------------------------------------------------------------------------- */
+
+.practicum-page .media_component {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-block);
+  background-color: var(--sand-200);
+}
+
+.practicum-page .media_component img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.practicum-page .media_component.is-4x3  { aspect-ratio: 4 / 3; }
+.practicum-page .media_component.is-4x5  { aspect-ratio: 4 / 5; }
+.practicum-page .media_component.is-16x9 { aspect-ratio: 16 / 9; }
+
+.practicum-page .media_chip {
+  position: absolute;
+  right: var(--spacing-lg);
+  bottom: var(--spacing-lg);
+  display: flex;
+  max-width: calc(100% - 1.5rem);
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-surface);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-sm);
+  line-height: 1.35;
+}
+
+.practicum-page .media_chip strong {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+}
+
+.practicum-page .media_chip span {
+  color: var(--color-text-secondary);
+}
+
+
+/* --------------------------------------------------------------------------
+   5.18. Первый экран
+   На десктопе текст слева, фото справа; на телефоне сначала текст, потом
+   фото. Один h1 на страницу и одно главное действие. На фото одна белая
+   плашка с фактом (media_chip). Текст в саму картинку не впечатываем.
+   -------------------------------------------------------------------------- */
+
+.practicum-page .hero_component {
+  display: grid;
+  align-items: center;
+  gap: var(--spacing-4xl);
+}
+
+.practicum-page .hero_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-heading-copy);
+  container-type: inline-size;
+}
+
+/* Заголовок не крупнее, чем помещается в колонку: на десктопе от 1025
+   до 1280px колонка текста узкая, и 64px рвали бы слово «психологов» */
+.practicum-page .hero_content .text-size-display-2xl {
+  font-size: min(var(--text-display-2xl), 11.5cqi);
+}
+
+.practicum-page .hero_lead {
+  display: flex;
+  max-width: 34rem;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xl);
+  line-height: 1.35;
+}
+
+.practicum-page .hero_actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+/* На телефоне кнопка во всю ширину, дальше по размеру надписи */
+.practicum-page .hero_actions .button_component {
+  flex: 1 1 100%;
+}
+
+.practicum-page .hero_media {
+  min-width: 0;
+}
+
+@media (min-width: 32.5625rem) {
+  .practicum-page .hero_actions .button_component {
+    flex: 0 0 auto;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .hero_component {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: var(--spacing-6xl);
+  }
+}
+
+
+/* ==========================================================================
+   6. Движение
+   Появление при прокрутке: блок с data-reveal всплывает на 24px за 600ms.
+   Без JS и при «уменьшить движение» всё сразу видно.
+   ========================================================================== */
+
+.practicum-page.is-reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity var(--reveal-duration) var(--motion-ease-out),
+    transform var(--reveal-duration) var(--motion-ease-out);
+}
+
+.practicum-page.is-reveal-ready [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .practicum-page *,
+  .practicum-page *::before,
+  .practicum-page *::after {
+    animation-duration: 0ms !important; /* единственное допустимое !important: доступность */
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+  }
+
+  .practicum-page.is-reveal-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .practicum-page .skeleton_component {
+    background-image: none;
+  }
+}

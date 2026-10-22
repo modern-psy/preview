@@ -1,0 +1,1135 @@
+/* ==========================================================================
+   Живые эфиры АСП Практикума · стили блоков страницы
+   Всё собрано из кита (kit/practicum-kit.css): цвета, кегли и отступы
+   только токенами второго слоя. Hex и кегли числом здесь не пишем.
+   Порядок разделов = порядок блоков на странице.
+   ========================================================================== */
+
+
+/* --- Шапка: белая плашка над первым экраном --- */
+.practicum-page .header_wrap {
+  padding-top: var(--spacing-lg);
+}
+
+.practicum-page .header_component {
+  display: flex;
+  min-height: 3.75rem;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-xl);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg-surface);
+}
+
+.practicum-page .header_logo {
+  display: block;
+  flex: none;
+  color: var(--color-text-primary);
+  border-radius: var(--radius-xs);
+}
+
+.practicum-page .header_logo svg {
+  width: auto;
+  height: 1.25rem;
+}
+
+/* На телефоне в шапке только логотип и кнопка */
+.practicum-page .header_nav {
+  display: none;
+}
+
+.practicum-page .header_button {
+  margin-left: auto;
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .header_logo svg {
+    height: 1.5rem;
+  }
+
+  .practicum-page .header_nav {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-left: auto;
+  }
+
+  .practicum-page .header_button {
+    margin-left: var(--spacing-md);
+  }
+}
+
+.practicum-page .header_link {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-site), background-color var(--transition-site);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .header_link:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-hover);
+  }
+}
+
+
+/* --- 1. Первый экран: отступ от шапки меньше обычного --- */
+.practicum-page .section_hero {
+  padding-top: var(--spacing-4xl);
+}
+
+/* На планшете текст первого экрана по центру: фото под ним во всю ширину,
+   и прижатый влево текст выглядит случайным. На узком телефоне остаётся
+   по левому краю, там абзацы длинные. На десктопе снова влево, рядом с фото */
+@media (min-width: 32.5625rem) {
+  .practicum-page .hero_content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .practicum-page .hero_actions {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .hero_content {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .practicum-page .hero_actions {
+    justify-content: flex-start;
+  }
+}
+
+
+/* --- 2. Для кого: шапка слева, 4 карточки справа на десктопе --- */
+.practicum-page .audience_component {
+  display: grid;
+  gap: var(--space-section-content);
+}
+
+.practicum-page .audience_header {
+  display: flex;
+  max-width: 56rem;
+  flex-direction: column;
+  gap: var(--space-heading-copy);
+}
+
+.practicum-page .audience_supporting {
+  max-width: 40rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xl);
+  line-height: 1.35;
+}
+
+.practicum-page .audience_grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.practicum-page .audience_card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--card-padding);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg-surface);
+}
+
+.practicum-page .audience_card .featured-icon_component {
+  margin-bottom: var(--spacing-md);
+}
+
+.practicum-page .audience_title {
+  font-size: var(--text-display-sm);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.practicum-page .audience_text {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  line-height: 1.45;
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .audience_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* --- 3. Что дают эфиры: слева заголовок и тёмная карточка, справа форматы.
+   На телефоне тёмная карточка встаёт после списка. Разметка одна:
+   обёртка benefits_aside прозрачна для сетки, порядок задают области --- */
+.practicum-page .benefits_component {
+  display: grid;
+  grid-template-areas: "head" "list" "live";
+  gap: var(--space-section-content);
+}
+
+.practicum-page .benefits_aside {
+  display: contents;
+}
+
+.practicum-page .benefits_head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-heading-copy);
+  grid-area: head;
+}
+
+.practicum-page .benefits_note {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  line-height: 1.45;
+}
+
+.practicum-page .benefits_list {
+  display: grid;
+  grid-area: list;
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.practicum-page .benefits_item {
+  display: grid;
+  gap: var(--spacing-md);
+  padding-block: var(--spacing-4xl);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.practicum-page .benefits_title {
+  font-size: var(--text-display-sm);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.practicum-page .benefits_result {
+  max-width: 36rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  line-height: 1.45;
+}
+
+/* Тёмная карточка «Преимущество живого формата»: первый из двух тёмных блоков страницы */
+.practicum-page .benefits_live {
+  display: grid;
+  align-self: start;
+  gap: var(--spacing-2xl);
+  grid-area: live;
+  padding: var(--spacing-4xl) var(--card-padding);
+  border-radius: var(--radius-block);
+  color: var(--color-text-on-inverse);
+  background-color: var(--color-bg-inverse);
+}
+
+.practicum-page .benefits_live-title {
+  font-size: var(--text-display-sm);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.practicum-page .benefits_live-list {
+  display: grid;
+  gap: var(--spacing-xl);
+}
+
+/* На всех ширинах пункт строкой: иконка слева, текст справа */
+.practicum-page .benefits_live-list li {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: var(--spacing-lg);
+  font-size: var(--text-lg);
+  line-height: 1.45;
+}
+
+.practicum-page .benefits_live-list .icon_component {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-accent-on-inverse);
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .benefits_live {
+    padding: var(--spacing-4xl);
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .benefits_component {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-areas: "head list" "live list";
+    grid-template-rows: auto 1fr;
+    column-gap: var(--spacing-7xl);
+    row-gap: var(--spacing-4xl);
+  }
+
+  /* Карточка прижата к низу: её нижний край на одной линии с последней чертой списка */
+  .practicum-page .benefits_live {
+    align-self: end;
+  }
+}
+
+
+/* --- 4. Расписание --- */
+.practicum-page .events_list {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+/* Спикер в раскрытой карточке: фото крупно на песочной подложке */
+.practicum-page .event-speaker_component {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  align-content: start;
+  column-gap: var(--spacing-xl);
+  row-gap: var(--spacing-xs);
+}
+
+.practicum-page .event-speaker_photo {
+  width: 6rem;
+  height: 6rem;
+  grid-row: span 2;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-sunken);
+  object-fit: cover;
+  object-position: center top;
+}
+
+.practicum-page .event-speaker_name {
+  align-self: end;
+  color: var(--color-text-primary);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.35;
+}
+
+.practicum-page .event-speaker_role {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .event-speaker_component {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .practicum-page .event-speaker_photo {
+    width: 100%;
+    height: auto;
+    max-width: 12rem;
+    aspect-ratio: 1 / 1;
+    grid-row: auto;
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+/* Архив прошедших эфиров */
+.practicum-page .archive_component {
+  margin-top: var(--spacing-3xl);
+  border-top: 1px solid var(--color-border-primary);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.practicum-page .archive_trigger {
+  display: flex;
+  width: 100%;
+  min-height: 3.5rem;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) 0;
+  border: 0;
+  color: var(--color-text-primary);
+  background: transparent;
+  font-family: var(--font-family-display);
+  font-size: var(--text-display-xs);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+}
+
+.practicum-page .archive_count {
+  padding: 0 var(--spacing-sm);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-sunken);
+  font-family: var(--font-family-text);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+}
+
+.practicum-page .archive_trigger .disclosure_icon {
+  margin-left: auto;
+  color: var(--color-text-brand);
+}
+
+.practicum-page .archive_list {
+  padding-bottom: var(--spacing-lg);
+}
+
+.practicum-page .archive_item {
+  display: grid;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-lg) 0;
+  border-top: 1px solid var(--color-border-secondary);
+}
+
+.practicum-page .archive_date {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.practicum-page .archive_title {
+  color: var(--color-text-primary);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.35;
+}
+
+.practicum-page .archive_speaker {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .archive_item {
+    grid-template-columns: 12rem minmax(0, 1fr) 12rem 10rem;
+    align-items: baseline;
+    gap: var(--spacing-3xl);
+  }
+}
+
+
+/* --- Спикеры: фото на песочной подложке во всю карточку --- */
+.practicum-page .speakers_grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-3xl) var(--grid-gap);
+}
+
+.practicum-page .speaker-card_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.practicum-page .speaker-card_photo-wrap {
+  margin-bottom: var(--spacing-md);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg-sunken);
+}
+
+.practicum-page .speaker-card_photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.practicum-page .speaker-card_name {
+  font-size: var(--text-display-xs);
+  line-height: 1.25;
+}
+
+.practicum-page .speaker-card_role {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .speakers_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+/* --- 5. Что меняется: четыре белые плитки без рамок и линий.
+   Группу задаёт плитка, а не черта. Цвет только в точках пунктов:
+   лес, олива, мёд, серый --- */
+.practicum-page .results_head {
+  max-width: 46rem;
+  margin-bottom: var(--space-section-content);
+}
+
+.practicum-page .results_grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.practicum-page .results_card {
+  --results-dot: var(--color-marker-brand);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  padding: var(--spacing-4xl) var(--card-padding);
+  border-radius: var(--radius-block);
+  background-color: var(--color-bg-surface);
+}
+
+.practicum-page .results_card.is-olive { --results-dot: var(--color-marker-olive); }
+.practicum-page .results_card.is-honey { --results-dot: var(--color-marker-honey); }
+.practicum-page .results_card.is-sand  { --results-dot: var(--color-marker-gray); }
+
+.practicum-page .results_title {
+  font-size: var(--text-display-sm);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.practicum-page .results_list {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.practicum-page .results_list li {
+  position: relative;
+  padding-left: var(--spacing-2xl);
+  color: var(--color-text-secondary);
+  font-size: var(--text-md);
+  line-height: 1.5;
+}
+
+.practicum-page .results_list li::before {
+  position: absolute;
+  top: 0.6em;
+  left: var(--spacing-xs);
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: var(--results-dot);
+  content: "";
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .results_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .practicum-page .results_card {
+    padding: var(--spacing-5xl) var(--spacing-4xl);
+  }
+}
+
+
+/* --- Вступайте в сообщество: всё по центру, заголовок, абзац и чипсы
+   в одной колонке одинаковой ширины --- */
+.practicum-page .community_component {
+  align-items: center;
+  text-align: center;
+}
+
+.practicum-page .community_component > * {
+  width: 100%;
+  max-width: 46rem;
+}
+
+.practicum-page .community_component .inverse-block_text {
+  max-width: 46rem;
+}
+
+.practicum-page .community_component .tag-list_component,
+.practicum-page .community_component .inverse-block_actions {
+  justify-content: center;
+}
+
+
+/* --- О Практикуме: вся секция на белом во всю ширину экрана.
+   Сверху формула заголовком во всю ширину и абзац под ней,
+   ниже три карточки форматов на светлом песке.
+   У этой секции и следующей (Академия) стоит is-first: белой полосе
+   нужен отступ сверху, а Академии отступ от края белой полосы --- */
+.practicum-page .section_about {
+  background-color: var(--color-bg-surface);
+}
+
+.practicum-page .about_component {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-section-content);
+}
+
+.practicum-page .about_header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-heading-copy);
+}
+
+.practicum-page .about_formula {
+  font-size: var(--text-display-lg);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+/* Знаки формулы тише слов */
+.practicum-page .about_op {
+  color: var(--color-text-tertiary);
+}
+
+.practicum-page .about_text {
+  max-width: 40rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xl);
+  line-height: 1.35;
+}
+
+.practicum-page .about_formats {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+/* На телефоне карточка формата строкой: иконка слева, название справа */
+.practicum-page .about_format {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg-page);
+  font-family: var(--font-family-display);
+  font-size: var(--text-display-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.practicum-page .about_format .icon_component {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .about_formats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* От планшета карточки в ряд: иконка сверху, название снизу */
+  .practicum-page .about_format {
+    min-height: 9rem;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-3xl);
+    padding: var(--spacing-2xl);
+  }
+}
+
+
+/* --- Академия: тот же блок, что в лендингах Академии (academy-showcase).
+   Геометрия и положения картинок перенесены из web-academy один в один,
+   цвета, шрифты и радиусы — из кита Практикума. Свечений нет --- */
+.practicum-page .showcase_component {
+  --showcase-padding: var(--card-padding);
+  --showcase-practice-height: 21.875rem;
+  --showcase-side-height: 16.8125rem;
+  --showcase-teachers-height: 16.8125rem;
+  --showcase-community-top: 8.8125rem;
+  --showcase-graduates-top: 6.5625rem;
+  --showcase-graduates-reserve: 9.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-section-content);
+}
+
+.practicum-page .showcase_heading {
+  max-width: 63rem;
+  text-align: center;
+}
+
+.practicum-page .showcase_grid,
+.practicum-page .showcase_side {
+  display: grid;
+  width: 100%;
+  gap: var(--grid-gap);
+}
+
+.practicum-page .showcase_side {
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.practicum-page .showcase_card {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--showcase-side-height);
+  padding: var(--showcase-padding);
+  overflow: hidden;
+  border-radius: var(--radius-block);
+  background-color: var(--color-bg-surface);
+  isolation: isolate;
+}
+
+.practicum-page .showcase_copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: min(100%, 37.5rem);
+  flex-direction: column;
+  align-self: start;
+  gap: var(--spacing-md);
+}
+
+.practicum-page .showcase_title {
+  font-size: var(--text-display-md);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.practicum-page .showcase_text {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xl);
+  line-height: 1.25;
+}
+
+/* Практика: фото на всю карточку, текст сверху на светлой части снимка */
+.practicum-page .showcase_card.is-practice {
+  min-height: var(--showcase-practice-height);
+  align-content: start;
+  padding-bottom: 10rem;
+  background-color: var(--color-bg-sunken);
+}
+
+.practicum-page .showcase_practice-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.practicum-page .showcase_practice-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Сообщество: скрин канала выглядывает снизу справа */
+.practicum-page .showcase_card.is-community {
+  grid-template-rows: minmax(calc(var(--showcase-community-top) - var(--showcase-padding)), max-content) minmax(6rem, 1fr);
+  padding-bottom: 0;
+}
+
+.practicum-page .showcase_card.is-community .showcase_copy {
+  padding-bottom: var(--spacing-md);
+}
+
+.practicum-page .showcase_community-media {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.practicum-page .showcase_community-image {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(100%, 16.4375rem);
+  height: auto;
+  transform: translateX(-50%);
+}
+
+/* Выпускники: тёмная карточка — лесная, три портрета */
+.practicum-page .showcase_card.is-graduates {
+  grid-template-rows: minmax(calc(var(--showcase-graduates-top) - var(--showcase-padding)), max-content) minmax(var(--showcase-graduates-reserve), 1fr);
+  color: var(--color-text-on-inverse);
+  background-color: var(--color-bg-inverse);
+}
+
+.practicum-page .showcase_card.is-graduates .showcase_text {
+  color: var(--color-text-on-inverse-secondary);
+}
+
+.practicum-page .showcase_graduates-media {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.practicum-page .showcase_avatar {
+  position: absolute;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.practicum-page .showcase_avatar.is-primary { top: 2.1875rem; left: 39.045%; width: min(31.46%, 7rem); }
+.practicum-page .showcase_avatar.is-small   { top: 0; right: 1.4%; width: min(14.33%, 3.1875rem); }
+.practicum-page .showcase_avatar.is-medium  { top: 4.5625rem; left: 2.81%; width: min(19.39%, 4.3125rem); }
+
+/* Преподаватели: на всю ширину, справа фото с декоративной панелью плеера */
+.practicum-page .showcase_card.is-teachers {
+  min-height: var(--showcase-teachers-height);
+  align-content: start;
+  gap: var(--spacing-lg);
+}
+
+.practicum-page .showcase_card.is-teachers .showcase_copy {
+  width: 100%;
+  max-width: 53.125rem;
+}
+
+.practicum-page .showcase_teachers-media {
+  display: flex;
+  width: min(100%, 10.53125rem);
+  flex-direction: column;
+  gap: 0.351rem;
+  justify-self: center;
+}
+
+.practicum-page .showcase_teachers-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 240 / 164;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  object-position: center top;
+}
+
+.practicum-page .showcase_teachers-controls {
+  display: grid;
+  aspect-ratio: 12 / 1;
+  grid-template-columns: 3.75rem minmax(0, 1fr);
+  gap: var(--spacing-xs);
+}
+
+.practicum-page .showcase_teachers-control {
+  border-radius: var(--radius-xs);
+  background-color: var(--color-bg-sunken);
+}
+
+.practicum-page .showcase_teachers-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  border-radius: var(--radius-xs);
+  background-color: var(--color-accent);
+}
+
+.practicum-page .showcase_teachers-status span {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: var(--color-accent-on-inverse);
+}
+
+@media (min-width: 32.5625rem) {
+  .practicum-page .showcase_component {
+    --showcase-practice-height: 25rem;
+    --showcase-teachers-height: 19.8125rem;
+    --showcase-community-top: 8.0625rem;
+    --showcase-graduates-top: 6.0625rem;
+    --showcase-graduates-reserve: 9.5rem;
+  }
+
+  .practicum-page .showcase_community-image {
+    left: auto;
+    right: calc(var(--showcase-padding) * -1);
+    transform: none;
+  }
+
+  .practicum-page .showcase_avatar.is-primary { top: 2.375rem; left: 59.85%; width: min(23.11%, 7.625rem); }
+  .practicum-page .showcase_avatar.is-small   { right: 0; width: min(10.42%, 3.4375rem); }
+  .practicum-page .showcase_avatar.is-medium  { top: 4.9375rem; left: 33.52%; width: min(14.2%, 4.6875rem); }
+
+  .practicum-page .showcase_teachers-media {
+    width: min(100%, 12.65625rem);
+    gap: 0.422rem;
+    justify-self: end;
+    margin-right: var(--spacing-2xl);
+  }
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .showcase_component {
+    --showcase-practice-height: 37.5rem;
+    --showcase-side-height: 18.25rem;
+    --showcase-teachers-height: 15rem;
+    --showcase-community-top: 10.875rem;
+    --showcase-graduates-top: 8.125rem;
+    --showcase-graduates-reserve: 8rem;
+  }
+
+  /* Акцент заголовка с новой строки */
+  .practicum-page .showcase_accent {
+    display: block;
+  }
+
+  .practicum-page .showcase_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .practicum-page .showcase_community-image {
+    right: 0;
+    width: 57.1%;
+  }
+
+  .practicum-page .showcase_graduates-media { top: -0.25rem; }
+  .practicum-page .showcase_avatar.is-primary { left: 52.53%; width: min(29.4%, 7.625rem); }
+  .practicum-page .showcase_avatar.is-small   { right: -3.61%; width: min(13.25%, 3.4375rem); }
+  .practicum-page .showcase_avatar.is-medium  { left: 19.04%; width: min(18.07%, 4.6875rem); }
+
+  .practicum-page .showcase_card.is-teachers {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 15rem);
+    gap: 2.9375rem;
+  }
+
+  .practicum-page .showcase_teachers-media {
+    width: 100%;
+    gap: var(--spacing-md);
+    margin: 0;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .showcase_component {
+    --showcase-practice-height: 50rem;
+    --showcase-side-height: 24.5rem;
+    --showcase-community-top: 10.9375rem;
+    --showcase-graduates-top: 5.875rem;
+    --showcase-graduates-reserve: 14rem;
+  }
+
+  .practicum-page .showcase_community-image { width: 58.95%; }
+  .practicum-page .showcase_graduates-media { top: -1.925rem; }
+  .practicum-page .showcase_avatar.is-primary { top: 7rem; left: 67.61%; width: min(25.57%, 11.25rem); }
+  .practicum-page .showcase_avatar.is-small   { right: 1.14%; width: min(11.51%, 5.0625rem); }
+  .practicum-page .showcase_avatar.is-medium  { top: 10.5625rem; left: 43.32%; width: min(15.625%, 6.875rem); }
+}
+
+
+/* --- Партнёры и фонды: ряды логотипов --- */
+.practicum-page .partners_component {
+  display: grid;
+  gap: var(--spacing-5xl);
+}
+
+.practicum-page .partners_group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.practicum-page .partners_title {
+  font-size: var(--text-display-sm);
+  line-height: 1.2;
+}
+
+.practicum-page .partners_logos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+.practicum-page .partners_logos img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xl);
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .partners_logos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .partners_logos {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .practicum-page .partners_logos.is-funds {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+
+/* --- Отзывы: сообщения из Telegram, свёрстанные текстом ---
+   Каждый отзыв выглядит как сообщение в чате: аватар внизу слева, белое
+   облачко с острым нижним углом к аватару. Ширина облачка по тексту:
+   короткое «спасибо» не растягивается на всю колонку.
+   На телефоне сообщения идут столбиком, дальше колонками, как на доске:
+   две на планшете, три на десктопе */
+.practicum-page .reviews_list {
+  display: grid;
+  gap: var(--spacing-xl);
+}
+
+.practicum-page .review_component {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+}
+
+.practicum-page .review_message {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-card) var(--radius-card) var(--radius-card) var(--radius-xs);
+  background-color: var(--color-bg-surface);
+}
+
+.practicum-page .review_text {
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: 1.45;
+}
+
+/* Дата мелко в правом углу, как время в Telegram */
+.practicum-page .review_date {
+  align-self: flex-end;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.3;
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .reviews_list {
+    display: block;
+    columns: 2;
+    column-gap: var(--grid-gap);
+  }
+
+  .practicum-page .reviews_item {
+    margin-bottom: var(--spacing-xl);
+    break-inside: avoid;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .reviews_list {
+    columns: 3;
+  }
+}
+
+
+/* --- Подвал: песочная подложка во всю ширину --- */
+.practicum-page .footer_component {
+  padding-block: var(--spacing-6xl) var(--spacing-4xl);
+  background-color: var(--color-bg-sunken);
+}
+
+.practicum-page .footer_top {
+  display: grid;
+  gap: var(--spacing-4xl);
+  padding-bottom: var(--spacing-4xl);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.practicum-page .footer_brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.practicum-page .footer_logo {
+  display: block;
+  align-self: flex-start;
+  color: var(--color-text-primary);
+}
+
+.practicum-page .footer_logo svg {
+  width: auto;
+  height: 1.5rem;
+}
+
+.practicum-page .footer_tagline {
+  max-width: 22rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-md);
+  line-height: 1.45;
+}
+
+.practicum-page .footer_socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.practicum-page .footer_col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.practicum-page .footer_heading {
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.practicum-page .footer_contact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  color: var(--color-text-primary);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.practicum-page .footer_contact .icon_component {
+  color: var(--color-text-brand);
+}
+
+.practicum-page .footer_note {
+  margin-top: calc(var(--spacing-sm) * -1);
+  padding-left: var(--spacing-2xl);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.practicum-page .footer_links {
+  display: grid;
+  gap: var(--spacing-sm);
+  font-size: var(--text-sm);
+}
+
+.practicum-page .footer_links a {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-primary);
+  text-underline-offset: 0.2em;
+  transition: color var(--transition-site), text-decoration-color var(--transition-site);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .practicum-page .footer_links a:hover {
+    color: var(--color-text-primary);
+    text-decoration-color: currentColor;
+  }
+}
+
+.practicum-page .footer_bottom {
+  display: grid;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-3xl);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+@media (min-width: 48rem) {
+  .practicum-page .footer_top {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
