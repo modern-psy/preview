@@ -175,14 +175,15 @@ const wrap = (name, id, inner, {width = 'wide'} = {}) => `<section class="sectio
 </section>`;
 const header = (id, heading, description) => `<div class="section-header_component is-center is-responsive"><h2 class="section-title_component is-center is-responsive" id="${id}-heading">${renderText(heading)}</h2>${description ? `<p class="section-subtitle_component">${renderText(description)}</p>` : ''}</div>`;
 
-/* «Тренинг о тренинге» — макет Г «Фото на фоне, путь стеклянными карточками» (выбран Дарьей 12.10.2026, основа —
+/* «Тренинг о тренинге» — ширина как у блока цены (колонка is-content-wide, 22.10.2026).
+   Макет Г «Фото на фоне, путь стеклянными карточками» (выбран Дарьей 12.10.2026, основа —
    библиотечный блок «Фото-фон со стеклянными карточками»). Фото на всю карточку приглушено затемнением в тон поля #2B2334,
    слева и снизу плотнее — там текст. Сверху заголовок и подводка, внизу путь: три шага стеклянными карточками и белая
    карточка финала «В финале — ваш тренинг». На телефоне фото сверху, текст и шаги под ним на сплошном тёмном поле. */
 function renderFormatPath(f, id) {
   const steps = f.steps.map(step => `<li class="format-path_step${step.final ? ' is-final' : ''}"><p class="format-path_title">${renderText(step.title)}</p><p class="format-path_text">${renderText(step.text)}</p></li>`).join('');
   return `<section class="section_format-path section-spacing_component" id="${sectionId(id)}" aria-labelledby="${id}-heading">
-  <div class="padding-global"><div class="container-xlarge">
+  <div class="padding-global"><div class="container-xlarge"><div class="column-grid_component"><div class="column-grid_content is-content-wide">
     <div class="format-path_component">
       <div class="format-path_media"><img class="format-path_image" src="${escapeHtml(f.image.src)}" width="${f.image.width}" height="${f.image.height}" alt="${escapeHtml(f.image.alt)}" draggable="false" loading="lazy" decoding="async"></div>
       <div class="format-path_content">
@@ -190,7 +191,7 @@ function renderFormatPath(f, id) {
         <ol class="format-path_steps" aria-label="${escapeHtml(f.listLabel)}">${steps}</ol>
       </div>
     </div>
-  </div></div>
+  </div></div></div></div>
 </section>`;
 }
 
