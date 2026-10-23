@@ -161,9 +161,25 @@
   line-height: 1.45;
 }
 
+/* На планшете две карточки в ряд, а последняя нечётная на всю ширину:
+   три в ряд там так узки, что рвутся слова. Три в ряд с десктопа */
 @media (min-width: 48rem) {
   .practicum-page .audience_grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .practicum-page .audience_card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .audience_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .practicum-page .audience_card:last-child:nth-child(odd) {
+    grid-column: auto;
   }
 }
 
@@ -411,18 +427,32 @@
 }
 
 
-/* --- Спикеры: фото на песочной подложке во всю карточку --- */
-.practicum-page .speakers_grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-3xl) var(--grid-gap);
+/* --- Спикеры: лента карточек, листается вбок до края экрана.
+   Слева отступ ровно как у контейнера, справа лента уходит за край,
+   и видно, что дальше есть ещё карточки. Фото на песочной подложке.
+   Полоса прокрутки тонкая: мышью ленту можно тянуть за неё,
+   с клавиатуры листать стрелками после Tab --- */
+.practicum-page .speakers_list {
+  --speakers-inset: calc(var(--page-padding) + max(0px, (100% - 2 * var(--page-padding) - var(--container-max)) / 2));
+  display: flex;
+  gap: var(--grid-gap);
+  padding-inline: var(--speakers-inset);
+  padding-bottom: var(--spacing-xl);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: var(--speakers-inset);
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--color-border-primary) transparent;
+  scrollbar-width: thin;
 }
 
 .practicum-page .speaker-card_component {
   display: flex;
   min-width: 0;
+  flex: 0 0 15rem;
   flex-direction: column;
   gap: var(--spacing-xs);
+  scroll-snap-align: start;
 }
 
 .practicum-page .speaker-card_photo-wrap {
@@ -452,8 +482,14 @@
 }
 
 @media (min-width: 48rem) {
-  .practicum-page .speakers_grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .practicum-page .speaker-card_component {
+    flex-basis: 17.5rem;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .practicum-page .speaker-card_component {
+    flex-basis: 21rem;
   }
 }
 
@@ -551,8 +587,8 @@
 /* --- О Практикуме: вся секция на белом во всю ширину экрана.
    Сверху формула заголовком во всю ширину и абзац под ней,
    ниже три карточки форматов на светлом песке.
-   У этой секции и следующей (Академия) стоит is-first: белой полосе
-   нужен отступ сверху, а Академии отступ от края белой полосы --- */
+   У этой секции и следующей за ней (отзывы) стоит is-first: белой полосе
+   нужен отступ сверху, а отзывам отступ от края белой полосы --- */
 .practicum-page .section_about {
   background-color: var(--color-bg-surface);
 }
