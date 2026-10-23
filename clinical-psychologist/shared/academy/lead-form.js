@@ -9,6 +9,9 @@
 
   const INTL_TEL_INPUT_UTILS_URL =
     "https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/utils.js";
+  // Longest wait for the utils module before phone validation falls back to the
+  // plausibility check; exact validation takes over once the module arrives.
+  const INTL_TEL_INPUT_UTILS_WAIT_MS = 1500;
   const ASCII_EMAIL_PATTERN =
     /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
   const TELEGRAM_USERNAME_PATTERN = /^@[A-Za-z0-9_]{3,32}$/;
@@ -161,13 +164,23 @@
           },
         },
       });
-      ready = instance.promise
-        .then(() => {
-          utilsReady = true;
-        })
-        .catch(() => {
-          utilsReady = false;
-        });
+      // The library defers the utils download until the window "load" event. On
+      // pages with heavy third-party widgets (modern-psy.ru: the Jivo chat arrives
+      // after ~6 s) that kept phone validation and the submit button pending.
+      // Start the download now; a repeated call is a no-op inside the library.
+      window.intlTelInput.attachUtils?.(() => import(INTL_TEL_INPUT_UTILS_URL))?.catch(() => {});
+      ready = Promise.race([
+        instance.promise
+          .then(() => {
+            utilsReady = true;
+          })
+          .catch(() => {
+            utilsReady = false;
+          }),
+        new Promise((resolve) => {
+          window.setTimeout(resolve, INTL_TEL_INPUT_UTILS_WAIT_MS);
+        }),
+      ]);
     }
 
     return {
