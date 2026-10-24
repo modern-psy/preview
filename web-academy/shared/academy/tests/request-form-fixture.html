@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Стенд формы заявки</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../section-heading.css">
+    <link rel="stylesheet" href="../request-form.css">
+    <style>
+      /* Только оформление стенда, к форме не относится */
+      .fixture_bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; padding: 0.75rem 1rem; background: #fff; border-bottom: 1px solid #ddd; font: 14px/1.4 system-ui, sans-serif; }
+      .fixture_bar a { color: #332f41; }
+      .fixture_result { flex-basis: 100%; margin: 0; white-space: pre-wrap; word-break: break-word; font: 12px/1.4 ui-monospace, monospace; }
+      .fixture_stage { padding: 2rem var(--page-padding, 1rem); }
+    </style>
+  </head>
+  <body>
+    <!-- Стенд: настоящая разметка из request-form-render.mjs, скрипт request-form.js
+         и поддельная нативная форма Тильды. Никуда ничего не отправляет.
+         Параметры адреса:
+           mode=course|access|webinar        режим формы
+           messenger=telegram|max            что выбрать перед автопроверкой
+           event=success|error|captcha|validation|missing|unrelated   ответ «Тильды»
+           email=required                    в нативной форме почта обязательна (проверка контракта)
+           auto=1                            сразу заполнить и отправить -->
+    <div class="fixture_bar">
+      <button id="run" type="button" disabled>Заполнить и отправить</button>
+      <a href="?mode=course">Курс</a>
+      <a href="?mode=course&amp;messenger=max">Курс, MAX</a>
+      <a href="?mode=access">Доступ</a>
+      <a href="?mode=webinar">Вебинар</a>
+      <a href="?mode=course&amp;event=error">Ошибка Тильды</a>
+      <a href="?mode=course&amp;event=missing">Нет нативной формы</a>
+      <pre class="fixture_result" id="result">Загрузка…</pre>
+    </div>
+    <main class="academy-page">
+      <div class="fixture_stage" id="stage"></div>
+    </main>
+    <!-- request-form:markup:start -->
+    <template id="request-form-markup-course"><form id="fixture-form" class="request-form_component" data-academy-request-form data-mode="course" data-tilda-form-name="fixture-form" data-hours-from="10" data-hours-to="20" data-source="fixture · course" data-device-field="fixture_device" aria-labelledby="fixture-form-heading" novalidate><div class="request-form_intro section-header_component is-left is-responsive" data-request-content><h2 class="section-title_component is-left is-responsive" id="fixture-form-heading">Запишитесь на&nbsp;курс</h2><p class="section-subtitle_component">Менеджер напишет и&nbsp;ответит на&nbsp;вопросы о&nbsp;программе и&nbsp;оплате</p></div><div class="request-form_body" data-request-content><p class="request-form_summary" id="fixture-form-summary" role="status" aria-live="polite" data-request-summary></p><div class="request-form_fields"><div class="request-form_field" data-request-field="name" data-state="idle"><label class="request-form_label" for="fixture-form-name">Имя</label><input class="request-form_input" id="fixture-form-name" type="text" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="80" required aria-describedby="fixture-form-name-error" aria-invalid="false" data-request-input="name"><p class="request-form_error" id="fixture-form-name-error" aria-live="polite" data-request-error></p></div><div class="request-form_field is-phone" data-request-field="phone" data-state="idle"><label class="request-form_label" for="fixture-form-phone">Телефон</label><input class="request-form_input" id="fixture-form-phone" type="tel" name="phone" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="+7 900 000-00-00" maxlength="24" required data-phone-mode="ru" aria-describedby="fixture-form-phone-error fixture-form-phone-hint" aria-invalid="false" data-request-input="phone"><p class="request-form_error" id="fixture-form-phone-error" aria-live="polite" data-request-error></p><p class="request-form_hint" id="fixture-form-phone-hint" data-request-hint>Напишем в&nbsp;выбранный мессенджер, а&nbsp;если не&nbsp;получится, позвоним</p><button class="request-form_link-button" type="button" aria-controls="fixture-form-phone" data-request-country>Другая страна</button></div></div><div class="request-form_contact"><fieldset class="request-form_choice" data-request-messenger><legend class="request-form_label">Где удобнее переписываться</legend><div class="request-form_choice-options"><input class="request-form_choice-input" type="radio" name="messenger" value="telegram" id="fixture-form-messenger-telegram" checked><label class="request-form_choice-option" for="fixture-form-messenger-telegram"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span lang="en">Telegram</span></label><input class="request-form_choice-input" type="radio" name="messenger" value="max" id="fixture-form-messenger-max"><label class="request-form_choice-option" for="fixture-form-messenger-max"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor"/></svg><span lang="en">MAX</span></label></div><p class="request-form_hint" data-request-max-hint hidden>Напишем в&nbsp;MAX на&nbsp;этот номер</p></fieldset><div class="request-form_field is-telegram" data-request-field="telegram" data-state="idle"><label class="request-form_label" for="fixture-form-telegram">Ник в&nbsp;Telegram</label><input class="request-form_input" id="fixture-form-telegram" type="text" name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="@anna_psy" maxlength="64" required aria-describedby="fixture-form-telegram-error fixture-form-telegram-hint" aria-invalid="false" data-request-input="telegram"><p class="request-form_error" id="fixture-form-telegram-error" aria-live="polite" data-request-error></p><p class="request-form_hint" id="fixture-form-telegram-hint" data-request-hint>По&nbsp;номеру в&nbsp;Telegram найти получается не&nbsp;всегда, поэтому нужен ник. Он&nbsp;есть в&nbsp;«Настройках», строка «Имя пользователя».</p></div></div><div class="request-form_actions"><button class="request-form_submit" type="submit" aria-busy="false" disabled data-request-submit><span class="request-form_submit-label">Записаться</span><span class="request-form_submit-busy" aria-hidden="true"><span class="request-form_spinner"></span>Отправляем…</span></button><p class="request-form_note">Ответим с&nbsp;10:00 до&nbsp;20:00 по&nbsp;Москве, без&nbsp;выходных</p><p class="request-form_legal">Нажимая на кнопку «Записаться», я даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на обработку моих персональных данных в соответствии с <a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p><div class="request-form_help" data-request-help hidden><p class="request-form_help-text" data-request-help-text></p><div class="request-form_bots"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div></div></div></div><div class="request-form_success section-header_component is-left is-responsive" tabindex="-1" data-request-success hidden><h2 class="section-title_component is-left is-responsive" id="fixture-form-success-heading" tabindex="-1" data-request-success-heading>Заявка принята</h2><p class="section-subtitle_component" data-request-success-text>Менеджер скоро свяжется с&nbsp;вами.</p><div class="request-form_bots is-success"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div><p class="request-form_lecture">Пока ждёте: <a href="https://modern-psy.ru/" target="_blank" rel="noopener">первая лекция курса бесплатно</a></p></div></form></template>
+    <template id="request-form-markup-access"><form id="fixture-form" class="request-form_component" data-academy-request-form data-mode="access" data-tilda-form-name="fixture-form" data-hours-from="10" data-hours-to="20" data-source="fixture · access" data-device-field="fixture_device" aria-labelledby="fixture-form-heading" novalidate><div class="request-form_intro section-header_component is-left is-responsive" data-request-content><h2 class="section-title_component is-left is-responsive" id="fixture-form-heading">Получите доступ к&nbsp;мини-курсу</h2><p class="section-subtitle_component">Пришлём ссылку на&nbsp;уроки на&nbsp;почту</p></div><div class="request-form_body" data-request-content><p class="request-form_summary" id="fixture-form-summary" role="status" aria-live="polite" data-request-summary></p><div class="request-form_fields"><div class="request-form_field" data-request-field="name" data-state="idle"><label class="request-form_label" for="fixture-form-name">Имя</label><input class="request-form_input" id="fixture-form-name" type="text" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="80" required aria-describedby="fixture-form-name-error" aria-invalid="false" data-request-input="name"><p class="request-form_error" id="fixture-form-name-error" aria-live="polite" data-request-error></p></div><div class="request-form_field" data-request-field="email" data-state="idle"><label class="request-form_label" for="fixture-form-email">Почта</label><input class="request-form_input" id="fixture-form-email" type="email" name="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="anna@mail.ru" maxlength="120" required aria-describedby="fixture-form-email-error fixture-form-email-hint" aria-invalid="false" data-request-input="email"><p class="request-form_error" id="fixture-form-email-error" aria-live="polite" data-request-error></p><p class="request-form_hint" id="fixture-form-email-hint" data-request-hint>Пришлём доступ на&nbsp;эту почту</p><p class="request-form_hint" data-request-email-suggest hidden>Может быть, <button class="request-form_link-button is-inline" type="button" data-request-email-fix></button>?</p></div><div class="request-form_field is-phone" data-request-field="phone" data-state="idle"><label class="request-form_label" for="fixture-form-phone">Телефон</label><input class="request-form_input" id="fixture-form-phone" type="tel" name="phone" inputmode="tel" autocomplete="tel" enterkeyhint="done" placeholder="+7 900 000-00-00" maxlength="24" required data-phone-mode="ru" aria-describedby="fixture-form-phone-error" aria-invalid="false" data-request-input="phone"><p class="request-form_error" id="fixture-form-phone-error" aria-live="polite" data-request-error></p><button class="request-form_link-button" type="button" aria-controls="fixture-form-phone" data-request-country>Другая страна</button></div></div><div class="request-form_actions"><button class="request-form_submit" type="submit" aria-busy="false" disabled data-request-submit><span class="request-form_submit-label">Получить доступ</span><span class="request-form_submit-busy" aria-hidden="true"><span class="request-form_spinner"></span>Отправляем…</span></button><p class="request-form_legal">Нажимая на кнопку «Получить доступ», я даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на обработку моих персональных данных в соответствии с <a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p><div class="request-form_help" data-request-help hidden><p class="request-form_help-text" data-request-help-text></p><div class="request-form_bots"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div></div></div></div><div class="request-form_success section-header_component is-left is-responsive" tabindex="-1" data-request-success hidden><h2 class="section-title_component is-left is-responsive" id="fixture-form-success-heading" tabindex="-1" data-request-success-heading>Заявка принята</h2><p class="section-subtitle_component" data-request-success-text>Менеджер скоро свяжется с&nbsp;вами.</p><div class="request-form_bots is-success"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div></div></form></template>
+    <template id="request-form-markup-webinar"><form id="fixture-form" class="request-form_component" data-academy-request-form data-mode="webinar" data-tilda-form-name="fixture-form" data-hours-from="10" data-hours-to="20" data-source="fixture · webinar" data-device-field="fixture_device" data-success-text="Ссылку на эфир пришлём в выбранный мессенджер до начала вебинара." aria-labelledby="fixture-form-heading" novalidate><div class="request-form_intro section-header_component is-left is-responsive" data-request-content><h2 class="section-title_component is-left is-responsive" id="fixture-form-heading">Запишитесь на&nbsp;вебинар</h2><p class="section-subtitle_component">Ссылку на&nbsp;эфир пришлём в&nbsp;мессенджер</p></div><div class="request-form_body" data-request-content><p class="request-form_summary" id="fixture-form-summary" role="status" aria-live="polite" data-request-summary></p><div class="request-form_fields"><div class="request-form_field" data-request-field="name" data-state="idle"><label class="request-form_label" for="fixture-form-name">Имя</label><input class="request-form_input" id="fixture-form-name" type="text" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="80" required aria-describedby="fixture-form-name-error" aria-invalid="false" data-request-input="name"><p class="request-form_error" id="fixture-form-name-error" aria-live="polite" data-request-error></p></div><div class="request-form_field is-phone" data-request-field="phone" data-state="idle"><label class="request-form_label" for="fixture-form-phone">Телефон</label><input class="request-form_input" id="fixture-form-phone" type="tel" name="phone" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="+7 900 000-00-00" maxlength="24" required data-phone-mode="ru" aria-describedby="fixture-form-phone-error fixture-form-phone-hint" aria-invalid="false" data-request-input="phone"><p class="request-form_error" id="fixture-form-phone-error" aria-live="polite" data-request-error></p><p class="request-form_hint" id="fixture-form-phone-hint" data-request-hint>Напишем в&nbsp;выбранный мессенджер, а&nbsp;если не&nbsp;получится, позвоним</p><button class="request-form_link-button" type="button" aria-controls="fixture-form-phone" data-request-country>Другая страна</button></div></div><div class="request-form_contact"><fieldset class="request-form_choice" data-request-messenger><legend class="request-form_label">Где удобнее переписываться</legend><div class="request-form_choice-options"><input class="request-form_choice-input" type="radio" name="messenger" value="telegram" id="fixture-form-messenger-telegram" checked><label class="request-form_choice-option" for="fixture-form-messenger-telegram"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span lang="en">Telegram</span></label><input class="request-form_choice-input" type="radio" name="messenger" value="max" id="fixture-form-messenger-max"><label class="request-form_choice-option" for="fixture-form-messenger-max"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor"/></svg><span lang="en">MAX</span></label></div><p class="request-form_hint" data-request-max-hint hidden>Напишем в&nbsp;MAX на&nbsp;этот номер</p></fieldset><div class="request-form_field is-telegram" data-request-field="telegram" data-state="idle"><label class="request-form_label" for="fixture-form-telegram">Ник в&nbsp;Telegram</label><input class="request-form_input" id="fixture-form-telegram" type="text" name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="@anna_psy" maxlength="64" required aria-describedby="fixture-form-telegram-error fixture-form-telegram-hint" aria-invalid="false" data-request-input="telegram"><p class="request-form_error" id="fixture-form-telegram-error" aria-live="polite" data-request-error></p><p class="request-form_hint" id="fixture-form-telegram-hint" data-request-hint>По&nbsp;номеру в&nbsp;Telegram найти получается не&nbsp;всегда, поэтому нужен ник. Он&nbsp;есть в&nbsp;«Настройках», строка «Имя пользователя».</p></div></div><div class="request-form_actions"><button class="request-form_submit" type="submit" aria-busy="false" disabled data-request-submit><span class="request-form_submit-label">Записаться</span><span class="request-form_submit-busy" aria-hidden="true"><span class="request-form_spinner"></span>Отправляем…</span></button><p class="request-form_note">Ответим с&nbsp;10:00 до&nbsp;20:00 по&nbsp;Москве, без&nbsp;выходных</p><p class="request-form_legal">Нажимая на кнопку «Записаться», я даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на обработку моих персональных данных в соответствии с <a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p><div class="request-form_help" data-request-help hidden><p class="request-form_help-text" data-request-help-text></p><div class="request-form_bots"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div></div></div></div><div class="request-form_success section-header_component is-left is-responsive" tabindex="-1" data-request-success hidden><h2 class="section-title_component is-left is-responsive" id="fixture-form-success-heading" tabindex="-1" data-request-success-heading>Заявка принята</h2><p class="section-subtitle_component" data-request-success-text>Ссылку на&nbsp;эфир пришлём в&nbsp;выбранный мессенджер до&nbsp;начала вебинара.</p><div class="request-form_bots is-success"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div></div></form></template>
+    <!-- request-form:markup:end -->
+    <script>
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const mode = ['course', 'access', 'webinar'].includes(params.get('mode')) ? params.get('mode') : 'course';
+      const event = params.get('event') || 'success';
+      const result = document.querySelector('#result');
+      let submitCount = 0;
+
+      // Разметку заранее собирает build-request-form-fixture.mjs из request-form-render.mjs
+      document.querySelector('#stage').append(document.querySelector(`#request-form-markup-${mode}`).content.cloneNode(true));
+
+      // Поддельная нативная форма Тильды: структура как в опубликованном блоке
+      const record = document.createElement('section');
+      record.className = 't-rec';
+      const emailReq = params.get('email') === 'required' ? ' data-tilda-req="1"' : '';
+      const messengerBlock = mode === 'access' ? '' : `
+        <div class="t-input-group t-input-group_contact_method" data-field-name="messenger-type;messenger-id">
+          <input type="radio" name="messenger-type" value="whatsapp" checked>
+          <input type="radio" name="messenger-type" value="telegram">
+          <div class="t-contact-method__telegram-value t-phonemask-input-group t-contact-method__hybrid t-contact-method__hidden">
+            <input class="js-phonemask-result-iso" type="hidden" name="tildaspec-phone-part[]-iso" disabled>
+            <input class="t-input t-input-phonemask" type="tel" name="tildaspec-phone-part[]" disabled>
+            <input class="js-phonemask-result js-tilda-rule" type="hidden" name="messenger-id" disabled>
+            <input class="t-input js-username-input js-tilda-rule" type="text" name="messenger-id" disabled>
+          </div>
+          <div class="t-contact-method__whatsapp-value t-phonemask-input-group">
+            <input class="js-phonemask-result-iso" type="hidden" name="tildaspec-phone-part[]-iso">
+            <input class="t-input t-input-phonemask" type="tel" name="tildaspec-phone-part[]" data-phonemask-code="+7" data-phonemask-iso="ru">
+            <input class="js-phonemask-result js-tilda-rule" type="hidden" name="messenger-id" data-tilda-rule="phone">
+          </div>
+        </div>`;
+      record.innerHTML = `
+        <form class="t-form">
+          <input type="hidden" name="tildaspec-formname" value="fixture-form">
+          <input type="text" name="Name" data-tilda-rule="name" data-tilda-req="1">
+          <input type="email" name="email" data-tilda-rule="email"${emailReq}>
+          <div class="t-input-group t-input-group_ph" data-field-name="Phone">
+            <input class="js-phonemask-result-iso" type="hidden" name="tildaspec-phone-part[]-iso">
+            <input class="t-input t-input-phonemask" type="tel" name="tildaspec-phone-part[]" data-phonemask-code="+7" data-phonemask-iso="ru">
+            <input class="js-phonemask-result js-tilda-rule" type="hidden" name="Phone" data-tilda-rule="phone" data-tilda-rule-minlength="18">
+          </div>
+          ${messengerBlock}
+          <button type="submit">Отправить</button>
+        </form>`;
+      const nativeForm = record.querySelector('form');
+      const messengerGroup = nativeForm.querySelector('.t-input-group_contact_method');
+      if (messengerGroup) {
+        const telegramFields = messengerGroup.querySelector('.t-contact-method__telegram-value');
+        const maxFields = messengerGroup.querySelector('.t-contact-method__whatsapp-value');
+        const renderNativeMessenger = () => {
+          const isTelegram = messengerGroup.querySelector('input[name="messenger-type"]:checked')?.value === 'telegram';
+          telegramFields.classList.toggle('t-contact-method__hidden', !isTelegram);
+          maxFields.classList.toggle('t-contact-method__hidden', isTelegram);
+          telegramFields.querySelectorAll('input').forEach(input => { input.disabled = !isTelegram || !(input.name === 'messenger-id' && input.type === 'text'); });
+          maxFields.querySelectorAll('input').forEach(input => { input.disabled = isTelegram; });
+        };
+        messengerGroup.querySelectorAll('input[name="messenger-type"]').forEach(input => input.addEventListener('change', renderNativeMessenger));
+        renderNativeMessenger();
+      }
+      // Маска телефона Тильды: российский номер в виде +7 (912) 345-67-89
+      window.t_form_phonemask__setValue = (group, phone) => {
+        const digits = String(phone).replace(/\D/g, '');
+        const national = digits.startsWith('7') ? digits.slice(1, 11) : digits;
+        const formatted = national.replace(/^(\d{3})(\d{3})(\d{2})(\d{2})$/, '($1) $2-$3-$4');
+        const visible = group.querySelector('input.t-input-phonemask:not([type="hidden"])');
+        visible.value = formatted;
+        Object.assign(visible.dataset, {phonemaskCode: '+7', phonemaskCurrent: formatted, phonemaskIso: 'ru'});
+        group.querySelectorAll('.js-phonemask-result').forEach(input => { input.value = `+7 ${formatted}`; });
+        group.querySelectorAll('.js-phonemask-result-iso').forEach(input => { input.value = 'ru'; });
+      };
+      nativeForm.addEventListener('submit', submitEvent => {
+        submitEvent.preventDefault();
+        submitCount += 1;
+        const value = name => nativeForm.querySelector(`input[name="${name}"]`)?.value ?? null;
+        const activeContact = nativeForm.querySelector('input[name="messenger-id"]:not(:disabled):not([type="hidden"]), .t-contact-method__whatsapp-value:not(.t-contact-method__hidden) input[name="messenger-id"]');
+        const inactive = messengerGroup ? [...messengerGroup.querySelectorAll('input[name="messenger-id"]:disabled, input[name="tildaspec-phone-part[]"]:disabled')].map(input => input.value).filter(Boolean) : [];
+        window.__requestFormFixture = {
+          Name: value('Name'), email: value('email'), Phone: value('Phone'),
+          messengerType: nativeForm.querySelector('input[name="messenger-type"]:checked')?.value ?? null,
+          messengerId: activeContact?.value ?? null,
+          form_source: value('form_source'), fixture_device: value('fixture_device'),
+          inactiveContactValues: inactive,
+        };
+        if (event === 'validation') {
+          nativeForm.querySelector('.t-input-group_ph').classList.add('js-error-control-box');
+          return;
+        }
+        setTimeout(() => {
+          window.__fixtureEventDispatched = true;
+          if (event === 'captcha') return;
+          const type = event === 'error' ? 'tildaform:aftererror' : 'tildaform:aftersuccess';
+          const form = event === 'unrelated' ? document.createElement('form') : nativeForm;
+          document.dispatchEvent(new CustomEvent(type, {detail: {form}}));
+        }, 300);
+      });
+      if (event !== 'missing') document.body.append(record);
+
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = '../request-form.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.append(script);
+      });
+
+      const form = document.querySelector('[data-academy-request-form]');
+      const runButton = document.querySelector('#run');
+      runButton.disabled = false;
+      result.textContent = 'Готово. Можно заполнять руками или нажать «Заполнить и отправить».';
+
+      const put = (key, text) => {
+        const input = form.querySelector(`[data-request-input="${key}"]`);
+        if (!input || input.disabled) return;
+        input.value = text;
+        input.dispatchEvent(new Event('input', {bubbles: true}));
+      };
+
+      const run = async () => {
+        const messenger = params.get('messenger');
+        if (messenger) {
+          const radio = form.querySelector(`input[name="messenger"][value="${messenger}"]`);
+          if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change', {bubbles: true})); }
+        }
+        put('name', 'Анна Тестова');
+        put('email', 'anna@gmail.com');
+        put('phone', '89123456789');
+        put('telegram', 't.me/anna_psy');
+        form.querySelector('[data-request-submit]').click();
+        const deadline = Date.now() + 5000;
+        while (Date.now() < deadline) {
+          if (form.dataset.state === 'success' || form.querySelector('[data-request-summary]').dataset.state === 'error' || (window.__fixtureEventDispatched && ['captcha', 'unrelated'].includes(event))) break;
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        const success = form.dataset.state === 'success';
+        const busy = form.getAttribute('aria-busy') === 'true';
+        const summary = form.querySelector('[data-request-summary]');
+        const native = window.__requestFormFixture;
+        const expectWait = ['captcha', 'unrelated'].includes(event);
+        const expectError = ['error', 'validation', 'missing'].includes(event) || params.get('email') === 'required';
+        const passed = event === 'missing' || params.get('email') === 'required'
+          ? submitCount === 0 && summary.dataset.state === 'error' && !success
+          : submitCount === 1 && (expectWait ? busy && !success : expectError ? !busy && !success && summary.dataset.state === 'error' : success && !busy);
+        result.textContent = JSON.stringify({passed, mode, event, submitCount, success, busy, summary: summary.textContent, native, successText: form.querySelector('[data-request-success-text]')?.textContent}, null, 1);
+      };
+      runButton.addEventListener('click', run);
+      if (params.get('auto') === '1') run();
+    })().catch(error => { document.querySelector('#result').textContent = String(error); });
+    </script>
+  </body>
+</html>

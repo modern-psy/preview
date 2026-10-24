@@ -66,6 +66,7 @@
 | CTA grid | `.cta_*`, `data-cta-grid*`; [templates and guide](cta.md) | shared grid highlights/comets | base SVG and CTA remain visible | SVG source, copy and destination |
 | Responsive slider | `data-slider-component`, `data-academy-slider` and controls | Splide; current reviews/teachers on all widths | all authored cards remain readable without JS | pinned library, slide size, copy and media |
 | Lead form | `.lead-form_component`, `data-academy-lead-form`, optional `lead-form.css` | `lead-form.js` + intl-tel-input 29.1.2 | visible fields/copy, submit disabled | copy, IDs, native marker, consent and project form contract |
+| Форма заявки (мобильный стандарт) | `request-form-render.mjs`, `.request-form_component`, `data-academy-request-form`; [контракт](request-form.md) | `request-form.js`, без сторонних библиотек | поля и тексты видны, кнопка выключена | режим, заголовок, надпись кнопки, маркер нативной формы, источник; до пилота на опубликованной странице не в продакшен |
 | Admission requirements | `admission-render.mjs`, `.admission_component`, `admission.css`; [guide](admission.md) | none | heading and document list remain visible | copy, media, heading IDs and outer column width |
 | Ratings | `.ratings_component`, optional `ratings.css` | none | summary, tags, logos and scores are semantic HTML | current values, copy, assets and outer column width |
 
