@@ -33,9 +33,7 @@
     unavailable: "Отправка сейчас недоступна. Напишите в приёмную комиссию, ответим так же быстро",
     slow: "Отправляем дольше обычного. Если не получится, напишите в приёмную комиссию",
     noNative: "Если форма не отправится, напишите в приёмную комиссию",
-    countryOther: "Другая страна",
-    countryRussia: "Номер в России",
-    intlHint: "Номер с кодом страны, например +375 29 123-45-67",
+    phoneCheck: "Проверьте номер: не хватает цифр или есть лишние",
     ruPlaceholder: "+7 900 000-00-00",
     intlPlaceholder: "+375 29 123-45-67",
   };
@@ -232,6 +230,30 @@
     }
   })();
 
+  // Маска телефона Тильды. На странице с формой Тильды скрипт уже есть,
+  // иначе подгружаем его с tildacdn. Не загрузился — остаётся своя маска
+  const TILDA_PHONE_MASK_URL = "https://static.tildacdn.com/js/tilda-phone-mask-1.1.min.js";
+  let tildaMaskLoading = null;
+
+  const loadTildaMask = () => {
+    const ready = () => typeof window.t_form_phonemask_load === "function";
+    if (ready()) return Promise.resolve(true);
+    if (tildaMaskLoading) return tildaMaskLoading;
+    tildaMaskLoading = new Promise((resolve) => {
+      let script = [...document.scripts].find((item) => item.src.includes("tilda-phone-mask"));
+      if (!script) {
+        script = document.createElement("script");
+        script.src = TILDA_PHONE_MASK_URL;
+        script.async = true;
+        document.head.append(script);
+      }
+      script.addEventListener("load", () => resolve(ready()));
+      script.addEventListener("error", () => resolve(false));
+      window.setTimeout(() => resolve(ready()), 8000);
+    });
+    return tildaMaskLoading;
+  };
+
   /* ---------- Мост к нативной форме Тильды ---------- */
 
   const setNativeInputValue = (input, value) => {
@@ -330,6 +352,19 @@
     setNativeInputValue(input, original ? `${original} · ${value}` : value);
   };
 
+  // Следующий кадр, но не дольше 100 мс: в фоновой вкладке кадры не рисуются,
+  // и отправка не должна из-за этого зависать
+  const nextFrame = () => new Promise((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      resolve();
+    };
+    window.requestAnimationFrame(finish);
+    window.setTimeout(finish, 100);
+  });
+
   class ContractError extends Error {}
 
   // Сначала проверяем, что в нативной форме есть всё нужное, и только потом
@@ -356,7 +391,7 @@
     if (!payload.messenger) return;
 
     const selectedType = selectTildaMessenger(messengerGroup, payload.messenger);
-    await new Promise((resolve) => window.requestAnimationFrame(resolve));
+    await nextFrame();
 
     // Очищаем контакты всех мессенджеров, иначе старое значение уйдёт в CRM вместе с новым
     messengerGroup.querySelectorAll(
@@ -419,18 +454,19 @@
     const hoursFrom = Number(form.dataset.hoursFrom) || 10;
     const hoursTo = Number(form.dataset.hoursTo) || 20;
     const device = detectDevice();
-    const inputs = [...form.querySelectorAll("[data-request-input]")];
-    const byKey = (key) => inputs.find((input) => input.dataset.requestInput === key) || null;
+    // Поля ищем каждый раз заново: маска Тильды подменяет поле телефона своим
+    const byKey = (key) => form.querySelector(`[data-request-input="${key}"]`);
+    const allInputs = () => [...form.querySelectorAll("[data-request-input]")];
+    const inputOf = (target) =>
+      (target instanceof HTMLInputElement && target.matches("[data-request-input]") ? target : null);
     const nameInput = byKey("name");
-    const phoneInput = byKey("phone");
     const emailInput = byKey("email");
     const telegramInput = byKey("telegram");
+    const phoneInput = () => byKey("phone");
     const telegramField = telegramInput?.closest("[data-request-field]") || null;
+    const phoneMaskRoot = form.querySelector("[data-request-phone-mask]");
     const messengerInputs = [...form.querySelectorAll('input[name="messenger"]')];
-    const maxHint = form.querySelector("[data-request-max-hint]");
-    const countryButton = form.querySelector("[data-request-country]");
-    const phoneHint = phoneInput?.closest("[data-request-field]")?.querySelector("[data-request-hint]") || null;
-    const phoneHintText = phoneHint?.textContent || "";
+    const tipButtons = [...form.querySelectorAll("[data-request-tip]")];
     const emailSuggest = form.querySelector("[data-request-email-suggest]");
     const emailFix = form.querySelector("[data-request-email-fix]");
     const submit = form.querySelector("[data-request-submit]");
@@ -444,7 +480,9 @@
     const section = form.closest("section[aria-labelledby]");
     const draftKey = `academy-request-form:${window.location.pathname}:${form.id || formName}`;
     const cleanups = [];
-    let phoneMode = "ru";
+    let phoneMode = "ru"; // своя маска: ru или intl
+    let tildaMask = Boolean(phoneMaskRoot?.querySelector("input.t-input-phonemask"));
+    let quiet = false; // скрипт сам заполняет поле: это не ввод человека
     let busy = false;
     let disposed = false;
     let started = false;
@@ -467,8 +505,42 @@
 
     const fieldOf = (input) => input.closest("[data-request-field]");
     const isActive = (input) => input && !input.disabled && !fieldOf(input)?.hidden;
-    const activeInputs = () => inputs.filter(isActive);
+    const activeInputs = () => allInputs().filter(isActive);
     const selectedMessenger = () => messengerInputs.find((input) => input.checked)?.value || null;
+
+    /* Телефон: маска Тильды с выбором страны. Пока она не загрузилась
+       или если не загрузится совсем, работает своя маска +7 */
+
+    const phoneResult = () => phoneMaskRoot?.querySelector(".js-phonemask-result") || null;
+
+    const phoneMessage = (input) => {
+      if (!tildaMask) {
+        return phoneMode === "ru" ? ruPhoneMessage(parseRuPhone(input.value).national) : intlPhoneMessage(input.value);
+      }
+      if (!digitsOf(input.value)) return TEXT.phoneEmpty;
+      const value = phoneResult()?.value || "";
+      const valid = typeof window.t_form_phonemask__validatePhone === "function"
+        ? window.t_form_phonemask__validatePhone(value)
+        : digitsOf(value).length >= 8;
+      if (valid) return "";
+      return input.getAttribute("data-phonemask-code") === "+7" ? TEXT.phoneShort : TEXT.phoneCheck;
+    };
+
+    const phoneTyped = () => {
+      const input = phoneInput();
+      if (!input) return "";
+      if (tildaMask) return digitsOf(input.value);
+      return phoneMode === "ru" ? parseRuPhone(input.value).national : digitsOf(input.value);
+    };
+
+    const phoneE164 = () => {
+      const input = phoneInput();
+      if (tildaMask) return `+${digitsOf(phoneResult()?.value)}`;
+      if (phoneMode === "intl") return `+${digitsOf(input.value)}`;
+      return `+7${parseRuPhone(input.value).national}`;
+    };
+
+    const phoneDisplay = () => (tildaMask ? phoneResult()?.value || "" : phoneInput()?.value.trim() || "");
 
     const messageFor = (input) => {
       const value = input.value;
@@ -476,7 +548,7 @@
         case "name": return nameMessage(value);
         case "email": return emailMessage(value);
         case "telegram": return telegramMessage(value);
-        case "phone": return phoneMode === "ru" ? ruPhoneMessage(parseRuPhone(value).national) : intlPhoneMessage(value);
+        case "phone": return phoneMessage(input);
         default: return "";
       }
     };
@@ -531,8 +603,7 @@
         storage.setItem(draftKey, JSON.stringify({
           name: nameInput?.value || "",
           email: emailInput?.value || "",
-          phone: phoneInput?.value || "",
-          phoneMode,
+          phone: phoneTyped() ? phoneE164() : "",
           messenger: selectedMessenger(),
           telegram: telegramInput?.value || "",
         }));
@@ -557,48 +628,37 @@
       }
     };
 
-    /* Телефон */
+    /* Своя маска: нужна, только пока маска Тильды не подключилась */
 
-    const setPhoneMode = (nextMode, { keepValue = false, focus = false } = {}) => {
-      if (!phoneInput) return;
+    const setPhoneMode = (nextMode) => {
       phoneMode = nextMode;
-      phoneInput.dataset.phoneMode = nextMode;
-      phoneInput.placeholder = nextMode === "ru" ? TEXT.ruPlaceholder : TEXT.intlPlaceholder;
-      if (countryButton) countryButton.textContent = nextMode === "ru" ? TEXT.countryOther : TEXT.countryRussia;
-      if (phoneHint) phoneHint.textContent = nextMode === "ru" ? phoneHintText : TEXT.intlHint;
-      if (!keepValue) phoneInput.value = nextMode === "intl" ? "+" : "";
-      showFieldError(phoneInput, "");
-      if (focus) {
-        phoneInput.focus();
-        const end = phoneInput.value.length;
-        phoneInput.setSelectionRange(end, end);
-      }
+      const input = phoneInput();
+      if (input && !tildaMask) input.placeholder = nextMode === "ru" ? TEXT.ruPlaceholder : TEXT.intlPlaceholder;
     };
 
-    const formatPhone = () => {
-      if (!phoneInput) return;
+    const formatPhone = (input) => {
       if (phoneMode === "intl") {
-        const sanitized = sanitizeIntlPhone(phoneInput.value);
-        if (sanitized !== phoneInput.value) phoneInput.value = sanitized;
+        const sanitized = sanitizeIntlPhone(input.value);
+        if (sanitized !== input.value) input.value = sanitized;
         return;
       }
-      const raw = phoneInput.value;
+      const raw = input.value;
       const parsed = parseRuPhone(raw);
       if (parsed.foreign) {
-        setPhoneMode("intl", { keepValue: true });
-        phoneInput.value = sanitizeIntlPhone(raw);
+        setPhoneMode("intl");
+        input.value = sanitizeIntlPhone(raw);
         return;
       }
       const formatted = formatRuPhone(parsed.national);
       if (formatted === raw) return;
-      const caret = phoneInput.selectionStart ?? raw.length;
+      const caret = input.selectionStart ?? raw.length;
       const atEnd = caret >= raw.length;
       const cleaned = raw.replace(/[^\d+]/g, "");
       const hadPrefix = cleaned.startsWith("+") || (digitsOf(raw).length >= 11 && /^[78]/.test(digitsOf(raw)));
-      phoneInput.value = formatted;
-      if (document.activeElement !== phoneInput) return;
+      input.value = formatted;
+      if (document.activeElement !== input) return;
       if (atEnd) {
-        phoneInput.setSelectionRange(formatted.length, formatted.length);
+        input.setSelectionRange(formatted.length, formatted.length);
         return;
       }
       // Курсор встаёт после того же числа цифр, что и до форматирования
@@ -608,12 +668,64 @@
         if (/\d/.test(formatted[position])) left -= 1;
         position += 1;
       }
-      phoneInput.setSelectionRange(position, position);
+      input.setSelectionRange(position, position);
     };
 
-    const phoneE164 = () => {
-      if (phoneMode === "intl") return `+${digitsOf(phoneInput.value)}`;
-      return `+7${parseRuPhone(phoneInput.value).national}`;
+    const setOwnPhone = (e164) => {
+      const input = phoneInput();
+      if (!input || !e164) return;
+      if (e164.startsWith("+7")) {
+        setPhoneMode("ru");
+        input.value = formatRuPhone(parseRuPhone(e164).national);
+      } else {
+        setPhoneMode("intl");
+        input.value = sanitizeIntlPhone(e164);
+      }
+    };
+
+    /* Маска Тильды: её скрипт заменяет наше поле своим с флагом и кодом страны */
+
+    const startTildaMask = () => {
+      const original = phoneInput();
+      if (disposed || tildaMask || !phoneMaskRoot || !original || typeof window.t_form_phonemask_load !== "function") return;
+      const describedBy = original.getAttribute("aria-describedby") || "";
+      const hadFocus = document.activeElement === original;
+      const e164 = phoneTyped() ? phoneE164() : "";
+      const backup = original.cloneNode(true);
+      original.value = "";
+      try {
+        window.t_form_phonemask_load(original);
+      } catch (error) {
+        // Ниже проверяем, дошла ли настройка маски до конца
+      }
+      const group = phoneMaskRoot.querySelector("[data-input-lid]");
+      const input = phoneMaskRoot.querySelector("input.t-input-phonemask");
+      if (group?.getAttribute("data-init-mask") !== "yes" || !input) {
+        // Маска встала не до конца: возвращаем своё поле, чтобы телефон можно было ввести
+        const wrap = phoneMaskRoot.querySelector(".t-input-phonemask__wrap");
+        if (wrap) wrap.replaceWith(backup);
+        if (e164) setOwnPhone(e164);
+        return;
+      }
+      tildaMask = true;
+      input.classList.add("request-form_phone-input");
+      input.dataset.requestInput = "phone";
+      input.required = true;
+      input.setAttribute("autocomplete", "tel");
+      input.setAttribute("inputmode", "tel");
+      input.setAttribute("aria-invalid", "false");
+      input.setAttribute("aria-describedby", describedBy);
+      if (e164 && typeof window.t_form_phonemask__setValue === "function") {
+        quiet = true;
+        try {
+          window.t_form_phonemask__setValue(phoneMaskRoot.querySelector("[data-input-lid]"), e164, undefined, { noFocus: true });
+        } catch (error) {
+          // Номер не перенёсся: человек наберёт его заново
+        }
+        quiet = false;
+      }
+      if (hadFocus) input.focus();
+      updateEnterHints();
     };
 
     /* Мессенджер */
@@ -625,7 +737,6 @@
         telegramInput.disabled = !isTelegram;
         if (!isTelegram) showFieldError(telegramInput, "");
       }
-      if (maxHint) maxHint.hidden = isTelegram;
       updateEnterHints();
       refreshSummary();
     };
@@ -640,7 +751,8 @@
     /* Реакция на ввод */
 
     const handleInput = (input) => {
-      if (input === phoneInput) formatPhone();
+      if (quiet) return;
+      if (input.dataset.requestInput === "phone" && !tildaMask) formatPhone(input);
       if (input === emailInput && emailSuggest) emailSuggest.hidden = true;
       input.dataset.dirty = "true";
       // Ошибка исчезает, как только значение стало верным, не дожидаясь ухода из поля
@@ -653,43 +765,51 @@
       }
     };
 
-    inputs.forEach((input) => {
-      listen(input, "input", () => handleInput(input));
-      // Поле проверяется, когда человек из него вышел и что-то в нём менял
-      listen(input, "blur", () => {
-        if (busy) return;
-        if (input === phoneInput && phoneMode === "ru" && !parseRuPhone(input.value).national) input.value = "";
-        if (input === telegramInput && !telegramMessage(input.value)) input.value = `@${normalizeTelegram(input.value)}`;
-        if (input.dataset.dirty === "true") showFieldError(input, messageFor(input));
-        if (input === emailInput) showEmailSuggestion();
-        refreshSummary();
-      });
+    // Поле проверяется, когда человек из него вышел и что-то в нём менял
+    const handleBlur = (input) => {
+      if (busy) return;
+      const key = input.dataset.requestInput;
+      if (key === "phone" && !tildaMask && phoneMode === "ru" && !parseRuPhone(input.value).national) input.value = "";
+      if (key === "telegram" && !telegramMessage(input.value)) input.value = `@${normalizeTelegram(input.value)}`;
+      if (input.dataset.dirty === "true") showFieldError(input, messageFor(input));
+      if (key === "email") showEmailSuggestion();
+      refreshSummary();
+    };
+
+    listen(form, "input", (event) => {
+      const input = inputOf(event.target);
+      if (input) handleInput(input);
+    });
+    // Маска Тильды при вставке номера и смене страны шлёт change, а не input
+    listen(form, "change", (event) => {
+      const input = inputOf(event.target);
+      if (input?.dataset.requestInput === "phone") handleInput(input);
+    });
+    listen(form, "focusout", (event) => {
+      const input = inputOf(event.target);
+      if (input) handleBlur(input);
     });
 
-    // Пустое поле телефона сразу показывает код страны
-    listen(phoneInput, "focus", () => {
-      if (phoneMode === "ru" && !phoneInput.value) {
-        phoneInput.value = "+7 ";
-        window.requestAnimationFrame(() => phoneInput.setSelectionRange(3, 3));
-      }
+    // Своя маска: пустое поле телефона сразу показывает код страны
+    listen(form, "focusin", (event) => {
+      const input = inputOf(event.target);
+      if (input?.dataset.requestInput !== "phone" || tildaMask || phoneMode !== "ru" || input.value) return;
+      input.value = "+7 ";
+      window.requestAnimationFrame(() => input.setSelectionRange(3, 3));
     });
 
-    // Вставка целого номера в пустое поле заменяет «+7 », а не дописывается к нему
-    listen(phoneInput, "paste", (event) => {
-      if (phoneMode !== "ru") return;
+    // Своя маска: вставка целого номера в пустое поле заменяет «+7 », а не дописывается к нему
+    listen(form, "paste", (event) => {
+      const input = inputOf(event.target);
+      if (input?.dataset.requestInput !== "phone" || tildaMask || phoneMode !== "ru") return;
       const text = event.clipboardData?.getData("text") || "";
-      const allSelected = phoneInput.selectionStart === 0 && phoneInput.selectionEnd === phoneInput.value.length;
-      if (!text || (parseRuPhone(phoneInput.value).national && !allSelected)) return;
+      const allSelected = input.selectionStart === 0 && input.selectionEnd === input.value.length;
+      if (!text || (parseRuPhone(input.value).national && !allSelected)) return;
       event.preventDefault();
-      phoneInput.value = text;
-      handleInput(phoneInput);
-      const end = phoneInput.value.length;
-      phoneInput.setSelectionRange(end, end);
-    });
-
-    listen(countryButton, "click", () => {
-      setPhoneMode(phoneMode === "ru" ? "intl" : "ru", { focus: true });
-      saveDraft();
+      input.value = text;
+      handleInput(input);
+      const end = input.value.length;
+      input.setSelectionRange(end, end);
     });
 
     listen(emailFix, "click", () => {
@@ -717,6 +837,52 @@
         list[index + 1].focus();
       }
     });
+
+    /* Пояснения под «?»: нажатие открывает и закрепляет, наведение мышью
+       показывает, Escape, нажатие мимо и уход фокуса закрывают */
+
+    const canHover = Boolean(window.matchMedia?.("(hover: hover) and (pointer: fine)").matches);
+    const tipOf = (button) => document.getElementById(button.getAttribute("aria-controls"));
+    const setTip = (button, open, pinned = false) => {
+      button.setAttribute("aria-expanded", String(open));
+      button.dataset.pinned = open && pinned ? "true" : "";
+      const tip = tipOf(button);
+      if (tip) tip.hidden = !open;
+    };
+    const closeTips = (except) => {
+      tipButtons.forEach((button) => {
+        if (button !== except) setTip(button, false);
+      });
+    };
+
+    tipButtons.forEach((button) => {
+      listen(button, "click", () => {
+        const pinnedOpen = button.getAttribute("aria-expanded") === "true" && button.dataset.pinned === "true";
+        closeTips(button);
+        setTip(button, !pinnedOpen, true);
+      });
+      listen(button, "blur", () => setTip(button, false));
+      if (canHover) {
+        listen(button, "mouseenter", () => {
+          if (button.getAttribute("aria-expanded") === "true") return;
+          closeTips(button);
+          setTip(button, true);
+        });
+        listen(button, "mouseleave", () => {
+          if (button.dataset.pinned !== "true") setTip(button, false);
+        });
+      }
+    });
+
+    if (tipButtons.length) {
+      listen(document, "keydown", (event) => {
+        if (event.key === "Escape") closeTips();
+      });
+      listen(document, "pointerdown", (event) => {
+        const inside = tipButtons.some((button) => button.contains(event.target) || tipOf(button)?.contains(event.target));
+        if (!inside) closeTips();
+      });
+    }
 
     /* Видимость: липкая панель страницы прячется, пока форма на экране или открыта клавиатура */
 
@@ -868,7 +1034,7 @@
         name: normalizeName(nameInput.value),
         email: emailInput ? emailInput.value.trim() : null,
         phone,
-        phoneDisplay: phoneInput.value.trim(),
+        phoneDisplay: phoneDisplay(),
         messenger,
         messengerContact: messenger === "telegram" ? `@${normalizeTelegram(telegramInput.value)}` : messenger === "max" ? phone : "",
       };
@@ -896,7 +1062,7 @@
         const nativeSubmit = nativeForm.querySelector('button[type="submit"], input[type="submit"]');
         if (nativeSubmit instanceof HTMLElement) nativeForm.requestSubmit(nativeSubmit);
         else nativeForm.requestSubmit();
-        await new Promise((resolve) => window.requestAnimationFrame(resolve));
+        await nextFrame();
         // Нативная проверка Тильды не пропустила поля: событие не придёт, выходим из ожидания
         if (submittedForm === nativeForm && nativeForm.querySelector(".js-error-control-box")) {
           showDeliveryError(TEXT.sendFailed);
@@ -919,16 +1085,16 @@
     if (draft) {
       if (nameInput && draft.name) nameInput.value = draft.name;
       if (emailInput && draft.email) emailInput.value = draft.email;
-      if (phoneInput && draft.phone) {
-        if (draft.phoneMode === "intl") setPhoneMode("intl", { keepValue: true });
-        phoneInput.value = draft.phone;
-      }
+      if (draft.phone) setOwnPhone(draft.phone);
       const savedMessenger = messengerInputs.find((input) => input.value === draft.messenger);
       if (savedMessenger) savedMessenger.checked = true;
       if (telegramInput && draft.telegram) telegramInput.value = draft.telegram;
     }
     renderMessenger();
     if (submit) submit.disabled = false;
+    loadTildaMask().then((ready) => {
+      if (ready) startTildaMask();
+    });
     if (formName) watchedNames.add(formName);
     hideTildaFormRecord(formName);
 

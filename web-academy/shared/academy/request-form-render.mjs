@@ -3,7 +3,9 @@
 // Подписи полей, подсказки и тексты ошибок — часть стандарта, их здесь не меняют.
 import {escapeHtml, renderText, sectionId} from './html-render.mjs';
 
-const MODES = ['course', 'access', 'webinar'];
+// course — заявка на курс, waitlist — лист ожидания (поля и поведение как у курса),
+// access — доступ к мини-курсу на почту, webinar — запасная форма вебинара
+const MODES = ['course', 'waitlist', 'access', 'webinar'];
 
 // Значения по умолчанию из решений 24 октября 2026 (ТЗ «Форма заявки»).
 // Лендинг может переопределить их в своих данных.
@@ -24,6 +26,8 @@ const ICONS = {
   max: '<svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor"/></svg>',
 };
 
+ICONS.question = '<svg class="request-form_tip-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.9 7a2.15 2.15 0 0 1 4.2.55c0 1.45-2.1 1.85-2.1 3.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="13.2" r=".95" fill="currentColor"/></svg>';
+
 const MESSENGERS = [
   {value: 'telegram', label: 'Telegram'},
   {value: 'max', label: 'MAX'},
@@ -42,12 +46,22 @@ const httpsUrl = (value, key) => {
   return value;
 };
 
+// Пояснение под значком «?»: открывается нажатием (на компьютере и наведением),
+// а скринридер читает его вместе с полем через aria-describedby
+const tipButton = (tipId, label) =>
+  `<button class="request-form_tip-button" type="button" aria-label="${attr(label)}" aria-expanded="false" aria-controls="${tipId}" data-request-tip>${ICONS.question}</button>`;
+const tipText = (tipId, text) => `<p class="request-form_tip" id="${tipId}" hidden>${renderText(text)}</p>`;
+
 // Одно текстовое поле: подпись над полем, ошибка и подсказка под ним
-function field({id, key, label, input, hint = '', after = '', extraClass = '', hidden = false}) {
-  const hintId = hint ? ` ${id}-${key}-hint` : '';
+function field({id, key, label, input, hint = '', after = '', extraClass = '', hidden = false, tip = null, inputId = '', inputClass = '', wrap = null}) {
+  const controlId = inputId || `${id}-${key}`;
+  const tipId = tip ? `${id}-${key}-tip` : '';
+  const describedBy = [`${id}-${key}-error`, hint ? `${id}-${key}-hint` : '', tipId].filter(Boolean).join(' ');
+  const labelHtml = `<label class="request-form_label" for="${controlId}">${renderText(label)}</label>`;
+  const control = `<input class="request-form_input${inputClass}" id="${controlId}" ${input} aria-describedby="${describedBy}" aria-invalid="false" data-request-input="${key}"${hidden ? ' disabled' : ''}>`;
   return `<div class="request-form_field${extraClass}" data-request-field="${key}" data-state="idle"${hidden ? ' hidden' : ''}>`
-    + `<label class="request-form_label" for="${id}-${key}">${renderText(label)}</label>`
-    + `<input class="request-form_input" id="${id}-${key}" ${input} aria-describedby="${id}-${key}-error${hintId}" aria-invalid="false" data-request-input="${key}"${hidden ? ' disabled' : ''}>`
+    + (tip ? `<div class="request-form_label-row">${labelHtml}${tipButton(tipId, tip.label)}</div>${tipText(tipId, tip.text)}` : labelHtml)
+    + (wrap ? wrap(control) : control)
     + `<p class="request-form_error" id="${id}-${key}-error" aria-live="polite" data-request-error></p>`
     + (hint ? `<p class="request-form_hint" id="${id}-${key}-hint" data-request-hint>${renderText(hint)}</p>` : '')
     + after
@@ -98,7 +112,7 @@ export function renderRequestForm(input, {id = 'request-form', headingLevel = 2}
   const fields = [];
   fields.push(field({
     id, key: 'name', label: 'Имя',
-    input: 'type="text" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="80" required',
+    input: 'type="text" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" placeholder="Анна" maxlength="80" required',
   }));
   if (mode === 'access') {
     fields.push(field({
@@ -108,11 +122,15 @@ export function renderRequestForm(input, {id = 'request-form', headingLevel = 2}
       after: '<p class="request-form_hint" data-request-email-suggest hidden>Может быть, <button class="request-form_link-button is-inline" type="button" data-request-email-fix></button>?</p>',
     }));
   }
+  // Телефон: скрипт подключает к полю маску Тильды с выбором страны (Россия
+  // по умолчанию). Атрибуты data-phonemask-* и обёртки #rec… и .t-input-block
+  // нужны её скрипту: он ищет поле внутри #rec<id> по data-input-lid и заменяет его своим
+  const lid = `${id}-phone`;
   fields.push(field({
-    id, key: 'phone', label: 'Телефон', extraClass: ' is-phone',
-    input: `type="tel" name="phone" inputmode="tel" autocomplete="tel" enterkeyhint="${hasMessenger ? 'next' : 'done'}" placeholder="+7 900 000-00-00" maxlength="24" required data-phone-mode="ru"`,
+    id, key: 'phone', label: 'Телефон', extraClass: ' is-phone', inputId: `input_${lid}`, inputClass: ' js-phonemask-input',
+    input: `type="tel" name="phone" inputmode="tel" autocomplete="tel" enterkeyhint="${hasMessenger ? 'next' : 'done'}" placeholder="+7 900 000-00-00" maxlength="24" required data-phonemask-id="${lid}" data-phonemask-lid="${lid}" data-phonemask-maskcountry="RU" data-phonemask-init="no" data-phonemask-skip-auto-init="true"`,
     hint: hasMessenger ? 'Напишем в выбранный мессенджер, а если не получится, позвоним' : '',
-    after: `<button class="request-form_link-button" type="button" aria-controls="${id}-phone" data-request-country>Другая страна</button>`,
+    wrap: control => `<div class="request-form_phone" id="rec${lid}" data-request-phone-mask><div class="request-form_phone-group" data-input-lid="${lid}"><div class="t-input-block">${control}</div></div></div>`,
   }));
 
   let contact = '';
@@ -122,13 +140,16 @@ export function renderRequestForm(input, {id = 'request-form', headingLevel = 2}
       return `<input class="request-form_choice-input" type="radio" name="messenger" value="${value}" id="${id}-messenger-${value}"${checked}>`
         + `<label class="request-form_choice-option" for="${id}-messenger-${value}">${ICONS[value]}<span lang="en">${label}</span></label>`;
     }).join('');
+    const messengerTip = `${id}-messenger-tip`;
     contact = '<div class="request-form_contact">'
-      + `<fieldset class="request-form_choice" data-request-messenger><legend class="request-form_label">Где удобнее переписываться</legend><div class="request-form_choice-options">${options}</div>`
-      + `<p class="request-form_hint" data-request-max-hint${telegramFirst ? ' hidden' : ''}>Напишем в&nbsp;MAX на&nbsp;этот номер</p></fieldset>`
+      + `<div class="request-form_choice" role="radiogroup" aria-labelledby="${id}-messenger-label" aria-describedby="${messengerTip}" data-request-messenger>`
+      + `<div class="request-form_label-row"><span class="request-form_label" id="${id}-messenger-label">Где удобнее переписываться</span>${tipButton(messengerTip, 'Как с вами свяжутся')}</div>`
+      + tipText(messengerTip, 'В Telegram напишем по нику. В MAX напишем на номер телефона, который вы указали выше.')
+      + `<div class="request-form_choice-options">${options}</div></div>`
       + field({
         id, key: 'telegram', label: 'Ник в Telegram', extraClass: ' is-telegram', hidden: !telegramFirst,
         input: 'type="text" name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="@anna_psy" maxlength="64" required',
-        hint: 'По номеру в Telegram найти получается не всегда, поэтому нужен ник. Он есть в «Настройках», строка «Имя пользователя».',
+        tip: {label: 'Зачем нужен ник', text: 'По номеру в Telegram найти получается не всегда, поэтому нужен ник. Он есть в «Настройках», строка «Имя пользователя».'},
       })
       + '</div>';
   }
@@ -152,12 +173,15 @@ export function renderRequestForm(input, {id = 'request-form', headingLevel = 2}
     + '<div class="request-form_actions">'
     // Без JS кнопка выключена: форма всё равно не может отправиться. Скрипт включает её сразу
     + `<button class="request-form_submit" type="submit" aria-busy="false" disabled data-request-submit><span class="request-form_submit-label">${renderText(submitLabel)}</span><span class="request-form_submit-busy" aria-hidden="true"><span class="request-form_spinner"></span>Отправляем…</span></button>`
-    // Доступ к мини-курсу приходит письмом сразу, обещать часы ответа там незачем
-    + (mode === 'access' ? '' : `<p class="request-form_note">${renderText(data.hoursNote)}</p>`)
-    + `<p class="request-form_legal">${legal}</p>`
     + `<div class="request-form_help" data-request-help hidden><p class="request-form_help-text" data-request-help-text></p>${botLinks(data)}</div>`
+    + `<p class="request-form_legal">${legal}</p>`
     + '</div>'
     + '</div>'
+    // Часы ответа отдельно от колонки с полями: на телефоне встают под согласие,
+    // от 768 px сетка ставит их вниз левой колонки. Только для курса и листа
+    // ожидания: доступ к мини-курсу приходит письмом сразу, а вебинарная форма
+    // запасная, основную запись круглые сутки ведёт бот BotHelp
+    + (mode === 'course' || mode === 'waitlist' ? `<p class="request-form_note" data-request-content>${renderText(data.hoursNote)}</p>` : '')
     + `<div class="request-form_success section-header_component is-left is-responsive" tabindex="-1" data-request-success hidden>`
     + `<h${level} class="section-title_component is-left is-responsive" id="${id}-success-heading" tabindex="-1" data-request-success-heading>${renderText(data.successHeading)}</h${level}>`
     + `<p class="section-subtitle_component" data-request-success-text>${renderText(successFallback)}</p>`

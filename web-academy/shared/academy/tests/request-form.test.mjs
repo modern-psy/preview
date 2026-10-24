@@ -115,6 +115,42 @@ test('разметка: заявка на курс без почты, Telegram �
   assert.doesNotMatch(html, /Написать в&nbsp;MAX/, 'без адреса бота в MAX кнопки MAX нет');
 });
 
+test('разметка: телефон готов к маске Тильды, Россия по умолчанию', () => {
+  const html = renderRequestForm({...base, mode: 'course'}, {id: 'lead'});
+  assert.match(html, /<label class="request-form_label" for="input_lead-phone">Телефон<\/label>/);
+  assert.match(html, /id="reclead-phone" data-request-phone-mask><div class="request-form_phone-group" data-input-lid="lead-phone"><div class="t-input-block">/);
+  assert.match(html, /class="request-form_input js-phonemask-input" id="input_lead-phone"[^>]*data-phonemask-id="lead-phone" data-phonemask-lid="lead-phone" data-phonemask-maskcountry="RU"[^>]*data-phonemask-skip-auto-init="true"/);
+  assert.doesNotMatch(html, /Другая страна/);
+});
+
+test('разметка: пояснения про Telegram и MAX под «?», часы ответа в самом низу', () => {
+  const html = renderRequestForm({...base, mode: 'course'}, {id: 'lead'});
+  assert.equal((html.match(/data-request-tip>/g) || []).length, 2);
+  assert.match(html, /aria-controls="lead-telegram-tip"[^>]*>.*?<\/button><\/div><p class="request-form_tip" id="lead-telegram-tip" hidden>По&nbsp;номеру в&nbsp;Telegram/);
+  assert.match(html, /role="radiogroup" aria-labelledby="lead-messenger-label" aria-describedby="lead-messenger-tip"/);
+  assert.match(html, /id="lead-messenger-tip" hidden>В&nbsp;Telegram напишем по&nbsp;нику\. В&nbsp;MAX напишем на&nbsp;номер телефона/);
+  assert.match(html, /name="telegram"[^>]*aria-describedby="lead-telegram-error lead-telegram-tip"/);
+  assert.doesNotMatch(html, /data-request-max-hint/);
+  assert.ok(html.indexOf('request-form_legal') < html.indexOf('request-form_note'), 'часы ответа под согласием');
+  assert.match(html, /<\/p><\/div><\/div><p class="request-form_note" data-request-content>/, 'часы ответа вне колонки с полями, сетка ставит их влево');
+});
+
+test('разметка: лист ожидания как заявка на курс', () => {
+  const course = renderRequestForm({...base, mode: 'course'}, {id: 'lead'});
+  const waitlist = renderRequestForm({...base, mode: 'waitlist', submitLabel: 'Записаться'}, {id: 'lead'});
+  assert.match(waitlist, /data-mode="waitlist"/);
+  assert.equal(waitlist.replace('data-mode="waitlist"', 'data-mode="course"'), course);
+});
+
+test('разметка: часы ответа только у курса и листа ожидания', () => {
+  assert.match(renderRequestForm({...base, mode: 'waitlist'}), /request-form_note/);
+  assert.doesNotMatch(renderRequestForm({...base, mode: 'webinar', successText: 'Ссылку пришлём'}), /request-form_note/, 'вебинарная форма запасная, BotHelp работает круглые сутки');
+});
+
+test('разметка: в имени пример значения', () => {
+  assert.match(renderRequestForm(base, {id: 'lead'}), /name="name"[^>]*placeholder="Анна"/);
+});
+
 test('разметка: MAX по умолчанию прячет ник', () => {
   const html = renderRequestForm({...base, mode: 'course', defaultMessenger: 'max'}, {id: 'lead'});
   assert.match(html, /data-request-field="telegram" data-state="idle" hidden>/);

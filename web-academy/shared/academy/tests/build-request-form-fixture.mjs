@@ -1,7 +1,7 @@
 // Собирает разметку формы заявки для стенда и пример request-form.html.
 // Запуск из web-academy: node shared/academy/tests/build-request-form-fixture.mjs
 import fs from 'node:fs/promises';
-import {renderRequestForm} from '../request-form-render.mjs';
+import {renderRequestForm, renderRequestFormSection} from '../request-form-render.mjs';
 
 const examples = {
   course: {
@@ -9,6 +9,11 @@ const examples = {
     description: 'Менеджер напишет и ответит на вопросы о программе и оплате',
     submitLabel: 'Записаться',
     lecture: {label: 'первая лекция курса бесплатно', url: 'https://modern-psy.ru/'},
+  },
+  waitlist: {
+    heading: 'Лист ожидания',
+    description: 'Напишем, когда откроется запись на\u00a0следующий поток',
+    submitLabel: 'Записаться в\u00a0лист ожидания',
   },
   access: {
     heading: 'Получите доступ к мини-курсу',
@@ -23,9 +28,10 @@ const examples = {
   },
 };
 
-const render = mode => renderRequestForm({
+// На стенде форма стоит в настоящей секции лендинга: та же ширина, что на странице
+const render = mode => renderRequestFormSection({
   mode, nativeMarker: 'fixture-form', source: `fixture · ${mode}`, deviceField: 'fixture_device', ...examples[mode],
-}, {id: 'fixture-form'});
+}, {id: 'application', formId: 'fixture-form'});
 
 const templates = Object.keys(examples)
   .map(mode => `    <template id="request-form-markup-${mode}">${render(mode)}</template>`)
