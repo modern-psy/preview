@@ -474,11 +474,10 @@ body { margin: 0; background: #f5f5f5; }
 .cs-line:last-child { padding-right: 4.5rem; padding-bottom: 1.5rem; }
 .cs-stamp { position: absolute; right: 0; bottom: -2.25rem; width: 6.5rem; height: 6.5rem; color: var(--wa-accent); transform: rotate(calc(-14deg - var(--cs-tilt))); }
 .cs-stamp svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.cs-foot { display: grid; gap: 1.5rem; padding-top: 1.75rem; border-top: 1px solid var(--wa-dark-line); }
-.cs-foot .idea-note { color: #fff; }
-.cs-foot .idea-trio li { border-top-color: var(--wa-dark-line); }
-.cs-foot .wa-h3 { color: #fff; }
-.cs-foot .wa-body { color: var(--wa-on-dark-3); }
+/* печать влетает с увеличением и на время анимации выходит за правый край экрана: обрезаем только по горизонтали */
+.wa-sec.is-clip-x { overflow-x: clip; }
+/* под листом только кнопка к блоку «Шесть шагов» */
+.cs-foot { display: flex; }
 .wa .is-playing .cs-ink { animation: cs-write 0.7s cubic-bezier(0.3, 0.6, 0.3, 1) both; animation-delay: calc(0.3s + var(--d) * 0.6s); }
 .wa .is-playing .cs-check { animation: cs-pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) both; animation-delay: calc(0.95s + var(--d) * 0.6s); }
 .wa .is-playing .cs-stamp { animation: cs-stamp 0.5s cubic-bezier(0.25, 1.4, 0.5, 1) both; animation-delay: 3.9s; }
@@ -498,8 +497,11 @@ body { margin: 0; background: #f5f5f5; }
   .cs-stamp { width: 7.5rem; height: 7.5rem; right: -1.5rem; bottom: -2.5rem; }
 }
 @container stage (min-width: 64.0625rem) {
-  .cs { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 4.5rem; row-gap: 3.5rem; padding: 3.5rem 4rem 3.5rem; }
-  .cs-foot { grid-column: 1 / -1; }
+  .cs { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 4.5rem; row-gap: 2rem; padding: 3.5rem 4rem 3.5rem; }
+  /* кнопка в левой колонке сразу под текстом, лист справа на две строки */
+  .cs { grid-template-rows: auto 1fr; }
+  .cs-sheet { grid-column: 2; grid-row: 1 / span 2; }
+  .cs-foot { grid-column: 1; grid-row: 2; align-self: start; }
   .cs-sheet { width: calc(100% - 1rem); margin-block: 1.75rem 2.25rem; }
 }
 
@@ -574,27 +576,38 @@ body { margin: 0; background: #f5f5f5; }
 @container stage (min-width: 64.0625rem) { .sp-tiles b { width: 3rem; height: 3rem; font-size: 1rem; } }
 .sp-meet .wa-h3 { color: #fff; }
 .sp-meet .wa-body { color: var(--wa-on-dark-2); }
-.sp-make { margin-top: var(--head-gap); display: grid; gap: 1rem; }
-.sp-make-t { font-size: var(--sub); line-height: 1.3; letter-spacing: -0.015em; color: var(--wa-ink); max-width: 40ch; }
-.sp-arts { display: grid; gap: 0.5rem; }
-.sp-art { background: #fff; border-radius: var(--r); padding: 0.75rem; display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; align-items: center; }
-.sp-art p { font-size: var(--body); font-weight: 500; letter-spacing: -0.015em; line-height: 1.2; }
+/* «Шесть шагов»: номер шага рядом с заголовком; шаги 3–6 карточками с рисунком.
+   На телефоне рисунок слева от текста, на планшете карточки по две, на десктопе в ряд по четыре. */
+.st-lead { margin-top: 1rem; font-size: var(--sub); line-height: 1.3; letter-spacing: -0.015em; color: var(--wa-ink-2); max-width: 46ch; text-wrap: pretty; }
+.st-head { display: flex; align-items: center; gap: 0.625rem; }
+.st-n { flex: none; display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--wa-chip); color: var(--wa-ink); font-size: 0.875rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.sp-meet .st-n { background: rgb(255 255 255 / 14%); color: #fff; }
+.st-grid { margin-top: var(--gap); display: grid; gap: var(--gap); }
+.st-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 1rem; align-items: start; }
+.st-text { display: grid; gap: 0.5rem; align-content: start; }
+.st-card .wa-h3 { font-size: 1.125rem; line-height: 1.2; }
+.st-card .wa-body, .st-q { font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-2); }
+.st-q { display: grid; gap: 0.25rem; }
+.st-q li { position: relative; padding-left: 0.875rem; }
+.st-q li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 0.3125rem; height: 0.3125rem; border-radius: 50%; background: var(--wa-ink-3); }
 .art { position: relative; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 0.5rem; background: var(--wa-page); overflow: hidden; }
 .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .art svg * { vector-effect: non-scaling-stroke; }
 @container stage (min-width: 48rem) {
   .sp-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; row-gap: 0; }
   .sp-before, .sp-meet { grid-row: span 3; grid-template-rows: subgrid; row-gap: 0.75rem; }
-  .sp-arts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
-  .sp-art { grid-template-columns: minmax(0, 1fr); padding: 1rem; gap: 0.875rem; align-content: start; }
-  .sp-make { gap: 0; }
-  .sp-make-t { margin-bottom: 1rem; }
+  .st-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .st-card { grid-template-columns: minmax(0, 1fr); align-content: start; }
+  .st-card .wa-h3 { font-size: 1.25rem; }
+  .st-card .wa-body, .st-q { font-size: 1rem; }
 }
 @container stage (min-width: 64.0625rem) {
   .sp-meet { padding: 1.25rem 1.25rem 2rem; }
   .sp-meet > :not(.sp-call) { padding-inline: 0.75rem; }
   .sp-before { padding: 1.25rem 1.25rem 2rem; }
-  .sp-before .wa-h3, .sp-meet .wa-h3 { margin-top: 0.5rem; }
+  .st-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .st-card { padding: 1.25rem 1.25rem 1.75rem; }
+  .sp-before .st-head, .sp-meet .st-head { margin-top: 0.5rem; }
   .sp-before > :not(.sp-player) { padding-inline: 0.75rem; }
 }
 
@@ -696,23 +709,24 @@ body { margin: 0; background: #f5f5f5; }
 </div></div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ idea: Не становиться психиатром, лист «Разбор случая». Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ idea: Зачем психологу знания психиатрии, лист «После обучения вы сможете». Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="psy-page" data-psy-part="idea"><div class="wa" lang="ru">
-<section id="idea" class="wa-sec"><div class="wa-in">
+<section id="idea" class="wa-sec is-clip-x"><div class="wa-in">
+      <!-- «Зачем психологу знания психиатрии»: слева зачем, справа лист с умениями. Лист заполняется построчно при появлении, в конце печать (page.js, data-sheet). -->
       <div class="cs" data-sheet>
         <div class="cs-text">
-          <h2 class="wa-title">Не становиться психиатром</h2>
-          <p class="idea-lead">Понимать, когда и&nbsp;как подключать клиента к&nbsp;помощи, если замечены «красные флаги»</p>
-          <p class="wa-body">Психиатрическая грамотность нужна психологу не&nbsp;для назначения лечения, а&nbsp;для более точного понимания случая. На&nbsp;программе вы будете учиться описывать наблюдаемые проявления, сопоставлять гипотезы, замечать риски и&nbsp;обосновывать дальнейший маршрут помощи.</p>
+          <h2 class="wa-title">Зачем психологу знания психиатрии</h2>
+          <p class="idea-lead">Чтобы точнее понимать состояние клиента и&nbsp;обоснованно выбирать следующий шаг, не&nbsp;ставя диагнозов и&nbsp;не&nbsp;выходя за&nbsp;границы своей компетенции.</p>
+          <p class="wa-body">Вы сможете вовремя заметить тревожные признаки, понять, нужен&nbsp;ли клиенту врач, и&nbsp;выстроить работу вместе с&nbsp;психиатром.</p>
         </div>
         <figure class="cs-sheet">
-          <figcaption class="cs-sheet-head"><b>Разбор случая</b><span>учебный кейс</span></figcaption>
+          <figcaption class="cs-sheet-head"><b>После обучения вы сможете</b></figcaption>
           <ol class="cs-lines">
-            <li class="cs-line" style="--d:0"><span class="cs-n">1</span><div><p class="cs-step">Собрать данные</p><p class="cs-ink">жалобы, наблюдение в&nbsp;беседе, история состояния, шкалы</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
-            <li class="cs-line" style="--d:1"><span class="cs-n">2</span><div><p class="cs-step">Описать проявления</p><p class="cs-ink">что наблюдается, как давно, насколько выражено</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
-            <li class="cs-line" style="--d:2"><span class="cs-n">3</span><div><p class="cs-step">Сформулировать гипотезы</p><p class="cs-ink">несколько рабочих версий, скрининг не&nbsp;диагноз</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
-            <li class="cs-line" style="--d:3"><span class="cs-n">4</span><div><p class="cs-step">Оценить риски</p><p class="cs-ink">срочность и&nbsp;границы своей роли</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
-            <li class="cs-line" style="--d:4"><span class="cs-n">5</span><div><p class="cs-step">Определить дальнейшие действия</p><p class="cs-ink">продолжить работу или рекомендовать консультацию психиатра</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
+            <li class="cs-line" style="--d:0"><span class="cs-n">1</span><div><p class="cs-step">Оценивать психическое состояние клиента</p><p class="cs-ink">Собираете данные из&nbsp;жалоб, наблюдения, истории состояния, временной линии и&nbsp;психометрических методик.</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
+            <li class="cs-line" style="--d:1"><span class="cs-n">2</span><div><p class="cs-step">Распознавать «красные флаги»</p><p class="cs-ink">Замечаете изменения сна, настроения, активности, мышления, восприятия и&nbsp;поведения, которые требуют дополнительной оценки.</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
+            <li class="cs-line" style="--d:2"><span class="cs-n">3</span><div><p class="cs-step">Интерпретировать результаты скрининга</p><p class="cs-ink">Сопоставляете баллы шкал с&nbsp;симптомами, контекстом и&nbsp;динамикой состояния и&nbsp;формулируете рабочие гипотезы.</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
+            <li class="cs-line" style="--d:3"><span class="cs-n">4</span><div><p class="cs-step">Понимать, когда нужен психиатр</p><p class="cs-ink">Оцениваете, насколько ситуация срочная и&nbsp;нужна&nbsp;ли клиенту консультация врача.</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
+            <li class="cs-line" style="--d:4"><span class="cs-n">5</span><div><p class="cs-step">Выстраивать работу с&nbsp;психиатром</p><p class="cs-ink">Решаете, что уточнить, что обсудить с&nbsp;клиентом и&nbsp;какую информацию передать врачу с&nbsp;его согласия.</p></div><svg class="ic cs-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li>
           </ol>
           <div class="cs-stamp" aria-hidden="true">
             <svg viewBox="0 0 120 120">
@@ -724,15 +738,7 @@ body { margin: 0; background: #f5f5f5; }
             </svg>
           </div>
         </figure>
-        <div class="cs-foot">
-          <p class="idea-note">Эта логика проходит через учебные кейсы, практические занятия и&nbsp;итоговую работу.</p>
-          <ul class="idea-trio">
-            <li><h3 class="wa-h3">Разбираете случаи, а&nbsp;не&nbsp;только критерии</h3><p class="wa-body">Учитесь связывать жалобы, наблюдения и&nbsp;историю клиента с&nbsp;рабочими гипотезами и&nbsp;дальнейшими действиями.</p></li>
-            <li><h3 class="wa-h3">Используете психометрику осознанно</h3><p class="wa-body">Подбираете инструменты под задачу и&nbsp;понимаете, каких выводов нельзя сделать только по&nbsp;результату шкалы.</p></li>
-            <li><h3 class="wa-h3">Проверяете результат на&nbsp;итоговом кейсе</h3><p class="wa-body">Объединяете навыки курса в&nbsp;письменном разборе случая и&nbsp;обосновываете решения на&nbsp;защите.</p></li>
-          </ul>
-          <div><a class="wa-btn is-light" href="#format">Посмотреть, как устроено обучение</a></div>
-        </div>
+        <div class="cs-foot"><a class="wa-btn is-light" href="#format">Посмотреть, как устроено обучение</a></div>
       </div>
     </div></section>
 </div></div>
@@ -757,30 +763,30 @@ body { margin: 0; background: #f5f5f5; }
 </div></div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ format: Теорию изучаете заранее, на встречах учитесь применять. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ format: Шесть шагов от наблюдения к плану действий. Вставить целиком в отдельный T123 с нулевыми отступами. -->
 <div class="psy-page" data-psy-part="format"><div class="wa" lang="ru">
 <section id="format" class="wa-sec"><div class="wa-in">
-      <h2 class="wa-title">Теорию изучаете заранее. На&nbsp;встречах учитесь применять&nbsp;её</h2>
+      <!-- «Шесть шагов»: вместо блоков «Не становиться психиатром» и «Теорию изучаете заранее». Шаги 1–2 крупными карточками (кадр лекции, окно встречи), шаги 3–6 карточками с рисунками. -->
+      <h2 class="wa-title">Шесть шагов от&nbsp;наблюдения к&nbsp;плану действий</h2>
+      <p class="st-lead">На&nbsp;курсе вы последовательно отрабатываете логику клинически грамотной работы психолога:</p>
       <div class="sp-pair">
         <article class="sp-before">
           <div class="sp-player" aria-hidden="true"><span class="sp-tag">лекция в&nbsp;записи</span><span class="sp-play"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg></span><span class="sp-bar"></span></div>
-          <h3 class="wa-h3">Заранее, в&nbsp;удобное время</h3>
-          <p class="wa-body">Смотрите лекцию по&nbsp;теме и&nbsp;закрепляете теорию тестированием.</p>
+          <div class="st-head"><span class="st-n">1</span><h3 class="wa-h3">Изучаете теорию</h3></div>
+          <p class="wa-body">Смотрите лекции в&nbsp;записи в&nbsp;удобное время, знакомитесь с&nbsp;основными проявлениями психических состояний, границами компетенции, принципами скрининга и&nbsp;направления клиента к&nbsp;психиатру.</p>
         </article>
         <article class="sp-meet">
           <div class="sp-call"><span class="sp-tiles" aria-hidden="true"><i><b>ЕС</b></i><i><b>МВ</b></i><i><b>ОП</b></i><i><b>ДН</b></i><i class="is-speaking"><b>АБ</b></i><i><b>ИР</b></i></span></div>
-          <h3 class="wa-h3">На&nbsp;встречах по&nbsp;вторникам</h3>
-          <p class="wa-body">Разбираете учебные случаи, обсуждаете гипотезы, составляете уточняющие вопросы и&nbsp;обосновываете дальнейшие действия.</p>
+          <div class="st-head"><span class="st-n">2</span><h3 class="wa-h3">Разбираете учебные случаи</h3></div>
+          <p class="wa-body">На&nbsp;практических встречах анализируете жалобы клиента, наблюдение в&nbsp;беседе, историю состояния и&nbsp;результаты шкал.</p>
         </article>
       </div>
-      <div class="sp-make">
-        <p class="sp-make-t">Готовите описания состояния, временные линии и&nbsp;планы маршрутизации</p>
-        <ul class="sp-arts">
-          <li class="sp-art"><div class="art" aria-hidden="true"><svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet"><rect x="34" y="18" width="52" height="5" rx="2.5" fill="#332f41"/><rect x="34" y="34" width="92" height="3" rx="1.5" fill="#c9c8cf"/><rect x="34" y="45" width="80" height="3" rx="1.5" fill="#c9c8cf"/><rect x="34" y="56" width="88" height="3" rx="1.5" fill="#c9c8cf"/><rect x="34" y="67" width="56" height="3" rx="1.5" fill="#c9c8cf"/></svg></div><p>Описание состояния</p></li>
-          <li class="sp-art"><div class="art" aria-hidden="true"><svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet"><path d="M22 62 H138" stroke="#332f41" stroke-width="1.5"/><path d="M36 56 V46 M66 56 V30 M96 56 V40" stroke="#c9c8cf" stroke-width="1.5"/><path d="M126 56 V24" stroke="#7c5cdb" stroke-width="1.5"/><circle cx="36" cy="62" r="4" fill="#332f41"/><circle cx="66" cy="62" r="4" fill="#332f41"/><circle cx="96" cy="62" r="4" fill="#332f41"/><circle cx="126" cy="62" r="4" fill="#7c5cdb"/></svg></div><p>Временная линия</p></li>
-          <li class="sp-art"><div class="art" aria-hidden="true"><svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet"><path d="M46 31 V52 a10 10 0 0 0 10 10 H75 M85 62 H104 a10 10 0 0 0 10 -10 V31" stroke="#332f41" stroke-width="1.5" fill="none"/><circle cx="46" cy="26" r="5" fill="#f5f5f5" stroke="#332f41" stroke-width="1.5"/><circle cx="80" cy="62" r="5" fill="#f5f5f5" stroke="#332f41" stroke-width="1.5"/><circle cx="114" cy="26" r="5" fill="#332f41"/></svg></div><p>План маршрутизации</p></li>
-        </ul>
-      </div>
+      <ol class="st-grid">
+          <li class="st-card"><div class="art" aria-hidden="true"><svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet"><path d="M22 62 H138" stroke="#332f41" stroke-width="1.5"/><path d="M36 56 V46 M66 56 V30 M96 56 V40" stroke="#c9c8cf" stroke-width="1.5"/><path d="M126 56 V24" stroke="#7c5cdb" stroke-width="1.5"/><circle cx="36" cy="62" r="4" fill="#332f41"/><circle cx="66" cy="62" r="4" fill="#332f41"/><circle cx="96" cy="62" r="4" fill="#332f41"/><circle cx="126" cy="62" r="4" fill="#7c5cdb"/></svg></div><div class="st-text"><div class="st-head"><span class="st-n">3</span><h3 class="wa-h3">Формулируете рабочие гипотезы</h3></div><p class="wa-body">Учитесь отвечать на&nbsp;вопросы:</p><ul class="st-q"><li>что именно происходит с&nbsp;клиентом;</li><li>как давно наблюдаются изменения;</li><li>насколько они выражены;</li><li>какие объяснения нужно рассмотреть;</li><li>какие данные ещё необходимо уточнить.</li></ul></div></li>
+          <li class="st-card"><div class="art" aria-hidden="true"><svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet"><path d="M44 66 A36 36 0 0 1 116 66" stroke="#c9c8cf" stroke-width="1.5" fill="none"/><path d="M106.5 41 A36 36 0 0 1 116 66" stroke="#7c5cdb" stroke-width="1.5" fill="none"/><path d="M80 66 L101 46" stroke="#332f41" stroke-width="1.5" stroke-linecap="round"/><circle cx="80" cy="66" r="4" fill="#332f41"/></svg></div><div class="st-text"><div class="st-head"><span class="st-n">4</span><h3 class="wa-h3">Оцениваете риски</h3></div><p class="wa-body">Определяете, насколько ситуация срочная, какие действия находятся в&nbsp;зоне ответственности психолога и&nbsp;в&nbsp;какой момент нужна консультация психиатра.</p></div></li>
+          <li class="st-card"><div class="art" aria-hidden="true"><svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet"><path d="M46 31 V52 a10 10 0 0 0 10 10 H75 M85 62 H104 a10 10 0 0 0 10 -10 V31" stroke="#332f41" stroke-width="1.5" fill="none"/><circle cx="46" cy="26" r="5" fill="#f5f5f5" stroke="#332f41" stroke-width="1.5"/><circle cx="80" cy="62" r="5" fill="#f5f5f5" stroke="#332f41" stroke-width="1.5"/><circle cx="114" cy="26" r="5" fill="#332f41"/></svg></div><div class="st-text"><div class="st-head"><span class="st-n">5</span><h3 class="wa-h3">Составляете план дальнейшей работы</h3></div><p class="wa-body">Решаете, что делать дальше: продолжать психологическую работу, обсудить с&nbsp;клиентом обращение к&nbsp;врачу или выстроить взаимодействие с&nbsp;психиатром.</p></div></li>
+          <li class="st-card"><div class="art" aria-hidden="true"><svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet"><rect x="34" y="18" width="52" height="5" rx="2.5" fill="#332f41"/><rect x="34" y="34" width="92" height="3" rx="1.5" fill="#c9c8cf"/><rect x="34" y="45" width="80" height="3" rx="1.5" fill="#c9c8cf"/><rect x="34" y="56" width="88" height="3" rx="1.5" fill="#c9c8cf"/><rect x="34" y="67" width="56" height="3" rx="1.5" fill="#c9c8cf"/></svg></div><div class="st-text"><div class="st-head"><span class="st-n">6</span><h3 class="wa-h3">Проверяете навык на&nbsp;итоговом кейсе</h3></div><p class="wa-body">Пишете разбор комплексного случая и&nbsp;защищаете его. В&nbsp;работе объединяете сбор данных, описание состояния, рабочие гипотезы, оценку рисков и&nbsp;выбор следующего шага.</p></div></li>
+      </ol>
     </div></section>
 </div></div>
 </div></div></div></div>
