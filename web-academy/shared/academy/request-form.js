@@ -254,6 +254,11 @@
     return tildaMaskLoading;
   };
 
+  const readCookie = (name) => {
+    const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+    return match ? decodeURIComponent(match[1]) : "";
+  };
+
   /* ---------- Мост к нативной форме Тильды ---------- */
 
   const setNativeInputValue = (input, value) => {
@@ -390,7 +395,16 @@
     setNativeInputValue(nameInput, payload.name);
     if (payload.email !== null) setNativeInputValue(emailInput, payload.email);
     fillTildaPhoneGroup(phoneGroup, payload.phone, "Phone");
-    extras.forEach(([name, value, mode]) => setNativeExtra(nativeForm, name, value, mode));
+    // Несколько значений в одно поле собираем через « · »: так источник
+    // и устройство вместе уходят в form_source, а не затирают друг друга
+    const merged = new Map();
+    extras.forEach(([name, value, mode]) => {
+      if (!name || !value) return;
+      const current = merged.get(name);
+      if (mode === "append" && current) current.parts.push(value);
+      else merged.set(name, { mode, parts: [value] });
+    });
+    merged.forEach(({ mode, parts }, name) => setNativeExtra(nativeForm, name, parts.join(" · "), mode));
     if (!payload.messenger) return;
 
     const selectedType = selectTildaMessenger(messengerGroup, payload.messenger);
@@ -1057,6 +1071,8 @@
       const extras = [];
       if (form.dataset.source) extras.push(["form_source", form.dataset.source, "replace"]);
       if (form.dataset.deviceField) extras.push([form.dataset.deviceField, device, form.dataset.deviceMode || "append"]);
+      // Номер посетителя Метрики, как в прежних формах: по нему заявку связывают с визитом
+      extras.push(["ym_client_id", readCookie("_ym_uid"), "replace"]);
 
       try {
         await syncTildaForm(nativeForm, payload, extras);

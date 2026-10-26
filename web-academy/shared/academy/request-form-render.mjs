@@ -19,9 +19,10 @@ export const requestFormDefaults = {
   hoursFrom: 10,
   hoursTo: 19,
   hoursNote: 'Ответим с 10:00 до 19:00 по Москве, без выходных',
-  // Новых полей в amoCRM нет: устройство дописывается в последнее скрытое
-  // поле с метками, ключевое слово рекламы в нём сохраняется
-  deviceField: 'utm_term',
+  // Новых полей в amoCRM нет: устройство дописывается к источнику заявки
+  // в form_source. Поля utm_* не подходят: скрипт в head сайта переписывает
+  // их меткой из адреса или куки и затирает дописанное
+  deviceField: 'form_source',
   deviceMode: 'append',
   defaultMessenger: 'telegram',
   successHeading: 'Заявка принята',
