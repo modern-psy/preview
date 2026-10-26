@@ -1,6 +1,7 @@
 // Сборка блоков T123 для Тильды: один T123 = одна секция, стили и скрипты отдельными блоками.
 // Запуск из apps/preview: node psihiatriya-dlya-psihologov/build-tilda.mjs
-// Вход: index.html, page.css, page.js (их и правим). Выход: tilda/*.html, tilda/preview.html, tilda/manifest.json.
+// Вход: index.html, page.css, page.js (их и правим), academy.css, request-form.css и request-form.js (копии общих компонентов).
+// Выход: tilda/*.html, tilda/preview.html, tilda/manifest.json.
 // Файлы в tilda/ руками не править: при следующей сборке они перезапишутся.
 import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -17,9 +18,20 @@ const css = await read('page.css');
 // иначе блок общих стилей не влезает в лимит T123.
 const academyCss = await read('academy.css');
 const js = await read('page.js');
+// Форма заявки: копия общего компонента Академии (её кладёт request-form-sync.mjs). Стили идут внутри блока секции signup,
+// скрипт отдельным T123 после блока с формой Тильды: вместе со скриптом страницы он не влезает в лимит T123.
+const requestFormCss = await read('request-form.css');
+const requestFormJs = await read('request-form.js');
+// В Тильду скрипт формы идёт без комментариев (request-form.md). Убираем только комментарии на отдельных строках,
+// код и строки не трогаем; результат проверяется ниже разбором через new Function.
+const stripComments = code => code
+  .replace(/^[ \t]*\/\*(?:(?!\*\/)[\s\S])*\*\/[ \t]*\n/gm, '')
+  .replace(/^[ \t]*\/\/.*\n/gm, '');
+const requestFormJsTilda = stripComments(requestFormJs).trim();
+new Function(requestFormJsTilda);
 
 // Картинки должны быть с CDN: локальные файлы в Тильду не переносятся.
-const local = [...source.matchAll(/(?:src|href)="(\.\/(?!(?:page|academy)\.(?:css|js))[^"]+|img\/[^"]+)"/g), ...(css + academyCss).matchAll(/url\((['"]?)(\.\/|img\/)[^)]*\)/g)];
+const local = [...source.matchAll(/(?:src|href)="(\.\/(?!(?:page|academy|request-form)\.(?:css|js))[^"]+|img\/[^"]+)"/g), ...(css + academyCss + requestFormCss).matchAll(/url\((['"]?)(\.\/|img\/)[^)]*\)/g)];
 if (local.length) throw new Error(`Локальные файлы: ${local.map(m => m[1] || m[0]).join(', ')}. Нужны ссылки на CDN (S3).`);
 
 // Секции верхнего уровня внутри обёртки .wa: разметка переносится дословно.
@@ -38,7 +50,7 @@ const titles = {
   academy: 'Почему выбирают нас, со стилями компонента',
   ratings: '98 % студентов рекомендуют обучение',
   price: 'Стоимость обучения и гибкие условия оплаты',
-  signup: 'Форма заявки',
+  signup: 'Форма заявки (общий компонент request-form), со стилями компонента',
   faq: 'Ответы на популярные вопросы',
 };
 if (sections.length !== Object.keys(titles).length) throw new Error(`Ожидалось ${Object.keys(titles).length} секций, найдено ${sections.length}`);
@@ -76,14 +88,17 @@ for (const markup of sections) {
   const id = markup.match(/<section id="([a-z-]+)"/)[1];
   const title = titles[id];
   if (!title) throw new Error(`Нет названия для секции ${id}`);
-  const style = id === 'academy' ? `<style>\n${academyCss.trim()}\n</style>\n` : '';
+  const style = id === 'academy' ? `<style>\n${academyCss.trim()}\n</style>\n` : id === 'signup' ? `<style>\n${requestFormCss.trim()}\n</style>\n` : '';
   await write(id, `<!-- СЕКЦИЯ ${id}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n${style}<div class="psy-page" data-academy="1" data-psy-part="${id}"><div class="wa" lang="ru">\n${markup}\n</div></div>\n`, title, 'BODY');
 }
 
 // 3. Скрипт страницы: ждёт, пока все секции появятся в документе.
 await write('scripts', `<!-- СКРИПТ СТРАНИЦЫ. После всех секций и после блока с формой Тильды. -->\n<script>\n(() => {\nconst init = () => {\n${js.trim()}\n};\nif (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once: true});\nelse init();\n})();\n</script>\n`, 'Скрипт страницы', 'FOOTER');
 
-// 4. Микроразметка FAQ. Курс и организацию на сайте размечает блок микроразметки из генератора цен
+// 4. Скрипт формы заявки: после блока с формой Тильды и после скрипта страницы, без комментариев.
+await write('request-form', `<!-- СКРИПТ ФОРМЫ ЗАЯВКИ (общий компонент request-form). После блока с формой Тильды, сразу за скриптом страницы. -->\n<script>\n${requestFormJsTilda}\n</script>\n`, 'Скрипт формы заявки', 'FOOTER');
+
+// 5. Микроразметка FAQ. Курс и организацию на сайте размечает блок микроразметки из генератора цен
 //    (apps/preview/pricing, курс psychiatry-for-psy, цены из CMS), поэтому в пакет идёт только FAQPage:
 //    иначе курс оказался бы размечен дважды. В index.html для превью остаются все три разметки.
 const jsonLd = [...source.matchAll(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g)].map(m => m[0]);

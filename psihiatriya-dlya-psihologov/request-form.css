@@ -1,0 +1,685 @@
+/* Копия web-academy/shared/academy/request-form.css, её кладёт request-form-sync.mjs. Руками не править: правки в общем компоненте, потом снова запустить сценарий. */
+/* Форма заявки Академии: тёмная карточка, на телефоне одна колонка.
+   Контракт и что можно менять: request-form.md.
+   Размеры полей не уменьшать: текст в поле меньше 16 px заставляет iPhone
+   увеличивать страницу при нажатии на поле. */
+
+.request-form_component {
+  /* Публичные токены: можно переопределить в теме лендинга */
+  --request-form-surface: var(--color-surface-dark, #2b2334);
+  --request-form-text: var(--color-text-on-dark-muted, #e6e5eb);
+  --request-form-muted: #bdb7b7;
+  --request-form-placeholder: #9a93a3;
+  --request-form-line: #8a8394;
+  --request-form-field: rgb(255 255 255 / 5%);
+  --request-form-error: #ff7373;
+  --request-form-error-text: #f98a8a;
+  --request-form-action: #ffffff;
+  --request-form-action-hover: var(--color-text-on-dark-muted, #e6e5eb);
+  /* Геометрия: телефон по умолчанию, ниже — планшет и компьютер */
+  --request-form-padding: 1rem;
+  --request-form-field-height: 3.25rem;
+  --request-form-field-font: 1rem;
+  --request-form-small: 0.875rem;
+  --request-form-radius: 0.5rem;
+  display: grid;
+  --request-form-gap: 1.75rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--request-form-gap);
+  align-items: start;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  /* Ширина как у блока цен: 63rem */
+  max-width: 63rem;
+  margin-inline: auto;
+  padding: var(--request-form-padding);
+  border-radius: var(--radius-card, 1rem);
+  color: var(--request-form-text);
+  background: var(--request-form-surface);
+  --section-subtitle-color: var(--request-form-muted);
+}
+
+.request-form_component *,
+.request-form_component *::before,
+.request-form_component *::after {
+  box-sizing: border-box;
+}
+
+.request-form_component [hidden] {
+  display: none !important;
+}
+
+/* Нативная форма Тильды остаётся в DOM только для отправки */
+[data-academy-native-form-record] {
+  display: none !important;
+}
+
+.request-form_intro,
+.request-form_body,
+.request-form_fields,
+.request-form_contact,
+.request-form_field,
+.request-form_actions,
+.request-form_success {
+  display: grid;
+  min-width: 0;
+}
+
+.request-form_intro .section-title_component,
+.request-form_success .section-title_component {
+  color: var(--request-form-text);
+}
+
+/* Между полями 12 px, между группами 20 px */
+.request-form_body {
+  gap: 1.25rem;
+}
+
+.request-form_fields,
+.request-form_contact {
+  gap: 0.75rem;
+}
+
+.request-form_field {
+  position: relative;
+  gap: 0.375rem;
+}
+
+/* Подпись и значок «?» в одной строке */
+.request-form_label-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.request-form_component .request-form_tip-button {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--request-form-muted) !important;
+  background: none;
+  cursor: pointer;
+}
+
+/* Видно 20 px, а нажимается квадрат 44 px */
+.request-form_tip-button::after {
+  content: "";
+  position: absolute;
+  inset: -0.75rem;
+}
+
+.request-form_component .request-form_tip-button[aria-expanded="true"] {
+  color: var(--request-form-text) !important;
+}
+
+.request-form_tip-button:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+}
+
+.request-form_tip-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Пояснение всплывает под подписью поверх поля */
+.request-form_tip {
+  position: absolute;
+  z-index: 5;
+  top: 1.75rem;
+  left: 0;
+  width: min(100%, 22rem);
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-surface);
+  background: var(--request-form-text);
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 35%);
+  font-size: var(--request-form-small);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.request-form_label {
+  margin: 0;
+  padding: 0;
+  color: var(--request-form-text);
+  font-size: var(--request-form-small);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.request-form_input {
+  display: block;
+  width: 100%;
+  height: var(--request-form-field-height);
+  margin: 0;
+  padding: 0 0.875rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  background: var(--request-form-field);
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--request-form-field-font);
+  font-weight: 400;
+  line-height: 1.2;
+  caret-color: var(--request-form-text);
+  appearance: none;
+  /* Поле с курсором прокручивается выше клавиатуры телефона */
+  scroll-margin-block: 6rem;
+  transition: border-color var(--transition-site, 180ms ease), box-shadow var(--transition-site, 180ms ease);
+}
+
+.request-form_input::placeholder {
+  color: var(--request-form-placeholder);
+  opacity: 1;
+}
+
+.request-form_input:focus {
+  outline: none;
+  border-color: var(--request-form-text);
+  box-shadow: inset 0 0 0 1px var(--request-form-text);
+}
+
+.request-form_input:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+}
+
+.request-form_field[data-state="invalid"] .request-form_input {
+  border-color: var(--request-form-error);
+  box-shadow: inset 0 0 0 1px var(--request-form-error);
+}
+
+/* Поле телефона с маской Тильды: её скрипт заменяет наше поле своим,
+   здесь ему возвращается вид остальных полей. Список стран Тильда рисует сама */
+.request-form_phone,
+.request-form_phone-group {
+  min-width: 0;
+}
+
+.request-form_component .t-input-phonemask__wrap {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--request-form-field-height);
+  align-items: center;
+  margin: 0;
+  padding: 0 0.875rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  background: var(--request-form-field);
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--request-form-field-font);
+  line-height: 1.2;
+  transition: border-color var(--transition-site, 180ms ease), box-shadow var(--transition-site, 180ms ease);
+}
+
+.request-form_component .t-input-phonemask__wrap:focus-within {
+  border-color: var(--request-form-text);
+  box-shadow: inset 0 0 0 1px var(--request-form-text);
+}
+
+.request-form_field[data-state="invalid"] .t-input-phonemask__wrap {
+  border-color: var(--request-form-error);
+  box-shadow: inset 0 0 0 1px var(--request-form-error);
+}
+
+.request-form_component .t-input-phonemask__select {
+  min-height: 2.75rem;
+  margin: 0 0.5rem 0 0;
+  color: var(--request-form-text);
+  font-size: var(--request-form-field-font);
+}
+
+.request-form_component .t-input-phonemask__select-code {
+  margin-left: 0.5rem;
+}
+
+.request-form_component input.t-input-phonemask {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  color: var(--request-form-text);
+  background: transparent;
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--request-form-field-font);
+  caret-color: var(--request-form-text);
+  scroll-margin-block: 6rem;
+}
+
+.request-form_component input.t-input-phonemask::placeholder {
+  color: var(--request-form-placeholder);
+  opacity: 1;
+}
+
+/* Автозаполнение браузера не должно красить поле в жёлтый */
+.request-form_input:-webkit-autofill {
+  -webkit-text-fill-color: var(--request-form-text);
+  box-shadow: inset 0 0 0 3rem var(--request-form-surface);
+  transition: background-color 600000s 0s;
+}
+
+.request-form_error,
+.request-form_hint,
+.request-form_summary,
+.request-form_note,
+.request-form_legal,
+.request-form_help-text,
+.request-form_lecture {
+  margin: 0;
+  font-size: var(--request-form-small);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.request-form_hint {
+  color: var(--request-form-muted);
+}
+
+/* Ошибка: цвет, рамка поля и значок, цвет никогда не единственный сигнал */
+.request-form_error {
+  display: flex;
+  gap: 0.375rem;
+  color: var(--request-form-error-text);
+}
+
+.request-form_error::before {
+  content: "";
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.1em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.25' fill='none' stroke='%23f98a8a' stroke-width='1.5'/%3E%3Cpath d='M8 4.5v4.25' stroke='%23f98a8a' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='11.25' r='.9' fill='%23f98a8a'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.request-form_error:empty {
+  display: none;
+}
+
+/* «Проверьте 2 поля» видно над полями. Остальные состояния — только для скринридера */
+.request-form_summary {
+  display: flex;
+  gap: 0.375rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--request-form-error);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  font-weight: 500;
+}
+
+.request-form_summary:empty {
+  display: none;
+}
+
+.request-form_summary:not([data-state="invalid"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Маленькая кнопка-ссылка: «Другая страна», исправление почты.
+   Видно строку текста, а нажимается полоса 44 px */
+.request-form_component .request-form_link-button {
+  justify-self: start;
+  min-height: 2.75rem;
+  margin: -0.5rem 0;
+  padding: 0;
+  border: 0;
+  color: var(--request-form-text) !important;
+  background: none;
+  font: inherit;
+  font-size: var(--request-form-small);
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.request-form_component .request-form_link-button.is-inline {
+  min-height: 0;
+  margin: 0;
+  font-weight: 500;
+}
+
+.request-form_link-button:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+  border-radius: 0.125rem;
+}
+
+/* Выбор мессенджера: два сегмента, вся площадь нажимается */
+.request-form_choice {
+  position: relative;
+  display: grid;
+  gap: 0.375rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.request-form_choice-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.request-form_choice-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.request-form_choice-option {
+  display: flex;
+  min-width: 0;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.1;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-site, 180ms ease), color var(--transition-site, 180ms ease), border-color var(--transition-site, 180ms ease);
+}
+
+.request-form_choice-input:checked + .request-form_choice-option {
+  border-color: var(--request-form-text);
+  color: var(--request-form-surface);
+  background: var(--request-form-text);
+}
+
+.request-form_choice-input:focus-visible + .request-form_choice-option {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+}
+
+.request-form_icon {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Кнопка отправки, срок ответа, согласие */
+.request-form_actions {
+  gap: 0.75rem;
+}
+
+.request-form_component .request-form_submit {
+  display: grid;
+  width: 100%;
+  min-height: 3.5rem;
+  place-items: center;
+  margin: 0;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-surface) !important;
+  background: var(--request-form-action);
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 180ms ease);
+}
+
+/* Обе надписи в одной ячейке: ширина кнопки не меняется во время отправки */
+.request-form_submit-label,
+.request-form_submit-busy {
+  grid-area: 1 / 1;
+}
+
+.request-form_submit-busy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  visibility: hidden;
+}
+
+.request-form_submit[aria-busy="true"] .request-form_submit-label {
+  visibility: hidden;
+}
+
+.request-form_submit[aria-busy="true"] .request-form_submit-busy {
+  visibility: visible;
+}
+
+.request-form_spinner {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: request-form-spin 0.8s linear infinite;
+}
+
+@keyframes request-form-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.request-form_submit:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 3px;
+}
+
+/* Часы ответа: на телефоне сразу под согласием, с обычным для подписей
+   отступом 12 px вместо промежутка между блоками формы */
+.request-form_note {
+  margin-top: calc(0.75rem - var(--request-form-gap));
+  color: var(--request-form-text);
+}
+
+.request-form_legal {
+  color: var(--request-form-muted);
+  font-size: 0.8125rem;
+}
+
+.request-form_component .request-form_legal a,
+.request-form_component .request-form_lecture a {
+  color: inherit !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.request-form_component .request-form_lecture a {
+  color: var(--request-form-text) !important;
+  font-weight: 500;
+}
+
+/* Запасной путь: кнопки бота приёмной комиссии */
+.request-form_help {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border-radius: var(--request-form-radius);
+  background: rgb(255 255 255 / 7%);
+}
+
+.request-form_help-text {
+  color: var(--request-form-text);
+}
+
+.request-form_bots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 0.5rem;
+}
+
+.request-form_component .request-form_bot {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text) !important;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 180ms ease), border-color var(--transition-site, 180ms ease);
+}
+
+.request-form_component .request-form_bot.is-primary {
+  border-color: var(--request-form-action);
+  color: var(--request-form-surface) !important;
+  background: var(--request-form-action);
+}
+
+.request-form_bot:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 3px;
+}
+
+/* Экран успеха занимает всю карточку */
+.request-form_success {
+  grid-column: 1 / -1;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+.request-form_success:focus,
+.request-form_success .section-title_component:focus {
+  outline: none;
+}
+
+.request-form_success .section-title_component:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 4px;
+}
+
+.request-form_bots.is-success {
+  max-width: 30rem;
+}
+
+/* Наведение только у мыши: на телефоне эффект залипает после нажатия */
+@media (hover: hover) and (pointer: fine) {
+  .request-form_input:hover:not(:focus) {
+    border-color: var(--request-form-text);
+  }
+  .request-form_choice-input:not(:checked) + .request-form_choice-option:hover {
+    border-color: var(--request-form-text);
+  }
+  .request-form_component .request-form_submit:hover,
+  .request-form_component .request-form_bot.is-primary:hover {
+    background: var(--request-form-action-hover);
+  }
+  .request-form_component .request-form_bot:not(.is-primary):hover {
+    border-color: var(--request-form-text);
+  }
+  .request-form_component .request-form_link-button:hover {
+    text-decoration-thickness: 2px;
+  }
+  .request-form_component .request-form_tip-button:hover {
+    color: var(--request-form-text) !important;
+  }
+  .request-form_component .t-input-phonemask__wrap:hover:not(:focus-within) {
+    border-color: var(--request-form-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .request-form_input,
+  .t-input-phonemask__wrap,
+  .request-form_choice-option,
+  .request-form_submit,
+  .request-form_bot {
+    transition: none;
+  }
+  .request-form_spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+/* 521–767 px: телефон боком, поля чуть просторнее */
+@media (min-width: 32.5625rem) {
+  .request-form_component {
+    --request-form-padding: 1.25rem;
+    --request-form-gap: 2rem;
+  }
+}
+
+/* 768–1024 px: заголовок слева, поля справа */
+@media (min-width: 48rem) {
+  .request-form_component {
+    --request-form-padding: 1.5rem;
+    --request-form-field-height: 3.5rem;
+    --request-form-gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+  }
+  /* Заголовок слева сверху, поля справа на всю высоту, часы ответа внизу слева */
+  .request-form_intro {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .request-form_body {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .request-form_note {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    margin-top: 0;
+  }
+  .request-form_component[data-state="success"] {
+    grid-template-rows: auto;
+  }
+}
+
+/* От 1025 px */
+@media (min-width: 64.0625rem) {
+  .request-form_component {
+    --request-form-padding: 2rem;
+    --request-form-field-font: 1.0625rem;
+    --request-form-gap: 2.5rem;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+}

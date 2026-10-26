@@ -348,59 +348,11 @@ body { margin: 0; background: #f5f5f5; }
   .terms-col + .terms-col { border-left: 1px solid var(--wa-grey-2); }
 }
 
-/* ---------- 10 · Заявка: лид-форма Академии ---------- */
-.lf { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: var(--wa-on-dark-2); }
-.lf-intro { display: grid; gap: 1.25rem; align-content: start; }
-.lf-title { font-size: var(--title); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; color: var(--wa-on-dark-2); text-wrap: balance; }
-.lf-desc { font-size: var(--sub); line-height: 1.2; color: var(--wa-on-dark-3); max-width: 34ch; }
-.lf-form { display: grid; gap: 1.25rem; }
-.lf-fields { display: grid; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
-.lf-field { position: relative; }
-.lf-input { display: block; width: 100%; height: 3.75rem; padding: 1.35rem 1rem 0.35rem; border: 1px solid #8e8899; border-radius: 0.375rem; background: transparent; color: var(--wa-on-dark-2); font: inherit; font-size: 1rem; caret-color: #fff; transition: border-color 0.2s ease; }
-.lf-input::placeholder { color: transparent; }
-.lf-label { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--wa-on-dark-3); font-size: 1rem; pointer-events: none; transition: top 0.2s ease, font-size 0.2s ease, transform 0.2s ease; }
-.lf-input:focus + .lf-label, .lf-input:not(:placeholder-shown) + .lf-label { top: 0.6rem; transform: none; font-size: 0.75rem; }
-.lf-input:focus { outline: none; border-color: #fff; }
-.lf-input:focus-visible { box-shadow: 0 0 0 2px rgb(255 255 255 / 35%); }
-.lf-msg { margin: 0; padding: 0; border: 0; }
-.lf-msg legend { padding: 0; margin-bottom: 0.75rem; font-weight: 500; color: var(--wa-on-dark-3); font-size: 1rem; }
-.lf-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
-.lf-opt { position: relative; }
-.lf-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.lf-opt > span { display: flex; min-height: 3.125rem; align-items: center; justify-content: center; border: 1px solid #8e8899; border-radius: 0.375rem; color: var(--wa-on-dark-3); font-weight: 500; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
-/* значки мессенджеров, как в формах других лендингов: красятся цветом текста кнопки */
-.lf-opt > span { gap: 0.5rem; }
-.lf-opt-icon { width: 1.25rem; height: 1.25rem; flex: none; }
-.lf-opt input:checked + span { background: #c7c7c7; border-color: #c7c7c7; color: var(--wa-ink); }
-.lf-opt input:focus-visible + span { outline: 2px solid var(--wa-on-dark-2); outline-offset: 3px; }
-@media (hover: hover) and (pointer: fine) { .lf-opt input:not(:checked) + span:hover { border-color: #fff; color: #fff; } .lf-submit:hover { background: var(--wa-on-dark-2); } }
-.lf-submit { width: 100%; min-height: 3.5rem; border: 0; border-radius: 0.5rem; background: #fff; color: var(--wa-dark); font: 500 1.125rem/1.07 var(--font); letter-spacing: -0.04em; cursor: pointer; transition: background-color 0.2s ease; }
-.lf-submit:focus-visible { outline: 2px solid var(--wa-on-dark-2); outline-offset: 3px; }
-.lf-legal { font-size: var(--fine); line-height: 1.35; color: var(--wa-on-dark-3); }
-.lf-legal a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
-/* Заявка: ошибка в поле, строка статуса, ответ после отправки */
-.lf-input[aria-invalid="true"] { border-color: var(--wa-accent-soft); box-shadow: 0 0 0 1px var(--wa-accent-soft); }
-.lf-status { font-size: var(--caption); line-height: 1.35; color: var(--wa-on-dark); }
-.lf-status:empty { display: none; }
-.lf-submit:disabled { cursor: progress; opacity: 0.7; }
-.lf-done { display: grid; gap: 0.75rem; align-content: center; outline: none; }
-.lf-form[hidden], .lf-done[hidden] { display: none; }
-.lf-done-title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3); line-height: 1.15; color: #fff; }
-.lf-done-text { font-size: var(--body); line-height: 1.4; color: var(--wa-on-dark-3); max-width: 34ch; }
-/* Скрытая форма Тильды: убираем с глаз, но не через display:none, скриптам Тильды нужно измерять поля */
-[data-psy-native-form] { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; border: 0 !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; }
-@container stage (min-width: 48rem) {
-  .lf { padding: 2.5rem; }
-  .lf-input { height: 4.125rem; font-size: 1.125rem; }
-  .lf-label { font-size: 1.125rem; }
-  .lf-submit { min-height: 4rem; font-size: 1.25rem; }
-}
 @container stage (min-width: 64.0625rem) {
   .pr { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
   .pr-zone { padding: 2.25rem 2.5rem; }
   .pr-name { font-size: 1.875rem; }
   .pr-price { font-size: 3.25rem; }
-  .lf { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 3.5rem 4rem; gap: 4rem; }
 }
 
 
@@ -1164,38 +1116,700 @@ body { margin: 0; background: #f5f5f5; }
 </div></div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- СЕКЦИЯ signup: Форма заявки. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<!-- СЕКЦИЯ signup: Форма заявки (общий компонент request-form), со стилями компонента. Вставить целиком в отдельный T123 с нулевыми отступами. -->
+<style>
+/* Копия web-academy/shared/academy/request-form.css, её кладёт request-form-sync.mjs. Руками не править: правки в общем компоненте, потом снова запустить сценарий. */
+/* Форма заявки Академии: тёмная карточка, на телефоне одна колонка.
+   Контракт и что можно менять: request-form.md.
+   Размеры полей не уменьшать: текст в поле меньше 16 px заставляет iPhone
+   увеличивать страницу при нажатии на поле. */
+
+.request-form_component {
+  /* Публичные токены: можно переопределить в теме лендинга */
+  --request-form-surface: var(--color-surface-dark, #2b2334);
+  --request-form-text: var(--color-text-on-dark-muted, #e6e5eb);
+  --request-form-muted: #bdb7b7;
+  --request-form-placeholder: #9a93a3;
+  --request-form-line: #8a8394;
+  --request-form-field: rgb(255 255 255 / 5%);
+  --request-form-error: #ff7373;
+  --request-form-error-text: #f98a8a;
+  --request-form-action: #ffffff;
+  --request-form-action-hover: var(--color-text-on-dark-muted, #e6e5eb);
+  /* Геометрия: телефон по умолчанию, ниже — планшет и компьютер */
+  --request-form-padding: 1rem;
+  --request-form-field-height: 3.25rem;
+  --request-form-field-font: 1rem;
+  --request-form-small: 0.875rem;
+  --request-form-radius: 0.5rem;
+  display: grid;
+  --request-form-gap: 1.75rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--request-form-gap);
+  align-items: start;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  /* Ширина как у блока цен: 63rem */
+  max-width: 63rem;
+  margin-inline: auto;
+  padding: var(--request-form-padding);
+  border-radius: var(--radius-card, 1rem);
+  color: var(--request-form-text);
+  background: var(--request-form-surface);
+  --section-subtitle-color: var(--request-form-muted);
+}
+
+.request-form_component *,
+.request-form_component *::before,
+.request-form_component *::after {
+  box-sizing: border-box;
+}
+
+.request-form_component [hidden] {
+  display: none !important;
+}
+
+/* Нативная форма Тильды остаётся в DOM только для отправки */
+[data-academy-native-form-record] {
+  display: none !important;
+}
+
+.request-form_intro,
+.request-form_body,
+.request-form_fields,
+.request-form_contact,
+.request-form_field,
+.request-form_actions,
+.request-form_success {
+  display: grid;
+  min-width: 0;
+}
+
+.request-form_intro .section-title_component,
+.request-form_success .section-title_component {
+  color: var(--request-form-text);
+}
+
+/* Между полями 12 px, между группами 20 px */
+.request-form_body {
+  gap: 1.25rem;
+}
+
+.request-form_fields,
+.request-form_contact {
+  gap: 0.75rem;
+}
+
+.request-form_field {
+  position: relative;
+  gap: 0.375rem;
+}
+
+/* Подпись и значок «?» в одной строке */
+.request-form_label-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.request-form_component .request-form_tip-button {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--request-form-muted) !important;
+  background: none;
+  cursor: pointer;
+}
+
+/* Видно 20 px, а нажимается квадрат 44 px */
+.request-form_tip-button::after {
+  content: "";
+  position: absolute;
+  inset: -0.75rem;
+}
+
+.request-form_component .request-form_tip-button[aria-expanded="true"] {
+  color: var(--request-form-text) !important;
+}
+
+.request-form_tip-button:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+}
+
+.request-form_tip-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Пояснение всплывает под подписью поверх поля */
+.request-form_tip {
+  position: absolute;
+  z-index: 5;
+  top: 1.75rem;
+  left: 0;
+  width: min(100%, 22rem);
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-surface);
+  background: var(--request-form-text);
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 35%);
+  font-size: var(--request-form-small);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.request-form_label {
+  margin: 0;
+  padding: 0;
+  color: var(--request-form-text);
+  font-size: var(--request-form-small);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.request-form_input {
+  display: block;
+  width: 100%;
+  height: var(--request-form-field-height);
+  margin: 0;
+  padding: 0 0.875rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  background: var(--request-form-field);
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--request-form-field-font);
+  font-weight: 400;
+  line-height: 1.2;
+  caret-color: var(--request-form-text);
+  appearance: none;
+  /* Поле с курсором прокручивается выше клавиатуры телефона */
+  scroll-margin-block: 6rem;
+  transition: border-color var(--transition-site, 180ms ease), box-shadow var(--transition-site, 180ms ease);
+}
+
+.request-form_input::placeholder {
+  color: var(--request-form-placeholder);
+  opacity: 1;
+}
+
+.request-form_input:focus {
+  outline: none;
+  border-color: var(--request-form-text);
+  box-shadow: inset 0 0 0 1px var(--request-form-text);
+}
+
+.request-form_input:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+}
+
+.request-form_field[data-state="invalid"] .request-form_input {
+  border-color: var(--request-form-error);
+  box-shadow: inset 0 0 0 1px var(--request-form-error);
+}
+
+/* Поле телефона с маской Тильды: её скрипт заменяет наше поле своим,
+   здесь ему возвращается вид остальных полей. Список стран Тильда рисует сама */
+.request-form_phone,
+.request-form_phone-group {
+  min-width: 0;
+}
+
+.request-form_component .t-input-phonemask__wrap {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--request-form-field-height);
+  align-items: center;
+  margin: 0;
+  padding: 0 0.875rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  background: var(--request-form-field);
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--request-form-field-font);
+  line-height: 1.2;
+  transition: border-color var(--transition-site, 180ms ease), box-shadow var(--transition-site, 180ms ease);
+}
+
+.request-form_component .t-input-phonemask__wrap:focus-within {
+  border-color: var(--request-form-text);
+  box-shadow: inset 0 0 0 1px var(--request-form-text);
+}
+
+.request-form_field[data-state="invalid"] .t-input-phonemask__wrap {
+  border-color: var(--request-form-error);
+  box-shadow: inset 0 0 0 1px var(--request-form-error);
+}
+
+.request-form_component .t-input-phonemask__select {
+  min-height: 2.75rem;
+  margin: 0 0.5rem 0 0;
+  color: var(--request-form-text);
+  font-size: var(--request-form-field-font);
+}
+
+.request-form_component .t-input-phonemask__select-code {
+  margin-left: 0.5rem;
+}
+
+.request-form_component input.t-input-phonemask {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  color: var(--request-form-text);
+  background: transparent;
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--request-form-field-font);
+  caret-color: var(--request-form-text);
+  scroll-margin-block: 6rem;
+}
+
+.request-form_component input.t-input-phonemask::placeholder {
+  color: var(--request-form-placeholder);
+  opacity: 1;
+}
+
+/* Автозаполнение браузера не должно красить поле в жёлтый */
+.request-form_input:-webkit-autofill {
+  -webkit-text-fill-color: var(--request-form-text);
+  box-shadow: inset 0 0 0 3rem var(--request-form-surface);
+  transition: background-color 600000s 0s;
+}
+
+.request-form_error,
+.request-form_hint,
+.request-form_summary,
+.request-form_note,
+.request-form_legal,
+.request-form_help-text,
+.request-form_lecture {
+  margin: 0;
+  font-size: var(--request-form-small);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.request-form_hint {
+  color: var(--request-form-muted);
+}
+
+/* Ошибка: цвет, рамка поля и значок, цвет никогда не единственный сигнал */
+.request-form_error {
+  display: flex;
+  gap: 0.375rem;
+  color: var(--request-form-error-text);
+}
+
+.request-form_error::before {
+  content: "";
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.1em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.25' fill='none' stroke='%23f98a8a' stroke-width='1.5'/%3E%3Cpath d='M8 4.5v4.25' stroke='%23f98a8a' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='11.25' r='.9' fill='%23f98a8a'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.request-form_error:empty {
+  display: none;
+}
+
+/* «Проверьте 2 поля» видно над полями. Остальные состояния — только для скринридера */
+.request-form_summary {
+  display: flex;
+  gap: 0.375rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--request-form-error);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  font-weight: 500;
+}
+
+.request-form_summary:empty {
+  display: none;
+}
+
+.request-form_summary:not([data-state="invalid"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Маленькая кнопка-ссылка: «Другая страна», исправление почты.
+   Видно строку текста, а нажимается полоса 44 px */
+.request-form_component .request-form_link-button {
+  justify-self: start;
+  min-height: 2.75rem;
+  margin: -0.5rem 0;
+  padding: 0;
+  border: 0;
+  color: var(--request-form-text) !important;
+  background: none;
+  font: inherit;
+  font-size: var(--request-form-small);
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.request-form_component .request-form_link-button.is-inline {
+  min-height: 0;
+  margin: 0;
+  font-weight: 500;
+}
+
+.request-form_link-button:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+  border-radius: 0.125rem;
+}
+
+/* Выбор мессенджера: два сегмента, вся площадь нажимается */
+.request-form_choice {
+  position: relative;
+  display: grid;
+  gap: 0.375rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.request-form_choice-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.request-form_choice-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.request-form_choice-option {
+  display: flex;
+  min-width: 0;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.1;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-site, 180ms ease), color var(--transition-site, 180ms ease), border-color var(--transition-site, 180ms ease);
+}
+
+.request-form_choice-input:checked + .request-form_choice-option {
+  border-color: var(--request-form-text);
+  color: var(--request-form-surface);
+  background: var(--request-form-text);
+}
+
+.request-form_choice-input:focus-visible + .request-form_choice-option {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 2px;
+}
+
+.request-form_icon {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Кнопка отправки, срок ответа, согласие */
+.request-form_actions {
+  gap: 0.75rem;
+}
+
+.request-form_component .request-form_submit {
+  display: grid;
+  width: 100%;
+  min-height: 3.5rem;
+  place-items: center;
+  margin: 0;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-surface) !important;
+  background: var(--request-form-action);
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 180ms ease);
+}
+
+/* Обе надписи в одной ячейке: ширина кнопки не меняется во время отправки */
+.request-form_submit-label,
+.request-form_submit-busy {
+  grid-area: 1 / 1;
+}
+
+.request-form_submit-busy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  visibility: hidden;
+}
+
+.request-form_submit[aria-busy="true"] .request-form_submit-label {
+  visibility: hidden;
+}
+
+.request-form_submit[aria-busy="true"] .request-form_submit-busy {
+  visibility: visible;
+}
+
+.request-form_spinner {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: request-form-spin 0.8s linear infinite;
+}
+
+@keyframes request-form-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.request-form_submit:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 3px;
+}
+
+/* Часы ответа: на телефоне сразу под согласием, с обычным для подписей
+   отступом 12 px вместо промежутка между блоками формы */
+.request-form_note {
+  margin-top: calc(0.75rem - var(--request-form-gap));
+  color: var(--request-form-text);
+}
+
+.request-form_legal {
+  color: var(--request-form-muted);
+  font-size: 0.8125rem;
+}
+
+.request-form_component .request-form_legal a,
+.request-form_component .request-form_lecture a {
+  color: inherit !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.request-form_component .request-form_lecture a {
+  color: var(--request-form-text) !important;
+  font-weight: 500;
+}
+
+/* Запасной путь: кнопки бота приёмной комиссии */
+.request-form_help {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border-radius: var(--request-form-radius);
+  background: rgb(255 255 255 / 7%);
+}
+
+.request-form_help-text {
+  color: var(--request-form-text);
+}
+
+.request-form_bots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 0.5rem;
+}
+
+.request-form_component .request-form_bot {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--request-form-line);
+  border-radius: var(--request-form-radius);
+  color: var(--request-form-text) !important;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 180ms ease), border-color var(--transition-site, 180ms ease);
+}
+
+.request-form_component .request-form_bot.is-primary {
+  border-color: var(--request-form-action);
+  color: var(--request-form-surface) !important;
+  background: var(--request-form-action);
+}
+
+.request-form_bot:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 3px;
+}
+
+/* Экран успеха занимает всю карточку */
+.request-form_success {
+  grid-column: 1 / -1;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+.request-form_success:focus,
+.request-form_success .section-title_component:focus {
+  outline: none;
+}
+
+.request-form_success .section-title_component:focus-visible {
+  outline: 2px solid var(--request-form-text);
+  outline-offset: 4px;
+}
+
+.request-form_bots.is-success {
+  max-width: 30rem;
+}
+
+/* Наведение только у мыши: на телефоне эффект залипает после нажатия */
+@media (hover: hover) and (pointer: fine) {
+  .request-form_input:hover:not(:focus) {
+    border-color: var(--request-form-text);
+  }
+  .request-form_choice-input:not(:checked) + .request-form_choice-option:hover {
+    border-color: var(--request-form-text);
+  }
+  .request-form_component .request-form_submit:hover,
+  .request-form_component .request-form_bot.is-primary:hover {
+    background: var(--request-form-action-hover);
+  }
+  .request-form_component .request-form_bot:not(.is-primary):hover {
+    border-color: var(--request-form-text);
+  }
+  .request-form_component .request-form_link-button:hover {
+    text-decoration-thickness: 2px;
+  }
+  .request-form_component .request-form_tip-button:hover {
+    color: var(--request-form-text) !important;
+  }
+  .request-form_component .t-input-phonemask__wrap:hover:not(:focus-within) {
+    border-color: var(--request-form-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .request-form_input,
+  .t-input-phonemask__wrap,
+  .request-form_choice-option,
+  .request-form_submit,
+  .request-form_bot {
+    transition: none;
+  }
+  .request-form_spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+/* 521–767 px: телефон боком, поля чуть просторнее */
+@media (min-width: 32.5625rem) {
+  .request-form_component {
+    --request-form-padding: 1.25rem;
+    --request-form-gap: 2rem;
+  }
+}
+
+/* 768–1024 px: заголовок слева, поля справа */
+@media (min-width: 48rem) {
+  .request-form_component {
+    --request-form-padding: 1.5rem;
+    --request-form-field-height: 3.5rem;
+    --request-form-gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+  }
+  /* Заголовок слева сверху, поля справа на всю высоту, часы ответа внизу слева */
+  .request-form_intro {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .request-form_body {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .request-form_note {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    margin-top: 0;
+  }
+  .request-form_component[data-state="success"] {
+    grid-template-rows: auto;
+  }
+}
+
+/* От 1025 px */
+@media (min-width: 64.0625rem) {
+  .request-form_component {
+    --request-form-padding: 2rem;
+    --request-form-field-font: 1.0625rem;
+    --request-form-gap: 2.5rem;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+}
+</style>
 <div class="psy-page" data-academy="1" data-psy-part="signup"><div class="wa" lang="ru">
 <section id="signup" class="wa-sec"><div class="wa-in">
-      <div class="lf">
-        <div class="lf-intro">
-          <h2 class="lf-title">Оставьте заявку, и&nbsp;мы свяжемся с&nbsp;вами</h2>
-          <p class="lf-desc">Пришлём полную программу курса и&nbsp;ответим на&nbsp;вопросы о&nbsp;поступлении</p>
-        </div>
-        <!-- Заявка уходит через скрытую форму Тильды с именем из data-tilda-form-name (см. page.js, раздел «Заявка»).
-             data-lead-source: подпись для отдела продаж в поле form_source. -->
-        <form class="lf-form" data-lead-form data-tilda-form-name="psychiatry-basics" data-lead-source="ПК «Психиатрия для психологов»" novalidate>
-          <fieldset class="lf-fields">
-            <legend class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Контактные данные</legend>
-            <div class="lf-field"><input class="lf-input" type="text" id="lf-name" name="name" autocomplete="name" placeholder=" " required><label class="lf-label" for="lf-name">Имя *</label></div>
-            <div class="lf-field"><input class="lf-input" type="tel" id="lf-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder=" " required><label class="lf-label" for="lf-phone">Телефон *</label></div>
-          </fieldset>
-          <fieldset class="lf-msg">
-            <legend>Где удобнее общаться</legend>
-            <div class="lf-opts">
-              <label class="lf-opt"><input type="radio" id="lf-msg-max" name="messenger" value="max" checked><span><svg class="lf-opt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor" /></svg><span lang="en">MAX</span></span></label>
-              <label class="lf-opt"><input type="radio" id="lf-msg-tg" name="messenger" value="telegram"><span><svg class="lf-opt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor" /></svg><span lang="en">Telegram</span></span></label>
-            </div>
-          </fieldset>
-          <button class="lf-submit button_component is-light" type="submit" id="lf-submit">Оставить заявку</button>
-          <p class="lf-status" data-lead-status role="status" aria-live="polite"></p>
-          <p class="lf-legal">Нажимая на&nbsp;кнопку, вы соглашаетесь с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p>
-        </form>
-        <div class="lf-done" data-lead-success tabindex="-1" hidden>
-          <p class="lf-done-title">Заявка отправлена</p>
-          <p class="lf-done-text">Напишем вам в&nbsp;<span data-lead-success-messenger>MAX</span>, пришлём полную программу курса и&nbsp;ответим на&nbsp;вопросы.</p>
-        </div>
-      </div>
+      <!-- request-form:start Форма заявки: общий компонент Академии (web-academy/shared/academy/request-form.md), режим «курс».
+           Разметку собирает request-form-sync.mjs из данных FORM, руками не править. Заявка уходит через скрытую форму Тильды psychiatry-basics. -->
+      <form id="signup-form" class="request-form_component" data-academy-request-form data-mode="course" data-tilda-form-name="psychiatry-basics" data-hours-from="10" data-hours-to="19" data-source="ПК «Психиатрия для психологов»" data-device-field="utm_term" data-device-mode="append" aria-labelledby="signup-form-heading" novalidate><div class="request-form_intro section-header_component is-left is-responsive" data-request-content><h2 class="section-title_component is-left is-responsive" id="signup-form-heading">Оставьте заявку, и&nbsp;мы свяжемся с&nbsp;вами</h2><p class="section-subtitle_component">Пришлём полную программу курса и&nbsp;ответим на&nbsp;вопросы о&nbsp;поступлении</p></div><div class="request-form_body" data-request-content><p class="request-form_summary" id="signup-form-summary" role="status" aria-live="polite" data-request-summary></p><div class="request-form_fields"><div class="request-form_field" data-request-field="name" data-state="idle"><label class="request-form_label" for="signup-form-name">Имя</label><input class="request-form_input" id="signup-form-name" type="text" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" placeholder="Анна" maxlength="80" required aria-describedby="signup-form-name-error" aria-invalid="false" data-request-input="name"><p class="request-form_error" id="signup-form-name-error" aria-live="polite" data-request-error></p></div><div class="request-form_field is-phone" data-request-field="phone" data-state="idle"><label class="request-form_label" for="input_signup-form-phone">Телефон</label><div class="request-form_phone" id="recsignup-form-phone" data-request-phone-mask><div class="request-form_phone-group" data-input-lid="signup-form-phone"><div class="t-input-block"><input class="request-form_input js-phonemask-input" id="input_signup-form-phone" type="tel" name="phone" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="+7 900 000-00-00" maxlength="24" required data-phonemask-id="signup-form-phone" data-phonemask-lid="signup-form-phone" data-phonemask-maskcountry="RU" data-phonemask-init="no" data-phonemask-skip-auto-init="true" aria-describedby="signup-form-phone-error signup-form-phone-hint" aria-invalid="false" data-request-input="phone"></div></div></div><p class="request-form_error" id="signup-form-phone-error" aria-live="polite" data-request-error></p><p class="request-form_hint" id="signup-form-phone-hint" data-request-hint>Напишем в&nbsp;выбранный мессенджер, а&nbsp;если не&nbsp;получится, позвоним</p></div></div><div class="request-form_contact"><div class="request-form_choice" role="radiogroup" aria-labelledby="signup-form-messenger-label" aria-describedby="signup-form-messenger-tip" data-request-messenger><div class="request-form_label-row"><span class="request-form_label" id="signup-form-messenger-label">Где удобнее переписываться</span><button class="request-form_tip-button" type="button" aria-label="Как с вами свяжутся" aria-expanded="false" aria-controls="signup-form-messenger-tip" data-request-tip><svg class="request-form_tip-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.9 7a2.15 2.15 0 0 1 4.2.55c0 1.45-2.1 1.85-2.1 3.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="13.2" r=".95" fill="currentColor"/></svg></button></div><p class="request-form_tip" id="signup-form-messenger-tip" hidden>В&nbsp;Telegram напишем по&nbsp;нику. В&nbsp;MAX напишем на&nbsp;номер телефона, который вы&nbsp;указали выше.</p><div class="request-form_choice-options"><input class="request-form_choice-input" type="radio" name="messenger" value="telegram" id="signup-form-messenger-telegram" checked><label class="request-form_choice-option" for="signup-form-messenger-telegram"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span lang="en">Telegram</span></label><input class="request-form_choice-input" type="radio" name="messenger" value="max" id="signup-form-messenger-max"><label class="request-form_choice-option" for="signup-form-messenger-max"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2238 19.9426C8.26666 19.9426 7.35714 19.6569 5.77618 18.514C4.77618 19.7997 1.60952 20.8045 1.47142 19.0854C1.47142 17.795 1.18571 16.7045 0.861895 15.514C0.476181 14.0473 0.0380859 12.414 0.0380859 10.0473C0.0380859 4.39496 4.67618 0.142578 10.1714 0.142578C15.6714 0.142578 19.9809 4.60448 19.9809 10.0997C19.9898 12.6981 18.9674 15.1938 17.1381 17.0391C15.3088 18.8846 12.8221 19.9288 10.2238 19.9426ZM10.3047 5.02829C7.62856 4.8902 5.54285 6.74258 5.08094 9.64733C4.69999 12.0521 5.37618 14.9807 5.95237 15.133C6.22856 15.1997 6.9238 14.6378 7.35714 14.2045C8.07367 14.6995 8.90808 14.9968 9.77615 15.0664C11.1092 15.1305 12.4141 14.669 13.4105 13.7813C14.4069 12.8935 15.0153 11.6503 15.1047 10.3188C15.1568 8.98449 14.6831 7.68308 13.7854 6.69456C12.8878 5.70604 11.6379 5.10941 10.3047 5.03305V5.02829Z" fill="currentColor"/></svg><span lang="en">MAX</span></label></div></div><div class="request-form_field is-telegram" data-request-field="telegram" data-state="idle"><div class="request-form_label-row"><label class="request-form_label" for="signup-form-telegram">Ник в&nbsp;Telegram</label><button class="request-form_tip-button" type="button" aria-label="Зачем нужен ник" aria-expanded="false" aria-controls="signup-form-telegram-tip" data-request-tip><svg class="request-form_tip-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.9 7a2.15 2.15 0 0 1 4.2.55c0 1.45-2.1 1.85-2.1 3.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="13.2" r=".95" fill="currentColor"/></svg></button></div><p class="request-form_tip" id="signup-form-telegram-tip" hidden>По&nbsp;номеру в&nbsp;Telegram найти получается не&nbsp;всегда, поэтому нужен ник. Он&nbsp;есть в&nbsp;«Настройках», строка «Имя пользователя».</p><input class="request-form_input" id="signup-form-telegram" type="text" name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="@anna_psy" maxlength="64" required aria-describedby="signup-form-telegram-error signup-form-telegram-tip" aria-invalid="false" data-request-input="telegram"><p class="request-form_error" id="signup-form-telegram-error" aria-live="polite" data-request-error></p></div></div><div class="request-form_actions"><button class="request-form_submit" type="submit" aria-busy="false" disabled data-request-submit><span class="request-form_submit-label">Оставить заявку</span><span class="request-form_submit-busy" aria-hidden="true"><span class="request-form_spinner"></span>Отправляем…</span></button><div class="request-form_help" data-request-help hidden><p class="request-form_help-text" data-request-help-text></p><div class="request-form_bots"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div></div><p class="request-form_legal">Нажимая на кнопку «Оставить заявку», я даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener noreferrer">согласие</a> на обработку моих персональных данных в соответствии с <a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p></div></div><p class="request-form_note" data-request-content>Ответим с&nbsp;10:00 до&nbsp;19:00 по&nbsp;Москве, без&nbsp;выходных</p><div class="request-form_success section-header_component is-left is-responsive" tabindex="-1" data-request-success hidden><h2 class="section-title_component is-left is-responsive" id="signup-form-success-heading" tabindex="-1" data-request-success-heading>Заявка принята</h2><p class="section-subtitle_component" data-request-success-text>Менеджер скоро свяжется с&nbsp;вами.</p><div class="request-form_bots is-success"><a class="request-form_bot is-primary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener"><svg class="request-form_icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor"/></svg><span>Написать в&nbsp;Telegram</span></a></div></div></form>
+      <!-- request-form:end -->
     </div></section>
 </div></div>
 </div></div></div></div>
@@ -1265,175 +1879,30 @@ body { margin: 0; background: #f5f5f5; }
 <script>
 (() => {
 const init = () => {
-/* Лендинг «Психиатрия для психологов»: колода ситуаций, лист умений, точечная иллюстрация первого экрана, форма. */
+/* Лендинг «Психиатрия для психологов»: колода ситуаций, лист умений, точечная иллюстрация первого экрана, FAQ.
+   Форма заявки: общий компонент Академии, отдельный файл request-form.js; здесь только номер посетителя Метрики для неё. */
 (() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* ---------- Заявка: отправка через скрытую форму Тильды ----------
-     На modern-psy.ru на странице стоит обычный блок с формой Тильды, его имя указано в data-tilda-form-name у <form>.
-     Эта форма и есть канал в AmoCRM: скрипт прячет её, переносит в неё имя, телефон и мессенджер и отправляет.
-     На превью формы Тильды нет: заявка никуда не уходит, сразу показываем ответ «Заявка отправлена», чтобы его было видно.
-     🟡 Имена полей ниже должны совпадать с настройками формы в Тильде буква в букву.
-        Если поля с таким именем в форме нет, скрипт добавит его скрытым. */
-  const LEAD = {
-    fields: { name: 'Name', phone: 'Phone', messenger: 'messenger', source: 'form_source', clientId: 'ym_client_id' },
-    utm: ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'],
-    messengers: { max: 'MAX', telegram: 'Telegram' },
-    errors: { name: 'Напишите, как к вам обращаться', phone: 'Проверьте номер телефона', send: 'Не получилось отправить заявку. Проверьте интернет и попробуйте ещё раз.' },
-    timeout: 10000
+  /* ---------- Номер посетителя Метрики в заявке ----------
+     Общая форма заявки (request-form.js) передаёт в форму Тильды имя, телефон, мессенджер, form_source и устройство,
+     но не ym_client_id, а прежняя форма лендинга его передавала. Добавляем в форму Тильды скрытое поле ym_client_id
+     и кладём в него номер из куки _ym_uid; общий скрипт сайта в head тоже заполняет это поле перед отправкой. */
+  const clientId = () => (document.cookie.match(/(?:^|;\s*)_ym_uid=([^;]+)/) || [])[1] || '';
+  const addClientIdField = () => {
+    const name = document.querySelector('[data-academy-request-form]')?.dataset.tildaFormName;
+    const native = name && [...document.querySelectorAll('form.t-form')].find(f => f.querySelector('input[name="tildaspec-formname"]')?.value === name);
+    if (!native) return false;
+    let input = native.querySelector('input[name="ym_client_id"]');
+    if (!input) { input = document.createElement('input'); input.type = 'hidden'; input.name = 'ym_client_id'; native.append(input); }
+    if (!input.value) input.value = clientId();
+    native.addEventListener('submit', () => { if (!input.value) input.value = clientId(); }, true);
+    return true;
   };
-  const isProduction = /(^|\.)modern-psy\.ru$/.test(location.hostname);
-  const normalizePhone = v => {
-    const raw = String(v || '').trim(), d = raw.replace(/\D/g, '');
-    if (!d) return '';
-    if (raw.startsWith('+')) return '+' + d;
-    if (d.length === 11 && d.startsWith('8')) return '+7' + d.slice(1);
-    if (d.length === 10) return '+7' + d;
-    return '+' + d;
-  };
-  const phoneOk = p => { const d = p.replace(/\D/g, ''); return d.startsWith('7') ? d.length === 11 : d.length >= 10 && d.length <= 15; };
-  /* метки utm живут в адресе только на первом шаге, запоминаем их на время визита */
-  const readUtm = () => {
-    let saved = {};
-    try { saved = JSON.parse(sessionStorage.getItem('psy-utm') || '{}') || {}; } catch (e) { saved = {}; }
-    const q = new URLSearchParams(location.search), fresh = {};
-    LEAD.utm.forEach(k => { const v = (q.get(k) || '').trim(); if (v) fresh[k] = v; });
-    const all = Object.assign({}, saved, fresh);
-    if (Object.keys(fresh).length) { try { sessionStorage.setItem('psy-utm', JSON.stringify(all)); } catch (e) { /* приватный режим */ } }
-    return all;
-  };
-  /* номер посетителя Метрики лежит в куке _ym_uid */
-  const ymClientId = () => (document.cookie.match(/(?:^|;\s*)_ym_uid=([^;]+)/) || [])[1] || '';
-  /* форму ищем по имени; если имя не совпало, но форма на странице одна, берём её и предупреждаем в консоли */
-  const findTildaForm = name => {
-    const forms = [...document.querySelectorAll('form.t-form')];
-    const byName = forms.find(f => f.querySelector('input[name="tildaspec-formname"]')?.value === name);
-    if (byName) return byName;
-    if (forms.length === 1) {
-      console.warn('[заявка] Формы «' + name + '» на странице нет, работаем с единственной формой Тильды. Поправьте data-tilda-form-name или имя формы в Тильде.');
-      return forms[0];
-    }
-    return null;
-  };
-  const hideTildaForm = name => {
-    const form = findTildaForm(name);
-    if (!form) return null;
-    const rec = form.closest('.t-rec') || form;
-    rec.setAttribute('data-psy-native-form', '');
-    rec.setAttribute('aria-hidden', 'true');
-    return form;
-  };
-  /* значение ставим «родным» сеттером и шлём input/change, иначе скрипты Тильды не заметят заполненное поле */
-  const setValue = (input, value) => {
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
-    if (setter) setter.call(input, value); else input.value = value;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  };
-  const setField = (form, name, value) => {
-    let input = form.querySelector('input[name="' + name + '"]');
-    if (!(input instanceof HTMLInputElement)) {
-      input = document.createElement('input');
-      input.type = 'hidden'; input.name = name;
-      form.appendChild(input);
-    }
-    setValue(input, value);
-  };
-  /* телефон с маской Тильды заполняем через саму Тильду, иначе она пересчитает номер из пустой маски */
-  const setPhone = (form, phone) => {
-    const group = form.querySelector('.t-input-group_ph');
-    if (group && typeof window.t_form_phonemask__setValue === 'function') {
-      try { window.t_form_phonemask__setValue(group, phone, undefined, { noFocus: true }); } catch (e) { console.warn('[заявка] Тильда не приняла номер в поле с маской.', e); }
-    }
-    setField(form, LEAD.fields.phone, phone);
-  };
-  /* обязательные поля формы Тильды, которых нет на странице, не дали бы отправить заявку: снимаем обязательность только с пустых */
-  const relax = form => form.querySelectorAll('[required], [data-tilda-rule], [data-tilda-req]').forEach(f => {
-    if (String(f.value || '').trim()) return;
-    f.removeAttribute('required'); f.removeAttribute('data-tilda-rule'); f.removeAttribute('data-tilda-req');
-  });
-  /* ответ Тильды приходит событием: success, error или timeout, если не ответила */
-  let waits = 0;
-  const waitTilda = (form, ms) => new Promise(resolve => {
-    const ns = '.psyLead' + (++waits);
-    let done = false, timer = 0;
-    const mine = (e, passed) => { const f = passed instanceof HTMLFormElement ? passed : e?.detail?.form || e?.target; return !(f instanceof HTMLFormElement) || f === form; };
-    const ok = (e, f) => { if (mine(e, f)) finish('success'); };
-    const fail = (e, f) => { if (mine(e, f)) finish('error'); };
-    const finish = r => {
-      if (done) return; done = true; clearTimeout(timer);
-      document.removeEventListener('tildaform:aftersuccess', ok); document.removeEventListener('tildaform:aftererror', fail);
-      if (typeof window.jQuery === 'function') window.jQuery(document).off(ns);
-      resolve(r);
-    };
-    document.addEventListener('tildaform:aftersuccess', ok); document.addEventListener('tildaform:aftererror', fail);
-    if (typeof window.jQuery === 'function') { window.jQuery(document).on('tildaform:aftersuccess' + ns, ok); window.jQuery(document).on('tildaform:aftererror' + ns, fail); }
-    timer = setTimeout(() => finish('timeout'), ms);
-  });
-  const sendToTilda = async (formName, values) => {
-    const native = hideTildaForm(formName);
-    if (!native) {
-      const msg = '[заявка] Формы Тильды «' + formName + '» на странице нет, заявка не отправлена.';
-      if (isProduction) console.error(msg); else console.info(msg + ' Это превью, так и должно быть.', values);
-      return 'skipped';
-    }
-    Object.entries(values).forEach(([k, v]) => k === LEAD.fields.phone ? setPhone(native, v) : setField(native, k, v));
-    const utm = readUtm();
-    setField(native, LEAD.fields.clientId, ymClientId());
-    LEAD.utm.forEach(k => setField(native, k, utm[k] || ''));
-    relax(native);
-    const answer = waitTilda(native, LEAD.timeout);
-    const btn = native.querySelector('button[type="submit"]:not(:disabled), input[type="submit"]:not(:disabled)');
-    if (btn) native.requestSubmit(btn); else native.requestSubmit();
-    return answer;
-  };
-  document.querySelectorAll('[data-lead-form]').forEach(form => {
-    const box = form.parentElement, name = form.dataset.tildaFormName || '', source = form.dataset.leadSource || document.title;
-    const nameInput = form.querySelector('input[name="name"]'), phoneInput = form.querySelector('input[name="phone"]');
-    const submit = form.querySelector('.lf-submit'), status = form.querySelector('[data-lead-status]');
-    const done = box.querySelector('[data-lead-success]'), doneMessenger = box.querySelector('[data-lead-success-messenger]');
-    const label = submit.textContent;
-    let busy = false;
-    readUtm();
-    /* форму Тильды прячем сразу, как она появится на странице */
-    if (name && !hideTildaForm(name)) {
-      const mo = new MutationObserver(() => { if (hideTildaForm(name)) mo.disconnect(); });
-      mo.observe(document.body, { childList: true, subtree: true });
-      setTimeout(() => mo.disconnect(), 10000);
-    }
-    const checks = { name: () => nameInput.value.trim() ? '' : LEAD.errors.name, phone: () => phoneOk(normalizePhone(phoneInput.value)) ? '' : LEAD.errors.phone };
-    const inputs = { name: nameInput, phone: phoneInput };
-    const setStatus = (text = '') => { status.textContent = text; };
-    Object.entries(inputs).forEach(([k, input]) => input.addEventListener('input', () => {
-      if (input.getAttribute('aria-invalid') === 'true' && !checks[k]()) { input.removeAttribute('aria-invalid'); setStatus(); }
-    }));
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      if (busy) return;
-      const bad = Object.keys(checks).filter(k => checks[k]());
-      Object.keys(inputs).forEach(k => bad.includes(k) ? inputs[k].setAttribute('aria-invalid', 'true') : inputs[k].removeAttribute('aria-invalid'));
-      if (bad.length) { setStatus(checks[bad[0]]()); inputs[bad[0]].focus(); return; }
-      const messenger = form.querySelector('input[name="messenger"]:checked')?.value || 'max';
-      busy = true; submit.disabled = true; submit.textContent = 'Отправляем…'; setStatus();
-      let result = 'error';
-      try {
-        result = await sendToTilda(name, {
-          [LEAD.fields.name]: nameInput.value.trim(),
-          [LEAD.fields.phone]: normalizePhone(phoneInput.value),
-          [LEAD.fields.messenger]: LEAD.messengers[messenger] || messenger,
-          [LEAD.fields.source]: source
-        });
-      } catch (err) { console.error('[заявка] Не получилось отправить заявку в Тильду.', err); }
-      busy = false; submit.disabled = false; submit.textContent = label;
-      if (result === 'success' || (result === 'skipped' && !isProduction)) {
-        if (doneMessenger) doneMessenger.textContent = LEAD.messengers[messenger] || 'мессенджер';
-        form.hidden = true;
-        if (done) { done.hidden = false; done.focus(); }
-        return;
-      }
-      if (result === 'timeout') console.warn('[заявка] Тильда не ответила вовремя.');
-      setStatus(LEAD.errors.send);
-    });
-  });
+  if (!addClientIdField()) {
+    const mo = new MutationObserver(() => { if (addClientIdField()) mo.disconnect(); });
+    mo.observe(document.body, { childList: true, subtree: true });
+    setTimeout(() => mo.disconnect(), 10000);
+  }
 
   /* ---------- FAQ: открыт один вопрос за раз ---------- */
   document.querySelectorAll('[data-faq]').forEach(list => {
@@ -1676,6 +2145,1082 @@ const init = () => {
 };
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once: true});
 else init();
+})();
+</script>
+</div></div></div></div>
+<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
+<!-- СКРИПТ ФОРМЫ ЗАЯВКИ (общий компонент request-form). После блока с формой Тильды, сразу за скриптом страницы. -->
+<script>
+(() => {
+  "use strict";
+
+
+  const TEXT = {
+    nameEmpty: "Напишите, как к вам обращаться",
+    nameShort: "Напишите имя полностью",
+    nameLong: "Имя слишком длинное, сократите до 60 символов",
+    nameChars: "В имени только буквы, пробел и дефис",
+    phoneEmpty: "Напишите номер телефона",
+    phoneShort: "В номере не хватает цифр, пример: +7 912 345-67-89",
+    phoneCode: "Проверьте код номера, пример: +7 912 345-67-89",
+    phoneIntlShort: "Нужен код страны и номер, например +375 29 123-45-67",
+    phoneIntlLong: "В номере слишком много цифр, проверьте его",
+    emailEmpty: "Напишите почту, на неё придёт доступ",
+    emailCyrillic: "Адрес почты пишется латиницей, пример: anna@mail.ru",
+    emailInvalid: "Проверьте адрес почты, пример: anna@mail.ru",
+    telegramEmpty: "Напишите ник в Telegram, например @anna_psy",
+    telegramPhone: "Нужен ник, а не номер телефона, например @anna_psy",
+    telegramCyrillic: "Ник пишется латиницей, например @anna_psy",
+    telegramChars: "В нике только латинские буквы, цифры и подчёркивание, например @anna_psy",
+    telegramLength: "В нике от 3 до 32 символов, например @anna_psy",
+    sending: "Отправляем заявку…",
+    sendFailed: "Не получилось отправить. Попробуйте ещё раз или напишите в приёмную комиссию",
+    unavailable: "Отправка сейчас недоступна. Напишите в приёмную комиссию, ответим так же быстро",
+    slow: "Отправляем дольше обычного. Если не получится, напишите в приёмную комиссию",
+    noNative: "Если форма не отправится, напишите в приёмную комиссию",
+    phoneCheck: "Проверьте номер: не хватает цифр или есть лишние",
+    ruPlaceholder: "+7 900 000-00-00",
+    intlPlaceholder: "+375 29 123-45-67",
+  };
+
+
+  const digitsOf = (value) => String(value || "").replace(/\D/g, "");
+
+  const parseRuPhone = (value) => {
+    const cleaned = String(value || "").replace(/[^\d+]/g, "");
+    const digits = digitsOf(cleaned);
+    if (cleaned.startsWith("00") || (cleaned.startsWith("+") && digits && digits[0] !== "7")) {
+      return { foreign: true, national: "" };
+    }
+    let national = digits;
+    if (cleaned.startsWith("+")) national = digits.slice(1);
+    else if (digits.length >= 11 && /^[78]/.test(digits)) national = digits.slice(1);
+    if (national.length >= 11 && /^[78]/.test(national)) national = national.slice(1);
+    return { foreign: false, national: national.slice(0, 10) };
+  };
+
+  const formatRuPhone = (national) => {
+    if (!national) return "";
+    let result = `+7 ${national.slice(0, 3)}`;
+    if (national.length > 3) result += ` ${national.slice(3, 6)}`;
+    if (national.length > 6) result += `-${national.slice(6, 8)}`;
+    if (national.length > 8) result += `-${national.slice(8, 10)}`;
+    return result;
+  };
+
+  const ruPhoneMessage = (national) => {
+    if (!national) return TEXT.phoneEmpty;
+    if (national.length < 10) return TEXT.phoneShort;
+    if (/^[0-2]/.test(national)) return TEXT.phoneCode;
+    return "";
+  };
+
+  const sanitizeIntlPhone = (value) => {
+    let result = String(value || "").replace(/[^\d+()\-\s]/g, "").replace(/(?!^)\+/g, "");
+    if (result.startsWith("00")) result = `+${result.slice(2)}`;
+    if (result && !result.startsWith("+")) result = `+${result}`;
+    return result;
+  };
+
+  const intlPhoneMessage = (value) => {
+    const digits = digitsOf(value);
+    if (!digits) return TEXT.phoneEmpty;
+    if (digits.length < 8) return TEXT.phoneIntlShort;
+    if (digits.length > 15) return TEXT.phoneIntlLong;
+    return "";
+  };
+
+  const normalizeTelegram = (value) => {
+    let nick = String(value || "").trim();
+    const link = nick.match(/^(?:https?:\/\/)?(?:www\.)?(?:t|telegram)\.(?:me|dog)\/([^/?#\s]*)/i);
+    if (link) nick = link[1];
+    return nick.replace(/^@+/, "");
+  };
+
+  const telegramMessage = (value) => {
+    const nick = normalizeTelegram(value);
+    if (!nick) return TEXT.telegramEmpty;
+    if (/^\+?[\d\s()-]{5,}$/.test(nick)) return TEXT.telegramPhone;
+    if (/[а-яё]/i.test(nick)) return TEXT.telegramCyrillic;
+    if (!/^[A-Za-z0-9_]+$/.test(nick)) return TEXT.telegramChars;
+    if (nick.length < 3 || nick.length > 32) return TEXT.telegramLength;
+    return "";
+  };
+
+  const EMAIL_PATTERN =
+    /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
+
+  const EMAIL_DOMAIN_FIXES = {
+    "gmial.com": "gmail.com", "gmai.com": "gmail.com", "gmal.com": "gmail.com",
+    "gamil.com": "gmail.com", "gnail.com": "gmail.com", "gmail.co": "gmail.com",
+    "gmail.cm": "gmail.com", "gmail.con": "gmail.com", "gmail.ru": "gmail.com",
+    "yandex.r": "yandex.ru", "yandx.ru": "yandex.ru", "yadex.ru": "yandex.ru",
+    "yndex.ru": "yandex.ru", "yanex.ru": "yandex.ru", "mail.r": "mail.ru",
+    "mial.ru": "mail.ru", "maill.ru": "mail.ru", "mai.ru": "mail.ru",
+    "ramble.ru": "rambler.ru", "icloud.co": "icloud.com", "icloud.cm": "icloud.com",
+    "iclod.com": "icloud.com", "outlok.com": "outlook.com", "hotmial.com": "hotmail.com",
+  };
+
+  const suggestEmail = (value) => {
+    const email = String(value || "").trim();
+    const at = email.lastIndexOf("@");
+    if (at < 1) return "";
+    const domain = email.slice(at + 1).toLowerCase();
+    const fixed = EMAIL_DOMAIN_FIXES[domain] ||
+      domain.replace(/\.ry$/, ".ru").replace(/\.(con|cmo|ocm)$/, ".com");
+    return fixed && fixed !== domain ? `${email.slice(0, at)}@${fixed}` : "";
+  };
+
+  const emailMessage = (value) => {
+    const email = String(value || "").trim();
+    if (!email) return TEXT.emailEmpty;
+    if (/[а-яё]/i.test(email)) return TEXT.emailCyrillic;
+    if (!EMAIL_PATTERN.test(email)) return TEXT.emailInvalid;
+    return "";
+  };
+
+  const normalizeName = (value) => String(value || "").replace(/\s+/g, " ").trim();
+  const NAME_PATTERN = (() => {
+    try {
+      return new RegExp("^\\p{L}[\\p{L}'’ -]*$", "u");
+    } catch (error) {
+      return /^[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё'’ -]*$/;
+    }
+  })();
+
+  const nameMessage = (value) => {
+    const name = normalizeName(value);
+    if (!name) return TEXT.nameEmpty;
+    if (name.length < 2) return TEXT.nameShort;
+    if (name.length > 60) return TEXT.nameLong;
+    if (!NAME_PATTERN.test(name)) return TEXT.nameChars;
+    return "";
+  };
+
+  const moscowHour = (date = new Date()) => (date.getUTCHours() + 3) % 24;
+
+  const replyWhen = (hour, from, to) => {
+    if (hour < from) return `сегодня после ${from}:00 по Москве`;
+    if (hour < to) return `сегодня до ${to}:00 по Москве`;
+    return `завтра после ${from}:00 по Москве`;
+  };
+
+  const fieldsWord = (count) => {
+    const last = count % 10;
+    const lastTwo = count % 100;
+    if (last === 1 && lastTwo !== 11) return "поле";
+    if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return "поля";
+    return "полей";
+  };
+
+  const detectDevice = (nav = window.navigator || {}) => {
+    const ua = nav.userAgent || "";
+    const touchMac = /Macintosh/.test(ua) && nav.maxTouchPoints > 1;
+    if (/iPad|Tablet/i.test(ua) || touchMac || (/Android/i.test(ua) && !/Mobile/i.test(ua))) return "планшет";
+    if (/Mobi|iPhone|iPod|Android/i.test(ua)) return "телефон";
+    return "компьютер";
+  };
+
+  const successMessage = ({ mode, messenger, contact, email, hour, from, to, custom }) => {
+    if (custom) return custom;
+    if (mode === "access") {
+      return `Письмо с доступом придёт на ${email}. Если его нет во «Входящих», загляните в «Спам».`;
+    }
+    const where = messenger === "max" ? `в MAX на номер ${contact}` : `в Telegram ${contact}`;
+    return `Менеджер напишет ${where} ${replyWhen(hour, from, to)}. Если не ответите в мессенджере, позвоним.`;
+  };
+
+  const helpers = {
+    TEXT, parseRuPhone, formatRuPhone, ruPhoneMessage, sanitizeIntlPhone, intlPhoneMessage,
+    normalizeTelegram, telegramMessage, suggestEmail, emailMessage, normalizeName, nameMessage,
+    moscowHour, replyWhen, fieldsWord, detectDevice, successMessage,
+  };
+  window.__academyRequestFormHelpers = helpers;
+
+
+  if (typeof window.__academyRequestFormCleanup === "function") {
+    window.__academyRequestFormCleanup();
+  }
+
+  const forms = [...document.querySelectorAll("[data-academy-request-form]")];
+  if (!forms.length) return;
+
+  const IS_PRODUCTION = /(^|\.)modern-psy\.ru$/.test(window.location.hostname);
+  const SLOW_DELIVERY_MS = 15000;
+  const DISCOVERY_MS = 10000;
+
+  const storage = (() => {
+    try {
+      const store = window.sessionStorage;
+      store.setItem("__academy-request-form", "1");
+      store.removeItem("__academy-request-form");
+      return store;
+    } catch (error) {
+      return null;
+    }
+  })();
+
+  const TILDA_PHONE_MASK_URL = "https://static.tildacdn.com/js/tilda-phone-mask-1.1.min.js";
+  let tildaMaskLoading = null;
+
+  const loadTildaMask = () => {
+    const ready = () => typeof window.t_form_phonemask_load === "function";
+    if (ready()) return Promise.resolve(true);
+    if (tildaMaskLoading) return tildaMaskLoading;
+    tildaMaskLoading = new Promise((resolve) => {
+      let script = [...document.scripts].find((item) => item.src.includes("tilda-phone-mask"));
+      if (!script) {
+        script = document.createElement("script");
+        script.src = TILDA_PHONE_MASK_URL;
+        script.async = true;
+        document.head.append(script);
+      }
+      script.addEventListener("load", () => resolve(ready()));
+      script.addEventListener("error", () => resolve(false));
+      window.setTimeout(() => resolve(ready()), 8000);
+    });
+    return tildaMaskLoading;
+  };
+
+
+  const setNativeInputValue = (input, value) => {
+    if (!(input instanceof HTMLInputElement)) return;
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+    if (setter) setter.call(input, value);
+    else input.value = value;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  const findTildaForm = (formName) =>
+    (formName && [...document.querySelectorAll("form.t-form")].find(
+      (form) => form.querySelector('input[name="tildaspec-formname"]')?.value === formName,
+    )) || null;
+
+  const hideTildaFormRecord = (formName) => {
+    const nativeForm = findTildaForm(formName);
+    if (!(nativeForm instanceof HTMLFormElement)) return null;
+    const record = nativeForm.closest(".t-rec") || nativeForm;
+    record.hidden = true;
+    record.setAttribute("aria-hidden", "true");
+    record.setAttribute("data-academy-native-form-record", "");
+    return nativeForm;
+  };
+
+  const isRequiredInTilda = (element) =>
+    Boolean(element && (element.getAttribute?.("data-tilda-req") === "1" ||
+      element.querySelector?.('[data-tilda-req="1"]')));
+
+  const getTildaPhoneValue = (e164) => {
+    const digits = digitsOf(e164);
+    if (!digits) return "";
+    return digits.startsWith("7") ? digits.slice(1, 11) : `+${digits}`;
+  };
+
+  const fillTildaPhoneGroup = (group, e164, resultName) => {
+    if (!(group instanceof HTMLElement)) return;
+    const visibleInputs = [...group.querySelectorAll('input.t-input-phonemask:not([type="hidden"])')];
+    if (typeof window.t_form_phonemask__setValue === "function") {
+      window.t_form_phonemask__setValue(group, e164, undefined, { noFocus: true });
+    } else {
+      visibleInputs.forEach((input) => setNativeInputValue(input, getTildaPhoneValue(e164)));
+    }
+    const visible = visibleInputs[0];
+    const visiblePhone = visible?.dataset.phonemaskCurrent || visible?.value || "";
+    const dialCode = visible?.dataset.phonemaskCode || "";
+    const formatted = visiblePhone.startsWith("+") ? visiblePhone : `${dialCode} ${visiblePhone}`.trim();
+    group.querySelectorAll(`input.js-phonemask-result[name="${resultName}"]`)
+      .forEach((input) => setNativeInputValue(input, formatted || e164));
+    group.querySelectorAll("input.js-phonemask-result-iso")
+      .forEach((input) => setNativeInputValue(input, visible?.dataset.phonemaskIso || input.value || "ru"));
+  };
+
+  const selectTildaMessenger = (group, messenger) => {
+    const radios = [...group.querySelectorAll('input[type="radio"][name="messenger-type"]')];
+    const telegramRadio = radios.find((radio) => radio.value === "telegram");
+    const maxRadio =
+      radios.find((radio) => radio.value === "max" || radio.value === "max_messenger") ||
+      radios.find((radio) => radio.value === "whatsapp") ||
+      radios.find((radio) => radio.value !== "telegram");
+    if (maxRadio && !maxRadio.dataset.academyOriginalValue) {
+      maxRadio.dataset.academyOriginalValue = maxRadio.value;
+    }
+    if (maxRadio?.dataset.academyOriginalValue) maxRadio.value = maxRadio.dataset.academyOriginalValue;
+    const selected = messenger === "telegram" ? telegramRadio : maxRadio;
+    if (!(selected instanceof HTMLInputElement)) return "";
+    const selectedType = selected.value;
+    selected.checked = true;
+    selected.dispatchEvent(new Event("input", { bubbles: true }));
+    selected.dispatchEvent(new Event("change", { bubbles: true }));
+    if (messenger === "max" && selected.value === "whatsapp") selected.value = "max";
+    return selectedType;
+  };
+
+  const setNativeExtra = (nativeForm, name, value, mode = "replace") => {
+    if (!name || !value) return;
+    let input = [...nativeForm.querySelectorAll("input")].find((item) => item.name === name);
+    if (!input) {
+      input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      nativeForm.append(input);
+    }
+    if (input.dataset.academyOriginalValue === undefined) {
+      input.dataset.academyOriginalValue = input.value || new URLSearchParams(window.location.search).get(name) || "";
+    }
+    const original = mode === "append" ? input.dataset.academyOriginalValue : "";
+    setNativeInputValue(input, original ? `${original} · ${value}` : value);
+  };
+
+  const nextFrame = () => new Promise((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      resolve();
+    };
+    window.requestAnimationFrame(finish);
+    window.setTimeout(finish, 100);
+  });
+
+  class ContractError extends Error {}
+
+  const syncTildaForm = async (nativeForm, payload, extras) => {
+    const nameInput = nativeForm.querySelector('input[data-tilda-rule="name"], input[name="Name"]');
+    const emailInput = nativeForm.querySelector('input[data-tilda-rule="email"], input[name="email"], input[name="Email"]');
+    const phoneGroup = [...nativeForm.querySelectorAll(".t-input-group_ph")]
+      .find((group) => !group.closest(".t-input-group_contact_method"));
+    const messengerGroup = nativeForm.querySelector(".t-input-group_contact_method");
+    const problems = [];
+    if (!(nameInput instanceof HTMLInputElement)) problems.push("нет поля Name");
+    if (payload.email !== null && !(emailInput instanceof HTMLInputElement)) problems.push("нет поля email");
+    if (payload.email === null && isRequiredInTilda(emailInput)) problems.push("email обязателен в Тильде, а форма его не спрашивает");
+    if (!(phoneGroup instanceof HTMLElement)) problems.push("нет поля Phone");
+    if (payload.messenger && !(messengerGroup instanceof HTMLElement)) problems.push("нет блока messenger-type");
+    if (!payload.messenger && isRequiredInTilda(messengerGroup)) problems.push("мессенджер обязателен в Тильде, а форма его не спрашивает");
+    if (problems.length) throw new ContractError(problems.join("; "));
+
+    setNativeInputValue(nameInput, payload.name);
+    if (payload.email !== null) setNativeInputValue(emailInput, payload.email);
+    fillTildaPhoneGroup(phoneGroup, payload.phone, "Phone");
+    extras.forEach(([name, value, mode]) => setNativeExtra(nativeForm, name, value, mode));
+    if (!payload.messenger) return;
+
+    const selectedType = selectTildaMessenger(messengerGroup, payload.messenger);
+    await nextFrame();
+
+    messengerGroup.querySelectorAll(
+      'input[name="messenger-id"], input[name="tildaspec-phone-part[]"], input[name="tildaspec-phone-part[]-iso"]',
+    ).forEach((input) => {
+      if (input.closest(".t-contact-method__hybrid.t-contact-method__hidden")) return;
+      setNativeInputValue(input, "");
+    });
+
+    const typedInput = [...messengerGroup.querySelectorAll('input[name="messenger-id"][data-contact-method]')]
+      .find((input) => input.dataset.contactMethod === selectedType);
+    if (typedInput instanceof HTMLInputElement) {
+      const valueGroup = typedInput.closest(".t-phonemask-input-group");
+      if (/^[+0-9]/.test(payload.messengerContact) && valueGroup?.querySelector("input.t-input-phonemask")) {
+        setNativeInputValue(typedInput, "+");
+        fillTildaPhoneGroup(valueGroup, payload.messengerContact, "messenger-id");
+      } else {
+        setNativeInputValue(typedInput, payload.messengerContact);
+      }
+    } else if (payload.messenger === "telegram") {
+      const telegramInput = messengerGroup.querySelector('input[name="messenger-id"]:not([type="hidden"]):not(:disabled)');
+      if (!(telegramInput instanceof HTMLInputElement)) throw new ContractError("нет активного поля Telegram");
+      setNativeInputValue(telegramInput, payload.messengerContact);
+    } else {
+      const maxPhoneGroup = messengerGroup
+        .querySelector('input.t-input-phonemask:not([type="hidden"]):not(:disabled)')
+        ?.closest(".t-phonemask-input-group");
+      if (!(maxPhoneGroup instanceof HTMLElement)) throw new ContractError("нет активного поля MAX");
+      fillTildaPhoneGroup(maxPhoneGroup, payload.messengerContact, "messenger-id");
+    }
+  };
+
+  const captchaOpen = () => Boolean(document.querySelector(
+    '[class*="tildaformcaptchabox"], [id*="tildaformcaptchabox"], [class*="captchaIframeBox"], [id*="captchaIframeBox"]',
+  ));
+
+  const reachGoal = (form, goal, params) => {
+    try {
+      if (typeof window.ym !== "function") return;
+      const id = Number(form.dataset.metrikaId) ||
+        window.Ya?.Metrika2?.counters?.()?.[0]?.id ||
+        window.Ya?.Metrika?.counters?.()?.[0]?.id;
+      if (id) window.ym(id, "reachGoal", goal, params);
+    } catch (error) {
+    }
+  };
+
+
+  const controllers = [];
+  const watchedNames = new Set();
+
+  const setupForm = (form) => {
+    const mode = form.dataset.mode || "course";
+    const formName = form.dataset.tildaFormName?.trim() || "";
+    const hoursFrom = Number(form.dataset.hoursFrom) || 10;
+    const hoursTo = Number(form.dataset.hoursTo) || 19;
+    const device = detectDevice();
+    const byKey = (key) => form.querySelector(`[data-request-input="${key}"]`);
+    const allInputs = () => [...form.querySelectorAll("[data-request-input]")];
+    const inputOf = (target) =>
+      (target instanceof HTMLInputElement && target.matches("[data-request-input]") ? target : null);
+    const nameInput = byKey("name");
+    const emailInput = byKey("email");
+    const telegramInput = byKey("telegram");
+    const phoneInput = () => byKey("phone");
+    const telegramField = telegramInput?.closest("[data-request-field]") || null;
+    const phoneMaskRoot = form.querySelector("[data-request-phone-mask]");
+    const messengerInputs = [...form.querySelectorAll('input[name="messenger"]')];
+    const tipButtons = [...form.querySelectorAll("[data-request-tip]")];
+    const emailSuggest = form.querySelector("[data-request-email-suggest]");
+    const emailFix = form.querySelector("[data-request-email-fix]");
+    const submit = form.querySelector("[data-request-submit]");
+    const summary = form.querySelector("[data-request-summary]");
+    const help = form.querySelector("[data-request-help]");
+    const helpText = form.querySelector("[data-request-help-text]");
+    const contentParts = [...form.querySelectorAll("[data-request-content]")];
+    const successView = form.querySelector("[data-request-success]");
+    const successHeading = form.querySelector("[data-request-success-heading]");
+    const successText = form.querySelector("[data-request-success-text]");
+    const section = form.closest("section[aria-labelledby]");
+    const draftKey = `academy-request-form:${window.location.pathname}:${form.id || formName}`;
+    const cleanups = [];
+    let phoneMode = "ru"; // своя маска: ru или intl
+    let tildaMask = Boolean(phoneMaskRoot?.querySelector("input.t-input-phonemask"));
+    let quiet = false; // скрипт сам заполняет поле: это не ввод человека
+    let busy = false;
+    let disposed = false;
+    let started = false;
+    let submittedForm = null;
+    let slowTimer = 0;
+    let viewSent = false;
+    let onScreen = false;
+    let focused = false;
+    let lastVisible = null;
+
+    const listen = (target, type, handler, options) => {
+      if (!target) return;
+      target.addEventListener(type, handler, options);
+      cleanups.push(() => target.removeEventListener(type, handler, options));
+    };
+
+    const goalParams = (extra = {}) => ({ mode, page: window.location.pathname, device, ...extra });
+
+
+    const fieldOf = (input) => input.closest("[data-request-field]");
+    const isActive = (input) => input && !input.disabled && !fieldOf(input)?.hidden;
+    const activeInputs = () => allInputs().filter(isActive);
+    const selectedMessenger = () => messengerInputs.find((input) => input.checked)?.value || null;
+
+
+    const phoneResult = () => phoneMaskRoot?.querySelector(".js-phonemask-result") || null;
+
+    const phoneMessage = (input) => {
+      if (!tildaMask) {
+        return phoneMode === "ru" ? ruPhoneMessage(parseRuPhone(input.value).national) : intlPhoneMessage(input.value);
+      }
+      if (!digitsOf(input.value)) return TEXT.phoneEmpty;
+      const value = phoneResult()?.value || "";
+      const valid = typeof window.t_form_phonemask__validatePhone === "function"
+        ? window.t_form_phonemask__validatePhone(value)
+        : digitsOf(value).length >= 8;
+      if (valid) return "";
+      return input.getAttribute("data-phonemask-code") === "+7" ? TEXT.phoneShort : TEXT.phoneCheck;
+    };
+
+    const phoneTyped = () => {
+      const input = phoneInput();
+      if (!input) return "";
+      if (tildaMask) return digitsOf(input.value);
+      return phoneMode === "ru" ? parseRuPhone(input.value).national : digitsOf(input.value);
+    };
+
+    const phoneE164 = () => {
+      const input = phoneInput();
+      if (tildaMask) return `+${digitsOf(phoneResult()?.value)}`;
+      if (phoneMode === "intl") return `+${digitsOf(input.value)}`;
+      return `+7${parseRuPhone(input.value).national}`;
+    };
+
+    const phoneDisplay = () => (tildaMask ? phoneResult()?.value || "" : phoneInput()?.value.trim() || "");
+
+    const messageFor = (input) => {
+      const value = input.value;
+      switch (input.dataset.requestInput) {
+        case "name": return nameMessage(value);
+        case "email": return emailMessage(value);
+        case "telegram": return telegramMessage(value);
+        case "phone": return phoneMessage(input);
+        default: return "";
+      }
+    };
+
+    const showFieldError = (input, message) => {
+      const field = fieldOf(input);
+      const wasInvalid = field?.dataset.state === "invalid";
+      input.setAttribute("aria-invalid", String(Boolean(message)));
+      if (field) field.dataset.state = message ? "invalid" : "idle";
+      const error = field?.querySelector("[data-request-error]");
+      if (error) error.textContent = message;
+      if (message && !wasInvalid) reachGoal(form, "form_error", { mode, field: input.dataset.requestInput });
+    };
+
+    const isShownInvalid = (input) => fieldOf(input)?.dataset.state === "invalid";
+
+    const setSummary = (message = "", state = "idle") => {
+      if (!summary) return;
+      summary.textContent = message;
+      summary.dataset.state = state;
+    };
+
+    const refreshSummary = () => {
+      if (summary?.dataset.state !== "invalid") return;
+      const count = activeInputs().filter(isShownInvalid).length;
+      setSummary(count ? `Проверьте ${count} ${fieldsWord(count)}` : "", count ? "invalid" : "idle");
+    };
+
+    const showHelp = (message) => {
+      if (!help) return;
+      if (helpText) helpText.textContent = message;
+      help.hidden = false;
+    };
+
+    const hideHelp = () => {
+      if (help) help.hidden = true;
+    };
+
+    const updateEnterHints = () => {
+      const list = activeInputs();
+      list.forEach((input, index) => {
+        input.setAttribute("enterkeyhint", index === list.length - 1 ? "done" : "next");
+      });
+    };
+
+
+    const saveDraft = () => {
+      if (!storage) return;
+      try {
+        storage.setItem(draftKey, JSON.stringify({
+          name: nameInput?.value || "",
+          email: emailInput?.value || "",
+          phone: phoneTyped() ? phoneE164() : "",
+          messenger: selectedMessenger(),
+          telegram: telegramInput?.value || "",
+        }));
+      } catch (error) {
+      }
+    };
+
+    const clearDraft = () => {
+      try {
+        storage?.removeItem(draftKey);
+      } catch (error) {
+      }
+    };
+
+    const readDraft = () => {
+      try {
+        return JSON.parse(storage?.getItem(draftKey) || "null");
+      } catch (error) {
+        return null;
+      }
+    };
+
+
+    const setPhoneMode = (nextMode) => {
+      phoneMode = nextMode;
+      const input = phoneInput();
+      if (input && !tildaMask) input.placeholder = nextMode === "ru" ? TEXT.ruPlaceholder : TEXT.intlPlaceholder;
+    };
+
+    const formatPhone = (input) => {
+      if (phoneMode === "intl") {
+        const sanitized = sanitizeIntlPhone(input.value);
+        if (sanitized !== input.value) input.value = sanitized;
+        return;
+      }
+      const raw = input.value;
+      const parsed = parseRuPhone(raw);
+      if (parsed.foreign) {
+        setPhoneMode("intl");
+        input.value = sanitizeIntlPhone(raw);
+        return;
+      }
+      const formatted = formatRuPhone(parsed.national);
+      if (formatted === raw) return;
+      const caret = input.selectionStart ?? raw.length;
+      const atEnd = caret >= raw.length;
+      const cleaned = raw.replace(/[^\d+]/g, "");
+      const hadPrefix = cleaned.startsWith("+") || (digitsOf(raw).length >= 11 && /^[78]/.test(digitsOf(raw)));
+      input.value = formatted;
+      if (document.activeElement !== input) return;
+      if (atEnd) {
+        input.setSelectionRange(formatted.length, formatted.length);
+        return;
+      }
+      let left = digitsOf(raw.slice(0, caret)).length + (hadPrefix ? 0 : 1);
+      let position = 0;
+      while (position < formatted.length && left > 0) {
+        if (/\d/.test(formatted[position])) left -= 1;
+        position += 1;
+      }
+      input.setSelectionRange(position, position);
+    };
+
+    const setOwnPhone = (e164) => {
+      const input = phoneInput();
+      if (!input || !e164) return;
+      if (e164.startsWith("+7")) {
+        setPhoneMode("ru");
+        input.value = formatRuPhone(parseRuPhone(e164).national);
+      } else {
+        setPhoneMode("intl");
+        input.value = sanitizeIntlPhone(e164);
+      }
+    };
+
+
+    const startTildaMask = () => {
+      const original = phoneInput();
+      if (disposed || tildaMask || !phoneMaskRoot || !original || typeof window.t_form_phonemask_load !== "function") return;
+      const describedBy = original.getAttribute("aria-describedby") || "";
+      const hadFocus = document.activeElement === original;
+      const e164 = phoneTyped() ? phoneE164() : "";
+      const backup = original.cloneNode(true);
+      original.value = "";
+      try {
+        window.t_form_phonemask_load(original);
+      } catch (error) {
+      }
+      const group = phoneMaskRoot.querySelector("[data-input-lid]");
+      const input = phoneMaskRoot.querySelector("input.t-input-phonemask");
+      if (group?.getAttribute("data-init-mask") !== "yes" || !input) {
+        const wrap = phoneMaskRoot.querySelector(".t-input-phonemask__wrap");
+        if (wrap) wrap.replaceWith(backup);
+        if (e164) setOwnPhone(e164);
+        return;
+      }
+      tildaMask = true;
+      input.classList.add("request-form_phone-input");
+      input.dataset.requestInput = "phone";
+      input.required = true;
+      input.setAttribute("autocomplete", "tel");
+      input.setAttribute("inputmode", "tel");
+      input.setAttribute("aria-invalid", "false");
+      input.setAttribute("aria-describedby", describedBy);
+      if (e164 && typeof window.t_form_phonemask__setValue === "function") {
+        quiet = true;
+        try {
+          window.t_form_phonemask__setValue(phoneMaskRoot.querySelector("[data-input-lid]"), e164, undefined, { noFocus: true });
+        } catch (error) {
+        }
+        quiet = false;
+      }
+      if (hadFocus) input.focus();
+      updateEnterHints();
+    };
+
+
+    const renderMessenger = () => {
+      const isTelegram = selectedMessenger() === "telegram";
+      if (telegramField && telegramInput) {
+        telegramField.hidden = !isTelegram;
+        telegramInput.disabled = !isTelegram;
+        if (!isTelegram) showFieldError(telegramInput, "");
+      }
+      updateEnterHints();
+      refreshSummary();
+    };
+
+    const showEmailSuggestion = () => {
+      if (!emailInput || !emailSuggest || !emailFix) return;
+      const suggestion = emailMessage(emailInput.value) === TEXT.emailEmpty ? "" : suggestEmail(emailInput.value);
+      emailFix.textContent = suggestion;
+      emailSuggest.hidden = !suggestion;
+    };
+
+
+    const handleInput = (input) => {
+      if (quiet) return;
+      if (input.dataset.requestInput === "phone" && !tildaMask) formatPhone(input);
+      if (input === emailInput && emailSuggest) emailSuggest.hidden = true;
+      input.dataset.dirty = "true";
+      if (isShownInvalid(input)) showFieldError(input, messageFor(input));
+      refreshSummary();
+      saveDraft();
+      if (!started) {
+        started = true;
+        reachGoal(form, "form_start", goalParams());
+      }
+    };
+
+    const handleBlur = (input) => {
+      if (busy) return;
+      const key = input.dataset.requestInput;
+      if (key === "phone" && !tildaMask && phoneMode === "ru" && !parseRuPhone(input.value).national) input.value = "";
+      if (key === "telegram" && !telegramMessage(input.value)) input.value = `@${normalizeTelegram(input.value)}`;
+      if (input.dataset.dirty === "true") showFieldError(input, messageFor(input));
+      if (key === "email") showEmailSuggestion();
+      refreshSummary();
+    };
+
+    listen(form, "input", (event) => {
+      const input = inputOf(event.target);
+      if (input) handleInput(input);
+    });
+    listen(form, "change", (event) => {
+      const input = inputOf(event.target);
+      if (input?.dataset.requestInput === "phone") handleInput(input);
+    });
+    listen(form, "focusout", (event) => {
+      const input = inputOf(event.target);
+      if (input) handleBlur(input);
+    });
+
+    listen(form, "focusin", (event) => {
+      const input = inputOf(event.target);
+      if (input?.dataset.requestInput !== "phone" || tildaMask || phoneMode !== "ru" || input.value) return;
+      input.value = "+7 ";
+      window.requestAnimationFrame(() => input.setSelectionRange(3, 3));
+    });
+
+    listen(form, "paste", (event) => {
+      const input = inputOf(event.target);
+      if (input?.dataset.requestInput !== "phone" || tildaMask || phoneMode !== "ru") return;
+      const text = event.clipboardData?.getData("text") || "";
+      const allSelected = input.selectionStart === 0 && input.selectionEnd === input.value.length;
+      if (!text || (parseRuPhone(input.value).national && !allSelected)) return;
+      event.preventDefault();
+      input.value = text;
+      handleInput(input);
+      const end = input.value.length;
+      input.setSelectionRange(end, end);
+    });
+
+    listen(emailFix, "click", () => {
+      emailInput.value = emailFix.textContent;
+      emailSuggest.hidden = true;
+      handleInput(emailInput);
+      showFieldError(emailInput, messageFor(emailInput));
+      emailInput.focus();
+    });
+
+    messengerInputs.forEach((input) => {
+      listen(input, "change", () => {
+        renderMessenger();
+        saveDraft();
+      });
+    });
+
+    listen(form, "keydown", (event) => {
+      if (event.key !== "Enter" || event.isComposing) return;
+      const list = activeInputs();
+      const index = list.indexOf(event.target);
+      if (index > -1 && index < list.length - 1) {
+        event.preventDefault();
+        list[index + 1].focus();
+      }
+    });
+
+
+    const canHover = Boolean(window.matchMedia?.("(hover: hover) and (pointer: fine)").matches);
+    const tipOf = (button) => document.getElementById(button.getAttribute("aria-controls"));
+    const setTip = (button, open, pinned = false) => {
+      button.setAttribute("aria-expanded", String(open));
+      button.dataset.pinned = open && pinned ? "true" : "";
+      const tip = tipOf(button);
+      if (tip) tip.hidden = !open;
+    };
+    const closeTips = (except) => {
+      tipButtons.forEach((button) => {
+        if (button !== except) setTip(button, false);
+      });
+    };
+
+    tipButtons.forEach((button) => {
+      listen(button, "click", () => {
+        const pinnedOpen = button.getAttribute("aria-expanded") === "true" && button.dataset.pinned === "true";
+        closeTips(button);
+        setTip(button, !pinnedOpen, true);
+      });
+      listen(button, "blur", () => setTip(button, false));
+      if (canHover) {
+        listen(button, "mouseenter", () => {
+          if (button.getAttribute("aria-expanded") === "true") return;
+          closeTips(button);
+          setTip(button, true);
+        });
+        listen(button, "mouseleave", () => {
+          if (button.dataset.pinned !== "true") setTip(button, false);
+        });
+      }
+    });
+
+    if (tipButtons.length) {
+      listen(document, "keydown", (event) => {
+        if (event.key === "Escape") closeTips();
+      });
+      listen(document, "pointerdown", (event) => {
+        const inside = tipButtons.some((button) => button.contains(event.target) || tipOf(button)?.contains(event.target));
+        if (!inside) closeTips();
+      });
+    }
+
+
+    const emitVisible = () => {
+      const visible = onScreen || focused;
+      if (visible === lastVisible) return;
+      lastVisible = visible;
+      form.dispatchEvent(new CustomEvent("academy-request-form:visible", { bubbles: true, detail: { visible } }));
+    };
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          onScreen = entry.isIntersecting;
+          const half = entry.intersectionRatio >= 0.5 ||
+            (entry.rootBounds && entry.intersectionRect.height >= entry.rootBounds.height * 0.5);
+          if (!viewSent && half) {
+            viewSent = true;
+            reachGoal(form, "form_view", goalParams());
+          }
+        });
+        emitVisible();
+      }, { threshold: [0, 0.25, 0.5] });
+      observer.observe(form);
+      cleanups.push(() => observer.disconnect());
+    }
+
+    listen(form, "focusin", () => {
+      focused = true;
+      emitVisible();
+    });
+    listen(form, "focusout", () => {
+      window.setTimeout(() => {
+        focused = form.contains(document.activeElement);
+        emitVisible();
+      }, 0);
+    });
+
+
+    const setBusy = (value) => {
+      busy = value;
+      form.setAttribute("aria-busy", String(value));
+      submit?.setAttribute("aria-busy", String(value));
+      submit?.setAttribute("aria-disabled", String(value));
+      if (!value) window.clearTimeout(slowTimer);
+    };
+
+    const showSuccess = () => {
+      const payload = submittedPayload;
+      setBusy(false);
+      submittedForm = null;
+      setSummary();
+      hideHelp();
+      if (successText) {
+        successText.textContent = successMessage({
+          mode,
+          messenger: payload?.messenger,
+          contact: payload?.messenger === "max" ? payload.phoneDisplay : payload?.messengerContact,
+          email: payload?.email,
+          hour: moscowHour(),
+          from: hoursFrom,
+          to: hoursTo,
+          custom: form.dataset.successText,
+        });
+      }
+      contentParts.forEach((part) => {
+        part.hidden = true;
+      });
+      if (successView) successView.hidden = false;
+      form.dataset.state = "success";
+      if (section && successHeading?.id) section.setAttribute("aria-labelledby", successHeading.id);
+      clearDraft();
+      reachGoal(form, "form_success", { mode, contact: payload?.messenger || "email" });
+      window.requestAnimationFrame(() => (successHeading || successView)?.focus({ preventScroll: false }));
+    };
+
+    const showDeliveryError = (message) => {
+      submittedForm = null;
+      setBusy(false);
+      setSummary(message, "error");
+      showHelp(message);
+    };
+
+    const eventForm = (event, jqueryForm) => {
+      if (jqueryForm instanceof HTMLFormElement) return jqueryForm;
+      if (jqueryForm?.[0] instanceof HTMLFormElement) return jqueryForm[0];
+      if (event?.detail?.form instanceof HTMLFormElement) return event.detail.form;
+      if (event?.detail instanceof HTMLFormElement) return event.detail;
+      return event?.target instanceof HTMLFormElement ? event.target : null;
+    };
+
+    const onTildaSuccess = (event, jqueryForm) => {
+      if (submittedForm && eventForm(event, jqueryForm) === submittedForm) showSuccess();
+    };
+    const onTildaError = (event, jqueryForm) => {
+      if (submittedForm && eventForm(event, jqueryForm) === submittedForm) showDeliveryError(TEXT.sendFailed);
+    };
+
+    listen(document, "tildaform:aftersuccess", onTildaSuccess);
+    listen(document, "tildaform:aftererror", onTildaError);
+    const jqueryNamespace = `.academyRequestForm${controllers.length}`;
+    if (typeof window.jQuery === "function") {
+      window.jQuery(document).on(`tildaform:aftersuccess${jqueryNamespace}`, onTildaSuccess);
+      window.jQuery(document).on(`tildaform:aftererror${jqueryNamespace}`, onTildaError);
+      cleanups.push(() => window.jQuery(document).off(jqueryNamespace));
+    }
+
+    const watchSlowDelivery = (nativeForm) => {
+      window.clearTimeout(slowTimer);
+      slowTimer = window.setTimeout(() => {
+        if (!busy || submittedForm !== nativeForm) return;
+        if (captchaOpen()) {
+          watchSlowDelivery(nativeForm);
+          return;
+        }
+        showHelp(TEXT.slow);
+      }, SLOW_DELIVERY_MS);
+    };
+
+    let submittedPayload = null;
+
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+      if (busy) return;
+
+      if (telegramInput && isActive(telegramInput) && !telegramMessage(telegramInput.value)) {
+        telegramInput.value = `@${normalizeTelegram(telegramInput.value)}`;
+      }
+      const list = activeInputs();
+      const invalid = list.filter((input) => {
+        const message = messageFor(input);
+        showFieldError(input, message);
+        return Boolean(message);
+      });
+      if (invalid.length) {
+        setSummary(`Проверьте ${invalid.length} ${fieldsWord(invalid.length)}`, "invalid");
+        invalid[0].focus({ preventScroll: true });
+        const smooth = !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+        invalid[0].scrollIntoView({ block: "center", behavior: smooth ? "smooth" : "auto" });
+        return;
+      }
+
+      const phone = phoneE164();
+      const messenger = messengerInputs.length ? selectedMessenger() : null;
+      const payload = {
+        name: normalizeName(nameInput.value),
+        email: emailInput ? emailInput.value.trim() : null,
+        phone,
+        phoneDisplay: phoneDisplay(),
+        messenger,
+        messengerContact: messenger === "telegram" ? `@${normalizeTelegram(telegramInput.value)}` : messenger === "max" ? phone : "",
+      };
+      submittedPayload = payload;
+      reachGoal(form, "form_submit", { mode, contact: messenger || "email" });
+
+      setSummary(TEXT.sending, "loading");
+      hideHelp();
+      setBusy(true);
+
+      const nativeForm = hideTildaFormRecord(formName);
+      if (!(nativeForm instanceof HTMLFormElement)) {
+        showDeliveryError(TEXT.unavailable);
+        return;
+      }
+
+      const extras = [];
+      if (form.dataset.source) extras.push(["form_source", form.dataset.source, "replace"]);
+      if (form.dataset.deviceField) extras.push([form.dataset.deviceField, device, form.dataset.deviceMode || "append"]);
+
+      try {
+        await syncTildaForm(nativeForm, payload, extras);
+        if (disposed) return;
+        submittedForm = nativeForm;
+        const nativeSubmit = nativeForm.querySelector('button[type="submit"], input[type="submit"]');
+        if (nativeSubmit instanceof HTMLElement) nativeForm.requestSubmit(nativeSubmit);
+        else nativeForm.requestSubmit();
+        await nextFrame();
+        if (submittedForm === nativeForm && nativeForm.querySelector(".js-error-control-box")) {
+          showDeliveryError(TEXT.sendFailed);
+          return;
+        }
+        if (submittedForm === nativeForm) watchSlowDelivery(nativeForm);
+      } catch (error) {
+        if (error instanceof ContractError) {
+          console.error(`Форма заявки «${formName}»: нативная форма Тильды не совпадает с контрактом: ${error.message}`);
+        }
+        showDeliveryError(TEXT.sendFailed);
+      }
+    };
+
+    listen(form, "submit", handleSubmit);
+
+
+    const draft = readDraft();
+    if (draft) {
+      if (nameInput && draft.name) nameInput.value = draft.name;
+      if (emailInput && draft.email) emailInput.value = draft.email;
+      if (draft.phone) setOwnPhone(draft.phone);
+      const savedMessenger = messengerInputs.find((input) => input.value === draft.messenger);
+      if (savedMessenger) savedMessenger.checked = true;
+      if (telegramInput && draft.telegram) telegramInput.value = draft.telegram;
+    }
+    renderMessenger();
+    if (submit) submit.disabled = false;
+    loadTildaMask().then((ready) => {
+      if (ready) startTildaMask();
+    });
+    if (formName) watchedNames.add(formName);
+    hideTildaFormRecord(formName);
+
+    return {
+      formName,
+      onDiscoveryEnd() {
+        if (IS_PRODUCTION && !findTildaForm(formName) && form.dataset.state !== "success") showHelp(TEXT.noNative);
+      },
+      cleanup() {
+        disposed = true;
+        submittedForm = null;
+        window.clearTimeout(slowTimer);
+        cleanups.forEach((release) => release());
+      },
+    };
+  };
+
+
+  const hideKnownForms = () => {
+    watchedNames.forEach(hideTildaFormRecord);
+    if (watchedNames.size && [...watchedNames].every(findTildaForm)) finishDiscovery();
+  };
+
+  const observer = new MutationObserver(hideKnownForms);
+  let discoveryTimer = 0;
+  let discoveryDone = false;
+
+  function finishDiscovery() {
+    if (discoveryDone) return;
+    discoveryDone = true;
+    observer.disconnect();
+    window.clearTimeout(discoveryTimer);
+    controllers.forEach((controller) => controller.onDiscoveryEnd());
+  }
+
+  forms.forEach((form) => controllers.push(setupForm(form)));
+  observer.observe(document.body, { childList: true, subtree: true });
+  discoveryTimer = window.setTimeout(finishDiscovery, DISCOVERY_MS);
+  hideKnownForms();
+
+  window.__academyRequestFormCleanup = () => {
+    observer.disconnect();
+    window.clearTimeout(discoveryTimer);
+    controllers.forEach((controller) => controller.cleanup());
+    window.__academyRequestFormCleanup = undefined;
+  };
 })();
 </script>
 </div></div></div></div>

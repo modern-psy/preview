@@ -343,59 +343,11 @@ body { margin: 0; background: #f5f5f5; }
   .terms-col + .terms-col { border-left: 1px solid var(--wa-grey-2); }
 }
 
-/* ---------- 10 · Заявка: лид-форма Академии ---------- */
-.lf { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: var(--wa-on-dark-2); }
-.lf-intro { display: grid; gap: 1.25rem; align-content: start; }
-.lf-title { font-size: var(--title); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; color: var(--wa-on-dark-2); text-wrap: balance; }
-.lf-desc { font-size: var(--sub); line-height: 1.2; color: var(--wa-on-dark-3); max-width: 34ch; }
-.lf-form { display: grid; gap: 1.25rem; }
-.lf-fields { display: grid; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
-.lf-field { position: relative; }
-.lf-input { display: block; width: 100%; height: 3.75rem; padding: 1.35rem 1rem 0.35rem; border: 1px solid #8e8899; border-radius: 0.375rem; background: transparent; color: var(--wa-on-dark-2); font: inherit; font-size: 1rem; caret-color: #fff; transition: border-color 0.2s ease; }
-.lf-input::placeholder { color: transparent; }
-.lf-label { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--wa-on-dark-3); font-size: 1rem; pointer-events: none; transition: top 0.2s ease, font-size 0.2s ease, transform 0.2s ease; }
-.lf-input:focus + .lf-label, .lf-input:not(:placeholder-shown) + .lf-label { top: 0.6rem; transform: none; font-size: 0.75rem; }
-.lf-input:focus { outline: none; border-color: #fff; }
-.lf-input:focus-visible { box-shadow: 0 0 0 2px rgb(255 255 255 / 35%); }
-.lf-msg { margin: 0; padding: 0; border: 0; }
-.lf-msg legend { padding: 0; margin-bottom: 0.75rem; font-weight: 500; color: var(--wa-on-dark-3); font-size: 1rem; }
-.lf-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
-.lf-opt { position: relative; }
-.lf-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.lf-opt > span { display: flex; min-height: 3.125rem; align-items: center; justify-content: center; border: 1px solid #8e8899; border-radius: 0.375rem; color: var(--wa-on-dark-3); font-weight: 500; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
-/* значки мессенджеров, как в формах других лендингов: красятся цветом текста кнопки */
-.lf-opt > span { gap: 0.5rem; }
-.lf-opt-icon { width: 1.25rem; height: 1.25rem; flex: none; }
-.lf-opt input:checked + span { background: #c7c7c7; border-color: #c7c7c7; color: var(--wa-ink); }
-.lf-opt input:focus-visible + span { outline: 2px solid var(--wa-on-dark-2); outline-offset: 3px; }
-@media (hover: hover) and (pointer: fine) { .lf-opt input:not(:checked) + span:hover { border-color: #fff; color: #fff; } .lf-submit:hover { background: var(--wa-on-dark-2); } }
-.lf-submit { width: 100%; min-height: 3.5rem; border: 0; border-radius: 0.5rem; background: #fff; color: var(--wa-dark); font: 500 1.125rem/1.07 var(--font); letter-spacing: -0.04em; cursor: pointer; transition: background-color 0.2s ease; }
-.lf-submit:focus-visible { outline: 2px solid var(--wa-on-dark-2); outline-offset: 3px; }
-.lf-legal { font-size: var(--fine); line-height: 1.35; color: var(--wa-on-dark-3); }
-.lf-legal a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
-/* Заявка: ошибка в поле, строка статуса, ответ после отправки */
-.lf-input[aria-invalid="true"] { border-color: var(--wa-accent-soft); box-shadow: 0 0 0 1px var(--wa-accent-soft); }
-.lf-status { font-size: var(--caption); line-height: 1.35; color: var(--wa-on-dark); }
-.lf-status:empty { display: none; }
-.lf-submit:disabled { cursor: progress; opacity: 0.7; }
-.lf-done { display: grid; gap: 0.75rem; align-content: center; outline: none; }
-.lf-form[hidden], .lf-done[hidden] { display: none; }
-.lf-done-title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3); line-height: 1.15; color: #fff; }
-.lf-done-text { font-size: var(--body); line-height: 1.4; color: var(--wa-on-dark-3); max-width: 34ch; }
-/* Скрытая форма Тильды: убираем с глаз, но не через display:none, скриптам Тильды нужно измерять поля */
-[data-psy-native-form] { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; border: 0 !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; }
-@container stage (min-width: 48rem) {
-  .lf { padding: 2.5rem; }
-  .lf-input { height: 4.125rem; font-size: 1.125rem; }
-  .lf-label { font-size: 1.125rem; }
-  .lf-submit { min-height: 4rem; font-size: 1.25rem; }
-}
 @container stage (min-width: 64.0625rem) {
   .pr { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
   .pr-zone { padding: 2.25rem 2.5rem; }
   .pr-name { font-size: 1.875rem; }
   .pr-price { font-size: 3.25rem; }
-  .lf { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 3.5rem 4rem; gap: 4rem; }
 }
 
 
