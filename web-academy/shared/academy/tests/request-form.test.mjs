@@ -110,7 +110,9 @@ test('разметка: заявка на курс без почты, Telegram �
   assert.match(html, /data-tilda-form-name="kpt-bek"/);
   assert.match(html, /Нажимая на кнопку «Записаться»/);
   assert.match(html, /https:\/\/t\.me\/Welcometoasp_bot/);
-  assert.match(html, /с&nbsp;10:00 до&nbsp;20:00/);
+  assert.match(html, /с&nbsp;10:00 до&nbsp;19:00/);
+  assert.match(html, /data-hours-from="10" data-hours-to="19"/);
+  assert.match(html, /data-device-field="utm_term" data-device-mode="append"/, 'устройство дописывается в последнее скрытое поле с метками');
   assert.doesNotMatch(html, /type="checkbox"/, 'согласие строкой, без чекбокса');
   assert.doesNotMatch(html, /Написать в&nbsp;MAX/, 'без адреса бота в MAX кнопки MAX нет');
 });

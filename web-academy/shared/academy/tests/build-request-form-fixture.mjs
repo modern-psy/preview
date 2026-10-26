@@ -30,7 +30,7 @@ const examples = {
 
 // На стенде форма стоит в настоящей секции лендинга: та же ширина, что на странице
 const render = mode => renderRequestFormSection({
-  mode, nativeMarker: 'fixture-form', source: `fixture · ${mode}`, deviceField: 'fixture_device', ...examples[mode],
+  mode, nativeMarker: 'fixture-form', source: `fixture · ${mode}`, ...examples[mode],
 }, {id: 'application', formId: 'fixture-form'});
 
 const templates = Object.keys(examples)

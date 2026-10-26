@@ -7,16 +7,22 @@ import {escapeHtml, renderText, sectionId} from './html-render.mjs';
 // access — доступ к мини-курсу на почту, webinar — запасная форма вебинара
 const MODES = ['course', 'waitlist', 'access', 'webinar'];
 
-// Значения по умолчанию из решений 24 октября 2026 (ТЗ «Форма заявки»).
+// Значения по умолчанию из решений 24–26 октября 2026 (ТЗ «Форма заявки»).
 // Лендинг может переопределить их в своих данных.
 export const requestFormDefaults = {
   agreementUrl: 'https://modern-psy.ru/agreement',
   privacyUrl: 'https://modern-psy.ru/privacy',
   telegramBotUrl: 'https://t.me/Welcometoasp_bot',
+  // Бота приёмной комиссии в MAX нет, поэтому и кнопки MAX нет
   maxBotUrl: '',
+  // Менеджеры пишут и звонят с 10:00 до 19:00 по Москве каждый день
   hoursFrom: 10,
-  hoursTo: 20,
-  hoursNote: 'Ответим с 10:00 до 20:00 по Москве, без выходных',
+  hoursTo: 19,
+  hoursNote: 'Ответим с 10:00 до 19:00 по Москве, без выходных',
+  // Новых полей в amoCRM нет: устройство дописывается в последнее скрытое
+  // поле с метками, ключевое слово рекламы в нём сохраняется
+  deviceField: 'utm_term',
+  deviceMode: 'append',
   defaultMessenger: 'telegram',
   successHeading: 'Заявка принята',
 };

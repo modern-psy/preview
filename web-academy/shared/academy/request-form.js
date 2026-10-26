@@ -347,7 +347,10 @@
       input.name = name;
       nativeForm.append(input);
     }
-    if (input.dataset.academyOriginalValue === undefined) input.dataset.academyOriginalValue = input.value;
+    if (input.dataset.academyOriginalValue === undefined) {
+      // Метку из адреса страницы сохраняем: устройство дописывается к ней, а не вместо неё
+      input.dataset.academyOriginalValue = input.value || new URLSearchParams(window.location.search).get(name) || "";
+    }
     const original = mode === "append" ? input.dataset.academyOriginalValue : "";
     setNativeInputValue(input, original ? `${original} · ${value}` : value);
   };
@@ -452,7 +455,7 @@
     const mode = form.dataset.mode || "course";
     const formName = form.dataset.tildaFormName?.trim() || "";
     const hoursFrom = Number(form.dataset.hoursFrom) || 10;
-    const hoursTo = Number(form.dataset.hoursTo) || 20;
+    const hoursTo = Number(form.dataset.hoursTo) || 19;
     const device = detectDevice();
     // Поля ищем каждый раз заново: маска Тильды подменяет поле телефона своим
     const byKey = (key) => form.querySelector(`[data-request-input="${key}"]`);
