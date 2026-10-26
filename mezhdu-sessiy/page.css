@@ -705,17 +705,6 @@ body.is-menu-open { overflow: hidden; }
 
 .story_button { margin-top: clamp(1.75rem, 2.6vw, 2.25rem); }
 
-.story_note {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-lg);
-  color: var(--granola-text-secondary);
-  font-size: 0.9375rem;
-}
-
-.story_note .icon { --icon-size: 1.25rem; }
-
 /* --- Иллюстрация: фоновые панели и окно ---
    Плитка звонка и поля окна тоже считаются от ширины колонки (cqi),
    чтобы на ноутбуке плитка не закрывала текст окна */
@@ -1462,7 +1451,107 @@ body.is-menu-open { overflow: hidden; }
 
 
 /* ---------------------------------------------------------------------------
-   8. ПОДПИСКА ВЫГОДНА ДВАЖДЫ · графитовая полоса, одно окно, две выгоды
+   7b. ЧТО ВЫ ПОЛУЧАЕТЕ КАЖДЫЙ МЕСЯЦ · четыре пункта (26.10.2026)
+   Стоит перед «Почему клуб доступнее, чем кажется». Без карточек:
+   пункты с пунктиром сверху, номер на лаймовом кружке.
+   Телефон: столбиком. Десктоп (от 62rem): заголовок слева прилипает,
+   справа сетка 2 × 2.
+   --------------------------------------------------------------------------- */
+
+.outcomes_layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.outcomes_title {
+  max-width: 36rem;
+  color: var(--granola-text);
+  font-size: clamp(2rem, 1.2rem + 2.6vw, 3rem);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.outcomes_title strong { font-weight: var(--font-weight-semibold); }
+
+.outcomes_list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--spacing-3xl);
+}
+
+/* Пунктир над каждым пунктом — псевдоэлементом */
+.outcomes_item {
+  position: relative;
+  padding-block: var(--spacing-xl) var(--spacing-2xl);
+}
+
+.outcomes_item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  border-top: 1px dashed var(--granola-soft-strong);
+}
+
+.outcomes_num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 1.75rem;
+  padding-inline: var(--spacing-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-brand-300);
+  color: var(--granola-text);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.outcomes_item h3 {
+  margin-top: var(--spacing-lg);
+  color: var(--granola-text);
+  font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Фон секции серый #f5f5f5, поэтому текст --text-secondary (5.3:1) */
+.outcomes_item p {
+  max-width: 34rem;
+  margin-top: var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: var(--font-size-text-lg);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+@media screen and (min-width: 48rem) {
+  .outcomes_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media screen and (min-width: 62rem) {
+  .outcomes_layout {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    align-items: start;
+    gap: clamp(3rem, 6vw, 6rem);
+  }
+
+  .outcomes_title {
+    position: sticky;
+    top: calc(var(--header-space) + 1rem);
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   8. ПОЧЕМУ КЛУБ ДОСТУПНЕЕ, ЧЕМ КАЖЕТСЯ · графитовая полоса, одно окно, две выгоды
    22.10.2026 объединил блоки «Сколько это стоит по отдельности»
    и «Накопительная скидка» (артборд 15 холста). Обе выгоды на равных:
    одинаковый заголовок, пояснение и мини-график одной высоты внизу.
@@ -1471,7 +1560,8 @@ body.is-menu-open { overflow: hidden; }
    Данные обновлены 22.10.2026: 35 000 ₽ по отдельности, ступени 1–3, 4–6,
    7–12 месяцев и от 12 месяцев подряд.
    Окно на тёмном фоне устроено как в «Кому будет полезно» (раздел 9):
-   заливка ровная, неровная линия рамки внутри, иначе край рвётся.
+   одна ровная граница без внутренней линии (26.10.2026), белая панель
+   скруглена концентрично окну: радиус окна 24 минус поле 12 = 12px.
    --------------------------------------------------------------------------- */
 
 .sessions-page .section_value {
@@ -1480,10 +1570,6 @@ body.is-menu-open { overflow: hidden; }
   background: var(--granola-text);
   color: var(--text-white);
 }
-
-/* Сразу после полосы «Что вас ждёт внутри клуба» — встык, без серой
-   полосы между ними (Дарья, 22.10.2026) */
-.sessions-page .section_includes + .section_value { margin-top: 0; }
 
 .value_head {
   display: flex;
@@ -1519,16 +1605,6 @@ body.is-menu-open { overflow: hidden; }
   color: var(--granola-text);
 }
 
-.value_window::after {
-  content: "";
-  position: absolute;
-  inset: 0.375rem;
-  border: 0.08rem solid var(--granola-sketch);
-  border-radius: calc(var(--radius-4xl) - 0.375rem);
-  filter: url(#story-rough);
-  pointer-events: none;
-}
-
 .value_bar {
   display: flex;
   align-items: center;
@@ -1547,7 +1623,7 @@ body.is-menu-open { overflow: hidden; }
 .value_grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  border-radius: var(--radius-2xl);
+  border-radius: calc(var(--radius-4xl) - var(--spacing-md));   /* концентрично окну: 24 − 12 */
   background: var(--granola-page);
 }
 
@@ -1766,6 +1842,9 @@ body.is-menu-open { overflow: hidden; }
 /* Окно: заливка ровная, а неровная линия рамки нарисована внутри,
    с отступом от края — на тёмном фоне линия по самому краю читалась
    как рваные светлые штрихи */
+/* Окно без внутренней линии рамки (26.10.2026: двойная рамка с зазором
+   убрана). Скругления концентрические: радиус сцены = радиус окна минус
+   поле окна, 24 − 12 = 12px. Меняя поле или радиус, пересчитать и сцену */
 .audience_window {
   position: relative;
   isolation: isolate;
@@ -1773,27 +1852,17 @@ body.is-menu-open { overflow: hidden; }
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 3.5rem);
   margin-top: clamp(2rem, 4vw, 3rem);
-  padding: var(--spacing-lg) var(--spacing-lg) clamp(1.5rem, 3vw, 2.5rem);
-  border-radius: var(--radius-3xl);
+  padding: var(--spacing-md) var(--spacing-md) clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: var(--radius-4xl);
   background: var(--granola-surface);
   color: var(--granola-text);
-}
-
-.audience_window::after {
-  content: "";
-  position: absolute;
-  inset: 0.375rem;
-  border: 0.08rem solid var(--granola-sketch);
-  border-radius: calc(var(--radius-3xl) - 0.375rem);
-  filter: url(#story-rough);
-  pointer-events: none;
 }
 
 /* Сцена на светлой панели в лаймовую точку */
 .audience_pic {
   position: relative;
   min-height: 16rem;
-  border-radius: var(--radius-2xl);
+  border-radius: calc(var(--radius-4xl) - var(--spacing-md));
   background-color: var(--granola-soft);
   background-image: radial-gradient(circle, rgba(132, 204, 22, 0.35) 0 0.08rem, transparent 0.11rem);
   background-size: 0.875rem 0.875rem;
@@ -1875,7 +1944,7 @@ body.is-menu-open { overflow: hidden; }
 
   .audience_window {
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
   }
 
   .audience_pic { min-height: 26rem; }
@@ -2635,7 +2704,8 @@ body.is-menu-open { overflow: hidden; }
   text-wrap: pretty;
 }
 
-/* --- Окно с ценой: как окно выгод, заливка ровная, линия рамки внутри --- */
+/* --- Окно с ценой: как окно выгод, одна ровная граница, скругления
+   концентрические (26.10.2026 внутренняя линия рамки убрана) --- */
 .join_window {
   position: relative;
   isolation: isolate;
@@ -2644,16 +2714,6 @@ body.is-menu-open { overflow: hidden; }
   border-radius: var(--radius-4xl);
   background: var(--granola-surface);
   color: var(--granola-text);
-}
-
-.join_window::after {
-  content: "";
-  position: absolute;
-  inset: 0.375rem;
-  border: 0.08rem solid var(--granola-sketch);
-  border-radius: calc(var(--radius-4xl) - 0.375rem);
-  filter: url(#story-rough);
-  pointer-events: none;
 }
 
 .join_bar {
@@ -2672,7 +2732,7 @@ body.is-menu-open { overflow: hidden; }
 
 .join_panel {
   padding: var(--spacing-xl) 1.25rem;
-  border-radius: var(--radius-2xl);
+  border-radius: calc(var(--radius-4xl) - var(--spacing-md));   /* концентрично окну: 24 − 12 */
   background: var(--granola-page);
 }
 
