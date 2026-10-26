@@ -453,11 +453,17 @@ body { margin: 0; background: #f5f5f5; }
 
 /* ---------- «Зачем психологу знания психиатрии»: лист умений ----------
    Тёмная плашка: слева зачем и кнопка, справа белый лист «После обучения вы сможете».
-   Лист останавливается посреди экрана, пока страницу листают вниз, и раскрывает умения по одному:
-   текущее раскрыто, пройденные свёрнуты до заголовка с галочкой, следующие серые. После пятого печать.
-   Состояния строк и середину экрана ставит page.js (data-sk). Без скрипта лист обычный, все пояснения видны.
-   Сколько прокрутки уходит на лист — высота .sk-run (--sk-run), по умолчанию 110 % высоты экрана. */
-.sk { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: #fff; }
+   Пока страницу листают вниз, плашка целиком стоит на экране (на телефоне так, чтобы лист был посередине),
+   а лист раскрывает умения по одному: текущее раскрыто, пройденные свёрнуты до заголовка с галочкой,
+   следующие серые. После пятого печать. Запас прокрутки .sk-run лежит под плашкой, поэтому тёмный фон
+   своей высоты и не растягивается. Высоту листа, положение плашки и состояния строк ставит page.js (data-sk).
+   Без скрипта плашка обычная, все пояснения видны. Сколько прокрутки уходит на лист — --sk-run, по умолчанию 110 % экрана. */
+.sk-panel { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: #fff; }
+.sk.is-js .sk-panel { position: sticky; top: var(--sk-top, 0px); }
+.sk-run { display: none; }
+.sk.is-js .sk-run { display: block; height: var(--sk-run, 110svh); }
+/* пока скрипт меряет высоту листа, анимации выключены */
+.sk.is-measuring * { transition: none !important; animation: none !important; }
 .sk .wa-title { color: #fff; }
 .sk .idea-lead { color: var(--wa-on-dark-2); }
 .sk .wa-body { color: var(--wa-on-dark-3); }
@@ -465,13 +471,10 @@ body { margin: 0; background: #f5f5f5; }
 /* на телефоне обёртка .sk-side прозрачна: текст над листом, кнопка после него */
 .sk-side { display: contents; }
 .sk-text { order: 1; }
-.sk-track { order: 2; position: relative; }
+.sk-sheet { order: 2; }
 .sk-foot { order: 3; display: flex; }
 .sk.is-js .sk-foot { margin-top: 0.5rem; }
 .sk-sheet { position: relative; margin-bottom: 2rem; background: #fff; color: var(--wa-ink); border-radius: 0.75rem; padding: 1.25rem 0.625rem 0.75rem; box-shadow: 0 1.5rem 3rem -1.5rem rgb(0 0 0 / 55%); }
-.sk.is-js .sk-sheet { position: sticky; top: var(--sk-top, 1rem); }
-.sk-run { display: none; }
-.sk.is-js .sk-run { display: block; height: var(--sk-run, 110svh); }
 .sk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0 0.625rem 0.875rem; border-bottom: 1px solid var(--wa-line); }
 .sk-head b { font-size: var(--h3); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; }
 .sk-count { font-size: var(--fine); color: var(--wa-ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -503,7 +506,7 @@ body { margin: 0; background: #f5f5f5; }
 @keyframes sk-pop { from { transform: scale(0); } to { transform: scale(1); } }
 @keyframes sk-stamp { 0% { transform: rotate(-14deg) scale(1.7); opacity: 0; } 70% { opacity: 1; } 100% { transform: rotate(-14deg) scale(1); opacity: 1; } }
 @container stage (min-width: 48rem) {
-  .sk { padding: 2.5rem; }
+  .sk-panel { padding: 2.5rem; }
   .sk-sheet { width: min(100%, 44rem); margin-inline: auto; padding: 1.75rem 1.25rem 1.25rem; }
   .sk-head { padding-inline: 0.75rem; }
   .sk-line { grid-template-columns: 2rem minmax(0, 1fr) 1.75rem; column-gap: 1rem; padding: 0.875rem 0.75rem; }
@@ -511,11 +514,10 @@ body { margin: 0; background: #f5f5f5; }
   .sk-mark { width: 1.75rem; height: 1.75rem; }
   .sk-stamp { width: 7rem; height: 7rem; right: -1.5rem; bottom: -3rem; }
 }
-/* десктоп: текст и кнопка слева тоже стоят на месте, пока справа заполняется лист */
+/* десктоп: текст и кнопка слева, лист справа */
 @container stage (min-width: 64.0625rem) {
-  .sk { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 4.5rem; padding: 3.5rem 4rem; }
-  .sk-side { display: grid; gap: 2rem; align-content: start; align-self: start; }
-  .sk.is-js .sk-side { position: sticky; top: var(--sk-top, 1rem); }
+  .sk-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 4.5rem; align-items: center; padding: 3.5rem 4rem; }
+  .sk-side { display: grid; gap: 2rem; align-content: start; }
   .sk-sheet { width: 100%; margin-bottom: 1.5rem; }
   .sk.is-js .sk-foot { margin-top: 0; }
 }
@@ -726,40 +728,40 @@ body { margin: 0; background: #f5f5f5; }
 <div class="psy-page" data-academy="1" data-psy-part="idea"><div class="wa" lang="ru">
 <section id="idea" class="wa-sec is-clip-x"><div class="wa-in">
       <!-- «Зачем психологу знания психиатрии»: слева зачем, справа лист с умениями.
-           Лист останавливается посреди экрана, пока страницу листают вниз, и раскрывает умения по одному;
+           Тёмная плашка останавливается на экране, пока страницу листают вниз, а лист раскрывает умения по одному;
            после пятого ставится печать (page.js, data-sk). Без скрипта видны все пояснения сразу. -->
       <div class="sk" data-sk>
-        <div class="sk-side">
-          <div class="sk-text">
-            <h2 class="wa-title">Зачем психологу знания психиатрии</h2>
-            <p class="idea-lead">Чтобы точнее понимать состояние клиента и&nbsp;обоснованно выбирать следующий шаг, не&nbsp;ставя диагнозов и&nbsp;не&nbsp;выходя за&nbsp;границы своей компетенции.</p>
-            <p class="wa-body">Вы сможете вовремя заметить тревожные признаки, понять, нужен&nbsp;ли клиенту врач, и&nbsp;выстроить работу вместе с&nbsp;психиатром.</p>
+        <div class="sk-panel">
+          <div class="sk-side">
+            <div class="sk-text">
+              <h2 class="wa-title">Зачем психологу знания психиатрии</h2>
+              <p class="idea-lead">Чтобы точнее понимать состояние клиента и&nbsp;обоснованно выбирать следующий шаг, не&nbsp;ставя диагнозов и&nbsp;не&nbsp;выходя за&nbsp;границы своей компетенции.</p>
+              <p class="wa-body">Вы сможете вовремя заметить тревожные признаки, понять, нужен&nbsp;ли клиенту врач, и&nbsp;выстроить работу вместе с&nbsp;психиатром.</p>
+            </div>
+            <div class="sk-foot"><a class="wa-btn is-light button_component" href="#format">Посмотреть, как устроено обучение</a></div>
           </div>
-          <div class="sk-foot"><a class="wa-btn is-light button_component" href="#format">Посмотреть, как устроено обучение</a></div>
-        </div>
-        <div class="sk-track">
           <figure class="sk-sheet">
             <figcaption class="sk-head"><b>После обучения вы сможете</b><span class="sk-count" aria-hidden="true"></span></figcaption>
             <ol class="sk-lines">
-            <li class="sk-line"><span class="sk-n">1</span><p class="sk-step">Оценивать психическое состояние клиента</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Собираете данные из&nbsp;жалоб, наблюдения, истории состояния, временной линии и&nbsp;психометрических методик.</p></div></div></li>
-            <li class="sk-line"><span class="sk-n">2</span><p class="sk-step">Распознавать «красные флаги»</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Замечаете изменения сна, настроения, активности, мышления, восприятия и&nbsp;поведения, которые требуют дополнительной оценки.</p></div></div></li>
-            <li class="sk-line"><span class="sk-n">3</span><p class="sk-step">Интерпретировать результаты скрининга</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Сопоставляете баллы шкал с&nbsp;симптомами, контекстом и&nbsp;динамикой состояния и&nbsp;формулируете рабочие гипотезы.</p></div></div></li>
-            <li class="sk-line"><span class="sk-n">4</span><p class="sk-step">Понимать, когда нужен психиатр</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Оцениваете, насколько ситуация срочная и&nbsp;нужна&nbsp;ли клиенту консультация врача.</p></div></div></li>
-            <li class="sk-line"><span class="sk-n">5</span><p class="sk-step">Выстраивать работу с&nbsp;психиатром</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Решаете, что уточнить, что обсудить с&nbsp;клиентом и&nbsp;какую информацию передать врачу с&nbsp;его согласия.</p></div></div></li>
+              <li class="sk-line"><span class="sk-n">1</span><p class="sk-step">Оценивать психическое состояние клиента</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Собираете данные из&nbsp;жалоб, наблюдения, истории состояния, временной линии и&nbsp;психометрических методик.</p></div></div></li>
+              <li class="sk-line"><span class="sk-n">2</span><p class="sk-step">Распознавать «красные флаги»</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Замечаете изменения сна, настроения, активности, мышления, восприятия и&nbsp;поведения, которые требуют дополнительной оценки.</p></div></div></li>
+              <li class="sk-line"><span class="sk-n">3</span><p class="sk-step">Интерпретировать результаты скрининга</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Сопоставляете баллы шкал с&nbsp;симптомами, контекстом и&nbsp;динамикой состояния и&nbsp;формулируете рабочие гипотезы.</p></div></div></li>
+              <li class="sk-line"><span class="sk-n">4</span><p class="sk-step">Понимать, когда нужен психиатр</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Оцениваете, насколько ситуация срочная и&nbsp;нужна&nbsp;ли клиенту консультация врача.</p></div></div></li>
+              <li class="sk-line"><span class="sk-n">5</span><p class="sk-step">Выстраивать работу с&nbsp;психиатром</p><span class="sk-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div class="sk-p"><div><p class="sk-ink">Решаете, что уточнить, что обсудить с&nbsp;клиентом и&nbsp;какую информацию передать врачу с&nbsp;его согласия.</p></div></div></li>
             </ol>
             <div class="sk-stamp" aria-hidden="true">
-            <svg viewBox="0 0 120 120">
-              <defs><path id="cs-ring" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/></defs>
-              <circle cx="60" cy="60" r="57" fill="none" stroke="currentColor" stroke-width="2"/>
-              <circle cx="60" cy="60" r="34" fill="currentColor"/>
-              <text font-family="Wix Madefor Text, Arial, sans-serif" font-size="11.5" font-weight="600" fill="currentColor" letter-spacing="0.6"><textPath href="#cs-ring" xlink:href="#cs-ring" textLength="278" lengthAdjust="spacing">решение обосновано · решение обосновано ·</textPath></text>
-              <path d="M47 61 l9 9 l18 -19" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
+              <svg viewBox="0 0 120 120">
+                <defs><path id="cs-ring" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/></defs>
+                <circle cx="60" cy="60" r="57" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="60" cy="60" r="34" fill="currentColor"/>
+                <text font-family="Wix Madefor Text, Arial, sans-serif" font-size="11.5" font-weight="600" fill="currentColor" letter-spacing="0.6"><textPath href="#cs-ring" xlink:href="#cs-ring" textLength="278" lengthAdjust="spacing">решение обосновано · решение обосновано ·</textPath></text>
+                <path d="M47 61 l9 9 l18 -19" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
           </figure>
-          <!-- запас прокрутки: пока он проходит, лист стоит на месте -->
-          <div class="sk-run" aria-hidden="true"></div>
         </div>
+        <!-- запас прокрутки под плашкой: пока он проходит, плашка стоит на месте -->
+        <div class="sk-run" aria-hidden="true"></div>
       </div>
     </div></section>
 </div></div>
@@ -1498,34 +1500,58 @@ const init = () => {
     watch(el, () => { el.classList.remove('is-drawing'); void el.offsetWidth; el.classList.add('is-drawing'); }, null, 0.4);
   });
 
-  /* «Зачем психологу знания психиатрии»: лист умений стоит посреди экрана, пока страницу листают вниз,
-     и раскрывает умения по одному. Шаг считается по тому, какая доля запаса прокрутки (.sk-run) пройдена:
-     шесть равных отрезков, на шестом все умения отмечены и ставится печать. */
+  /* «Зачем психологу знания психиатрии»: тёмная плашка стоит на экране, пока страницу листают вниз,
+     а лист раскрывает умения по одному. Шаг считается по тому, какая доля запаса прокрутки (.sk-run) пройдена:
+     шесть равных отрезков, на шестом все умения отмечены и ставится печать.
+     Высота листа закрепляется по самому длинному пояснению, чтобы плашка не меняла высоту между шагами.
+     Если лист не помещается в экран (маленький телефон, телефон боком), закрепления нет: все пояснения видны. */
   document.querySelectorAll('[data-sk]').forEach(box => {
-    const track = box.querySelector('.sk-track'), sheet = box.querySelector('.sk-sheet');
+    const panel = box.querySelector('.sk-panel'), sheet = box.querySelector('.sk-sheet');
     const lines = [...box.querySelectorAll('.sk-line')], count = box.querySelector('.sk-count');
-    box.classList.add('is-js');
     let last = -1, raf = 0, width = innerWidth;
-    /* лист встаёт по центру экрана; считаем, когда лишние пояснения свернулись и загрузился шрифт */
-    const place = () => box.style.setProperty('--sk-top', Math.max(16, Math.round((innerHeight - sheet.offsetHeight) / 2)) + 'px');
+    const show = now => {
+      lines.forEach((l, i) => { l.classList.toggle('is-past', i < now); l.classList.toggle('is-now', i === now); l.classList.toggle('is-next', i > now); });
+      count.textContent = (now + 1) + ' из ' + lines.length;
+    };
     const update = () => {
       raf = 0;
-      const r = track.getBoundingClientRect(), top = parseFloat(getComputedStyle(sheet).top) || 0;
-      const p = Math.min(1, Math.max(0, (top - r.top) / Math.max(1, r.height - sheet.offsetHeight)));
+      if (!box.classList.contains('is-js')) return;
+      const r = box.getBoundingClientRect(), top = parseFloat(getComputedStyle(panel).top) || 0;
+      const p = Math.min(1, Math.max(0, (top - r.top) / Math.max(1, r.height - panel.offsetHeight)));
       const step = Math.min(lines.length, Math.floor(p * (lines.length + 1)));
       if (step === last) return;
       last = step;
-      const now = Math.min(step, lines.length - 1);
-      lines.forEach((l, i) => { l.classList.toggle('is-past', i < now); l.classList.toggle('is-now', i === now); l.classList.toggle('is-next', i > now); });
-      count.textContent = (now + 1) + ' из ' + lines.length;
+      show(Math.min(step, lines.length - 1));
       box.classList.toggle('is-done', step === lines.length);
     };
-    update();
-    setTimeout(place, 500);
-    if (document.fonts) document.fonts.ready.then(() => setTimeout(place, 450));
+    /* мерим лист без анимаций с каждым раскрытым умением, берём самый высокий;
+       плашку ставим по центру экрана, а если она выше экрана, то так, чтобы посередине был лист */
+    const place = () => {
+      box.classList.add('is-js', 'is-measuring');
+      sheet.style.minHeight = '';
+      let tallest = 0;
+      lines.forEach((l, i) => { show(i); tallest = Math.max(tallest, sheet.offsetHeight); });
+      sheet.style.minHeight = tallest + 'px';
+      const vh = innerHeight, ph = panel.offsetHeight;
+      const sheetTop = sheet.getBoundingClientRect().top - panel.getBoundingClientRect().top;
+      const fits = tallest + 32 <= vh;
+      const top = ph <= vh ? (vh - ph) / 2 : Math.min(0, Math.max(vh - ph, (vh - tallest) / 2 - sheetTop));
+      box.style.setProperty('--sk-top', Math.round(top) + 'px');
+      box.classList.remove('is-measuring');
+      if (!fits) {
+        box.classList.remove('is-js', 'is-done');
+        sheet.style.minHeight = '';
+        lines.forEach(l => l.classList.remove('is-past', 'is-now', 'is-next'));
+        count.textContent = '';
+      }
+      last = -1;
+      update();
+    };
+    place();
+    if (document.fonts) document.fonts.ready.then(place);
     addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
-    /* на телефоне высота окна меняется, когда прячется панель браузера: середину пересчитываем только при смене ширины */
-    addEventListener('resize', () => { if (innerWidth === width) return; width = innerWidth; place(); last = -1; update(); });
+    /* на телефоне высота окна меняется, когда прячется панель браузера: пересчитываем только при смене ширины */
+    addEventListener('resize', () => { if (innerWidth === width) return; width = innerWidth; place(); });
   });
 
 

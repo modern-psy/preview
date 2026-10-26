@@ -238,34 +238,58 @@ const init = () => {
     watch(el, () => { el.classList.remove('is-drawing'); void el.offsetWidth; el.classList.add('is-drawing'); }, null, 0.4);
   });
 
-  /* «Зачем психологу знания психиатрии»: лист умений стоит посреди экрана, пока страницу листают вниз,
-     и раскрывает умения по одному. Шаг считается по тому, какая доля запаса прокрутки (.sk-run) пройдена:
-     шесть равных отрезков, на шестом все умения отмечены и ставится печать. */
+  /* «Зачем психологу знания психиатрии»: тёмная плашка стоит на экране, пока страницу листают вниз,
+     а лист раскрывает умения по одному. Шаг считается по тому, какая доля запаса прокрутки (.sk-run) пройдена:
+     шесть равных отрезков, на шестом все умения отмечены и ставится печать.
+     Высота листа закрепляется по самому длинному пояснению, чтобы плашка не меняла высоту между шагами.
+     Если лист не помещается в экран (маленький телефон, телефон боком), закрепления нет: все пояснения видны. */
   document.querySelectorAll('[data-sk]').forEach(box => {
-    const track = box.querySelector('.sk-track'), sheet = box.querySelector('.sk-sheet');
+    const panel = box.querySelector('.sk-panel'), sheet = box.querySelector('.sk-sheet');
     const lines = [...box.querySelectorAll('.sk-line')], count = box.querySelector('.sk-count');
-    box.classList.add('is-js');
     let last = -1, raf = 0, width = innerWidth;
-    /* лист встаёт по центру экрана; считаем, когда лишние пояснения свернулись и загрузился шрифт */
-    const place = () => box.style.setProperty('--sk-top', Math.max(16, Math.round((innerHeight - sheet.offsetHeight) / 2)) + 'px');
+    const show = now => {
+      lines.forEach((l, i) => { l.classList.toggle('is-past', i < now); l.classList.toggle('is-now', i === now); l.classList.toggle('is-next', i > now); });
+      count.textContent = (now + 1) + ' из ' + lines.length;
+    };
     const update = () => {
       raf = 0;
-      const r = track.getBoundingClientRect(), top = parseFloat(getComputedStyle(sheet).top) || 0;
-      const p = Math.min(1, Math.max(0, (top - r.top) / Math.max(1, r.height - sheet.offsetHeight)));
+      if (!box.classList.contains('is-js')) return;
+      const r = box.getBoundingClientRect(), top = parseFloat(getComputedStyle(panel).top) || 0;
+      const p = Math.min(1, Math.max(0, (top - r.top) / Math.max(1, r.height - panel.offsetHeight)));
       const step = Math.min(lines.length, Math.floor(p * (lines.length + 1)));
       if (step === last) return;
       last = step;
-      const now = Math.min(step, lines.length - 1);
-      lines.forEach((l, i) => { l.classList.toggle('is-past', i < now); l.classList.toggle('is-now', i === now); l.classList.toggle('is-next', i > now); });
-      count.textContent = (now + 1) + ' из ' + lines.length;
+      show(Math.min(step, lines.length - 1));
       box.classList.toggle('is-done', step === lines.length);
     };
-    update();
-    setTimeout(place, 500);
-    if (document.fonts) document.fonts.ready.then(() => setTimeout(place, 450));
+    /* мерим лист без анимаций с каждым раскрытым умением, берём самый высокий;
+       плашку ставим по центру экрана, а если она выше экрана, то так, чтобы посередине был лист */
+    const place = () => {
+      box.classList.add('is-js', 'is-measuring');
+      sheet.style.minHeight = '';
+      let tallest = 0;
+      lines.forEach((l, i) => { show(i); tallest = Math.max(tallest, sheet.offsetHeight); });
+      sheet.style.minHeight = tallest + 'px';
+      const vh = innerHeight, ph = panel.offsetHeight;
+      const sheetTop = sheet.getBoundingClientRect().top - panel.getBoundingClientRect().top;
+      const fits = tallest + 32 <= vh;
+      const top = ph <= vh ? (vh - ph) / 2 : Math.min(0, Math.max(vh - ph, (vh - tallest) / 2 - sheetTop));
+      box.style.setProperty('--sk-top', Math.round(top) + 'px');
+      box.classList.remove('is-measuring');
+      if (!fits) {
+        box.classList.remove('is-js', 'is-done');
+        sheet.style.minHeight = '';
+        lines.forEach(l => l.classList.remove('is-past', 'is-now', 'is-next'));
+        count.textContent = '';
+      }
+      last = -1;
+      update();
+    };
+    place();
+    if (document.fonts) document.fonts.ready.then(place);
     addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
-    /* на телефоне высота окна меняется, когда прячется панель браузера: середину пересчитываем только при смене ширины */
-    addEventListener('resize', () => { if (innerWidth === width) return; width = innerWidth; place(); last = -1; update(); });
+    /* на телефоне высота окна меняется, когда прячется панель браузера: пересчитываем только при смене ширины */
+    addEventListener('resize', () => { if (innerWidth === width) return; width = innerWidth; place(); });
   });
 
 

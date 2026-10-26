@@ -448,11 +448,17 @@ body { margin: 0; background: #f5f5f5; }
 
 /* ---------- «Зачем психологу знания психиатрии»: лист умений ----------
    Тёмная плашка: слева зачем и кнопка, справа белый лист «После обучения вы сможете».
-   Лист останавливается посреди экрана, пока страницу листают вниз, и раскрывает умения по одному:
-   текущее раскрыто, пройденные свёрнуты до заголовка с галочкой, следующие серые. После пятого печать.
-   Состояния строк и середину экрана ставит page.js (data-sk). Без скрипта лист обычный, все пояснения видны.
-   Сколько прокрутки уходит на лист — высота .sk-run (--sk-run), по умолчанию 110 % высоты экрана. */
-.sk { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: #fff; }
+   Пока страницу листают вниз, плашка целиком стоит на экране (на телефоне так, чтобы лист был посередине),
+   а лист раскрывает умения по одному: текущее раскрыто, пройденные свёрнуты до заголовка с галочкой,
+   следующие серые. После пятого печать. Запас прокрутки .sk-run лежит под плашкой, поэтому тёмный фон
+   своей высоты и не растягивается. Высоту листа, положение плашки и состояния строк ставит page.js (data-sk).
+   Без скрипта плашка обычная, все пояснения видны. Сколько прокрутки уходит на лист — --sk-run, по умолчанию 110 % экрана. */
+.sk-panel { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: #fff; }
+.sk.is-js .sk-panel { position: sticky; top: var(--sk-top, 0px); }
+.sk-run { display: none; }
+.sk.is-js .sk-run { display: block; height: var(--sk-run, 110svh); }
+/* пока скрипт меряет высоту листа, анимации выключены */
+.sk.is-measuring * { transition: none !important; animation: none !important; }
 .sk .wa-title { color: #fff; }
 .sk .idea-lead { color: var(--wa-on-dark-2); }
 .sk .wa-body { color: var(--wa-on-dark-3); }
@@ -460,13 +466,10 @@ body { margin: 0; background: #f5f5f5; }
 /* на телефоне обёртка .sk-side прозрачна: текст над листом, кнопка после него */
 .sk-side { display: contents; }
 .sk-text { order: 1; }
-.sk-track { order: 2; position: relative; }
+.sk-sheet { order: 2; }
 .sk-foot { order: 3; display: flex; }
 .sk.is-js .sk-foot { margin-top: 0.5rem; }
 .sk-sheet { position: relative; margin-bottom: 2rem; background: #fff; color: var(--wa-ink); border-radius: 0.75rem; padding: 1.25rem 0.625rem 0.75rem; box-shadow: 0 1.5rem 3rem -1.5rem rgb(0 0 0 / 55%); }
-.sk.is-js .sk-sheet { position: sticky; top: var(--sk-top, 1rem); }
-.sk-run { display: none; }
-.sk.is-js .sk-run { display: block; height: var(--sk-run, 110svh); }
 .sk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0 0.625rem 0.875rem; border-bottom: 1px solid var(--wa-line); }
 .sk-head b { font-size: var(--h3); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; }
 .sk-count { font-size: var(--fine); color: var(--wa-ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -498,7 +501,7 @@ body { margin: 0; background: #f5f5f5; }
 @keyframes sk-pop { from { transform: scale(0); } to { transform: scale(1); } }
 @keyframes sk-stamp { 0% { transform: rotate(-14deg) scale(1.7); opacity: 0; } 70% { opacity: 1; } 100% { transform: rotate(-14deg) scale(1); opacity: 1; } }
 @container stage (min-width: 48rem) {
-  .sk { padding: 2.5rem; }
+  .sk-panel { padding: 2.5rem; }
   .sk-sheet { width: min(100%, 44rem); margin-inline: auto; padding: 1.75rem 1.25rem 1.25rem; }
   .sk-head { padding-inline: 0.75rem; }
   .sk-line { grid-template-columns: 2rem minmax(0, 1fr) 1.75rem; column-gap: 1rem; padding: 0.875rem 0.75rem; }
@@ -506,11 +509,10 @@ body { margin: 0; background: #f5f5f5; }
   .sk-mark { width: 1.75rem; height: 1.75rem; }
   .sk-stamp { width: 7rem; height: 7rem; right: -1.5rem; bottom: -3rem; }
 }
-/* десктоп: текст и кнопка слева тоже стоят на месте, пока справа заполняется лист */
+/* десктоп: текст и кнопка слева, лист справа */
 @container stage (min-width: 64.0625rem) {
-  .sk { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 4.5rem; padding: 3.5rem 4rem; }
-  .sk-side { display: grid; gap: 2rem; align-content: start; align-self: start; }
-  .sk.is-js .sk-side { position: sticky; top: var(--sk-top, 1rem); }
+  .sk-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 4.5rem; align-items: center; padding: 3.5rem 4rem; }
+  .sk-side { display: grid; gap: 2rem; align-content: start; }
   .sk-sheet { width: 100%; margin-bottom: 1.5rem; }
   .sk.is-js .sk-foot { margin-top: 0; }
 }
