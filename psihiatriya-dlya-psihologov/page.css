@@ -162,7 +162,7 @@ body { margin: 0; background: #f5f5f5; }
 .wa-sec.is-hero { padding-block: 0.75rem 2rem; }
 .hr {
   --hr-bg: #2b2334; --hr-head: #ffffff; --hr-text: #e6e5eb; --hr-muted: #bdb7c9; --hr-line: rgb(255 255 255 / 16%);
-  --hr-pill: rgb(255 255 255 / 14%); --hr-pill-ink: #ffffff; --hr-main: #ffffff; --hr-main-ink: #2b2334; --hr-main-hover: #f3f0fc;
+  --hr-main: #ffffff; --hr-main-ink: #2b2334; --hr-main-hover: #f3f0fc;
   --hr-glass: rgb(255 255 255 / 14%); --hr-glass-hover: rgb(255 255 255 / 22%); --hr-glass-ink: #ffffff;
   --fl-dot: 230, 229, 235; --fl-end: #a993f0; --fl-ring: 169, 147, 240; --fl-alpha: 1;
   --fl-chip: rgb(255 255 255 / 12%); --fl-chip-ink: #ffffff; --fl-lens: 255, 255, 255; --fl-on: #7c5cdb; --fl-on-ink: #ffffff;
@@ -170,8 +170,6 @@ body { margin: 0; background: #f5f5f5; }
   transition: background-color 0.3s ease;
 }
 .hr-text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 1rem 1.25rem; }
-.hr-pills { display: flex; flex-wrap: wrap; gap: 0.375rem; }
-.hr-pills li { font-size: var(--fine); line-height: 1; padding: 0.45rem 0.7rem; border-radius: 999px; background: var(--hr-pill); color: var(--hr-pill-ink); white-space: nowrap; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 /* H1: размер, насыщенность и межстрочный из v1 (класс hero_heading), здесь только цвет */
 .hr-title { color: var(--hr-head); }
 .hr-sub { display: block; margin-top: 0.5em; font-family: var(--font); font-weight: 400; font-size: var(--sub); line-height: 1.2; letter-spacing: -0.01em; color: var(--hr-text); text-wrap: balance; }
@@ -187,12 +185,20 @@ body { margin: 0; background: #f5f5f5; }
   .hb.is-glass:hover { background: var(--hr-glass-hover); }
 }
 .hb:focus-visible { outline: 2px solid var(--fl-end); outline-offset: 3px; }
-/* Факты о курсе: отдельная полоса под текстом. На телефоне столбиком, на планшете по два, на десктопе в ряд во всю ширину карточки */
-.hr-facts { position: relative; z-index: 1; display: grid; margin: 0 1rem 0.5rem; }
-.hr-facts div { display: grid; gap: 0.25rem; align-content: start; padding: 0.75rem 0; border-top: 1px solid var(--hr-line); }
-.hr-facts dt { font-size: var(--fine); line-height: 1.3; color: var(--hr-muted); }
-.hr-facts dd { margin: 0; font-size: max(var(--caption), 1rem); line-height: 1.35; color: var(--hr-head); text-wrap: pretty; }
-.hr-facts b { font-weight: inherit; white-space: nowrap; }
+/* Старт и длительность строкой под кнопками (ТЗ «Первый экран на телефоне», макет К6): белым и с иконкой, чтобы было видно сразу */
+.hr-start { display: flex; align-items: center; gap: 0.5rem; font-size: var(--body); font-weight: 500; line-height: 1.3; color: var(--hr-head); }
+.hr-start .ic { width: 1.25rem; height: 1.25rem; flex: none; color: var(--hr-muted); }
+/* Телефон до 520 px: сначала заголовок, кнопки и старт, описание и строка о клинике после них (низ главной кнопки не ниже 560 px) */
+.hr-actions { order: 1; }
+.hr-start { order: 2; }
+.hr-lead { order: 3; }
+.hr-note { order: 4; }
+/* Факты с иконками под карточкой, на фоне страницы: на телефоне столбиком, от 521 px по два, на десктопе в ряд.
+   Старт и длительность здесь не повторяются: они в карточке. Иконки Lucide 20 px. */
+.hr-facts { margin: 1rem 0 0; padding: 0 0.25rem; display: grid; gap: 0.75rem; }
+.hr-facts li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: center; font-size: max(var(--caption), 1rem); line-height: 1.3; color: var(--wa-ink); }
+.hr-fi { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--wa-line); color: var(--wa-ink); }
+.hr-fi .ic { width: 1.25rem; height: 1.25rem; }
 .hr-art { position: relative; height: 15rem; }
 .hr-art canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 /* А: поток в своей колонке справа, как коллаж в К1 */
@@ -205,15 +211,15 @@ body { margin: 0; background: #f5f5f5; }
 @container stage (min-width: 32.5625rem) {
   .hr-b .hr-art.is-tall { height: 22rem; }
   .hr-text { gap: 1.25rem; }
-  .hr-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; margin-bottom: 0.75rem; }
+  .hr-actions, .hr-start, .hr-lead, .hr-note { order: 0; }
+  .hr-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.75rem; }
   .hb { min-height: 3.5rem; }
 }
 @container stage (min-width: 48rem) {
   .wa-sec.is-hero { padding-block: 1.25rem 3rem; }
   .hr { border-radius: 1.75rem; }
   .hr-text { padding: 2.25rem 2rem 1.75rem; gap: 1.375rem; }
-  .hr-facts { margin: 0 2rem 1rem; column-gap: 2rem; }
-  .hr-pills li { font-size: 1rem; } /* плашка v1: 14 → 16 px */
+  .hr-facts { margin-top: 1.25rem; padding: 0 0.5rem; }
   .hr-a .hr-art { height: 17rem; margin: -1rem 0 0; }
   .hr-b .hr-art, .hr-b .hr-art.is-tall { height: 25rem; }
 }
@@ -222,16 +228,12 @@ body { margin: 0; background: #f5f5f5; }
   .hr-a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); min-height: 41rem; }
   .hr-a .hr-text { padding: 3rem 0 2.75rem 3rem; }
   .hr-a .hr-art { height: auto; margin: 0; }
-  /* верхняя зона: текст слева, точки на всю ширину за ним; полоса фактов ниже, точки под неё не заходят */
+  /* текст слева, точки на всё поле карточки за ним */
   .hr-b .hr-text, .hr-b .hr-art { grid-area: 1 / 1 / 2 / 2; }
   .hr-b .hr-art, .hr-b .hr-art.is-tall { position: absolute; inset: 0; height: auto; }
   .hr-b .hr-text { min-height: 38rem; max-width: 40rem; padding: 3rem 0 2.5rem 3rem; }
   .hr-b .hr-lead { margin-top: auto; }
-  .hr-b .hr-facts { grid-area: 2 / 1; margin: 0 3rem 2.5rem; grid-template-columns: minmax(11rem, 0.8fr) minmax(0, 1.45fr) minmax(0, 1.1fr) minmax(0, 0.85fr); column-gap: 0; border-top: 1px solid var(--hr-line); }
-  .hr-b .hr-facts div { border-top: 0; padding: 1rem 1.25rem 0; }
-  .hr-b .hr-facts div:first-child { padding-left: 0; }
-  .hr-b .hr-facts div:last-child { padding-right: 0; }
-  .hr-b .hr-facts div + div { border-left: 1px solid var(--hr-line); }
+  .hr-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem 2rem; margin-top: 1.5rem; }
 }
 
 
