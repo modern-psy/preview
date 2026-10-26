@@ -184,7 +184,9 @@ body { margin: 0; background: #f5f5f5; }
 .hr-sub { display: block; margin-top: 0.5em; font-family: var(--font); font-weight: 400; font-size: var(--sub); line-height: 1.2; letter-spacing: -0.01em; color: var(--hr-text); text-wrap: balance; }
 .hr-lead { font-size: var(--body); line-height: 1.4; color: var(--hr-text); max-width: 46ch; text-wrap: pretty; }
 /* строка о клинике под описанием: тише описания, но читается на тёмном */
-.hr-note { font-size: var(--caption); line-height: 1.4; color: var(--hr-muted); max-width: 46ch; text-wrap: pretty; }
+.hr-note { display: flex; align-items: flex-start; gap: 0.5rem; font-size: var(--caption); line-height: 1.4; color: var(--hr-muted); max-width: 46ch; text-wrap: pretty; }
+/* значок клиники: 20 px, по первой строке текста */
+.hr-note .ic { width: 1.25rem; height: 1.25rem; flex: none; margin-top: calc((1.4em - 1.25rem) / 2); }
 .hr-actions { display: flex; flex-wrap: wrap; gap: 0.625rem; }
 .hb { display: inline-flex; flex: 1 1 13.75rem; align-items: center; justify-content: center; min-height: 3.25rem; padding: 0.875rem 1.625rem; border-radius: 0.875rem; font: 500 1rem/1.2 var(--font); text-align: center; text-decoration: none; transition: background-color 0.15s ease; }
 .hb.is-main { background: var(--hr-main); color: var(--hr-main-ink); }
@@ -195,8 +197,7 @@ body { margin: 0; background: #f5f5f5; }
 }
 .hb:focus-visible { outline: 2px solid var(--fl-end); outline-offset: 3px; }
 /* Старт и длительность строкой под кнопками (ТЗ «Первый экран на телефоне», макет К6): белым и с иконкой, чтобы было видно сразу */
-.hr-start { display: flex; align-items: center; gap: 0.5rem; font-size: var(--body); font-weight: 500; line-height: 1.3; color: var(--hr-head); }
-.hr-start .ic { width: 1.25rem; height: 1.25rem; flex: none; color: var(--hr-muted); }
+.hr-start { font-size: var(--body); font-weight: 500; line-height: 1.3; color: var(--hr-head); }
 /* Телефон до 520 px: сначала заголовок, кнопки и старт, описание и строка о клинике после них (низ главной кнопки не ниже 560 px) */
 .hr-actions { order: 1; }
 .hr-start { order: 2; }
@@ -674,9 +675,9 @@ body { margin: 0; background: #f5f5f5; }
         <div class="hr-text">
           <h1 class="hr-title hero_heading" id="hero-heading">Психиатрия для психологов<span class="hr-sub">От&nbsp;понимания состояния клиента к&nbsp;обоснованным действиям</span></h1>
           <p class="hr-lead">Научитесь замечать клинически значимые проявления и&nbsp;«красные флаги», формулировать рабочие гипотезы и&nbsp;определять, когда нужна консультация психиатра.</p>
-          <p class="hr-note">Курс разработан на&nbsp;базе одной из&nbsp;ведущих клиник психиатрического профиля</p>
+          <p class="hr-note"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M14 9h-4"/><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h2"/><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16"/></svg><span>Курс разработан на&nbsp;базе одной из&nbsp;ведущих клиник психиатрического профиля</span></p>
           <div class="hr-actions"><a class="hb is-main button_component is-light" href="#signup" data-hero-primary>Оставить заявку</a><a class="hb is-glass button_component" href="#program">Посмотреть программу</a></div>
-          <p class="hr-start"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg><span>Старт 16&nbsp;марта · 65&nbsp;академических&nbsp;часов</span></p>
+          <p class="hr-start">Старт 16&nbsp;марта · 65&nbsp;академических&nbsp;часов</p>
         </div>
         <div class="hr-art is-tall" data-hero-art="venn" data-mode="shapes" aria-hidden="true"><canvas></canvas></div>
       </div>
