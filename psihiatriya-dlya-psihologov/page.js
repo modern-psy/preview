@@ -1,28 +1,7 @@
 /* Лендинг «Психиатрия для психологов»: колода ситуаций, лист умений, точечная иллюстрация первого экрана, FAQ.
-   Форма заявки: общий компонент Академии, отдельный файл request-form.js; здесь только номер посетителя Метрики для неё. */
+   Форма заявки: общий компонент Академии, отдельный файл request-form.js. */
 (() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* ---------- Номер посетителя Метрики в заявке ----------
-     Общая форма заявки (request-form.js) передаёт в форму Тильды имя, телефон, мессенджер, form_source и устройство,
-     но не ym_client_id, а прежняя форма лендинга его передавала. Добавляем в форму Тильды скрытое поле ym_client_id
-     и кладём в него номер из куки _ym_uid; общий скрипт сайта в head тоже заполняет это поле перед отправкой. */
-  const clientId = () => (document.cookie.match(/(?:^|;\s*)_ym_uid=([^;]+)/) || [])[1] || '';
-  const addClientIdField = () => {
-    const name = document.querySelector('[data-academy-request-form]')?.dataset.tildaFormName;
-    const native = name && [...document.querySelectorAll('form.t-form')].find(f => f.querySelector('input[name="tildaspec-formname"]')?.value === name);
-    if (!native) return false;
-    let input = native.querySelector('input[name="ym_client_id"]');
-    if (!input) { input = document.createElement('input'); input.type = 'hidden'; input.name = 'ym_client_id'; native.append(input); }
-    if (!input.value) input.value = clientId();
-    native.addEventListener('submit', () => { if (!input.value) input.value = clientId(); }, true);
-    return true;
-  };
-  if (!addClientIdField()) {
-    const mo = new MutationObserver(() => { if (addClientIdField()) mo.disconnect(); });
-    mo.observe(document.body, { childList: true, subtree: true });
-    setTimeout(() => mo.disconnect(), 10000);
-  }
-
   /* ---------- FAQ: открыт один вопрос за раз ---------- */
   document.querySelectorAll('[data-faq]').forEach(list => {
     const items = [...list.querySelectorAll('[data-faq-item]')];
