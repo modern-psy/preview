@@ -13,10 +13,13 @@ const read = name => fs.readFile(new URL(name, root), 'utf8');
 
 const source = await read('index.html');
 const css = await read('page.css');
+// Стили общих компонентов Web Academy («Почему выбирают нас», «98 % студентов»): идут внутри блока секции academy,
+// иначе блок общих стилей не влезает в лимит T123.
+const academyCss = await read('academy.css');
 const js = await read('page.js');
 
 // Картинки должны быть с CDN: локальные файлы в Тильду не переносятся.
-const local = [...source.matchAll(/(?:src|href)="(\.\/(?!page\.(?:css|js))[^"]+|img\/[^"]+)"/g), ...css.matchAll(/url\((['"]?)(\.\/|img\/)[^)]*\)/g)];
+const local = [...source.matchAll(/(?:src|href)="(\.\/(?!(?:page|academy)\.(?:css|js))[^"]+|img\/[^"]+)"/g), ...(css + academyCss).matchAll(/url\((['"]?)(\.\/|img\/)[^)]*\)/g)];
 if (local.length) throw new Error(`Локальные файлы: ${local.map(m => m[1] || m[0]).join(', ')}. Нужны ссылки на CDN (S3).`);
 
 // Секции верхнего уровня внутри обёртки .wa: разметка переносится дословно.
@@ -32,6 +35,8 @@ const titles = {
   program: 'Программа курса',
   teacher: 'Преподаватель курса',
   documents: 'Удостоверение о повышении квалификации',
+  academy: 'Почему выбирают нас, со стилями компонента',
+  ratings: '98 % студентов рекомендуют обучение',
   price: 'Стоимость обучения и гибкие условия оплаты',
   signup: 'Форма заявки',
   faq: 'Ответы на популярные вопросы',
@@ -53,7 +58,7 @@ const write = async (slug, text, title, placement) => {
 };
 
 // 1. Стили: шрифты и page.css целиком, плюс поправки под сайт.
-const links = [...source.matchAll(/<link rel="(?:preconnect|stylesheet)"[^>]*>/g)].map(m => m[0]).filter(link => !link.includes('./page.css'));
+const links = [...source.matchAll(/<link rel="(?:preconnect|stylesheet)"[^>]*>/g)].map(m => m[0]).filter(link => !link.includes('href="./'));
 const tildaFix = `
 /* ===== Поправки под Тильду =====
    Общий custom.css сайта красит все ссылки «a { color: inherit !important }», и у ссылок-кнопок пропадает текст.
@@ -70,7 +75,8 @@ for (const markup of sections) {
   const id = markup.match(/<section id="([a-z-]+)"/)[1];
   const title = titles[id];
   if (!title) throw new Error(`Нет названия для секции ${id}`);
-  await write(id, `<!-- СЕКЦИЯ ${id}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n<div class="psy-page" data-psy-part="${id}"><div class="wa" lang="ru">\n${markup}\n</div></div>\n`, title, 'BODY');
+  const style = id === 'academy' ? `<style>\n${academyCss.trim()}\n</style>\n` : '';
+  await write(id, `<!-- СЕКЦИЯ ${id}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n${style}<div class="psy-page" data-psy-part="${id}"><div class="wa" lang="ru">\n${markup}\n</div></div>\n`, title, 'BODY');
 }
 
 // 3. Скрипт страницы: ждёт, пока все секции появятся в документе.
