@@ -4,8 +4,18 @@
 Превью: https://modern-psy-preview-5a99.twc1.net/webinar-rodbt/
 
 Собран 23.10.2026. `index.html`, `page.css`, `page.js` правятся напрямую, сборки нет.
-Стили самодостаточные, в мире «Психиатрии для психологов» (фон #f5f5f5, белые карточки, тёмные плашки #2b2334,
-фиолетовый только акцентом), переломы через @container: 521 / 768 / 1025 px.
+
+**24.10.2026 переведён на общие стили лендингов v1** (`apps/preview/academy-base`, на сайте — custom.css Тильды):
+- шрифт Wix Madefor из v1, Google Fonts и Wix Madefor Display убраны;
+- метка `data-academy="1"` стоит на обёртке `.wa`; в пакете Тильды — на обёртке каждого блока T123;
+- роли текста из v1: заголовки секций `section-title_component is-responsive`, описания `section-subtitle_component`,
+  заголовки карточек `content-heading_component is-card` (в программе `is-compact`), имена спикеров `is-profile`,
+  тексты `body-text_component` (в FAQ `is-reading`, подписи `is-caption`), H1 `hero_heading`, кнопки `button_component`;
+- в `page.css` кегли не задаём: тексты уникальных блоков берут размеры из `--body`, `--sub`, `--h3`,
+  значения которых совпадают с ролями v1. Цвет текста на тёмных плашках — переменными `--body-text-color`
+  и `--section-subtitle-color`.
+
+Фон #f5f5f5, белые карточки, тёмные плашки #2b2334, фиолетовый только акцентом, переломы через @container: 521 / 768 / 1025 px.
 
 ## Блоки сверху вниз
 
@@ -41,4 +51,7 @@
 ## Дальше
 
 - после утверждения блоков: пакет T123 для Тильды (по образцу `psihiatriya-dlya-psihologov/build-tilda.mjs`),
-  картинки на S3.
+  картинки на S3. Стили v1 в пакет не копировать: на сайте они уже в custom.css. В пакет идут только `page.css`
+  и разметка блоков, у каждой обёртки блока `data-academy="1"`.
+- превью-сервер: страница ссылается на `/academy-base/v1.css`, поэтому пушить её в modern-psy/preview
+  только вместе с папкой `academy-base`.

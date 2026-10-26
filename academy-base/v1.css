@@ -1,0 +1,547 @@
+/* ==========================================================================
+   Общие стили лендингов Академии · версия 1 · 24.10.2026
+
+   Что это. Базовые правила, которые одинаковы на всех новых лендингах:
+   шрифт, цвета, поля страницы, отступы секций и карточек, роли текста,
+   кнопка и плашка. Секции целиком (первый экран, форма, цены, FAQ…)
+   сюда не входят: их стили по-прежнему лежат в пакете страницы.
+
+   Где живёт. Этот файл — исходник. На превью его подключают ссылкой
+   /academy-base/v1.css. В Тильду он попадает через custom.css сайта:
+   вставку собирает скрипт scripts/build-academy-base.mjs.
+
+   Как включается. Только на страницах, у обёртки которых стоит метка
+   data-academy="1". Старые лендинги метки не имеют, и этот файл
+   их не задевает.
+
+     <div class="main-wrapper academy-page kpt-page" data-academy="1">…</div>
+
+   В Тильде у каждого блока T123 своя обёртка — метку ставить в каждую.
+
+   Как менять.
+   · Исправление, которое не меняет вид (опечатка, сбой на какой-то
+     ширине), — прямо здесь. Меняется на всех страницах версии 1.
+   · Правка, которая меняет вид (кегль, цвет, отступ), — только в новой
+     версии v2.css. Страницы переводятся на неё по одной.
+
+   Основа — web-academy/shared/academy (components.css, section-heading.css,
+   body-text.css, button.css, section-spacing.css, card-spacing.css,
+   anchor-scroll.css) с решениями от 24.10.2026 для ширины до 520 px.
+
+   Ступени ширины: до 520 · от 521 · от 768 · от 1025 px.
+   ========================================================================== */
+
+
+/* ---------- 1. Шрифт ----------
+   Wix Madefor Text, один вариативный файл 29 КБ: насыщенность 400–800,
+   кириллица, латиница и знаки набора. Как собран — fonts/README.md.
+   Своё имя семейства, чтобы не смешиваться с Google Fonts на старых страницах.
+   Адрес файла в Тильде подставляет сборщик. НЕ МЕНЯТЬ имя семейства. */
+@font-face {
+  font-family: "Academy Wix Madefor";
+  src: url("fonts/wix-madefor-text-academy.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+/* Пока шрифт грузится, текст показан Arial, подогнанным под размеры Wix Madefor:
+   при подмене строки не прыгают. Цифры посчитаны по файлу шрифта и русскому
+   тексту лендингов 24.10.2026. НЕ МЕНЯТЬ руками: пересчитывать при смене файла. */
+@font-face {
+  font-family: "Academy Wix Madefor Fallback";
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 102.96%;
+  ascent-override: 97.9%;
+  descent-override: 24.47%;
+  line-gap-override: 0%;
+}
+
+
+/* ---------- 2. Цвета, шрифт, ширины ----------
+   Значения из web-academy. МОЖНО добавлять новые токены,
+   НЕЛЬЗЯ менять существующие в этой версии: на них держатся страницы. */
+[data-academy="1"] {
+  --color-page-background: #f5f5f5;
+  --color-surface-primary: #ffffff;
+  --color-surface-dark: #2b2334;
+  --color-text-primary: #332f41;
+  --color-text-secondary: #747476;
+  --color-text-secondary-large: #7b7b7c;
+  --color-text-secondary-on-accent: #5e5a6a;
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #e6e5eb;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-text: #644ab2;
+  --color-accent-soft: #dad6ff;
+  --color-focus: #7c5cdb;
+  --color-cta-grid-muted: #32293c;
+  --color-cta-grid-medium: #3b2e49;
+  --color-cta-grid-bright: #38254e;
+  --border-gradient-accent: linear-gradient(
+    to top right,
+    rgba(124, 92, 219, 0.8) 0%,
+    rgba(124, 92, 219, 0.3) 50%,
+    rgba(124, 92, 219, 0.8) 100%
+  );
+
+  --font-family-body: "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif;
+  --font-family-emphasis: var(--font-family-body);
+
+  /* Ширина контента 1520 px и поля страницы: от 16 px на телефоне до 80 px */
+  --container-xlarge: 95rem;
+  --page-padding: clamp(1rem, 4.7619vw, 5rem);
+  --transition-site: 180ms ease;
+
+  /* Карточки: поля от 16 px на всех ширинах (правило Академии от 12.10.2026) */
+  --card-padding: 1rem;
+  --radius-card: 0.75rem;
+  --card-grid-gap: 0.75rem;
+
+  /* Расстояние между секциями и поля тёмных секций */
+  --section-space: 3.75rem;
+  --section-inset-space: 2.5rem;
+
+  /* Заголовки секций и их окружение */
+  --section-heading-gap: clamp(1.25rem, 3.63vw, 1.75rem);
+  --section-heading-description-size: clamp(1.125rem, 2.149vw, 1.375rem);
+  --content-heading-gap: 0.5rem;
+  --space-heading-copy: 1.25rem;
+  --space-subtitle-pair: 0.25rem;
+  --space-mark-heading: 0.75rem;
+  --space-section-content: 2rem;
+  --space-cta-action: 2rem;
+  --text-body-size: clamp(1.125rem, 2.016vw, 1.25rem);
+  --text-body-line-height: 1.4;
+
+  /* H1 первого экрана: 28 px на 375 → 48 px на 1440 и шире.
+     Меньше, чем в web-academy, потому что названия курсов длинные (решение 24.10.2026). */
+  --hero-heading-size: clamp(1.75rem, calc(1.8779vw + 1.3099rem), 3rem);
+
+  /* Отступ сверху при переходе по якорю */
+  --anchor-scroll-offset: 50px;
+}
+@media (min-width: 32.5625rem) {
+  [data-academy="1"] { --section-space: 5rem; --space-subtitle-pair: 0.5rem; --space-section-content: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  [data-academy="1"] {
+    --card-grid-gap: 1rem;
+    --radius-card: 1rem;
+    --section-space: 6.25rem;
+    --section-inset-space: 3.125rem;
+    --space-heading-copy: 1.5rem;
+    --space-subtitle-pair: 0.75rem;
+    --space-mark-heading: 1rem;
+    --space-section-content: 2.625rem;
+    --anchor-scroll-offset: 100px;
+  }
+}
+@media (min-width: 64.0625rem) {
+  [data-academy="1"] {
+    --section-space: 9.375rem;
+    --section-inset-space: 4.375rem;
+    --space-heading-copy: 1.75rem;
+    --space-subtitle-pair: 1rem;
+    --space-section-content: 4.375rem;
+    --space-cta-action: 2.25rem;
+  }
+}
+
+
+/* ---------- 3. Основа страницы ---------- */
+[data-academy="1"] {
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+/* iPhone не раздувает текст при повороте. Увеличение пальцами НЕ запрещаем. */
+html:has([data-academy="1"]) {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body:has([data-academy="1"]) {
+  margin: 0;
+  background: #f5f5f5;
+}
+[data-academy="1"],
+[data-academy="1"] *,
+[data-academy="1"] *::before,
+[data-academy="1"] *::after {
+  box-sizing: border-box;
+}
+[data-academy="1"] :where(h1, h2, h3, h4, h5, h6, p, ul, li) {
+  margin: 0;
+  padding: 0;
+}
+[data-academy="1"] ul { list-style: none; }
+[data-academy="1"] a { color: inherit; text-decoration: none; }
+[data-academy="1"] img { -webkit-user-drag: none; user-select: none; }
+
+/* Каркас: main-wrapper → padding-global (боковые поля) → container-xlarge (1520 px) */
+[data-academy="1"].main-wrapper,
+[data-academy="1"] .main-wrapper { display: block; }
+[data-academy="1"] .padding-global {
+  width: 100%;
+  padding-right: var(--page-padding);
+  padding-left: var(--page-padding);
+}
+[data-academy="1"] .container-xlarge {
+  width: 100%;
+  max-width: var(--container-xlarge);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Отступы секций: снизу у каждой секции, у тёмных — внутренние поля */
+[data-academy="1"] .section-spacing_component { padding-block: 0 var(--section-space); }
+[data-academy="1"] .section-spacing_component.is-inset { padding-block: var(--section-inset-space); }
+[data-academy="1"] .section-spacing_component.is-after-inset { padding-block-start: var(--section-space); }
+
+/* Якоря: блок не прилипает к верху экрана и не прячется под шапкой сайта */
+[data-academy="1"] [id] { scroll-margin-top: var(--anchor-scroll-offset); }
+
+/* Поля формы на телефоне не мельче 16 px: иначе iPhone приближает страницу,
+   когда нажимаешь на поле. До 767 px — чтобы закрыть и телефон, повёрнутый боком.
+   !important — чтобы не перебил стиль формы на странице. */
+@media (max-width: 47.9375rem) {
+  [data-academy="1"] :is(input:not([type="checkbox"], [type="radio"], [type="range"]), select, textarea) {
+    font-size: 1rem !important;
+  }
+}
+
+
+/* ---------- 4. H1 первого экрана ----------
+   Размер задаёт токен --hero-heading-size (раздел 2).
+   Стили первого экрана на странице НЕ должны переопределять этот токен. */
+[data-academy="1"] .hero_heading {
+  font-family: var(--font-family-body);
+  font-size: var(--hero-heading-size);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------- 5. Заголовок секции, описание, заголовок карточки ---------- */
+[data-academy="1"] .section-title_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--section-title-size, clamp(2.25rem, 3.1vw, 3.25rem));
+  font-weight: var(--section-title-weight, 500);
+  line-height: var(--section-title-line-height, 1.1);
+  letter-spacing: var(--section-title-tracking, -0.06em);
+  text-align: inherit;
+  text-wrap: var(--section-title-wrap, balance);
+}
+[data-academy="1"] .section-title_component.is-left { text-align: left; }
+[data-academy="1"] .section-title_component.is-center { text-align: center; }
+[data-academy="1"] .section-title_component.is-right { text-align: right; }
+[data-academy="1"] .section-title_accent { display: inline; color: var(--color-accent-text, var(--color-accent-primary)); }
+
+/* Адаптивный заголовок секции: 32 · 36 · 44 · 52 px.
+   Межстрочный 1.1 на телефоне (решение 24.10.2026), 1.0 от 521 px как в web-academy. */
+[data-academy="1"] :is(.section-title_component.is-responsive, .section-layout_component.is-responsive) {
+  --section-title-size: 2rem;
+  --section-title-line-height: 1.1;
+}
+[data-academy="1"] .section-title_component.is-responsive { overflow-wrap: anywhere; }
+@media (min-width: 32.5625rem) {
+  [data-academy="1"] :is(.section-title_component.is-responsive, .section-layout_component.is-responsive) {
+    --section-title-size: 2.25rem;
+    --section-title-line-height: 1;
+  }
+}
+@media (min-width: 48rem) {
+  [data-academy="1"] :is(.section-title_component.is-responsive, .section-layout_component.is-responsive) { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  [data-academy="1"] :is(.section-title_component.is-responsive, .section-layout_component.is-responsive) { --section-title-size: 3.25rem; }
+}
+
+/* Описание под заголовком секции: 18 · 18 · 20 · 22 px (18 на телефоне — решение 24.10.2026) */
+[data-academy="1"] .section-subtitle_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--section-subtitle-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: var(--section-subtitle-line-height, 1.2);
+  letter-spacing: var(--section-subtitle-tracking, -0.01em);
+  text-wrap: pretty;
+}
+
+/* Заголовок карточки и вопроса: 22 · 22 · 24 · 24 px (22 на телефоне — решение 24.10.2026) */
+[data-academy="1"] .content-heading_component {
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--content-heading-size, clamp(1.375rem, 2.419vw, 1.5rem));
+  font-weight: 500;
+  line-height: var(--content-heading-line-height, 1.1);
+  letter-spacing: 0;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+[data-academy="1"] .content-heading_component.is-prominent {
+  font-size: var(--content-prominent-size, clamp(1.75rem, 2.4vw, 2.25rem));
+  font-weight: 444;
+  letter-spacing: -0.03em;
+}
+[data-academy="1"] .content-heading_component.is-card { --content-heading-size: 1.375rem; }
+/* Имя в карточке преподавателя: 22 · 24 · 28 · 32 px */
+[data-academy="1"] .content-heading_component.is-profile { --content-heading-size: 1.375rem; font-weight: 400; }
+/* Плотные списки (расписание): 18 px на телефоне, 20 px от 521 px */
+[data-academy="1"] .content-heading_component.is-compact { --content-heading-size: 1.125rem; }
+@media (min-width: 32.5625rem) {
+  [data-academy="1"] .content-heading_component.is-profile { --content-heading-size: 1.5rem; }
+  [data-academy="1"] .content-heading_component.is-compact { --content-heading-size: 1.25rem; }
+}
+@media (min-width: 48rem) {
+  [data-academy="1"] .content-heading_component.is-card { --content-heading-size: 1.5rem; }
+  [data-academy="1"] .content-heading_component.is-profile { --content-heading-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  [data-academy="1"] .content-heading_component.is-profile { --content-heading-size: 2rem; }
+}
+
+/* Группы: заголовок + описание, метка + заголовок, шапка секции + содержимое */
+[data-academy="1"] .content-header_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--content-heading-gap);
+}
+[data-academy="1"] .section-header_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-heading-gap);
+}
+[data-academy="1"] .section-subtitles_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-subtitles-gap, 1rem);
+}
+[data-academy="1"] .section-header_title {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: inherit;
+  gap: var(--section-heading-mark-gap, 1rem);
+}
+[data-academy="1"] .section-header_component.is-responsive {
+  --section-heading-gap: var(--space-heading-copy);
+  --section-heading-description-size: 1.125rem;
+  --section-subtitles-gap: var(--space-subtitle-pair);
+  --section-heading-mark-gap: var(--space-mark-heading);
+}
+@media (min-width: 48rem) {
+  [data-academy="1"] .section-header_component.is-responsive { --section-heading-description-size: 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  [data-academy="1"] .section-header_component.is-responsive { --section-heading-description-size: 1.375rem; }
+}
+[data-academy="1"] .section-header_component.is-left { align-items: flex-start; text-align: left; }
+[data-academy="1"] .section-header_component.is-center { align-items: center; text-align: center; }
+[data-academy="1"] .section-header_component.is-right { align-items: flex-end; text-align: right; }
+
+[data-academy="1"] .section-layout_component {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--section-layout-gap, clamp(2.5rem, 6.835vw, 4.375rem));
+}
+[data-academy="1"] .section-layout_component.is-responsive { --section-layout-gap: var(--space-section-content); }
+@media (min-width: 64.0625rem) {
+  [data-academy="1"] .section-layout_component.is-split {
+    display: grid;
+    grid-template-columns: var(--section-layout-columns, minmax(0, 0.75fr) minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+
+/* ---------- 6. Текст ----------
+   Основной текст и длинное чтение: 16 · 16 · 18 · 20 px (16 на телефоне — решение 24.10.2026).
+   Межстрочный: 1.3 на телефоне, 1.2 от 521 px; у длинного чтения 1.4 везде.
+   Отрицательный трекинг только у текста от 16 px. */
+[data-academy="1"] .body-text_component {
+  margin: 0;
+  color: var(--body-text-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: min(var(--body-text-max, 1.25rem), 1rem);
+  font-weight: 444;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+  text-wrap: pretty;
+}
+[data-academy="1"] .body-text_component.is-regular { font-weight: 400; }
+[data-academy="1"] .body-text_component.is-statement { letter-spacing: normal; }
+/* Подводка: 18 · 18 · 20 · 22 px */
+[data-academy="1"] .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.125rem)); }
+/* Длинное чтение: программа, отзывы, описание преподавателя */
+[data-academy="1"] .body-text_component:is(.is-reading, .is-detailed) { line-height: 1.4; letter-spacing: normal; }
+[data-academy="1"] .body-text_component.is-showcase { font-size: 1rem; font-weight: 400; line-height: 1.1; }
+[data-academy="1"] .body-text_lead { color: var(--color-text-primary); }
+/* Подпись, рассрочка: 15 · 16 · 16 · 18 px */
+[data-academy="1"] .body-text_component.is-caption { font-size: 0.9375rem; line-height: 1.35; letter-spacing: 0; }
+/* Выделение, врезка, сноска */
+[data-academy="1"] .body-text_component.is-emphasis { font-weight: 600; }
+[data-academy="1"] .body-text_component.is-callout { font-weight: 500; line-height: 1.3; }
+/* Сноска, согласие: 14 px на всех ширинах */
+[data-academy="1"] .body-text_component.is-fine-print { font-size: 0.875rem; font-weight: 400; line-height: 1.4; letter-spacing: 0; }
+/* Компактные подписи в списках: 16 px на всех ширинах */
+[data-academy="1"] .body-text_component.is-compact { font-size: 1rem; }
+
+@media (min-width: 32.5625rem) {
+  [data-academy="1"] .body-text_component { line-height: 1.2; }
+  [data-academy="1"] .body-text_component.is-showcase { font-size: 1.125rem; }
+  [data-academy="1"] .body-text_component.is-caption { font-size: 1rem; line-height: 1.2; letter-spacing: -0.01em; }
+}
+@media (min-width: 48rem) {
+  [data-academy="1"] .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.125rem); }
+  [data-academy="1"] .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.25rem)); }
+  [data-academy="1"] .body-text_component.is-showcase { font-size: 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  [data-academy="1"] .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.25rem); }
+  [data-academy="1"] .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.375rem)); }
+  [data-academy="1"] .body-text_component.is-showcase { font-size: 1.5rem; }
+  [data-academy="1"] .body-text_component.is-caption { font-size: 1.125rem; }
+}
+
+
+/* ---------- 7. Кнопка ----------
+   Один размер, растёт с шириной: 18 px на телефоне → 22 px на большом экране.
+   Варианты: is-accent (фиолетовая), is-light (белая), is-outline (на фото и тёмном).
+   Ширину кнопки задаёт секция. */
+[data-academy="1"] { --button-light-padding-inline: 0.75rem; }
+@media (min-width: 48rem) {
+  [data-academy="1"] { --button-light-padding-inline: 1.5rem; }
+}
+[data-academy="1"] .button_component {
+  --button-font-size: max(1.125rem, calc(1rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem)));
+  --button-min-height: calc(3.125rem + clamp(0rem, 2.91560102vw - 1.09335038rem, 0.7125rem) + clamp(0rem, 0.31059507vw - 0.19237482rem, 0.13375rem));
+  display: inline-flex;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--button-min-height);
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: var(--button-font-size);
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color var(--transition-site, 150ms ease-in-out),
+    box-shadow var(--transition-site, 150ms ease-in-out);
+}
+/* Цвет текста с !important: custom.css сайта красит все ссылки правилом
+   «a { color: inherit !important }», и без этого текст кнопки-ссылки пропадает. */
+[data-academy="1"] .button_component.is-light {
+  padding-inline: var(--button-light-padding-inline, 0.75rem);
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary) !important;
+}
+[data-academy="1"] .button_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark) !important;
+}
+[data-academy="1"] .button_component.is-outline {
+  border-color: var(--color-text-on-dark);
+  background: rgb(255 255 255 / 15%);
+  color: var(--color-text-on-dark) !important;
+  backdrop-filter: blur(4px);
+}
+/* Наведение только мышью: на телефоне эффект залипал бы после нажатия */
+@media (hover: hover) and (pointer: fine) {
+  [data-academy="1"] .button_component.is-light:where(:not(:disabled)):hover { background: var(--color-text-on-dark-muted); }
+  [data-academy="1"] .button_component.is-accent:where(:not(:disabled)):hover { background: var(--color-accent-text); }
+  [data-academy="1"] .button_component.is-outline:where(:not(:disabled)):hover { background: rgb(255 255 255 / 25%); }
+}
+[data-academy="1"] .button_component:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 85%);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-academy="1"] .button_component { transition: none; }
+}
+
+
+/* ---------- 8. Плашка ----------
+   Короткий факт: «Онлайн», «Старт 16 ноября». 14 → 16 px. Трекинг 0: текст мельче 16 px. */
+[data-academy="1"] .meta-pill_component {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+[data-academy="1"] .meta-pill_component.is-accent {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+}
+[data-academy="1"] .meta-pill_component img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+[data-academy="1"] .meta-pill_component.is-responsive {
+  --meta-pill-padding-y: calc(0.3125rem + clamp(0rem, 0.25575448vw - 0.09590793rem, 0.0625rem));
+  --meta-pill-padding-start: calc(0.375rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-padding-end: calc(0.5625rem + clamp(0rem, 0.76726343vw - 0.28772379rem, 0.1875rem));
+  --meta-pill-size: calc(0.875rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  --meta-pill-icon-size: calc(1.125rem + clamp(0rem, 0.51150895vw - 0.19181586rem, 0.125rem));
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  padding: var(--meta-pill-padding-y) var(--meta-pill-padding-end) var(--meta-pill-padding-y) var(--meta-pill-padding-start);
+  font-size: var(--meta-pill-size);
+  white-space: normal;
+}
+[data-academy="1"] .meta-pill_icon {
+  display: block;
+  width: var(--meta-pill-icon-size, 1.25rem);
+  height: var(--meta-pill-icon-size, 1.25rem);
+  flex: none;
+}
+@media (min-width: 48rem) {
+  [data-academy="1"] .meta-pill_component { font-size: 1rem; }
+}
