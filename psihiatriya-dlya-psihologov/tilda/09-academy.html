@@ -3,7 +3,9 @@
 /* ===== Блоки «Почему выбирают нас» и «98 % студентов» =====
    Перенесены один в один из общих компонентов Web Academy (как на «Тренингах для детей» и «КПТ Оксфорд»).
    Все правила заперты в обёртке .psy-acad, на остальную страницу не влияют.
-   Сначала токены (цвета, отступы, радиусы), потом правила компонентов. Тексты правим в index.html. */
+   Сначала токены (цвета, отступы, радиусы), потом правила компонентов. Тексты правим в index.html.
+   Роли текста (body-text, section-title, content-heading, section-header, section-layout) берутся из общих
+   стилей v1 по метке data-academy="1" — их копии отсюда убраны 26.10.2026. */
 .psy-acad { --color-page-background: #f5f5f5; --color-surface-primary: #ffffff; --color-text-primary: #332f41; --color-text-secondary: #747476; --color-text-secondary-large: #7b7b7c; --color-text-secondary-on-accent: #5e5a6a; --color-text-on-dark: #ffffff; --color-accent-primary: #7c5cdb; --color-accent-soft: #dad6ff; --color-focus: #7c5cdb; --color-surface-dark: #2b2334; --color-text-on-dark-muted: #e6e5eb; --color-cta-grid-muted: #32293c; --color-cta-grid-medium: #3b2e49; --color-cta-grid-bright: #38254e; --border-gradient-accent: linear-gradient(
     to top right,
     rgba(124, 92, 219, 0.8) 0%,
@@ -74,15 +76,6 @@
 .psy-acad .academy-showcase_teachers-status span { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-surface-primary); }
 @media (min-width: 48rem) { .psy-acad .academy-showcase_card.is-teachers { grid-template-columns: minmax(0px, 1fr) minmax(10rem, 15rem); align-items: start; min-height: 15rem; } }
 @media (min-width: 48rem) { .psy-acad .academy-showcase_teachers-media { width: 100%; } }
-.psy-acad .body-text_component { margin: 0px; color: var(--body-text-color, var(--color-text-secondary-large)); font-family: var(--font-family-body); font-size: min(var(--body-text-max, 1.25rem), 0.9375rem); font-weight: 444; line-height: 1.2; letter-spacing: -0.01em; font-feature-settings: "lnum", "pnum"; }
-.psy-acad .body-text_component.is-statement { letter-spacing: normal; }
-.psy-acad .body-text_component.is-showcase { font-size: 1rem; font-weight: 400; line-height: 1.1; }
-@media (min-width: 32.5625rem) { .psy-acad .body-text_component.is-showcase { font-size: 1.125rem; } }
-@media (min-width: 32.5625rem) { .psy-acad .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1rem); } }
-@media (min-width: 48rem) { .psy-acad .body-text_component.is-showcase { font-size: 1.25rem; } }
-@media (min-width: 48rem) { .psy-acad .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.125rem); } }
-@media (min-width: 64.0625rem) { .psy-acad .body-text_component.is-showcase { font-size: 1.5rem; } }
-@media (min-width: 64.0625rem) { .psy-acad .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.25rem); } }
 .psy-acad .academy-showcase_component.is-responsive { --content-prominent-size: 1.5rem; --content-heading-line-height: 1; --content-heading-gap: 0.5rem; --showcase-padding: 1rem; --showcase-gap: 0.75rem; --showcase-practice-height: 21.875rem; --showcase-side-height: 16.8125rem; --showcase-teachers-height: 16.8125rem; --showcase-community-top: 8.8125rem; --showcase-graduates-top: 6.5625rem; --showcase-graduates-reserve: 9.25rem; --body-text-color: var(--showcase-copy-color, var(--color-text-secondary-large, #747476)); gap: var(--section-layout-gap); overflow-wrap: anywhere; }
 .psy-acad .academy-showcase_intro { max-width: 63rem; }
 .psy-acad .academy-showcase_component.is-responsive .academy-showcase_layout, .psy-acad .academy-showcase_component.is-responsive .academy-showcase_grid, .psy-acad .academy-showcase_component.is-responsive .academy-showcase_side-grid { gap: var(--showcase-gap); }
@@ -161,28 +154,9 @@
 @media (min-width: 64.0625rem) { .psy-acad .ratings_layout { grid-template-columns: minmax(0px, 624fr) minmax(0px, 368fr); } }
 @media (min-width: 64.0625rem) { .psy-acad .ratings_platforms { grid-template-rows: repeat(2, minmax(0px, 1fr)); } }
 @media (min-width: 64.0625rem) { .psy-acad .ratings_card.is-wide { padding: 1.5rem; } }
-.psy-acad .section-title_component { width: 100%; min-width: 0px; margin: 0px; color: inherit; font-family: var(--font-family-body); font-size: var(--section-title-size, clamp(2.25rem, 3.1vw, 3.25rem)); font-weight: var(--section-title-weight, 400); line-height: var(--section-title-line-height, 1.1); letter-spacing: var(--section-title-tracking, -0.06em); text-align: inherit; text-wrap: var(--section-title-wrap, balance); }
-.psy-acad .section-title_component.is-left { text-align: left; }
-.psy-acad .section-title_component.is-center { text-align: center; }
-.psy-acad .section-subtitle_component { width: 100%; min-width: 0px; margin: 0px; color: var(--section-subtitle-color, var(--color-text-secondary-large)); font-family: var(--font-family-body); font-size: var(--section-heading-description-size); font-weight: 400; line-height: var(--section-subtitle-line-height, 1.2); letter-spacing: var(--section-subtitle-tracking, -0.01em); text-wrap: pretty; }
-.psy-acad .content-heading_component { min-width: 0px; margin: 0px; color: inherit; font-family: var(--font-family-body); font-size: var(--content-heading-size, clamp(1.25rem, 2.419vw, 1.5rem)); font-weight: 500; line-height: var(--content-heading-line-height, 1.1); letter-spacing: 0px; font-feature-settings: "lnum", "pnum"; }
-.psy-acad .content-heading_component.is-prominent { font-size: var(--content-prominent-size, clamp(1.75rem, 2.4vw, 2.25rem)); font-weight: 444; letter-spacing: -0.03em; }
-.psy-acad .content-header_component { display: flex; min-width: 0px; flex-direction: column; gap: var(--content-heading-gap); }
-.psy-acad .section-header_component { display: flex; width: 100%; min-width: 0px; flex-direction: column; gap: var(--section-heading-gap); }
-.psy-acad .section-header_component.is-responsive { --section-heading-gap: var(--space-heading-copy); --section-heading-description-size: 1rem; --section-subtitles-gap: var(--space-subtitle-pair); --section-heading-mark-gap: var(--space-mark-heading); }
-@media (min-width: 32.5625rem) { .psy-acad .section-header_component.is-responsive { --section-heading-description-size: 1.125rem; } }
-@media (min-width: 48rem) { .psy-acad .section-header_component.is-responsive { --section-heading-description-size: 1.25rem; } }
-@media (min-width: 64.0625rem) { .psy-acad .section-header_component.is-responsive { --section-heading-description-size: 1.375rem; } }
-.psy-acad .section-header_component.is-left { align-items: flex-start; text-align: left; }
-.psy-acad .section-header_component.is-center { align-items: center; text-align: center; }
-.psy-acad .section-layout_component { display: flex; width: 100%; min-width: 0px; flex-direction: column; gap: var(--section-layout-gap, clamp(2.5rem, 6.835vw, 4.375rem)); }
-.psy-acad .section-layout_component.is-responsive { --section-title-size: 2rem; --section-title-line-height: 1; --section-layout-gap: var(--space-section-content); }
-@media (min-width: 32.5625rem) { .psy-acad .section-layout_component.is-responsive { --section-title-size: 2.25rem; } }
-@media (min-width: 48rem) { .psy-acad .section-layout_component.is-responsive { --section-title-size: 2.75rem; } }
-@media (min-width: 64.0625rem) { .psy-acad .section-layout_component.is-responsive { --section-title-size: 3.25rem; } }
 .psy-acad [id] { scroll-margin-top: var(--anchor-scroll-offset); }
 </style>
-<div class="psy-page" data-psy-part="academy"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="academy"><div class="wa" lang="ru">
 <section id="academy" class="wa-sec" aria-labelledby="academy-heading"><div class="wa-in">
       <!-- «Почему выбирают нас»: общий компонент Web Academy, один в один как на «Тренингах для детей». Стили в academy.css (обёртка .psy-acad). -->
       <div class="psy-acad">

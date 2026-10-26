@@ -58,7 +58,8 @@ const write = async (slug, text, title, placement) => {
 };
 
 // 1. Стили: шрифты и page.css целиком, плюс поправки под сайт.
-const links = [...source.matchAll(/<link rel="(?:preconnect|stylesheet)"[^>]*>/g)].map(m => m[0]).filter(link => !link.includes('href="./'));
+const links = [...source.matchAll(/<link rel="(?:preconnect|stylesheet)"[^>]*>/g)].map(m => m[0]).filter(link => !link.includes('href="./') && !link.includes('/academy-base/'));
+// Общие стили лендингов v1 (/academy-base/v1.css) и их шрифт в пакет НЕ идут: на сайте они уже в custom.css Тильды.
 const tildaFix = `
 /* ===== Поправки под Тильду =====
    Общий custom.css сайта красит все ссылки «a { color: inherit !important }», и у ссылок-кнопок пропадает текст.
@@ -76,7 +77,7 @@ for (const markup of sections) {
   const title = titles[id];
   if (!title) throw new Error(`Нет названия для секции ${id}`);
   const style = id === 'academy' ? `<style>\n${academyCss.trim()}\n</style>\n` : '';
-  await write(id, `<!-- СЕКЦИЯ ${id}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n${style}<div class="psy-page" data-psy-part="${id}"><div class="wa" lang="ru">\n${markup}\n</div></div>\n`, title, 'BODY');
+  await write(id, `<!-- СЕКЦИЯ ${id}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n${style}<div class="psy-page" data-academy="1" data-psy-part="${id}"><div class="wa" lang="ru">\n${markup}\n</div></div>\n`, title, 'BODY');
 }
 
 // 3. Скрипт страницы: ждёт, пока все секции появятся в документе.
@@ -102,7 +103,8 @@ if (new Set(exportIds).size !== exportIds.length) throw new Error('Повтор�
 for (const link of all.matchAll(/href="#([a-z][a-z0-9-]*)"/g)) if (!exportIds.includes(link[1])) throw new Error(`Якорь без цели: #${link[1]}`);
 
 // preview.html: блоки в обёртках, как их рисует Тильда, плюс правило ссылок из custom.css сайта.
-const preview = `<!doctype html>\n<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Психиатрия для психологов: проверка блоков T123</title>\n<style>/* как в custom.css на modern-psy.ru */ a { color: inherit !important; }</style></head><body><div id="allrecords">\n${blocks.map(block => `<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">\n${block}</div></div></div></div>\n`).join('')}</div></body></html>\n`;
+const preview = `<!doctype html>\n<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Психиатрия для психологов: проверка блоков T123</title>\n<link rel="stylesheet" href="../../academy-base/v1.css"><!-- на сайте v1 лежит в custom.css Тильды -->
+<style>/* как в custom.css на modern-psy.ru */ a { color: inherit !important; }</style></head><body><div id="allrecords">\n${blocks.map(block => `<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">\n${block}</div></div></div></div>\n`).join('')}</div></body></html>\n`;
 await fs.writeFile(new URL('preview.html', out), preview);
 await fs.writeFile(new URL('manifest.json', out), JSON.stringify(files, null, 2) + '\n');
 console.log(`Готово: ${sections.length} секций, ${files.length} блоков T123, каждый меньше ${LIMIT} символов.`);

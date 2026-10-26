@@ -1,18 +1,20 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Психиатрия для психологов: проверка блоков T123</title>
+<link rel="stylesheet" href="../../academy-base/v1.css"><!-- на сайте v1 лежит в custom.css Тильды -->
 <style>/* как в custom.css на modern-psy.ru */ a { color: inherit !important; }</style></head><body><div id="allrecords">
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- ОБЩИЕ СТИЛИ. Первый T123 страницы, до всех секций. Отступы T123 сверху и снизу: 0. -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://optim.tildacdn.com" crossorigin>
 <link rel="preconnect" href="https://s3.twcstorage.ru" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@500&amp;family=Wix+Madefor+Text:wght@400;500;600&amp;display=swap">
 <style>
 /* Лендинг «Психиатрия для психологов» · курс повышения квалификации.
    Стили самодостаточные, в мире Web Academy: фон #f5f5f5, белые карточки, тёмные плашки #2b2334,
    фиолетовый #7c5cdb только акцентом. Ширина страницы — контейнер «stage», все переломы через
    @container: 521 px — большой телефон, 768 px — планшет, 1025 px — десктоп.
+   С 26.10.2026 стоит на общих стилях лендингов v1 (apps/preview/academy-base): шрифт, H1, кнопки
+   и роли текста берутся оттуда, метка data-academy="1" стоит на обёртке .psy-page.
+   Кегли здесь НЕ задавать числами: тексты берут размеры из переменных --title, --sub, --body, --h3,
+   --caption, --fine, значения которых совпадают с ролями v1 (таблица в academy-base/README.md).
    Цвета менять только в переменных ниже. */
 
 .psy-page {
@@ -35,8 +37,9 @@
   --wa-on-dark-2: #e6e5eb;
   --wa-on-dark-3: #b9b4c4;
   --wa-dark-line: rgb(255 255 255 / 14%);
-  --font: "Wix Madefor Text", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --font-display: "Wix Madefor Display", "Wix Madefor Text", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  /* шрифт из v1 (Wix Madefor Text, свой файл); Wix Madefor Display и Google Fonts больше не используем */
+  --font: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+  --font-display: var(--font);
 }
 
 body { margin: 0; background: #f5f5f5; }
@@ -47,27 +50,34 @@ body { margin: 0; background: #f5f5f5; }
 /* ============ блоки страницы ============ */
 .wa {
   --pad: 1rem; --sec-y: 3.5rem; --gap: 0.75rem; --head-gap: 2rem;
-  --title: 2rem; --sub: 1rem; --body: 0.9375rem; --h3: 1.25rem; --big: 1.375rem;
+  /* роли текста v1: --sub описание под заголовком, --body текст, --h3 заголовок карточки,
+     --caption подпись и рассрочка, --fine сноска и согласие (14 px везде), --big имя и крупная подводка */
+  --title: 2rem; --title-lh: 1.1; --sub: 1.125rem; --body: 1rem; --h3: 1.375rem; --big: 1.375rem; --caption: 0.9375rem; --fine: 0.875rem;
   --card-pad: 1rem; --r: 0.75rem;
+  /* цвета текста ролей v1 в общих блоках: темнее серого v1, контраст выше 4,5:1 */
+  --body-text-color: var(--wa-ink-2); --section-subtitle-color: var(--wa-ink-3);
   font-family: var(--font); color: var(--wa-ink); background: var(--wa-page);
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
   font-feature-settings: "lnum" 1, "pnum" 1;
 }
 @container stage (min-width: 32.5625rem) {
-  .wa { --title: 2.25rem; --sub: 1.125rem; --body: 1rem; --head-gap: 2.25rem; --big: 1.5rem; }
+  .wa { --title: 2.25rem; --title-lh: 1; --sub: 1.125rem; --body: 1rem; --head-gap: 2.25rem; --big: 1.5rem; --caption: 1rem; }
 }
 @container stage (min-width: 48rem) {
   .wa { --pad: clamp(1.5rem, 4.76cqi, 5rem); --sec-y: 5rem; --gap: 1rem; --head-gap: 2.625rem;
-        --title: 2.75rem; --sub: 1.25rem; --body: 1.125rem; --h3: 1.375rem; --big: 1.75rem; --card-pad: 1.5rem; --r: 1rem; }
+        --title: 2.75rem; --sub: 1.25rem; --body: 1.125rem; --h3: 1.5rem; --big: 1.75rem; --card-pad: 1.5rem; --r: 1rem; }
 }
 @container stage (min-width: 64.0625rem) {
-  .wa { --sec-y: 6.5rem; --head-gap: 3.5rem; --title: 3.25rem; --sub: 1.375rem; --body: 1.25rem; --h3: 1.5rem; --big: 2rem; --card-pad: 2rem; }
+  .wa { --sec-y: 6.5rem; --head-gap: 3.5rem; --title: 3.25rem; --sub: 1.375rem; --body: 1.25rem; --h3: 1.5rem; --big: 2rem; --card-pad: 2rem; --caption: 1.125rem; }
 }
 .wa :where(h2, h3, p, ul, ol, li, figure) { margin: 0; padding: 0; }
 .wa :where(ul, ol) { list-style: none; }
+/* подписи внутри SVG (печать листа) тем же шрифтом, что и страница: атрибут font-family в SVG перебивается здесь */
+.wa svg text { font-family: var(--font-family-body, var(--font)); }
 .wa-sec { padding: var(--sec-y) var(--pad); }
 .wa-in { max-width: 95rem; margin-inline: auto; }
-.wa-title { font-size: var(--title); font-weight: 400; line-height: 1.05; letter-spacing: -0.06em; text-wrap: balance; color: var(--wa-ink); }
+/* заголовок секции как в v1: 500, межстрочный 1.1 на телефоне и 1.0 от 521 px (ниже, в переменной --title-lh) */
+.wa-title { font-size: var(--title); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; text-wrap: balance; color: var(--wa-ink); }
 .wa-title em { font-style: normal; color: var(--wa-accent); }
 .wa-sub { font-size: var(--sub); line-height: 1.25; letter-spacing: -0.01em; color: var(--wa-ink-3); text-wrap: pretty; max-width: 44ch; }
 .wa-body { font-size: var(--body); line-height: 1.35; letter-spacing: -0.01em; color: var(--wa-ink-2); text-wrap: pretty; }
@@ -109,7 +119,7 @@ body { margin: 0; background: #f5f5f5; }
 .dk-card[data-pos="1"] > *, .dk-card[data-pos="2"] > * { opacity: 0; }
 .dk-card.is-out-left { z-index: 9; transform: translate(-112%, -0.5rem) rotate(-7deg); opacity: 0; }
 .dk-card.is-out-right { z-index: 9; transform: translate(112%, -0.5rem) rotate(7deg); opacity: 0; }
-.dk-count { margin-bottom: 0.5rem; font-size: 0.9375rem; color: var(--wa-ink-3); font-variant-numeric: tabular-nums; }
+.dk-count { margin-bottom: 0.5rem; font-size: var(--caption); color: var(--wa-ink-3); font-variant-numeric: tabular-nums; }
 .dk-q { font-size: var(--big); font-weight: 400; line-height: 1.12; letter-spacing: -0.035em; text-indent: -0.4em; text-wrap: balance; }
 .dk-a { font-size: var(--body); line-height: 1.35; color: var(--wa-ink-2); text-wrap: pretty; }
 .dk-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
@@ -170,12 +180,13 @@ body { margin: 0; background: #f5f5f5; }
 }
 .hr-text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 1rem 1.25rem; }
 .hr-pills { display: flex; flex-wrap: wrap; gap: 0.375rem; }
-.hr-pills li { font-size: 0.8125rem; line-height: 1; padding: 0.45rem 0.7rem; border-radius: 999px; background: var(--hr-pill); color: var(--hr-pill-ink); white-space: nowrap; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-.hr-title { font-family: var(--font-display); font-weight: 500; font-size: 2.25rem; line-height: 0.98; letter-spacing: -0.035em; color: var(--hr-head); text-wrap: balance; }
-.hr-sub { display: block; margin-top: 0.5em; font-family: var(--font); font-weight: 400; font-size: 1.125rem; line-height: 1.2; letter-spacing: -0.01em; color: var(--hr-text); text-wrap: balance; }
-.hr-lead { font-size: 1rem; line-height: 1.4; color: var(--hr-text); max-width: 46ch; text-wrap: pretty; }
+.hr-pills li { font-size: var(--fine); line-height: 1; padding: 0.45rem 0.7rem; border-radius: 999px; background: var(--hr-pill); color: var(--hr-pill-ink); white-space: nowrap; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+/* H1: размер, насыщенность и межстрочный из v1 (класс hero_heading), здесь только цвет */
+.hr-title { color: var(--hr-head); }
+.hr-sub { display: block; margin-top: 0.5em; font-family: var(--font); font-weight: 400; font-size: var(--sub); line-height: 1.2; letter-spacing: -0.01em; color: var(--hr-text); text-wrap: balance; }
+.hr-lead { font-size: var(--body); line-height: 1.4; color: var(--hr-text); max-width: 46ch; text-wrap: pretty; }
 /* строка о клинике под описанием: тише описания, но читается на тёмном */
-.hr-note { font-size: 0.875rem; line-height: 1.4; color: var(--hr-muted); max-width: 46ch; text-wrap: pretty; }
+.hr-note { font-size: var(--caption); line-height: 1.4; color: var(--hr-muted); max-width: 46ch; text-wrap: pretty; }
 .hr-actions { display: flex; flex-wrap: wrap; gap: 0.625rem; }
 .hb { display: inline-flex; flex: 1 1 13.75rem; align-items: center; justify-content: center; min-height: 3.25rem; padding: 0.875rem 1.625rem; border-radius: 0.875rem; font: 500 1rem/1.2 var(--font); text-align: center; text-decoration: none; transition: background-color 0.15s ease; }
 .hb.is-main { background: var(--hr-main); color: var(--hr-main-ink); }
@@ -188,8 +199,8 @@ body { margin: 0; background: #f5f5f5; }
 /* Факты о курсе: отдельная полоса под текстом. На телефоне столбиком, на планшете по два, на десктопе в ряд во всю ширину карточки */
 .hr-facts { position: relative; z-index: 1; display: grid; margin: 0 1rem 0.5rem; }
 .hr-facts div { display: grid; gap: 0.25rem; align-content: start; padding: 0.75rem 0; border-top: 1px solid var(--hr-line); }
-.hr-facts dt { font-size: 0.8125rem; line-height: 1.3; color: var(--hr-muted); }
-.hr-facts dd { margin: 0; font-size: 1rem; line-height: 1.35; color: var(--hr-head); text-wrap: pretty; }
+.hr-facts dt { font-size: var(--fine); line-height: 1.3; color: var(--hr-muted); }
+.hr-facts dd { margin: 0; font-size: max(var(--caption), 1rem); line-height: 1.35; color: var(--hr-head); text-wrap: pretty; }
 .hr-facts b { font-weight: inherit; white-space: nowrap; }
 .hr-art { position: relative; height: 15rem; }
 .hr-art canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -204,31 +215,19 @@ body { margin: 0; background: #f5f5f5; }
   .hr-b .hr-art.is-tall { height: 22rem; }
   .hr-text { gap: 1.25rem; }
   .hr-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; margin-bottom: 0.75rem; }
-  .hr-title { font-size: 2.75rem; }
-  .hr-sub { font-size: 1.25rem; }
-  .hr-lead { font-size: 1.0625rem; }
   .hb { min-height: 3.5rem; }
 }
 @container stage (min-width: 48rem) {
   .wa-sec.is-hero { padding-block: 1.25rem 3rem; }
   .hr { border-radius: 1.75rem; }
   .hr-text { padding: 2.25rem 2rem 1.75rem; gap: 1.375rem; }
-  .hr-title { font-size: 3.5rem; }
-  .hr-sub { font-size: 1.375rem; }
-  .hr-lead { font-size: 1.125rem; }
-  .hr-note { font-size: 0.9375rem; }
   .hr-facts { margin: 0 2rem 1rem; column-gap: 2rem; }
-  .hr-facts dt { font-size: 0.875rem; }
-  .hr-facts dd { font-size: 1.0625rem; }
+  .hr-pills li { font-size: 1rem; } /* плашка v1: 14 → 16 px */
   .hr-a .hr-art { height: 17rem; margin: -1rem 0 0; }
   .hr-b .hr-art, .hr-b .hr-art.is-tall { height: 25rem; }
 }
 @container stage (min-width: 64.0625rem) {
   .wa-sec.is-hero { padding-block: 1.5rem 3.5rem; }
-  .hr-title { font-size: clamp(3.5rem, 4.8cqi, 4.125rem); }
-  .hr-sub { font-size: 1.5rem; }
-  .hr-lead { font-size: 1.1875rem; }
-  .hr-note { font-size: 1rem; }
   .hr-a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); min-height: 41rem; }
   .hr-a .hr-text { padding: 3rem 0 2.75rem 3rem; }
   .hr-a .hr-art { height: auto; margin: 0; }
@@ -256,12 +255,12 @@ body { margin: 0; background: #f5f5f5; }
 .au-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 0.5rem; align-content: start; }
 .au-photo { margin: 0; border-radius: var(--r); overflow: hidden; aspect-ratio: 16 / 11; background: var(--wa-grey); }
 .au-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 40% 40%; display: block; }
-.au-note { margin-top: 1.25rem; font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-3); text-align: center; text-wrap: balance; }
+.au-note { margin-top: 1.25rem; font-size: var(--caption); line-height: 1.4; color: var(--wa-ink-3); text-align: center; text-wrap: balance; }
 @container stage (min-width: 48rem) {
   .au { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
   .au-card { padding: 1.25rem 1.5rem 1.5rem; }
   .au-photo { aspect-ratio: auto; min-height: 100%; }
-  .au-note { font-size: 1rem; max-width: 44rem; margin-inline: auto; }
+  .au-note { max-width: 44rem; margin-inline: auto; }
 }
 
 /* ---------- 7 · Преподаватель: широкая карточка ---------- */
@@ -284,11 +283,11 @@ body { margin: 0; background: #f5f5f5; }
 /* ---------- 8 · Документы: удостоверение и сертификат ---------- */
 .dc { background: #fff; border-radius: var(--r); overflow: hidden; display: grid; }
 .dc-text { padding: var(--card-pad); display: grid; gap: 1.25rem; align-content: start; }
-.dc-title { font-size: min(var(--title), 2.75rem); font-weight: 400; line-height: 1.05; letter-spacing: -0.06em; text-wrap: balance; }
+.dc-title { font-size: min(var(--title), 2.75rem); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; text-wrap: balance; }
 .dc-terms { display: grid; gap: 0.625rem; }
 .dc-terms li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--wa-ink); }
 .dc-terms .ic { margin-top: 0.1rem; color: var(--wa-ink-2); }
-.dc-license { font-size: 0.8125rem; line-height: 1.4; color: var(--wa-ink-3); }
+.dc-license { font-size: var(--fine); line-height: 1.4; color: var(--wa-ink-3); }
 .dc-license span { white-space: nowrap; }
 .dc-img { min-height: 13rem; background: #f3f4f6 url("https://s3.twcstorage.ru/asp-media/udost_1_floating_1600_cbdd66df33.webp") 50% 50% / cover no-repeat; }
 @container stage (min-width: 48rem) {
@@ -307,32 +306,32 @@ body { margin: 0; background: #f5f5f5; }
 .pr-zone { padding: 1.5rem; min-width: 0; }
 .pr-main { display: flex; flex-direction: column; }
 .pr-side { display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--wa-line); }
-.pr-chip { align-self: flex-start; font-size: 0.8125rem; font-weight: 500; line-height: 1; padding: 0.4375rem 0.75rem; border-radius: 999px; background: var(--wa-page); color: var(--wa-ink); }
+.pr-chip { align-self: flex-start; font-size: var(--fine); font-weight: 500; line-height: 1; padding: 0.4375rem 0.75rem; border-radius: 999px; background: var(--wa-page); color: var(--wa-ink); }
 .pr-title { display: grid; gap: 0.375rem; margin-top: 1.25rem; }
 .pr-name { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; text-wrap: balance; }
-.pr-start { font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-3); }
+.pr-start { font-size: var(--caption); line-height: 1.4; color: var(--wa-ink-3); }
 .pr-money { margin-top: auto; padding-top: 2rem; }
 .pr-price { display: flex; align-items: baseline; gap: 0.375rem; font-size: 2.5rem; font-weight: 500; letter-spacing: -0.045em; line-height: 1; color: var(--wa-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pr-price small { font-size: 1.75rem; font-weight: 400; letter-spacing: -0.02em; color: var(--wa-ink-3); }
-.pr-alt { margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-3); }
+.pr-alt { margin-top: 0.75rem; font-size: var(--caption); line-height: 1.4; color: var(--wa-ink-3); }
 .pr-side-title { font-size: 1.0625rem; font-weight: 500; line-height: 1.25; color: var(--wa-ink); }
-.pr-check { display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink); }
+.pr-check { display: flex; flex-direction: column; gap: 0.75rem; font-size: var(--caption); line-height: 1.4; color: var(--wa-ink); }
 .pr-check li { display: grid; grid-template-columns: 1.125rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
 .pr-check .ic { width: 1.125rem; height: 1.125rem; margin-top: 0.125rem; color: #0a6b4e; }
 /* пояснение под пунктом: мелко и серым */
-.pr-check-sub { display: block; margin-top: 0.125rem; font-size: 0.8125rem; line-height: 1.35; color: var(--wa-ink-3); }
+.pr-check-sub { display: block; margin-top: 0.125rem; font-size: var(--fine); line-height: 1.35; color: var(--wa-ink-3); }
 .terms { margin-top: var(--head-gap); }
 .terms-title { text-align: center; font-size: var(--big); font-weight: 400; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem; }
 .terms-cols { display: grid; }
 .terms-col { display: grid; gap: 0.625rem; align-content: start; padding-block: 1.25rem; border-top: 1px solid var(--wa-grey-2); }
 .terms-col:first-child { border-top: 0; padding-top: 0; }
 .terms-col h4 { margin: 0; font-size: 1.0625rem; font-weight: 500; color: var(--wa-ink); }
-.terms-col p { margin: 0; font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-2); }
+.terms-col p { margin: 0; font-size: var(--caption); line-height: 1.4; color: var(--wa-ink-2); }
 .terms-disc { display: grid; gap: 0.5rem; }
-.terms-disc li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 0.75rem; align-items: center; font-size: 0.9375rem; line-height: 1.3; color: var(--wa-ink-2); }
+.terms-disc li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 0.75rem; align-items: center; font-size: var(--caption); line-height: 1.3; color: var(--wa-ink-2); }
 .terms-disc b { display: block; text-align: center; padding: 0.35rem 0.25rem; border-radius: 0.5rem; background: #fff; font-weight: 600; font-size: 0.875rem; color: var(--wa-ink); white-space: nowrap; }
 /* условие скидки мелким серым под основной строкой, как пояснение в «Что входит» */
-.terms-sub { display: block; margin-top: 0.125rem; font-size: 0.8125rem; line-height: 1.35; color: var(--wa-ink-3); }
+.terms-sub { display: block; margin-top: 0.125rem; font-size: var(--fine); line-height: 1.35; color: var(--wa-ink-3); }
 @container stage (min-width: 48rem) {
   .pr { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .pr-zone { padding: 2rem; }
@@ -349,7 +348,7 @@ body { margin: 0; background: #f5f5f5; }
 /* ---------- 10 · Заявка: лид-форма Академии ---------- */
 .lf { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: var(--wa-on-dark-2); }
 .lf-intro { display: grid; gap: 1.25rem; align-content: start; }
-.lf-title { font-size: var(--title); font-weight: 400; line-height: 1.05; letter-spacing: -0.06em; color: var(--wa-on-dark-2); text-wrap: balance; }
+.lf-title { font-size: var(--title); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; color: var(--wa-on-dark-2); text-wrap: balance; }
 .lf-desc { font-size: var(--sub); line-height: 1.2; color: var(--wa-on-dark-3); max-width: 34ch; }
 .lf-form { display: grid; gap: 1.25rem; }
 .lf-fields { display: grid; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
@@ -374,11 +373,11 @@ body { margin: 0; background: #f5f5f5; }
 @media (hover: hover) and (pointer: fine) { .lf-opt input:not(:checked) + span:hover { border-color: #fff; color: #fff; } .lf-submit:hover { background: var(--wa-on-dark-2); } }
 .lf-submit { width: 100%; min-height: 3.5rem; border: 0; border-radius: 0.5rem; background: #fff; color: var(--wa-dark); font: 500 1.125rem/1.07 var(--font); letter-spacing: -0.04em; cursor: pointer; transition: background-color 0.2s ease; }
 .lf-submit:focus-visible { outline: 2px solid var(--wa-on-dark-2); outline-offset: 3px; }
-.lf-legal { font-size: 0.8125rem; line-height: 1.35; color: var(--wa-on-dark-3); }
+.lf-legal { font-size: var(--fine); line-height: 1.35; color: var(--wa-on-dark-3); }
 .lf-legal a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
 /* Заявка: ошибка в поле, строка статуса, ответ после отправки */
 .lf-input[aria-invalid="true"] { border-color: var(--wa-accent-soft); box-shadow: 0 0 0 1px var(--wa-accent-soft); }
-.lf-status { font-size: 0.9375rem; line-height: 1.35; color: var(--wa-on-dark); }
+.lf-status { font-size: var(--caption); line-height: 1.35; color: var(--wa-on-dark); }
 .lf-status:empty { display: none; }
 .lf-submit:disabled { cursor: progress; opacity: 0.7; }
 .lf-done { display: grid; gap: 0.75rem; align-content: center; outline: none; }
@@ -469,7 +468,7 @@ body { margin: 0; background: #f5f5f5; }
 .cs-line:last-child { border-bottom: 0; }
 .cs-n { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--wa-chip); font-size: 0.875rem; font-weight: 500; color: var(--wa-ink-2); font-variant-numeric: tabular-nums; }
 .cs-step { font-weight: 500; font-size: 1rem; letter-spacing: -0.015em; line-height: 1.2; margin-top: 0.2rem; }
-.cs-ink { margin-top: 0.25rem; font-size: 0.9375rem; line-height: 1.35; color: var(--wa-ink-2); }
+.cs-ink { margin-top: 0.25rem; font-size: var(--caption); line-height: 1.35; color: var(--wa-ink-2); }
 .cs-check { color: var(--wa-dark); margin-top: 0.2rem; }
 .cs-line:last-child { padding-right: 4.5rem; padding-bottom: 1.5rem; }
 .cs-stamp { position: absolute; right: 0; bottom: -2.25rem; width: 6.5rem; height: 6.5rem; color: var(--wa-accent); transform: rotate(calc(-14deg - var(--cs-tilt))); }
@@ -493,7 +492,6 @@ body { margin: 0; background: #f5f5f5; }
   .cs-line { grid-template-columns: 2rem minmax(0, 1fr) 1.25rem; gap: 1rem; padding-block: 1rem; }
   .cs-n { width: 2rem; height: 2rem; }
   .cs-step { font-size: 1.125rem; }
-  .cs-ink { font-size: 1rem; }
   .cs-stamp { width: 7.5rem; height: 7.5rem; right: -1.5rem; bottom: -2.5rem; }
 }
 @container stage (min-width: 64.0625rem) {
@@ -507,10 +505,9 @@ body { margin: 0; background: #f5f5f5; }
 
 /* ---------- общая шапка «Программы» ---------- */
 .facts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.fact { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.45rem 0.9rem 0.45rem 0.7rem; border-radius: 999px; background: #fff; font-size: 0.9375rem; line-height: 1.2; color: var(--wa-ink); }
+.fact { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.45rem 0.9rem 0.45rem 0.7rem; border-radius: 999px; background: #fff; font-size: var(--caption); line-height: 1.2; color: var(--wa-ink); }
 .fact .ic { color: var(--wa-ink-2); }
 .fact b { font-weight: 600; white-space: nowrap; }
-@container stage (min-width: 48rem) { .fact { font-size: 1rem; } }
 
 /* ---------- 5А · Путь сверху вниз ---------- */
 .pa { display: grid; gap: var(--head-gap); }
@@ -530,7 +527,7 @@ body { margin: 0; background: #f5f5f5; }
 .pa-mark { position: absolute; left: -2.25rem; top: 1.25rem; display: grid; place-items: center; width: 1.4375rem; height: 1.4375rem; border-radius: 50%; background: var(--wa-dark); color: #fff; font-size: 0.75rem; font-weight: 500; font-variant-numeric: tabular-nums; }
 .pa-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 1rem; }
 .pa-topics { display: flex; flex-wrap: wrap; gap: 0.375rem; }
-.pa-topics li { padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--wa-chip); font-size: 0.9375rem; line-height: 1.25; color: var(--wa-ink); }
+.pa-topics li { padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--wa-chip); font-size: var(--caption); line-height: 1.25; color: var(--wa-ink); }
 .pa-res { padding: 1rem; border-radius: 0.625rem; background: var(--wa-page); display: grid; gap: 0.25rem; }
 .pa-res-l { font-size: 0.875rem; font-weight: 500; color: var(--wa-ink-3); }
 .pa-res p:last-child { font-size: var(--body); line-height: 1.35; color: var(--wa-ink); text-wrap: pretty; }
@@ -585,8 +582,7 @@ body { margin: 0; background: #f5f5f5; }
 .st-grid { margin-top: var(--gap); display: grid; gap: var(--gap); }
 .st-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 1rem; align-items: start; }
 .st-text { display: grid; gap: 0.5rem; align-content: start; }
-.st-card .wa-h3 { font-size: 1.125rem; line-height: 1.2; }
-.st-card .wa-body, .st-q { font-size: 0.9375rem; line-height: 1.4; color: var(--wa-ink-2); }
+.st-q { font-size: var(--body); line-height: 1.4; color: var(--wa-ink-2); }
 .st-q { display: grid; gap: 0.25rem; }
 .st-q li { position: relative; padding-left: 0.875rem; }
 .st-q li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 0.3125rem; height: 0.3125rem; border-radius: 50%; background: var(--wa-ink-3); }
@@ -598,8 +594,6 @@ body { margin: 0; background: #f5f5f5; }
   .sp-before, .sp-meet { grid-row: span 3; grid-template-rows: subgrid; row-gap: 0.75rem; }
   .st-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .st-card { grid-template-columns: minmax(0, 1fr); align-content: start; }
-  .st-card .wa-h3 { font-size: 1.25rem; }
-  .st-card .wa-body, .st-q { font-size: 1rem; }
 }
 @container stage (min-width: 64.0625rem) {
   .sp-meet { padding: 1.25rem 1.25rem 2rem; }
@@ -623,23 +617,19 @@ body { margin: 0; background: #f5f5f5; }
 .fq-q { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem var(--card-pad); cursor: pointer; list-style: none; border-radius: var(--r); }
 .fq-q::-webkit-details-marker { display: none; }
 .fq-q:focus-visible { outline: 2px solid var(--wa-accent); outline-offset: 3px; }
-.fq-title { font-size: 1rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.015em; color: var(--wa-ink); text-wrap: pretty; }
+.fq-title { font-size: var(--h3); font-weight: 500; line-height: 1.2; letter-spacing: -0.015em; color: var(--wa-ink); text-wrap: pretty; }
 .fq-icon { position: relative; flex: none; width: 2rem; height: 2rem; border-radius: 50%; background: var(--wa-chip); transition: background-color 0.15s ease; }
 .fq-icon::before, .fq-icon::after { content: ""; position: absolute; left: 50%; top: 50%; width: 0.75rem; height: 1.5px; border-radius: 1px; background: var(--wa-ink); transform: translate(-50%, -50%); transition: transform 0.2s ease; }
 .fq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
 .fq-item[open] .fq-icon::after { transform: translate(-50%, -50%) rotate(0deg); }
 @media (hover: hover) and (pointer: fine) { .fq-q:hover .fq-icon { background: var(--wa-grey); } }
 .fq-a { padding: 0 var(--card-pad) 1.25rem; }
-.fq-a p { max-width: 62ch; font-size: 0.9375rem; line-height: 1.45; color: var(--wa-ink-2); text-wrap: pretty; }
+.fq-a p { max-width: 62ch; font-size: var(--body); line-height: 1.45; color: var(--wa-ink-2); text-wrap: pretty; }
 @container stage (min-width: 48rem) {
   .fq-q { padding: 1.25rem var(--card-pad); }
-  .fq-title { font-size: 1.1875rem; }
-  .fq-a p { font-size: 1.0625rem; }
 }
 @container stage (min-width: 64.0625rem) {
-  .fq-title { font-size: 1.3125rem; }
   .fq-a { padding-bottom: 1.5rem; }
-  .fq-a p { font-size: 1.125rem; }
 }
 
 /* ===== Поправки под Тильду =====
@@ -653,15 +643,15 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ hero: Первый экран и факты о курсе. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="hero"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="hero"><div class="wa" lang="ru">
 <section id="hero" class="wa-sec is-hero"><div class="wa-in">
       <div class="hr hr-b" data-tone="dark">
         <div class="hr-text">
           <ul class="hr-pills"><li>Курс повышения квалификации</li></ul>
-          <h1 class="hr-title" id="hero-heading">Психиатрия для психологов<span class="hr-sub">От&nbsp;понимания состояния клиента к&nbsp;обоснованным действиям</span></h1>
+          <h1 class="hr-title hero_heading" id="hero-heading">Психиатрия для психологов<span class="hr-sub">От&nbsp;понимания состояния клиента к&nbsp;обоснованным действиям</span></h1>
           <p class="hr-lead">Научитесь замечать клинически значимые проявления и&nbsp;«красные флаги», формулировать рабочие гипотезы и&nbsp;определять, когда нужна консультация психиатра.</p>
           <p class="hr-note">Курс разработан на&nbsp;базе одной из&nbsp;ведущих клиник психиатрического профиля</p>
-          <div class="hr-actions"><a class="hb is-main" href="#signup">Оставить заявку</a><a class="hb is-glass" href="#program">Посмотреть программу</a></div>
+          <div class="hr-actions"><a class="hb is-main button_component is-light" href="#signup">Оставить заявку</a><a class="hb is-glass button_component" href="#program">Посмотреть программу</a></div>
         </div>
         <dl class="hr-facts">
           <div><dt>Старт и&nbsp;длительность</dt><dd>16&nbsp;марта, 65&nbsp;академ.&nbsp;ч.</dd></div>
@@ -676,7 +666,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ situations: Когда привычного понимания запроса уже недостаточно. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="situations"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="situations"><div class="wa" lang="ru">
 <section id="situations" class="wa-sec"><div class="wa-in">
      <div class="hx is-panel" data-draw>
       <div class="hx-text">
@@ -693,7 +683,7 @@ body { margin: 0; background: #f5f5f5; }
           <article class="dk-card" data-pos="4" aria-hidden="true"><p class="dk-count">Ситуация 5 из 5</p><h3 class="dk-q">«Клиент уже наблюдается у&nbsp;врача»</h3><p class="dk-a">Нужно понимать, какие задачи остаются в&nbsp;психологической работе и&nbsp;какую информацию важно обсудить с&nbsp;психиатром с&nbsp;согласия клиента.</p></article>
         </div>
         <div class="dk-controls">
-          <button type="button" class="wa-btn is-glass" id="dkg-next" data-next>Следующая ситуация</button>
+          <button type="button" class="wa-btn is-glass button_component" id="dkg-next" data-next>Следующая ситуация</button>
           <div class="dk-dots" role="group" aria-label="Ситуации">
             <button type="button" class="dk-dot" id="dkg-dot-1" aria-label="Ситуация 1" aria-current="true"></button>
             <button type="button" class="dk-dot" id="dkg-dot-2" aria-label="Ситуация 2" aria-current="false"></button>
@@ -710,7 +700,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ idea: Зачем психологу знания психиатрии, лист «После обучения вы сможете». Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="idea"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="idea"><div class="wa" lang="ru">
 <section id="idea" class="wa-sec is-clip-x"><div class="wa-in">
       <!-- «Зачем психологу знания психиатрии»: слева зачем, справа лист с умениями. Лист заполняется построчно при появлении, в конце печать (page.js, data-sheet). -->
       <div class="cs" data-sheet>
@@ -738,14 +728,14 @@ body { margin: 0; background: #f5f5f5; }
             </svg>
           </div>
         </figure>
-        <div class="cs-foot"><a class="wa-btn is-light" href="#format">Посмотреть, как устроено обучение</a></div>
+        <div class="cs-foot"><a class="wa-btn is-light button_component" href="#format">Посмотреть, как устроено обучение</a></div>
       </div>
     </div></section>
 </div></div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ audience: Кому подойдёт программа. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="audience"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="audience"><div class="wa" lang="ru">
 <section id="audience" class="wa-sec"><div class="wa-in">
       <div class="sec-head"><h2 class="wa-title">Кому подойдёт программа</h2></div>
       <div class="narrow">
@@ -764,7 +754,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ format: Шесть шагов от наблюдения к плану действий. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="format"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="format"><div class="wa" lang="ru">
 <section id="format" class="wa-sec"><div class="wa-in">
       <!-- «Шесть шагов»: вместо блоков «Не становиться психиатром» и «Теорию изучаете заранее». Шаги 1–2 крупными карточками (кадр лекции, окно встречи), шаги 3–6 карточками с рисунками. -->
       <h2 class="wa-title">Шесть шагов от&nbsp;наблюдения к&nbsp;плану действий</h2>
@@ -792,7 +782,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ teacher: Преподаватель курса. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="teacher"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="teacher"><div class="wa" lang="ru">
 <section id="teacher" class="wa-sec"><div class="wa-in">
       <div class="sec-head"><h2 class="wa-title">Преподаватель курса</h2></div>
       <div class="narrow">
@@ -811,7 +801,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ program: Программа курса. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="program"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="program"><div class="wa" lang="ru">
 <section id="program" class="wa-sec"><div class="wa-in pa">
       <div class="pa-aside">
         <h2 class="wa-title">Программа курса</h2>
@@ -845,14 +835,14 @@ body { margin: 0; background: #f5f5f5; }
             <div class="pa-res"><p class="pa-res-l">Практический результат</p><p>Объединяете сбор данных, описание проявлений, рабочие гипотезы, оценку рисков и&nbsp;маршрутизацию в&nbsp;один последовательный разбор.</p></div>
           </div></li>
         </ol>
-        <div class="pa-cta"><a class="wa-btn is-accent" href="#signup">Получить полную программу курса</a></div>
+        <div class="pa-cta"><a class="wa-btn is-accent button_component" href="#signup">Получить полную программу курса</a></div>
       </div>
     </div></section>
 </div></div>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ documents: Удостоверение о повышении квалификации. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="documents"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="documents"><div class="wa" lang="ru">
 <section id="documents" class="wa-sec"><div class="wa-in">
       <div class="dc">
         <div class="dc-text">
@@ -875,7 +865,9 @@ body { margin: 0; background: #f5f5f5; }
 /* ===== Блоки «Почему выбирают нас» и «98 % студентов» =====
    Перенесены один в один из общих компонентов Web Academy (как на «Тренингах для детей» и «КПТ Оксфорд»).
    Все правила заперты в обёртке .psy-acad, на остальную страницу не влияют.
-   Сначала токены (цвета, отступы, радиусы), потом правила компонентов. Тексты правим в index.html. */
+   Сначала токены (цвета, отступы, радиусы), потом правила компонентов. Тексты правим в index.html.
+   Роли текста (body-text, section-title, content-heading, section-header, section-layout) берутся из общих
+   стилей v1 по метке data-academy="1" — их копии отсюда убраны 26.10.2026. */
 .psy-acad { --color-page-background: #f5f5f5; --color-surface-primary: #ffffff; --color-text-primary: #332f41; --color-text-secondary: #747476; --color-text-secondary-large: #7b7b7c; --color-text-secondary-on-accent: #5e5a6a; --color-text-on-dark: #ffffff; --color-accent-primary: #7c5cdb; --color-accent-soft: #dad6ff; --color-focus: #7c5cdb; --color-surface-dark: #2b2334; --color-text-on-dark-muted: #e6e5eb; --color-cta-grid-muted: #32293c; --color-cta-grid-medium: #3b2e49; --color-cta-grid-bright: #38254e; --border-gradient-accent: linear-gradient(
     to top right,
     rgba(124, 92, 219, 0.8) 0%,
@@ -946,15 +938,6 @@ body { margin: 0; background: #f5f5f5; }
 .psy-acad .academy-showcase_teachers-status span { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-surface-primary); }
 @media (min-width: 48rem) { .psy-acad .academy-showcase_card.is-teachers { grid-template-columns: minmax(0px, 1fr) minmax(10rem, 15rem); align-items: start; min-height: 15rem; } }
 @media (min-width: 48rem) { .psy-acad .academy-showcase_teachers-media { width: 100%; } }
-.psy-acad .body-text_component { margin: 0px; color: var(--body-text-color, var(--color-text-secondary-large)); font-family: var(--font-family-body); font-size: min(var(--body-text-max, 1.25rem), 0.9375rem); font-weight: 444; line-height: 1.2; letter-spacing: -0.01em; font-feature-settings: "lnum", "pnum"; }
-.psy-acad .body-text_component.is-statement { letter-spacing: normal; }
-.psy-acad .body-text_component.is-showcase { font-size: 1rem; font-weight: 400; line-height: 1.1; }
-@media (min-width: 32.5625rem) { .psy-acad .body-text_component.is-showcase { font-size: 1.125rem; } }
-@media (min-width: 32.5625rem) { .psy-acad .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1rem); } }
-@media (min-width: 48rem) { .psy-acad .body-text_component.is-showcase { font-size: 1.25rem; } }
-@media (min-width: 48rem) { .psy-acad .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.125rem); } }
-@media (min-width: 64.0625rem) { .psy-acad .body-text_component.is-showcase { font-size: 1.5rem; } }
-@media (min-width: 64.0625rem) { .psy-acad .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.25rem); } }
 .psy-acad .academy-showcase_component.is-responsive { --content-prominent-size: 1.5rem; --content-heading-line-height: 1; --content-heading-gap: 0.5rem; --showcase-padding: 1rem; --showcase-gap: 0.75rem; --showcase-practice-height: 21.875rem; --showcase-side-height: 16.8125rem; --showcase-teachers-height: 16.8125rem; --showcase-community-top: 8.8125rem; --showcase-graduates-top: 6.5625rem; --showcase-graduates-reserve: 9.25rem; --body-text-color: var(--showcase-copy-color, var(--color-text-secondary-large, #747476)); gap: var(--section-layout-gap); overflow-wrap: anywhere; }
 .psy-acad .academy-showcase_intro { max-width: 63rem; }
 .psy-acad .academy-showcase_component.is-responsive .academy-showcase_layout, .psy-acad .academy-showcase_component.is-responsive .academy-showcase_grid, .psy-acad .academy-showcase_component.is-responsive .academy-showcase_side-grid { gap: var(--showcase-gap); }
@@ -1033,28 +1016,9 @@ body { margin: 0; background: #f5f5f5; }
 @media (min-width: 64.0625rem) { .psy-acad .ratings_layout { grid-template-columns: minmax(0px, 624fr) minmax(0px, 368fr); } }
 @media (min-width: 64.0625rem) { .psy-acad .ratings_platforms { grid-template-rows: repeat(2, minmax(0px, 1fr)); } }
 @media (min-width: 64.0625rem) { .psy-acad .ratings_card.is-wide { padding: 1.5rem; } }
-.psy-acad .section-title_component { width: 100%; min-width: 0px; margin: 0px; color: inherit; font-family: var(--font-family-body); font-size: var(--section-title-size, clamp(2.25rem, 3.1vw, 3.25rem)); font-weight: var(--section-title-weight, 400); line-height: var(--section-title-line-height, 1.1); letter-spacing: var(--section-title-tracking, -0.06em); text-align: inherit; text-wrap: var(--section-title-wrap, balance); }
-.psy-acad .section-title_component.is-left { text-align: left; }
-.psy-acad .section-title_component.is-center { text-align: center; }
-.psy-acad .section-subtitle_component { width: 100%; min-width: 0px; margin: 0px; color: var(--section-subtitle-color, var(--color-text-secondary-large)); font-family: var(--font-family-body); font-size: var(--section-heading-description-size); font-weight: 400; line-height: var(--section-subtitle-line-height, 1.2); letter-spacing: var(--section-subtitle-tracking, -0.01em); text-wrap: pretty; }
-.psy-acad .content-heading_component { min-width: 0px; margin: 0px; color: inherit; font-family: var(--font-family-body); font-size: var(--content-heading-size, clamp(1.25rem, 2.419vw, 1.5rem)); font-weight: 500; line-height: var(--content-heading-line-height, 1.1); letter-spacing: 0px; font-feature-settings: "lnum", "pnum"; }
-.psy-acad .content-heading_component.is-prominent { font-size: var(--content-prominent-size, clamp(1.75rem, 2.4vw, 2.25rem)); font-weight: 444; letter-spacing: -0.03em; }
-.psy-acad .content-header_component { display: flex; min-width: 0px; flex-direction: column; gap: var(--content-heading-gap); }
-.psy-acad .section-header_component { display: flex; width: 100%; min-width: 0px; flex-direction: column; gap: var(--section-heading-gap); }
-.psy-acad .section-header_component.is-responsive { --section-heading-gap: var(--space-heading-copy); --section-heading-description-size: 1rem; --section-subtitles-gap: var(--space-subtitle-pair); --section-heading-mark-gap: var(--space-mark-heading); }
-@media (min-width: 32.5625rem) { .psy-acad .section-header_component.is-responsive { --section-heading-description-size: 1.125rem; } }
-@media (min-width: 48rem) { .psy-acad .section-header_component.is-responsive { --section-heading-description-size: 1.25rem; } }
-@media (min-width: 64.0625rem) { .psy-acad .section-header_component.is-responsive { --section-heading-description-size: 1.375rem; } }
-.psy-acad .section-header_component.is-left { align-items: flex-start; text-align: left; }
-.psy-acad .section-header_component.is-center { align-items: center; text-align: center; }
-.psy-acad .section-layout_component { display: flex; width: 100%; min-width: 0px; flex-direction: column; gap: var(--section-layout-gap, clamp(2.5rem, 6.835vw, 4.375rem)); }
-.psy-acad .section-layout_component.is-responsive { --section-title-size: 2rem; --section-title-line-height: 1; --section-layout-gap: var(--space-section-content); }
-@media (min-width: 32.5625rem) { .psy-acad .section-layout_component.is-responsive { --section-title-size: 2.25rem; } }
-@media (min-width: 48rem) { .psy-acad .section-layout_component.is-responsive { --section-title-size: 2.75rem; } }
-@media (min-width: 64.0625rem) { .psy-acad .section-layout_component.is-responsive { --section-title-size: 3.25rem; } }
 .psy-acad [id] { scroll-margin-top: var(--anchor-scroll-offset); }
 </style>
-<div class="psy-page" data-psy-part="academy"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="academy"><div class="wa" lang="ru">
 <section id="academy" class="wa-sec" aria-labelledby="academy-heading"><div class="wa-in">
       <!-- «Почему выбирают нас»: общий компонент Web Academy, один в один как на «Тренингах для детей». Стили в academy.css (обёртка .psy-acad). -->
       <div class="psy-acad">
@@ -1098,7 +1062,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ ratings: 98 % студентов рекомендуют обучение. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="ratings"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="ratings"><div class="wa" lang="ru">
 <section id="ratings" class="wa-sec" aria-labelledby="ratings-heading"><div class="wa-in">
       <!-- «98 % студентов»: общий компонент Web Academy, рейтинги как на КПТ Оксфорд и «Психологе-консультанте» (ВКонтакте 4.9, Сравни 4.82, Отзовик 4.9). -->
       <div class="psy-acad">
@@ -1127,7 +1091,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ price: Стоимость обучения и гибкие условия оплаты. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="price"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="price"><div class="wa" lang="ru">
 <section id="price" class="wa-sec"><div class="wa-in">
       <div class="sec-head"><h2 class="wa-title">Стоимость обучения</h2></div>
       <div class="narrow">
@@ -1168,7 +1132,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ signup: Форма заявки. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="signup"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="signup"><div class="wa" lang="ru">
 <section id="signup" class="wa-sec"><div class="wa-in">
       <div class="lf">
         <div class="lf-intro">
@@ -1190,7 +1154,7 @@ body { margin: 0; background: #f5f5f5; }
               <label class="lf-opt"><input type="radio" id="lf-msg-tg" name="messenger" value="telegram"><span><svg class="lf-opt-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4809 4.10863C16.6868 4.02196 16.9122 3.99206 17.1336 4.02206C17.355 4.05206 17.5643 4.14085 17.7398 4.2792C17.9152 4.41755 18.0504 4.60039 18.1312 4.8087C18.212 5.01701 18.2355 5.24316 18.1992 5.46363L16.3092 16.9278C16.1259 18.0336 14.9125 18.6678 13.8984 18.117C13.05 17.6561 11.79 16.9461 10.6567 16.2053C10.09 15.8345 8.3542 14.647 8.56754 13.802C8.75087 13.0795 11.6675 10.3645 13.3342 8.7503C13.9884 8.11613 13.69 7.7503 12.9175 8.33363C10.9992 9.78196 7.9192 11.9845 6.90087 12.6045C6.00254 13.1511 5.5342 13.2445 4.9742 13.1511C3.95254 12.9811 3.00504 12.7178 2.2317 12.397C1.1867 11.9636 1.23754 10.527 2.23087 10.1086L16.4809 4.10863Z" fill="currentColor" /></svg><span lang="en">Telegram</span></span></label>
             </div>
           </fieldset>
-          <button class="lf-submit" type="submit" id="lf-submit">Оставить заявку</button>
+          <button class="lf-submit button_component is-light" type="submit" id="lf-submit">Оставить заявку</button>
           <p class="lf-status" data-lead-status role="status" aria-live="polite"></p>
           <p class="lf-legal">Нажимая на&nbsp;кнопку, вы соглашаетесь с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a></p>
         </form>
@@ -1204,7 +1168,7 @@ body { margin: 0; background: #f5f5f5; }
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
 <!-- СЕКЦИЯ faq: Ответы на популярные вопросы. Вставить целиком в отдельный T123 с нулевыми отступами. -->
-<div class="psy-page" data-psy-part="faq"><div class="wa" lang="ru">
+<div class="psy-page" data-academy="1" data-psy-part="faq"><div class="wa" lang="ru">
 <section id="faq" class="wa-sec"><div class="wa-in">
       <div class="narrow">
         <div class="sec-head"><h2 class="wa-title">Ответы на&nbsp;популярные вопросы</h2></div>
