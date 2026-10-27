@@ -92,18 +92,30 @@
       show(Math.min(step, lines.length - 1));
       box.classList.toggle('is-done', step === lines.length);
     };
+    /* фиксированная шапка сайта сверху (на modern-psy.ru на компьютере 81 px, на телефоне её нет):
+       её нижний край считаем верхом экрана, чтобы плашка не уходила под шапку */
+    const headerBottom = () => {
+      let bottom = 0;
+      for (let el of document.elementsFromPoint(innerWidth / 2, 1)) {
+        for (; el && el !== document.body; el = el.parentElement) {
+          if (box.contains(el)) break;
+          if (getComputedStyle(el).position === 'fixed') { bottom = Math.max(bottom, el.getBoundingClientRect().bottom); break; }
+        }
+      }
+      return Math.min(bottom, innerHeight / 3);
+    };
     /* мерим лист без анимаций с каждым раскрытым умением, берём самый высокий;
-       плашку ставим по центру экрана, а если она выше экрана, то так, чтобы посередине был лист */
+       плашку ставим по центру экрана под шапкой, а если она выше, то так, чтобы посередине был лист */
     const place = () => {
       box.classList.add('is-js', 'is-measuring');
       sheet.style.minHeight = '';
       let tallest = 0;
       lines.forEach((l, i) => { show(i); tallest = Math.max(tallest, sheet.offsetHeight); });
       sheet.style.minHeight = tallest + 'px';
-      const vh = innerHeight, ph = panel.offsetHeight;
+      const vh = innerHeight, safe = headerBottom(), room = vh - safe, ph = panel.offsetHeight;
       const sheetTop = sheet.getBoundingClientRect().top - panel.getBoundingClientRect().top;
-      const fits = tallest + 32 <= vh;
-      const top = ph <= vh ? (vh - ph) / 2 : Math.min(0, Math.max(vh - ph, (vh - tallest) / 2 - sheetTop));
+      const fits = tallest + 32 <= room;
+      const top = ph <= room ? safe + (room - ph) / 2 : Math.min(safe, Math.max(vh - ph, safe + (room - tallest) / 2 - sheetTop));
       box.style.setProperty('--sk-top', Math.round(top) + 'px');
       box.classList.remove('is-measuring');
       if (!fits) {

@@ -14,8 +14,8 @@ const read = name => fs.readFile(new URL(name, root), 'utf8');
 
 const source = await read('index.html');
 const css = await read('page.css');
-// Стили общих компонентов Web Academy («Почему выбирают нас», «98 % студентов»): идут внутри блока секции academy,
-// иначе блок общих стилей не влезает в лимит T123.
+// Стили общих компонентов Web Academy («Почему выбирают нас», «98 % студентов»): идут внутри того из двух блоков,
+// что стоит на странице раньше (сейчас ratings), иначе блок общих стилей не влезает в лимит T123.
 const academyCss = await read('academy.css');
 const js = await read('page.js');
 // Форма заявки: копия общего компонента Академии (её кладёт request-form-sync.mjs). Стили идут внутри блока секции signup,
@@ -47,7 +47,7 @@ const titles = {
   program: 'Программа курса',
   teacher: 'Преподаватель курса',
   documents: 'Удостоверение о повышении квалификации',
-  academy: 'Почему выбирают нас, со стилями компонента',
+  academy: 'Почему выбирают нас',
   ratings: '98 % студентов рекомендуют обучение',
   price: 'Стоимость обучения и гибкие условия оплаты',
   signup: 'Форма заявки (общий компонент request-form), со стилями компонента',
@@ -84,11 +84,13 @@ const tildaFix = `
 await write('styles', `<!-- ОБЩИЕ СТИЛИ. Первый T123 страницы, до всех секций. Отступы T123 сверху и снизу: 0. -->\n${links.join('\n')}\n<style>\n${css.trim()}\n${tildaFix}</style>\n`, 'Общие стили', 'STYLE');
 
 // 2. Секции: каждая в своей обёртке .psy-page > .wa, как на превью.
+// стили «Почему выбирают нас» и рейтингов кладём в тот из двух блоков, что стоит выше
+const academyCssHost = sections.map(m => m.match(/<section id="([a-z-]+)"/)[1]).find(id => id === 'academy' || id === 'ratings');
 for (const markup of sections) {
   const id = markup.match(/<section id="([a-z-]+)"/)[1];
-  const title = titles[id];
+  const title = id === academyCssHost ? `${titles[id]}, со стилями «Почему выбирают нас» и рейтингов` : titles[id];
   if (!title) throw new Error(`Нет названия для секции ${id}`);
-  const style = id === 'academy' ? `<style>\n${academyCss.trim()}\n</style>\n` : id === 'signup' ? `<style>\n${requestFormCss.trim()}\n</style>\n` : '';
+  const style = id === academyCssHost ? `<style>\n${academyCss.trim()}\n</style>\n` : id === 'signup' ? `<style>\n${requestFormCss.trim()}\n</style>\n` : '';
   await write(id, `<!-- СЕКЦИЯ ${id}: ${title}. Вставить целиком в отдельный T123 с нулевыми отступами. -->\n${style}<div class="psy-page" data-academy="1" data-psy-part="${id}"><div class="wa" lang="ru">\n${markup}\n</div></div>\n`, title, 'BODY');
 }
 
