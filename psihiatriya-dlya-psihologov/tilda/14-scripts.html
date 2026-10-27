@@ -158,14 +158,15 @@ const init = () => {
       show(Math.min(step, lines.length - 1));
       box.classList.toggle('is-done', step === lines.length);
     };
-    /* фиксированная шапка сайта сверху (на modern-psy.ru на компьютере 81 px, на телефоне её нет):
-       её нижний край считаем верхом экрана, чтобы плашка не уходила под шапку */
+    /* шапка сайта, которая стоит сверху при прокрутке (на modern-psy.ru #t-header липкая, 81 px на компьютере,
+       на телефоне её нет): её нижний край считаем верхом экрана, чтобы плашка не уходила под шапку */
     const headerBottom = () => {
       let bottom = 0;
       for (let el of document.elementsFromPoint(innerWidth / 2, 1)) {
         for (; el && el !== document.body; el = el.parentElement) {
           if (box.contains(el)) break;
-          if (getComputedStyle(el).position === 'fixed') { bottom = Math.max(bottom, el.getBoundingClientRect().bottom); break; }
+          const position = getComputedStyle(el).position;
+          if (position === 'fixed' || (position === 'sticky' && el.getBoundingClientRect().top <= 1)) { bottom = Math.max(bottom, el.getBoundingClientRect().bottom); break; }
         }
       }
       return Math.min(bottom, innerHeight / 3);
