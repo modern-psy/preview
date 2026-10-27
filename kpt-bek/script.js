@@ -1851,7 +1851,8 @@
    Поверх любого сценария:
    • несколько открытых потоков — даты старта переключаются сверху;
    • курс месяца — жёлтый купон «−10 % до 31 октября», рядом с ценой
-     зачёркнутая цена до акции;
+     зачёркнутая цена до акции; акция у каждого потока своя, у потока
+     без неё купона и скидки нет;
    • ближайшее повышение — серая плашка под ценой «С 20 октября: …»
      и «подорожает на N ₽». Нет повышения — плашки нет;
    • внизу «Гибкие условия оплаты» (выключить: data-terms="off").
@@ -1860,7 +1861,10 @@
    Правила взяты из витрины /pricing-scenarios (решения Дарьи 12.10.2026):
    кнопок в блоке нет (кнопка живёт в форме ниже), официальная цена —
    в рассрочку, оплата сразу — выгода от неё, платёж в месяц из CMS,
-   а если его там нет — цена в рассрочку ÷ 24.
+   а если его там нет — цена в рассрочку ÷ 24. У курса с одной ценой
+   в «Курсе месяца» платёж — цена со скидкой ÷ 24, как в каталоге.
+   Начавшиеся потоки показываем, пока их не перевели в лист ожидания
+   или не сняли с публикации (решение Дарьи 21.10.2026).
 
    Пока ответ CMS не пришёл и если CMS не ответила, на странице
    остаётся снимок цен на дату сборки блока.
@@ -1977,6 +1981,10 @@
     var twoPrices = regOnce != null && regList != null && regOnce < regList;
     var sale = saleOnce != null ? saleOnce : saleList;
     var was = saleOnce != null ? regOnce : regList;
+    // Рассрочка — по правилу каталога (решение Дарьи 09.10.2026, подтверждено 21.10.2026): у курса с двумя
+    // ценами — от цены в рассрочку, скидка «Курса месяца» её не меняет; у курса с одной ценой — от неё же,
+    // со скидкой, если курс в акции. Тогда платёж из CMS не берём: он посчитан от цены без скидки.
+    var discountedInstallment = !twoPrices && Boolean(promo) && was != null && was > sale;
     var p = {
       sale: sale,
       was: promo && was != null && was > sale ? was : null,
@@ -1984,8 +1992,8 @@
       twoPrices: twoPrices,
       benefit: twoPrices ? regList - sale : 0,
       free: sale === 0,
-      perMonth: cmsMonth || (regList ? Math.round(regList / 24) : null),
-      months: cmsMonth ? (num(src.installmentMonths) || 24) : 24,
+      perMonth: discountedInstallment ? Math.round(sale / 24) : (cmsMonth || (regList ? Math.round(regList / 24) : null)),
+      months: cmsMonth && !discountedInstallment ? (num(src.installmentMonths) || 24) : 24,
       next: null,
     };
     if (next) {
@@ -1996,17 +2004,25 @@
     return p;
   }
 
+  // «Курс месяца» → { percent, until } или null; закончившаяся акция снимается сама.
+  function promoOf(raw, now) {
+    raw = raw || {};
+    var on = raw.active && num(raw.discountPercent) && (!raw.until || String(raw.until).slice(0, 10) >= todayIso(now));
+    return on ? { percent: num(raw.discountPercent), until: dayLabel(raw.until, now) } : null;
+  }
+
   function model(course, now) {
     now = now || Date.now();
-    var raw = course.promo || {};
-    var promoOn = raw.active && num(raw.discountPercent) && (!raw.until || String(raw.until).slice(0, 10) >= todayIso(now));
-    var promo = promoOn ? { percent: num(raw.discountPercent), until: dayLabel(raw.until, now) } : null;
+    // С 27.10.2026 акция у каждого потока своя (streams[].promo): у КПТ Оксфорд скидка
+    // может быть на осенний поток, а на зимний нет. Старый снимок без неё — акция курса на все потоки.
+    var coursePromo = promoOf(course.promo, now);
     var all = course.streams || [];
     var open = all.filter(function (s) { return OPEN.indexOf(s.status) !== -1 && s.pricing; })
       .sort(function (a, b) { return String(a.startDate || '9999').localeCompare(String(b.startDate || '9999')); });
     var streams = [];
     open.forEach(function (s, index) {
       var pr = s.pricing;
+      var promo = s.promo ? promoOf(s.promo, now) : coursePromo;
       var items = [];
       if (pr.hasTariffs) {
         (pr.tariffs || []).forEach(function (tariff) {
@@ -2029,6 +2045,7 @@
           start: anytime ? null : dayLabel(s.startDate, now),
           anytime: anytime,
           lastChance: s.status === 'Последний шанс',
+          promo: promo,
           items: items,
         });
       }
@@ -2037,7 +2054,6 @@
     return {
       title: course.title || '',
       level: course.educationLevel || null,
-      promo: promo,
       streams: streams,
       waitlist: waiting ? { booking: num(waiting.pricing && waiting.pricing.bookingPrice) } : null,
     };
@@ -2090,11 +2106,12 @@
   }
 
   // Курс месяца — жёлтый купон «−10 % | до 31 октября», наклеен на карточку с ценой.
-  function sticker(m) {
-    if (!m.promo) return '';
+  // Купон у выбранного потока: на поток без акции его нет.
+  function sticker(stream) {
+    if (!stream.promo) return '';
     return '<span class="price-sticker_component"><span class="price-sticker_coupon"><span class="price-auto_sr">Курс месяца: </span>'
-      + '<span class="price-sticker_value">' + MINUS + m.promo.percent + NBSP + '%</span>'
-      + (m.promo.until ? '<span class="price-sticker_until">' + t('до ' + m.promo.until) + '</span>' : '') + '</span></span>';
+      + '<span class="price-sticker_value">' + MINUS + stream.promo.percent + NBSP + '%</span>'
+      + (stream.promo.until ? '<span class="price-sticker_until">' + t('до ' + stream.promo.until) + '</span>' : '') + '</span></span>';
   }
 
   // Список «что входит»: строка или { text, has }. Чего нет в тарифе — серым с крестиком.
@@ -2177,7 +2194,7 @@
   function wideCard(m, stream, p, includes) {
     var money = '<div class="price-wide_money">' + priceMain(p) + caption(p) + (p.next ? '<div class="price-wide_foot">' + rise(p) + '</div>' : '') + '</div>';
     var side = includes && includes.length ? '<p class="price-wide_side-title">' + t(TEXT.includes) + '</p>' + checklist(includes) : '';
-    return '<div class="price-wide_component' + (side ? '' : ' is-plain') + '">' + sticker(m)
+    return '<div class="price-wide_component' + (side ? '' : ' is-plain') + '">' + sticker(stream)
       + '<div class="price-wide_main">' + (m.level ? '<span class="price-wide_chip">' + t(m.level) + '</span>' : '')
       + '<div class="price-wide_title"><h3 class="price-wide_name">' + t(m.title) + '</h3><p class="price-wide_sub">' + t(startLine(stream)) + '</p></div>'
       + (side ? money : '') + '</div>'
@@ -2221,7 +2238,7 @@
       body = cardGrid(stream.items.map(function (item, i) {
         var p = item.price;
         return card({
-          featured: i === top, tag: i === top ? TEXT.recommended : '', sticker: i === top ? sticker(m) : '',
+          featured: i === top, tag: i === top ? TEXT.recommended : '', sticker: i === top ? sticker(stream) : '',
           title: item.name, sub: rows[i].description, price: priceMain(p), caption: caption(p), list: rows[i].list, foot: rise(p),
         });
       }));
@@ -2229,7 +2246,7 @@
     }
     if (scenario === 'compare') {
       body = cardGrid([
-        card({ featured: true, tag: first.benefit > 0 ? 'Выгода ' + rub(first.benefit) : '', sticker: sticker(m), title: 'Оплата сразу', sub: 'Один платёж', price: priceTag(first.sale, { was: first.was }), foot: rise(first) }),
+        card({ featured: true, tag: first.benefit > 0 ? 'Выгода ' + rub(first.benefit) : '', sticker: sticker(stream), title: 'Оплата сразу', sub: 'Один платёж', price: priceTag(first.sale, { was: first.was }), foot: rise(first) }),
         card({ title: 'В рассрочку', sub: 'Официальная цена, ' + first.months + ' ' + plural(first.months, 'ежемесячный платёж', 'ежемесячных платежа', 'ежемесячных платежей'), price: priceTag(first.perMonth, { month: true }) }),
       ]);
       return frame({ heading: TEXT.heading, lead: lead(m, stream), controls: controls, body: body, terms: showTerms, uid: uid });
