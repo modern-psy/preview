@@ -45,7 +45,7 @@ const titles = {
   'academy-showcase': 'Почему выбирают нас',
   price: 'Стоимость обучения (цена из CMS)',
   'payment-terms': 'Гибкие условия оплаты',
-  'lead-form': 'Форма заявки',
+  'request-form': 'Форма заявки (лист ожидания или запись на курс — по статусу потока в CMS)',
   faq: 'Ответы на популярные вопросы',
 };
 if (sections.length !== Object.keys(titles).length) throw new Error(`Ожидалось ${Object.keys(titles).length} секций, найдено ${sections.length}`);

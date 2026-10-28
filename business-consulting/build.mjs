@@ -9,7 +9,7 @@
 import fs from 'node:fs/promises';
 import vm from 'node:vm';
 import {renderAcademyShowcase} from '../web-academy/shared/academy/academy-showcase-render.mjs';
-import {renderLeadFormSection} from '../web-academy/shared/academy/lead-form-render.mjs';
+import {renderRequestFormSection} from '../web-academy/shared/academy/request-form-render.mjs';
 import {renderFaq} from '../web-academy/shared/academy/faq-render.mjs';
 import {renderBenefits} from '../web-academy/shared/academy/hero-render.mjs';
 import {escapeHtml, renderText, sectionId} from '../web-academy/shared/academy/html-render.mjs';
@@ -89,12 +89,13 @@ const header = (id, heading, lead, {align = 'center'} = {}) => `<div class="sect
    в рамке, слева заголовок, в светлой плашке подводка и три строки «чему научитесь» с иконками в кружках,
    плитка старта, одна кнопка и под ней тихая строка «Обучение онлайн» (дни и время занятий здесь сняты
    по просьбе Дарьи 12.10.2026 — они в программе). На планшете и телефоне плитка и кнопка лежат на фото, низ фото
-   растворяется в поле. Дата старта обновляется из CMS (data-cms-start). Часы, формат и удостоверение —
+   растворяется в поле. Дата старта обновляется из CMS (data-cms-start), в листе ожидания вместо неё «Лист ожидания»
+   (data-cms-waitlist, решение Дарьи 28.10.2026). Часы, формат и удостоверение —
    «кубиками» отдельным блоком сразу под первым экраном (renderFacts). */
 function renderHeroPanel(hero, stream) {
   const {panel} = hero;
-  const cmsTile = tile => tile.cms === 'start' ? ` data-cms-start="Старт {date}"` : tile.cms === 'days-time' ? ' data-cms-schedule-short' : '';
-  const tileText = tile => tile.cms === 'start' && stream.start ? `Старт ${stream.start}` : tile.cms === 'days-time' && stream.schedule ? stream.schedule.short : tile.text;
+  const cmsTile = tile => tile.cms === 'start' ? ` data-cms-start="Старт {date}" data-cms-waitlist="${escapeHtml(tile.waitlist)}"` : tile.cms === 'days-time' ? ' data-cms-schedule-short' : '';
+  const tileText = tile => tile.cms === 'start' && stream.waiting ? tile.waitlist : tile.cms === 'start' && stream.start ? `Старт ${stream.start}` : tile.cms === 'days-time' && stream.schedule ? stream.schedule.short : tile.text;
   const rows = panel.rows.map(row => `<li class="hero-panel_row"><span class="hero-panel_row-icon">${icon(row.icon)}</span><span>${renderText(row.text)}</span></li>`).join('');
   const tiles = panel.tiles.map(tile => `<li class="hero-panel_tile">${icon(tile.icon)}<span${cmsTile(tile)}>${renderText(tileText(tile))}</span></li>`).join('');
   const main = hero.actions[0];
@@ -195,7 +196,8 @@ function renderLearning(l, id) {
    «Результат модуля» с иконкой мишени. До 1025px плашка встаёт под темы. */
 function renderProgram(p, id, stream) {
   const item = row => {
-    if (row.cms === 'start') return `<li class="program-schedule_item"><span>${renderText(row.label)}</span><span class="program-schedule_time" data-cms-start="{date}">${renderText(stream.start || row.detail)}</span></li>`;
+    // В листе ожидания вся плашка — «Лист ожидания» (подпись вместо «Старт», дата пустая); набор открылся — page.js вернёт «Старт» и дату.
+    if (row.cms === 'start') return `<li class="program-schedule_item"><span data-cms-label="${escapeHtml(row.label)}" data-cms-waitlist="${escapeHtml(row.waitlist)}">${renderText(stream.waiting ? row.waitlist : row.label)}</span><span class="program-schedule_time" data-cms-start="{date}" data-cms-waitlist="">${stream.waiting ? '' : renderText(stream.start || row.detail)}</span></li>`;
     if (row.cms === 'schedule') return `<li class="program-schedule_item"><span data-cms-schedule-days>${renderText(stream.schedule?.days || row.label)}</span><span class="program-schedule_time" data-cms-schedule-time>${renderText(stream.schedule?.time || row.detail)}</span></li>`;
     return `<li class="program-schedule_item"><span>${renderText(row.label)}</span><span class="program-schedule_time">${renderText(row.detail)}</span></li>`;
   };
@@ -258,27 +260,13 @@ function renderJsonLd(seo, teacher, model, course) {
   const orgId = `${org.url}/#organization`;
   const organization = {'@context': 'https://schema.org', '@type': 'EducationalOrganization', '@id': orgId, name: org.name, url: org.url, logo: org.logo, telephone: org.telephone, email: org.email,
     address: {'@type': 'PostalAddress', addressCountry: 'RU', ...org.address}};
-  const offers = {'@type': 'Offer', price: String(model.sale), priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: seo.canonical};
-  if (model.promo && course.promo?.until) offers.priceValidUntil = course.promo.until;
+  // Курс в листе ожидания: цены на странице нет, поэтому и в разметке её нет (поток с датой старта остаётся).
+  const offers = model.waiting ? undefined : {'@type': 'Offer', price: String(model.sale), priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: seo.canonical};
+  if (offers && model.promo && course.promo?.until) offers.priceValidUntil = course.promo.until;
   const courseLd = {'@context': 'https://schema.org', '@type': 'Course', '@id': `${seo.canonical}#course`, name: seo.course.name, description: seo.course.description, url: seo.canonical, inLanguage: 'ru',
     provider: {'@id': orgId}, educationalCredentialAwarded: seo.course.credential, offers,
-    hasCourseInstance: {'@type': 'CourseInstance', courseMode: 'online', startDate: model.startDate, instructor: [{'@type': 'Person', name: teacher.name, jobTitle: teacher.role}]}};
+    hasCourseInstance: {'@type': 'CourseInstance', courseMode: 'online', ...(model.startDate ? {startDate: model.startDate} : {}), instructor: [{'@type': 'Person', name: teacher.name, jobTitle: teacher.role}]}};
   return [ldScript(organization), ldScript(courseLd, ' data-course-ld')].join('\n');
-}
-
-/* Скрипт формы Академии рассчитан на обязательную почту. Поля почты на лендингах курсов больше нет
-   (как в rodbt-live, narrative-therapy и treningi-dlya-detey), поэтому три места скрипта делаются терпимыми к его отсутствию. */
-function withoutEmail(source) {
-  const patches = [
-    ['      !(emailInput instanceof HTMLInputElement) ||\n', ''],
-    ['    setNativeInputValue(emailInput, formData.email);', '    if (emailInput instanceof HTMLInputElement) setNativeInputValue(emailInput, formData.email);'],
-    ['        email: form.elements.email.value.trim(),', '        email: form.elements.email?.value.trim() || "",'],
-  ];
-  for (const [from, to] of patches) {
-    if (!source.includes(from)) throw new Error(`lead-form.js: не найден фрагмент для формы без почты: ${from.trim()}`);
-    source = source.replace(from, to);
-  }
-  return source;
 }
 
 // Снимок цены: data/api-course.json. С флагом --refresh берётся заново из Public API.
@@ -328,15 +316,15 @@ async function buildHtml() {
   for (const card of [academy.community, academy.graduates]) for (const key of ['glow', 'compactGlow']) card[key].src = await dataUrl(consultant, card[key].src);
   const showcase = patch(renderAcademyShowcase(academy, {id: `${SLUG}-academy`}), '<br class="academy-showcase_heading-break"><span class="section-title_accent"> </span>', '', 'Почему выбирают нас: заголовок');
 
-  const leadForm = await data('lead-form');
-  leadForm.errorIcon = await dataUrl(consultant, 'assets/icons/form-error.svg');
-  leadForm.successIcon = await dataUrl(consultant, 'assets/icons/form-success.svg');
-  const emailField = /<div class="lead-form_field" data-lead-field data-state="idle"><div class="lead-form_control"><input class="lead-form_input" type="email"[\s\S]*?data-lead-error><\/p><\/div>/;
-  const fullForm = renderLeadFormSection({...leadForm, emailLabel: 'Почта'}, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
-  if (!emailField.test(fullForm)) throw new Error('Lead form: не найдено поле email в разметке формы');
-  // Заголовок формы «Занятия начнутся 18 ноября» обновляется вместе с ценой из CMS.
-  const formHeading = `id="${SLUG}-form-heading">`;
-  const form = patch(fullForm.replace(emailField, ''), formHeading, `id="${SLUG}-form-heading" data-cms-start="Занятия начнутся {date}">`, 'Форма: заголовок');
+  // Форма заявки — общий компонент request-form (web-academy/shared/academy/request-form.md, 28.10.2026 вместо lead-form).
+  // Режим по снимку CMS: открытого потока нет — «Лист ожидания», иначе заявка на курс. Тексты обоих — data/request-form.json.
+  const requestForm = await data('request-form');
+  const formMode = model.waiting ? 'waitlist' : 'course';
+  const formSection = renderRequestFormSection({nativeMarker: requestForm.nativeMarker, mode: formMode, ...requestForm[formMode]}, {id: `${SLUG}-application`, formId: `${SLUG}-form`});
+  // При записи на курс заголовок «Занятия начнутся 18 ноября» обновляется вместе с датой старта из CMS.
+  const form = formMode === 'course'
+    ? patch(formSection, `id="${SLUG}-form-heading">`, `id="${SLUG}-form-heading" data-cms-start="Занятия начнутся {date}">`, 'Форма: заголовок')
+    : formSection;
 
   const teacher = await data('teacher');
   // Порядок секций по правкам Дарьи от 12.10.2026.
@@ -402,7 +390,7 @@ ${renderJsonLd(seo, teacher, model, course)}
 }
 
 async function buildCss() {
-  const order = ['components.css', 'card-spacing.css', 'section-spacing.css', 'body-text.css', 'button.css', 'benefits.css', 'academy-showcase-responsive.css', 'faq-responsive.css', 'lead-form.css', 'lead-form-responsive.css', 'section-heading.css', 'anchor-scroll.css'];
+  const order = ['components.css', 'card-spacing.css', 'section-spacing.css', 'body-text.css', 'button.css', 'benefits.css', 'academy-showcase-responsive.css', 'faq-responsive.css', 'request-form.css', 'section-heading.css', 'anchor-scroll.css'];
   const parts = [];
   for (const name of order) {
     const css = await read(shared, name);
@@ -418,11 +406,10 @@ async function buildCss() {
 }
 
 async function buildJs() {
-  const order = ['components.js', 'anchor-scroll.js', 'lead-form.js'];
+  const order = ['components.js', 'anchor-scroll.js', 'request-form.js'];
   const parts = [];
   for (const name of order) {
-    let source = (await read(shared, name)).trim();
-    if (name === 'lead-form.js') source = withoutEmail(source);
+    const source = (await read(shared, name)).trim();
     parts.push(`/* === web-academy/shared/academy/${name} === */\n${source}`);
   }
   parts.push(`/* === business-consulting/page.js === */\n${(await read(root, 'page.js')).trim()}`);

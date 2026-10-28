@@ -56,7 +56,9 @@
     return {days: days, time: time, short: short ? short + ', ' + time : days + ' ' + time};
   }
 
-  /* Ответ /api/public/course/:slug → то, что нужно карточке. Берётся ближайший открытый поток. */
+  /* Ответ /api/public/course/:slug → то, что нужно карточке. Берётся ближайший открытый поток.
+     Открытых нет (курс в листе ожидания) — берётся ближайший поток ради даты старта, а waiting: true говорит
+     микроразметке, что продажи нет и цену в неё писать нельзя. */
   function fromApi(course) {
     if (!course) return null;
     var open = (course.streams || []).filter(function (s) { return OPEN.indexOf(s.status) !== -1; })
@@ -70,6 +72,7 @@
     var promo = course.promo && course.promo.active ? course.promo : null;
     var next = p.nextPriceChange && p.nextPriceChange.at ? p.nextPriceChange : null;
     return {
+      waiting: !open.length,
       sale: sale,
       // Зачёркнутая цена — только при акции.
       was: promo && before != null && before > sale ? before : null,
@@ -124,25 +127,33 @@
   globalThis.BusinessConsultingPrice = api;
   if (typeof document === 'undefined') return;
 
-  /* В браузере: один запрос к API. Карточка перерисовывается, только если разметка изменилась. */
-  var root = document.querySelector('[data-price-block]');
+  /* В браузере: один запрос к API. Карточка перерисовывается, только если разметка изменилась.
+     На сайте вместо этой карточки стоит общий блок цены из генератора /pricing (data-price-auto, 28.10.2026):
+     он сам рисует цену или лист ожидания. Тогда адрес API и курс берутся из него, а здесь обновляются
+     только дата старта, расписание, часы и микроразметка. */
+  var root = document.querySelector('[data-price-block]') || document.querySelector('[data-price-auto][data-course][data-api]');
   if (!root || !window.fetch) return;
-  var text;
-  try { text = JSON.parse(root.getAttribute('data-price-text')); } catch (error) { return; }
+  var text = null;
+  if (root.hasAttribute('data-price-text')) {
+    try { text = JSON.parse(root.getAttribute('data-price-text')); } catch (error) { text = null; }
+  }
   var url = root.getAttribute('data-api') + '/api/public/course/' + root.getAttribute('data-course');
   fetch(url, {headers: {Accept: 'application/json'}})
     .then(function (response) { return response.ok ? response.json() : null; })
     .then(function (course) {
       var model = fromApi(course);
       if (!model) return;
-      var card = root.querySelector('[data-price-card]');
+      var card = text && root.querySelector('[data-price-card]');
       if (card && card.getAttribute('data-price-card') !== signature(model)) card.outerHTML = render(model, text);
-      // Дата старта в первом экране и в форме заявки.
-      if (model.start) {
-        document.querySelectorAll('[data-cms-start]').forEach(function (el) {
-          el.textContent = el.getAttribute('data-cms-start').replace('{date}', model.start);
-        });
-      }
+      // Дата старта в первом экране, программе и форме заявки. Курс в листе ожидания — вместо даты
+      // «Лист ожидания» (текст в data-cms-waitlist, в data/hero.json и data/program.json); в программе
+      // подпись «Старт» (data-cms-label) тоже меняется, а дата становится пустой и прячется.
+      document.querySelectorAll('[data-cms-start], [data-cms-label]').forEach(function (el) {
+        if (model.waiting && el.hasAttribute('data-cms-waitlist')) el.textContent = el.getAttribute('data-cms-waitlist');
+        else if (model.waiting) return;
+        else if (el.hasAttribute('data-cms-label')) el.textContent = el.getAttribute('data-cms-label');
+        else if (model.start) el.textContent = el.getAttribute('data-cms-start').replace('{date}', model.start);
+      });
       // Расписание: дни и время в программе, короткая плитка в первом экране.
       if (model.schedule) {
         var put = function (selector, value) { document.querySelectorAll(selector).forEach(function (el) { el.textContent = value; }); };
@@ -150,11 +161,15 @@
         put('[data-cms-schedule-time]', model.schedule.time);
         put('[data-cms-schedule-short]', model.schedule.short);
       }
-      // Цена в микроразметке совпадает с ценой на странице.
+      // Цена в микроразметке совпадает с ценой на странице. В листе ожидания цены на странице нет,
+      // поэтому цена из разметки уходит, а поток с датой старта остаётся. Набор открылся — цена возвращается.
       document.querySelectorAll('script[type="application/ld+json"][data-course-ld]').forEach(function (el) {
         try {
           var ld = JSON.parse(el.textContent);
-          if (ld.offers) {
+          if (model.waiting) {
+            delete ld.offers;
+          } else {
+            if (!ld.offers) ld.offers = {'@type': 'Offer', priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: ld.url};
             ld.offers.price = String(model.sale);
             if (model.promo && course.promo.until) ld.offers.priceValidUntil = course.promo.until; else delete ld.offers.priceValidUntil;
           }
@@ -180,7 +195,7 @@
       })(catalog);
       var hours = found && Number(found.hours);
       if (!hours) return;
-      text.hours = hours;
+      if (text) text.hours = hours;
       document.querySelectorAll('[data-cms-hours]').forEach(function (el) {
         el.textContent = el.getAttribute('data-cms-hours').replace('{hours}', hoursPhrase(hours));
       });
