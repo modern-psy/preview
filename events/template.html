@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Заголовок вкладки и адрес — как на живой странице modern-psy.ru/events -->
+  <title>Мероприятия</title>
+  <!-- Описания на живой странице нет; взято из подводки первого экрана -->
+  <meta name="description" content="Конференции Академии Современной Психологии для психологов и психотерапевтов: ACT Petersburg, Trauma Focused Weekend, Compassion Focused Weekend, Полимодальная конференция и другие. Записи выступлений и видеоотчёты.">
+  <!-- Превью: в поиск не попадает. На боевом сайте эту строку не переносить. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://modern-psy.ru/events">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://modern-psy.ru/events">
+  <meta property="og:title" content="Мероприятия">
+  <meta property="og:description" content="Конференции Академии Современной Психологии для психологов и психотерапевтов: доклады ведущих экспертов, общение с коллегами, записи выступлений.">
+  <!-- Картинки для соцсетей (og:image 1200×630) пока нет -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;444;500;600&display=swap">
+  <!-- Фото мероприятий лежат на CDN Тильды -->
+  <link rel="preconnect" href="https://optim.tildacdn.com">
+  <!-- Сначала общие текстовые роли Web Academy, потом стили страницы -->
+  <link rel="stylesheet" href="type.css">
+  <link rel="stylesheet" href="page.css">
+</head>
+<body>
+
+<!-- ============================================================
+     ШАПКА САЙТА — копия блока apps/tilda/header (на Тильде она подключается
+     отдельной страницей-шапкой). Здесь только для превью; править в apps/tilda/header.
+     ============================================================ -->
+{{HEADER}}
+
+<!-- ============================================================
+     МЕРОПРИЯТИЯ · файл собирается: node events/build.mjs (из apps/preview)
+     Тексты первого экрана можно править прямо здесь.
+     Карточки мероприятий — в data/events.json, здесь их не трогать: места
+     вида {{…}} заполняет сборка.
+     ============================================================ -->
+<main class="main-wrapper events-page" id="main-content">
+
+  <!-- 1. Первый экран: заголовок, подводка и оглавление со ссылками на карточки -->
+  <section class="section_events-hero" aria-labelledby="events-hero-title">
+    <div class="padding-global">
+      <div class="container-events">
+        <div class="events-hero_component">
+          <h1 class="events-hero_title" id="events-hero-title">Ежегодно проводим крупнейшие мероприятия <span class="events-hero_title-accent">для&nbsp;психологов и&nbsp;психотерапевтов</span></h1>
+          <p class="events-hero_text section-subtitle_component">Каждое мероприятие — это возможность послушать доклады от&nbsp;ведущих экспертов в&nbsp;своих областях, пообщаться с&nbsp;коллегами в&nbsp;неформальной обстановке и&nbsp;погрузиться в&nbsp;атмосферу конкретного направления.</p>
+          <!-- Оглавление: ближайшее мероприятие и годы летописи — собирает сборка.
+               На телефоне листается пальцем в одну строку -->
+          <nav class="events-index_component" aria-label="Мероприятия на странице">
+            <ul class="events-index_list" role="list">{{INDEX}}</ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Ближайшее мероприятие: тёмная карточка с регистрацией.
+       Карточка сама прячется на следующий день после даты из поля until (page.js).
+       После мероприятия перенесите его в data/events.json из upcoming в past -->
+  <section class="section_events-upcoming" aria-labelledby="events-upcoming-title" data-events-upcoming{{UPCOMING_HIDDEN}}>
+    <div class="padding-global">
+      <div class="container-events">
+        <h2 class="events-section_title section-title_component is-responsive" id="events-upcoming-title">Ближайшее</h2>
+        {{UPCOMING}}
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Прошедшие мероприятия летописью по годам: у каждого — фото, история (что было,
+       кто выступал, о чём говорили), цифры, видеоотчёт и записи.
+       На компьютере год слева прилипает при прокрутке. Тексты — в data/events.json (years).
+       Видео грузится только по кнопке «Смотреть, как это было»: до клика на месте плеера — фото -->
+  <section class="section_events-past" aria-labelledby="events-past-title">
+    <div class="padding-global">
+      <div class="container-events">
+        <h2 class="events-section_title section-title_component is-responsive" id="events-past-title">Прошедшие мероприятия</h2>
+        <div class="events-chronicle_component">
+          {{PAST}}
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="page.js" defer></script>
+<!-- Микроразметка ближайшего мероприятия (Event), собирается из data/events.json.
+     Цена в разметке 0 ₽: участие в эфире бесплатное, как на странице. Прошедшие в разметку не попадают -->
+{{JSON_LD}}
+</body>
+</html>
