@@ -1,0 +1,506 @@
+<!-- ============================================================
+     ШАПКА: ПОИСК ПО КУРСАМ И СКРЫТИЕ ПРИ ПРОКРУТКЕ · второй блок T123
+     на странице-шапке, сразу под блоком шапки. Без него шапка работает,
+     но без поиска и всегда видна наверху.
+     Поиск — по курсам из CMS (/api/public/catalog): названия, поисковые
+     слова, преподаватели, темы поиска. Руками не править: собирается
+       node apps/tilda/header/build.mjs
+     Надписи и быстрые запросы — apps/tilda/header/src/nav.json (search).
+     ============================================================ -->
+<style>
+.site-header{--sh-muted-strong: #68686b}.site-search_field{display: flex;align-items: center;gap: 0.5rem;min-width: 0;min-height: 2.75rem;padding: 0 0.25rem 0 0.875rem;border: 1px solid transparent;border-radius: var(--sh-radius-small);background-color: var(--sh-page);color: var(--sh-muted-strong);transition: border-color var(--sh-duration) var(--sh-ease),background-color var(--sh-duration) var(--sh-ease)}.site-search_field:focus-within{border-color: var(--sh-focus);background-color: var(--sh-surface)}.site-search_field svg{width: 1.125rem;height: 1.125rem}.site-header .site-search_input{flex: 1 1 auto;min-width: 0;height: 2.625rem;margin: 0;padding: 0;border: 0;outline: 0;background: none;color: var(--sh-text);font: inherit;font-size: 1rem;line-height: 1.2;-webkit-appearance: none;appearance: none}.site-header .site-search_input::placeholder{color: var(--sh-muted-strong);opacity: 1}
+.site-header .site-search_input::-webkit-search-cancel-button,
+.site-header .site-search_input::-webkit-search-decoration{-webkit-appearance: none}.site-search_clear{display: inline-flex;align-items: center;justify-content: center;width: 2.25rem;height: 2.25rem;border-radius: 0.5rem;color: var(--sh-muted-strong)}.site-search_clear svg{width: 1rem;height: 1rem}
+.site-header.has-search .site-nav_head-title{display: none}.site-nav_head .site-search_field{flex: 1 1 auto;margin-right: 0.75rem}
+.site-nav .site-search_body{padding: 0 var(--sh-padding)}@media (max-width: 64rem){
+.site-header.is-searching .site-nav_catalog,
+.site-header.is-searching .site-nav_links{display: none}.site-header.is-searching .site-nav .site-search_body{padding-bottom: calc(2rem + env(safe-area-inset-bottom,0px))}}.site-search_hints{display: flex;flex-wrap: wrap;align-items: center;gap: 0.5rem;padding: 1rem 0 0.25rem}.site-search_hints-title{flex: 1 1 100%;color: var(--sh-muted);font-size: 0.8125rem;font-weight: 600}.site-search_hint{min-height: 2.25rem;padding: 0 0.875rem;border: 1px solid var(--sh-border);border-radius: 62.5rem;background-color: var(--sh-surface);font-size: 0.9375rem;font-weight: 500;transition: border-color var(--sh-duration) var(--sh-ease)}.site-search_note{padding-top: 0.75rem;color: var(--sh-muted);font-size: 0.875rem;line-height: 1.4}.site-search_list{display: grid;grid-template-columns: minmax(0,1fr);row-gap: 0.125rem;padding: 0.5rem 0}.site-search_item{display: flex;flex-direction: column;gap: 0.1875rem;padding: 0.75rem 0;transition: background-color var(--sh-duration) var(--sh-ease)}.site-search_title{font-size: 1rem;font-weight: 500;line-height: 1.3;text-wrap: pretty;overflow-wrap: anywhere}.site-search_meta{color: var(--sh-muted);font-size: 0.8125rem;line-height: 1.35}.site-search_empty{padding: 1rem 0;color: var(--sh-muted);font-size: 0.9375rem;line-height: 1.45}.site-search_all{display: inline-block;margin: 0.25rem 0 1rem}
+.site-search-panel{display: none}@media (min-width: 64.0625rem){
+.site-nav .site-search_body{display: none}.site-search-panel{position: absolute;top: 100%;right: 0;left: 0;border-top: 1px solid var(--sh-border);background-color: var(--sh-surface);box-shadow: var(--sh-shadow)}.site-header.is-search-open .site-search-panel{display: block;animation: site-nav-reveal var(--sh-duration) var(--sh-ease)}
+.site-header.is-search-open .site-header_scrim{display: block}.site-search-panel_inner{max-width: var(--sh-max);margin: 0 auto;padding: 1.5rem var(--sh-padding) 2rem}
+.site-search-panel .site-search_field,
+.site-search-panel .site-search_body{max-width: 52rem}.site-search-panel .site-search_field{min-height: 3.25rem;padding-left: 1rem}
+.site-search-panel .site-search_input{font-size: 1.125rem}.site-search-panel .site-search_list{grid-template-columns: repeat(2,minmax(0,1fr));column-gap: 2rem}.site-search_item{margin: 0 -0.625rem;padding: 0.625rem;border-radius: 0.5rem}}@media (hover: hover) and (pointer: fine){
+.site-search_hint:hover{border-color: var(--sh-border-strong)}
+.site-search_item:hover{background-color: var(--sh-page)}
+.site-search_clear:hover{color: var(--sh-text)}}
+#t-header{transition: transform 460ms cubic-bezier(0.16,1,0.3,1),box-shadow 460ms ease}html.site-header-hidden #t-header{transform: translateY(-100%);transition-duration: 220ms;transition-timing-function: cubic-bezier(0.4,0,1,1)}
+html.site-header-floating #t-header{box-shadow: 0 0.75rem 1.5rem -1.25rem rgba(51,47,65,0.35)}
+.site-header_inner{transition: transform 560ms cubic-bezier(0.16,1,0.3,1) 60ms,opacity 360ms ease 60ms}html.site-header-hidden .site-header_inner{transform: translateY(-0.75rem);opacity: 0}@media (prefers-reduced-motion: reduce){
+#t-header{transition: none}}</style>
+<script>
+window.__aspSearchCfg={"label":"Найти курс, тему или преподавателя","inputPlaceholder":"Курс, тема или преподаватель","hints":["КПТ","АСТ","Травма","СДВГ","РПП","Пары"],"allLabel":"Все курсы на одной странице","allUrl":"https://modern-psy.ru/courses","metrika":"82190929"};
+(function (root) {
+var STOP = ['обучение', 'обучения', 'обучении', 'курс', 'курсы', 'курса', 'курсов', 'по', 'для', 'в', 'и', 'на', 'с', 'у', 'о',
+'асп', 'академия', 'академии', 'современной', 'психологии', 'онлайн', 'программа', 'школа', 'хочу', 'как', 'работа', 'работе',
+'терапия', 'терапии', 'психотерапия', 'психотерапии', 'психология', 'психолога', 'психологов', 'практике', 'клиент', 'клиенты',
+'клиентом', 'клиентами', 'работать', 'лечение', 'лечить'];
+var W = { t: 3, tg: 2.6, tch: 2.4, tp: 2.2, sec: 1.2, sub: 1.2, ds: 0.6 };
+var TOPIC_BONUS = [1.5, 1.0, 0.6, 0.3];
+var EN = "qwertyuiop[]asdfghjkl;'zxcvbnm,.`";
+var RU = 'йцукенгшщзхъфывапролджэячсмитьбюё';
+function swapLayout(s) {
+var out = '', i, c, k;
+for (i = 0; i < s.length; i++) {
+c = s[i];
+k = EN.indexOf(c);
+if (k >= 0) { out += RU[k]; continue; }
+k = RU.indexOf(c);
+out += k >= 0 ? EN[k] : c;
+}
+return out;
+}
+function norm(s) {
+return String(s || '').toLowerCase().replace(/ё/g, 'е').replace(/[«»"'“”„()\[\]{}.,:;!?·•\/\\|]+/g, ' ')
+.replace(/[ \s]+/g, ' ').trim();
+}
+var ENDS = ['иями', 'ями', 'ами', 'ого', 'его', 'ому', 'ему', 'ыми', 'ими', 'ией', 'ая', 'яя', 'ое', 'ее', 'ые', 'ие', 'ый', 'ий', 'ой',
+'ую', 'юю', 'ов', 'ев', 'ей', 'ам', 'ям', 'ах', 'ях', 'ом', 'ем', 'ию', 'ия', 'ии', 'ье', 'ья', 'а', 'я', 'ы', 'и', 'у', 'ю', 'е', 'о', 'ь'];
+function stem(w) {
+if (w.length < 5 || /[a-z0-9]/.test(w)) return w;
+for (var i = 0; i < ENDS.length; i++) {
+var e = ENDS[i];
+if (w.length - e.length >= 4 && w.slice(-e.length) === e) return w.slice(0, -e.length);
+}
+return w;
+}
+function dist(a, b, max) {
+if (Math.abs(a.length - b.length) > max) return max + 1;
+var d = [], i, j;
+for (i = 0; i <= a.length; i++) { d[i] = [i]; }
+for (j = 0; j <= b.length; j++) { d[0][j] = j; }
+for (i = 1; i <= a.length; i++) {
+var rowMin = max + 1;
+for (j = 1; j <= b.length; j++) {
+var cost = a[i - 1] === b[j - 1] ? 0 : 1;
+d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+if (d[i][j] < rowMin) rowMin = d[i][j];
+}
+if (rowMin > max) return max + 1;
+}
+return d[a.length][b.length];
+}
+function words(s) {
+var n = norm(s), list = n.split(' '), extra = [];
+list.forEach(function (w) { if (w.indexOf('-') > 0) { extra.push(w.replace(/-/g, '')); extra = extra.concat(w.split('-')); } });
+return list.concat(extra).filter(Boolean);
+}
+function toField(ws) { return ws.map(function (w) { return { w: w, s: stem(w) }; }); }
+function phrases(s) { return String(s || '').split(',').map(function (p) { return p.trim(); }).filter(Boolean); }
+function build(cards) {
+return cards.map(function (c) {
+var f = {};
+['t', 'tg', 'tch', 'sec', 'sub', 'ds'].forEach(function (k) { f[k] = toField(words(c[k] || '')); });
+var groups = (c.tp || []).map(function (g) { return { pos: g[1], terms: phrases(g[0]), field: toField(words(g[0])) }; });
+f.tp = [].concat.apply([], groups.map(function (g) { return g.field; }));
+return { c: c, f: f, groups: groups, tags: phrases(c.tg), teachers: phrases(c.tch) };
+});
+}
+function matchToken(tok, field, exactShort, curated) {
+var best = 0, how = '', q = 0, i, fw, ts = stem(tok), short = tok.length <= 3;
+for (i = 0; i < field.length; i++) {
+fw = field[i];
+if (fw.w === tok) return { v: 1, how: 'exact', q: 3 };
+if (short && exactShort) continue;
+if (tok.length >= 2 && fw.w.indexOf(tok) === 0 && (short ? 0.5 : 0.9) > best) { best = short ? 0.5 : 0.9; how = 'prefix'; q = short && !curated ? 1 : 2; }
+else if (ts.length >= 4 && fw.s === ts && 0.85 > best) { best = 0.85; how = 'stem'; q = 2; }
+else if (tok.length >= 4 && best < 0.6) {
+var max = tok.length >= 7 ? 2 : 1;
+var target = fw.w.length > tok.length + 1 ? fw.w.slice(0, tok.length) : fw.w;
+if (fw.w.length >= 4 && dist(tok, target, max) <= max) { best = 0.6; how = 'typo:' + fw.w; q = 1; }
+}
+}
+return { v: best, how: how, q: q };
+}
+function scoreQuery(index, q) {
+var toks = words(q);
+if (!toks.length) return [];
+var keyToks = toks.filter(function (t) { return STOP.indexOf(t) < 0; });
+var strict = keyToks.length ? keyToks : toks;
+var qn = norm(q);
+var res = [];
+var maxQ = {};
+index.forEach(function (it) {
+var reasons = [];
+strict.forEach(function (tok) {
+var bestTok = 0, bestHow = '', bestField = '', bestQ = 0;
+Object.keys(W).forEach(function (k) {
+var m = matchToken(tok, it.f[k], k === 'ds' || k === 'tp' || k === 'tch', k === 'tg');
+var v = m.v * W[k];
+if (v > bestTok) { bestTok = v; bestHow = m.how; bestField = k; bestQ = m.q; }
+});
+if (bestTok) { reasons.push({ tok: tok, how: bestHow, field: bestField, v: bestTok, q: bestQ }); maxQ[tok] = Math.max(maxQ[tok] || 0, bestQ); }
+});
+res.push({ it: it, reasons: reasons });
+});
+var out = [];
+res.forEach(function (r) {
+var it = r.it;
+var reasons = r.reasons.filter(function (z) { return !(z.q < 2 && maxQ[z.tok] >= 2); });
+var total = reasons.reduce(function (a, z) { return a + z.v; }, 0);
+var matchedAll = strict.every(function (tok) { return reasons.some(function (z) { return z.tok === tok; }); });
+it.tags.forEach(function (p) { var pn = norm(p); if (pn.indexOf(' ') > 0 && qn.indexOf(pn) >= 0) { total += 2; reasons.push({ tok: pn, how: 'phrase', field: 'tg' }); } });
+var topicBonus = 0;
+it.groups.forEach(function (g) {
+var hit = g.terms.some(function (p) { var pn = norm(p); return pn.indexOf(' ') > 0 && qn.indexOf(pn) >= 0; }) ||
+strict.some(function (tok) { var m = matchToken(tok, g.field, true); return m.how === 'exact' || m.how === 'stem'; });
+if (hit) topicBonus = Math.max(topicBonus, TOPIC_BONUS[g.pos] || 0.1);
+});
+if (!total) return;
+total += topicBonus;
+var c = it.c;
+if (c.st === 'Идёт набор' || c.st === 'Последний шанс') total += 0.4;
+if (c.f && !topicBonus) total += 0.3;
+out.push({ c: c, score: total, all: matchedAll, reasons: reasons, it: it, tn: norm(c.t) });
+});
+res = out;
+var full = res.filter(function (r) { return r.all; });
+var list = full.length ? full : res;
+list.sort(function (a, b) { return b.score - a.score; });
+if (list.length) { var cut = list[0].score * 0.35; list = list.filter(function (r) { return r.score >= cut; }).slice(0, 8); }
+list.partial = !full.length && res.length > 0;
+list.missed = list.partial ? strict.filter(function (tok) { return !list.some(function (r) { return r.reasons.some(function (z) { return z.tok === tok; }); }); }) : [];
+return list;
+}
+function search(index, q) {
+var a = scoreQuery(index, q);
+var alt = swapLayout(norm(q));
+var b = alt !== norm(q) ? scoreQuery(index, alt) : [];
+var top = function (l) { return l.length ? l[0].score * (l.partial ? 0.5 : 1) : 0; };
+if (top(b) > top(a) * 1.3) { b.layout = alt; return b; }
+return a;
+}
+function explain(r) {
+var i, z;
+var pick = function (list, tok) {
+var st = stem(tok);
+return list.filter(function (x) { var xn = norm(x); return xn.indexOf(tok) >= 0 || xn.indexOf(st) >= 0; })[0];
+};
+for (i = 0; i < r.reasons.length; i++) {
+z = r.reasons[i];
+if (z.how.indexOf('typo:') === 0) return 'похоже на «' + z.how.slice(5) + '»';
+}
+for (i = 0; i < r.reasons.length; i++) {
+z = r.reasons[i];
+if (r.tn.indexOf(stem(z.tok)) >= 0) continue;
+if (z.field === 'tch') return 'преподаёт ' + (pick(r.it.teachers, z.tok) || '');
+if (z.field === 'tp') {
+var terms = [].concat.apply([], r.it.groups.map(function (g) { return g.terms; }));
+return 'по теме «' + (pick(terms, z.tok) || z.tok) + '»';
+}
+if (z.field === 'tg' || z.how === 'phrase') return 'по слову «' + (pick(r.it.tags, z.tok) || z.tok) + '»';
+}
+return '';
+}
+function fromCatalog(data) {
+var topics = (data && data.topics) || [];
+return ((data && data.cards) || []).map(function (c) {
+var tp = [];
+topics.forEach(function (t) {
+var i = (t.courses || []).indexOf(c.slug);
+if (i >= 0) tp.push([(t.terms || []).join(', '), i]);
+});
+return {
+s: c.slug, t: c.title, sub: c.subtitle || '', sec: c.section, u: c.url, st: c.status, f: !!c.flagship,
+tg: (c.searchWords || []).join(', '), tch: (c.teachers || []).join(', '), tp: tp,
+ds: String(c.description || '').slice(0, 400), card: c,
+};
+});
+}
+root.AspSearch = { build: build, search: search, explain: explain, fromCatalog: fromCatalog, norm: norm, swapLayout: swapLayout };
+})(typeof window !== 'undefined' ? window : globalThis);
+(function () {
+'use strict';
+var DESKTOP = window.matchMedia('(min-width: 64.0625rem)');
+var GOAL_DELAY = 1500;
+var ICON_SEARCH = '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="5.75" stroke="currentColor" stroke-width="1.5"/><path d="m13.5 13.5 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+var ICON_CLEAR = '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+function initSearch(root) {
+var S = window.AspSearch;
+var H = window.AspHeader;
+var cfg = window.__aspSearchCfg || {};
+if (!S || !H || root.__siteSearchDone) return;
+var trigger = root.querySelector('[data-search-open]');
+var nav = root.querySelector('[data-nav]');
+var head = nav && nav.querySelector('.site-nav_head');
+var closeButton = head && head.querySelector('[data-nav-close]');
+var bar = root.querySelector('.site-header_bar');
+if (!trigger || !head || !closeButton || !bar) return;
+root.__siteSearchDone = true;
+function fieldHtml(id) {
+return '<label class="site-sr" for="' + id + '">' + H.esc(cfg.label || 'Найти курс') + '</label>'
++ ICON_SEARCH
++ '<input class="site-search_input" id="' + id + '" type="search" placeholder="' + H.esc(cfg.inputPlaceholder || cfg.label || 'Найти курс') + '" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" data-search-input>'
++ '<button class="site-search_clear" type="button" aria-label="Очистить поиск" data-search-clear hidden>' + ICON_CLEAR + '</button>';
+}
+function bodyHtml() {
+var hints = (cfg.hints || []).map(function (h) {
+return '<button class="site-search_hint" type="button" data-search-hint>' + H.esc(h) + '</button>';
+}).join('');
+return (hints ? '<div class="site-search_hints" data-search-hints><p class="site-search_hints-title">Часто ищут</p>' + hints + '</div>' : '')
++ '<div class="site-search_results" data-search-results aria-live="polite" hidden></div>';
+}
+function el(tag, cls, html) {
+var node = document.createElement(tag);
+node.className = cls;
+node.innerHTML = html;
+return node;
+}
+var navField = el('div', 'site-search_field', fieldHtml('site-search-nav-input'));
+head.insertBefore(navField, closeButton);
+var navBody = el('div', 'site-search_body', bodyHtml());
+head.parentNode.insertBefore(navBody, head.nextSibling);
+nav.setAttribute('data-search-box', '');
+var panel = el('div', 'site-search-panel', '<div class="site-search-panel_inner" data-search-box>'
++ '<div class="site-search_field">' + fieldHtml('site-search-panel-input') + '</div>'
++ '<div class="site-search_body">' + bodyHtml() + '</div></div>');
+panel.id = 'site-search-panel';
+panel.setAttribute('role', 'search');
+bar.appendChild(panel);
+var boxes = [nav, panel.firstChild].map(function (box) {
+return {
+el: box,
+input: box.querySelector('[data-search-input]'),
+clear: box.querySelector('[data-search-clear]'),
+results: box.querySelector('[data-search-results]'),
+hints: box.querySelector('[data-search-hints]'),
+};
+});
+var navBox = boxes[0];
+var panelBox = boxes[1];
+var index = S.build(snapshotEntries(root));
+var lastQuery = '';
+var goalTimer = null;
+var api = root.getAttribute('data-api');
+if (api && window.AspCatalogData) {
+window.AspCatalogData(api).data.then(function (data) {
+index = S.build(S.fromCatalog(withPreviewExtra(data)));
+boxes.forEach(function (box) { if (box.input.value.trim()) render(box); });
+}).catch(function () {  });
+}
+root.classList.add('has-search');
+trigger.hidden = false;
+trigger.setAttribute('aria-controls', panel.id);
+var scrim = root.querySelector('[data-nav-scrim]');
+function openPanel() {
+if (root.siteHeader) root.siteHeader.closeCatalog();
+if (scrim) scrim.hidden = false;
+root.classList.add('is-search-open');
+trigger.setAttribute('aria-expanded', 'true');
+panelBox.input.focus({ preventScroll: true });
+render(panelBox);
+}
+function closePanel(returnFocus) {
+if (!root.classList.contains('is-search-open')) return;
+root.classList.remove('is-search-open');
+if (scrim && !root.classList.contains('is-catalog-open')) scrim.hidden = true;
+trigger.setAttribute('aria-expanded', 'false');
+if (returnFocus) trigger.focus({ preventScroll: true });
+}
+trigger.addEventListener('click', function () {
+if (DESKTOP.matches) {
+if (root.classList.contains('is-search-open')) closePanel(true);
+else openPanel();
+return;
+}
+if (root.siteHeader) root.siteHeader.openNav({ keepFocus: true });
+navBox.input.focus({ preventScroll: true });
+render(navBox);
+});
+root.addEventListener('site-header:catalog-open', function () { closePanel(false); });
+root.addEventListener('site-header:nav-close', function () { setQuery(navBox, ''); });
+document.addEventListener('pointerdown', function (e) {
+if (!DESKTOP.matches || !root.classList.contains('is-search-open')) return;
+if (panel.contains(e.target) || trigger.contains(e.target)) return;
+closePanel(false);
+});
+var onLayout = function () { closePanel(false); };
+if (DESKTOP.addEventListener) DESKTOP.addEventListener('change', onLayout);
+else DESKTOP.addListener(onLayout);
+boxes.forEach(function (box) {
+box.input.addEventListener('input', function () { render(box); });
+box.input.addEventListener('keydown', function (e) {
+var links = resultLinks(box);
+if (e.key === 'ArrowDown' && links.length) { e.preventDefault(); links[0].focus(); }
+else if (e.key === 'Enter' && links.length) { e.preventDefault(); links[0].click(); }
+else if (e.key === 'Escape') {
+e.stopPropagation();
+if (box.input.value) setQuery(box, '');
+else if (box === panelBox) closePanel(true);
+else if (root.siteHeader) root.siteHeader.closeNav(true);
+}
+});
+if (box.clear) box.clear.addEventListener('click', function () { setQuery(box, ''); box.input.focus(); });
+if (box.hints) box.hints.addEventListener('click', function (e) {
+var hint = e.target.closest('[data-search-hint]');
+if (!hint) return;
+setQuery(box, hint.textContent);
+box.input.focus({ preventScroll: true });
+});
+box.results.addEventListener('keydown', function (e) {
+var links = resultLinks(box);
+var i = links.indexOf(document.activeElement);
+if (i < 0) return;
+if (e.key === 'ArrowDown') { e.preventDefault(); (links[i + 1] || links[i]).focus(); }
+else if (e.key === 'ArrowUp') { e.preventDefault(); (i ? links[i - 1] : box.input).focus(); }
+else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); box.input.focus(); }
+});
+box.results.addEventListener('click', function (e) {
+var link = e.target.closest('[data-search-slug]');
+if (!link) return;
+goal('site_search_click', { query: box.input.value.trim(), slug: link.getAttribute('data-search-slug'), position: Number(link.getAttribute('data-search-pos')) });
+});
+});
+function setQuery(box, value) {
+box.input.value = value;
+render(box);
+}
+function resultLinks(box) {
+return Array.prototype.slice.call(box.results.querySelectorAll('a'));
+}
+function render(box) {
+var q = box.input.value.trim();
+var searching = q.length > 0;
+box.clear.hidden = !searching;
+if (box.hints) box.hints.hidden = searching;
+if (box === navBox) root.classList.toggle('is-searching', searching);
+if (!searching) {
+box.results.innerHTML = '';
+box.results.hidden = true;
+return;
+}
+var found = S.search(index, q);
+box.results.hidden = false;
+box.results.innerHTML = resultsHtml(q, found);
+scheduleGoal(q, found.length);
+}
+function resultsHtml(q, found) {
+if (!found.length) {
+return '<p class="site-search_empty">По запросу «' + H.esc(q) + '» курсов нет. Попробуйте другое слово или посмотрите '
++ '<a class="site-nav_more" href="' + H.esc(cfg.allUrl || '#') + '">все курсы</a>.</p>';
+}
+var notes = [];
+if (found.layout) notes.push('Исправили раскладку: «' + H.esc(q) + '» → «' + H.esc(found.layout) + '»');
+if (found.partial) {
+notes.push(found.missed.length
+? 'Точно по «' + H.esc(found.missed.join(', ')) + '» ничего нет, вот похожее'
+: 'Курса, где есть всё сразу, нет, вот близкие');
+}
+var utm = root.getAttribute('data-utm') || '';
+return (notes.length ? '<p class="site-search_note">' + notes.join('. ') + '</p>' : '')
++ '<ul class="site-search_list" role="list">'
++ found.map(function (r, i) {
+var c = r.c.card;
+var meta = [c.section, when(c), S.explain(r)].filter(Boolean).join('\u00a0· ');
+return '<li><a class="site-search_item" href="' + H.esc(H.withUtm(c.url, utm)) + '" data-search-slug="' + H.esc(r.c.s) + '" data-search-pos="' + (i + 1) + '">'
++ '<span class="site-search_title">' + H.esc(c.title) + '</span>'
++ '<span class="site-search_meta">' + H.esc(meta) + '</span>'
++ '</a></li>';
+}).join('')
++ '</ul>'
++ (cfg.allUrl ? '<a class="site-nav_more site-search_all" href="' + H.esc(cfg.allUrl) + '">' + H.esc(cfg.allLabel || 'Все курсы') + '</a>' : '');
+}
+function when(c) {
+if (c.meta != null) return c.meta;
+if (c.price && c.price.free) return 'бесплатно';
+if (c.mode === 'waitlist') return 'лист ожидания';
+if (c.status === 'Последний шанс') return 'последний шанс';
+if (c.startDate) return 'старт ' + H.day(c.startDate);
+return 'набор открыт';
+}
+function goal(name, params) {
+try {
+if (cfg.metrika && typeof window.ym === 'function') window.ym(Number(cfg.metrika), 'reachGoal', name, params);
+} catch (e) {  }
+}
+function scheduleGoal(q, count) {
+clearTimeout(goalTimer);
+goalTimer = setTimeout(function () {
+if (q === lastQuery) return;
+lastQuery = q;
+goal(count ? 'site_search' : 'site_search_empty', { query: q, results: count });
+}, GOAL_DELAY);
+}
+}
+function snapshotEntries(root) {
+var out = [];
+root.querySelectorAll('[data-section-panel]').forEach(function (panel) {
+var section = panel.getAttribute('data-section-panel');
+panel.querySelectorAll('.site-nav_course-link').forEach(function (a) {
+var title = a.querySelector('.site-nav_course-title');
+var meta = a.querySelector('.site-nav_course-meta');
+var t = (title || a).textContent;
+var url = a.getAttribute('href');
+out.push({ s: url, t: t, sec: section, tg: '', tch: '', tp: [], ds: '',
+card: { title: t, url: url, section: section, meta: meta ? meta.textContent : '' } });
+});
+});
+return out;
+}
+function withPreviewExtra(data) {
+var x = window.__aspSearchPreview;
+if (!x || (data.topics && data.topics.length)) return data;
+var cards = data.cards.map(function (c) {
+return Object.assign({}, c, {
+searchWords: (c.searchWords || []).length ? c.searchWords : String(x.words[c.slug] || '').split(',').map(function (w) { return w.trim(); }).filter(Boolean),
+teachers: (c.teachers || []).length ? c.teachers : (x.teachers[c.slug] || []),
+});
+});
+return Object.assign({}, data, { cards: cards, topics: x.topics });
+}
+function init() {
+document.querySelectorAll('[data-site-header]').forEach(initSearch);
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+})();
+(function () {
+'use strict';
+var DESKTOP = window.matchMedia('(min-width: 64.0625rem)');
+var PHONE_STEP = 8;
+var DESKTOP_HIDE = 80;
+var DESKTOP_SHOW = 160;
+function initAutoHide(root) {
+var html = document.documentElement;
+var fromY = window.pageYOffset || 0;
+var queued = false;
+function update() {
+queued = false;
+var y = window.pageYOffset || 0;
+var hidden = html.classList.contains('site-header-hidden');
+html.classList.toggle('site-header-floating', y > root.offsetHeight);
+if (y <= root.offsetHeight || html.classList.contains('site-header-lock') || root.classList.contains('is-catalog-open')
+|| root.classList.contains('is-search-open') || root.querySelector('[data-submenu-toggle][aria-expanded="true"]') || keyboardFocusIn(root)) {
+html.classList.remove('site-header-hidden');
+fromY = y;
+return;
+}
+var d = y - fromY;
+if (hidden ? d > 0 : d < 0) { fromY = y; return; }
+var limit = DESKTOP.matches ? (hidden ? DESKTOP_SHOW : DESKTOP_HIDE) : PHONE_STEP;
+if (Math.abs(d) < limit) return;
+html.classList.toggle('site-header-hidden', !hidden);
+fromY = y;
+}
+window.addEventListener('scroll', function () {
+if (!queued) { queued = true; window.requestAnimationFrame(update); }
+}, { passive: true });
+root.addEventListener('focusin', function () {
+if (keyboardFocusIn(root)) html.classList.remove('site-header-hidden');
+});
+update();
+}
+function keyboardFocusIn(root) {
+try { return !!root.querySelector(':focus-visible'); } catch (e) { return false; }
+}
+function init() {
+document.querySelectorAll('[data-site-header]').forEach(function (root) {
+if (root.__siteAutoHideDone) return;
+root.__siteAutoHideDone = true;
+initAutoHide(root);
+});
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+})();</script>

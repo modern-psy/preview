@@ -1,0 +1,28 @@
+/* ============================================================
+   СКРЫТИЕ ШАПКИ ПРИ ПРОКРУТКЕ · второй блок T123 (вместе с поиском).
+   Классы на <html> ставит header-autohide.js.
+   ============================================================ */
+
+#t-header { transition: transform 460ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 460ms ease; }
+
+/* Уезжает быстро и с разгоном (220 мс), выезжает мягко и с торможением (460 мс).
+   Логотип, поиск и кнопка догоняют полосу с задержкой 60 мс и проявляются,
+   а пока шапка висит над страницей, под ней лежит мягкая тень */
+html.site-header-hidden #t-header {
+  transform: translateY(-100%);
+  transition-duration: 220ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+html.site-header-floating #t-header { box-shadow: 0 0.75rem 1.5rem -1.25rem rgba(51, 47, 65, 0.35); }
+
+.site-header_inner { transition: transform 560ms cubic-bezier(0.16, 1, 0.3, 1) 60ms, opacity 360ms ease 60ms; }
+
+html.site-header-hidden .site-header_inner {
+  transform: translateY(-0.75rem);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #t-header { transition: none; }
+}

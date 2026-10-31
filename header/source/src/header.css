@@ -1,0 +1,1114 @@
+/* ============================================================
+   ШАПКА САЙТА · modern-psy.ru, один блок T123 на всех страницах
+   Все правила начинаются с .site-header, чтобы не задеть другие блоки Тильды.
+   Цвета, шрифт, поля и ширина — как у каталога и web-academy:
+   содержимое до 1520px, как у лендингов (кадр 1680 = 80 + 1520 + 80),
+   поля clamp(1rem, 4.7619vw, 5rem), Wix Madefor Text.
+   Разметка одна на все экраны; меняется только раскладка:
+     до 767px   — выдвижное меню на весь экран, раздел открывается
+                  отдельным экраном с кнопкой «Назад»;
+     768–1024px — выдвижное меню: разделы слева, курсы справа,
+                  правая колонка снизу;
+     от 1025px  — строка ссылок в шапке, мега-меню под ней в три колонки.
+   ============================================================ */
+
+.site-header {
+  --sh-page: #f5f5f5;           /* фон страницы и подложек */
+  --sh-surface: #fff;
+  --sh-border: #e8e7ee;
+  --sh-border-strong: #d4d2dd;  /* обводка кнопки «Все курсы», полоса прокрутки */
+  /* Цвета и геометрия — из web-academy (shared/academy/components.css, button.css) */
+  --sh-text: #332f41;           /* --color-text-primary */
+  --sh-muted: #747476;          /* --color-text-secondary: даты, счётчики */
+  --sh-accent: #7c5cdb;         /* --color-accent-primary: главные кнопки */
+  --sh-accent-hover: #6a49c9;   /* --color-accent-hover */
+  --sh-accent-dark: #644ab2;    /* --color-accent-text: ссылки в тексте */
+  --sh-accent-soft: #dad6ff;    /* --color-accent-soft: плашка ближайшего мероприятия */
+  --sh-light-hover: #e6e5eb;    /* наведение на светлую кнопку, как у .is-light */
+  --sh-focus: #7c5cdb;          /* --color-focus */
+  --sh-shadow: 0 1.5rem 2.5rem -1.5rem rgba(51, 47, 65, 0.28);
+  --sh-shadow-small: 0 0.25rem 0.75rem -0.25rem rgba(51, 47, 65, 0.12); /* выпадающий список «Проекты» */
+  --sh-radius: 1rem;            /* панели */
+  --sh-radius-small: 0.75rem;
+  --sh-radius-button: 0.5rem;   /* кнопки web-academy: 8px */
+  --sh-padding: clamp(1rem, 4.7619vw, 5rem); /* поля страницы web-academy */
+  --sh-max: calc(95rem + 2 * var(--sh-padding)); /* контейнер лендингов 1520px плюс поля */
+  --sh-bar: 4rem;               /* высота строки шапки на телефоне */
+  --sh-duration: 180ms;
+  --sh-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --sh-z: 9000;
+
+  position: relative;
+  z-index: var(--sh-z);
+  width: 100%;
+  background-color: var(--sh-surface);
+  color: var(--sh-text);
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.3;
+  font-variant-numeric: lining-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.site-header *,
+.site-header *::before,
+.site-header *::after {
+  box-sizing: border-box;
+}
+
+/* Тильда красит ссылки и рисует маркеры у списков — снимаем внутри шапки.
+   :where() не добавляет веса селектору, поэтому правила ниже эти сбросы
+   спокойно перебивают. */
+/* !important нужен: Тильда задаёт цвет всем ссылкам правилом #allrecords a,
+   и оно весомее любого класса */
+.site-header :where(a) {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.site-header :where(ul) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-header :where(li)::before { content: none; }
+
+.site-header :where(p, h3) {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.site-header :where(button) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.site-header :where(svg) {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.site-header [hidden] { display: none !important; }
+
+.site-header :focus-visible {
+  outline: 0.125rem solid var(--sh-focus);
+  outline-offset: 0.125rem;
+  border-radius: 0.375rem;
+}
+
+.site-header ::selection {
+  background-color: var(--sh-accent-soft);
+  color: var(--sh-accent-dark);
+}
+
+/* Текст только для скринридера */
+.site-header .site-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Строка шапки ---------- */
+.site-header_bar {
+  position: relative;
+  border-bottom: 1px solid var(--sh-border);
+  background-color: var(--sh-surface);
+}
+
+.site-header_inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: var(--sh-max);
+  min-height: var(--sh-bar);
+  margin: 0 auto;
+  padding: 0 var(--sh-padding);
+}
+
+.site-header_brand {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin-right: auto;
+  color: #2c1d59; /* цвет логотипа из брендбука */
+}
+
+.site-header_brand svg {
+  width: 3.75rem;
+  height: 1.25rem;
+}
+
+/* Между логотипом и полем поиска — 16px на телефоне, 24px на планшете */
+.site-search-trigger { margin-left: 0.5rem; }
+
+/* Кнопка «Все курсы»: обведённая, с иконкой меню. На телефоне — справа */
+.site-header_toggle {
+  order: 3;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.625rem 0 0.5rem;
+  border: 1px solid var(--sh-border-strong);
+  border-radius: var(--sh-radius-button);
+  color: var(--sh-text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: background-color var(--sh-duration) var(--sh-ease), border-color var(--sh-duration) var(--sh-ease), color var(--sh-duration) var(--sh-ease);
+}
+
+/* Поле «Найти курс» в строке шапки: выглядит как поле, по нажатию открывает поиск.
+   Появляется, когда загрузился второй блок с поиском */
+.site-search-trigger {
+  order: 1;
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 24rem;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border-radius: var(--sh-radius-small);
+  background-color: var(--sh-page);
+  color: #68686b; /* серый на сером поле с контрастом не ниже 4,5 */
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.site-search-trigger svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.site-search-trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-search-trigger .is-short { display: none; }
+
+/* Уже 375px «Найти курс» не помещается — пишем «Поиск» */
+@media (max-width: 23.375rem) {
+  .site-search-trigger .is-long { display: none; }
+  .site-search-trigger .is-short { display: inline; }
+}
+
+.site-header_toggle-icon {
+  position: relative;
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.site-header_toggle-icon span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transition: transform var(--sh-duration) var(--sh-ease), top var(--sh-duration) var(--sh-ease);
+}
+
+.site-header_toggle-icon span:nth-child(1) { top: 0.3125rem; }
+.site-header_toggle-icon span:nth-child(2) { top: 0.8125rem; }
+
+.site-header_toggle-label { white-space: nowrap; }
+
+/* Открыто: две линии складываются в крестик */
+.site-header_toggle[aria-expanded="true"] .site-header_toggle-icon span:nth-child(1) {
+  top: 0.5625rem;
+  transform: rotate(45deg);
+}
+
+.site-header_toggle[aria-expanded="true"] .site-header_toggle-icon span:nth-child(2) {
+  top: 0.5625rem;
+  transform: rotate(-45deg);
+}
+
+/* ---------- Кнопки ---------- */
+/* ---------- Кнопки: геометрия .button.is-accent / .is-light из web-academy,
+   размер — шапочный (48px), а не лендинговый ---------- */
+.site-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: var(--sh-radius-button);
+  background-color: var(--sh-accent);
+  color: #fff !important; /* !important против стилей ссылок Тильды */
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-decoration: none !important;
+  transition: background-color var(--sh-duration) var(--sh-ease), color var(--sh-duration) var(--sh-ease);
+}
+
+/* Второстепенная: светлая кнопка на белом, как .is-light на светлой подложке */
+.site-button.is-secondary {
+  background-color: var(--sh-page);
+  color: var(--sh-text) !important;
+}
+
+/* Главная кнопка «Календарь обучения»: на телефоне её нет в строке шапки,
+   она первая в списке ссылок меню (.site-nav_item.is-mobile-only) */
+.site-header_cta {
+  order: 2;
+  flex: 0 0 auto;
+  display: none;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.125rem;
+  font-size: 0.9375rem;
+}
+
+/* ---------- Выдвижное меню (телефон и планшет) ---------- */
+.site-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background-color: var(--sh-surface);
+}
+
+.site-header.is-nav-open .site-nav { display: flex; }
+
+.site-nav_head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--sh-bar);
+  padding: 0 var(--sh-padding);
+  border-bottom: 1px solid var(--sh-border);
+  background-color: var(--sh-surface);
+}
+
+.site-nav_head-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.site-nav_close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-right: -0.75rem;
+  border-radius: var(--sh-radius-small);
+  color: var(--sh-text);
+}
+
+.site-nav_close svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ---------- Каталог внутри меню ---------- */
+.site-nav_catalog-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-nav_rail {
+  padding: 0.5rem var(--sh-padding) 1.25rem;
+}
+
+.site-nav_rail-title {
+  padding: 1rem 0 0.5rem;
+  color: var(--sh-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.site-nav_tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-nav_tab {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--sh-border);
+  text-align: left;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  transition: background-color var(--sh-duration) var(--sh-ease), color var(--sh-duration) var(--sh-ease);
+}
+
+.site-nav_tab-label { flex: 1 1 auto; }
+
+/* Число курсов в разделе */
+/* Число курсов в разделе — серое, фиолетовый оставлен кнопкам и мероприятию */
+.site-nav_tab-count {
+  display: inline-flex;
+  min-width: 1.75rem;
+  height: 1.625rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--sh-page);
+  color: var(--sh-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+
+.site-nav_tab-count:empty { display: none; }
+
+/* Стрелка справа у раздела: рисуется рамкой, без картинки, чтобы блок был короче */
+.site-nav_tab::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0 0.5rem 0 0.25rem;
+  border-right: 1.5px solid var(--sh-muted);
+  border-bottom: 1.5px solid var(--sh-muted);
+  transform: rotate(-45deg);
+}
+
+.site-nav_rail-actions {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+}
+
+.site-nav_rail-actions .site-button { width: 100%; }
+
+/* Экраны разделов: на телефоне открываются поверх меню */
+.site-nav_panel {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background-color: var(--sh-surface);
+}
+
+.site-nav_panel.is-open { display: flex; }
+
+.site-nav_back {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--sh-bar);
+  padding: 0 var(--sh-padding);
+  border-bottom: 1px solid var(--sh-border);
+  background-color: var(--sh-surface);
+  color: var(--sh-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.site-nav_back::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0 0.25rem 0 0.125rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(135deg);
+}
+
+.site-nav_panel-body {
+  padding: 1.25rem var(--sh-padding) calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.site-nav_panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.375rem 1.5rem;
+}
+
+.site-nav_panel-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.site-nav_panel-count {
+  margin-left: 0.25rem;
+  color: var(--sh-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Ссылка в тексте — всегда подчёркнута */
+.site-nav_more {
+  color: var(--sh-accent) !important;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--sh-duration) var(--sh-ease);
+}
+
+.site-nav_empty {
+  margin-top: 1rem;
+  color: var(--sh-muted);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+/* Группа курсов: «Ближайшие старты», «Старт в любое время», «Лист ожидания» */
+.site-nav_group { margin-top: 1.5rem; }
+
+.site-nav_group-title {
+  padding-bottom: 0.25rem;
+  color: var(--sh-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Без линий между курсами: ряд отделяет воздух, при наведении подсвечивается строка */
+.site-nav_courses {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0.125rem;
+}
+
+.site-nav_course-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.75rem 0;
+  transition: color var(--sh-duration) var(--sh-ease), background-color var(--sh-duration) var(--sh-ease);
+}
+
+.site-nav_course-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-wrap: pretty;
+  overflow-wrap: anywhere; /* длинное слово на узком экране не вылезет за край */
+}
+
+.site-nav_course-meta {
+  color: var(--sh-muted);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Правая колонка: «Выбор Академии» ---------- */
+.site-nav_soon {
+  margin: 0 var(--sh-padding) 1.5rem;
+  padding: 1.25rem;
+  border-radius: var(--sh-radius);
+  background-color: var(--sh-page);
+}
+
+.site-nav_soon-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.site-nav_soon-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.site-nav_soon-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  height: 100%;
+  padding: 0.625rem;
+  border: 1px solid var(--sh-border);
+  border-radius: var(--sh-radius-small);
+  background-color: var(--sh-surface);
+  transition: border-color var(--sh-duration) var(--sh-ease);
+}
+
+.site-nav_soon-image {
+  display: block;
+  width: 100%;
+  height: auto; /* иначе высота берётся из атрибута height картинки */
+  aspect-ratio: 16 / 10;
+  margin-bottom: 0.25rem;
+  border-radius: 0.5rem;
+  background-color: var(--sh-accent-soft);
+  object-fit: cover;
+  object-position: center;
+}
+
+.site-nav_soon-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.site-nav_soon-meta {
+  color: var(--sh-muted);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+}
+
+/* ---------- Ссылки шапки (Проекты, Акции, О нас…) ---------- */
+.site-nav_links {
+  padding: 0.25rem var(--sh-padding) calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--sh-border);
+}
+
+.site-nav_item { border-bottom: 1px solid var(--sh-border); }
+
+.site-nav_link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: left;
+  transition: color var(--sh-duration) var(--sh-ease);
+}
+
+/* Надпись ссылки: на десктопе под ней появляется линия при наведении */
+.site-nav_link-text {
+  position: relative;
+  display: inline-block;
+}
+
+
+
+/* Выделенный пункт (сейчас «Антикризисная конфа»): тот же размер, но фиолетовым
+   и полужирным — единственное цветное слово в строке. Можно повесить на любой пункт
+   через kind: event в nav.json. */
+.site-nav_link.is-event {
+  color: var(--sh-accent-dark) !important; /* перебивает inherit выше и стили ссылок Тильды */
+  font-weight: 600;
+}
+
+.site-nav_link-chevron {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--sh-muted);
+  transition: transform var(--sh-duration) var(--sh-ease);
+}
+
+.site-nav_link[aria-expanded="true"] .site-nav_link-chevron { transform: rotate(180deg); }
+
+.site-nav_submenu {
+  display: none;
+  padding: 0 0 0.75rem;
+}
+
+.site-nav_link[aria-expanded="true"] + .site-nav_submenu { display: block; }
+
+.site-nav_sublink {
+  display: block;
+  padding: 0.625rem 0 0.625rem 1rem;
+  color: var(--sh-text);
+  font-size: 1rem;
+  line-height: 1.3;
+  transition: color var(--sh-duration) var(--sh-ease);
+}
+
+/* Затемнение страницы под мега-меню (только десктоп) */
+.site-header_scrim {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: none;
+  background-color: rgba(29, 29, 51, 0.24);
+}
+
+/* Пока меню открыто, страница под ним не прокручивается */
+html.site-header-lock,
+html.site-header-lock body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+/* Пока меню открыто, чаты и баннер cookie его не закрывают */
+html.site-header-lock jdiv,
+html.site-header-lock [id^="carrot"],
+html.site-header-lock [class^="carrot"],
+html.site-header-lock [class^="amo-button"],
+html.site-header-lock .t657 { visibility: hidden !important; }
+
+/* ---------- Планшет, от 768px: разделы слева, курсы справа ---------- */
+@media (min-width: 48rem) {
+  .site-header { --sh-bar: 4.5rem; }
+
+  .site-header_brand svg {
+    width: 4.25rem;
+    height: 1.4rem;
+  }
+
+  .site-search-trigger { margin-left: 1rem; }
+
+  .site-header_cta { display: inline-flex; }
+
+  .site-nav_item.is-mobile-only { display: none; }
+
+  .site-nav_catalog-inner {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    column-gap: 2rem;
+    padding: 0 var(--sh-padding);
+  }
+
+  .site-nav_rail {
+    padding: 0.5rem 0 1.5rem;
+    border-right: 1px solid var(--sh-border);
+  }
+
+  .site-nav_tabs { padding-right: 1.5rem; }
+
+  .site-nav_tab {
+    min-height: 3rem;
+    padding: 0.625rem 0.875rem;
+    border: 0;
+    border-radius: var(--sh-radius-small);
+    font-size: 1rem;
+  }
+
+  .site-nav_tab.is-active {
+    background-color: var(--sh-page);
+    color: var(--sh-text);
+    font-weight: 600;
+  }
+
+  .site-nav_tab.is-active .site-nav_tab-count { background-color: var(--sh-surface); }
+
+  .site-nav_tab::after { display: none; }
+
+  .site-nav_rail-actions {
+    margin-right: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--sh-border);
+  }
+
+  /* Экраны разделов стоят в правой колонке, виден только активный */
+  .site-nav_panels {
+    grid-column: 2;
+    grid-row: 1;
+    padding-top: 1.5rem;
+  }
+
+  .site-nav_panel {
+    position: static;
+    display: none;
+    overflow: visible;
+    background: none;
+  }
+
+  .site-nav_panel.is-active { display: block; }
+
+  .site-nav_back { display: none; }
+
+  .site-nav_panel-body { padding: 0 0 1.5rem; }
+
+  .site-nav_soon {
+    grid-column: 1 / -1;
+    margin: 0 0 1.5rem;
+  }
+
+  .site-nav_soon-list { gap: 1rem; }
+
+  .site-nav_soon-card { flex-direction: row; align-items: center; gap: 0.25rem 1rem; flex-wrap: wrap; }
+  .site-nav_soon-image { width: 7.5rem; margin: 0; }
+  .site-nav_soon-name, .site-nav_soon-meta { flex: 1 1 100%; }
+  .site-nav_soon-image + .site-nav_soon-name { flex: 1 1 10rem; }
+  .site-nav_soon-meta { padding-left: 8.5rem; margin-top: -0.25rem; }
+
+  .site-nav_links {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .site-nav_item { position: relative; border: 0; }
+
+  .site-nav_submenu { position: static; }
+}
+
+/* ---------- От 896px курсы раздела в две колонки ---------- */
+@media (min-width: 56rem) {
+  .site-nav_courses {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+}
+
+/* ---------- Десктоп, от 1025px: ссылки в строке, мега-меню под шапкой ---------- */
+@media (min-width: 64.0625rem) {
+  .site-header { --sh-bar: 5rem; }
+
+  .site-header_inner { gap: 1rem; }
+
+  .site-header_brand { margin-right: 1.25rem; }
+
+  .site-header_brand svg {
+    width: 5rem;
+    height: 1.7rem;
+  }
+
+  .site-search-trigger { margin-left: 0; }
+
+  /* Порядок в строке: логотип, «Все курсы», поиск, ссылки, кнопка */
+  .site-header_toggle {
+    order: 1;
+    min-height: 3rem;
+    padding: 0 1.125rem 0 0.875rem;
+    font-size: 1rem;
+  }
+
+  .site-header_toggle[aria-expanded="true"],
+  .site-search-trigger[aria-expanded="true"] {
+    border-color: var(--sh-text);
+    background-color: var(--sh-page);
+  }
+
+  /* Поиск на десктопе: квадратная кнопка-лупа, от 1440px — поле с надписью */
+  .site-search-trigger {
+    order: 2;
+    flex: 0 0 auto;
+    justify-content: center;
+    width: 3rem;
+    min-height: 3rem;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--sh-radius-button);
+  }
+
+  .site-search-trigger span { display: none !important; }
+
+  .site-nav { order: 3; }
+
+  .site-header_cta {
+    order: 4;
+    min-height: 3rem;
+    padding: 0.625rem 2rem; /* чуть длиннее остальных кнопок, как у .button.is-accent */
+    font-size: 1rem;
+  }
+
+  /* Меню больше не выдвижное: ссылки в строке, каталог абсолютной панелью */
+  .site-nav {
+    position: static;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+    overflow: visible;
+    background: none;
+  }
+
+  .site-nav_head { display: none; }
+
+  .site-nav_catalog {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    display: none;
+    border-top: 1px solid var(--sh-border);
+    background-color: var(--sh-surface);
+    box-shadow: var(--sh-shadow);
+  }
+
+  .site-header.is-catalog-open .site-nav_catalog {
+    display: block;
+    animation: site-nav-reveal var(--sh-duration) var(--sh-ease);
+  }
+
+  .site-nav_catalog-inner {
+    grid-template-columns: 15.5rem minmax(0, 1fr) 18rem;
+    column-gap: 2.5rem;
+    align-items: start;
+    max-width: var(--sh-max);
+    margin: 0 auto;
+    padding: 1.5rem var(--sh-padding) 2rem;
+  }
+
+  .site-nav_rail {
+    padding: 0 0 0.5rem;
+    border-right: 0;
+  }
+
+  .site-nav_rail-title { display: none; }
+
+  .site-nav_tabs { padding-right: 0; }
+
+  .site-nav_tab { padding: 0.6875rem 0.875rem; }
+
+  .site-nav_tab::after {
+    display: block;
+    margin-right: 0.125rem;
+    opacity: 0;
+    transition: opacity var(--sh-duration) var(--sh-ease);
+  }
+
+  .site-nav_tab.is-active::after {
+    opacity: 1;
+    border-color: var(--sh-text);
+  }
+
+  .site-nav_rail-actions { margin-right: 0; }
+
+  /* Высота панели задаётся рейкой и колонкой «Выбор Академии»; длинный раздел
+     прокручивается внутри: height: 0 + min-height: 100% не даёт списку растянуть ряд */
+  .site-nav_panels {
+    align-self: stretch;
+    height: 0;
+    min-height: 100%;
+    padding: 0.25rem 1rem 0 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--sh-border-strong) transparent;
+  }
+
+  .site-nav_panels::-webkit-scrollbar { width: 0.375rem; }
+  .site-nav_panels::-webkit-scrollbar-thumb { border-radius: 0.1875rem; background-color: var(--sh-border-strong); }
+
+  .site-nav_panel-body { padding-bottom: 0.5rem; }
+
+  .site-nav_courses { column-gap: 2rem; }
+
+  .site-nav_course-link {
+    margin: 0 -0.625rem;
+    padding: 0.625rem 0.625rem;
+    border-radius: 0.5rem;
+  }
+
+  .site-nav_soon {
+    grid-column: 3;
+    grid-row: 1;
+    margin: 0;
+    padding: 1.25rem;
+  }
+
+  .site-nav_soon-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .site-nav_soon-card { flex-direction: column; align-items: stretch; gap: 0.375rem; flex-wrap: nowrap; }
+  .site-nav_soon-image { width: 100%; margin-bottom: 0.25rem; aspect-ratio: 2 / 1; }
+  .site-nav_soon-image + .site-nav_soon-name { flex: 0 0 auto; }
+  .site-nav_soon-meta { padding-left: 0; margin-top: 0; }
+
+  /* Ссылки в строке шапки */
+  .site-nav_links {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    column-gap: clamp(1rem, 2vw, 2rem);
+    margin-right: clamp(1rem, 2vw, 2rem);
+    padding: 0;
+    border: 0;
+  }
+
+  .site-nav_item { border: 0; }
+
+  .site-nav_link {
+    gap: 0.25rem;
+    width: auto;
+    min-height: 3rem;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+  }
+
+  /* Линия под надписью: рисуется при наведении и у открытого списка */
+  .site-nav_link-text::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -0.375rem;
+    left: 0;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0;
+    transform: scaleX(0.6);
+    transform-origin: left center;
+    transition: opacity var(--sh-duration) var(--sh-ease), transform var(--sh-duration) var(--sh-ease);
+  }
+
+
+  .site-nav_link[aria-expanded="true"] .site-nav_link-text::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .site-nav_link-chevron {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  /* Выпадающий список «Проекты» */
+  .site-nav_submenu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: -0.75rem;
+    min-width: 19rem;
+    padding: 0.5rem;
+    border: 1px solid var(--sh-border);
+    border-radius: var(--sh-radius-small);
+    background-color: var(--sh-surface);
+    box-shadow: var(--sh-shadow-small);
+  }
+
+  .site-nav_link[aria-expanded="true"] + .site-nav_submenu {
+    animation: site-nav-reveal var(--sh-duration) var(--sh-ease);
+  }
+
+  .site-nav_sublink {
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    transition: background-color var(--sh-duration) var(--sh-ease), color var(--sh-duration) var(--sh-ease);
+  }
+
+  .site-header.is-catalog-open .site-header_scrim { display: block; }
+}
+
+/* Тильда: шапка прилипает к верху страницы на всех экранах. #t-header — обёртка,
+   в которую Тильда кладёт блоки страницы-шапки; .t-records режет липкие
+   элементы своим overflow, поэтому снимаем его.
+   Скрытие при прокрутке и его анимация — во втором блоке (header-autohide.*). */
+#t-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9000 !important;
+  background-color: #fff;
+}
+
+.t-records { overflow: visible !important; }
+
+
+
+/* На самых узких ноутбуках, 1025–1099px, «Календарь обучения» не помещается
+   в строку вместе с поиском и ссылками — пишем «Календарь» (nav.json, cta.short) */
+.site-header .is-narrow { display: none; }
+
+@media (min-width: 64.0625rem) and (max-width: 68.6875rem) {
+  .site-header_cta .is-wide { display: none; }
+  .site-header_cta .is-narrow { display: inline; }
+}
+
+/* Узкий десктоп 1025–1199px: строке тесно, ужимаем поля и кегль ссылок,
+   чтобы «Все курсы», ссылки и кнопка не наезжали друг на друга */
+@media (min-width: 64.0625rem) and (max-width: 74.9375rem) {
+  .site-header_inner { gap: 0.75rem; }
+  .site-header_toggle { padding: 0 0.875rem 0 0.75rem; }
+  .site-nav_links { column-gap: 0.875rem; margin-right: 0.5rem; }
+  .site-nav_link { font-size: 0.9375rem; }
+  .site-header_cta { padding-inline: 1.25rem; }
+}
+
+/* На широких экранах курсы в три колонки — панель становится ниже */
+@media (min-width: 90rem) {
+  .site-nav_catalog-inner { column-gap: 3rem; }
+  .site-nav_courses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  .site-search-trigger {
+    justify-content: flex-start;
+    width: 13rem;
+    padding: 0 1rem;
+    font-size: 0.9375rem;
+  }
+
+  .site-search-trigger .is-long { display: inline !important; }
+}
+
+@keyframes site-nav-reveal {
+  from { opacity: 0; transform: translateY(-0.375rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Наведение — только там, где есть мышь, иначе на телефоне эффект залипает */
+@media (hover: hover) and (pointer: fine) {
+  .site-header_toggle:hover { border-color: var(--sh-text); }
+  .site-search-trigger:hover { background-color: var(--sh-light-hover); }
+
+  .site-button:hover { background-color: var(--sh-accent-hover); }
+  .site-button.is-secondary:hover { background-color: var(--sh-light-hover); }
+
+  .site-nav_tab:not(.is-active):hover { background-color: var(--sh-page); }
+  .site-nav_course-link:hover { background-color: var(--sh-page); }
+  .site-nav_more:hover { color: var(--sh-accent-hover) !important; }
+  .site-nav_soon-card:hover { border-color: var(--sh-focus); }
+  .site-nav_link:hover .site-nav_link-text::after { opacity: 1; transform: scaleX(1); }
+  .site-nav_sublink:hover { background-color: var(--sh-page); }
+  .site-nav_back:hover { color: var(--sh-text); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header *,
+  .site-header *::before,
+  .site-header *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

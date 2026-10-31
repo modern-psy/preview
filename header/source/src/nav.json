@@ -1,0 +1,84 @@
+{
+  "_comment": "Содержимое шапки, которое не приходит из CMS. Курсы внутри разделов и карточки правой колонки («Выбор Академии») берутся из /api/public/catalog. После правок запустить: node apps/tilda/header/build.mjs",
+
+  "api": "https://modern-psy-asp-prod-8ceb.twc1.net",
+  "home": "https://modern-psy.ru/",
+
+  "_utm": "Хвост, который добавляется к ссылкам на курсы из CMS, чтобы в аналитике было видно переходы из шапки. Пусто — не добавлять.",
+  "utm": "",
+
+  "_sections": "Разделы мега-меню. section — название раздела ровно как в CMS (по нему берутся курсы); label — как раздел называется в шапке (пусто — как в CMS); url — страница раздела в каталоге; noun — слово для счётчика: 1, 2–4, 5+.",
+  "sections": [
+    { "key": "methods", "section": "Методы психотерапии", "url": "https://modern-psy.ru/methods", "noun": ["курс", "курса", "курсов"] },
+    { "key": "specializations", "section": "Специализации", "url": "https://modern-psy.ru/specializations", "noun": ["курс", "курса", "курсов"] },
+    { "key": "professions", "section": "Профессии", "url": "https://modern-psy.ru/professions", "noun": ["программа", "программы", "программ"] },
+    { "key": "webinars", "section": "Вебинары", "url": "https://modern-psy.ru/webinars", "noun": ["вебинар", "вебинара", "вебинаров"] },
+    { "key": "free", "section": "Бесплатные мини-курсы", "url": "https://modern-psy.ru/free", "noun": ["мини-курс", "мини-курса", "мини-курсов"] }
+  ],
+
+  "_catalogActions": "Две кнопки под списком разделов.",
+  "catalogActions": [
+    { "label": "Учиться бесплатно", "url": "https://modern-psy.ru/free", "kind": "primary" },
+    { "label": "Перейти в каталог", "url": "https://modern-psy.ru/courses", "kind": "secondary" }
+  ],
+
+  "_soonTitle": "Заголовок правой колонки (аналог английского featured).",
+  "soonTitle": "Выбор Академии",
+
+  "_soon": "Правая колонка с двумя карточками. Элемент со slug берётся из CMS (обложка, название, дата, цена). Пустой slug или курс, которого нет в каталоге, заменяется ближайшим по дате старта. Элемент с title/url/image — ручная карточка для страниц, которых нет в CMS.",
+  "soon": [
+    {
+      "title": "Студенческая конференция 2.0",
+      "meta": "бесплатно",
+      "url": "https://modern-psy.ru/student-conference-2",
+      "image": "https://s3.twcstorage.ru/asp-media/image_1792768326989_0f6638cc09.png"
+    },
+    {
+      "title": "Мастерская профессионального контента",
+      "meta": "проект Академии",
+      "url": "https://modern-psy.ru/masterskaya-professionalnogo-kontenta",
+      "image": "https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp"
+    }
+  ],
+
+  "_links": "Ссылки в строке шапки. Пункт с items раскрывается списком; kind: event — выделенный пункт, фиолетовым полужирным.",
+  "links": [
+    {
+      "label": "Проекты",
+      "items": [
+        { "label": "Сообщество выпускников", "url": "https://modern-psy.ru/alumni" },
+        { "label": "Конференции", "url": "https://modern-psy.ru/events" },
+        { "label": "АСП Практикум", "url": "https://lk.modern-psy.ru/practicum-asp" },
+        { "label": "Обучение РО ДБТ в России", "url": "https://modern-psy.ru/ro-dbt-path" },
+        { "label": "Реферальная программа", "url": "https://modern-psy.ru/referal" },
+        { "label": "Живой лекторий", "url": "https://modern-psy.ru/lectorium-spb" },
+        { "label": "Мастерская профессионального контента", "url": "https://modern-psy.ru/masterskaya-professionalnogo-kontenta" }
+      ]
+    },
+    {
+      "label": "Академия",
+      "items": [
+        { "label": "О нас", "url": "https://modern-psy.ru/about" },
+        { "label": "Акции", "url": "https://modern-psy.ru/discounts" },
+        { "label": "Новости", "url": "https://modern-psy.ru/academy-news" },
+        { "label": "Документы", "url": "https://modern-psy.ru/documents" }
+      ]
+    },
+    { "label": "Студенческая конференция 2.0", "url": "https://modern-psy.ru/student-conference-2", "kind": "event" }
+  ],
+
+  "_cta": "Главная кнопка справа. На телефоне её нет в строке шапки: она первая в списке ссылок открытого меню. short — подпись на самых узких ноутбуках, 1025–1099px: полная туда не помещается.",
+  "cta": { "label": "Календарь обучения", "short": "Календарь", "url": "https://modernpsy.academy/timetable" },
+
+  "_search": "Поиск по курсам. placeholder — надпись на поле в строке шапки (placeholderShort — на экранах уже 375px); label — подпись поля для скринридера; inputPlaceholder — подсказка в самом поле поиска; hints — быстрые запросы под пустым полем; metrika — номер счётчика для целей site_search, site_search_empty и site_search_click (пусто — цели не отправляются; цели нужно завести в Метрике как «JavaScript-событие»).",
+  "search": {
+    "placeholder": "Найти курс",
+    "placeholderShort": "Поиск",
+    "label": "Найти курс, тему или преподавателя",
+    "inputPlaceholder": "Курс, тема или преподаватель",
+    "hints": ["КПТ", "АСТ", "Травма", "СДВГ", "РПП", "Пары"],
+    "allLabel": "Все курсы на одной странице",
+    "allUrl": "https://modern-psy.ru/courses",
+    "metrika": "82190929"
+  }
+}

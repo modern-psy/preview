@@ -1,0 +1,230 @@
+/* ============================================================
+   ПОИСК В ШАПКЕ · второй блок T123, стоит сразу под шапкой.
+   Поле в строке шапки нарисовано в первом блоке (header.css),
+   здесь — поле внутри меню, панель поиска на десктопе и результаты.
+   Цвета — переменные шапки (--sh-…), они заданы в header.css.
+   ============================================================ */
+
+.site-header {
+  --sh-muted-strong: #68686b; /* серый текст на сером поле: контраст не ниже 4,5 */
+}
+
+/* ---------- Поле поиска: в меню телефона и в панели десктопа ---------- */
+.site-search_field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 0.25rem 0 0.875rem;
+  border: 1px solid transparent;
+  border-radius: var(--sh-radius-small);
+  background-color: var(--sh-page);
+  color: var(--sh-muted-strong);
+  transition: border-color var(--sh-duration) var(--sh-ease), background-color var(--sh-duration) var(--sh-ease);
+}
+
+.site-search_field:focus-within {
+  border-color: var(--sh-focus);
+  background-color: var(--sh-surface);
+}
+
+.site-search_field svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* 16px и больше: иначе iPhone приближает страницу при вводе */
+.site-header .site-search_input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 2.625rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--sh-text);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.2;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.site-header .site-search_input::placeholder {
+  color: var(--sh-muted-strong);
+  opacity: 1;
+}
+
+.site-header .site-search_input::-webkit-search-cancel-button,
+.site-header .site-search_input::-webkit-search-decoration { -webkit-appearance: none; }
+
+.site-search_clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  color: var(--sh-muted-strong);
+}
+
+.site-search_clear svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* В меню телефона и планшета поле стоит вместо слова «Меню» */
+.site-header.has-search .site-nav_head-title { display: none; }
+
+.site-nav_head .site-search_field {
+  flex: 1 1 auto;
+  margin-right: 0.75rem;
+}
+
+.site-nav .site-search_body { padding: 0 var(--sh-padding); }
+
+/* Пока ищем, вместо разделов и ссылок — найденные курсы (телефон и планшет) */
+@media (max-width: 64rem) {
+  .site-header.is-searching .site-nav_catalog,
+  .site-header.is-searching .site-nav_links { display: none; }
+
+  .site-header.is-searching .site-nav .site-search_body {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ---------- Быстрые запросы под пустым полем ---------- */
+.site-search_hints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0 0.25rem;
+}
+
+.site-search_hints-title {
+  flex: 1 1 100%;
+  color: var(--sh-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.site-search_hint {
+  min-height: 2.25rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--sh-border);
+  border-radius: 62.5rem;
+  background-color: var(--sh-surface);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: border-color var(--sh-duration) var(--sh-ease);
+}
+
+/* ---------- Результаты ---------- */
+.site-search_note {
+  padding-top: 0.75rem;
+  color: var(--sh-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.site-search_list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0.125rem;
+  padding: 0.5rem 0;
+}
+
+.site-search_item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  padding: 0.75rem 0;
+  transition: background-color var(--sh-duration) var(--sh-ease);
+}
+
+.site-search_title {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.site-search_meta {
+  color: var(--sh-muted);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.site-search_empty {
+  padding: 1rem 0;
+  color: var(--sh-muted);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.site-search_all {
+  display: inline-block;
+  margin: 0.25rem 0 1rem;
+}
+
+/* ---------- Панель поиска под шапкой: только десктоп ---------- */
+.site-search-panel { display: none; }
+
+@media (min-width: 64.0625rem) {
+  /* поле и подсказки из меню телефона на десктопе не нужны: там панель */
+  .site-nav .site-search_body { display: none; }
+
+  .site-search-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    border-top: 1px solid var(--sh-border);
+    background-color: var(--sh-surface);
+    box-shadow: var(--sh-shadow);
+  }
+
+  .site-header.is-search-open .site-search-panel {
+    display: block;
+    animation: site-nav-reveal var(--sh-duration) var(--sh-ease);
+  }
+
+  .site-header.is-search-open .site-header_scrim { display: block; }
+
+  .site-search-panel_inner {
+    max-width: var(--sh-max);
+    margin: 0 auto;
+    padding: 1.5rem var(--sh-padding) 2rem;
+  }
+
+  .site-search-panel .site-search_field,
+  .site-search-panel .site-search_body { max-width: 52rem; }
+
+  .site-search-panel .site-search_field {
+    min-height: 3.25rem;
+    padding-left: 1rem;
+  }
+
+  .site-search-panel .site-search_input { font-size: 1.125rem; }
+
+  .site-search-panel .site-search_list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+
+  .site-search_item {
+    margin: 0 -0.625rem;
+    padding: 0.625rem;
+    border-radius: 0.5rem;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-search_hint:hover { border-color: var(--sh-border-strong); }
+  .site-search_item:hover { background-color: var(--sh-page); }
+  .site-search_clear:hover { color: var(--sh-text); }
+}
