@@ -1,0 +1,451 @@
+/* ==========================================================================
+   Страница «Акции» · modern-psy.ru/discounts · 31.10.2026
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета,
+   поля страницы, ширина 1520, H1, заголовок секции, кнопки. Здесь только
+   то, что есть на этой странице: тёмный баннер с курсами месяца,
+   подарочные карты и табы «Какие скидки ваши?».
+
+   Все правила начинаются с .discounts-page, чтобы не задеть соседние блоки
+   Тильды. Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px.
+   ========================================================================== */
+
+
+/* ---------- 0. Цвета страницы ----------
+   Берутся из v1. Новые здесь только подарочные карты и жёлтая плашка
+   процента — как у баннера «Курсы месяца» над каталогом. */
+.discounts-page {
+  --discounts-line: #e8e7ee;          /* тонкие линии на светлом */
+  --discounts-line-dark: rgb(255 255 255 / 14%); /* линии на тёмном */
+  --discounts-promo: #ffe740;         /* плашка «−10 %», как в баннере каталога */
+  --discounts-card-a: #463a56;        /* подарочная карта, тон светлее фона */
+  --discounts-card-b: #3a3047;        /* подарочная карта, чуть светлее фона */
+  --discounts-old-price: #c9c3d4;     /* зачёркнутая цена на тёмном, 9:1 */
+  --discounts-tab-hover: #efeef3;     /* таб под мышью */
+  --discounts-tab-hover-line: #d3d1db;
+  --discounts-panel-padding: 1rem;
+  --discounts-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (min-width: 48rem) {
+  .discounts-page { --discounts-panel-padding: 1.5rem; }
+}
+.discounts-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+.discounts-page a:focus-visible,
+.discounts-page [role="tab"]:focus-visible,
+.discounts-page [role="tabpanel"]:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+
+/* ---------- 1. Тёмный баннер ----------
+   Телефон и планшет: карты полосой сверху, под ними текст.
+   Компьютер (от 1025 px): текст слева, карты справа во всю высоту. */
+.discounts-page .discounts-hero_component { padding-top: clamp(1rem, 1.5vw, 1.5rem); }
+
+.discounts-page .discounts-hero_panel {
+  display: grid;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+@media (min-width: 64.0625rem) {
+  .discounts-page .discounts-hero_panel {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    border-radius: 1.5rem;
+  }
+  .discounts-page .gift-wall_component { grid-column: 2; grid-row: 1; }
+  .discounts-page .discounts-hero_content { grid-column: 1; grid-row: 1; }
+}
+
+.discounts-page .discounts-hero_content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding: var(--discounts-panel-padding);
+}
+@media (min-width: 64.0625rem) {
+  .discounts-page .discounts-hero_content { gap: 2.5rem; padding-block: 2.5rem; }
+}
+.discounts-page .discounts-hero_header { display: flex; flex-direction: column; gap: 0.75rem; }
+.discounts-page .discounts-hero_lead {
+  max-width: 36rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: 1rem;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+@media (min-width: 48rem) { .discounts-page .discounts-hero_lead { font-size: 1.125rem; } }
+@media (min-width: 64.0625rem) { .discounts-page .discounts-hero_lead { font-size: 1.25rem; line-height: 1.3; } }
+
+/* Кнопка «Выбрать курс» — компактная, как кнопки в панели скидок и на /events/:
+   высота 50 px, текст 16 px, поля 24 px. До 768 px во всю ширину. */
+.discounts-page .discounts-hero_actions .button_component {
+  --button-font-size: 1rem;
+  --button-min-height: 3.125rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+@media (min-width: 48rem) {
+  .discounts-page .discounts-hero_actions .button_component { width: auto; }
+}
+
+
+/* ---------- 2. Курсы месяца строками ----------
+   Строка целиком — ссылка на курс. Слева название, процент и старт,
+   справа цена: новая крупно, старая зачёркнута. На телефоне цена под названием. */
+.discounts-page .month-offer_head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  padding-bottom: 0.75rem;
+}
+.discounts-page .month-offer_heading {
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 48rem) { .discounts-page .month-offer_heading { font-size: 1.5rem; } }
+.discounts-page .month-offer_until { color: var(--color-text-on-dark-muted); font-size: 0.9375rem; line-height: 1.3; }
+@media (min-width: 48rem) { .discounts-page .month-offer_until { font-size: 1rem; } }
+
+.discounts-page .month-offer_item { border-top: 1px solid var(--discounts-line-dark); }
+.discounts-page .month-offer_item:last-child { border-bottom: 1px solid var(--discounts-line-dark); }
+
+.discounts-page .month-offer_link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 1rem;
+  color: var(--color-text-on-dark) !important; /* custom.css сайта красит все ссылки */
+  text-decoration: none;
+}
+@media (min-width: 32.5625rem) {
+  .discounts-page .month-offer_link {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.5rem;
+  }
+}
+@media (min-width: 64.0625rem) { .discounts-page .month-offer_link { padding-block: 1.25rem; } }
+
+.discounts-page .month-offer_main { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.discounts-page .month-offer_title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--transition-site);
+}
+@media (min-width: 48rem) { .discounts-page .month-offer_title { font-size: 1.25rem; } }
+.discounts-page .month-offer_meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.625rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+.discounts-page .month-offer_pill {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--discounts-promo);
+  color: var(--color-surface-dark);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Цена: подпись про оплату над ценой, как в баннере каталога;
+   в строке плашка с процентом, новая цена, старая зачёркнутая */
+.discounts-page .month-offer_price {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: start;
+  align-items: center;
+  column-gap: 0.625rem;
+  row-gap: 0.125rem;
+  font-variant-numeric: lining-nums;
+  white-space: nowrap;
+}
+@media (min-width: 32.5625rem) { .discounts-page .month-offer_price { justify-content: end; text-align: right; } }
+.discounts-page .month-offer_terms {
+  grid-column: 1 / -1;
+  color: var(--color-text-on-dark-muted);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  white-space: normal;
+}
+.discounts-page .month-offer_new { font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; }
+@media (min-width: 48rem) { .discounts-page .month-offer_new { font-size: 1.5rem; } }
+.discounts-page .month-offer_old { color: var(--discounts-old-price); font-size: 0.9375rem; }
+
+@media (hover: hover) and (pointer: fine) {
+  .discounts-page .month-offer_link:hover .month-offer_title { text-decoration-color: currentColor; }
+}
+
+
+/* ---------- 3. Подарочные карты ----------
+   Плоские карты под одним углом, ряды сдвинуты на полкарты.
+   Лента — две тонкие белые линии, бант нарисован линией (svg в фоне).
+   Одна карта фиолетовая, остальные в тон тёмного фона. Картинок нет, всё в css. */
+/* Все карты целиком, ни одна цифра не обрезается: размер карты считается
+   от ширины и высоты области (единицы cqi и cqh). Края не растворяются: карты плоские.
+   Телефон и планшет — полосой над текстом, компьютер — колонкой справа. */
+.discounts-page .gift-wall_component {
+  position: relative;
+  height: 14rem;
+  overflow: hidden;
+  container-type: size;
+}
+@media (min-width: 48rem) { .discounts-page .gift-wall_component { height: 18rem; } }
+@media (min-width: 64.0625rem) { .discounts-page .gift-wall_component { height: auto; } }
+
+.discounts-page .gift-wall_grid {
+  --gift-w: min(24cqi, 42cqh);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(3, var(--gift-w));
+  gap: calc(var(--gift-w) * 0.1);
+  /* + четверть карты вправо: средний ряд сдвинут влево, так стена стоит по центру */
+  transform: translate(calc(-50% + var(--gift-w) / 4), -50%) rotate(-12deg);
+}
+/* Телефон и планшет: три столбца, два ряда (карты 1–6), второй ряд сдвинут на полкарты — «кладка» */
+.discounts-page .gift-card_component:nth-child(n+7) { display: none; }
+.discounts-page .gift-card_component:nth-child(n+4):nth-child(-n+6) { translate: calc(var(--gift-w) / -2) 0; }
+/* Компьютер: колонка высокая, поэтому два столбца и четыре ряда (карты 1–8),
+   сдвинуты второй и четвёртый ряды. Так карты крупнее и стена занимает всю высоту. */
+@media (min-width: 64.0625rem) {
+  .discounts-page .gift-wall_grid {
+    --gift-w: min(30cqi, 27cqh);
+    grid-template-columns: repeat(2, var(--gift-w));
+  }
+  .discounts-page .gift-card_component:nth-child(-n+8) { display: flex; }
+  .discounts-page .gift-card_component:nth-child(n+4):nth-child(-n+6) { translate: none; }
+  .discounts-page .gift-card_component:is(:nth-child(3), :nth-child(4), :nth-child(7), :nth-child(8)) {
+    translate: calc(var(--gift-w) / -2) 0;
+  }
+}
+
+/* Раскладка от скрипта (page.js, раздел 3): сплошное поле карт с выходом за края баннера.
+   Скрипт ставит каждой карте место (left, top) в повёрнутой системе и размер --gift-w;
+   начало системы — центр области (--gift-x, --gift-y). Правила выше — запасной вариант без скрипта. */
+.discounts-page .gift-wall_grid[data-layout] {
+  top: 0;
+  left: 0;
+  display: block;
+  width: 0;
+  height: 0;
+  transform: translate(var(--gift-x), var(--gift-y)) rotate(var(--gift-angle, -12deg));
+  transform-origin: 0 0;
+}
+.discounts-page .gift-wall_grid[data-layout] .gift-card_component {
+  position: absolute;
+  display: flex;
+  width: var(--gift-w);
+  translate: none;
+}
+/* После первого появления карты больше не анимируются: при пересчёте раскладки они бы мигали */
+.discounts-page .gift-wall_grid.is-settled .gift-card_component { animation: none; }
+
+.discounts-page .gift-card_component {
+  position: relative;
+  display: flex;
+  aspect-ratio: 3 / 2;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: calc(var(--gift-w) * 0.06) calc(var(--gift-w) * 0.07);
+  border-radius: 0.75rem;
+  background-color: var(--discounts-card-a);
+  /* лента: вертикальная и горизонтальная полосы по 2 px */
+  background-image:
+    linear-gradient(90deg, transparent calc(28% - 1px), rgb(255 255 255 / 70%) calc(28% - 1px), rgb(255 255 255 / 70%) calc(28% + 1px), transparent calc(28% + 1px)),
+    linear-gradient(180deg, transparent calc(34% - 1px), rgb(255 255 255 / 70%) calc(34% - 1px), rgb(255 255 255 / 70%) calc(34% + 1px), transparent calc(34% + 1px));
+  color: var(--color-text-on-dark-muted);
+  animation: gift-in 900ms var(--discounts-ease) both;
+}
+/* бант на пересечении ленты */
+.discounts-page .gift-card_component::after {
+  content: "";
+  position: absolute;
+  top: 34%;
+  left: 28%;
+  width: calc(var(--gift-w) * 0.22);
+  height: calc(var(--gift-w) * 0.14);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 28' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12C18 4 7 1 5 6s8 8 17 6Z'/%3E%3Cpath d='M22 12c4-8 15-11 17-6s-8 8-17 6Z'/%3E%3Cpath d='M22 12 15 26M22 12l7 14'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: translate(-50%, -45%);
+}
+.discounts-page .gift-card_component.is-soft { background-color: var(--discounts-card-b); }
+.discounts-page .gift-card_component.is-accent { background-color: var(--color-accent-primary); color: var(--color-text-on-dark); }
+.discounts-page .gift-card_value {
+  font-size: clamp(1rem, calc(var(--gift-w) * 0.15), 1.75rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.discounts-page .gift-card_value small { margin-right: 0.15em; font-size: 0.875rem; letter-spacing: 0; }
+
+/* Карты появляются по очереди, один раз при загрузке. Без анимации — сразу на месте. */
+@keyframes gift-in {
+  from { opacity: 0; transform: translateY(1.5rem) scale(0.96); }
+}
+.discounts-page .gift-card_component:nth-child(2) { animation-delay: 60ms; }
+.discounts-page .gift-card_component:nth-child(3) { animation-delay: 120ms; }
+.discounts-page .gift-card_component:nth-child(4) { animation-delay: 90ms; }
+.discounts-page .gift-card_component:nth-child(5) { animation-delay: 150ms; }
+.discounts-page .gift-card_component:nth-child(6) { animation-delay: 210ms; }
+.discounts-page .gift-card_component:nth-child(7) { animation-delay: 180ms; }
+.discounts-page .gift-card_component:nth-child(8) { animation-delay: 240ms; }
+.discounts-page .gift-card_component:nth-child(9) { animation-delay: 300ms; }
+@media (prefers-reduced-motion: reduce) {
+  .discounts-page .gift-card_component { animation: none; }
+}
+
+
+/* ---------- 4. Какие скидки ваши? ----------
+   Табы: на телефоне сеткой 2×2, от 768 px в одну строку.
+   Выбранный таб тёмный, а не фиолетовый: фиолетовый остаётся на кнопке. */
+.discounts-page .discount-picker_body { display: flex; flex-direction: column; gap: 0.75rem; }
+@media (min-width: 48rem) { .discounts-page .discount-picker_body { gap: 1rem; } }
+
+.discounts-page .discount-picker_tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.discounts-page .discount-picker_tabs[hidden] { display: none; }
+@media (min-width: 48rem) {
+  .discounts-page .discount-picker_tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.discounts-page .discount-picker_tab {
+  min-height: 3.25rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--discounts-line);
+  border-radius: 0.75rem;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  text-wrap: balance;
+  cursor: pointer;
+  transition: background-color var(--transition-site), color var(--transition-site), border-color var(--transition-site);
+}
+@media (min-width: 48rem) { .discounts-page .discount-picker_tab { min-height: 3.5rem; font-size: 1.0625rem; } }
+@media (min-width: 64.0625rem) { .discounts-page .discount-picker_tab { min-height: 3.75rem; font-size: 1.125rem; } }
+.discounts-page .discount-picker_tab[aria-selected="true"] {
+  border-color: var(--color-surface-dark);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+@media (hover: hover) and (pointer: fine) {
+  .discounts-page .discount-picker_tab[aria-selected="false"]:hover { border-color: var(--discounts-tab-hover-line); background: var(--discounts-tab-hover); }
+}
+
+/* Панель скидки: процент крупно, название и условие, одна кнопка */
+.discounts-page .discount-picker_panel {
+  padding: var(--discounts-panel-padding);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+.discounts-page .discount-picker_panel[hidden] { display: none; }
+.discounts-page .discount-picker_panel.is-entering { animation: panel-in 420ms var(--discounts-ease); }
+@keyframes panel-in { from { opacity: 0; transform: translateY(0.5rem); } }
+@media (prefers-reduced-motion: reduce) {
+  .discounts-page .discount-picker_panel.is-entering { animation: none; }
+}
+
+.discounts-page .discount-offer_main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+@media (min-width: 48rem) {
+  .discounts-page .discount-offer_main {
+    grid-template-columns: 13rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem 2rem;
+  }
+  .discounts-page .discount-offer_button { grid-column: 2; justify-self: start; }
+}
+@media (min-width: 64.0625rem) {
+  .discounts-page .discount-offer_main { grid-template-columns: 17rem minmax(0, 1fr) auto; }
+  .discounts-page .discount-offer_button { grid-column: 3; }
+}
+
+.discounts-page .discount-offer_value {
+  color: var(--color-text-primary);
+  font-size: clamp(3rem, 2.4rem + 2.6vw, 4.75rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.discounts-page .discount-offer_value.is-word { font-size: clamp(2rem, 1.7rem + 1.3vw, 2.75rem); line-height: 1; white-space: normal; }
+.discounts-page .discount-offer_prefix { margin-right: 0.2em; font-size: 0.42em; letter-spacing: 0; }
+.discounts-page .discount-offer_text { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.discounts-page .discount-offer_title {
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+@media (min-width: 48rem) { .discounts-page .discount-offer_title { font-size: 1.5rem; } }
+.discounts-page .discount-offer_desc {
+  max-width: 40rem;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+@media (min-width: 48rem) { .discounts-page .discount-offer_desc { font-size: 1.125rem; } }
+/* Кнопка внутри панели — компактная, как в карточках /events/ (events-button_component):
+   высота 50 px, текст 16 px, поля 24 px. Крупная кнопка v1 (63 px) остаётся только в первом экране,
+   как на главной. До 768 px — во всю ширину панели. */
+.discounts-page .discount-offer_button {
+  --button-font-size: 1rem;
+  --button-min-height: 3.125rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+@media (min-width: 48rem) { .discounts-page .discount-offer_button { width: auto; } }
+
+/* Вторая скидка в той же ситуации — такая же крупная, под тонкой линией */
+.discounts-page .discount-offer_main.is-extra {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--discounts-line);
+}
+@media (min-width: 48rem) {
+  .discounts-page .discount-offer_main.is-extra { margin-top: 1.5rem; padding-top: 1.5rem; }
+}
+
+.discounts-page .discount-picker_note { margin-top: 0.5rem; color: var(--color-text-primary); font-size: 1rem; line-height: 1.35; }
+@media (min-width: 48rem) { .discounts-page .discount-picker_note { font-size: 1.125rem; } }
+.discounts-page .discount-picker_phone {
+  color: var(--color-text-primary) !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  white-space: nowrap;
+}
