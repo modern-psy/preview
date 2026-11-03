@@ -1,0 +1,617 @@
+/* ==========================================================================
+   Страница «Сообщество выпускников» · modern-psy.ru/alumni · 03.11.2026
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета,
+   поля страницы, ширина 1520, H1, заголовки секций, роли текста, кнопки.
+   Здесь только раскладка и то, чего нет в v1: пропуск, его оборот,
+   печать, тёмные панели и вопросы-ответы. Кегли ролей текста не меняем.
+
+   Все правила начинаются с .alumni-page, чтобы не задеть соседние блоки
+   Тильды. Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px.
+   ========================================================================== */
+
+
+/* ---------- 0. Цвета и общие мелочи ----------
+   Цвета из v1. Своих здесь четыре: линии на светлом и на тёмном,
+   подписи полей пропуска на тёмном и серый текст на светлом. */
+.alumni-page {
+  --alumni-line: #e8e7ee;                      /* тонкие линии на светлом */
+  --alumni-line-dark: rgb(255 255 255 / 14%);  /* линии на тёмном */
+  --alumni-label-dark: #b9b3c4;                /* подписи полей пропуска на #2b2334, 7.6:1 */
+  --alumni-muted: #636169;                     /* второстепенный текст на белом и #f5f5f5, 5.8:1 */
+  --alumni-panel-padding: 1rem;
+  --alumni-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --alumni-pass-tilt: -2deg;
+}
+@media (min-width: 48rem) {
+  .alumni-page { --alumni-panel-padding: 2rem; }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page { --alumni-panel-padding: 3rem; --alumni-pass-tilt: -3deg; }
+}
+
+/* Серый текст v1 (#7b7b7c) на светлом фоне даёт 3.9:1 — для мелкого текста мало
+   (см. academy-base/README.md, «Что ещё не готово»). На этой странице берём тёмнее. */
+.alumni-page { --body-text-color: var(--alumni-muted); --section-subtitle-color: var(--alumni-muted); }
+
+/* Заголовки секций не крупнее H1. В v1 они 32 · 36 · 44 · 52 px, а H1 — 28 → 48 px,
+   и на этой странице заголовки секций перебивали главный. Решение Дарьи 03.11.2026:
+   уменьшить их ниже H1. Размер считается от размера H1, трекинг как у H1. */
+.alumni-page .section-title_component.is-responsive {
+  --section-title-size: calc(var(--hero-heading-size) * 0.9);
+  --section-title-tracking: -0.025em;
+  --section-title-line-height: 1.1;
+}
+
+.alumni-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+.alumni-page a:focus-visible,
+.alumni-page summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+
+/* ---------- 1. Первый экран ----------
+   Телефон и планшет: заголовок → пропуск → кнопка.
+   Компьютер: заголовок и кнопка слева, пропуск справа во всю высоту. */
+.alumni-page .alumni-hero_component { padding-top: clamp(2rem, 5vw, 5rem); }
+
+.alumni-page .alumni-hero_layout {
+  display: grid;
+  grid-template-areas: "header" "pass" "actions";
+  gap: 1.75rem;
+  align-items: center;
+}
+.alumni-page .alumni-hero_header { grid-area: header; display: flex; flex-direction: column; gap: 1rem; }
+.alumni-page .alumni-hero_lead { max-width: 30rem; }
+.alumni-page .pass_component { grid-area: pass; }
+.alumni-page .alumni-hero_actions { grid-area: actions; }
+.alumni-page .alumni-hero_button { width: 100%; }
+
+@media (min-width: 48rem) {
+  .alumni-page .alumni-hero_layout { gap: 2.5rem; }
+  .alumni-page .alumni-hero_button { width: auto; min-width: 20rem; }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page .alumni-hero_layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-areas: "header pass" "actions pass";
+    grid-template-rows: auto auto;
+    column-gap: clamp(3rem, 6vw, 7rem);
+    row-gap: 2.5rem;
+    align-items: end;
+  }
+  .alumni-page .alumni-hero_actions { align-self: start; }
+  .alumni-page .alumni-hero_lead { max-width: 34rem; }
+}
+
+
+/* ---------- 2. Пропуск и печать ----------
+   Плоская тёмная карточка под небольшим наклоном. Поля — подпись и значение
+   в две колонки. Печать в правом верхнем углу заходит на край карточки.
+   При открытии страницы пропуск «ложится» на место и печать опускается
+   (раздел 9); без анимации он сразу стоит как на макете. */
+.alumni-page .pass_component {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-inline: 0.25rem;
+  padding: 1.5rem 1.25rem 1.75rem;
+  border-radius: 1.25rem;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  transform: rotate(var(--alumni-pass-tilt));
+  box-shadow: 0 1.5rem 3rem -1.5rem rgb(43 35 52 / 45%);
+}
+.alumni-page .pass_title { text-wrap: balance; }
+.alumni-page .pass_fields { display: grid; gap: 1rem; margin: 0; }
+.alumni-page .pass_field {
+  display: grid;
+  grid-template-columns: minmax(5rem, 0.38fr) minmax(0, 1fr);
+  column-gap: 1rem;
+  align-items: baseline;
+}
+.alumni-page .pass_label { color: var(--alumni-label-dark); }
+.alumni-page .pass_value { margin: 0; color: var(--color-text-on-dark); text-wrap: pretty; }
+/* На телефоне печать меньше, чтобы заголовку пропуска хватило места */
+.alumni-page .pass_stamp {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  width: 4rem;
+  height: auto;
+}
+.alumni-page .pass_title { max-width: calc(100% - 3.5rem); }
+@media (min-width: 48rem) {
+  .alumni-page .pass_stamp { width: clamp(5.5rem, 8vw, 7.5rem); }
+  .alumni-page .pass_title { max-width: calc(100% - clamp(5.5rem, 8vw, 7.5rem) - 1rem); }
+}
+
+/* На планшете пропуск не растягивается во всю ширину: он должен остаться
+   карточкой, а не полосой. С 1025 px ширину задаёт колонка. */
+@media (min-width: 48rem) {
+  .alumni-page .pass_component {
+    width: 100%;
+    max-width: 40rem;
+    justify-self: start;
+    gap: 2rem;
+    padding: 2.25rem 2.5rem 2.5rem;
+    border-radius: 1.5rem;
+  }
+  .alumni-page .pass_fields { gap: 1.25rem; }
+  .alumni-page .pass_field { grid-template-columns: 9rem minmax(0, 1fr); column-gap: 1.5rem; }
+  .alumni-page .pass_stamp { top: 1.75rem; right: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page .pass_component { max-width: none; margin-inline: 0; padding: 3rem 3rem 3.25rem; }
+}
+
+/* Печать: кольцо, надпись по кругу и внутренний круг — контуром, как оттиск
+   штампа, галочка белая. Используется и на пропуске, и в блоке «Получите пропуск». */
+.alumni-page .stamp_component { display: block; overflow: visible; }
+.alumni-page .stamp_ring { fill: none; stroke: var(--color-accent-primary); stroke-width: 2.5; }
+.alumni-page .stamp_text {
+  fill: var(--color-accent-soft);
+  font-family: var(--font-family-body);
+  font-size: 11px;
+  font-weight: 500;
+}
+.alumni-page .stamp_core { fill: none; stroke: var(--color-accent-primary); stroke-width: 2.5; }
+.alumni-page .stamp_check { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+
+
+/* ---------- 3. Что открывает пропуск ----------
+   Белые карточки без обводок. Сверху у каждой серая «сцена» с маленьким
+   рисунком формата — тот же приём, что в блоке «Как устроено обучение»
+   на главной. Подпись внизу карточки прижата к низу, чтобы в ряду они
+   стояли на одной линии. Цвета сцен — серые и тёмный #2b2334, фиолетовый
+   только одной точкой в сцене. */
+.alumni-page .alumni-formats_grid {
+  display: grid;
+  gap: var(--card-grid-gap);
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 48rem) {
+  .alumni-page .alumni-formats_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page .alumni-formats_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.alumni-page .format-card_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+.alumni-page .format-card_body { display: flex; flex-direction: column; gap: 0.5rem; }
+@media (min-width: 48rem) {
+  .alumni-page .format-card_component { gap: 1.25rem; padding: 1.25rem; }
+  .alumni-page .format-card_body { gap: 0.75rem; }
+}
+.alumni-page .format-card_note {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--alumni-line);
+}
+
+/* Сцена: серая подложка, внутри рисунок. Высота одна у всех, чтобы заголовки стояли в линию. */
+.alumni-page .format-ui_component {
+  --scene-line: #cfcbd6;
+  --scene-bar: #e8e7ee;
+  position: relative;
+  height: 11rem;
+  overflow: hidden;
+  border-radius: 0.875rem;
+  background: var(--color-page-background);
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+/* Супервизии: карточка случая и реплика */
+.alumni-page .format-case_card {
+  position: absolute;
+  inset: 0.75rem 3rem 0.75rem 0.75rem;
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.625rem;
+  background: var(--color-surface-primary);
+}
+.alumni-page .format-case_card b { font-weight: 500; }
+.alumni-page .format-case_card i { display: block; height: 0.5rem; border-radius: 999px; background: var(--scene-bar); }
+.alumni-page .format-case_note {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  max-width: 72%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem 0.75rem 0.25rem 0.75rem;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+
+/* Практикум: критерии с галочками */
+.alumni-page .format-criteria_list {
+  position: absolute;
+  inset: 0.75rem;
+  display: grid;
+  align-content: center;
+  gap: 0.375rem;
+}
+.alumni-page .format-criteria_tag {
+  justify-self: start;
+  margin-bottom: 0.125rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  font-size: 0.75rem;
+}
+.alumni-page .format-criteria_item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.625rem;
+  border-radius: 0.625rem;
+  background: var(--color-surface-primary);
+}
+.alumni-page .format-criteria_item svg { flex: none; width: 1.125rem; height: 1.125rem; }
+.alumni-page .format-criteria_item rect { fill: none; stroke: var(--scene-line); stroke-width: 1.5; }
+.alumni-page .format-criteria_item path {
+  fill: none;
+  stroke: var(--color-text-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Самообучение: стопка слайдов */
+.alumni-page .format-slides_stack { position: absolute; inset: 1rem 2.5rem 1.75rem; }
+.alumni-page .format-slide_item {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background: var(--color-surface-primary);
+  box-shadow: 0 0.25rem 0.75rem -0.375rem rgb(43 35 52 / 20%);
+}
+.alumni-page .format-slide_item.is-back { transform: translate(1rem, -0.5rem) rotate(4deg); opacity: 0.6; }
+.alumni-page .format-slide_item.is-mid { transform: translate(0.5rem, -0.25rem) rotate(2deg); opacity: 0.85; }
+.alumni-page .format-slide_item.is-front {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4rem;
+  grid-template-rows: auto auto auto 1fr;
+  column-gap: 0.75rem;
+  row-gap: 0.4375rem;
+  padding: 0.75rem;
+}
+.alumni-page .format-slide_item.is-front b { grid-column: 1 / -1; font-weight: 500; }
+.alumni-page .format-slide_item.is-front > i { grid-column: 1; display: block; height: 0.4375rem; border-radius: 999px; background: var(--scene-bar); }
+.alumni-page .format-slide_bars {
+  grid-column: 2;
+  grid-row: 2 / 5;
+  display: flex;
+  align-items: end;
+  gap: 0.25rem;
+}
+.alumni-page .format-slide_bars i { flex: 1; border-radius: 0.1875rem 0.1875rem 0 0; background: var(--scene-line); }
+.alumni-page .format-slide_bars i:nth-child(1) { height: 40%; }
+.alumni-page .format-slide_bars i:nth-child(2) { height: 65%; }
+.alumni-page .format-slide_bars i:nth-child(3) { height: 50%; }
+.alumni-page .format-slide_bars i:nth-child(4) { height: 85%; background: var(--color-surface-dark); }
+.alumni-page .format-slides_pager {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  color: var(--alumni-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Исследования: forest plot. Тонкие линии — разброс, квадраты — исследования, ромб — итог */
+.alumni-page .format-forest_svg { position: absolute; inset: 0.5rem; width: calc(100% - 1rem); height: calc(100% - 1rem); }
+.alumni-page .format-forest_zero { stroke: var(--scene-line); stroke-width: 1.5; stroke-dasharray: 3 4; }
+.alumni-page .format-forest_row line { stroke: var(--color-text-primary); stroke-width: 1.5; stroke-linecap: round; }
+.alumni-page .format-forest_row rect { fill: var(--color-text-primary); }
+.alumni-page .format-forest_total { fill: var(--color-accent-primary); }
+
+/* Продвижение: круг равных и темы вокруг. Слово переходит по кругу: тёмный кружок — тот, кто говорит */
+.alumni-page .format-circle_ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6.5rem;
+  height: 6.5rem;
+  border: 1.5px dashed var(--scene-line);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.alumni-page .format-circle_person {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: -0.875rem 0 0 -0.875rem;
+  border: 2px solid var(--color-page-background);
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  box-shadow: inset 0 -0.4rem 0 0.05rem var(--scene-bar);
+  transform: rotate(var(--a)) translateY(-3.25rem) rotate(calc(var(--a) * -1));
+}
+.alumni-page .format-circle_person:first-child { background: var(--color-surface-dark); box-shadow: none; }
+.alumni-page .format-circle_chip {
+  position: absolute;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-surface-primary);
+  font-size: 0.75rem;
+}
+.alumni-page .format-circle_chip.is-a { left: 0.75rem; top: 0.875rem; }
+.alumni-page .format-circle_chip.is-b { right: 0.75rem; top: 2.5rem; }
+.alumni-page .format-circle_chip.is-c { left: 1.5rem; bottom: 0.875rem; }
+
+/* Навыки ACT: гексафлекс, шесть процессов гибкости */
+.alumni-page .format-hex_svg { position: absolute; inset: 0.5rem; width: calc(100% - 1rem); height: calc(100% - 1rem); overflow: visible; }
+.alumni-page .format-hex_edge { fill: none; stroke: var(--scene-line); stroke-width: 1.5; }
+.alumni-page .format-hex_node circle { fill: var(--color-surface-primary); stroke: var(--scene-line); stroke-width: 1.5; }
+.alumni-page .format-hex_node text { fill: var(--color-text-primary); font-family: var(--font-family-body); font-size: 10.5px; }
+.alumni-page .format-hex_node:first-of-type circle { fill: var(--color-surface-dark); stroke: none; }
+
+/* Движение сцен: только пока блок на экране (класс is-run ставит page.js) */
+@media (prefers-reduced-motion: no-preference) {
+  .alumni-page .is-run .format-case_note { animation: format-note 6s var(--alumni-ease) infinite; }
+  .alumni-page .is-run .format-criteria_item path { stroke-dasharray: 14; animation: format-check 6s ease infinite; }
+  .alumni-page .is-run .format-criteria_item:nth-child(3) path { animation-delay: 0.5s; }
+  .alumni-page .is-run .format-criteria_item:nth-child(4) path { animation-delay: 1s; }
+  .alumni-page .is-run .format-slide_bars i { transform-origin: bottom; animation: format-grow 6s var(--alumni-ease) infinite; }
+  .alumni-page .is-run .format-forest_row { animation: format-fade 6s ease infinite; }
+  .alumni-page .is-run .format-forest_row:nth-of-type(2) { animation-delay: 0.3s; }
+  .alumni-page .is-run .format-forest_row:nth-of-type(3) { animation-delay: 0.6s; }
+  .alumni-page .is-run .format-forest_row:nth-of-type(4) { animation-delay: 0.9s; }
+  .alumni-page .is-run .format-circle_person { animation: format-speak 5s ease infinite; }
+  .alumni-page .is-run .format-circle_person:nth-child(2) { animation-delay: 1s; }
+  .alumni-page .is-run .format-circle_person:nth-child(3) { animation-delay: 2s; }
+  .alumni-page .is-run .format-circle_person:nth-child(4) { animation-delay: 3s; }
+  .alumni-page .is-run .format-circle_person:nth-child(5) { animation-delay: 4s; }
+  .alumni-page .is-run .format-hex_node circle { animation: format-hex 6s ease infinite; animation-delay: calc(var(--i) * 1s); }
+}
+@keyframes format-note { 0%, 8% { opacity: 0; transform: translateY(0.5rem); } 18%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes format-check { 0%, 8% { stroke-dashoffset: 14; } 20%, 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 14; } }
+@keyframes format-grow { 0%, 6% { transform: scaleY(0.2); } 22%, 100% { transform: none; } }
+@keyframes format-fade { 0%, 6% { opacity: 0; } 18%, 92% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes format-speak { 0%, 20% { background: var(--color-surface-dark); box-shadow: none; } 21%, 100% { background: var(--color-surface-primary); box-shadow: inset 0 -0.4rem 0 0.05rem var(--scene-bar); } }
+@keyframes format-hex { 0%, 16.6% { fill: var(--color-surface-dark); stroke: var(--color-surface-dark); } 17%, 100% { fill: var(--color-surface-primary); stroke: var(--scene-line); } }
+
+
+/* ---------- 4. Тёмная панель «Можно вести свою встречу» ----------
+   Слева заголовок, справа три пункта через тонкие линии. */
+.alumni-page .alumni-lead_panel {
+  display: grid;
+  gap: 2rem;
+  padding: var(--alumni-panel-padding);
+  padding-block: calc(var(--alumni-panel-padding) + 0.5rem);
+  border-radius: 1rem;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+  --body-text-color: var(--color-text-on-dark-muted);
+}
+.alumni-page .alumni-lead_list { display: grid; margin: 0; padding: 0; }
+.alumni-page .alumni-lead_item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--alumni-line-dark);
+}
+.alumni-page .alumni-lead_item:first-child { padding-top: 0; border-top: 0; }
+.alumni-page .alumni-lead_item:last-child { padding-bottom: 0; }
+@media (min-width: 64.0625rem) {
+  .alumni-page .alumni-lead_panel {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    column-gap: clamp(3rem, 6vw, 7rem);
+    border-radius: 1.5rem;
+  }
+  .alumni-page .alumni-lead_item { padding-block: 1.75rem; }
+}
+
+
+/* ---------- 5. Ещё в пропуске ----------
+   Компьютер: большая карточка с сертификатом слева, три карточки столбиком справа. */
+.alumni-page .alumni-extras_grid { display: grid; gap: var(--card-grid-gap); }
+.alumni-page .alumni-extras_list { display: grid; gap: var(--card-grid-gap); margin: 0; padding: 0; }
+.alumni-page .certificate-card_component,
+.alumni-page .extra-card_component {
+  min-width: 0;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+.alumni-page .certificate-card_component { display: flex; flex-direction: column; gap: 1.5rem; }
+.alumni-page .certificate-card_image {
+  display: block;
+  width: min(100%, 34rem);
+  height: auto;
+  margin-inline: auto;
+  aspect-ratio: 1613 / 1180;
+}
+@media (min-width: 48rem) {
+  .alumni-page .certificate-card_component,
+  .alumni-page .extra-card_component { padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page .alumni-extras_grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .alumni-page .certificate-card_component { padding: 2rem; justify-content: space-between; }
+  .alumni-page .alumni-extras_list { grid-template-rows: repeat(3, 1fr); }
+  .alumni-page .extra-card_component { display: flex; flex-direction: column; justify-content: center; padding: 2rem; }
+}
+
+
+/* ---------- 6. Правила на обороте ----------
+   Белая оборотная сторона пропуска с тонкой рамкой, наклон в другую сторону. */
+.alumni-page .alumni-rules_layout { display: grid; gap: 2rem; align-items: center; }
+@media (min-width: 64.0625rem) {
+  .alumni-page .alumni-rules_layout {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    column-gap: clamp(3rem, 6vw, 7rem);
+  }
+}
+.alumni-page .pass-back_component {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-inline: 0.25rem;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--alumni-line);
+  border-radius: 1.25rem;
+  background: var(--color-surface-primary);
+  transform: rotate(calc(var(--alumni-pass-tilt) * -0.6));
+  box-shadow: 0 1.25rem 2.5rem -1.75rem rgb(43 35 52 / 30%);
+}
+.alumni-page .pass-back_list {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rule;
+}
+/* Номера пунктов — как у статей в документе: пропуск и правила на нём */
+.alumni-page .pass-back_item {
+  position: relative;
+  padding-left: 2.25rem;
+  counter-increment: rule;
+}
+.alumni-page .pass-back_item::before {
+  content: counter(rule);
+  position: absolute;
+  top: 0.125rem;
+  left: 0;
+  color: var(--alumni-muted);
+  font-size: 1.125rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.alumni-page .pass-back_note { padding-top: 1rem; border-top: 1px solid var(--alumni-line); color: var(--alumni-muted); }
+@media (min-width: 48rem) {
+  .alumni-page .pass-back_component { gap: 1.75rem; padding: 2.25rem 2.5rem; border-radius: 1.5rem; }
+  .alumni-page .pass-back_list { gap: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page .pass-back_component { margin-inline: 0; padding: 2.75rem 3rem; }
+}
+
+
+/* ---------- 7. Получите пропуск ----------
+   Тёмная панель: слева заголовок и белая кнопка, справа крупная печать. */
+.alumni-page .alumni-cta_panel {
+  display: grid;
+  gap: 2rem;
+  padding: var(--alumni-panel-padding);
+  padding-block: calc(var(--alumni-panel-padding) + 0.5rem);
+  border-radius: 1rem;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+}
+.alumni-page .alumni-cta_content { display: flex; flex-direction: column; gap: var(--space-cta-action); align-items: flex-start; }
+.alumni-page .alumni-cta_button { width: 100%; }
+.alumni-page .alumni-cta_seal { display: flex; align-items: center; gap: 1.25rem; }
+.alumni-page .alumni-cta_stamp { width: 5.5rem; height: auto; flex: none; }
+@media (min-width: 48rem) {
+  .alumni-page .alumni-cta_button { width: auto; min-width: 20rem; }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page .alumni-cta_panel {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(3rem, 6vw, 7rem);
+    border-radius: 1.5rem;
+  }
+  .alumni-page .alumni-cta_seal { justify-content: center; gap: 2rem; }
+  .alumni-page .alumni-cta_stamp { width: 9rem; }
+}
+
+
+/* ---------- 8. Вопросы и ответы ----------
+   Нативные details: работают без скрипта. Плюс превращается в минус у открытого. */
+/* Заголовок над списком, список во всю ширину контейнера — как на согласованном макете */
+.alumni-page .alumni-faq_layout { display: grid; gap: var(--space-section-content); }
+.alumni-page .faq_list { display: grid; gap: 0.5rem; }
+.alumni-page .faq_item { border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.alumni-page .faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem var(--card-padding);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  list-style: none;
+}
+.alumni-page .faq_question::-webkit-details-marker { display: none; }
+.alumni-page .faq_heading { text-wrap: pretty; }
+.alumni-page .faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color var(--transition-site);
+}
+.alumni-page .faq_icon::before,
+.alumni-page .faq_icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.75rem;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms var(--alumni-ease);
+}
+.alumni-page .faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.alumni-page .faq_item[open] .faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .alumni-page .faq_question:hover .faq_icon { background: var(--color-text-on-dark-muted); }
+}
+.alumni-page .faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.alumni-page .faq_answer p { max-width: 62ch; }
+.alumni-page .faq_link {
+  color: var(--color-accent-text) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+@media (min-width: 48rem) {
+  .alumni-page .faq_question { padding: 1.25rem 1.5rem; }
+  .alumni-page .faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+
+
+/* ---------- 9. Движение ----------
+   Один момент при открытии: пропуск ложится под наклон, печать опускается на него.
+   Всё видно с первого кадра; при «уменьшить движение» анимации нет. */
+@media (prefers-reduced-motion: no-preference) {
+  .alumni-page .pass_component { animation: alumni-pass-settle 900ms var(--alumni-ease) both; }
+  .alumni-page .pass_stamp { animation: alumni-stamp-press 520ms 520ms var(--alumni-ease) both; }
+}
+@keyframes alumni-pass-settle {
+  from { transform: translateY(0.75rem) rotate(0deg); }
+  to { transform: translateY(0) rotate(var(--alumni-pass-tilt)); }
+}
+@keyframes alumni-stamp-press {
+  from { transform: scale(1.18) rotate(-14deg); }
+  to { transform: scale(1) rotate(0deg); }
+}
