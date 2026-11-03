@@ -52,13 +52,15 @@
 
 
 /* ---------- 1. Первый экран ----------
-   Телефон и планшет: заголовок → пропуск → кнопка.
+   Телефон: заголовок → кнопка → билет. Кнопка выше билета, чтобы она была видна
+   без прокрутки и на маленьких экранах (340 px, iPhone SE): билет с корешком высокий.
+   Планшет: заголовок → билет → кнопка.
    Компьютер: заголовок и кнопка слева, пропуск справа во всю высоту. */
 .alumni-page .alumni-hero_component { padding-top: clamp(2rem, 5vw, 5rem); }
 
 .alumni-page .alumni-hero_layout {
   display: grid;
-  grid-template-areas: "header" "pass" "actions";
+  grid-template-areas: "header" "actions" "pass";
   gap: 1.75rem;
   align-items: center;
 }
@@ -69,12 +71,12 @@
 .alumni-page .alumni-hero_button { width: 100%; }
 
 @media (min-width: 48rem) {
-  .alumni-page .alumni-hero_layout { gap: 2.5rem; }
+  .alumni-page .alumni-hero_layout { grid-template-areas: "header" "pass" "actions"; gap: 2.5rem; }
   .alumni-page .alumni-hero_button { width: auto; min-width: 20rem; }
 }
 @media (min-width: 64.0625rem) {
   .alumni-page .alumni-hero_layout {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
     grid-template-areas: "header pass" "actions pass";
     grid-template-rows: auto auto;
     column-gap: clamp(3rem, 6vw, 7rem);
@@ -86,25 +88,68 @@
 }
 
 
-/* ---------- 2. Пропуск и печать ----------
-   Плоская тёмная карточка под небольшим наклоном. Поля — подпись и значение
-   в две колонки. Печать в правом верхнем углу заходит на край карточки.
-   При открытии страницы пропуск «ложится» на место и печать опускается
+/* ---------- 2. Пропуск-билет ----------
+   Тёмный билет под небольшим наклоном: слева поля (подпись и значение),
+   справа отрывной корешок с печатью. На телефоне корешок внизу.
+   Линия отрыва — пунктир, на её концах полукруглые вырезы, как у билета.
+
+   Устройство:
+   · .pass_component — обёртка: наклон и тень (тень через filter, чтобы
+     повторять форму с вырезами);
+   · .pass_ticket — сам билет: фон, пунктир и вырезы (mask);
+   · .pass_main и .pass_stub — половинки. Ширина корешка (--stub-w) и его
+     высота на телефоне (--stub-h) задают и место пунктира с вырезами.
+   При открытии страницы билет «ложится» на место и печать опускается
    (раздел 9); без анимации он сразу стоит как на макете. */
-.alumni-page .pass_component {
-  position: relative;
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-inline: 0.25rem;
-  padding: 1.5rem 1.25rem 1.75rem;
-  border-radius: 1.25rem;
-  background: var(--color-surface-dark);
-  color: var(--color-text-on-dark);
-  transform: rotate(var(--alumni-pass-tilt));
-  box-shadow: 0 1.5rem 3rem -1.5rem rgb(43 35 52 / 45%);
+.alumni-page .ticket_shape,
+.alumni-page .pass_ticket {
+  --notch: 0.875rem;
+  --perforation: rgb(255 255 255 / 24%);
+  --stub-h: 6.5rem;
+  --stub-w: 11rem;
+  /* Телефон: пунктир поперёк билета над корешком, вырезы слева и справа */
+  background:
+    repeating-linear-gradient(to right, var(--perforation) 0 0.375rem, transparent 0.375rem 0.75rem)
+      0 calc(100% - var(--stub-h)) / 100% 2px no-repeat,
+    var(--color-surface-dark);
+  -webkit-mask:
+    radial-gradient(circle at 0 calc(100% - var(--stub-h)), #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% calc(100% - var(--stub-h)), #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle at 0 calc(100% - var(--stub-h)), #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% calc(100% - var(--stub-h)), #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) right / 51% 100% no-repeat;
 }
+@media (min-width: 48rem) {
+  /* Планшет и компьютер: пунктир вдоль, перед корешком справа, вырезы сверху и снизу */
+  .alumni-page .ticket_shape,
+  .alumni-page .pass_ticket {
+    --notch: 1rem;
+    background:
+      repeating-linear-gradient(to bottom, var(--perforation) 0 0.375rem, transparent 0.375rem 0.75rem)
+        calc(100% - var(--stub-w)) 0 / 2px 100% no-repeat,
+      var(--color-surface-dark);
+    -webkit-mask:
+      radial-gradient(circle at calc(100% - var(--stub-w) + 1px) 0, #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) top / 100% 51% no-repeat,
+      radial-gradient(circle at calc(100% - var(--stub-w) + 1px) 100%, #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) bottom / 100% 51% no-repeat;
+    mask:
+      radial-gradient(circle at calc(100% - var(--stub-w) + 1px) 0, #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) top / 100% 51% no-repeat,
+      radial-gradient(circle at calc(100% - var(--stub-w) + 1px) 100%, #0000 var(--notch), #000 calc(var(--notch) + 0.5px)) bottom / 100% 51% no-repeat;
+  }
+}
+
+.alumni-page .pass_component {
+  min-width: 0;
+  margin-inline: 0.25rem;
+  transform: rotate(var(--alumni-pass-tilt));
+  filter: drop-shadow(0 1.25rem 1.25rem rgb(43 35 52 / 22%));
+}
+.alumni-page .pass_ticket {
+  display: grid;
+  grid-template-rows: auto var(--stub-h);
+  border-radius: 1.25rem;
+  color: var(--color-text-on-dark);
+}
+.alumni-page .pass_main { display: flex; min-width: 0; flex-direction: column; gap: 1.5rem; padding: 1.5rem 1.25rem 1.75rem; }
 .alumni-page .pass_title { text-wrap: balance; }
 .alumni-page .pass_fields { display: grid; gap: 1rem; margin: 0; }
 .alumni-page .pass_field {
@@ -115,37 +160,34 @@
 }
 .alumni-page .pass_label { color: var(--alumni-label-dark); }
 .alumni-page .pass_value { margin: 0; color: var(--color-text-on-dark); text-wrap: pretty; }
-/* На телефоне печать меньше, чтобы заголовку пропуска хватило места */
-.alumni-page .pass_stamp {
-  position: absolute;
-  top: 0.875rem;
-  right: 0.875rem;
-  width: 4rem;
-  height: auto;
-}
-.alumni-page .pass_title { max-width: calc(100% - 3.5rem); }
-@media (min-width: 48rem) {
-  .alumni-page .pass_stamp { width: clamp(5.5rem, 8vw, 7.5rem); }
-  .alumni-page .pass_title { max-width: calc(100% - clamp(5.5rem, 8vw, 7.5rem) - 1rem); }
-}
 
-/* На планшете пропуск не растягивается во всю ширину: он должен остаться
-   карточкой, а не полосой. С 1025 px ширину задаёт колонка. */
+/* Корешок: на телефоне печать и подпись в строку */
+.alumni-page .pass_stub {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+}
+.alumni-page .pass_stamp { flex: none; width: 4.5rem; height: auto; }
+.alumni-page .pass_stub-note { color: var(--alumni-label-dark); text-wrap: balance; }
+
+/* Планшет: билет не растягивается во всю ширину, иначе он превращается в полосу.
+   С 1025 px ширину задаёт колонка. */
 @media (min-width: 48rem) {
-  .alumni-page .pass_component {
-    width: 100%;
-    max-width: 40rem;
-    justify-self: start;
-    gap: 2rem;
-    padding: 2.25rem 2.5rem 2.5rem;
-    border-radius: 1.5rem;
-  }
+  .alumni-page .pass_component { width: 100%; max-width: 42rem; justify-self: start; }
+  .alumni-page .pass_ticket { grid-template-columns: minmax(0, 1fr) var(--stub-w); grid-template-rows: none; border-radius: 1.5rem; }
+  .alumni-page .pass_main { gap: 2rem; padding: 2.25rem 2rem 2.5rem 2.5rem; }
   .alumni-page .pass_fields { gap: 1.25rem; }
-  .alumni-page .pass_field { grid-template-columns: 9rem minmax(0, 1fr); column-gap: 1.5rem; }
-  .alumni-page .pass_stamp { top: 1.75rem; right: 1.75rem; }
+  .alumni-page .pass_field { grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: 1.25rem; }
+  .alumni-page .pass_stub { flex-direction: column; justify-content: center; gap: 1rem; padding: 1.5rem 1.25rem; text-align: center; }
+  .alumni-page .pass_stamp { width: 6.5rem; }
 }
 @media (min-width: 64.0625rem) {
-  .alumni-page .pass_component { max-width: none; margin-inline: 0; padding: 3rem 3rem 3.25rem; }
+  .alumni-page .pass_component { max-width: none; margin-inline: 0; }
+  .alumni-page .pass_ticket { --stub-w: 11rem; }
+  .alumni-page .pass_main { padding: 3rem 2.5rem 3.25rem 3rem; }
+  .alumni-page .pass_stamp { width: 7.5rem; }
 }
 
 /* Печать: кольцо, надпись по кругу и внутренний круг — контуром, как оттиск
@@ -511,32 +553,43 @@
 
 
 /* ---------- 7. Получите пропуск ----------
-   Тёмная панель: слева заголовок и белая кнопка, справа крупная печать. */
+   Вторая половина того же билета: слева заголовок и белая кнопка, за линией
+   отрыва корешок с печатью. Форма, пунктир и вырезы — общий класс
+   .ticket_shape (раздел 2). Корешок на телефоне внизу, с 768 px справа.
+   Пунктир стоит по середине промежутка между текстом и корешком. */
 .alumni-page .alumni-cta_panel {
+  --stub-h: 8.5rem;
   display: grid;
-  gap: 2rem;
+  gap: 3rem;
   padding: var(--alumni-panel-padding);
   padding-block: calc(var(--alumni-panel-padding) + 0.5rem);
   border-radius: 1rem;
-  background: var(--color-surface-dark);
   color: var(--color-text-on-dark);
   --section-subtitle-color: var(--color-text-on-dark-muted);
 }
-.alumni-page .alumni-cta_content { display: flex; flex-direction: column; gap: var(--space-cta-action); align-items: flex-start; }
+.alumni-page .alumni-cta_content { display: flex; min-width: 0; flex-direction: column; gap: var(--space-cta-action); align-items: flex-start; }
 .alumni-page .alumni-cta_button { width: 100%; }
-.alumni-page .alumni-cta_seal { display: flex; align-items: center; gap: 1.25rem; }
-.alumni-page .alumni-cta_stamp { width: 5.5rem; height: auto; flex: none; }
-@media (min-width: 48rem) {
-  .alumni-page .alumni-cta_button { width: auto; min-width: 20rem; }
+.alumni-page .alumni-cta_seal {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  block-size: calc(var(--stub-h) - var(--alumni-panel-padding) - 2rem); /* высота корешка минус нижнее поле и половина промежутка */
 }
-@media (min-width: 64.0625rem) {
+.alumni-page .alumni-cta_stamp { width: 5rem; height: auto; flex: none; }
+@media (min-width: 48rem) {
   .alumni-page .alumni-cta_panel {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    --stub-w: 17rem;
+    grid-template-columns: minmax(0, 1fr) calc(var(--stub-w) - var(--alumni-panel-padding) - 2rem);
     align-items: center;
-    column-gap: clamp(3rem, 6vw, 7rem);
+    column-gap: 4rem;
     border-radius: 1.5rem;
   }
-  .alumni-page .alumni-cta_seal { justify-content: center; gap: 2rem; }
+  .alumni-page .alumni-cta_button { width: auto; min-width: 20rem; }
+  .alumni-page .alumni-cta_seal { flex-direction: column; justify-content: center; block-size: auto; gap: 1rem; text-align: center; }
+  .alumni-page .alumni-cta_stamp { width: 7rem; }
+}
+@media (min-width: 64.0625rem) {
+  .alumni-page .alumni-cta_panel { --stub-w: 24rem; }
   .alumni-page .alumni-cta_stamp { width: 9rem; }
 }
 

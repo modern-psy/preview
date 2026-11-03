@@ -832,7 +832,7 @@ else init();
     <main class="main-wrapper alumni-page" id="main-content" data-academy="1">
 
       <!-- ========== 1. Первый экран: заголовок и пропуск ==========
-           Телефон: заголовок → пропуск → кнопка (кнопка видна без прокрутки).
+           Телефон: заголовок → кнопка → билет (кнопка видна без прокрутки). Планшет: заголовок → билет → кнопка.
            Компьютер (от 1025 px): слева заголовок и кнопка, справа пропуск. -->
       <section class="alumni-hero_component section-spacing_component" aria-labelledby="alumni-heading">
         <div class="padding-global">
@@ -843,35 +843,44 @@ else init();
                 <p class="body-text_component is-summary alumni-hero_lead">Обсуждаем сложные случаи, углубляем знания и&nbsp;поддерживаем друг друга.</p>
               </div>
 
-              <!-- Пропуск: поля — настоящие правила сообщества. Менять текст можно, наклон и печать задаются в page.css (раздел 2). -->
+              <!-- Пропуск-билет: слева поля (настоящие правила сообщества), справа отрывной корешок с печатью.
+                   На телефоне корешок внизу. Текст менять можно; наклон, перфорацию и вырезы задаёт page.css (раздел 2).
+                   Внешняя обёртка даёт наклон и тень, внутренняя — форму билета с вырезами. -->
               <div class="pass_component" role="group" aria-label="Пропуск в сообщество выпускников">
-                <p class="content-heading_component is-prominent pass_title">Пропуск в&nbsp;сообщество выпускников АСП</p>
-                <dl class="pass_fields">
-                  <div class="pass_field">
-                    <dt class="body-text_component is-caption pass_label">Кому</dt>
-                    <dd class="body-text_component is-summary pass_value">выпускникам любой программы Академии</dd>
+                <div class="pass_ticket">
+                  <div class="pass_main">
+                    <p class="content-heading_component is-prominent pass_title">Пропуск в&nbsp;сообщество выпускников АСП</p>
+                    <dl class="pass_fields">
+                      <div class="pass_field">
+                        <dt class="body-text_component is-caption pass_label">Кому</dt>
+                        <dd class="body-text_component is-summary pass_value">выпускникам любой программы Академии</dd>
+                      </div>
+                      <div class="pass_field">
+                        <dt class="body-text_component is-caption pass_label">Взнос</dt>
+                        <dd class="body-text_component is-summary pass_value">бесплатно</dd>
+                      </div>
+                      <div class="pass_field">
+                        <dt class="body-text_component is-caption pass_label">Открывает</dt>
+                        <dd class="body-text_component is-summary pass_value">закрытый чат и&nbsp;до&nbsp;20&nbsp;встреч в&nbsp;месяц</dd>
+                      </div>
+                      <div class="pass_field">
+                        <dt class="body-text_component is-caption pass_label">Участников</dt>
+                        <dd class="body-text_component is-summary pass_value">больше&nbsp;1500</dd>
+                      </div>
+                    </dl>
                   </div>
-                  <div class="pass_field">
-                    <dt class="body-text_component is-caption pass_label">Взнос</dt>
-                    <dd class="body-text_component is-summary pass_value">бесплатно</dd>
+                  <!-- Корешок: печать — украшение, скринридер её не читает -->
+                  <div class="pass_stub">
+                    <svg class="stamp_component pass_stamp" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                      <defs><path id="stamp-ring-hero" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
+                      <circle class="stamp_ring" cx="60" cy="60" r="56"/>
+                      <text class="stamp_text"><textPath href="#stamp-ring-hero" startOffset="0" textLength="272" lengthAdjust="spacing">выпускник АСП · выпускник АСП ·</textPath></text>
+                      <circle class="stamp_core" cx="60" cy="60" r="31"/>
+                      <path class="stamp_check" d="M47 60.5l9 9 18-19"/>
+                    </svg>
+                    <p class="body-text_component is-caption pass_stub-note">Вход через куратора в&nbsp;Telegram</p>
                   </div>
-                  <div class="pass_field">
-                    <dt class="body-text_component is-caption pass_label">Открывает</dt>
-                    <dd class="body-text_component is-summary pass_value">закрытый чат и&nbsp;до&nbsp;20&nbsp;встреч в&nbsp;месяц</dd>
-                  </div>
-                  <div class="pass_field">
-                    <dt class="body-text_component is-caption pass_label">Участников</dt>
-                    <dd class="body-text_component is-summary pass_value">больше 1500</dd>
-                  </div>
-                </dl>
-                <!-- Печать: украшение, скринридер её не читает -->
-                <svg class="stamp_component pass_stamp" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-                  <defs><path id="stamp-ring-hero" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
-                  <circle class="stamp_ring" cx="60" cy="60" r="56"/>
-                  <text class="stamp_text"><textPath href="#stamp-ring-hero" startOffset="0" textLength="272" lengthAdjust="spacing">выпускник АСП · выпускник АСП ·</textPath></text>
-                  <circle class="stamp_core" cx="60" cy="60" r="31"/>
-                  <path class="stamp_check" d="M47 60.5l9 9 18-19"/>
-                </svg>
+                </div>
               </div>
 
               <div class="alumni-hero_actions">
@@ -1108,7 +1117,7 @@ else init();
       <section class="alumni-cta_component section-spacing_component" id="join" aria-labelledby="join-heading">
         <div class="padding-global">
           <div class="container-xlarge">
-            <div class="alumni-cta_panel">
+            <div class="alumni-cta_panel ticket_shape">
               <div class="alumni-cta_content">
                 <div class="section-header_component is-responsive">
                   <h2 class="section-title_component is-responsive" id="join-heading">Получите пропуск</h2>
@@ -1124,7 +1133,7 @@ else init();
                   <circle class="stamp_core" cx="60" cy="60" r="31"/>
                   <path class="stamp_check" d="M47 60.5l9 9 18-19"/>
                 </svg>
-                <p class="content-heading_component is-card alumni-cta_count">Нас уже больше 1500</p>
+                <p class="content-heading_component is-card alumni-cta_count">Нас уже больше&nbsp;1500</p>
               </div>
             </div>
           </div>
