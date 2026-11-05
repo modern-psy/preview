@@ -1,0 +1,825 @@
+/* ==========================================================================
+   Лендинг «Детская психология» · профессиональная переподготовка · modern-psy.ru/child-psy
+   Пересобирается с 05.11.2026 по блокам из библиотеки.
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета, каркас
+   main-wrapper → padding-global → container-xlarge (1520 px, поля от 16 px), отступы секций
+   section-spacing_component, H1 hero_heading, роли текста body-text_component и кнопка button_component.
+   Здесь только раскладка блоков и цвета, которых нет в v1.
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста, переопределять --hero-heading-size
+   и поля кнопки. Размер текста меняется только сменой класса роли в index.html (таблица в academy-base/README.md).
+
+   Все правила начинаются с .child-psy-page, чтобы не задеть соседние блоки Тильды.
+   Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px. Других не добавлять.
+   ========================================================================== */
+
+
+/* ---------- 0. Цвета ----------
+   Цвета из v1 (--color-*). Свои — только здесь, в правилах ниже hex-кодов нет: серый текст на светлом, линия,
+   текст и фон карточек на тёмном, серые схемы и строки-заглушки в иллюстрациях. */
+.child-psy-page {
+  --child-psy-muted: #625f6a;           /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1 */
+  --child-psy-line: #d9d8df;            /* линии между пунктами плашки и обводка кружков с иконками в фактах */
+  --child-psy-on-dark-muted: #b9b4c4;   /* текст карточек на тёмной плашке: на #2b2334 7,4:1, на карточке около 6:1 */
+  --child-psy-dark-card: rgb(255 255 255 / 8%); /* карточка на тёмной плашке, как на «Нарративной практике» */
+  --child-psy-scheme: #b7b4c0;          /* схемы блока 3, точки навыков, пунктиры групп в блоке 5 */
+  --child-psy-scheme-fill: #cfcdd6;     /* заливка схем, кружки участников, выделенная строка случая */
+  --child-psy-placeholder: #e8e7ee;     /* серые строки-заглушки на белом (карточки случаев, документ проекта) */
+  --child-psy-sheet: #ececf0;           /* серая колонка резюме в блоке 7 */
+  --child-psy-placeholder-on-sheet: #dcdbe2; /* строки-заглушки контактов на серой колонке резюме */
+}
+
+/* Серый текст v1 (#7b7b7c) даёт на белом 4,2:1, на #f5f5f5 — 3,9:1: для текста мельче 24 px мало
+   (academy-base/README.md, «Что ещё не готово»). На этой странице берём темнее, как на /alumni. */
+.child-psy-page { --body-text-color: var(--child-psy-muted); --section-subtitle-color: var(--child-psy-muted); }
+
+.child-psy-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Боковые поля страницы: до 767 px ровно 16 px, как на /neurodivergence и «Психиатрии для психологов»
+   (решение Дарьи 05.11.2026). В v1 поле растёт с шириной экрана (clamp(1rem, 4.7619vw, 5rem): 18 px на 375,
+   29 px на 600); от 768 px возвращаем формулу v1, там она совпадает с этими лендингами.
+   Меняем только токен --page-padding, которым пользуется padding-global; два класса — чтобы перебить v1. */
+.main-wrapper.child-psy-page { --page-padding: 1rem; }
+@media (min-width: 48rem) {
+  .main-wrapper.child-psy-page { --page-padding: clamp(1rem, 4.7619vw, 5rem); }
+}
+
+
+/* ---------- 1. Первый экран ----------
+   Эталон В3 «Описание в плашке», светлая версия: белая карточка, польза курса в серой плашке, старт строкой
+   и две кнопки, справа фото в рамке. Под карточкой факты с иконками на фоне страницы.
+   В карточке иконок нет (просьба Дарьи 05.11.2026): пункты плашки держатся на ролях текста v1 и тонких линиях.
+   Роли текста v1: H1 — hero_heading; подзаголовок — body-text_component is-summary (18 · 18 · 20 · 22 px, серый);
+   подводка в плашке — body-text_component is-caption (15 · 16 · 16 · 18 px, серый: мельче пунктов, чтобы не спорить
+   с подзаголовком над плашкой); пункты — content-heading_component is-compact (18 · 20 px, вес 500, тёмные);
+   старт — body-text_component is-callout (вес 500).
+   Телефон до 520 px: фото полосой сверху, заголовок, старт и кнопки, плашка после них (низ кнопки не ниже 560 px).
+   Планшет 521–1024 px: заголовок, плашка, старт и кнопки, фото последним, своей высоты.
+   Компьютер: две колонки. Обёртка .child-psy-hero_text до 1024 px «прозрачная» (display: contents),
+   чтобы её части встали в сетку карточки. */
+.child-psy-page .child-psy-hero_component { padding-top: 0.75rem; }
+.child-psy-page .child-psy-hero_card {
+  display: grid;
+  grid-template-areas: "photo" "header" "cta" "panel";
+  gap: 1.25rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-hero_text { display: contents; }
+.child-psy-page .child-psy-hero_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+
+/* заголовок и подзаголовок; промежуток как --hero-title-gap web-academy */
+.child-psy-page .child-psy-hero_header { grid-area: header; display: grid; gap: 0.5rem; padding: 0.25rem 0.25rem 0; }
+
+/* плашка с пользой курса: серая подводка, под ней три тёмных пункта, каждый отделён тонкой линией сверху */
+.child-psy-page .child-psy-hero_panel {
+  grid-area: panel;
+  display: grid;
+  gap: 0.875rem;
+  padding: 1.25rem 1.25rem 0.375rem;
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+.child-psy-page .child-psy-hero_points { display: grid; }
+.child-psy-page .child-psy-hero_point {
+  padding-block: 0.875rem;
+  border-top: 1px solid var(--child-psy-line);
+  color: var(--color-text-primary);
+  text-wrap: pretty;
+}
+
+/* старт строкой и кнопки.
+   Ширина кнопок — как в Hero web-academy (.hero_actions: align-items: stretch, max-width 38.3125rem;
+   .hero_buttons: кнопки в сетке, растянуты; button.md: «родитель задаёт ширину: растяжение в Hero»).
+   Высоту, кегль и поля задаёт button_component, здесь не трогаем.
+   Вторая кнопка — button_component is-light, но на белой карточке белая не видна, поэтому фон серый
+   из кита (#f5f5f5, --color-page-background): «на светлом второстепенные кнопки серые» (эталоны первого экрана, 12.10.2026).
+   Наведение остаётся из v1 (#e6e5eb). */
+.child-psy-page .child-psy-hero_cta { grid-area: cta; display: grid; gap: 0.875rem; padding: 0 0.25rem; }
+.child-psy-page .child-psy-hero_start { --body-text-color: var(--color-text-primary); }
+/* две кнопки рядом, когда каждой хватает 17rem (надписи в одну строку), иначе друг под другом:
+   на телефоне и на 1025–1350 px в столбик, на планшете и широком компьютере в ряд, без новой ступени ширины */
+.child-psy-page .child-psy-hero_buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 0.5rem 1rem; width: 100%; max-width: 38.3125rem; }
+/* селектор из трёх классов, чтобы перебить фон is-light из v1; наведение v1 сильнее и остаётся */
+.child-psy-page .button_component.child-psy-hero_secondary { background: var(--color-page-background); }
+
+/* фото: на телефоне полосой сверху. Кадр подобран так, чтобы в полосу целиком попали оба лица
+   (психолог справа, девочка слева); пока снимок грузится, на его месте серый фон страницы */
+.child-psy-page .child-psy-hero_photo {
+  grid-area: photo;
+  display: block;
+  width: 100%;
+  height: 8.5rem;
+  object-fit: cover;
+  object-position: 50% 21%;
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+
+/* факты под карточкой — единственное место первого экрана с иконками: на телефоне столбиком, от 521 px по два,
+   от 1025 px в ряд. Старт здесь не повторяется. */
+.child-psy-page .child-psy-hero_facts { display: grid; gap: 0.75rem; margin-top: 1rem; padding: 0 0.25rem; --body-text-color: var(--color-text-primary); }
+.child-psy-page .child-psy-hero_fact { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: center; }
+.child-psy-page .child-psy-hero_fact-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  box-shadow: inset 0 0 0 1px var(--child-psy-line);
+  color: var(--color-text-primary);
+}
+
+@media (min-width: 32.5625rem) {
+  .child-psy-page .child-psy-hero_card { grid-template-areas: "header" "panel" "cta" "photo"; gap: 1.5rem; padding: 1.5rem; border-radius: 1.75rem; }
+  .child-psy-page .child-psy-hero_header { padding: 0.5rem 0.25rem 0; }
+  .child-psy-page .child-psy-hero_panel { padding: 1.5rem 1.5rem 0.5rem; border-radius: 1.25rem; }
+  .child-psy-page .child-psy-hero_cta { gap: 1rem; }
+  .child-psy-page .child-psy-hero_photo { height: 22rem; border-radius: 1.25rem; object-position: 50% 30%; }
+  .child-psy-page .child-psy-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.75rem; }
+}
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-hero_component { padding-top: 1.25rem; }
+  .child-psy-page .child-psy-hero_card { padding: 2.25rem; gap: 1.75rem; }
+  .child-psy-page .child-psy-hero_header { gap: 0.75rem; }
+  .child-psy-page .child-psy-hero_photo { height: 25rem; }
+  .child-psy-page .child-psy-hero_facts { margin-top: 1.25rem; padding: 0 0.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-hero_component { padding-top: 1.5rem; }
+  .child-psy-page .child-psy-hero_card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    grid-template-areas: "text photo";
+    gap: clamp(2.5rem, 3.9vw, 3.5rem);
+    padding: clamp(2.25rem, 3.3vw, 3rem);
+  }
+  .child-psy-page .child-psy-hero_text { grid-area: text; display: flex; flex-direction: column; gap: 1.75rem; }
+  /* в левой колонке части идут друг за другом: имена клеток телефона и планшета здесь не нужны */
+  .child-psy-page .child-psy-hero_text > * { grid-area: auto; }
+  .child-psy-page .child-psy-hero_header { padding: 0; }
+  .child-psy-page .child-psy-hero_cta { padding: 0; }
+  /* высоту фото задаёт левая колонка (height: 0 + min-height: 100%), а не размер снимка; не ниже 26rem,
+     чтобы фото не превращалось в полосу */
+  .child-psy-page .child-psy-hero_photo { height: 0; min-height: max(100%, 26rem); object-position: 52% 45%; }
+  /* четыре факта в ряд. Ширина колонок пропорциональна длине текста, и у каждой есть минимум на две строки:
+     на широком экране все факты в одну строку, уже — переносятся вместе на вторую, ни один не встаёт в три.
+     Без этого на 1025–1280 px «Диплом о профессиональной переподготовке» складывался в три строки, пока соседи
+     стояли в одну. Новую ступень ширины не заводим: промежуток сужается вместе с экраном. */
+  .child-psy-page .child-psy-hero_facts {
+    grid-template-columns: minmax(13.75rem, 1fr) minmax(19.5rem, 1.6fr) minmax(10.75rem, 1fr) auto;
+    gap: 1.25rem clamp(1.5rem, 2.8vw, 2.5rem);
+    margin-top: 1.5rem;
+  }
+}
+
+
+/* ---------- 2. Детская психология: ключ к пониманию психики ----------
+   Вариант библиотеки «Тёмная плашка с тремя пунктами» (как «На чем строится нарративная практика»): тёмная плашка
+   #2B2334 внутри контейнера, поля плашки — токен v1 --section-inset-space (40 · 50 · 70 px), заголовок и подзаголовок
+   по центру (section-header_component), три карточки с полупрозрачным белым фоном.
+   Роли текста v1: заголовок — section-title_component (32 · 36 · 44 · 52 px); подзаголовок — body-text_component
+   is-summary; заголовок карточки — content-heading_component is-card (22 · 22 · 24 · 24 px); текст — body-text_component.
+   Карточки: на телефоне и планшете столбиком, от 1025 px три в ряд. Номеров и иконок нет. */
+.child-psy-page .child-psy-insight_plate {
+  padding: var(--section-inset-space) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+  --body-text-color: var(--color-text-on-dark-muted);
+}
+.child-psy-page .child-psy-insight_plate .section-header_component { max-width: 50rem; margin-inline: auto; }
+.child-psy-page .child-psy-insight_list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+/* карточки: поля 16 px на всех ширинах (правило проекта, напоминание Дарьи 05.11.2026). Заголовок прижат к верху,
+   абзац к низу карточки: в ряду одной высоты (от 1025 px) абзацы стоят на одной линии */
+.child-psy-page .child-psy-insight_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--child-psy-dark-card);
+  --body-text-color: var(--child-psy-on-dark-muted);
+}
+.child-psy-page .child-psy-insight_card .content-heading_component { color: var(--color-text-on-dark); text-wrap: balance; }
+
+@media (min-width: 32.5625rem) {
+  .child-psy-page .child-psy-insight_plate { padding-inline: 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-insight_plate { padding-inline: 2.5rem; }
+  .child-psy-page .child-psy-insight_card { gap: 1rem; }
+}
+/* три колонки от 1025 px. Поля плашки минимальные до 1280 px (32 px) и плавно растут до 70 px к 1440 px:
+   с полными полями колонки сжимались, и заголовки карточек вставали в четыре строки */
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-insight_plate { padding-inline: clamp(2rem, 23.75vw - 17rem, 4.375rem); }
+  .child-psy-page .child-psy-insight_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .child-psy-page .child-psy-insight_card { gap: 1.5rem; }
+}
+
+
+/* ---------- 3. Почему стоит освоить детскую психологию ----------
+   Вариант Б (выбран Дарьей 05.11.2026): главная причина на тёмной карточке, три белые строки со схемой сбоку.
+   Роли текста v1: цифра «≈ 20 %» — размер заголовка секции (section-title_component), подпись к ней — is-caption,
+   заголовки — content-heading_component is-card, текст — body-text_component.
+   Схемы: тёмный #2B2334 и серые из кита; единственное цветное пятно — 20 закрашенных точек (сиреневый из кита).
+   Поля карточек 16 px, у крупной тёмной карточки на компьютере 24 px (правило проекта: от 16, крупные плашки до 20–24).
+   Телефон и планшет: всё столбиком, у строк схема над текстом (планшет — справа от текста).
+   Компьютер: тёмная карточка слева на высоту трёх строк. */
+.child-psy-page .child-psy-reasons_grid { display: grid; gap: var(--card-grid-gap); }
+
+/* главная карточка: сверху сетка точек, снизу цифра с подписью, заголовок и текст */
+.child-psy-page .child-psy-reasons_main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --body-text-color: var(--child-psy-on-dark-muted);
+}
+.child-psy-page .child-psy-reasons_main .content-heading_component { color: var(--color-text-on-dark); text-wrap: balance; }
+.child-psy-page .child-psy-reasons_main-text { display: grid; gap: 0.75rem; }
+/* сетка 10 × 10 точек: все серые, первые два ряда (20 точек) сиреневые */
+.child-psy-page .child-psy-reasons_dots {
+  position: relative;
+  width: min(100%, 14rem);
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgb(255 255 255 / 22%) 0 36%, transparent 40%) 0 0 / 10% 10%;
+}
+.child-psy-page .child-psy-reasons_dots-hit {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 20%;
+  background: radial-gradient(circle, var(--color-accent-soft) 0 36%, transparent 40%) 0 0 / 10% 50%;
+}
+/* цифра и подпись выровнены по нижнему краю (просьба Дарьи): подпись стоит блоком рядом с цифрой,
+   её последняя строка на одном уровне с низом цифры */
+.child-psy-page .child-psy-reasons_figure { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem 1.25rem; margin-bottom: 0.75rem; }
+.child-psy-page .child-psy-reasons_number { flex: none; width: auto; white-space: nowrap; color: var(--color-text-on-dark); }
+/* подпись в две ровные строки — по высоте примерно как цифра, чтобы не торчала над ней. Если рядом с цифрой
+   для двух строк места нет (телефон, узкий компьютер), подпись переходит под цифру, а не рассыпается в четыре строки */
+.child-psy-page .child-psy-reasons_figure-caption { flex: 1 1 17rem; max-width: 19rem; padding-bottom: 0.125rem; text-wrap: balance; --body-text-color: var(--color-text-on-dark-muted); }
+
+/* строки: текст и схема на сером поле.
+   В одной строке, когда тексту хватает 17rem, а схеме 14rem; лишнее место достаётся в основном тексту.
+   Иначе встают друг под другом (телефон, узкий компьютер 1025–1200 px, где правая колонка уже).
+   Заголовок прижат к верху, абзац к низу карточки (просьба Дарьи), а не по центру. */
+.child-psy-page .child-psy-reasons_row { display: flex; flex-wrap: wrap; align-items: stretch; gap: 1rem 1.5rem; padding: var(--card-padding); border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.child-psy-page .child-psy-reasons_row .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.child-psy-page .child-psy-reasons_text { flex: 1.4 1 17rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem; padding: 0.25rem 0; }
+.child-psy-page .child-psy-reasons_stage { flex: 1 1 14rem; display: grid; place-items: center; min-height: 10rem; padding: 1.25rem; border-radius: 0.75rem; background: var(--color-page-background); }
+
+/* схема «психолог, ребёнок, родители»: три узла и линии между ними */
+.child-psy-page .child-psy-reasons_family { position: relative; width: min(100%, 15rem); aspect-ratio: 16 / 9; }
+.child-psy-page .child-psy-reasons_family svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.child-psy-page .child-psy-reasons_family line { stroke: var(--child-psy-scheme); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.child-psy-page .child-psy-reasons_family line.is-dashed { stroke-dasharray: 4 4; }
+.child-psy-page .child-psy-reasons_node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-surface-primary);
+  box-shadow: inset 0 0 0 1px var(--child-psy-line);
+  white-space: nowrap;
+  --body-text-color: var(--color-text-primary);
+}
+.child-psy-page .child-psy-reasons_node.is-top { left: 50%; top: 18%; background: var(--color-surface-dark); box-shadow: none; --body-text-color: var(--color-text-on-dark); }
+.child-psy-page .child-psy-reasons_node.is-left { left: 20%; top: 82%; }
+.child-psy-page .child-psy-reasons_node.is-right { left: 80%; top: 82%; }
+
+/* схема «ребёнок и взрослый»: силуэты одним плавным контуром, ребёнок тёмный, взрослый серый,
+   пунктирная стрелка от ребёнка к взрослому; наконечник — маркер, он встаёт по направлению конца пунктира */
+.child-psy-page .child-psy-reasons_bond { display: block; width: min(100%, 14rem); height: auto; overflow: visible; }
+.child-psy-page .child-psy-reasons_bond .is-child { fill: var(--color-surface-dark); }
+.child-psy-page .child-psy-reasons_bond .is-adult { fill: var(--child-psy-scheme-fill); }
+.child-psy-page .child-psy-reasons_bond .is-link { fill: none; stroke: var(--child-psy-scheme); stroke-width: 1.75; stroke-dasharray: 5 5; stroke-linecap: round; }
+.child-psy-page .child-psy-reasons_bond .is-arrowhead { fill: none; stroke: var(--child-psy-scheme); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.child-psy-page .child-psy-reasons_bond .is-ground { stroke: var(--child-psy-line); stroke-width: 1.5; }
+
+/* схема «дополнительная специализация»: мини-карточка профиля психолога — кружок, две серые строки вместо имени
+   и роли, теги направлений; новый тег «+ Дети и подростки» тёмный */
+.child-psy-page .child-psy-reasons_profile {
+  display: grid;
+  gap: 0.875rem;
+  width: min(100%, 15rem);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-surface-primary);
+  box-shadow: inset 0 0 0 1px var(--child-psy-line);
+}
+.child-psy-page .child-psy-reasons_profile-head { display: flex; align-items: center; gap: 0.625rem; }
+.child-psy-page .child-psy-reasons_avatar { flex: none; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--child-psy-scheme-fill); }
+.child-psy-page .child-psy-reasons_lines { display: grid; flex: 1; gap: 0.375rem; }
+.child-psy-page .child-psy-reasons_lines span { display: block; height: 0.5rem; border-radius: 999px; background: var(--color-text-on-dark-muted); }
+.child-psy-page .child-psy-reasons_lines span:first-child { width: 75%; }
+.child-psy-page .child-psy-reasons_lines span:last-child { width: 45%; }
+.child-psy-page .child-psy-reasons_tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.child-psy-page .child-psy-reasons_tag { padding: 0.25rem 0.625rem; border-radius: 999px; background: var(--color-page-background); white-space: nowrap; --body-text-color: var(--color-text-primary); }
+.child-psy-page .child-psy-reasons_tag.is-new { background: var(--color-surface-dark); --body-text-color: var(--color-text-on-dark); }
+
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-reasons_dots { width: min(100%, 15rem); }
+  .child-psy-page .child-psy-reasons_figure { gap: 1.5rem; }
+  .child-psy-page .child-psy-reasons_row .child-psy-reasons_stage { order: 2; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-reasons_grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); grid-template-rows: repeat(3, auto); }
+  .child-psy-page .child-psy-reasons_main { grid-row: 1 / 4; padding: 1.5rem; }
+  .child-psy-page .child-psy-reasons_dots { width: min(100%, 16rem); }
+}
+
+
+/* ---------- 4. Даже без опыта работы с детьми ----------
+   Акцентный блок (просьба Дарьи 05.11.2026): белая плашка внутри контейнера на сером фоне страницы.
+   Поля плашки — как у карточек проекта: 16 px (токен v1 --card-padding) со всех сторон, от 1025 px 24 px.
+   Заголовок слева, три колонки: иконка (тёмно-фиолетовая, --color-accent-text, на сером фоне страницы),
+   пункт (content-heading_component is-card) и описание (body-text_component).
+   Телефон: столбиком, иконка над текстом. Планшет: строки, иконка слева. Компьютер (от 1025 px): три колонки. */
+.child-psy-page .child-psy-fit_plate {
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-fit_list { display: grid; gap: 2rem; }
+.child-psy-page .child-psy-fit_item { display: grid; gap: 1rem; align-content: start; }
+.child-psy-page .child-psy-fit_icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.875rem;
+  background: var(--color-page-background);
+  color: var(--color-accent-text);
+}
+.child-psy-page .child-psy-fit_text { display: grid; gap: 0.75rem; }
+.child-psy-page .child-psy-fit_text .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.child-psy-page .child-psy-fit_text .body-text_component { max-width: 36rem; }
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-fit_list { gap: 2.25rem; }
+  .child-psy-page .child-psy-fit_item { grid-template-columns: 3rem minmax(0, 1fr); column-gap: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-fit_plate { padding: 1.5rem; }
+  .child-psy-page .child-psy-fit_list { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(2rem, 3.5vw, 3.5rem); }
+  .child-psy-page .child-psy-fit_item { grid-template-columns: minmax(0, 1fr); row-gap: 1.5rem; }
+}
+
+
+/* ---------- 5. Много практики и отработки навыков ----------
+   По образцу «Как устроено обучение» на новой главной (apps/preview/glavnaya/page.css, раздел 7): белые плитки,
+   в каждой серая «сцена» (фон страницы) с маленьким интерфейсом. Колонка шириной с «Вопросы и ответы» (64rem).
+   Поля плиток 16 px. Цвета: тёмный #2B2334 — психолог; одно сиреневое пятно — «преподаватель» в большой группе.
+   Надписи в сценах — роль v1 is-fine-print, кегли здесь не задаются.
+   Телефон: плитки столбиком. Планшет (от 768 px): группы во всю ширину, кейсы и супервизии рядом, финальная
+   работа во всю ширину. Компьютер (от 1025 px): группы слева на высоту двух плиток. */
+.child-psy-page .child-psy-practice_column { width: 100%; max-width: 64rem; margin-inline: auto; }
+.child-psy-page .child-psy-practice_grid { display: grid; gap: var(--card-grid-gap); }
+.child-psy-page .child-psy-practice_grid > * { min-width: 0; }
+/* плитка: сцена сверху, заголовок и текст прижаты к низу (в ряду одной высоты тексты стоят на одной линии) */
+.child-psy-page .child-psy-practice_tile {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-practice_tile .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.child-psy-page .child-psy-practice_text { display: grid; gap: 0.5rem; margin-top: auto; }
+.child-psy-page .child-psy-practice_scene {
+  position: relative;
+  min-height: 11rem;
+  border-radius: 0.875rem;
+  background: var(--color-page-background);
+  overflow: hidden;
+}
+
+/* группы: заголовок и переключатель в одной строке, если помещаются */
+.child-psy-page .child-psy-practice_head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
+/* на телефоне переключатель во всю ширину плитки, кнопки поровну и в одну строку (на 340 px иначе переносятся) */
+.child-psy-page .child-psy-practice_switch { display: flex; flex: 1 1 100%; gap: 0.25rem; padding: 0.25rem; border-radius: 0.75rem; background: var(--color-page-background); }
+.child-psy-page .child-psy-practice_switch[hidden] { display: none; }
+.child-psy-page .child-psy-practice_switch-button {
+  min-height: 2.75rem;
+  flex: 1 1 0;
+  padding: 0.375rem 0.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+.child-psy-page .child-psy-practice_switch-button[aria-pressed="true"] { background: var(--color-surface-primary); box-shadow: 0 1px 2px rgb(43 35 52 / 10%); }
+.child-psy-page .child-psy-practice_scene.is-stage { flex: 1 1 auto; min-height: 15rem; }
+.child-psy-page .child-psy-practice_layer { position: absolute; inset: 0; transition: opacity 300ms ease; }
+.child-psy-page .child-psy-practice_scene[data-mode="small"] .child-psy-practice_layer.is-big,
+.child-psy-page .child-psy-practice_scene[data-mode="big"] .child-psy-practice_layer.is-small { opacity: 0; visibility: hidden; }
+.child-psy-page .child-psy-practice_links { position: absolute; inset: 0; width: 100%; height: 100%; }
+.child-psy-page .child-psy-practice_links :is(line, ellipse) { fill: none; stroke: var(--child-psy-scheme); stroke-width: 1.5; stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; }
+/* человек: кружок и подпись роли; ставится в точку --x / --y (задана в разметке) */
+.child-psy-page .child-psy-practice_person {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  display: grid;
+  justify-items: center;
+  gap: 0.375rem;
+  transform: translate(-50%, -1.5rem);
+}
+.child-psy-page .child-psy-practice_face { width: 3rem; height: 3rem; border-radius: 50%; background: var(--color-surface-primary); box-shadow: inset 0 0 0 1px var(--child-psy-line); }
+.child-psy-page .child-psy-practice_person.is-lead .child-psy-practice_face { background: var(--color-surface-dark); box-shadow: none; }
+.child-psy-page .child-psy-practice_person.is-quiet { transform: translate(-50%, -50%); }
+.child-psy-page .child-psy-practice_person.is-quiet .child-psy-practice_face { width: 2rem; height: 2rem; }
+.child-psy-page .child-psy-practice_role {
+  padding: 0.125rem 0.625rem;
+  border-radius: 999px;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.child-psy-page .child-psy-practice_person.is-lead .child-psy-practice_role { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.child-psy-page .child-psy-practice_teacher {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+  padding: 0.125rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  white-space: nowrap;
+}
+
+/* карточка случая: заголовок и серые строки; одна строка выделена, как пометка при разборе */
+.child-psy-page .child-psy-practice_case {
+  position: absolute;
+  inset: 1.25rem 2.5rem 1.25rem 1.5rem;
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.625rem;
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-practice_case.is-back { inset: 0.75rem 1.5rem 1.75rem 2.5rem; transform: rotate(3deg); box-shadow: inset 0 0 0 1px var(--child-psy-line); }
+.child-psy-page .child-psy-practice_case.is-narrow { inset: 0.75rem 3rem 0.75rem 0.75rem; }
+.child-psy-page .child-psy-practice_case-title { color: var(--color-text-primary); }
+.child-psy-page :is(.child-psy-practice_case, .child-psy-practice_doc) i { display: block; height: 0.5rem; border-radius: 999px; background: var(--child-psy-placeholder); }
+.child-psy-page .child-psy-practice_case i.is-marked { background: var(--child-psy-scheme-fill); }
+/* реплика супервизора: тёмное облачко снизу справа */
+.child-psy-page .child-psy-practice_note {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  max-width: 72%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem 0.75rem 0.25rem 0.75rem;
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+/* документ проекта: слегка повёрнут, внизу участники группы */
+.child-psy-page .child-psy-practice_doc {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(15rem, calc(100% - 3rem));
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--color-surface-primary);
+  transform: translate(-50%, -50%) rotate(-2deg);
+}
+.child-psy-page .child-psy-practice_team { display: flex; margin-top: 0.25rem; }
+.child-psy-page .child-psy-practice_team span { width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--child-psy-scheme-fill); box-shadow: 0 0 0 2px var(--color-surface-primary); }
+.child-psy-page .child-psy-practice_team span + span { margin-left: -0.375rem; }
+.child-psy-page .child-psy-practice_team span:first-child { background: var(--color-surface-dark); }
+
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-practice_switch { display: inline-flex; flex: 0 0 auto; }
+  .child-psy-page .child-psy-practice_switch-button { flex: 0 0 auto; padding-inline: 1rem; }
+  .child-psy-page .child-psy-practice_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .child-psy-page .child-psy-practice_tile.is-groups { grid-column: 1 / -1; }
+  .child-psy-page .child-psy-practice_tile.is-wide { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 1.5rem; }
+  .child-psy-page .child-psy-practice_tile.is-wide .child-psy-practice_text { align-self: end; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-practice_tile.is-groups { grid-column: 1; grid-row: span 2; }
+}
+
+
+/* ---------- 6. Как устроено обучение ----------
+   Три белые карточки и широкая тёмная карточка «Максимум практики» под ними: так блок не повторяет блок 3
+   (там тёмная карточка стоит сбоку на высоту трёх строк).
+   Поля карточек 16 px, у широкой тёмной на компьютере 24 px. Заголовок прижат к верху, абзац к низу.
+   Телефон и планшет: карточки столбиком, у тёмной на планшете заголовок слева, текст справа.
+   Компьютер (от 1025 px): три белые в ряд, тёмная во всю ширину под ними. */
+.child-psy-page .child-psy-format_grid { display: grid; gap: var(--card-grid-gap); }
+.child-psy-page .child-psy-format_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-format_card .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.child-psy-page .child-psy-format_card .body-text_component { max-width: 36rem; }
+.child-psy-page .child-psy-format_card.is-dark {
+  background: var(--color-surface-dark);
+  --body-text-color: var(--child-psy-on-dark-muted);
+}
+.child-psy-page .child-psy-format_card.is-dark .content-heading_component { color: var(--color-text-on-dark); }
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-format_card { gap: 1rem; }
+  .child-psy-page .child-psy-format_card.is-dark {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    column-gap: 2rem;
+    align-items: start;
+  }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-format_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .child-psy-page .child-psy-format_card { gap: 1.5rem; }
+  .child-psy-page .child-psy-format_card.is-dark { grid-column: 1 / -1; padding: 1.5rem; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+}
+
+
+/* ---------- 7. Включите новые навыки в своё резюме ----------
+   Небольшой документ-резюме, вариант Б (выбор Дарьи 05.11.2026, из четырёх вариантов): лист из двух колонок,
+   как шаблон резюме. Слева серая колонка: кружок фото, полоса имени, «Психолог», контакты серыми строками,
+   специализация с тёмной меткой «+ Детская психология» (как в профиле блока 3). Справа раздел «Навыки»:
+   направление (content-heading is-compact) и навыки абзацем (body-text is-caption), без маркеров и линий.
+   Поля 16 px, на компьютере 24 px. Лист не шире 50rem.
+   Телефон: серая колонка становится шапкой (фото слева, имя и «Психолог» справа, контакты и специализация ниже).
+   От 768 px: колонка слева шириной 13rem. От 1025 px: заголовок слева (липкий), лист справа (is-split v1). */
+.child-psy-page .child-psy-skills_layout { --section-layout-columns: minmax(0, 0.8fr) minmax(0, 1fr); }
+.child-psy-page .child-psy-skills_doc {
+  display: grid;
+  width: 100%;
+  max-width: 50rem;
+  overflow: hidden;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-skills_side {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 1rem;
+  row-gap: 0.75rem;
+  align-items: center;
+  align-content: start;
+  padding: var(--card-padding);
+  background: var(--child-psy-sheet);
+}
+.child-psy-page .child-psy-skills_avatar { grid-row: 1 / 3; width: 4.5rem; height: 4.5rem; border-radius: 50%; background: var(--child-psy-scheme); }
+.child-psy-page .child-psy-skills_name { align-self: end; width: min(10rem, 100%); height: 0.75rem; border-radius: 999px; background: var(--color-surface-primary); }
+.child-psy-page .child-psy-skills_role { align-self: start; --body-text-color: var(--color-text-primary); }
+.child-psy-page .child-psy-skills_bars { grid-column: 1 / -1; display: grid; gap: 0.5rem; margin-block: 0.5rem; }
+.child-psy-page .child-psy-skills_bars i { display: block; height: 0.375rem; border-radius: 999px; background: var(--child-psy-placeholder-on-sheet); }
+.child-psy-page .child-psy-skills_spec { grid-column: 1 / -1; display: grid; justify-items: start; gap: 0.375rem; }
+.child-psy-page .child-psy-skills_muted { --body-text-color: var(--child-psy-muted); }
+.child-psy-page .child-psy-skills_tag {
+  padding: 0.125rem 0.625rem;
+  border-radius: 999px;
+  background: var(--color-surface-dark);
+  white-space: nowrap;
+  --body-text-color: var(--color-text-on-dark);
+}
+.child-psy-page .child-psy-skills_main { display: grid; align-content: start; gap: 1.25rem; padding: var(--card-padding); }
+/* «Навыки» — подпись раздела документа, серым */
+.child-psy-page .child-psy-skills_doc-label { color: var(--child-psy-muted); }
+.child-psy-page .child-psy-skills_entries { display: grid; gap: 1.25rem; }
+.child-psy-page .child-psy-skills_entry { display: grid; gap: 0.375rem; }
+.child-psy-page .child-psy-skills_entry .content-heading_component { color: var(--color-text-primary); }
+.child-psy-page .child-psy-skills_entry .body-text_component { max-width: 38rem; }
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-skills_doc { grid-template-columns: 13rem minmax(0, 1fr); }
+  .child-psy-page .child-psy-skills_side { grid-template-columns: minmax(0, 1fr); align-items: start; padding-block: 1.5rem; }
+  .child-psy-page .child-psy-skills_avatar { grid-row: auto; }
+  .child-psy-page :is(.child-psy-skills_name, .child-psy-skills_role) { align-self: auto; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-skills_doc { justify-self: end; }
+  .child-psy-page .child-psy-skills_main { padding: 1.5rem; }
+  .child-psy-page .child-psy-skills_layout .section-header_component { position: sticky; top: 2rem; }
+}
+
+
+/* ---------- 8. Авторы и преподаватели курса ----------
+   Как на /neurodivergence: белые карточки, круглое фото, имя (content-heading is-card), роль серым (is-caption),
+   метки с фактами (is-fine-print на сером), описание (is-caption). Поля карточек 16 px, на компьютере 24 px.
+   Телефон: фото 5rem слева от имени, описание ниже. Планшет (от 768 px): фото 9rem слева на высоту карточки,
+   справа имя и описание. Компьютер (от 1025 px): три карточки в ряд, фото 6.5rem рядом с именем, описание ниже. */
+.child-psy-page .child-psy-teachers_grid { display: grid; gap: var(--card-grid-gap); }
+.child-psy-page .child-psy-teachers_card {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  column-gap: 1rem;
+  row-gap: 1rem;
+  align-items: center;
+  align-content: start;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-teachers_photo { display: block; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--color-page-background); }
+.child-psy-page .child-psy-teachers_photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.child-psy-page .child-psy-teachers_name { display: grid; gap: 0.25rem; }
+.child-psy-page .child-psy-teachers_name .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.child-psy-page .child-psy-teachers_role { --body-text-color: var(--child-psy-muted); }
+.child-psy-page .child-psy-teachers_bio { grid-column: 1 / -1; max-width: 40rem; }
+/* метки с фактами: серые «таблетки» на фоне страницы, переносятся строками; факты только из описания */
+.child-psy-page .child-psy-teachers_facts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.child-psy-page .child-psy-teachers_fact {
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background: var(--color-page-background);
+  --body-text-color: var(--color-text-primary);
+}
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-teachers_card { grid-template-columns: 9rem minmax(0, 1fr); column-gap: 2rem; row-gap: 0.75rem; }
+  .child-psy-page .child-psy-teachers_photo { grid-row: 1 / 4; align-self: start; }
+  .child-psy-page .child-psy-teachers_name { align-self: end; }
+  .child-psy-page :is(.child-psy-teachers_facts, .child-psy-teachers_bio) { grid-column: 2; align-self: start; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-teachers_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .child-psy-page .child-psy-teachers_card { grid-template-columns: 6.5rem minmax(0, 1fr); column-gap: 1.25rem; row-gap: 1.25rem; padding: 1.5rem; }
+  .child-psy-page .child-psy-teachers_photo { grid-row: auto; align-self: center; }
+  .child-psy-page .child-psy-teachers_name { align-self: center; }
+  .child-psy-page :is(.child-psy-teachers_facts, .child-psy-teachers_bio) { grid-column: 1 / -1; }
+}
+
+
+/* ---------- 9. Программа обучения ----------
+   Как «Программа курса» на /neurodivergence: слева заголовок и время занятий, справа модули.
+   Модуль — белая карточка: номер серым (is-caption), название (content-heading is-compact, на ступень меньше
+   карточек, просьба Дарьи 05.11.2026), пояснение (is-caption).
+   Последняя карточка «Супервизии и итоговая аттестация» тёмная. Поля 16 px, на компьютере 24 px.
+   Телефон: номер над названием. От 768 px: номер слева в своей колонке.
+   От 1025 px: заголовок слева и закреплён при прокрутке (is-split v1), модули справа. */
+.child-psy-page .child-psy-program_layout { --section-layout-columns: minmax(0, 0.8fr) minmax(0, 1fr); }
+/* нумерованный список ради смысла (порядок модулей), номера пишутся текстом — браузерные цифры и отступ убраны */
+.child-psy-page .child-psy-program_list { display: grid; gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.child-psy-page .child-psy-program_module {
+  display: grid;
+  gap: 0.5rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.child-psy-page .child-psy-program_number { --body-text-color: var(--child-psy-muted); }
+.child-psy-page .child-psy-program_text { display: grid; gap: 0.375rem; }
+.child-psy-page .child-psy-program_text .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.child-psy-page .child-psy-program_module.is-final { background: var(--color-surface-dark); }
+.child-psy-page .child-psy-program_module.is-final .content-heading_component { color: var(--color-text-on-dark); }
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-program_module { grid-template-columns: 7rem minmax(0, 1fr); column-gap: 1.5rem; align-items: baseline; }
+  .child-psy-page .child-psy-program_module.is-final .child-psy-program_text { grid-column: 2; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-program_module { padding: 1.5rem; }
+  .child-psy-page .child-psy-program_layout .section-header_component { position: sticky; top: 2rem; }
+}
+
+
+/* ---------- 10. Бесплатные лекции ----------
+   Как на /neurodivergence: тёмная плашка #2B2334, слева заголовок, описание, три условия и белая кнопка
+   (button_component is-light), справа белая карточка «Вы получите» с двумя лекциями и пометкой.
+   Поля плашки и карточки 16 px, на компьютере 24 px. Кнопка на телефоне во всю ширину, с планшета по тексту.
+   Телефон и планшет: карточка под текстом. Компьютер (от 1025 px): текст и карточка в две колонки. */
+.child-psy-page .child-psy-free_plate {
+  display: grid;
+  gap: 2rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --body-text-color: var(--child-psy-on-dark-muted);
+}
+.child-psy-page .child-psy-free_text { display: grid; gap: 1.5rem; align-content: start; }
+.child-psy-page .child-psy-free_text .section-title_component { color: var(--color-text-on-dark); max-width: 22ch; }
+.child-psy-page .child-psy-free_copy { display: grid; gap: 0.5rem; }
+.child-psy-page .child-psy-free_copy .content-heading_component { color: var(--color-text-on-dark); }
+.child-psy-page .child-psy-free_copy .body-text_component { max-width: 40ch; }
+.child-psy-page .child-psy-free_checks { display: grid; gap: 0.5rem; }
+.child-psy-page .child-psy-free_checks li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
+.child-psy-page .child-psy-free_checks svg { width: 1.25rem; height: 1.25rem; color: var(--color-text-on-dark); }
+.child-psy-page .child-psy-free_actions { display: grid; }
+.child-psy-page .child-psy-free_card {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  --body-text-color: var(--child-psy-muted);
+}
+.child-psy-page .child-psy-free_lessons { display: grid; }
+.child-psy-page .child-psy-free_lesson {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  padding-block: 1rem;
+  border-top: 1px solid var(--child-psy-line);
+}
+.child-psy-page .child-psy-free_lesson:first-child { padding-top: 0; border-top: 0; }
+/* кружок «играть»: единственное сиреневое пятно блока */
+.child-psy-page .child-psy-free_play { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--color-accent-soft); color: var(--color-accent-text); }
+.child-psy-page .child-psy-free_play svg { width: 1rem; height: 1rem; margin-left: 0.125rem; }
+.child-psy-page .child-psy-free_lesson-text { display: grid; gap: 0.25rem; }
+.child-psy-page .child-psy-free_lesson-text .content-heading_component { color: var(--color-text-primary); }
+.child-psy-page .child-psy-free_note { padding: 0.75rem 1rem; border-radius: 0.625rem; background: var(--color-page-background); }
+@media (min-width: 48rem) {
+  .child-psy-page .child-psy-free_actions { display: flex; }
+}
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-free_plate { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 3rem; align-items: center; padding: 1.5rem; }
+  .child-psy-page .child-psy-free_card { padding: 1.5rem; }
+}
+
+
+/* ---------- 12–16. Общие блоки: «Почему выбирают нас», «98 %», цена, форма, вопросы ----------
+   «Почему выбирают нас» и «98 %» — стили в academy.css (копия, не править), форма — request-form.css (копия
+   общего компонента, кладёт request-form-sync.mjs), цена — стили внутри блока генератора.
+   Здесь только ширина колонки, шрифт блока цены и вопросы-ответы на ролях v1. */
+
+/* колонка шириной 64rem по центру: «98 %», вопросы и ответы (блок цены задаёт ту же ширину сам, layout wa-narrow) */
+.child-psy-page .child-psy-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+
+/* Блок цены приходит со своим шрифтом: Google Fonts price-sync.mjs убирает, а здесь блок переключается
+   на шрифт v1, как на /neurodivergence */
+.child-psy-page .price-auto_component { font-family: var(--font-family-body); }
+/* Отступы блока цены — как у секций v1: сверху 0, снизу --section-space (60 · 80 · 100 · 150 px).
+   У раскладки wa-narrow свои 56–104 px сверху и снизу: между «98 %» и ценой выходило 254 px вместо 150.
+   [data-layout] в селекторе — чтобы перебить стили блока, которые идут ниже по странице. */
+.child-psy-page .price-auto_component[data-layout] { --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
+
+/* Вопросы и ответы: белые карточки, вопрос — content-heading is-compact, ответ — body-text, плюс-крестик справа.
+   Поля 16 px, на компьютере 24 px. Кегли не задаются: только роли v1. */
+.child-psy-page .child-psy-faq_list { display: grid; gap: 0.5rem; }
+.child-psy-page .child-psy-faq_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.child-psy-page .child-psy-faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.child-psy-page .child-psy-faq_question::-webkit-details-marker { display: none; }
+.child-psy-page .child-psy-faq_question .content-heading_component { color: var(--color-text-primary); text-wrap: pretty; }
+.child-psy-page .child-psy-faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color 150ms ease;
+}
+.child-psy-page .child-psy-faq_icon::before,
+.child-psy-page .child-psy-faq_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.child-psy-page .child-psy-faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.child-psy-page .child-psy-faq_item[open] .child-psy-faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .child-psy-page .child-psy-faq_question:hover .child-psy-faq_icon { background: var(--child-psy-line); }
+}
+.child-psy-page .child-psy-faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.child-psy-page .child-psy-faq_answer .body-text_component { max-width: 62ch; }
+.child-psy-page .child-psy-faq_answer a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (min-width: 64.0625rem) {
+  .child-psy-page .child-psy-faq_question { padding: 1.25rem 1.5rem; }
+  .child-psy-page .child-psy-faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .child-psy-page :is(.child-psy-faq_icon, .child-psy-faq_icon::before, .child-psy-faq_icon::after) { transition: none; }
+}
