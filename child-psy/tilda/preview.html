@@ -38,6 +38,11 @@
   --child-psy-placeholder-on-sheet: #dcdbe2; /* строки-заглушки контактов на серой колонке резюме */
 }
 
+/* Отступ закреплённых при прокрутке заголовков («Резюме», «Программа») от верха окна: под шапкой сайта
+   на Тильде (около 78 px) с зазором, как на /neurodivergence и «Психиатрии» (6.5rem = 104 px).
+   С 2rem заголовок уходил под шапку (замечание Дарьи после публикации 05.11.2026). */
+.child-psy-page { --child-psy-sticky-top: 6.5rem; }
+
 /* Серый текст v1 (#7b7b7c) даёт на белом 4,2:1, на #f5f5f5 — 3,9:1: для текста мельче 24 px мало
    (academy-base/README.md, «Что ещё не готово»). На этой странице берём темнее, как на /alumni. */
 .child-psy-page { --body-text-color: var(--child-psy-muted); --section-subtitle-color: var(--child-psy-muted); }
@@ -623,7 +628,7 @@
 @media (min-width: 64.0625rem) {
   .child-psy-page .child-psy-skills_doc { justify-self: end; }
   .child-psy-page .child-psy-skills_main { padding: 1.5rem; }
-  .child-psy-page .child-psy-skills_layout .section-header_component { position: sticky; top: 2rem; }
+  .child-psy-page .child-psy-skills_layout .section-header_component { position: sticky; top: var(--child-psy-sticky-top); }
 }
 
 
@@ -701,7 +706,7 @@
 }
 @media (min-width: 64.0625rem) {
   .child-psy-page .child-psy-program_module { padding: 1.5rem; }
-  .child-psy-page .child-psy-program_layout .section-header_component { position: sticky; top: 2rem; }
+  .child-psy-page .child-psy-program_layout .section-header_component { position: sticky; top: var(--child-psy-sticky-top); }
 }
 
 
