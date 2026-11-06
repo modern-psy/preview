@@ -1,0 +1,2534 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <!-- Превью не индексируется. На сайте title и description задаются в настройках страницы Тильды; здесь — копия оттуда. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Черновик · первый экран клуба</title>
+    <meta
+      name="description"
+      content="Мастерская АСП помогает психологам регулярно создавать посты, видео и истории из практики — с группой, заданиями, созвонами и обратной связью."
+    />
+    <link rel="canonical" href="https://modern-psy.ru/masterskaya-professionalnogo-kontenta" />
+    <link rel="preconnect" href="https://static.tildacdn.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=20260730-1" />
+  
+    <style>
+      /* ЧЕРНОВИК: варианты первого экрана на обсуждение. В репозиторий не идёт. */
+      [data-hero-variant] { display: none; }
+      html[data-v="a"] [data-hero-variant="a"],
+      html[data-v="b"] [data-hero-variant="b"],
+      html[data-v="c"] [data-hero-variant="c"],
+      html[data-v="d"] [data-hero-variant="d"],
+      html[data-v="e"] [data-hero-variant="e"],
+      html[data-v="f"] [data-hero-variant="f"],
+      html[data-v="g"] [data-hero-variant="g"] { display: block; }
+
+      /* Двоеточие не уходит на новую строку после выделения (на телефоне выделение строчное, там не нужно) */
+      .hero_heading-keep { white-space: nowrap; }
+
+      /* Б: карточка во всю ширину контейнера, геометрия фона как у карточек героя */
+      .hero_component.is-card {
+        position: relative;
+        min-height: min(44rem, calc(100dvh - 9rem));
+        padding: 4.5rem 2rem;
+        justify-content: center;
+        overflow: clip;
+        background: #000000;
+        border-radius: 1rem;
+      }
+      .hero_card-background {
+        position: absolute;
+        top: -10.3%;
+        left: -12.9%;
+        width: 125.8%;
+        height: 120.6%;
+        max-width: none;
+        object-fit: cover;
+        filter: blur(38.5px);
+        transform: scale(1.03);
+      }
+      .hero_component.is-card .hero_content { position: relative; z-index: 1; }
+      .hero_component.is-card .hero_heading { color: #ffffff; }
+      .hero_component.is-card .hero_heading-highlight { color: var(--color-text-button); }
+      .hero_component.is-card .hero_description { color: #f5f5f5; }
+      .hero_component.is-card .hero_eyebrow {
+        background: rgba(255, 255, 255, 0.16);
+        color: #ffffff;
+        backdrop-filter: blur(4px);
+      }
+
+      /* В: карточки результата в стиле блока «Результат» */
+      .hero_results {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      .hero_result-card {
+        display: flex;
+        min-height: 11.25rem;
+        padding: 1.25rem;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 2rem;
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      .hero_result-card.is-dark { background: #000000; color: #ffffff; }
+      .hero_result-card.is-light { background: #fcfcfa; }
+      .hero_result-card.is-warm { background: #fdf2d4; }
+      .hero_result-heading {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.2143;
+        letter-spacing: -0.02em;
+      }
+      .hero_result-text {
+        max-width: 22rem;
+        margin: 0;
+        font-size: 1.125rem;
+        line-height: 1.444;
+        letter-spacing: -0.01em;
+      }
+      @media screen and (max-width: 61.9375rem) {
+        .hero_result-card { min-height: 11rem; }
+        .hero_result-heading { font-size: 1.5rem; }
+        .hero_result-text { font-size: 1rem; }
+      }
+      @media screen and (max-width: 47.9375rem) {
+        .hero_results { grid-template-columns: minmax(0, 1fr); }
+        .hero_result-card { min-height: 0; gap: 1rem; }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .hero_heading-keep { white-space: normal; }
+        .hero_component.is-card { min-height: 0; padding: 3rem 1.25rem; }
+        .hero_component.is-card .hero_heading-highlight { color: var(--color-text-button); }
+      }
+
+      .draft_switch {
+        position: fixed;
+        z-index: 200;
+        bottom: 1rem;
+        left: 50%;
+        display: flex;
+        /* На телефоне полоса не шире экрана: варианты листаются пальцем */
+        max-width: calc(100% - 2rem);
+        overflow-x: auto;
+        scrollbar-width: none;
+        gap: 0.25rem;
+        padding: 0.25rem;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 3rem;
+        transform: translateX(-50%);
+        backdrop-filter: blur(4px);
+      }
+      .draft_switch::-webkit-scrollbar { display: none; }
+      .draft_switch a {
+        flex: none;
+        white-space: nowrap;
+        padding: 0.5rem 1rem;
+        border-radius: 3rem;
+        color: #ffffff;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      html[data-v="a"] .draft_switch a[data-v="a"],
+      html[data-v="b"] .draft_switch a[data-v="b"],
+      html[data-v="c"] .draft_switch a[data-v="c"],
+      html[data-v="d"] .draft_switch a[data-v="d"],
+      html[data-v="e"] .draft_switch a[data-v="e"],
+      html[data-v="f"] .draft_switch a[data-v="f"],
+      html[data-v="g"] .draft_switch a[data-v="g"] { background: #ffffff; color: #000000; }
+
+      /* ---------- Г: корешки ---------- */
+      /* Без скрипта три карточки стоят рядом и всё видно сразу. */
+      .hero_spines {
+        --spine-closed: 5.5rem;
+        --spine-gap: 1rem;
+        --spine-height: 26.25rem;
+        --spine-interval: 6s;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--spine-gap);
+        container-type: inline-size;
+      }
+      .hero_spine {
+        position: relative;
+        min-width: 0;
+        min-height: var(--spine-height);
+        overflow: clip;
+        background: #000000;
+        border-radius: 1rem;
+        color: #ffffff;
+      }
+      .hero_spine-background {
+        position: absolute;
+        top: -10%;
+        left: -10%;
+        width: 120%;
+        height: 120%;
+        max-width: none;
+        object-fit: cover;
+        filter: blur(38.5px);
+      }
+      /* Один и тот же набор размытых фонов страницы, но каждый корешок своего цвета. */
+      .hero_spine-background.is-violet { object-position: 20% 40%; }
+      .hero_spine-background.is-teal { object-position: 70% 30%; transform: rotate(180deg); }
+      .hero_spine-background.is-coral { object-position: 76% 80%; }
+      .hero_spine-trigger { display: none; }
+      .hero_spine-panel {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        height: 100%;
+        min-height: var(--spine-height);
+        padding: 1.25rem;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+      .hero_spine-visual {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+      }
+      .hero_spine-copy {
+        display: flex;
+        max-width: 26rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: left;
+      }
+      .hero_spine-heading {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.2143;
+        letter-spacing: -0.02em;
+      }
+      .hero_spine-text {
+        margin: 0;
+        color: #f5f5f5;
+        font-size: 1.125rem;
+        line-height: 1.444;
+        letter-spacing: -0.01em;
+      }
+      .hero_spine-progress { display: none; }
+
+      /* Со скриптом: корешки, открытая карточка забирает всё место. */
+      .hero_spines.is-enhanced { display: flex; height: var(--spine-height); }
+      .hero_spines.is-enhanced .hero_spine {
+        flex: 0 0 var(--spine-closed);
+        min-height: 0;
+        transition: flex-grow 640ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .hero_spines.is-enhanced .hero_spine.is-active { flex-grow: 1; }
+      .hero_spines.is-enhanced .hero_spine-trigger {
+        position: absolute;
+        z-index: 2;
+        inset: 0;
+        display: flex;
+        width: 100%;
+        padding: 1.25rem 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        background: transparent;
+        border: 0;
+        border-radius: 1rem;
+        color: #ffffff;
+        font: inherit;
+        cursor: pointer;
+      }
+      .hero_spines.is-enhanced .hero_spine.is-active .hero_spine-trigger {
+        visibility: hidden;
+      }
+      .hero_spine-number {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1;
+        opacity: 0.8;
+      }
+      .hero_spine-title {
+        font-size: 1.375rem;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+      }
+      .hero_spines.is-enhanced .hero_spine-panel {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: calc(100cqi - 2 * var(--spine-closed) - 2 * var(--spine-gap));
+        min-height: 0;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 200ms ease, visibility 0s linear 200ms;
+      }
+      .hero_spines.is-enhanced .hero_spine.is-active .hero_spine-panel {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 360ms ease 220ms, visibility 0s;
+      }
+      .hero_spine-trigger:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: -4px;
+      }
+
+      /* Полоса до следующей карточки: только на компьютере и без «уменьшить движение». */
+      .hero_spines.is-auto .hero_spine.is-active .hero_spine-progress {
+        position: absolute;
+        z-index: 2;
+        top: 0.75rem;
+        right: 1.25rem;
+        left: 1.25rem;
+        display: block;
+        height: 2px;
+        overflow: clip;
+        background: rgba(255, 255, 255, 0.24);
+        border-radius: 1px;
+      }
+      .hero_spines.is-auto .hero_spine.is-active .hero_spine-progress::after {
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+        content: "";
+        transform: scaleX(0);
+        transform-origin: left;
+        animation: hero-spine-progress var(--spine-interval) linear forwards;
+      }
+      .hero_spines.is-paused .hero_spine-progress::after { animation-play-state: paused; }
+      @keyframes hero-spine-progress { to { transform: scaleX(1); } }
+
+      /* Широкая карточка: текст слева внизу, картинка справа. */
+      @media screen and (min-width: 62rem) {
+        .hero_spines.is-enhanced .hero_spine-panel {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+          align-items: end;
+          padding: 2rem;
+        }
+        .hero_spines.is-enhanced .hero_spine-visual { grid-column: 2; grid-row: 1; height: 100%; }
+        .hero_spines.is-enhanced .hero_spine-copy { grid-column: 1; grid-row: 1; }
+      }
+
+      /* Планшет: корешки уже, карточка выше. */
+      @media screen and (max-width: 61.9375rem) {
+        .hero_spines { --spine-closed: 4.5rem; --spine-height: 27.5rem; }
+        .hero_spine-heading { font-size: 1.5rem; }
+        .hero_spine-text { font-size: 1rem; }
+        .hero_spine-title { font-size: 1.25rem; }
+      }
+
+      /* Телефон: та же разметка, корешки становятся строками друг под другом.
+         Здесь наоборот (max-width), потому что композиция другая, а не сжатая. */
+      @media screen and (max-width: 47.9375rem) {
+        .hero_spines { grid-template-columns: minmax(0, 1fr); }
+        .hero_spines.is-enhanced { flex-direction: column; height: auto; }
+        .hero_spines.is-enhanced .hero_spine { flex: none; }
+        .hero_spines.is-enhanced .hero_spine-trigger {
+          position: relative;
+          min-height: 4rem;
+          padding: 0 1.25rem;
+          flex-direction: row;
+          justify-content: flex-start;
+          gap: 1rem;
+        }
+        .hero_spines.is-enhanced .hero_spine.is-active .hero_spine-trigger { display: none; }
+        .hero_spine-title { writing-mode: horizontal-tb; transform: none; }
+        .hero_spines.is-enhanced .hero_spine-panel {
+          position: relative;
+          display: none;
+          width: auto;
+          min-height: 0;
+          visibility: visible;
+          opacity: 1;
+          transition: none;
+        }
+        .hero_spines.is-enhanced .hero_spine.is-active .hero_spine-panel { display: flex; }
+        .hero_spine-visual { min-height: 15rem; }
+        .hero_spine { min-height: 0; }
+        .hero_spine-panel { min-height: 0; }
+      }
+
+      /* ---------- картинки внутри карточек ---------- */
+      .hero_feed {
+        display: flex;
+        width: min(100%, 19rem);
+        padding: 1rem;
+        flex-direction: column;
+        gap: 0.875rem;
+        background: #000000;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 1rem;
+        transform: rotate(0.66deg);
+      }
+      .hero_feed-profile { display: flex; align-items: center; gap: 0.75rem; }
+      .hero_feed-avatar {
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        flex: none;
+        place-items: center;
+        background: var(--color-highlight);
+        border-radius: 50%;
+        color: var(--color-text-button);
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .hero_feed-name {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        color: #ffffff;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        line-height: 1.3;
+        text-align: left;
+      }
+      .hero_feed-meta { color: rgba(255, 255, 255, 0.72); font-size: 0.8125rem; font-weight: 400; }
+      .hero_feed-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.25rem; }
+      .hero_feed-tile {
+        display: flex;
+        aspect-ratio: 4 / 5;
+        padding: 0.375rem;
+        align-items: flex-end;
+        background: #fcfcfa;
+        border-radius: 0.375rem;
+        color: var(--color-text-button);
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      .hero_feed-tile.is-lavender { background: var(--color-highlight); }
+      .hero_feed-tile.is-warm { background: #fdf2d4; }
+      .hero_feed-tile.is-light { background: #eeeeef; }
+      .hero_feed-tile.is-dark { background: #18181a; color: #f5f5f5; }
+
+      .hero_chat { display: flex; width: min(100%, 24rem); flex-direction: column; gap: 1rem; }
+      .hero_chat-message {
+        display: flex;
+        padding: 1rem;
+        align-items: flex-start;
+        gap: 0.75rem;
+        border-radius: 0.875rem;
+        font-size: 1rem;
+        line-height: 1.444;
+        letter-spacing: -0.01em;
+        text-align: left;
+      }
+      .hero_chat-message p { margin: 0; }
+      .hero_chat-message.is-light {
+        margin-right: 1.5rem;
+        background: #fcfcfa;
+        border: 0.5px solid rgba(205, 204, 204, 0.8);
+        color: #5e5a6a;
+        transform: rotate(-0.95deg);
+      }
+      .hero_chat-message.is-dark {
+        margin-left: 1.5rem;
+        background: #18181a;
+        color: #f5f5f5;
+        transform: rotate(0.66deg);
+      }
+      .hero_chat-avatar { width: 2.5rem; height: 2.5rem; flex: none; border-radius: 50%; object-fit: cover; }
+
+      .hero_orbit { position: relative; width: min(100%, 20rem); aspect-ratio: 1; }
+      .hero_orbit-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        aspect-ratio: 1;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .hero_orbit-ring.is-large { width: 100%; }
+      .hero_orbit-ring.is-medium { width: 70%; }
+      .hero_orbit-ring.is-small { width: 40%; }
+      .hero_orbit-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        padding: 0.375rem 1rem 0.375rem 0.375rem;
+        align-items: center;
+        gap: 0.625rem;
+        background: #ffffff;
+        border-radius: 3rem;
+        color: var(--color-text-button);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        line-height: 1.2;
+        text-align: left;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+      }
+      .hero_orbit-center > span:last-child { display: flex; flex-direction: column; }
+      .hero_orbit-role { color: #5e5a6a; font-size: 0.8125rem; font-weight: 400; }
+      .hero_orbit-topic {
+        position: absolute;
+        padding: 0.5rem 0.875rem;
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 3rem;
+        color: #ffffff;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+        backdrop-filter: blur(4px);
+      }
+      .hero_orbit-topic.is-first { top: 14.6%; left: 14.6%; }
+      .hero_orbit-topic.is-second { top: 19.7%; left: 67.5%; }
+      .hero_orbit-topic.is-third { top: 97%; left: 67.1%; }
+
+      /* Картинки в карточках мельче на планшете и телефоне (после базовых правил, чтобы перекрыть их). */
+      @media screen and (max-width: 61.9375rem) {
+        .hero_feed { width: min(100%, 14rem); padding: 0.75rem; gap: 0.625rem; }
+        .hero_chat { width: min(100%, 20rem); }
+        .hero_orbit { width: min(100%, 15rem); }
+      }
+      @media screen and (max-width: 47.9375rem) {
+        .hero_feed { width: min(100%, 15rem); }
+      }
+
+      /* ---------- ровные фоны ---------- */
+      .hero_spines.is-flat .hero_spine-background,
+      .hero_spines.is-flat .hero_grain { display: none; }
+      /* Очень мягкое пятно света со стороны картинки вместо яркого градиента. */
+      .hero_spines.is-flat .hero_spine::before {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(55% 70% at 75% 40%, var(--spine-glow), transparent 70%);
+        content: "";
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 360ms ease;
+      }
+      /* Пятно света только у открытой карточки, корешки остаются ровными. */
+      .hero_spines.is-flat .hero_spine.is-active::before { opacity: 1; }
+      .hero_spines.is-flat:not(.is-enhanced) .hero_spine::before { opacity: 1; }
+      .hero_spine { --spine-glow: rgba(190, 172, 244, 0.14); }
+      .hero_spine.is-on-light { --spine-glow: rgba(255, 255, 255, 0.85); }
+      .hero_spine.is-black { background: #000000; }
+      .hero_spine.is-ink { background: #18181a; }
+      .hero_spine.is-plum { background: var(--color-text-button); }
+      .hero_spine.is-paper { background: #fcfcfa; }
+      .hero_spine.is-warm { background: #fdf2d4; }
+      .hero_spine.is-lilac { background: #f1eef8; }
+
+      /* Светлая карточка: тёмный текст и тёмные линии. */
+      .hero_spine.is-on-light { color: var(--color-text-button); }
+      .hero_spine.is-on-light .hero_spine-trigger { color: var(--color-text-button) !important; }
+      .hero_spine.is-on-light .hero_spine-text { color: #5e5a6a; }
+      .hero_spine.is-on-light .hero_spine-trigger:focus-visible { outline-color: var(--color-text-button); }
+      .hero_spines.is-auto .hero_spine.is-on-light.is-active .hero_spine-progress { background: rgba(51, 47, 65, 0.16); }
+      .hero_spines.is-auto .hero_spine.is-on-light.is-active .hero_spine-progress::after { background: var(--color-text-button); }
+      .hero_spine.is-on-light .hero_orbit-ring { border-color: rgba(51, 47, 65, 0.18); }
+      .hero_spine.is-on-light .hero_orbit-topic { background: rgba(51, 47, 65, 0.08); color: var(--color-text-button); }
+      .hero_spine.is-on-light .hero_orbit-center { border: 1px solid rgba(51, 47, 65, 0.1); }
+      .hero_spine.is-on-light .hero_feed { border-color: transparent; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .hero_spines.is-enhanced .hero_spine,
+        .hero_spines.is-enhanced .hero_spine-panel { transition: none; }
+      }
+
+
+      /* ---------- Узнаваемость: стопка соцсетей ---------- */
+      /* Размер стопки считается от ширины ряда карточек: она всегда помещается в свою колонку. */
+      .hero_social { position: relative; width: 30em; height: 22em; flex: none; font-size: min(1rem, calc((100cqi - 18.5rem) * 0.0165)); }
+      .hero_spines:not(.is-enhanced) .hero_social { font-size: calc((100cqi / 3 - 4rem) / 30); }
+      .hero_app {
+        position: absolute;
+        width: 14.5em;
+        overflow: clip;
+        background: #ffffff;
+        border: 1px solid rgba(51, 47, 65, 0.08);
+        border-radius: 1em;
+        box-shadow: 0 0.75em 2em rgba(51, 47, 65, 0.1);
+        color: #1d1d33;
+        text-align: left;
+      }
+      /* Задние слои слегка размыты и повёрнуты, как стопка экранов. */
+      .hero_app.is-threads { top: 0; right: 0; filter: blur(1.5px); opacity: 0.9; transform: rotate(5deg); }
+      .hero_app.is-telegram { top: 2.25em; left: 0; filter: blur(1px); opacity: 0.95; transform: rotate(-4deg); }
+      .hero_app.is-instagram { z-index: 2; bottom: 0; left: 50%; transform: translateX(-50%) rotate(0.66deg); box-shadow: 0 1em 2.5em rgba(51, 47, 65, 0.18); }
+
+      .hero_app-icon { width: 1.25em; height: 1.25em; flex: none; }
+      .hero_app-avatar {
+        display: grid;
+        width: 2em;
+        height: 2em;
+        flex: none;
+        place-items: center;
+        background: var(--color-highlight);
+        border-radius: 50%;
+        color: var(--color-text-button);
+        font-size: 0.75em;
+        font-weight: 600;
+      }
+      .hero_app-name { display: flex; flex-direction: column; font-size: 0.8125em; font-weight: 600; line-height: 1.25; }
+      .hero_app-muted { color: #827f8b; font-size: 0.9em; font-weight: 400; }
+      .hero_app-text { margin: 0; font-size: 0.8125em; line-height: 1.4; }
+      .hero_app-actions { display: flex; gap: 0.875em; color: #332f41; }
+
+      .hero_threads-post { display: flex; padding: 0.875em; gap: 0.625em; }
+      .hero_threads-side { display: flex; flex-direction: column; align-items: center; gap: 0.375em; }
+      .hero_threads-line { width: 2px; flex: 1; min-height: 3em; background: rgba(51, 47, 65, 0.14); border-radius: 1px; }
+      .hero_threads-reply { width: 1.25em; height: 1.25em; border-radius: 50%; }
+      .hero_threads-body { display: flex; flex-direction: column; gap: 0.5em; }
+      .hero_threads-body .hero_app-name { flex-direction: row; gap: 0.375em; }
+
+      .hero_telegram-bar { display: flex; padding: 0.625em 0.75em; align-items: center; gap: 0.5em; border-bottom: 1px solid rgba(51, 47, 65, 0.08); }
+      .hero_telegram-chat { padding: 0.75em 0.75em 1.25em; background: #e9eef3; }
+      .hero_telegram-join { padding: 0.75em; color: #2a9de0; font-size: 0.8125em; font-weight: 600; text-align: center; }
+      .hero_telegram-bubble { display: flex; padding: 0.625em 0.75em; flex-direction: column; gap: 0.375em; background: #ffffff; border-radius: 0.875em 0.875em 0.875em 0.25em; }
+      .hero_telegram-meta { display: flex; align-items: center; align-self: flex-end; gap: 0.25em; color: #827f8b; font-size: 0.6875em; }
+      .hero_telegram-meta .hero_app-icon { width: 1.1em; height: 1.1em; }
+
+      .hero_insta-head { display: flex; padding: 0.625em 0.75em; align-items: center; gap: 0.5em; }
+      .hero_insta-head .hero_app-name { flex: 1; }
+      .hero_insta-ring {
+        display: grid;
+        padding: 0.125em;
+        place-items: center;
+        background: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf);
+        border-radius: 50%;
+      }
+      .hero_insta-ring .hero_app-avatar { border: 0.125em solid #ffffff; }
+      .hero_insta-photo { display: block; width: 100%; aspect-ratio: 5 / 4; object-fit: cover; object-position: 60% 40%; }
+      .hero_insta-actions { display: flex; padding: 0.625em 0.75em 0.375em; justify-content: space-between; color: #1d1d33; }
+      .hero_insta-actions > span { display: flex; gap: 0.875em; }
+      .hero_app.is-instagram .hero_app-text { padding: 0 0.75em 0.875em; }
+
+      /* ---------- Личный бренд: слова по орбите вокруг «ваш блог» ---------- */
+      /* Размер считается так же, как у стопки соцсетей: от ширины ряда карточек. */
+      .hero_blog { position: relative; width: 29.5em; height: 22.5em; flex: none; font-size: min(1rem, calc((100cqi - 18.5rem) * 0.0165)); }
+      .hero_spines:not(.is-enhanced) .hero_blog { font-size: calc((100cqi / 3 - 4rem) / 30); }
+      .hero_blog-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        aspect-ratio: 1;
+        border: 1px solid rgba(51, 47, 65, 0.16);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .hero_blog-ring.is-outer { width: 20em; }
+      .hero_blog-ring.is-inner { width: 12em; border-style: dashed; border-color: rgba(51, 47, 65, 0.14); }
+      .hero_blog-core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: grid;
+        width: 6.75em; /* 8em орбиты: свой кегль у центра крупнее */
+        height: 6.75em;
+        place-items: center;
+        background: #000000;
+        border-radius: 50%;
+        color: #ffffff;
+        font-size: max(1.1875em, 0.875rem);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        text-align: center;
+        transform: translate(-50%, -50%);
+      }
+      /* Орбита медленно вращается, а сами слова остаются ровными:
+         дорожка поворачивается в одну сторону, каждое слово на столько же в обратную. */
+      .hero_blog-track { position: absolute; inset: 0; animation: hero-blog-spin 70s linear infinite; }
+      .hero_blog-slot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        transform: rotate(var(--angle)) translateY(-10em) rotate(calc(-1 * var(--angle)));
+      }
+      .hero_blog-word {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0.5em 0.875em;
+        background: #ffffff;
+        border: 1px solid rgba(51, 47, 65, 0.12);
+        border-radius: 3em;
+        box-shadow: 0 0.25em 0.75em rgba(51, 47, 65, 0.06);
+        color: var(--color-text-button);
+        font-size: max(0.9375em, 0.75rem); /* слова читаются: не мельче 12px */
+        font-weight: 500;
+        line-height: 1.2;
+        white-space: nowrap;
+        translate: -50% -50%;
+        animation: hero-blog-spin 70s linear infinite reverse;
+      }
+      @keyframes hero-blog-spin { to { rotate: 360deg; } }
+      /* Пока карточка свёрнута, орбита стоит. */
+      .hero_spines.is-enhanced .hero_spine:not(.is-active) :is(.hero_blog-track, .hero_blog-word) { animation-play-state: paused; }
+      @media (prefers-reduced-motion: reduce) {
+        .hero_blog-track,
+        .hero_blog-word { animation: none; }
+      }
+      /* На тёмных карточках (варианты Е и Ж) центр светлый. */
+      .hero_spine:not(.is-on-light) .hero_blog-ring { border-color: rgba(255, 255, 255, 0.28); }
+      .hero_spine:not(.is-on-light) .hero_blog-core { background: #ffffff; color: #000000; }
+
+      /* Картинки целиком мельче на узких экранах. */
+      @media screen and (max-width: 61.9375rem) {
+        .hero_spines.is-enhanced .hero_social { font-size: 0.68rem; }
+        .hero_spines.is-enhanced .hero_blog { font-size: 0.68rem; }
+      }
+      @media screen and (max-width: 47.9375rem) {
+        .hero_spines.is-enhanced :is(.hero_social, .hero_blog),
+        .hero_spines:not(.is-enhanced) :is(.hero_social, .hero_blog) { font-size: min(0.85rem, calc((100cqi - 2.5rem) / 30)); }
+      }
+
+    </style>
+    <script>
+      document.documentElement.dataset.v = (new URLSearchParams(location.search).get("v") || "e").toLowerCase();
+    </script>
+  </head>
+  <body class="academy-page">
+    <div class="page-wrapper">
+      <header class="nav_component" data-node-id="662:268">
+        <div class="padding-global">
+          <div class="container-large">
+            <div class="nav_inner">
+              <a class="nav_logo" href="./" aria-label="АСП — на главную">
+                <img
+                  class="nav_logo-image"
+                  src="https://static.tildacdn.com/tild6138-3163-4231-a430-353235306465/logo-asp.svg"
+                  width="84"
+                  height="30"
+                  alt="Академия современной психологии"
+                />
+              </a>
+
+              <div class="nav_menu" id="primary-navigation">
+                <nav class="nav_links" aria-label="Основная навигация">
+                  <a class="nav_link" href="#inside">Что внутри</a>
+                  <a class="nav_link" href="#results">Результаты</a>
+                  <a class="nav_link" href="#curator">Куратор</a>
+                  <a class="nav_link" href="#price">Стоимость</a>
+                </nav>
+
+                <a class="button is-nav" href="#price">
+                  Зарегистрироваться
+                </a>
+              </div>
+
+              <button
+                class="nav_menu-button"
+                type="button"
+                aria-label="Открыть меню"
+                aria-controls="primary-navigation"
+                aria-expanded="false"
+              >
+                <span class="nav_menu-icon" aria-hidden="true">
+                  <span class="nav_menu-line"></span>
+                  <span class="nav_menu-line"></span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-wrapper">
+        <section class="section_hero" id="about" data-hero-variant="a">
+          <div class="padding-global">
+            <div class="container-large">
+
+              <div class="hero_component is-text-only">
+                <div class="hero_content">
+                  <div class="hero_copy">
+                    <div class="hero_heading-wrapper">
+                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                      <h1 class="hero_heading">Блог психолога, который <span class="hero_heading-keep"><span class="hero_heading-highlight">работает на&nbsp;вашу практику</span>:</span> узнаваемость, доверие, личный бренд</h1>
+                    </div>
+                    <p class="hero_description">Еженедельный клуб, где вы&nbsp;регулярно публикуетесь, а&nbsp;не&nbsp;откладываете</p>
+                  </div>
+                  <div class="hero_actions">
+                    <a class="button is-primary" href="#price">Вступить в клуб</a>
+                    <a class="button is-secondary" href="#price">Получить пробные дни</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_hero" id="about" data-hero-variant="b">
+          <div class="padding-global">
+            <div class="container-large">
+
+              <div class="hero_component is-card">
+                <img class="hero_card-background" src="https://static.tildacdn.com/tild3133-6633-4836-b230-616434363131/bg-1.webp" alt="" aria-hidden="true" />
+                <div class="hero_grain" aria-hidden="true"></div>
+                <div class="hero_content">
+                  <div class="hero_copy">
+                    <div class="hero_heading-wrapper">
+                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                      <h1 class="hero_heading">Блог психолога, который <span class="hero_heading-keep"><span class="hero_heading-highlight">работает на&nbsp;вашу практику</span>:</span> узнаваемость, доверие, личный бренд</h1>
+                    </div>
+                    <p class="hero_description">Еженедельный клуб, где вы&nbsp;регулярно публикуетесь, а&nbsp;не&nbsp;откладываете</p>
+                  </div>
+                  <div class="hero_actions">
+                    <a class="button is-cta" href="#price">Вступить в клуб</a>
+                    <a class="button is-faq-secondary" href="#price">Получить пробные дни</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_hero" id="about" data-hero-variant="c">
+          <div class="padding-global">
+            <div class="container-large">
+
+              <div class="hero_component">
+                <div class="hero_content">
+                  <div class="hero_copy">
+                    <div class="hero_heading-wrapper">
+                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                      <h1 class="hero_heading">Блог психолога, который <span class="hero_heading-highlight">работает на&nbsp;вашу практику</span></h1>
+                    </div>
+                    <p class="hero_description">Еженедельный клуб, где вы&nbsp;регулярно публикуетесь, а&nbsp;не&nbsp;откладываете</p>
+                  </div>
+                  <div class="hero_actions">
+                    <a class="button is-primary" href="#price">Вступить в клуб</a>
+                    <a class="button is-secondary" href="#price">Получить пробные дни</a>
+                  </div>
+                </div>
+                <div class="hero_results">
+                  <article class="hero_result-card is-dark">
+                    <h2 class="hero_result-heading">Узнаваемость</h2>
+                    <p class="hero_result-text">Люди начинают видеть вас регулярно и&nbsp;постепенно запоминают</p>
+                  </article>
+                  <article class="hero_result-card is-light">
+                    <h2 class="hero_result-heading">Доверие</h2>
+                    <p class="hero_result-text">Людям проще понять ваш подход и&nbsp;решиться прийти к&nbsp;вам на&nbsp;консультацию</p>
+                  </article>
+                  <article class="hero_result-card is-warm">
+                    <h2 class="hero_result-heading">Личный бренд</h2>
+                    <p class="hero_result-text">Вы говорите о&nbsp;психологии ясно, бережно и&nbsp;без обещаний быстрого результата</p>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_hero" id="about" data-hero-variant="d">
+          <div class="padding-global">
+            <div class="container-large">
+
+              <div class="hero_component">
+                <div class="hero_content">
+                  <div class="hero_copy">
+                    <div class="hero_heading-wrapper">
+                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                      <h1 class="hero_heading">Блог психолога, который <span class="hero_heading-highlight">работает на&nbsp;вашу практику</span></h1>
+                    </div>
+                    <p class="hero_description">Еженедельный клуб, где вы&nbsp;регулярно публикуетесь, а&nbsp;не&nbsp;откладываете</p>
+                  </div>
+                  <div class="hero_actions">
+                    <a class="button is-primary" href="#price">Вступить в клуб</a>
+                    <a class="button is-secondary" href="#price">Получить пробные дни</a>
+                  </div>
+                </div>
+                <div class="hero_spines" data-hero-spines>
+                  <article class="hero_spine is-active" data-spine>
+                    <img class="hero_spine-background is-violet" src="https://static.tildacdn.com/tild3133-6633-4836-b230-616434363131/bg-1.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="true" aria-controls="hero-spine-d-1">
+                      <span class="hero_spine-number">01</span>
+                      <span class="hero_spine-title">Узнаваемость</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-d-1">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_social">
+                          <div class="hero_app is-threads">
+                            <div class="hero_threads-post">
+                              <div class="hero_threads-side"><span class="hero_app-avatar">АМ</span><span class="hero_threads-line"></span><img class="hero_threads-reply" src="https://static.tildacdn.com/tild6239-3937-4030-b731-323432323439/avatar-3.webp" alt="" /></div>
+                              <div class="hero_threads-body">
+                                <div class="hero_app-name">anna.morozova.psy <span class="hero_app-muted">2 ч</span></div>
+                                <p class="hero_app-text">Почему тревогу нельзя «просто выключить»? Короткая нить о&nbsp;том, что с&nbsp;ней делать</p>
+                                <div class="hero_app-actions"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="hero_app is-telegram">
+                            <div class="hero_telegram-bar"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span class="hero_app-avatar">АМ</span><span class="hero_app-name">Анна Морозова · психолог<span class="hero_app-muted">канал</span></span></div>
+                            <div class="hero_telegram-chat">
+                              <div class="hero_telegram-bubble">
+                                <p class="hero_app-text"><b>Перед первой сессией</b><br />Пять вопросов, которые помогут понять, с&nbsp;чем вы&nbsp;идёте к&nbsp;психологу</p>
+                                <span class="hero_telegram-meta"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>1,2K · 18:30</span>
+                              </div>
+                            </div>
+                            <div class="hero_telegram-join">Подписаться</div>
+                          </div>
+                          <div class="hero_app is-instagram">
+                            <div class="hero_insta-head"><span class="hero_insta-ring"><span class="hero_app-avatar">АМ</span></span><span class="hero_app-name">anna.morozova.psy</span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+                            <img class="hero_insta-photo" src="https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp" alt="" />
+                            <div class="hero_insta-actions"><span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></div>
+                            <p class="hero_app-text"><b>anna.morozova.psy</b> Как понять, что пора к&nbsp;психологу</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Узнаваемость</h2>
+                        <p class="hero_spine-text">Вы появляетесь в&nbsp;ленте каждую неделю, и&nbsp;ваше имя начинают запоминать</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine" data-spine>
+                    <img class="hero_spine-background is-teal" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-d-2">
+                      <span class="hero_spine-number">02</span>
+                      <span class="hero_spine-title">Доверие</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-d-2">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_chat">
+                          <div class="hero_chat-message is-light">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild6336-6538-4463-b930-613239643937/avatar-2.webp" alt="" />
+                            <p>Сохранила ваш пост про тревогу, перечитываю его уже третий раз</p>
+                          </div>
+                          <div class="hero_chat-message is-dark">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild3163-6639-4763-b330-363537646334/avatar-1.webp" alt="" />
+                            <p>Здравствуйте! Можно записаться к&nbsp;вам на&nbsp;консультацию?</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Доверие</h2>
+                        <p class="hero_spine-text">Читатели заранее видят, как вы работаете, и&nbsp;записаться к&nbsp;вам уже не&nbsp;страшно</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine" data-spine>
+                    <img class="hero_spine-background is-coral" src="https://optim.tildacdn.com/tild3231-6635-4666-a334-643638616635/-/format/webp/bg-3.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-d-3">
+                      <span class="hero_spine-number">03</span>
+                      <span class="hero_spine-title">Личный бренд</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-d-3">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_blog">
+                          <span class="hero_blog-ring is-outer"></span>
+                          <span class="hero_blog-ring is-inner"></span>
+                          <span class="hero_blog-track">
+                            <span class="hero_blog-slot" style="--angle: 0deg"><span class="hero_blog-word">экспертиза</span></span>
+                            <span class="hero_blog-slot" style="--angle: 72deg"><span class="hero_blog-word">свой голос</span></span>
+                            <span class="hero_blog-slot" style="--angle: 144deg"><span class="hero_blog-word">своя аудитория</span></span>
+                            <span class="hero_blog-slot" style="--angle: 216deg"><span class="hero_blog-word">доверие</span></span>
+                            <span class="hero_blog-slot" style="--angle: 288deg"><span class="hero_blog-word">популярность</span></span>
+                          </span>
+                          <span class="hero_blog-core">ваш<br />блог</span>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Личный бренд</h2>
+                        <p class="hero_spine-text">Из постов складывается ваш почерк, и&nbsp;к&nbsp;вам приходят именно за&nbsp;ним</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_hero" id="about" data-hero-variant="e">
+          <div class="padding-global">
+            <div class="container-large">
+
+              <div class="hero_component">
+                <div class="hero_content">
+                  <div class="hero_copy">
+                    <div class="hero_heading-wrapper">
+                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                      <h1 class="hero_heading">Блог психолога, который <span class="hero_heading-highlight">работает на&nbsp;вашу практику</span></h1>
+                    </div>
+                    <p class="hero_description">Еженедельный клуб, где вы&nbsp;регулярно публикуетесь, а&nbsp;не&nbsp;откладываете</p>
+                  </div>
+                  <div class="hero_actions">
+                    <a class="button is-primary" href="#price">Вступить в клуб</a>
+                    <a class="button is-secondary" href="#price">Получить пробные дни</a>
+                  </div>
+                </div>
+                <div class="hero_spines is-flat" data-hero-spines>
+                  <article class="hero_spine is-lilac is-on-light is-active" data-spine>
+                    <img class="hero_spine-background is-violet" src="https://static.tildacdn.com/tild3133-6633-4836-b230-616434363131/bg-1.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="true" aria-controls="hero-spine-e-1">
+                      <span class="hero_spine-number">01</span>
+                      <span class="hero_spine-title">Узнаваемость</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-e-1">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_social">
+                          <div class="hero_app is-threads">
+                            <div class="hero_threads-post">
+                              <div class="hero_threads-side"><span class="hero_app-avatar">АМ</span><span class="hero_threads-line"></span><img class="hero_threads-reply" src="https://static.tildacdn.com/tild6239-3937-4030-b731-323432323439/avatar-3.webp" alt="" /></div>
+                              <div class="hero_threads-body">
+                                <div class="hero_app-name">anna.morozova.psy <span class="hero_app-muted">2 ч</span></div>
+                                <p class="hero_app-text">Почему тревогу нельзя «просто выключить»? Короткая нить о&nbsp;том, что с&nbsp;ней делать</p>
+                                <div class="hero_app-actions"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="hero_app is-telegram">
+                            <div class="hero_telegram-bar"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span class="hero_app-avatar">АМ</span><span class="hero_app-name">Анна Морозова · психолог<span class="hero_app-muted">канал</span></span></div>
+                            <div class="hero_telegram-chat">
+                              <div class="hero_telegram-bubble">
+                                <p class="hero_app-text"><b>Перед первой сессией</b><br />Пять вопросов, которые помогут понять, с&nbsp;чем вы&nbsp;идёте к&nbsp;психологу</p>
+                                <span class="hero_telegram-meta"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>1,2K · 18:30</span>
+                              </div>
+                            </div>
+                            <div class="hero_telegram-join">Подписаться</div>
+                          </div>
+                          <div class="hero_app is-instagram">
+                            <div class="hero_insta-head"><span class="hero_insta-ring"><span class="hero_app-avatar">АМ</span></span><span class="hero_app-name">anna.morozova.psy</span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+                            <img class="hero_insta-photo" src="https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp" alt="" />
+                            <div class="hero_insta-actions"><span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></div>
+                            <p class="hero_app-text"><b>anna.morozova.psy</b> Как понять, что пора к&nbsp;психологу</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Узнаваемость</h2>
+                        <p class="hero_spine-text">Вы появляетесь в&nbsp;ленте каждую неделю, и&nbsp;ваше имя начинают запоминать</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine is-warm is-on-light" data-spine>
+                    <img class="hero_spine-background is-teal" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-e-2">
+                      <span class="hero_spine-number">02</span>
+                      <span class="hero_spine-title">Доверие</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-e-2">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_chat">
+                          <div class="hero_chat-message is-light">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild6336-6538-4463-b930-613239643937/avatar-2.webp" alt="" />
+                            <p>Сохранила ваш пост про тревогу, перечитываю его уже третий раз</p>
+                          </div>
+                          <div class="hero_chat-message is-dark">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild3163-6639-4763-b330-363537646334/avatar-1.webp" alt="" />
+                            <p>Здравствуйте! Можно записаться к&nbsp;вам на&nbsp;консультацию?</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Доверие</h2>
+                        <p class="hero_spine-text">Читатели заранее видят, как вы работаете, и&nbsp;записаться к&nbsp;вам уже не&nbsp;страшно</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine is-paper is-on-light" data-spine>
+                    <img class="hero_spine-background is-coral" src="https://optim.tildacdn.com/tild3231-6635-4666-a334-643638616635/-/format/webp/bg-3.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-e-3">
+                      <span class="hero_spine-number">03</span>
+                      <span class="hero_spine-title">Личный бренд</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-e-3">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_blog">
+                          <span class="hero_blog-ring is-outer"></span>
+                          <span class="hero_blog-ring is-inner"></span>
+                          <span class="hero_blog-track">
+                            <span class="hero_blog-slot" style="--angle: 0deg"><span class="hero_blog-word">экспертиза</span></span>
+                            <span class="hero_blog-slot" style="--angle: 72deg"><span class="hero_blog-word">свой голос</span></span>
+                            <span class="hero_blog-slot" style="--angle: 144deg"><span class="hero_blog-word">своя аудитория</span></span>
+                            <span class="hero_blog-slot" style="--angle: 216deg"><span class="hero_blog-word">доверие</span></span>
+                            <span class="hero_blog-slot" style="--angle: 288deg"><span class="hero_blog-word">популярность</span></span>
+                          </span>
+                          <span class="hero_blog-core">ваш<br />блог</span>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Личный бренд</h2>
+                        <p class="hero_spine-text">Из постов складывается ваш почерк, и&nbsp;к&nbsp;вам приходят именно за&nbsp;ним</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_hero" id="about" data-hero-variant="f">
+          <div class="padding-global">
+            <div class="container-large">
+
+              <div class="hero_component">
+                <div class="hero_content">
+                  <div class="hero_copy">
+                    <div class="hero_heading-wrapper">
+                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                      <h1 class="hero_heading">Блог психолога, который <span class="hero_heading-highlight">работает на&nbsp;вашу практику</span></h1>
+                    </div>
+                    <p class="hero_description">Еженедельный клуб, где вы&nbsp;регулярно публикуетесь, а&nbsp;не&nbsp;откладываете</p>
+                  </div>
+                  <div class="hero_actions">
+                    <a class="button is-primary" href="#price">Вступить в клуб</a>
+                    <a class="button is-secondary" href="#price">Получить пробные дни</a>
+                  </div>
+                </div>
+                <div class="hero_spines is-flat" data-hero-spines>
+                  <article class="hero_spine is-black is-active" data-spine>
+                    <img class="hero_spine-background is-violet" src="https://static.tildacdn.com/tild3133-6633-4836-b230-616434363131/bg-1.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="true" aria-controls="hero-spine-f-1">
+                      <span class="hero_spine-number">01</span>
+                      <span class="hero_spine-title">Узнаваемость</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-f-1">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_social">
+                          <div class="hero_app is-threads">
+                            <div class="hero_threads-post">
+                              <div class="hero_threads-side"><span class="hero_app-avatar">АМ</span><span class="hero_threads-line"></span><img class="hero_threads-reply" src="https://static.tildacdn.com/tild6239-3937-4030-b731-323432323439/avatar-3.webp" alt="" /></div>
+                              <div class="hero_threads-body">
+                                <div class="hero_app-name">anna.morozova.psy <span class="hero_app-muted">2 ч</span></div>
+                                <p class="hero_app-text">Почему тревогу нельзя «просто выключить»? Короткая нить о&nbsp;том, что с&nbsp;ней делать</p>
+                                <div class="hero_app-actions"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="hero_app is-telegram">
+                            <div class="hero_telegram-bar"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span class="hero_app-avatar">АМ</span><span class="hero_app-name">Анна Морозова · психолог<span class="hero_app-muted">канал</span></span></div>
+                            <div class="hero_telegram-chat">
+                              <div class="hero_telegram-bubble">
+                                <p class="hero_app-text"><b>Перед первой сессией</b><br />Пять вопросов, которые помогут понять, с&nbsp;чем вы&nbsp;идёте к&nbsp;психологу</p>
+                                <span class="hero_telegram-meta"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>1,2K · 18:30</span>
+                              </div>
+                            </div>
+                            <div class="hero_telegram-join">Подписаться</div>
+                          </div>
+                          <div class="hero_app is-instagram">
+                            <div class="hero_insta-head"><span class="hero_insta-ring"><span class="hero_app-avatar">АМ</span></span><span class="hero_app-name">anna.morozova.psy</span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+                            <img class="hero_insta-photo" src="https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp" alt="" />
+                            <div class="hero_insta-actions"><span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></div>
+                            <p class="hero_app-text"><b>anna.morozova.psy</b> Как понять, что пора к&nbsp;психологу</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Узнаваемость</h2>
+                        <p class="hero_spine-text">Вы появляетесь в&nbsp;ленте каждую неделю, и&nbsp;ваше имя начинают запоминать</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine is-ink" data-spine>
+                    <img class="hero_spine-background is-teal" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-f-2">
+                      <span class="hero_spine-number">02</span>
+                      <span class="hero_spine-title">Доверие</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-f-2">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_chat">
+                          <div class="hero_chat-message is-light">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild6336-6538-4463-b930-613239643937/avatar-2.webp" alt="" />
+                            <p>Сохранила ваш пост про тревогу, перечитываю его уже третий раз</p>
+                          </div>
+                          <div class="hero_chat-message is-dark">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild3163-6639-4763-b330-363537646334/avatar-1.webp" alt="" />
+                            <p>Здравствуйте! Можно записаться к&nbsp;вам на&nbsp;консультацию?</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Доверие</h2>
+                        <p class="hero_spine-text">Читатели заранее видят, как вы работаете, и&nbsp;записаться к&nbsp;вам уже не&nbsp;страшно</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine is-plum" data-spine>
+                    <img class="hero_spine-background is-coral" src="https://optim.tildacdn.com/tild3231-6635-4666-a334-643638616635/-/format/webp/bg-3.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-f-3">
+                      <span class="hero_spine-number">03</span>
+                      <span class="hero_spine-title">Личный бренд</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-f-3">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_blog">
+                          <span class="hero_blog-ring is-outer"></span>
+                          <span class="hero_blog-ring is-inner"></span>
+                          <span class="hero_blog-track">
+                            <span class="hero_blog-slot" style="--angle: 0deg"><span class="hero_blog-word">экспертиза</span></span>
+                            <span class="hero_blog-slot" style="--angle: 72deg"><span class="hero_blog-word">свой голос</span></span>
+                            <span class="hero_blog-slot" style="--angle: 144deg"><span class="hero_blog-word">своя аудитория</span></span>
+                            <span class="hero_blog-slot" style="--angle: 216deg"><span class="hero_blog-word">доверие</span></span>
+                            <span class="hero_blog-slot" style="--angle: 288deg"><span class="hero_blog-word">популярность</span></span>
+                          </span>
+                          <span class="hero_blog-core">ваш<br />блог</span>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Личный бренд</h2>
+                        <p class="hero_spine-text">Из постов складывается ваш почерк, и&nbsp;к&nbsp;вам приходят именно за&nbsp;ним</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_hero" id="about" data-hero-variant="g">
+          <div class="padding-global">
+            <div class="container-large">
+
+              <div class="hero_component">
+                <div class="hero_content">
+                  <div class="hero_copy">
+                    <div class="hero_heading-wrapper">
+                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                      <h1 class="hero_heading">Блог психолога, который <span class="hero_heading-highlight">работает на&nbsp;вашу практику</span></h1>
+                    </div>
+                    <p class="hero_description">Еженедельный клуб, где вы&nbsp;регулярно публикуетесь, а&nbsp;не&nbsp;откладываете</p>
+                  </div>
+                  <div class="hero_actions">
+                    <a class="button is-primary" href="#price">Вступить в клуб</a>
+                    <a class="button is-secondary" href="#price">Получить пробные дни</a>
+                  </div>
+                </div>
+                <div class="hero_spines is-flat" data-hero-spines>
+                  <article class="hero_spine is-black is-active" data-spine>
+                    <img class="hero_spine-background is-violet" src="https://static.tildacdn.com/tild3133-6633-4836-b230-616434363131/bg-1.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="true" aria-controls="hero-spine-g-1">
+                      <span class="hero_spine-number">01</span>
+                      <span class="hero_spine-title">Узнаваемость</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-g-1">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_social">
+                          <div class="hero_app is-threads">
+                            <div class="hero_threads-post">
+                              <div class="hero_threads-side"><span class="hero_app-avatar">АМ</span><span class="hero_threads-line"></span><img class="hero_threads-reply" src="https://static.tildacdn.com/tild6239-3937-4030-b731-323432323439/avatar-3.webp" alt="" /></div>
+                              <div class="hero_threads-body">
+                                <div class="hero_app-name">anna.morozova.psy <span class="hero_app-muted">2 ч</span></div>
+                                <p class="hero_app-text">Почему тревогу нельзя «просто выключить»? Короткая нить о&nbsp;том, что с&nbsp;ней делать</p>
+                                <div class="hero_app-actions"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="hero_app is-telegram">
+                            <div class="hero_telegram-bar"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span class="hero_app-avatar">АМ</span><span class="hero_app-name">Анна Морозова · психолог<span class="hero_app-muted">канал</span></span></div>
+                            <div class="hero_telegram-chat">
+                              <div class="hero_telegram-bubble">
+                                <p class="hero_app-text"><b>Перед первой сессией</b><br />Пять вопросов, которые помогут понять, с&nbsp;чем вы&nbsp;идёте к&nbsp;психологу</p>
+                                <span class="hero_telegram-meta"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>1,2K · 18:30</span>
+                              </div>
+                            </div>
+                            <div class="hero_telegram-join">Подписаться</div>
+                          </div>
+                          <div class="hero_app is-instagram">
+                            <div class="hero_insta-head"><span class="hero_insta-ring"><span class="hero_app-avatar">АМ</span></span><span class="hero_app-name">anna.morozova.psy</span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+                            <img class="hero_insta-photo" src="https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp" alt="" />
+                            <div class="hero_insta-actions"><span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></div>
+                            <p class="hero_app-text"><b>anna.morozova.psy</b> Как понять, что пора к&nbsp;психологу</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Узнаваемость</h2>
+                        <p class="hero_spine-text">Вы появляетесь в&nbsp;ленте каждую неделю, и&nbsp;ваше имя начинают запоминать</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine is-paper is-on-light" data-spine>
+                    <img class="hero_spine-background is-teal" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-g-2">
+                      <span class="hero_spine-number">02</span>
+                      <span class="hero_spine-title">Доверие</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-g-2">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_chat">
+                          <div class="hero_chat-message is-light">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild6336-6538-4463-b930-613239643937/avatar-2.webp" alt="" />
+                            <p>Сохранила ваш пост про тревогу, перечитываю его уже третий раз</p>
+                          </div>
+                          <div class="hero_chat-message is-dark">
+                            <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild3163-6639-4763-b330-363537646334/avatar-1.webp" alt="" />
+                            <p>Здравствуйте! Можно записаться к&nbsp;вам на&nbsp;консультацию?</p>
+                          </div>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Доверие</h2>
+                        <p class="hero_spine-text">Читатели заранее видят, как вы работаете, и&nbsp;записаться к&nbsp;вам уже не&nbsp;страшно</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                  <article class="hero_spine is-warm is-on-light" data-spine>
+                    <img class="hero_spine-background is-coral" src="https://optim.tildacdn.com/tild3231-6635-4666-a334-643638616635/-/format/webp/bg-3.webp" alt="" aria-hidden="true" />
+                    <div class="hero_grain" aria-hidden="true"></div>
+                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-g-3">
+                      <span class="hero_spine-number">03</span>
+                      <span class="hero_spine-title">Личный бренд</span>
+                    </button>
+                    <div class="hero_spine-panel" id="hero-spine-g-3">
+                      <div class="hero_spine-visual" aria-hidden="true">
+                        <div class="hero_blog">
+                          <span class="hero_blog-ring is-outer"></span>
+                          <span class="hero_blog-ring is-inner"></span>
+                          <span class="hero_blog-track">
+                            <span class="hero_blog-slot" style="--angle: 0deg"><span class="hero_blog-word">экспертиза</span></span>
+                            <span class="hero_blog-slot" style="--angle: 72deg"><span class="hero_blog-word">свой голос</span></span>
+                            <span class="hero_blog-slot" style="--angle: 144deg"><span class="hero_blog-word">своя аудитория</span></span>
+                            <span class="hero_blog-slot" style="--angle: 216deg"><span class="hero_blog-word">доверие</span></span>
+                            <span class="hero_blog-slot" style="--angle: 288deg"><span class="hero_blog-word">популярность</span></span>
+                          </span>
+                          <span class="hero_blog-core">ваш<br />блог</span>
+                        </div></div>
+                      <div class="hero_spine-copy">
+                        <h2 class="hero_spine-heading">Личный бренд</h2>
+                        <p class="hero_spine-text">Из постов складывается ваш почерк, и&nbsp;к&nbsp;вам приходят именно за&nbsp;ним</p>
+                      </div>
+                    </div>
+                    <span class="hero_spine-progress" aria-hidden="true"></span>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_problem" id="inside" data-node-id="611:1188">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="problem_component">
+                <div class="problem_stage" data-node-id="611:1189">
+                  <h2 class="problem_heading">
+                    Вы умеете помогать, а&nbsp;за стенами кабинета о&nbsp;вас знают единицы
+                  </h2>
+
+                  <div class="problem_visuals">
+                    <article class="problem_feed-card">
+                      <div class="problem_feed-header">
+                        <h3 class="problem_feed-heading">
+                          Что чаще всего попадает в&nbsp;ленту?
+                        </h3>
+                        <div class="problem_feed-skeleton" aria-hidden="true">
+                          <span></span>
+                          <span></span>
+                        </div>
+                      </div>
+
+                      <div class="problem_feed-body">
+                        <p class="problem_feed-caption">
+                          В ленте выигрывает громкость — и собирает миллионы просмотров
+                        </p>
+                      </div>
+
+                      <div class="problem_feed-topics" aria-label="Примеры популярных тем">
+                        <div class="problem_topic-card is-first">
+                          «5 признаков нарцисса»
+                        </div>
+                        <div class="problem_topic-card is-second">
+                          «Исцели травму за выходные»
+                        </div>
+                        <div class="problem_topic-card is-third">
+                          «Гороскоп вашей привязанности»
+                        </div>
+                      </div>
+                    </article>
+
+                    <div class="problem_profile-viewport">
+                      <img
+                        class="problem_profile-image"
+                        src="https://static.tildacdn.com/tild3232-6134-4632-a639-653139663937/profil-psihologa-ins.png"
+                        alt="Профиль психолога в Instagram с публикациями и статистикой"
+                        title="Пример профессионального профиля психолога"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <img
+                        class="problem_profile-image is-blur-layer"
+                        src="https://static.tildacdn.com/tild3232-6134-4632-a639-653139663937/profil-psihologa-ins.png"
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="problem_messages">
+                  <div class="problem_message is-light" data-node-id="611:1213">
+                    <p>
+                      Вы пробовали вести блог. Темы есть, но в текст они не собираются.
+                      Пишете пост — звучит сухо. Записываете рилс — будто не вы.
+                      Публикуете редко. Потом снова пропадаете.
+                    </p>
+                  </div>
+
+                  <div class="problem_message is-dark" data-node-id="611:1215">
+                    <p>
+                      Кажется, чтобы вести блог, надо упрощать и кричать. А вам важно
+                      говорить честно — и не превращать психологию в шоу.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_cta" id="register" data-node-id="611:1217">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="cta_component">
+                <img
+                  class="cta_background-image"
+                  src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="cta_grain" aria-hidden="true"></div>
+
+                <div class="cta_content">
+                  <div class="cta_copy">
+                    <h2 class="cta_heading">
+                      Дело не&nbsp;в&nbsp;том, что&nbsp;вы чего-то не&nbsp;умеете
+                    </h2>
+                    <p class="cta_description">
+                      Обычно не хватает системы, ритма и людей рядом. В одиночку
+                      контент быстро снова уходит «на потом».
+                    </p>
+                  </div>
+
+                  <a class="button is-cta" href="#price">
+                    Вступить в клуб
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_tabs" id="results" data-node-id="611:1227">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="tabs_component">
+                <div class="tabs_header">
+                  <div class="tabs_heading-wrapper">
+                    <div class="tabs_eyebrow">
+                      Почему здесь доходят до результата
+                    </div>
+                    <h2 class="tabs_heading">
+                      <span class="tabs_heading-line">Клуб собран из&nbsp;того,</span>
+                      <span class="tabs_heading-line">
+                        что&nbsp;<span class="tabs_heading-highlight">держит в&nbsp;работе</span>
+                      </span>
+                    </h2>
+                  </div>
+                  <p class="tabs_description">
+                    Вы привыкли опираться на проверенное — странно было бы строить
+                    блог иначе. Здесь есть ритм, разборы и среда, в которой материалы
+                    доходят до публикации.
+                  </p>
+                </div>
+
+                <div class="tabs_layout">
+                  <div class="tabs_navigation">
+                    <div class="tabs_list" role="tablist" aria-label="Причины результата">
+                      <button
+                        class="tabs_trigger"
+                        id="result-tab-1"
+                        type="button"
+                        role="tab"
+                        aria-selected="true"
+                        aria-controls="result-panel-1"
+                        tabindex="0"
+                      >
+                        <span class="tabs_trigger-number">1</span>
+                        <span>Доводят идеи до готового материала</span>
+                      </button>
+                      <button
+                        class="tabs_trigger"
+                        id="result-tab-2"
+                        type="button"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="result-panel-2"
+                        tabindex="-1"
+                      >
+                        <span class="tabs_trigger-number">2</span>
+                        <span>Работают не только по вдохновению</span>
+                      </button>
+                      <button
+                        class="tabs_trigger"
+                        id="result-tab-3"
+                        type="button"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="result-panel-3"
+                        tabindex="-1"
+                      >
+                        <span class="tabs_trigger-number">3</span>
+                        <span>Не застревают в бесконечных правках</span>
+                      </button>
+                      <button
+                        class="tabs_trigger"
+                        id="result-tab-4"
+                        type="button"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="result-panel-4"
+                        tabindex="-1"
+                      >
+                        <span class="tabs_trigger-number">4</span>
+                        <span>Получают посильные, но развивающие задания</span>
+                      </button>
+                      <button
+                        class="tabs_trigger"
+                        id="result-tab-5"
+                        type="button"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="result-panel-5"
+                        tabindex="-1"
+                      >
+                        <span class="tabs_trigger-number">5</span>
+                        <span>Остаются в среде, где хочется работать</span>
+                      </button>
+                    </div>
+
+                    <a class="button is-tabs" href="#price">Вступить в клуб</a>
+                  </div>
+
+                  <div class="tabs_panels">
+                    <article
+                      class="tabs_panel"
+                      id="result-panel-1"
+                      role="tabpanel"
+                      aria-labelledby="result-tab-1"
+                      tabindex="0"
+                    >
+                      <h3 class="tabs_panel-heading">Доходят до&nbsp;результата, а&nbsp;не&nbsp;бросают</h3>
+                      <div class="tabs_panel-content">
+                        <div class="tabs_reason-card">
+                          <h4>Почему это работает?</h4>
+                          <p>Контент редко остаётся невыпущенным из-за нехватки идей. Чаще работа просто растягивается: задачу можно отложить, дедлайн сдвинуть, а почти готовый черновик оставить ещё на неделю. Поэтому в клубе важны не только материалы, а понятный ритм работы и точка, в которой её нужно завершить.</p>
+                        </div>
+                        <div class="tabs_feature-grid">
+                          <div class="tabs_feature-card is-light">
+                            <h4>Еженедельный цикл</h4>
+                            <p>Каждая неделя — законченный цикл: вы делаете материал, выкладываете его, разбираете работы коллег и фиксируете, что берёте в следующую работу.</p>
+                          </div>
+                          <div class="tabs_feature-card is-dark">
+                            <h4>Видимый результат</h4>
+                            <p>Вместо ощущения «я опять собираюсь начать» у вас остаётся готовый материал. Неделя за неделей из этого собирается не архив черновиков, а живая библиотека опубликованного контента.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article
+                      class="tabs_panel"
+                      id="result-panel-2"
+                      role="tabpanel"
+                      aria-labelledby="result-tab-2"
+                      tabindex="0"
+                      hidden
+                    >
+                      <h3 class="tabs_panel-heading">Контент не&nbsp;зависит от&nbsp;настроения</h3>
+                      <div class="tabs_panel-content">
+                        <div class="tabs_reason-card">
+                          <h4>Почему это работает?</h4>
+                          <p>Если ждать подходящего состояния, контент всё время будет проигрывать делам, клиентам и усталости. Вдохновение помогает, но регулярность появляется не из него, а из понятной системы: тема, задача, созвон, дедлайн, публикация.</p>
+                        </div>
+                        <div class="tabs_feature-grid">
+                          <div class="tabs_feature-card is-light">
+                            <h4>Ритм вместо рывков</h4>
+                            <p>Раз в неделю вы возвращаетесь к контенту вместе с группой. Не нужно каждый раз заново собирать мотивацию: есть встреча, понятная задача и следующий шаг.</p>
+                          </div>
+                          <div class="tabs_feature-card is-dark">
+                            <h4>Стабильное присутствие</h4>
+                            <p>Вы появляетесь в ленте не только тогда, когда «накрыло идеей». Люди начинают видеть вас регулярно — и постепенно запоминают ваш голос, темы и подход.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article
+                      class="tabs_panel"
+                      id="result-panel-3"
+                      role="tabpanel"
+                      aria-labelledby="result-tab-3"
+                      tabindex="0"
+                      hidden
+                    >
+                      <h3 class="tabs_panel-heading">Вы перестаёте удалять готовые рилсы</h3>
+                      <div class="tabs_panel-content">
+                        <div class="tabs_reason-card">
+                          <h4>Почему это работает?</h4>
+                          <p>Часто материал уже можно публиковать, но рука всё равно тянется переписать ещё раз. Не потому что текст плохой, а потому что одному трудно понять, где правда надо поправить, а где уже пора остановиться.</p>
+                        </div>
+                        <div class="tabs_feature-grid">
+                          <div class="tabs_feature-card is-light">
+                            <h4>Разбор перед выпуском</h4>
+                            <p>На разборе видно, что мешает материалу: слабый заход, лишние объяснения, слишком общий вывод или просто страх нажать «опубликовать».</p>
+                          </div>
+                          <div class="tabs_feature-card is-dark">
+                            <h4>Меньше зависших черновиков</h4>
+                            <p>Вы уходите не с ощущением «надо ещё посидеть», а с понятным списком правок — или с решением выпускать как есть.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article
+                      class="tabs_panel"
+                      id="result-panel-4"
+                      role="tabpanel"
+                      aria-labelledby="result-tab-4"
+                      tabindex="0"
+                      hidden
+                    >
+                      <h3 class="tabs_panel-heading">Задания развивают, но&nbsp;не&nbsp;перегружают</h3>
+                      <div class="tabs_panel-content">
+                        <div class="tabs_reason-card">
+                          <h4>Почему это работает?</h4>
+                          <p>Если задача слишком лёгкая, она не двигает навык. Если слишком большая — её откладывают. Рабочий рост происходит в посильном напряжении: чуть сложнее, чем обычно, но достаточно понятно, чтобы сделать.</p>
+                        </div>
+                        <div class="tabs_feature-grid">
+                          <div class="tabs_feature-card is-light">
+                            <h4>Несколько уровней задачи</h4>
+                            <p>В каждом задании есть простой вход и вариант глубже. Можно сделать минимально и не выпасть из ритма, а можно усложнить, если есть силы и время.</p>
+                          </div>
+                          <div class="tabs_feature-card is-dark">
+                            <h4>Рост без&nbsp;срыва темпа</h4>
+                            <p>Вы двигаетесь в своём темпе: достаточно трудно, чтобы расти, и достаточно посильно, чтобы продолжать. Контент не превращается в ещё одну непосильную обязанность.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article
+                      class="tabs_panel"
+                      id="result-panel-5"
+                      role="tabpanel"
+                      aria-labelledby="result-tab-5"
+                      tabindex="0"
+                      hidden
+                    >
+                      <h3 class="tabs_panel-heading">Хочется остаться, а&nbsp;не&nbsp;сбежать</h3>
+                      <div class="tabs_panel-content">
+                        <div class="tabs_reason-card">
+                          <h4>Почему это работает?</h4>
+                          <p>Контент легче делать не в одиночку, а в месте, куда понятно зачем возвращаться. Там есть ритм, люди рядом и ощущение, что вы не единственный специалист, которому бывает сложно писать о своей работе.</p>
+                        </div>
+                        <div class="tabs_feature-grid">
+                          <div class="tabs_feature-card is-light">
+                            <h4>Рабочая среда</h4>
+                            <p>В клубе видно, как другие выбирают темы, сомневаются, правят тексты и всё-таки публикуют. Это возвращает к работе лучше, чем обещание «с понедельника начать».</p>
+                          </div>
+                          <div class="tabs_feature-card is-dark">
+                            <h4>Проще продолжать</h4>
+                            <p>Вы не выпадаете после одной неудачной недели. Можно вернуться в общий ритм, взять следующую задачу и снова сделать материал.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_impact-cta" data-node-id="611:1273">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="impact-cta_component">
+                <img
+                  class="impact-cta_background-image"
+                  src="https://optim.tildacdn.com/tild3231-6635-4666-a334-643638616635/-/format/webp/bg-3.webp"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="impact-cta_grain" aria-hidden="true"></div>
+
+                <div class="impact-cta_content">
+                  <div class="impact-cta_copy">
+                    <div class="impact-cta_heading-wrapper">
+                      <div class="impact-cta_eyebrow">
+                        Это больше, чем личный блог
+                      </div>
+                      <h2 class="impact-cta_heading">
+                        Каждый пост влияет на&nbsp;то, как&nbsp;люди видят психологическую помощь
+                      </h2>
+                    </div>
+
+                    <p class="impact-cta_description">
+                      Люди выбирают специалиста не только по образованию и рекомендациям.
+                      Они смотрят, как вы говорите о сложном: спокойно, честно, без
+                      упрощений и обещаний быстрого результата.
+                    </p>
+                  </div>
+
+                  <div class="impact-cta_note">
+                    <p>
+                      <strong>Ваш блог помогает найти не только клиентов.</strong>
+                      Он делает бережный подход заметнее там, где его часто перекрывают
+                      громкие советы, диагнозы по сторис и простые ответы на сложные вопросы.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="impact-cta_visual" aria-label="Пример публикации психолога">
+                  <div class="impact-cta_post is-back" aria-hidden="true">
+                    <img
+                      src="https://static.tildacdn.com/tild3838-3362-4239-a163-623631316634/psiholog-vystuplenie.png"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <div class="impact-cta_post is-front">
+                    <img
+                      src="https://static.tildacdn.com/tild3838-3362-4239-a163-623631316634/psiholog-vystuplenie.png"
+                      alt="Психолог Анна Морозова выступает с микрофоном на встрече"
+                      title="Публикация психолога о профессиональной встрече"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_bot" data-node-id="611:1288">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="bot_component">
+                <div class="bot_header">
+                  <div class="bot_heading-wrapper">
+                    <div class="bot_eyebrow">Бот-помощник</div>
+                    <h2 class="bot_heading">
+                      Контент не&nbsp;должен занимать весь вечер
+                    </h2>
+                  </div>
+                  <p class="bot_description">
+                    Отправляете видео, голосовое или тему — бот собирает из этого
+                    разговорный рилс, черновик поста или сценарий для публикации
+                  </p>
+                </div>
+
+                <div class="bot_content">
+                  <div class="bot_media-grid">
+                    <div class="bot_demo-card">
+                      <img
+                        class="bot_demo-background"
+                        src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp"
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div class="bot_demo-grain" aria-hidden="true"></div>
+                      <img
+                        class="bot_demo-interface"
+                        src="https://static.tildacdn.com/tild3664-3035-4562-a434-343933643065/telegram-bot-podgoto.webp"
+                        alt="Telegram-бот превращает голосовое сообщение психолога в готовый пост"
+                        title="Подготовка публикации с помощью Telegram-бота"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+
+                    <div
+                      class="bot_video-compare"
+                      data-video-compare
+                      style="--compare-position: 30.6%"
+                    >
+                      <video
+                        class="bot_video-layer is-after"
+                        data-compare-video="after"
+                        src="https://static.tildacdn.com/vide3763-3036-4630-b163-373266326531/video-after-optimize.mp4"
+                        poster="./assets/content-video-poster.png"
+                        aria-label="Итоговый рилс после подготовки"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                        preload="auto"
+                      ></video>
+
+                      <div class="bot_video-before" aria-hidden="true">
+                        <video
+                          class="bot_video-layer is-before"
+                          data-compare-video="before"
+                          src="https://static.tildacdn.com/vide3266-6230-4665-b063-393530376261/video-before-optimiz.mp4"
+                          poster="./assets/content-video-poster.png"
+                          autoplay
+                          muted
+                          loop
+                          playsinline
+                          preload="auto"
+                        ></video>
+                      </div>
+
+                      <button
+                        class="bot_sound-button"
+                        type="button"
+                        data-sound-toggle
+                        data-node-id="697:324"
+                        aria-label="Включить звук"
+                        aria-pressed="false"
+                      >
+                        <span class="bot_sound-surface">
+                          <img
+                            class="bot_sound-icon is-muted"
+                            src="https://static.tildacdn.com/tild3965-3732-4361-a166-303962636531/volume-off_1.svg"
+                            alt=""
+                            aria-hidden="true"
+                            draggable="false"
+                          />
+                          <img
+                            class="bot_sound-icon is-playing"
+                            src="https://static.tildacdn.com/tild3336-3030-4366-b466-363934626631/volume-2_1.svg"
+                            alt=""
+                            aria-hidden="true"
+                            draggable="false"
+                          />
+                        </span>
+                      </button>
+
+                      <div class="bot_compare-divider" aria-hidden="true">
+                        <span class="bot_compare-handle" data-node-id="611:1308">
+                          <svg
+                            class="bot_compare-arrow is-left"
+                            width="16"
+                            height="18"
+                            viewBox="0 0 16 18"
+                            fill="none"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <path d="M1 10.6632C-0.333333 9.8934 -0.333334 7.9689 1 7.1991L13 0.2709C14.3333 -0.498902 16 0.46335 16 2.00295L16 15.8594C16 17.399 14.3333 18.3612 13 17.5914L1 10.6632Z" fill="#332F41" />
+                          </svg>
+                          <svg
+                            class="bot_compare-arrow is-right"
+                            width="16"
+                            height="18"
+                            viewBox="0 0 16 18"
+                            fill="none"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <path d="M15 7.1991C16.3333 7.9689 16.3333 9.8934 15 10.6632L3 17.5914C1.66667 18.3612 2.44076e-07 17.399 2.25717e-07 15.8594L6.04806e-08 2.00295C4.2121e-08 0.463349 1.66667 -0.498901 3 0.270899L15 7.1991Z" fill="#332F41" />
+                          </svg>
+                        </span>
+                      </div>
+
+                      <input
+                        class="bot_compare-range"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value="30.6"
+                        step="0.1"
+                        aria-label="Показать результат до или после обработки"
+                        aria-valuetext="31% исходного видео"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="bot_feature-grid">
+                    <article class="bot_feature-card">
+                      <span class="bot_feature-icon" aria-hidden="true">✍️</span>
+                      <div class="bot_feature-copy">
+                        <h3>Сценарий</h3>
+                        <p>
+                          Опишите тему — получите хук, структуру и черновик сценария.
+                          Не нужно начинать с пустого экрана
+                        </p>
+                      </div>
+                    </article>
+
+                    <article class="bot_feature-card">
+                      <span class="bot_feature-icon" aria-hidden="true">💡</span>
+                      <div class="bot_feature-copy">
+                        <h3>Идеи</h3>
+                        <p>
+                          Темы для вашего блога и заготовки подписей — чтобы не
+                          придумывать каждый раз с нуля, о чём говорить дальше
+                        </p>
+                      </div>
+                    </article>
+
+                    <article class="bot_feature-card">
+                      <span class="bot_feature-icon" aria-hidden="true">📊</span>
+                      <div class="bot_feature-copy">
+                        <h3>Контент-радар</h3>
+                        <p>
+                          Исследования, инфоповоды и форматы по вашим темам — с
+                          короткой выжимкой и ссылками на источники.
+                        </p>
+                      </div>
+                    </article>
+
+                    <article class="bot_feature-card">
+                      <span class="bot_feature-icon" aria-hidden="true">🎬</span>
+                      <div class="bot_feature-copy">
+                        <h3>ИИ-помощник</h3>
+                        <p>
+                          Черновики, подписи, адаптация текста и субтитры — для задач,
+                          которые обычно съедают время перед публикацией
+                        </p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_host" id="curator" data-node-id="611:1335">
+          <div class="padding-global">
+            <div class="container-large">
+              <article class="host_component">
+                <div class="host_photo-wrapper">
+                  <img
+                    class="host_photo"
+                    src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp"
+                    alt="Психолог Роман Дубченко, ведущий мастерской"
+                    title="Роман Дубченко — психолог и ведущий мастерской"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+
+                <div class="host_content">
+                  <div class="host_identity">
+                    <div class="host_heading-wrapper">
+                      <div class="host_eyebrow">Кто ведет</div>
+                      <h2 class="host_heading">Роман Дубченко</h2>
+                    </div>
+                    <p class="host_meta">
+                      психолог · предприниматель · автор блога @romind.psy
+                    </p>
+                  </div>
+
+                  <p class="host_description">
+                    Ведёт мастерскую и сам каждую неделю проходит тот же путь, что и
+                    участники: выбирает тему, собирает материал и доводит его до
+                    публикации. Разбирает не теорию, а живую работу — прямо по ходу
+                    процесса.
+                  </p>
+
+                  <a
+                    class="button is-film"
+                    href="https://www.youtube.com/watch?v=1rr9vQ0VCDQ&amp;t=151s"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span class="host_play-icon" aria-hidden="true">
+                      <svg viewBox="0 0 16 18" focusable="false">
+                        <path d="M15 9 1 17V1l14 8Z"></path>
+                      </svg>
+                    </span>
+                    <span>Смотреть фильм о работе с EMDR</span>
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_calls" data-node-id="611:1355">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="calls_component">
+                <div class="calls_header">
+                  <div class="calls_heading-wrapper">
+                    <div class="calls_eyebrow">Живые созвоны</div>
+                    <h2 class="calls_heading">
+                      Что происходит на&nbsp;живых созвонах
+                    </h2>
+                  </div>
+                  <p class="calls_description">
+                    Это рабочая встреча, а не лекция фоном. Вы приходите с тем, что
+                    сделали за неделю, дорабатываете материал вместе с группой и
+                    уходите с понятным шагом дальше.
+                  </p>
+                </div>
+
+                <div class="calls_layout">
+                  <ol class="calls_timeline">
+                    <li class="calls_step">
+                      <span class="calls_step-number">1</span>
+                      <div class="calls_step-copy">
+                        <h3>Сверяемся</h3>
+                        <p>
+                          Каждый коротко говорит, с чем пришёл: что получилось, где
+                          застрял и какой материал хочет довести до публикации. Без
+                          длинных отчётов.
+                        </p>
+                      </div>
+                    </li>
+
+                    <li class="calls_step">
+                      <span class="calls_step-number">2</span>
+                      <div class="calls_step-copy">
+                        <h3>Возвращаемся к&nbsp;планам</h3>
+                        <p>
+                          Смотрим, что удалось сделать из намеченного на прошлой
+                          неделе. Не для контроля, а чтобы не терять связь между
+                          планом и реальной работой.
+                        </p>
+                      </div>
+                    </li>
+
+                    <li class="calls_step">
+                      <span class="calls_step-number">3</span>
+                      <div class="calls_step-copy">
+                        <h3>Делаем короткую практику</h3>
+                        <p>
+                          Небольшая практика помогает выйти из самокритики и
+                          вернуться к задаче: не оценивать себя, а спокойно продолжить
+                          работу с материалом.
+                        </p>
+                      </div>
+                    </li>
+
+                    <li class="calls_step">
+                      <span class="calls_step-number">4</span>
+                      <div class="calls_step-copy">
+                        <h3>Осваиваем один приём</h3>
+                        <p>
+                          Берём один инструмент — например, заход для рилса или
+                          структуру поста. Роман показывает на примере, потом вы
+                          пробуете на своей теме.
+                        </p>
+                      </div>
+                    </li>
+
+                    <li class="calls_step">
+                      <span class="calls_step-number">5</span>
+                      <div class="calls_step-copy">
+                        <h3>Разбираем работы</h3>
+                        <p>
+                          Смотрим готовые и почти готовые материалы. Отмечаем, что
+                          уже работает, что можно усилить и что лучше убрать.
+                          Обсуждаем контент, а не человека.
+                        </p>
+                      </div>
+                    </li>
+
+                    <li class="calls_step is-last">
+                      <span class="calls_step-number">6</span>
+                      <div class="calls_step-copy">
+                        <h3>Планируем следующую неделю</h3>
+                        <p>
+                          Вы выбираете посильное задание на неделю и фиксируете один
+                          понятный шаг: что именно сделать до следующего созвона.
+                        </p>
+                      </div>
+                    </li>
+                  </ol>
+
+                  <div class="calls_image-wrapper">
+                    <img
+                      class="calls_image"
+                      src="https://static.tildacdn.com/tild3436-6463-4438-b431-393262613462/gruppovoy-sozvon-psi.webp"
+                      alt="Групповой онлайн-созвон психологов в клубе"
+                      title="Живой групповой созвон психологов"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_outcomes" data-node-id="611:1402">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="outcomes_component">
+                <div class="outcomes_header">
+                  <div class="outcomes_eyebrow">Результат</div>
+                  <h2 class="outcomes_heading">Что&nbsp;вы получаете</h2>
+                </div>
+
+                <div class="outcomes_grid">
+                  <div class="outcomes_primary-grid">
+                    <article class="outcomes_card is-dark is-large">
+                      <span class="outcomes_icon" aria-hidden="true">🔁</span>
+                      <div class="outcomes_card-copy">
+                        <h3>Регулярный контент</h3>
+                        <p>
+                          Ритм, созвоны и задания помогают каждую неделю доводить
+                          материал до публикации
+                        </p>
+                      </div>
+                    </article>
+
+                    <div class="outcomes_stack">
+                      <article class="outcomes_card is-dark is-small">
+                        <span class="outcomes_icon" aria-hidden="true">📈</span>
+                        <div class="outcomes_card-copy">
+                          <h3>Новые обращения</h3>
+                          <p>
+                            Людям проще понять ваш подход и решиться прийти к вам на
+                            консультацию
+                          </p>
+                        </div>
+                      </article>
+
+                      <article class="outcomes_card is-light is-small">
+                        <span class="outcomes_icon" aria-hidden="true">⏳</span>
+                        <div class="outcomes_card-copy">
+                          <h3>Время на&nbsp;главное</h3>
+                          <p>
+                            Бот берёт на себя монтаж, субтитры, черновики и поиск идей
+                          </p>
+                        </div>
+                      </article>
+                    </div>
+
+                    <article class="outcomes_card is-warm is-large">
+                      <span class="outcomes_icon" aria-hidden="true">🔁</span>
+                      <div class="outcomes_card-copy">
+                        <h3>Профессиональный голос</h3>
+                        <p>
+                          Вы говорите о психологии ясно, бережно и без обещаний
+                          быстрого результата
+                        </p>
+                      </div>
+                    </article>
+                  </div>
+
+                  <article class="outcomes_card is-support">
+                    <span class="outcomes_icon" aria-hidden="true">🤝</span>
+                    <div class="outcomes_card-copy">
+                      <h3>Опора</h3>
+                      <p>
+                        Рядом люди, которым можно показать черновик, свериться и не
+                        бросить материал на середине
+                      </p>
+                    </div>
+                    <div class="outcomes_members" aria-hidden="true">
+                      <img
+                        class="outcomes_orbit is-large"
+                        src="https://static.tildacdn.com/tild3537-6532-4336-b032-626562343966/ellipse-large.svg"
+                        alt=""
+                      />
+                      <img
+                        class="outcomes_orbit is-medium"
+                        src="https://static.tildacdn.com/tild6130-3561-4236-b839-333834623533/ellipse-medium.svg"
+                        alt=""
+                      />
+                      <img
+                        class="outcomes_orbit is-small"
+                        src="https://static.tildacdn.com/tild3364-3264-4065-a665-376661316662/Ellipse-small.svg"
+                        alt=""
+                      />
+
+                      <span class="outcomes_member is-left">
+                        <img
+                          src="https://static.tildacdn.com/tild3163-6639-4763-b330-363537646334/avatar-1.webp"
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                      <span class="outcomes_member is-middle">
+                        <img
+                          src="https://static.tildacdn.com/tild6336-6538-4463-b930-613239643937/avatar-2.webp"
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                      <span class="outcomes_member is-right">
+                        <img
+                          src="https://static.tildacdn.com/tild6239-3937-4030-b731-323432323439/avatar-3.webp"
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_pricing" id="price" data-node-id="611:1448">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="pricing_component">
+                <div class="pricing_header">
+                  <h2 class="pricing_heading">Ваш опыт заслуживает большей видимости</h2>
+                  <p class="pricing_description">
+                    Вы умеете помогать людям. Клуб помогает регулярно рассказывать
+                    об этом: собирать из практики понятный контент, публиковать его и
+                    не оставаться с этим в одиночку.
+                  </p>
+                </div>
+
+                <div class="pricing_card">
+                  <img
+                    class="pricing_background"
+                    src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp"
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="pricing_grain" aria-hidden="true"></div>
+                  <svg class="pricing_icon-definitions" aria-hidden="true">
+                    <symbol id="content-workshop-pricing-sparkle" viewBox="0 0 24 24">
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M11.2984 3.44685C11.5765 2.85105 12.4234 2.85105 12.7015 3.44685L15.0811 8.54535C15.1576 8.71005 15.29 8.84235 15.4556 8.91885L20.5531 11.2984C21.1489 11.5765 21.1489 12.4234 20.5531 12.7015L15.4556 15.0811C15.29 15.1576 15.1576 15.2899 15.0811 15.4546L12.7015 20.5531C12.4234 21.1489 11.5765 21.1489 11.2984 20.5531L8.91975 15.4546C8.84235 15.2899 8.71005 15.1576 8.54535 15.0811L3.44685 12.7015C2.85105 12.4234 2.85105 11.5765 3.44685 11.2984L8.54535 8.91885C8.71005 8.84235 8.84235 8.71005 8.91975 8.54535L11.2984 3.44685Z"
+                        fill="none"
+                        stroke="white"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </symbol>
+                  </svg>
+
+                  <div class="pricing_offer-main">
+                    <div class="pricing_eyebrow">Подписка</div>
+                    <p class="pricing_price">
+                      <strong>9 900 ₽</strong> <span>в месяц</span>
+                    </p>
+                  </div>
+
+                  <div class="pricing_benefits">
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Стартовый набор для&nbsp;монтажа</h3>
+                      <p>Шрифты, звуки и базовые элементы оформления для рилсов и коротких видео</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Поддержка в&nbsp;создании контента</h3>
+                      <p>Вы не остаётесь один на один с идеями: рядом есть группа, задания и обратная связь</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Амбассадорская программа АСП</h3>
+                      <p>Самые креативные участники могут получить приглашение в программу Академии</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Еженедельный рабочий ритм</h3>
+                      <p>Каждая неделя заканчивается готовым материалом, а не новым списком идей</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Живые созвоны</h3>
+                      <p>Показываете черновики, пробуете приёмы и получаете обратную связь по работе</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Бот-помощник и&nbsp;напоминания</h3>
+                      <p>Бот помогает с видео, сценариями, идеями и не даёт неделе раствориться</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Библиотека шаблонов</h3>
+                      <p>Опоры для постов, сторис, рилсов и сценариев, с которых легче начать</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Задания разной сложности</h3>
+                      <p>Выбираете формат и объём, которые реально сделать на этой неделе</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Обратная связь по&nbsp;работе</h3>
+                      <p>Конкретно: что уже работает, что усилить и что можно убрать</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Среда без&nbsp;гонки</h3>
+                      <p>Без рейтингов и сравнения по охватам — с фокусом на регулярность и качество</p>
+                    </article>
+                    <article class="pricing_benefit">
+                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Гибкие условия</h3>
+                      <p>Без годовых обязательств и сложных условий: подписку можно остановить в любой момент</p>
+                    </article>
+                  </div>
+
+                  <div class="pricing_action">
+                    <a class="button is-pricing" href="#popup:getcourse">
+                      Оформить подписку
+                    </a>
+                    <p>
+                      Помесячная подписка без долгого контракта. Остановить можно в
+                      любой момент.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section_faq" id="questions" data-node-id="611:1504">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="faq_component">
+                <div class="faq_intro">
+                  <img
+                    class="faq_background"
+                    src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp"
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="faq_grain" aria-hidden="true"></div>
+                  <div class="faq_heading-wrapper">
+                    <div class="faq_eyebrow">Частые вопросы</div>
+                    <h2 class="faq_heading">В&nbsp;клуб можно прийти не&nbsp;«готовым блогером», а&nbsp;живым специалистом</h2>
+                  </div>
+                  <div class="faq_actions">
+                    <a class="button is-faq-primary" href="#popup:getcourse">Вступить в клуб</a>
+                    <!-- Ссылка взята с живой страницы 06.11.2026: вопрос задают в Telegram-боте Академии. Адрес бота можно менять. -->
+                    <a class="button is-faq-secondary" href="https://t.me/Welcometoasp_bot" target="_blank" rel="noopener noreferrer">Задать вопрос</a>
+                  </div>
+                </div>
+
+                <div class="faq_list" id="faq-list">
+                  <div class="faq_item" data-accordion-item>
+                    <button class="faq_question" id="faq-question-1" type="button" aria-expanded="false" aria-controls="faq-answer-1">
+                      <span>Я хочу вести контент, но&nbsp;у&nbsp;меня плотная практика и&nbsp;мало свободного времени</span><span class="faq_icon" aria-hidden="true"></span>
+                    </button>
+                    <div class="faq_answer" id="faq-answer-1" role="region" aria-labelledby="faq-question-1" aria-hidden="true">
+                      <div class="faq_answer-inner">
+                        <p>Это нормальная стартовая точка. Клуб не&nbsp;требует ежедневных публикаций и&nbsp;постоянного присутствия в&nbsp;сторис. Мы строим процесс вокруг маленьких регулярных шагов: одна единица контента в&nbsp;неделю, работа прямо на&nbsp;созвоне и&nbsp;помощь бота с&nbsp;рутиной.</p>
+                        <p>Вам не&nbsp;нужно освобождать целые дни под блог. Достаточно встроиться в&nbsp;понятный ритм, где контент перестаёт быть огромной задачей «на&nbsp;потом» и&nbsp;становится частью профессиональной практики.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="faq_item" data-accordion-item>
+                    <button class="faq_question" id="faq-question-2" type="button" aria-expanded="false" aria-controls="faq-answer-2">
+                      <span>Мне комфортнее начинать с&nbsp;текстов, а&nbsp;не&nbsp;сразу с&nbsp;видео</span><span class="faq_icon" aria-hidden="true"></span>
+                    </button>
+                    <div class="faq_answer" id="faq-answer-2" role="region" aria-labelledby="faq-question-2" aria-hidden="true">
+                      <div class="faq_answer-inner">
+                        <p>Так тоже можно. В&nbsp;клубе камера не&nbsp;является обязательным входом. Вы можете начать с&nbsp;текстов, каруселей, заметок, сторис, ответов на&nbsp;частые вопросы клиентов и&nbsp;коротких профессиональных наблюдений.</p>
+                        <p>Главная задача на&nbsp;старте — научиться ясно формулировать свои мысли и&nbsp;регулярно выпускать их наружу. А&nbsp;видео можно подключить позже, если и&nbsp;когда появится готовность.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="faq_item" data-accordion-item>
+                    <button class="faq_question" id="faq-question-3" type="button" aria-expanded="false" aria-controls="faq-answer-3">
+                      <span>Мне важно, чтобы контент звучал профессионально и&nbsp;бережно</span><span class="faq_icon" aria-hidden="true"></span>
+                    </button>
+                    <div class="faq_answer" id="faq-answer-3" role="region" aria-labelledby="faq-question-3" aria-hidden="true">
+                      <div class="faq_answer-inner">
+                        <p>Это хорошая опора, а&nbsp;не&nbsp;проблема. В&nbsp;клубе мы не&nbsp;делаем контент ради хайпа или громких заявлений. Мы учимся говорить о&nbsp;сложных темах ясно, аккуратно и&nbsp;этично, чтобы вас понимали не&nbsp;только коллеги, но&nbsp;и&nbsp;потенциальные клиенты.</p>
+                        <p>Обратная связь устроена бережно: мы обсуждаем не&nbsp;вас как специалиста, а&nbsp;конкретный материал — где усилить мысль, что упростить, какой пример добавить, как сохранить точность и&nbsp;при этом не&nbsp;перегрузить текст.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="faq_item" data-accordion-item>
+                    <button class="faq_question" id="faq-question-4" type="button" aria-expanded="false" aria-controls="faq-answer-4">
+                      <span>Мне не&nbsp;нужен ещё один курс в&nbsp;записи — мне нужна практика и&nbsp;поддержка</span><span class="faq_icon" aria-hidden="true"></span>
+                    </button>
+                    <div class="faq_answer" id="faq-answer-4" role="region" aria-labelledby="faq-question-4" aria-hidden="true">
+                      <div class="faq_answer-inner">
+                        <p>Клуб отличается от&nbsp;курса тем, что здесь вы не&nbsp;просто смотрите уроки. Вы регулярно делаете контент: выбираете тему, собираете материал, получаете обратную связь, дорабатываете и&nbsp;публикуете. Есть ритм, группа, дедлайны, куратор и&nbsp;бот — среда, которая помогает не&nbsp;бросить после первого вдохновения.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer_component" data-node-id="700:338">
+        <div class="padding-global">
+          <div class="container-large">
+            <div class="footer_inner">
+              <div class="footer_top" data-node-id="700:532">
+                <div class="footer_identity" data-node-id="700:492">
+                  <a class="footer_logo" href="https://modern-psy.ru/" aria-label="Академия Современной Психологии — на главную">
+                    <img
+                      class="footer_logo-image"
+                      src="https://static.tildacdn.com/tild6138-3163-4231-a430-353235306465/logo-asp.svg"
+                      alt="Академия Современной Психологии"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+
+                  <div class="footer_contacts" data-node-id="700:493">
+                    <div class="footer_contact-list">
+                      <div class="footer_phone-wrapper">
+                        <a class="footer_contact-link" href="tel:+78122504276">+7 812 250-42-76</a>
+                        <span class="footer_contact-label">Отдел продаж</span>
+                      </div>
+                      <a class="footer_contact-link" href="mailto:info@modern-psy.ru">info@modern-psy.ru</a>
+                    </div>
+
+                    <div class="footer_socials" aria-label="Академия в социальных сетях" data-node-id="700:499">
+                      <a class="footer_social-link" href="https://www.youtube.com/@modernpsy" target="_blank" rel="noopener" aria-label="YouTube Академии">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M18.806 5.122c.875.255 1.552.973 1.773 1.882.562 1.679.559 8.35 0 9.954-.221.909-.898 1.627-1.773 1.882-1.574.589-12.039.57-13.612 0-.858-.241-1.53-.926-1.773-1.807-.562-1.654-.561-8.349 0-9.991.221-.91.897-1.627 1.773-1.882 1.573-.571 12.038-.571 13.612-.038Z" />
+                          <path d="m14.519 12.427-3.672 2.088a.47.47 0 0 1-.703-.408V9.931a.47.47 0 0 1 .703-.41l3.672 2.088a.47.47 0 0 1 0 .818Z" />
+                        </svg>
+                      </a>
+                      <a class="footer_social-link" href="https://t.me/modernpsyacademy" target="_blank" rel="noopener" aria-label="Telegram Академии">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M7.782 3h8.435C19.165 3 21 5.081 21 8.026v7.948C21 18.919 19.165 21 16.216 21H7.782C4.834 21 3 18.919 3 15.974V8.026C3 5.081 4.843 3 7.782 3Z" />
+                          <path d="m10.373 13.6-1.997-1.171c-.753-.441-.653-1.56.165-1.862l5.655-2.092c.829-.307 1.636.5 1.33 1.329l-2.092 5.655c-.304.819-1.422.918-1.863.164L10.4 13.627a.073.073 0 0 0-.027-.027Z" />
+                        </svg>
+                      </a>
+                      <a class="footer_social-link" href="https://vk.com/modernpsyacademy" target="_blank" rel="noopener" aria-label="VK Академии">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M7.782 3h8.435C19.165 3 21 5.081 21 8.026v7.948C21 18.919 19.165 21 16.216 21H7.782C4.834 21 3 18.919 3 15.974V8.026C3 5.081 4.843 3 7.782 3Z" />
+                          <path d="M16.925 8.984c-.326.663-.729 1.291-1.22 1.842-.439.492-.954.906-1.576 1.132-.42.148-.847.189-1.279.201M16.925 15.329c-.326-.663-.729-1.291-1.22-1.842-.439-.486-.954-.906-1.576-1.132-.42-.148-.847-.189-1.279-.195h-.635M10.928 8.988h1.267v6.334c-3.784 0-5.154-4.591-5.154-6.334" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <nav class="footer_legal" aria-label="Правовая информация" data-node-id="700:520">
+                  <a href="https://modern-psy.ru/oferta" target="_blank" rel="noopener">Публичная оферта</a>
+                  <a href="https://modern-psy.ru/privacy?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Политика конфиденциальности</a>
+                  <a href="https://modern-psy.ru/agreement?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Согласие на обработку персональных данных</a>
+                  <a href="https://modern-psy.ru/documents?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Сведения об образовательной организации</a>
+                  <a href="https://islod.obrnadzor.gov.ru/rlic/details/da67f5b1-2fd3-daeb-9904-9e381afa5ee8/" target="_blank" rel="noopener">Образовательная лицензия</a>
+                  <a href="https://modern-psy.ru/documents?utm_source=web&amp;utm_medium=cpc&amp;utm_campaign=footer">Документы</a>
+                </nav>
+
+                <address class="footer_details" data-node-id="700:486">
+                  <p>197198, г. Санкт-Петербург, вн.тер.г. Муниципальный Округ Введенский, пр-т Большой П.с., д. 7/4, литера А, помещ. 2-Н</p>
+                  <div class="footer_registration">
+                    <span>ОГРН 1217800102783</span>
+                    <span>ИНН/КПП 7839141929/781301001</span>
+                  </div>
+                </address>
+              </div>
+
+              <div class="footer_bottom" data-node-id="700:516">
+                <p>© <span data-current-year>2026</span> Академия Современной Психологии</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="./script.js"></script>
+  
+    <nav class="draft_switch" aria-label="Варианты первого экрана">
+      <a data-v="a" href="?v=a">А · без картинок</a>
+      <a data-v="b" href="?v=b">Б · тёмная карточка</a>
+      <a data-v="c" href="?v=c">В · три результата</a>
+      <a data-v="d" href="?v=d">Г · корешки</a>
+      <a data-v="e" href="?v=e">Д · светлые</a>
+      <a data-v="f" href="?v=f">Е · тёмные</a>
+      <a data-v="g" href="?v=g">Ж · смешанные</a>
+    </nav>
+    <script>
+      // На телефоне полоса прокручивается: показываем открытый вариант посередине
+      (function () {
+        var bar = document.querySelector(".draft_switch");
+        var current = bar && bar.querySelector('a[data-v="' + document.documentElement.dataset.v + '"]');
+        if (current) bar.scrollLeft = current.offsetLeft - (bar.clientWidth - current.offsetWidth) / 2;
+      })();
+    </script>
+    <script>
+      (() => {
+        document.querySelectorAll("[data-hero-spines]").forEach((root) => {
+        if (root.dataset.spinesInitialized === "true") return;
+        root.dataset.spinesInitialized = "true";
+        const items = [...root.querySelectorAll("[data-spine]")];
+        const wide = window.matchMedia("(min-width: 62rem)");
+        const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let current = Math.max(0, items.findIndex((item) => item.classList.contains("is-active")));
+        let hovered = false, focused = false, inView = false, stopped = false, hoverTimer = 0;
+
+        const activate = (index) => {
+          current = (index + items.length) % items.length;
+          items.forEach((item, i) => {
+            const active = i === current;
+            item.classList.toggle("is-active", active);
+            item.querySelector(".hero_spine-trigger").setAttribute("aria-expanded", String(active));
+          });
+        };
+        const sync = () => {
+          root.classList.toggle("is-auto", wide.matches && !reduce.matches && !stopped);
+          root.classList.toggle("is-paused", hovered || focused || !inView);
+        };
+
+        items.forEach((item, index) => {
+          const trigger = item.querySelector(".hero_spine-trigger");
+          trigger.addEventListener("click", () => { stopped = true; activate(index); sync(); });
+          // На компьютере корешок раскрывается и от наведения, с небольшой задержкой.
+          item.addEventListener("mouseenter", () => {
+            if (!fine.matches || index === current) return;
+            hoverTimer = window.setTimeout(() => activate(index), 160);
+          });
+          item.addEventListener("mouseleave", () => window.clearTimeout(hoverTimer));
+          item.querySelector(".hero_spine-progress").addEventListener("animationend", () => {
+            if (index === current) activate(current + 1);
+          });
+        });
+
+        root.addEventListener("mouseenter", () => { hovered = true; sync(); });
+        root.addEventListener("mouseleave", () => { hovered = false; sync(); });
+        root.addEventListener("focusin", () => { focused = true; sync(); });
+        root.addEventListener("focusout", () => { focused = false; sync(); });
+        new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; sync(); }, { threshold: 0.4 }).observe(root);
+        wide.addEventListener("change", sync);
+        reduce.addEventListener("change", sync);
+
+        root.classList.add("is-enhanced");
+        activate(current);
+        sync();
+        });
+      })();
+    </script>
+  </body>
+</html>
