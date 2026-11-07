@@ -1252,7 +1252,489 @@
         .pain_card { padding: 1.25rem 1rem; gap: 1rem; }
         .pain_bridge { font-size: 1.25rem; }
       }
+
+      /* ---------- Блок 4: для кого этот клуб ---------- */
+      .section_who { padding-bottom: var(--space-between-sections); }
+      .who_component {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3.5rem;
+      }
+      .who_heading {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: clamp(2.25rem, 2.857vw, 3rem);
+        font-weight: 700;
+        line-height: 1.125;
+        letter-spacing: -0.025em;
+        text-align: center;
+        text-wrap: balance;
+      }
+      .who_grid {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      /* Поля и фон у карточки внутри li: сброс страницы снимает padding у li */
+      .who_item { display: flex; min-width: 0; }
+      .who_card {
+        display: flex;
+        min-height: 20rem;
+        padding: 1.5rem;
+        flex: 1;
+        flex-direction: column;
+        gap: 1.5rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      /* Три полоски: с какой точки приходит человек */
+      .who_level { display: flex; gap: 0.25rem; }
+      .who_level-bar {
+        width: 1.75rem;
+        height: 0.375rem;
+        background: #eeeeef;
+        border-radius: 1rem;
+      }
+      .who_level-bar.is-on { background: var(--color-text-button); }
+      .who_title {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.2143;
+        letter-spacing: -0.02em;
+      }
+      .who_gets {
+        display: flex;
+        margin-top: auto;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .who_label {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .who_list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .who_list-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.625rem;
+        font-size: 1.125rem;
+        line-height: 1.4;
+        letter-spacing: -0.01em;
+      }
+      /* Галочка нарисована CSS, без файла иконки */
+      .who_check {
+        position: relative;
+        width: 1.125rem;
+        height: 1.125rem;
+        margin-top: 0.1875rem;
+        flex: none;
+        background: var(--color-highlight);
+        border-radius: 50%;
+      }
+      .who_check::after {
+        position: absolute;
+        top: 0.2rem;
+        left: 0.375rem;
+        width: 0.3125rem;
+        height: 0.5rem;
+        border: solid var(--color-text-button);
+        border-width: 0 2px 2px 0;
+        content: "";
+        transform: rotate(45deg);
+      }
+      .who_actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+      }
+
+      @media screen and (max-width: 74.9375rem) {
+        .who_title { font-size: 1.5rem; }
+        .who_list-item { font-size: 1rem; }
+      }
+      @media screen and (max-width: 61.9375rem) {
+        .who_component { gap: 2.5rem; }
+        .who_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+        .who_grid { grid-template-columns: minmax(0, 1fr); }
+        .who_card { min-height: 0; }
+        /* Кнопки по ширине карточек: две половины, края совпадают с карточками;
+           если места на две мало, встают друг под другом */
+        .who_actions { width: 100%; }
+        .who_actions .button { flex: 1 1 18rem; }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .who_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+        .who_card { padding: 1.25rem 1rem; gap: 1.25rem; }
+        .who_actions { flex-direction: column; }
+        .who_actions .button { flex: none; width: 100%; }
+      }
+
+      /* ---------- Блок 5: что меняется за время в клубе ---------- */
+      .section_growth { padding-bottom: var(--space-between-sections); }
+      .growth_component {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3.5rem;
+      }
+      .growth_header {
+        display: flex;
+        max-width: 50rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+      .growth_heading {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: clamp(2.25rem, 2.857vw, 3rem);
+        font-weight: 700;
+        line-height: 1.125;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      /* Оговорка про средний срез: заметная, но спокойная */
+      .growth_note {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 1.125rem;
+        line-height: 1.4;
+      }
+
+      /* Вариант 1: три шага по времени */
+      .results_timeline {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      .results_stage { display: flex; min-width: 0; }
+      .results_card {
+        display: flex;
+        padding: 1.5rem;
+        flex: 1;
+        flex-direction: column;
+        gap: 1.25rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      /* Полгода — итог, тёмная карточка, как итог цепочки в блоке 2 */
+      .results_stage.is-final .results_card { background: #000000; color: #ffffff; }
+      .results_when {
+        display: flex;
+        margin: 0;
+        align-items: baseline;
+        gap: 0.375rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .results_prefix, .results_unit { font-size: 1.5rem; line-height: 1; }
+      .results_number { font-size: 4.5rem; line-height: 0.9; letter-spacing: -0.04em; }
+      /* Полоса полугода: заполнена на 1, 3 и 6 месяцев из 6 */
+      .results_bar {
+        position: relative;
+        height: 0.375rem;
+        overflow: clip;
+        background: #eeeeef;
+        border-radius: 1rem;
+      }
+      .results_bar::after {
+        position: absolute;
+        inset: 0;
+        background: var(--color-text-button);
+        border-radius: inherit;
+        content: "";
+        transform: scaleX(var(--share));
+        transform-origin: left;
+      }
+      .results_stage.is-final .results_bar { background: rgba(255, 255, 255, 0.24); }
+      .results_stage.is-final .results_bar::after { background: var(--color-highlight); }
+      .results_list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+      }
+      .results_list-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.625rem;
+        font-size: 1.125rem;
+        line-height: 1.4;
+        letter-spacing: -0.01em;
+      }
+      /* Галочка нарисована CSS */
+      .results_check {
+        position: relative;
+        width: 1.125rem;
+        height: 1.125rem;
+        margin-top: 0.1875rem;
+        flex: none;
+        background: var(--color-highlight);
+        border-radius: 50%;
+      }
+      .results_check::after {
+        position: absolute;
+        top: 0.2rem;
+        left: 0.375rem;
+        width: 0.3125rem;
+        height: 0.5rem;
+        border: solid var(--color-text-button);
+        border-width: 0 2px 2px 0;
+        content: "";
+        transform: rotate(45deg);
+      }
+      .results_quotes {
+        display: flex;
+        margin-top: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      .results_quotes-label {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .results_quote {
+        margin: 0;
+        padding: 0.625rem 0.875rem;
+        background: #eeeeef;
+        border-radius: 0.875rem 0.875rem 0.875rem 0.25rem;
+        color: var(--color-text-button);
+        font-size: 1rem;
+        line-height: 1.35;
+      }
+
+      /* Вариант 2: стена результатов без месяцев, с цитатами из анкет */
+      .results_wall {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      .results_tile { display: flex; min-width: 0; }
+      .results_tile-inner {
+        display: flex;
+        min-height: 8.5rem;
+        padding: 1.25rem;
+        flex: 1;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 1rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      .results_tile.is-quote .results_tile-inner {
+        background: #000000;
+        border-radius: 1rem 1rem 1rem 0.25rem;
+        color: #ffffff;
+      }
+      .results_tile.is-quote .results_quotes-label { color: #c9c6d1; }
+      .results_tile-text {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: -0.015em;
+      }
+
+      /* Переключение вариантов (только для черновика) */
+      [data-results-variant="2"] { display: none; }
+      html[data-results="2"] [data-results-variant="1"] { display: none; }
+      html[data-results="2"] .results_wall[data-results-variant="2"] { display: grid; }
+
+      /* ---------- Истории участников ---------- */
+      .section_cases { padding-bottom: var(--space-between-sections); }
+      /* Тёмная плашка, как у историй студентов на странице КПТ Оксфордская модель */
+      .cases_component {
+        display: flex;
+        width: 100%;
+        max-width: 75rem;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 4rem 2rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        background: #000000;
+        border-radius: 1rem;
+      }
+      .cases_header {
+        display: flex;
+        max-width: 50rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+      .cases_heading {
+        margin: 0;
+        color: #ffffff;
+        font-size: clamp(2.25rem, 2.857vw, 3rem);
+        font-weight: 700;
+        line-height: 1.125;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .cases_description {
+        margin: 0;
+        color: #f5f5f5;
+        font-size: 1.25rem;
+        font-weight: 500;
+        line-height: 1.3;
+      }
+      .cases_list {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      .cases_item { display: flex; min-width: 0; }
+      .cases_card {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 1rem;
+        color: #ffffff;
+      }
+      /* Место фото: пока плашка с инициалами, фон из цветов ленты первого экрана */
+      .cases_photo {
+        position: relative;
+        display: flex;
+        aspect-ratio: 6 / 5;
+        padding: 1rem;
+        align-items: flex-end;
+        overflow: clip;
+        border-radius: 0.875rem;
+      }
+      .cases_photo.is-lilac { background: linear-gradient(160deg, #beacf4, #f1eef8); }
+      .cases_photo.is-warm { background: linear-gradient(160deg, #fdf2d4, #f6dcb4); }
+      .cases_photo.is-light { background: linear-gradient(160deg, #eeeeef, #cfcbd8); }
+      .cases_initials {
+        position: absolute;
+        top: 42%;
+        left: 50%;
+        color: rgba(51, 47, 65, 0.32);
+        font-size: 4.5rem;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        transform: translate(-50%, -50%);
+      }
+      /* С чем пришёл: тёмная подпись поверх фото */
+      .cases_before {
+        position: relative;
+        margin: 0;
+        padding: 0.75rem 0.875rem;
+        background: rgba(0, 0, 0, 0.72);
+        border-radius: 0.625rem;
+        color: #ffffff;
+        font-size: 0.9375rem;
+        line-height: 1.35;
+        backdrop-filter: blur(6px);
+      }
+      .cases_name {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+      /* Что изменилось: первая фраза светлая и жирная, дальше приглушённо */
+      .cases_after {
+        margin: 0;
+        color: #c9c6d1;
+        font-size: 1.0625rem;
+        line-height: 1.45;
+      }
+      .cases_after strong { color: #ffffff; font-weight: 600; }
+
+      @media screen and (max-width: 74.9375rem) {
+        .results_list-item { font-size: 1rem; }
+        .results_number { font-size: 3.75rem; }
+        .results_tile-text { font-size: 1.125rem; }
+      }
+      @media screen and (max-width: 61.9375rem) {
+        .growth_component { gap: 2.5rem; }
+        .growth_heading, .cases_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+        .results_timeline { max-width: 40rem; grid-template-columns: minmax(0, 1fr); }
+        .results_wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .cases_component { padding: 3rem 2rem; gap: 2.5rem; }
+      }
+      /* Телефон: истории листаются вбок внутри плашки, как на странице КПТ */
+      @media screen and (max-width: 47.9375rem) {
+        .cases_list {
+          grid-template-columns: none;
+          grid-auto-columns: 82%;
+          grid-auto-flow: column;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          scrollbar-width: none;
+        }
+        .cases_item { scroll-snap-align: start; }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .growth_heading, .cases_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+        .growth_note { font-size: 1rem; }
+        .results_card { padding: 1.25rem 1rem; }
+        .results_wall { grid-template-columns: minmax(0, 1fr); }
+        .results_tile-inner { min-height: 0; }
+        .cases_component { padding: 2.5rem 1rem; }
+        .cases_description { font-size: 1rem; }
+      }
+
+      /* Полоска выбора варианта блока 5 (только черновик) */
+      .draft_switch {
+        position: fixed;
+        z-index: 200;
+        bottom: 1rem;
+        left: 50%;
+        display: flex;
+        max-width: calc(100% - 2rem);
+        padding: 0.25rem;
+        gap: 0.25rem;
+        overflow-x: auto;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 3rem;
+        transform: translateX(-50%);
+        backdrop-filter: blur(4px);
+        scrollbar-width: none;
+      }
+      .draft_switch span,
+      .draft_switch a {
+        flex: none;
+        padding: 0.5rem 1rem;
+        border-radius: 3rem;
+        color: #ffffff;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .draft_switch span { color: #c9c6d1; font-weight: 500; }
+      html:not([data-results="2"]) .draft_switch a[data-r="1"],
+      html[data-results="2"] .draft_switch a[data-r="2"] { background: #ffffff; color: #000000; }
     </style>
+    <script>
+      // Черновик: какой вариант блока 5 показывать (?results=2 — без месяцев)
+      if (new URLSearchParams(location.search).get("results") === "2") document.documentElement.dataset.results = "2";
+    </script>
   </head>
   <body class="academy-page">
     <div class="page-wrapper">
@@ -1630,6 +2112,178 @@
                     Вступить в клуб
                   </a>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_who" aria-labelledby="who-heading">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="who_component">
+                <h2 class="who_heading" id="who-heading">Для кого этот клуб</h2>
+                <ul class="who_grid">
+                    <li class="who_item">
+                      <div class="who_card">
+                        <span class="who_level" aria-hidden="true"><span class="who_level-bar is-on"></span><span class="who_level-bar"></span><span class="who_level-bar"></span></span>
+                        <h3 class="who_title">Только начинаете вести блог</h3>
+                        <div class="who_gets">
+                          <p class="who_label">Что получите</p>
+                          <ul class="who_list">
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Простые задания</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Поддержку куратора</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Ответ на&nbsp;вопрос «с&nbsp;чего начать»</span></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="who_item">
+                      <div class="who_card">
+                        <span class="who_level" aria-hidden="true"><span class="who_level-bar is-on"></span><span class="who_level-bar is-on"></span><span class="who_level-bar"></span></span>
+                        <h3 class="who_title">Ведёте блог нерегулярно</h3>
+                        <div class="who_gets">
+                          <p class="who_label">Что получите</p>
+                          <ul class="who_list">
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Ритм</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Дедлайны</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Обратную связь</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Привычку</span></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="who_item">
+                      <div class="who_card">
+                        <span class="who_level" aria-hidden="true"><span class="who_level-bar is-on"></span><span class="who_level-bar is-on"></span><span class="who_level-bar is-on"></span></span>
+                        <h3 class="who_title">Хотите получить систему</h3>
+                        <div class="who_gets">
+                          <p class="who_label">Что получите</p>
+                          <ul class="who_list">
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Контент-план</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Инструменты</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Рабочий процесс, который можно масштабировать</span></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                </ul>
+                <div class="who_actions">
+                  <a class="button is-primary" href="#price">Воспользоваться пробным периодом</a>
+                  <a class="button is-secondary" href="#cases">Посмотреть результаты участников</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_growth" id="growth" aria-labelledby="growth-heading">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="growth_component">
+                <div class="growth_header">
+                  <h2 class="growth_heading" id="growth-heading">Что меняется за&nbsp;время в&nbsp;клубе</h2>
+                  <p class="growth_note">У&nbsp;каждого свой темп. Здесь средний срез по&nbsp;участникам клуба</p>
+                </div>
+                <ol class="results_timeline" data-results-variant="1">
+                    <li class="results_stage">
+                      <div class="results_card">
+                        <p class="results_when"><span class="results_prefix">через</span> <span class="results_number">1</span> <span class="results_unit">месяц</span></p>
+                        <span class="results_bar" aria-hidden="true" style="--share: 0.16666666666666666"></span>
+                        <ul class="results_list">
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Вы&nbsp;опубликовали первые материалы</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Есть понятный ритм недели</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Пропал страх «белого листа»</span></li>
+                        </ul>
+                        <div class="results_quotes">
+                          <p class="results_quotes-label">Из&nbsp;анкет участников</p>
+                          <p class="results_quote">«Опубликовала то, что откладывала»</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="results_stage">
+                      <div class="results_card">
+                        <p class="results_when"><span class="results_prefix">через</span> <span class="results_number">3</span> <span class="results_unit">месяца</span></p>
+                        <span class="results_bar" aria-hidden="true" style="--share: 0.5"></span>
+                        <ul class="results_list">
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Регулярность стала привычкой</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Сложился узнаваемый стиль</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Вы&nbsp;знаете, о&nbsp;чём писать</span></li>
+                        </ul>
+                        <div class="results_quotes">
+                          <p class="results_quotes-label">Из&nbsp;анкет участников</p>
+                          <p class="results_quote">«Наконец придумала, о&nbsp;чём писать»</p>
+                          <p class="results_quote">«Стала выходить регулярнее»</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="results_stage is-final">
+                      <div class="results_card">
+                        <p class="results_when"><span class="results_prefix">через</span> <span class="results_number">6</span> <span class="results_unit">месяцев</span></p>
+                        <span class="results_bar" aria-hidden="true" style="--share: 1"></span>
+                        <ul class="results_list">
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Блог стал частью практики</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>О&nbsp;вас говорят «видела ваш пост»</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Появляются обращения с&nbsp;упоминанием блога</span></li>
+                        </ul>
+                      </div>
+                    </li>
+                </ol>
+                <ul class="results_wall" data-results-variant="2">
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Первые материалы опубликованы</p></div></li>
+                    <li class="results_tile is-quote"><div class="results_tile-inner"><span class="results_quotes-label">Из&nbsp;анкеты</span><p class="results_tile-text">«Опубликовала то, что откладывала»</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Понятный ритм недели</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Нет страха «белого листа»</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Регулярность стала привычкой</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Сложился узнаваемый стиль</p></div></li>
+                    <li class="results_tile is-quote"><div class="results_tile-inner"><span class="results_quotes-label">Из&nbsp;анкеты</span><p class="results_tile-text">«Наконец придумала, о&nbsp;чём писать»</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Понятно, о&nbsp;чём писать</p></div></li>
+                    <li class="results_tile is-quote"><div class="results_tile-inner"><span class="results_quotes-label">Из&nbsp;анкеты</span><p class="results_tile-text">«Стала выходить регулярнее»</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Блог стал частью практики</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">О&nbsp;вас говорят «видела ваш пост»</p></div></li>
+                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Появляются обращения с&nbsp;упоминанием блога</p></div></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_cases" id="cases" aria-labelledby="cases-heading">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="cases_component">
+                <div class="cases_header">
+                  <h2 class="cases_heading" id="cases-heading">Как клуб раскрывает специалиста</h2>
+                  <p class="cases_description">Истории участников: с&nbsp;чем они пришли в&nbsp;клуб и&nbsp;что изменилось</p>
+                </div>
+                <ul class="cases_list">
+                    <li class="cases_item">
+                      <article class="cases_card">
+                        <div class="cases_photo is-lilac">
+                          <span class="cases_initials" aria-hidden="true">АГ</span>
+                          <p class="cases_before">Два года веду блог в&nbsp;Телеграме и&nbsp;считал себя пишущим человеком. Инстаграм и&nbsp;видео казались пугающими и&nbsp;непонятными</p>
+                        </div>
+                        <h3 class="cases_name">Андрей Громов</h3>
+                        <p class="cases_after"><strong>За&nbsp;два месяца закрыл большинство целей.</strong> Записал первые рилсы, хотя думал, что это не&nbsp;моё, и&nbsp;теперь кайфую от&nbsp;монтажа и&nbsp;сценариев</p>
+                      </article>
+                    </li>
+                    <li class="cases_item">
+                      <article class="cases_card">
+                        <div class="cases_photo is-warm">
+                          <span class="cases_initials" aria-hidden="true">ЛШ</span>
+                          <p class="cases_before">Несколько раз безуспешно начинала блог. Было страшно показаться некомпетентной, странной, глупой</p>
+                        </div>
+                        <h3 class="cases_name">Лера Шахова</h3>
+                        <p class="cases_after"><strong>Начала вести блог, и&nbsp;сковывающего страха больше нет.</strong> Монтаж уже не&nbsp;кажется жутким, а&nbsp;рядом коллеги: «здесь я&nbsp;не&nbsp;одна»</p>
+                      </article>
+                    </li>
+                    <li class="cases_item">
+                      <article class="cases_card">
+                        <div class="cases_photo is-light">
+                          <span class="cases_initials" aria-hidden="true">СС</span>
+                          <p class="cases_before">Между желанием вести блог и&nbsp;действиями была огромная пропасть. Было страшно и&nbsp;непонятно, с&nbsp;какой стороны подступиться</p>
+                        </div>
+                        <h3 class="cases_name">Саша Сванидзе</h3>
+                        <p class="cases_after"><strong>Стала увереннее, многое попробовала и, главное, начала делать.</strong> Контент-машиной не&nbsp;стала, но&nbsp;для меня это уже большой результат</p>
+                      </article>
+                    </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -2655,6 +3309,11 @@
 
     <script src="./script.js"></script>
   
+    <nav class="draft_switch" aria-label="Варианты блока 5">
+      <span>Блок 5</span>
+      <a data-r="1" href="?results=1#growth">1 · по месяцам</a>
+      <a data-r="2" href="?results=2#growth">2 · без месяцев</a>
+    </nav>
     <script>
       (() => {
         document.querySelectorAll("[data-hero-spines]").forEach((root) => {
