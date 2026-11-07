@@ -1555,11 +1555,6 @@
         letter-spacing: -0.015em;
       }
 
-      /* Переключение вариантов (только для черновика) */
-      [data-results-variant="2"] { display: none; }
-      html[data-results="2"] [data-results-variant="1"] { display: none; }
-      html[data-results="2"] .results_wall[data-results-variant="2"] { display: grid; }
-
       /* ---------- Истории участников ---------- */
       .section_cases { padding-bottom: var(--space-between-sections); }
       /* Тёмная плашка, как у историй студентов на странице КПТ Оксфордская модель */
@@ -1673,7 +1668,8 @@
       @media screen and (max-width: 61.9375rem) {
         .growth_component { gap: 2.5rem; }
         .growth_heading, .cases_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
-        .results_timeline { max-width: 40rem; grid-template-columns: minmax(0, 1fr); }
+        /* Планшет: карточки друг под другом на всю ширину, как в блоке 4 */
+        .results_timeline { grid-template-columns: minmax(0, 1fr); }
         .results_wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .cases_component { padding: 3rem 2rem; gap: 2.5rem; }
       }
@@ -1699,42 +1695,558 @@
         .cases_description { font-size: 1rem; }
       }
 
-      /* Полоска выбора варианта блока 5 (только черновик) */
-      .draft_switch {
-        position: fixed;
-        z-index: 200;
-        bottom: 1rem;
-        left: 50%;
+      /* ---------- Блок 6: кто стоит за клубом ---------- */
+      .section_team { padding-bottom: var(--space-between-sections); }
+      /* Серая плашка, как у блока 3 и прежней карточки ведущего */
+      .team_component {
         display: flex;
-        max-width: calc(100% - 2rem);
-        padding: 0.25rem;
-        gap: 0.25rem;
-        overflow-x: auto;
-        background: rgba(0, 0, 0, 0.8);
-        border-radius: 3rem;
-        transform: translateX(-50%);
-        backdrop-filter: blur(4px);
-        scrollbar-width: none;
+        width: 100%;
+        max-width: 75rem;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 4rem 2.5rem 2.5rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        background: #dfdfdf;
+        border: 0.5px solid rgba(205, 204, 204, 0.8);
+        border-radius: 1rem;
       }
-      .draft_switch span,
-      .draft_switch a {
-        flex: none;
-        padding: 0.5rem 1rem;
+      .team_heading {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: clamp(2.25rem, 2.857vw, 3rem);
+        font-weight: 700;
+        line-height: 1.125;
+        letter-spacing: -0.025em;
+        text-align: center;
+        text-wrap: balance;
+      }
+      .team_cards {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      /* Две белые карточки: фото ведущего слева, фото Академии справа */
+      .team_card {
+        display: grid;
+        padding: 1.5rem;
+        align-items: stretch;
+        gap: 2rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      .team_card.is-host { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+      /* Видео «до/после» из прежнего блока бота: управляет им скрипт страницы */
+      .team_video {
+        position: relative;
+        display: flex;
+        min-width: 0;
+      }
+      .team_video .bot_video-compare {
+        flex: 1;
+        background: #000000;
+        border-radius: 0.75rem;
+      }
+      .team_video .bot_sound-button { right: 1rem; bottom: 1rem; }
+      /* Подпись поверх видео, клики проходят сквозь неё к ползунку */
+      .team_video-label {
+        position: absolute;
+        z-index: 6;
+        top: 1rem;
+        left: 1rem;
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        background: rgba(0, 0, 0, 0.64);
         border-radius: 3rem;
         color: #ffffff;
         font-size: 0.875rem;
-        font-weight: 600;
-        text-decoration: none;
-        white-space: nowrap;
+        font-weight: 500;
+        line-height: 1;
+        pointer-events: none;
+        backdrop-filter: blur(6px);
       }
-      .draft_switch span { color: #c9c6d1; font-weight: 500; }
-      html:not([data-results="2"]) .draft_switch a[data-r="1"],
-      html[data-results="2"] .draft_switch a[data-r="2"] { background: #ffffff; color: #000000; }
+      .team_person {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .team_avatar {
+        width: 5rem;
+        height: 5rem;
+        flex: none;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .team_person-copy {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .team_card.is-academy { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .team_academy-photo {
+        min-height: 22rem;
+        overflow: clip;
+        background: #eeeeef;
+        border-radius: 0.75rem;
+      }
+      .team_photo-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .team_copy {
+        display: flex;
+        min-width: 0;
+        padding: 0.5rem 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+      }
+      .team_identity {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      /* Подпись роли: плашка, как надписи над заголовками страницы, но строчными */
+      .team_badge {
+        display: inline-flex;
+        min-height: 1.75rem;
+        margin: 0 0 0.25rem;
+        padding: 0.5rem 0.875rem;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.06);
+        border-radius: 3rem;
+        color: var(--color-text-dark);
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1;
+      }
+      .team_title {
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .team_meta {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 1rem;
+        line-height: 1.5;
+        letter-spacing: -0.01em;
+      }
+      .team_text {
+        max-width: 40rem;
+        margin: 0;
+        font-size: 1.125rem;
+        line-height: 1.444;
+        letter-spacing: -0.01em;
+      }
+      .team_card .button.is-film { margin-top: auto; }
+
+      /* Цифры Академии: три плитки, выпускники — чёрная с портретами */
+      .team_stats {
+        display: grid;
+        width: 100%;
+        margin-top: auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+      .team_stat { display: flex; min-width: 0; }
+      .team_stat-inner {
+        display: flex;
+        min-height: 8.5rem;
+        padding: 1rem;
+        flex: 1;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 0.25rem;
+        background: #eeeeef;
+        border-radius: 0.75rem;
+      }
+      .team_stat.is-dark .team_stat-inner { background: #000000; color: #ffffff; }
+      .team_faces { display: flex; margin-bottom: auto; }
+      .team_face {
+        width: 2rem;
+        height: 2rem;
+        object-fit: cover;
+        border: 2px solid #000000;
+        border-radius: 50%;
+      }
+      .team_face + .team_face { margin-left: -0.5rem; }
+      .team_stat-number {
+        margin: 0;
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+      .team_stat-label {
+        margin: 0;
+        font-size: 0.9375rem;
+        line-height: 1.3;
+      }
+      .team_stat.is-dark .team_stat-label { color: #f5f5f5; }
+
+      @media screen and (max-width: 74.9375rem) {
+        .team_title { font-size: 2.125rem; }
+        .team_stat-number { font-size: 1.875rem; }
+      }
+      /* Планшет: в обеих карточках видео или фото сверху, текст под ним */
+      @media screen and (max-width: 61.9375rem) {
+        .team_component { padding: 3rem 2rem 2rem; gap: 2.5rem; }
+        .team_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+        .team_card { gap: 1.5rem; }
+        .team_card.is-host { grid-template-columns: minmax(0, 1fr); }
+        .team_card.is-academy { grid-template-columns: minmax(0, 1fr); }
+        .team_academy-photo { order: -1; min-height: 0; aspect-ratio: 16 / 9; }
+        .team_copy { padding: 0; }
+        .team_text { font-size: 1rem; line-height: 1.45; }
+      }
+      /* Телефон: кнопка фильма на всю ширину */
+      @media screen and (max-width: 47.9375rem) {
+        .team_card .button.is-film { width: 100%; }
+      }
+      /* Узкий телефон: цифры строками, число слева, подпись справа */
+      @media screen and (max-width: 32.5rem) {
+        .team_component { padding: 2.5rem 1rem 1rem; gap: 2rem; }
+        .team_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+        .team_card { padding: 1rem; gap: 1.25rem; }
+        .team_title { font-size: 1.625rem; }
+        /* Аватар меньше, чтобы имя помещалось в одну строку рядом с ним */
+        .team_person { align-items: flex-start; gap: 0.75rem; }
+        .team_avatar { width: 3.5rem; height: 3.5rem; }
+        .team_meta { font-size: 0.9375rem; line-height: 1.4; }
+        .team_video-label { top: 0.75rem; left: 0.75rem; font-size: 0.8125rem; }
+        .team_stats { grid-template-columns: minmax(0, 1fr); }
+        .team_stat-inner {
+          min-height: 0;
+          padding: 0.875rem 1rem;
+          flex-direction: row;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 0.5rem 0.75rem;
+        }
+        .team_stat-number { flex: none; min-width: 4.5rem; font-size: 1.625rem; }
+        .team_stat-label { min-width: 0; flex: 1; font-size: 0.875rem; }
+        /* Портреты выпускников отдельной строкой над числом: в одну строку с ним не помещаются */
+        .team_faces { flex-basis: 100%; margin: 0; }
+        .team_face { width: 1.75rem; height: 1.75rem; }
+      }
+
+      /* ---------- Блок 7: как проходит неделя в клубе ---------- */
+      .section_week { padding-bottom: var(--space-between-sections); }
+      .week_component {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3.5rem;
+      }
+      .week_header {
+        display: flex;
+        max-width: 50rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+      .week_heading {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: clamp(2.25rem, 2.857vw, 3rem);
+        font-weight: 700;
+        line-height: 1.125;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .week_description {
+        margin: 0;
+        color: var(--color-text-dark);
+        font-size: 1.375rem;
+        font-weight: 500;
+        line-height: 1.2727;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+
+      /* Полоса недели: семь дней в ряд */
+      .week_plan {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .week_days {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+      .week_day { display: flex; min-width: 0; }
+      .week_day-card {
+        display: flex;
+        min-width: 0;
+        min-height: 13rem;
+        padding: 1rem;
+        flex: 1;
+        flex-direction: column;
+        gap: 0.75rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      .week_day-name {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .week_day-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .week_day-title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+      }
+      .week_day-text {
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.35;
+      }
+      .week_nowrap { white-space: nowrap; }
+      /* Время и периодичность — плашкой внизу карточки */
+      .week_day-time {
+        margin: auto 0 0;
+        padding: 0.375rem 0.625rem;
+        align-self: flex-start;
+        background: #eeeeef;
+        border-radius: 0.75rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      /* Суббота: постоянная встреча, выделена цветом */
+      .week_day.is-call .week_day-card { background: var(--color-highlight); }
+      .week_day.is-call .week_day-name { color: var(--color-text-button); }
+      .week_day.is-call .week_day-time { background: #ffffff; }
+      /* Воскресенье: выходной, без заливки */
+      .week_day.is-off .week_day-card {
+        background: transparent;
+        box-shadow: inset 0 0 0 1px rgba(51, 47, 65, 0.16);
+      }
+      .week_day.is-off .week_day-title { color: #5e5a6a; }
+
+      /* Бот: тонкая полоса под всеми днями, он не привязан к дню */
+      .week_bot {
+        display: flex;
+        padding: 0.875rem 1.25rem;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem 1.25rem;
+        background: #000000;
+        border-radius: 1rem;
+        color: #ffffff;
+      }
+      .week_bot-label {
+        display: inline-flex;
+        margin: 0;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .week_bot-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        flex: none;
+        background: var(--color-highlight);
+        border-radius: 50%;
+      }
+      .week_bot-text {
+        margin: 0;
+        color: #f5f5f5;
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      /* «Почему это работает»: прежние табы страницы */
+      .week_reasons {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
+      .week_reasons-heading {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        text-align: center;
+      }
+      /* Панель тянется до высоты списка, «Когда» прижато к низу */
+      .week_reasons .tabs_layout { align-items: stretch; }
+      .week_reasons .tabs_panels { display: flex; }
+      .week_reasons .tabs_panel { flex: 1; gap: 1.25rem; }
+      .week_reasons .tabs_list { gap: 0.75rem; }
+      .week_reasons .tabs_trigger { min-height: 4.25rem; }
+      .week_reasons .tabs_panel-heading { font-size: 2rem; line-height: 1.15; }
+      .week_panel-text {
+        max-width: 40rem;
+        margin: 0;
+        font-size: 1.375rem;
+        line-height: 1.45;
+        letter-spacing: -0.01em;
+      }
+      .week_panel-when {
+        display: flex;
+        margin-top: auto;
+        padding-top: 1.25rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        border-top: 1px solid rgba(51, 47, 65, 0.12);
+      }
+      .week_panel-when.is-host { flex-direction: row; align-items: center; gap: 1rem; }
+      .week_panel-avatar {
+        width: 3.5rem;
+        height: 3.5rem;
+        flex: none;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .week_panel-name {
+        display: block;
+        color: var(--color-text-button);
+        font-size: 1.125rem;
+        font-weight: 700;
+      }
+      .week_panel-label {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      /* Мини-неделя: отмечены дни, когда это происходит */
+      .week_mini {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 0.375rem;
+      }
+      .week_mini-day {
+        display: flex;
+        height: 3rem;
+        align-items: center;
+        justify-content: center;
+        background: #eeeeef;
+        border-radius: 0.75rem;
+        color: #5e5a6a;
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+      .week_mini-day.is-on { background: #000000; color: #ffffff; }
+
+      /* Ноутбук: колонки дней узкие, шрифт и поля меньше */
+      @media screen and (max-width: 74.9375rem) {
+        .week_day-card { padding: 0.75rem; min-height: 12rem; }
+        .week_day-name { font-size: 0.8125rem; }
+        .week_day-title { font-size: 1.0625rem; }
+        /* Колонки узкие: длинные слова вроде «исследования» переносятся по слогам */
+        .week_day-text { font-size: 0.8125rem; hyphens: auto; }
+        .week_day-time { font-size: 0.75rem; padding: 0.3125rem 0.5rem; }
+        .week_panel-text { font-size: 1.25rem; }
+        .week_reasons .tabs_panel-heading { font-size: 1.75rem; }
+      }
+      /* Планшет и телефон: дни списком сверху вниз, день слева, дело справа */
+      @media screen and (max-width: 61.9375rem) {
+        .week_component { gap: 2.5rem; }
+        .week_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+        .week_description { font-size: 1.1875rem; }
+        .week_days { grid-template-columns: minmax(0, 1fr); }
+        .week_day-card {
+          display: grid;
+          min-height: 0;
+          padding: 1rem 1.25rem;
+          grid-template-columns: 8rem minmax(0, 1fr) auto;
+          align-items: center;
+          gap: 0.375rem 1rem;
+        }
+        .week_day-name { font-size: 0.9375rem; }
+        .week_day-title { font-size: 1.125rem; }
+        .week_day-copy { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0 0.375rem; }
+        .week_day-text { font-size: 1rem; hyphens: manual; }
+        .week_day-time { margin: 0; font-size: 0.8125rem; }
+        .week_reasons-heading { font-size: 1.75rem; }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .week_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+        .week_description { font-size: 1rem; line-height: 1.45; }
+        .week_day-card { padding: 0.875rem 1rem; grid-template-columns: 6.75rem minmax(0, 1fr); }
+        .week_day-name { align-self: start; padding-top: 0.125rem; }
+        .week_day-time { grid-column: 2; justify-self: start; }
+        .week_day-copy { flex-direction: column; }
+        .week_bot { padding: 0.875rem 1rem; }
+        .week_panel-text { font-size: 1rem; }
+        .week_reasons .tabs_panel-heading { font-size: 1.5rem; }
+        .week_mini-day { height: 2.5rem; font-size: 0.8125rem; }
+      }
+
+      /* ---------- Блок бота без видео (видео теперь в карточке ведущего) ---------- */
+      .section_bot .bot_content {
+        display: grid;
+        grid-template-columns: minmax(0, 591fr) minmax(0, 833fr);
+        align-items: stretch;
+        gap: 1rem;
+      }
+      .section_bot .bot_media-grid { grid-template-columns: minmax(0, 1fr); }
+      /* Телефон с чатом по высоте карточки: уходит за верхний край и не доходит до нижнего на 1.75rem,
+         как в исходном блоке, при любой высоте карточки */
+      .section_bot .bot_demo-interface {
+        top: -1.5rem;
+        width: auto;
+        height: calc(100% - 0.25rem);
+      }
+      .section_bot .bot_feature-grid { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; }
+      .section_bot .bot_feature-card {
+        padding: 1.25rem 1.5rem;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.25rem;
+      }
+      .section_bot .bot_feature-icon { flex: none; font-size: 2.5rem; }
+      .section_bot .bot_feature-copy { gap: 0.375rem; }
+      .section_bot .bot_feature-card h3 { font-size: 1.375rem; }
+      .section_bot .bot_feature-card p { font-size: 1rem; line-height: 1.4; }
+      /* Планшет: картинка сверху, возможности сеткой 2×2, как было */
+      @media screen and (max-width: 61.9375rem) {
+        .section_bot .bot_content { grid-template-columns: minmax(0, 1fr); }
+        .section_bot .bot_feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; }
+        .section_bot .bot_feature-card { flex-direction: column; align-items: flex-start; }
+      }
+      /* Телефон: возможности списком, значок слева */
+      @media screen and (max-width: 47.9375rem) {
+        .section_bot .bot_feature-grid { grid-template-columns: minmax(0, 1fr); }
+        .section_bot .bot_feature-card { padding: 1rem; flex-direction: row; gap: 1rem; }
+        .section_bot .bot_feature-icon { font-size: 2rem; }
+        .section_bot .bot_feature-card h3 { font-size: 1.25rem; }
+      }
     </style>
-    <script>
-      // Черновик: какой вариант блока 5 показывать (?results=2 — без месяцев)
-      if (new URLSearchParams(location.search).get("results") === "2") document.documentElement.dataset.results = "2";
-    </script>
   </head>
   <body class="academy-page">
     <div class="page-wrapper">
@@ -2008,7 +2520,7 @@
           </section>
           </div>
         </div>
-        <section class="section_pain" id="inside" aria-labelledby="pain-heading">
+        <section class="section_pain" id="pain" aria-labelledby="pain-heading">
           <div class="padding-global">
             <div class="container-large">
               <div class="pain_component">
@@ -2174,7 +2686,7 @@
             </div>
           </div>
         </section>
-        <section class="section_growth" id="growth" aria-labelledby="growth-heading">
+        <section class="section_growth" id="results" aria-labelledby="growth-heading">
           <div class="padding-global">
             <div class="container-large">
               <div class="growth_component">
@@ -2182,7 +2694,7 @@
                   <h2 class="growth_heading" id="growth-heading">Что меняется за&nbsp;время в&nbsp;клубе</h2>
                   <p class="growth_note">У&nbsp;каждого свой темп. Здесь средний срез по&nbsp;участникам клуба</p>
                 </div>
-                <ol class="results_timeline" data-results-variant="1">
+                <ol class="results_timeline">
                     <li class="results_stage">
                       <div class="results_card">
                         <p class="results_when"><span class="results_prefix">через</span> <span class="results_number">1</span> <span class="results_unit">месяц</span></p>
@@ -2226,7 +2738,19 @@
                       </div>
                     </li>
                 </ol>
-                <ul class="results_wall" data-results-variant="2">
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_growth is-wall" id="growth-wall" aria-labelledby="growth-wall-heading">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="growth_component">
+                <div class="growth_header">
+                  <h2 class="growth_heading" id="growth-wall-heading">Что меняется за&nbsp;время в&nbsp;клубе</h2>
+                  <p class="growth_note">У&nbsp;каждого свой темп. Здесь средний срез по&nbsp;участникам клуба</p>
+                </div>
+                <ul class="results_wall">
                     <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Первые материалы опубликованы</p></div></li>
                     <li class="results_tile is-quote"><div class="results_tile-inner"><span class="results_quotes-label">Из&nbsp;анкеты</span><p class="results_tile-text">«Опубликовала то, что откладывала»</p></div></li>
                     <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Понятный ритм недели</p></div></li>
@@ -2288,232 +2812,323 @@
             </div>
           </div>
         </section>
-
-        <section class="section_tabs" id="results" data-node-id="611:1227">
+        <section class="section_team" id="curator" aria-labelledby="team-heading">
           <div class="padding-global">
             <div class="container-large">
-              <div class="tabs_component">
-                <div class="tabs_header">
-                  <div class="tabs_heading-wrapper">
-                    <div class="tabs_eyebrow">
-                      Почему здесь доходят до результата
+              <div class="team_component">
+                <h2 class="team_heading" id="team-heading">Кто стоит за&nbsp;клубом</h2>
+                <div class="team_cards">
+                  <article class="team_card is-host">
+                    <div class="team_video">
+                      <p class="team_video-label">Пример работы Романа</p>
+                      <div
+                      class="bot_video-compare"
+                      data-video-compare
+                      style="--compare-position: 30.6%"
+                    >
+                      <video
+                        class="bot_video-layer is-after"
+                        data-compare-video="after"
+                        src="https://static.tildacdn.com/vide3763-3036-4630-b163-373266326531/video-after-optimize.mp4"
+                        poster="./assets/content-video-poster.png"
+                        aria-label="Итоговый рилс после подготовки"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                        preload="auto"
+                      ></video>
+
+                      <div class="bot_video-before" aria-hidden="true">
+                        <video
+                          class="bot_video-layer is-before"
+                          data-compare-video="before"
+                          src="https://static.tildacdn.com/vide3266-6230-4665-b063-393530376261/video-before-optimiz.mp4"
+                          poster="./assets/content-video-poster.png"
+                          autoplay
+                          muted
+                          loop
+                          playsinline
+                          preload="auto"
+                        ></video>
+                      </div>
+
+                      <button
+                        class="bot_sound-button"
+                        type="button"
+                        data-sound-toggle
+                        data-node-id="697:324"
+                        aria-label="Включить звук"
+                        aria-pressed="false"
+                      >
+                        <span class="bot_sound-surface">
+                          <img
+                            class="bot_sound-icon is-muted"
+                            src="https://static.tildacdn.com/tild3965-3732-4361-a166-303962636531/volume-off_1.svg"
+                            alt=""
+                            aria-hidden="true"
+                            draggable="false"
+                          />
+                          <img
+                            class="bot_sound-icon is-playing"
+                            src="https://static.tildacdn.com/tild3336-3030-4366-b466-363934626631/volume-2_1.svg"
+                            alt=""
+                            aria-hidden="true"
+                            draggable="false"
+                          />
+                        </span>
+                      </button>
+
+                      <div class="bot_compare-divider" aria-hidden="true">
+                        <span class="bot_compare-handle" data-node-id="611:1308">
+                          <svg
+                            class="bot_compare-arrow is-left"
+                            width="16"
+                            height="18"
+                            viewBox="0 0 16 18"
+                            fill="none"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <path d="M1 10.6632C-0.333333 9.8934 -0.333334 7.9689 1 7.1991L13 0.2709C14.3333 -0.498902 16 0.46335 16 2.00295L16 15.8594C16 17.399 14.3333 18.3612 13 17.5914L1 10.6632Z" fill="#332F41" />
+                          </svg>
+                          <svg
+                            class="bot_compare-arrow is-right"
+                            width="16"
+                            height="18"
+                            viewBox="0 0 16 18"
+                            fill="none"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <path d="M15 7.1991C16.3333 7.9689 16.3333 9.8934 15 10.6632L3 17.5914C1.66667 18.3612 2.44076e-07 17.399 2.25717e-07 15.8594L6.04806e-08 2.00295C4.2121e-08 0.463349 1.66667 -0.498901 3 0.270899L15 7.1991Z" fill="#332F41" />
+                          </svg>
+                        </span>
+                      </div>
+
+                      <input
+                        class="bot_compare-range"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value="30.6"
+                        step="0.1"
+                        aria-label="Показать результат до или после обработки"
+                        aria-valuetext="31% исходного видео"
+                      />
                     </div>
-                    <h2 class="tabs_heading">
-                      <span class="tabs_heading-line">Клуб собран из&nbsp;того,</span>
-                      <span class="tabs_heading-line">
-                        что&nbsp;<span class="tabs_heading-highlight">держит в&nbsp;работе</span>
-                      </span>
-                    </h2>
-                  </div>
-                  <p class="tabs_description">
-                    Вы привыкли опираться на проверенное — странно было бы строить
-                    блог иначе. Здесь есть ритм, разборы и среда, в которой материалы
-                    доходят до публикации.
-                  </p>
+                    </div>
+                    <div class="team_copy">
+                      <div class="team_identity">
+                        <p class="team_badge">Ведущий клуба</p>
+                        <div class="team_person">
+                          <img class="team_avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="1680" height="1680" alt="Психолог Роман Дубченко, ведущий мастерской" loading="lazy" decoding="async">
+                          <div class="team_person-copy">
+                            <h3 class="team_title">Роман Дубченко</h3>
+                            <p class="team_meta">психолог, предприниматель, автор блога @romind.psy</p>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="team_text">
+                        Ведёт мастерскую и сам каждую неделю проходит тот же путь, что и
+                        участники: выбирает тему, собирает материал и доводит его до
+                        публикации. Разбирает не теорию, а живую работу — прямо по ходу
+                        процесса.
+                      </p>
+                      <a class="button is-film" href="https://www.youtube.com/watch?v=1rr9vQ0VCDQ&amp;t=151s" target="_blank" rel="noopener noreferrer">
+                        <span class="host_play-icon" aria-hidden="true"><svg viewBox="0 0 16 18" focusable="false"><path d="M15 9 1 17V1l14 8Z"></path></svg></span>
+                        <span>Смотреть фильм о&nbsp;работе с&nbsp;EMDR</span>
+                      </a>
+                    </div>
+                  </article>
+                  <article class="team_card is-academy">
+                    <div class="team_copy">
+                      <div class="team_identity">
+                        <p class="team_badge">Организатор клуба</p>
+                        <h3 class="team_title">Академия современной психологии</h3>
+                      </div>
+                      <p class="team_text">С&nbsp;2021 года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории</p>
+                      <ul class="team_stats">
+                        <li class="team_stat">
+                          <div class="team_stat-inner">
+                            <p class="team_stat-number">7000+</p>
+                            <p class="team_stat-label">участников сообщества</p>
+                          </div>
+                        </li>
+                        <li class="team_stat is-dark">
+                          <div class="team_stat-inner">
+                            <span class="team_faces" aria-hidden="true"><img class="team_face" src="https://optim.tildacdn.com/tild6562-3537-4564-b139-306233636630/-/format/webp/img-avatar2.webp" width="96" height="96" alt="" loading="lazy" decoding="async" draggable="false"><img class="team_face" src="https://static.tildacdn.com/tild6537-3239-4139-a337-343065626236/img-avatar1.webp" width="96" height="96" alt="" loading="lazy" decoding="async" draggable="false"><img class="team_face" src="https://static.tildacdn.com/tild6634-3837-4238-b035-646161323733/img-avatar3.webp" width="96" height="96" alt="" loading="lazy" decoding="async" draggable="false"></span>
+                            <p class="team_stat-number">4000+</p>
+                            <p class="team_stat-label">выпускников</p>
+                          </div>
+                        </li>
+                        <li class="team_stat">
+                          <div class="team_stat-inner">
+                            <p class="team_stat-number">60+</p>
+                            <p class="team_stat-label">преподавателей</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="team_academy-photo">
+                      <img class="team_photo-image" src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp" width="1401" height="1123" alt="Участники очного мероприятия Академии современной психологии" loading="lazy" decoding="async">
+                    </div>
+                  </article>
                 </div>
-
-                <div class="tabs_layout">
-                  <div class="tabs_navigation">
-                    <div class="tabs_list" role="tablist" aria-label="Причины результата">
-                      <button
-                        class="tabs_trigger"
-                        id="result-tab-1"
-                        type="button"
-                        role="tab"
-                        aria-selected="true"
-                        aria-controls="result-panel-1"
-                        tabindex="0"
-                      >
-                        <span class="tabs_trigger-number">1</span>
-                        <span>Доводят идеи до готового материала</span>
-                      </button>
-                      <button
-                        class="tabs_trigger"
-                        id="result-tab-2"
-                        type="button"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="result-panel-2"
-                        tabindex="-1"
-                      >
-                        <span class="tabs_trigger-number">2</span>
-                        <span>Работают не только по вдохновению</span>
-                      </button>
-                      <button
-                        class="tabs_trigger"
-                        id="result-tab-3"
-                        type="button"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="result-panel-3"
-                        tabindex="-1"
-                      >
-                        <span class="tabs_trigger-number">3</span>
-                        <span>Не застревают в бесконечных правках</span>
-                      </button>
-                      <button
-                        class="tabs_trigger"
-                        id="result-tab-4"
-                        type="button"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="result-panel-4"
-                        tabindex="-1"
-                      >
-                        <span class="tabs_trigger-number">4</span>
-                        <span>Получают посильные, но развивающие задания</span>
-                      </button>
-                      <button
-                        class="tabs_trigger"
-                        id="result-tab-5"
-                        type="button"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="result-panel-5"
-                        tabindex="-1"
-                      >
-                        <span class="tabs_trigger-number">5</span>
-                        <span>Остаются в среде, где хочется работать</span>
-                      </button>
-                    </div>
-
-                    <a class="button is-tabs" href="#price">Вступить в клуб</a>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_week" id="inside" aria-labelledby="week-heading">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="week_component">
+                <div class="week_header">
+                  <h2 class="week_heading" id="week-heading">Как проходит неделя в&nbsp;клубе</h2>
+                  <p class="week_description">Один посильный маршрут на&nbsp;неделю. Остальное по&nbsp;желанию</p>
+                </div>
+                <div class="week_plan">
+                  <ol class="week_days">
+                    <li class="week_day">
+                      <div class="week_day-card">
+                        <p class="week_day-name">Понедельник</p>
+                        <div class="week_day-copy">
+                          <p class="week_day-title">Задание</p>
+                          <p class="week_day-text">на&nbsp;личные темы блога</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="week_day">
+                      <div class="week_day-card">
+                        <p class="week_day-name">Вторник</p>
+                        <div class="week_day-copy">
+                          <p class="week_day-title">Разбор</p>
+                          <p class="week_day-text">психолога-блогера с&nbsp;примерами</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="week_day">
+                      <div class="week_day-card">
+                        <p class="week_day-name">Среда</p>
+                        <div class="week_day-copy">
+                          <p class="week_day-title">Задание</p>
+                          <p class="week_day-text">на&nbsp;научные темы и&nbsp;исследования</p>
+                        </div>
+                        <p class="week_day-time">Коворкинг <span class="week_nowrap">19:00–21:00</span></p>
+                      </div>
+                    </li>
+                    <li class="week_day">
+                      <div class="week_day-card">
+                        <p class="week_day-name">Четверг</p>
+                        <div class="week_day-copy">
+                          <p class="week_day-title">Тренды</p>
+                          <p class="week_day-text">подборка из&nbsp;соцсетей, чтобы было что подхватить</p>
+                        </div>
+                        <p class="week_day-time">Раз в&nbsp;две недели</p>
+                      </div>
+                    </li>
+                    <li class="week_day">
+                      <div class="week_day-card">
+                        <p class="week_day-name">Пятница</p>
+                        <div class="week_day-copy">
+                          <p class="week_day-title">День контента</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="week_day is-call">
+                      <div class="week_day-card">
+                        <p class="week_day-name">Суббота</p>
+                        <div class="week_day-copy">
+                          <p class="week_day-title">Созвон клуба</p>
+                          <p class="week_day-text">постоянная встреча</p>
+                        </div>
+                        <p class="week_day-time">14:00–16:00</p>
+                      </div>
+                    </li>
+                    <li class="week_day is-off">
+                      <div class="week_day-card">
+                        <p class="week_day-name">Воскресенье</p>
+                        <div class="week_day-copy">
+                          <p class="week_day-title">Выходной</p>
+                        </div>
+                      </div>
+                    </li>
+                  </ol>
+                  <div class="week_bot">
+                    <p class="week_bot-label"><span class="week_bot-dot" aria-hidden="true"></span>Бот-помощник</p>
+                    <p class="week_bot-text">Не&nbsp;привязан к&nbsp;дню: подсказывает темы, присылает шаблоны и&nbsp;напоминает о&nbsp;задании</p>
                   </div>
-
-                  <div class="tabs_panels">
-                    <article
-                      class="tabs_panel"
-                      id="result-panel-1"
-                      role="tabpanel"
-                      aria-labelledby="result-tab-1"
-                      tabindex="0"
-                    >
-                      <h3 class="tabs_panel-heading">Доходят до&nbsp;результата, а&nbsp;не&nbsp;бросают</h3>
-                      <div class="tabs_panel-content">
-                        <div class="tabs_reason-card">
-                          <h4>Почему это работает?</h4>
-                          <p>Контент редко остаётся невыпущенным из-за нехватки идей. Чаще работа просто растягивается: задачу можно отложить, дедлайн сдвинуть, а почти готовый черновик оставить ещё на неделю. Поэтому в клубе важны не только материалы, а понятный ритм работы и точка, в которой её нужно завершить.</p>
-                        </div>
-                        <div class="tabs_feature-grid">
-                          <div class="tabs_feature-card is-light">
-                            <h4>Еженедельный цикл</h4>
-                            <p>Каждая неделя — законченный цикл: вы делаете материал, выкладываете его, разбираете работы коллег и фиксируете, что берёте в следующую работу.</p>
-                          </div>
-                          <div class="tabs_feature-card is-dark">
-                            <h4>Видимый результат</h4>
-                            <p>Вместо ощущения «я опять собираюсь начать» у вас остаётся готовый материал. Неделя за неделей из этого собирается не архив черновиков, а живая библиотека опубликованного контента.</p>
-                          </div>
-                        </div>
+                </div>
+                <div class="tabs_component week_reasons">
+                  <h3 class="week_reasons-heading">Почему это работает</h3>
+                  <div class="tabs_layout">
+                    <div class="tabs_navigation">
+                      <div class="tabs_list" role="tablist" aria-label="Почему это работает">
+                      <button class="tabs_trigger" id="week-tab-1" type="button" role="tab" aria-selected="true" aria-controls="week-panel-1" tabindex="0">
+                        <span class="tabs_trigger-number">1</span>
+                        <span>Задание недели</span>
+                      </button>
+                      <button class="tabs_trigger" id="week-tab-2" type="button" role="tab" aria-selected="false" aria-controls="week-panel-2" tabindex="-1">
+                        <span class="tabs_trigger-number">2</span>
+                        <span>Чат</span>
+                      </button>
+                      <button class="tabs_trigger" id="week-tab-3" type="button" role="tab" aria-selected="false" aria-controls="week-panel-3" tabindex="-1">
+                        <span class="tabs_trigger-number">3</span>
+                        <span>Субботний созвон</span>
+                      </button>
+                      <button class="tabs_trigger" id="week-tab-4" type="button" role="tab" aria-selected="false" aria-controls="week-panel-4" tabindex="-1">
+                        <span class="tabs_trigger-number">4</span>
+                        <span>Ведущий-эксперт</span>
+                      </button>
+                      <button class="tabs_trigger" id="week-tab-5" type="button" role="tab" aria-selected="false" aria-controls="week-panel-5" tabindex="-1">
+                        <span class="tabs_trigger-number">5</span>
+                        <span>Бот</span>
+                      </button>
+                      </div>
+                      <a class="button is-tabs" href="#price">Вступить в клуб</a>
+                    </div>
+                    <div class="tabs_panels">
+                    <article class="tabs_panel week_panel" id="week-panel-1" role="tabpanel" aria-labelledby="week-tab-1" tabindex="0">
+                      <h4 class="tabs_panel-heading">Не&nbsp;нужно выбирать, с&nbsp;чего начать</h4>
+                      <p class="week_panel-text">Каждую неделю у&nbsp;вас одна конкретная задача и&nbsp;готовая рамка для неё. Вы&nbsp;тратите время на&nbsp;текст, а&nbsp;не&nbsp;на&nbsp;раздумья о&nbsp;теме. Если сил на&nbsp;большее нет, достаточно выполнить основное задание.</p>
+                      <div class="week_panel-when">
+                        <p class="week_panel-label">Когда: Понедельник и&nbsp;среда</p>
+                        <span class="week_mini" aria-hidden="true"><span class="week_mini-day is-on">Пн</span><span class="week_mini-day">Вт</span><span class="week_mini-day is-on">Ср</span><span class="week_mini-day">Чт</span><span class="week_mini-day">Пт</span><span class="week_mini-day">Сб</span><span class="week_mini-day">Вс</span></span>
                       </div>
                     </article>
-
-                    <article
-                      class="tabs_panel"
-                      id="result-panel-2"
-                      role="tabpanel"
-                      aria-labelledby="result-tab-2"
-                      tabindex="0"
-                      hidden
-                    >
-                      <h3 class="tabs_panel-heading">Контент не&nbsp;зависит от&nbsp;настроения</h3>
-                      <div class="tabs_panel-content">
-                        <div class="tabs_reason-card">
-                          <h4>Почему это работает?</h4>
-                          <p>Если ждать подходящего состояния, контент всё время будет проигрывать делам, клиентам и усталости. Вдохновение помогает, но регулярность появляется не из него, а из понятной системы: тема, задача, созвон, дедлайн, публикация.</p>
-                        </div>
-                        <div class="tabs_feature-grid">
-                          <div class="tabs_feature-card is-light">
-                            <h4>Ритм вместо рывков</h4>
-                            <p>Раз в неделю вы возвращаетесь к контенту вместе с группой. Не нужно каждый раз заново собирать мотивацию: есть встреча, понятная задача и следующий шаг.</p>
-                          </div>
-                          <div class="tabs_feature-card is-dark">
-                            <h4>Стабильное присутствие</h4>
-                            <p>Вы появляетесь в ленте не только тогда, когда «накрыло идеей». Люди начинают видеть вас регулярно — и постепенно запоминают ваш голос, темы и подход.</p>
-                          </div>
-                        </div>
+                    <article class="tabs_panel week_panel" id="week-panel-2" role="tabpanel" aria-labelledby="week-tab-2" tabindex="0" hidden>
+                      <h4 class="tabs_panel-heading">Рядом люди с&nbsp;той&nbsp;же задачей</h4>
+                      <p class="week_panel-text">В&nbsp;чате можно показать черновик, спросить совета и&nbsp;увидеть, как с&nbsp;тем&nbsp;же заданием справляются другие. Это снимает ощущение, что вы&nbsp;с&nbsp;этим один на&nbsp;один. Читать чат каждый день необязательно, вернуться к&nbsp;нему можно в&nbsp;любой момент.</p>
+                      <div class="week_panel-when">
+                        <p class="week_panel-label">Когда: В&nbsp;любой момент</p>
+                        <span class="week_mini" aria-hidden="true"><span class="week_mini-day is-on">Пн</span><span class="week_mini-day is-on">Вт</span><span class="week_mini-day is-on">Ср</span><span class="week_mini-day is-on">Чт</span><span class="week_mini-day is-on">Пт</span><span class="week_mini-day is-on">Сб</span><span class="week_mini-day is-on">Вс</span></span>
                       </div>
                     </article>
-
-                    <article
-                      class="tabs_panel"
-                      id="result-panel-3"
-                      role="tabpanel"
-                      aria-labelledby="result-tab-3"
-                      tabindex="0"
-                      hidden
-                    >
-                      <h3 class="tabs_panel-heading">Вы перестаёте удалять готовые рилсы</h3>
-                      <div class="tabs_panel-content">
-                        <div class="tabs_reason-card">
-                          <h4>Почему это работает?</h4>
-                          <p>Часто материал уже можно публиковать, но рука всё равно тянется переписать ещё раз. Не потому что текст плохой, а потому что одному трудно понять, где правда надо поправить, а где уже пора остановиться.</p>
-                        </div>
-                        <div class="tabs_feature-grid">
-                          <div class="tabs_feature-card is-light">
-                            <h4>Разбор перед выпуском</h4>
-                            <p>На разборе видно, что мешает материалу: слабый заход, лишние объяснения, слишком общий вывод или просто страх нажать «опубликовать».</p>
-                          </div>
-                          <div class="tabs_feature-card is-dark">
-                            <h4>Меньше зависших черновиков</h4>
-                            <p>Вы уходите не с ощущением «надо ещё посидеть», а с понятным списком правок — или с решением выпускать как есть.</p>
-                          </div>
-                        </div>
+                    <article class="tabs_panel week_panel" id="week-panel-3" role="tabpanel" aria-labelledby="week-tab-3" tabindex="0" hidden>
+                      <h4 class="tabs_panel-heading">Живой ритм вместо силы воли</h4>
+                      <p class="week_panel-text">Созвон задаёт регулярность: к&nbsp;субботе у&nbsp;вас что-то готово, и&nbsp;это можно обсудить. Мы&nbsp;разбираем материалы участников, отвечаем на&nbsp;вопросы и&nbsp;планируем следующую неделю. Если не&nbsp;получилось подключиться, запись остаётся доступной.</p>
+                      <div class="week_panel-when">
+                        <p class="week_panel-label">Когда: Суббота, 14:00–16:00</p>
+                        <span class="week_mini" aria-hidden="true"><span class="week_mini-day">Пн</span><span class="week_mini-day">Вт</span><span class="week_mini-day">Ср</span><span class="week_mini-day">Чт</span><span class="week_mini-day">Пт</span><span class="week_mini-day is-on">Сб</span><span class="week_mini-day">Вс</span></span>
                       </div>
                     </article>
-
-                    <article
-                      class="tabs_panel"
-                      id="result-panel-4"
-                      role="tabpanel"
-                      aria-labelledby="result-tab-4"
-                      tabindex="0"
-                      hidden
-                    >
-                      <h3 class="tabs_panel-heading">Задания развивают, но&nbsp;не&nbsp;перегружают</h3>
-                      <div class="tabs_panel-content">
-                        <div class="tabs_reason-card">
-                          <h4>Почему это работает?</h4>
-                          <p>Если задача слишком лёгкая, она не двигает навык. Если слишком большая — её откладывают. Рабочий рост происходит в посильном напряжении: чуть сложнее, чем обычно, но достаточно понятно, чтобы сделать.</p>
-                        </div>
-                        <div class="tabs_feature-grid">
-                          <div class="tabs_feature-card is-light">
-                            <h4>Несколько уровней задачи</h4>
-                            <p>В каждом задании есть простой вход и вариант глубже. Можно сделать минимально и не выпасть из ритма, а можно усложнить, если есть силы и время.</p>
-                          </div>
-                          <div class="tabs_feature-card is-dark">
-                            <h4>Рост без&nbsp;срыва темпа</h4>
-                            <p>Вы двигаетесь в своём темпе: достаточно трудно, чтобы расти, и достаточно посильно, чтобы продолжать. Контент не превращается в ещё одну непосильную обязанность.</p>
-                          </div>
-                        </div>
+                    <article class="tabs_panel week_panel" id="week-panel-4" role="tabpanel" aria-labelledby="week-tab-4" tabindex="0" hidden>
+                      <h4 class="tabs_panel-heading">Прямо говорит, что работает</h4>
+                      <p class="week_panel-text">Ведущий смотрит ваши материалы и&nbsp;прямо говорит, что работает, а&nbsp;что стоит поправить. Так вы&nbsp;замечаете свои сильные стороны и&nbsp;не&nbsp;повторяете одни и&nbsp;те&nbsp;же ошибки.</p>
+                      <div class="week_panel-when is-host">
+                        <img class="week_panel-avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="1680" height="1680" alt="" loading="lazy" decoding="async">
+                        <p class="week_panel-label"><span class="week_panel-name">Роман Дубченко</span>ведущий клуба</p>
                       </div>
                     </article>
-
-                    <article
-                      class="tabs_panel"
-                      id="result-panel-5"
-                      role="tabpanel"
-                      aria-labelledby="result-tab-5"
-                      tabindex="0"
-                      hidden
-                    >
-                      <h3 class="tabs_panel-heading">Хочется остаться, а&nbsp;не&nbsp;сбежать</h3>
-                      <div class="tabs_panel-content">
-                        <div class="tabs_reason-card">
-                          <h4>Почему это работает?</h4>
-                          <p>Контент легче делать не в одиночку, а в месте, куда понятно зачем возвращаться. Там есть ритм, люди рядом и ощущение, что вы не единственный специалист, которому бывает сложно писать о своей работе.</p>
-                        </div>
-                        <div class="tabs_feature-grid">
-                          <div class="tabs_feature-card is-light">
-                            <h4>Рабочая среда</h4>
-                            <p>В клубе видно, как другие выбирают темы, сомневаются, правят тексты и всё-таки публикуют. Это возвращает к работе лучше, чем обещание «с понедельника начать».</p>
-                          </div>
-                          <div class="tabs_feature-card is-dark">
-                            <h4>Проще продолжать</h4>
-                            <p>Вы не выпадаете после одной неудачной недели. Можно вернуться в общий ритм, взять следующую задачу и снова сделать материал.</p>
-                          </div>
-                        </div>
+                    <article class="tabs_panel week_panel" id="week-panel-5" role="tabpanel" aria-labelledby="week-tab-5" tabindex="0" hidden>
+                      <h4 class="tabs_panel-heading">Подсказка в&nbsp;момент, когда вы&nbsp;застряли</h4>
+                      <p class="week_panel-text">Бот подсказывает темы, присылает шаблоны и&nbsp;напоминает о&nbsp;задании. Он&nbsp;помогает, когда нет желания писать куратору или ждать ответа. Все материалы лежат в&nbsp;одном месте, их&nbsp;не&nbsp;нужно искать по&nbsp;чатам.</p>
+                      <div class="week_panel-when">
+                        <p class="week_panel-label">Когда: В&nbsp;любой день</p>
+                        <span class="week_mini" aria-hidden="true"><span class="week_mini-day is-on">Пн</span><span class="week_mini-day is-on">Вт</span><span class="week_mini-day is-on">Ср</span><span class="week_mini-day is-on">Чт</span><span class="week_mini-day is-on">Пт</span><span class="week_mini-day is-on">Сб</span><span class="week_mini-day is-on">Вс</span></span>
                       </div>
                     </article>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2624,103 +3239,6 @@
                         decoding="async"
                       />
                     </div>
-
-                    <div
-                      class="bot_video-compare"
-                      data-video-compare
-                      style="--compare-position: 30.6%"
-                    >
-                      <video
-                        class="bot_video-layer is-after"
-                        data-compare-video="after"
-                        src="https://static.tildacdn.com/vide3763-3036-4630-b163-373266326531/video-after-optimize.mp4"
-                        poster="./assets/content-video-poster.png"
-                        aria-label="Итоговый рилс после подготовки"
-                        autoplay
-                        muted
-                        loop
-                        playsinline
-                        preload="auto"
-                      ></video>
-
-                      <div class="bot_video-before" aria-hidden="true">
-                        <video
-                          class="bot_video-layer is-before"
-                          data-compare-video="before"
-                          src="https://static.tildacdn.com/vide3266-6230-4665-b063-393530376261/video-before-optimiz.mp4"
-                          poster="./assets/content-video-poster.png"
-                          autoplay
-                          muted
-                          loop
-                          playsinline
-                          preload="auto"
-                        ></video>
-                      </div>
-
-                      <button
-                        class="bot_sound-button"
-                        type="button"
-                        data-sound-toggle
-                        data-node-id="697:324"
-                        aria-label="Включить звук"
-                        aria-pressed="false"
-                      >
-                        <span class="bot_sound-surface">
-                          <img
-                            class="bot_sound-icon is-muted"
-                            src="https://static.tildacdn.com/tild3965-3732-4361-a166-303962636531/volume-off_1.svg"
-                            alt=""
-                            aria-hidden="true"
-                            draggable="false"
-                          />
-                          <img
-                            class="bot_sound-icon is-playing"
-                            src="https://static.tildacdn.com/tild3336-3030-4366-b466-363934626631/volume-2_1.svg"
-                            alt=""
-                            aria-hidden="true"
-                            draggable="false"
-                          />
-                        </span>
-                      </button>
-
-                      <div class="bot_compare-divider" aria-hidden="true">
-                        <span class="bot_compare-handle" data-node-id="611:1308">
-                          <svg
-                            class="bot_compare-arrow is-left"
-                            width="16"
-                            height="18"
-                            viewBox="0 0 16 18"
-                            fill="none"
-                            aria-hidden="true"
-                            focusable="false"
-                          >
-                            <path d="M1 10.6632C-0.333333 9.8934 -0.333334 7.9689 1 7.1991L13 0.2709C14.3333 -0.498902 16 0.46335 16 2.00295L16 15.8594C16 17.399 14.3333 18.3612 13 17.5914L1 10.6632Z" fill="#332F41" />
-                          </svg>
-                          <svg
-                            class="bot_compare-arrow is-right"
-                            width="16"
-                            height="18"
-                            viewBox="0 0 16 18"
-                            fill="none"
-                            aria-hidden="true"
-                            focusable="false"
-                          >
-                            <path d="M15 7.1991C16.3333 7.9689 16.3333 9.8934 15 10.6632L3 17.5914C1.66667 18.3612 2.44076e-07 17.399 2.25717e-07 15.8594L6.04806e-08 2.00295C4.2121e-08 0.463349 1.66667 -0.498901 3 0.270899L15 7.1991Z" fill="#332F41" />
-                          </svg>
-                        </span>
-                      </div>
-
-                      <input
-                        class="bot_compare-range"
-                        type="range"
-                        min="0"
-                        max="100"
-                        value="30.6"
-                        step="0.1"
-                        aria-label="Показать результат до или после обработки"
-                        aria-valuetext="31% исходного видео"
-                      />
-                    </div>
                   </div>
 
                   <div class="bot_feature-grid">
@@ -2770,58 +3288,6 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="section_host" id="curator" data-node-id="611:1335">
-          <div class="padding-global">
-            <div class="container-large">
-              <article class="host_component">
-                <div class="host_photo-wrapper">
-                  <img
-                    class="host_photo"
-                    src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp"
-                    alt="Психолог Роман Дубченко, ведущий мастерской"
-                    title="Роман Дубченко — психолог и ведущий мастерской"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-
-                <div class="host_content">
-                  <div class="host_identity">
-                    <div class="host_heading-wrapper">
-                      <div class="host_eyebrow">Кто ведет</div>
-                      <h2 class="host_heading">Роман Дубченко</h2>
-                    </div>
-                    <p class="host_meta">
-                      психолог · предприниматель · автор блога @romind.psy
-                    </p>
-                  </div>
-
-                  <p class="host_description">
-                    Ведёт мастерскую и сам каждую неделю проходит тот же путь, что и
-                    участники: выбирает тему, собирает материал и доводит его до
-                    публикации. Разбирает не теорию, а живую работу — прямо по ходу
-                    процесса.
-                  </p>
-
-                  <a
-                    class="button is-film"
-                    href="https://www.youtube.com/watch?v=1rr9vQ0VCDQ&amp;t=151s"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span class="host_play-icon" aria-hidden="true">
-                      <svg viewBox="0 0 16 18" focusable="false">
-                        <path d="M15 9 1 17V1l14 8Z"></path>
-                      </svg>
-                    </span>
-                    <span>Смотреть фильм о работе с EMDR</span>
-                  </a>
-                </div>
-              </article>
             </div>
           </div>
         </section>
@@ -3309,11 +3775,6 @@
 
     <script src="./script.js"></script>
   
-    <nav class="draft_switch" aria-label="Варианты блока 5">
-      <span>Блок 5</span>
-      <a data-r="1" href="?results=1#growth">1 · по месяцам</a>
-      <a data-r="2" href="?results=2#growth">2 · без месяцев</a>
-    </nav>
     <script>
       (() => {
         document.querySelectorAll("[data-hero-spines]").forEach((root) => {
