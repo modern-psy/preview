@@ -1047,6 +1047,211 @@
         border-radius: 1rem;
         opacity: var(--story-boxes, 1);
       }
+
+      /* ---------- Блок 3: что мешает показываться ---------- */
+      .section_pain { padding-bottom: var(--space-between-sections); }
+      /* Серая плашка — та же, что была у блока проблемы */
+      .pain_component {
+        display: flex;
+        width: 100%;
+        max-width: 75rem;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 4rem 2.5rem 3.5rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        background: #dfdfdf;
+        border: 0.5px solid rgba(205, 204, 204, 0.8);
+        border-radius: 1rem;
+      }
+      .pain_header {
+        display: flex;
+        max-width: 64rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        text-align: center;
+      }
+      .pain_heading {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: clamp(2.25rem, 2.857vw, 3rem);
+        font-weight: 700;
+        line-height: 1.125;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .pain_description {
+        max-width: 52rem;
+        margin: 0;
+        color: var(--color-text-dark);
+        font-size: 1.375rem;
+        font-weight: 500;
+        line-height: 1.2727;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+      .pain_body {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      /* Надпись над карточками: строчными, без капслока */
+      .pain_eyebrow {
+        display: inline-flex;
+        min-height: 1.75rem;
+        margin: 0;
+        padding: 0.5rem 0.875rem;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.06);
+        border-radius: 3rem;
+        color: var(--color-text-dark);
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1;
+      }
+      .pain_grid {
+        display: grid;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        list-style: none;
+      }
+      /* Пункт списка без полей: сброс страницы снимает padding у всех li,
+         поэтому поля и фон — у карточки внутри */
+      .pain_item {
+        display: flex;
+        min-width: 0;
+      }
+      .pain_card {
+        display: flex;
+        min-width: 0;
+        padding: 1.5rem;
+        flex: 1;
+        flex-direction: column;
+        gap: 1.25rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      .pain_card-title {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.2143;
+        letter-spacing: -0.02em;
+      }
+      /* Реплика психолога — пузырь сообщения, как в карточке «Доверие» */
+      .pain_quote {
+        align-self: flex-start;
+        max-width: 30rem;
+        margin: 0;
+        padding: 0.75rem 1rem;
+        background: #eeeeef;
+        border-radius: 1rem 1rem 1rem 0.25rem;
+        color: var(--color-text-button);
+        font-size: 1.125rem;
+        line-height: 1.4;
+        letter-spacing: -0.01em;
+      }
+      .pain_reason {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+      }
+      .pain_label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #5e5a6a;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .pain_reason-text {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 1rem;
+        line-height: 1.45;
+      }
+      /* Ответ клуба прижат к низу, чтобы ответы в ряду стояли на одной линии */
+      .pain_answer {
+        display: flex;
+        margin-top: auto;
+        padding: 1rem 1.125rem 1.125rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        background: #000000;
+        border-radius: 0.75rem;
+        color: #ffffff;
+      }
+      .pain_label.is-answer { color: #f5f5f5; }
+      .pain_dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        flex: none;
+        background: var(--color-highlight);
+        border-radius: 50%;
+      }
+      .pain_answer-text {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: -0.01em;
+      }
+      /* Фраза-мостик к следующему блоку */
+      .pain_bridge {
+        max-width: 48rem;
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: -0.015em;
+        text-align: center;
+        text-wrap: balance;
+      }
+
+      /* Со скриптом карточки появляются по очереди, когда блок въезжает в экран */
+      .pain_grid.is-animated .pain_item {
+        opacity: 0;
+        transform: translateY(1.5rem);
+        transition:
+          opacity 500ms ease calc(var(--pain-index) * 120ms),
+          transform 700ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--pain-index) * 120ms);
+      }
+      .pain_grid.is-animated.is-visible .pain_item {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media screen and (max-width: 74.9375rem) {
+        .pain_card-title { font-size: 1.5rem; }
+      }
+      @media screen and (max-width: 61.9375rem) {
+        .pain_component { padding: 3rem 2rem 3rem; gap: 2.5rem; }
+        .pain_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+        .pain_description { font-size: 1.1875rem; }
+        .pain_quote, .pain_answer-text { font-size: 1rem; }
+        .pain_bridge { font-size: 1.375rem; }
+      }
+      /* Телефон и узкий планшет: карточки друг под другом */
+      @media screen and (max-width: 47.9375rem) {
+        .pain_grid { grid-template-columns: minmax(0, 1fr); }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .pain_component { padding: 2.5rem 1rem 2.5rem; gap: 2rem; }
+        .pain_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+        .pain_description { font-size: 1rem; line-height: 1.45; }
+        .pain_card { padding: 1.25rem 1rem; gap: 1rem; }
+        .pain_bridge { font-size: 1.25rem; }
+      }
     </style>
   </head>
   <body class="academy-page">
@@ -1321,84 +1526,76 @@
           </section>
           </div>
         </div>
-
-        <section class="section_problem" id="inside" data-node-id="611:1188">
+        <section class="section_pain" id="inside" aria-labelledby="pain-heading">
           <div class="padding-global">
             <div class="container-large">
-              <div class="problem_component">
-                <div class="problem_stage" data-node-id="611:1189">
-                  <h2 class="problem_heading">
-                    Вы умеете помогать, а&nbsp;за стенами кабинета о&nbsp;вас знают единицы
-                  </h2>
-
-                  <div class="problem_visuals">
-                    <article class="problem_feed-card">
-                      <div class="problem_feed-header">
-                        <h3 class="problem_feed-heading">
-                          Что чаще всего попадает в&nbsp;ленту?
-                        </h3>
-                        <div class="problem_feed-skeleton" aria-hidden="true">
-                          <span></span>
-                          <span></span>
-                        </div>
-                      </div>
-
-                      <div class="problem_feed-body">
-                        <p class="problem_feed-caption">
-                          В ленте выигрывает громкость — и собирает миллионы просмотров
-                        </p>
-                      </div>
-
-                      <div class="problem_feed-topics" aria-label="Примеры популярных тем">
-                        <div class="problem_topic-card is-first">
-                          «5 признаков нарцисса»
-                        </div>
-                        <div class="problem_topic-card is-second">
-                          «Исцели травму за выходные»
-                        </div>
-                        <div class="problem_topic-card is-third">
-                          «Гороскоп вашей привязанности»
-                        </div>
-                      </div>
-                    </article>
-
-                    <div class="problem_profile-viewport">
-                      <img
-                        class="problem_profile-image"
-                        src="https://static.tildacdn.com/tild3232-6134-4632-a639-653139663937/profil-psihologa-ins.png"
-                        alt="Профиль психолога в Instagram с публикациями и статистикой"
-                        title="Пример профессионального профиля психолога"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <img
-                        class="problem_profile-image is-blur-layer"
-                        src="https://static.tildacdn.com/tild3232-6134-4632-a639-653139663937/profil-psihologa-ins.png"
-                        alt=""
-                        aria-hidden="true"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </div>
-                  </div>
+              <div class="pain_component">
+                <div class="pain_header">
+                  <h2 class="pain_heading" id="pain-heading">Вы&nbsp;умеете помогать, а&nbsp;за&nbsp;стенами кабинета о&nbsp;вас знают единицы</h2>
+                  <p class="pain_description">Хороший специалист не&nbsp;становится заметным сам по&nbsp;себе. Но&nbsp;показываться можно спокойно и&nbsp;профессионально, без крика и&nbsp;продаж</p>
                 </div>
-
-                <div class="problem_messages">
-                  <div class="problem_message is-light" data-node-id="611:1213">
-                    <p>
-                      Вы пробовали вести блог. Темы есть, но в текст они не собираются.
-                      Пишете пост — звучит сухо. Записываете рилс — будто не вы.
-                      Публикуете редко. Потом снова пропадаете.
-                    </p>
-                  </div>
-
-                  <div class="problem_message is-dark" data-node-id="611:1215">
-                    <p>
-                      Кажется, чтобы вести блог, надо упрощать и кричать. А вам важно
-                      говорить честно — и не превращать психологию в шоу.
-                    </p>
-                  </div>
+                <div class="pain_body">
+                  <p class="pain_eyebrow">Что мешает показываться</p>
+                  <ul class="pain_grid" role="list">
+                    <li class="pain_item" style="--pain-index: 0">
+                      <div class="pain_card">
+                        <h3 class="pain_card-title">Не&nbsp;знаю, что показывать</h3>
+                        <p class="pain_quote">«О&nbsp;чём писать, чтобы это было профессионально и&nbsp;не&nbsp;банально?»</p>
+                        <div class="pain_reason">
+                          <span class="pain_label">Что за&nbsp;этим</span>
+                          <p class="pain_reason-text">Нет рамки темы и&nbsp;понимания, что допустимо показывать специалисту</p>
+                        </div>
+                        <div class="pain_answer">
+                          <span class="pain_label is-answer"><span class="pain_dot" aria-hidden="true"></span>Ответ клуба</span>
+                          <p class="pain_answer-text">Задание недели и&nbsp;тема, которую вы&nbsp;выбираете вместе с&nbsp;куратором</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="pain_item" style="--pain-index: 1">
+                      <div class="pain_card">
+                        <h3 class="pain_card-title">Неловко и&nbsp;страшно</h3>
+                        <p class="pain_quote">«Не&nbsp;хочу кричать о&nbsp;себе и&nbsp;продавать. Что скажут коллеги и&nbsp;клиенты?»</p>
+                        <div class="pain_reason">
+                          <span class="pain_label">Что за&nbsp;этим</span>
+                          <p class="pain_reason-text">Страх выглядеть навязчивым, этические сомнения, боязнь оценки</p>
+                        </div>
+                        <div class="pain_answer">
+                          <span class="pain_label is-answer"><span class="pain_dot" aria-hidden="true"></span>Ответ клуба</span>
+                          <p class="pain_answer-text">Этичные форматы без продаж в&nbsp;лоб и&nbsp;среда коллег, которые проходят то&nbsp;же самое</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="pain_item" style="--pain-index: 2">
+                      <div class="pain_card">
+                        <h3 class="pain_card-title">Не&nbsp;получается регулярно</h3>
+                        <p class="pain_quote">«Начинаю и&nbsp;бросаю. Без дедлайна всё откладывается»</p>
+                        <div class="pain_reason">
+                          <span class="pain_label">Что за&nbsp;этим</span>
+                          <p class="pain_reason-text">Нет ритма и&nbsp;внешней рамки, блог держится на&nbsp;настроении</p>
+                        </div>
+                        <div class="pain_answer">
+                          <span class="pain_label is-answer"><span class="pain_dot" aria-hidden="true"></span>Ответ клуба</span>
+                          <p class="pain_answer-text">Еженедельный цикл и&nbsp;субботний созвон, который задаёт темп</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="pain_item" style="--pain-index: 3">
+                      <div class="pain_card">
+                        <h3 class="pain_card-title">Не&nbsp;знаю, как это делается</h3>
+                        <p class="pain_quote">«Рилс, карусели, сторис. Все говорят на&nbsp;языке, которого я&nbsp;не&nbsp;понимаю»</p>
+                        <div class="pain_reason">
+                          <span class="pain_label">Что за&nbsp;этим</span>
+                          <p class="pain_reason-text">Кажется, что у&nbsp;других больше опыта и&nbsp;навыков</p>
+                        </div>
+                        <div class="pain_answer">
+                          <span class="pain_label is-answer"><span class="pain_dot" aria-hidden="true"></span>Ответ клуба</span>
+                          <p class="pain_answer-text">Маршрут для новичков, задания разной сложности, бот-помощник и&nbsp;обратная связь</p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
+                <p class="pain_bridge">Дело не&nbsp;в&nbsp;таланте и&nbsp;не&nbsp;в&nbsp;дисциплине. Показываться учатся, как любому навыку: в&nbsp;ритме и&nbsp;в&nbsp;среде, а&nbsp;не&nbsp;силой воли</p>
               </div>
             </div>
           </div>
@@ -2675,6 +2872,21 @@
         window.addEventListener("resize", function () { layout(); smooth = window.scrollY; apply(0); });
         layout();
         apply(0);
+      })();
+    </script>
+    <script>
+      // Блок 3: карточки появляются по очереди один раз, когда блок въезжает в экран.
+      (function () {
+        var grid = document.querySelector(".pain_grid");
+        if (!grid || !("IntersectionObserver" in window)) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        grid.classList.add("is-animated");
+        var seen = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          grid.classList.add("is-visible");
+          seen.disconnect();
+        }, { threshold: 0.15 });
+        seen.observe(grid);
       })();
     </script>
   </body>
