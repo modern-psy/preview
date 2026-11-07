@@ -1,0 +1,479 @@
+<!-- ОБЩИЕ СТИЛИ. Первый T123 страницы, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<link rel="preconnect" href="https://static.tildacdn.com" crossorigin>
+<link rel="preconnect" href="https://s3.twcstorage.ru" crossorigin>
+<style>
+/* ==========================================================================
+   Лендинг «Коучинг взрослых людей с СДВГ», повышение квалификации, modern-psy.ru/adhd-adult
+   Пересобран 07.11.2026 по живой странице: те же блоки, вид на общих стилях v1.
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета, каркас
+   main-wrapper → padding-global → container-xlarge (1520 px, поля от 16 px), отступы секций
+   section-spacing_component, H1 hero_heading, роли текста body-text_component и кнопка button_component.
+   Здесь только раскладка блоков и цвета, которых нет в v1.
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста, переопределять --hero-heading-size
+   и поля кнопки. Размер текста меняется только сменой класса роли в index.html (таблица в academy-base/README.md).
+   Исключение — раздел 9–10: межстрочные блока цены и формы приводятся к ролям v1, как на /adult-adhd-therapy.
+
+   Все правила начинаются с .adhd-adult-page, чтобы не задеть соседние блоки Тильды.
+   Ступени ширины как в v1: до 520, от 521, от 768, от 1025 px. Других не добавлять.
+   ========================================================================== */
+
+
+/* ---------- 0. Цвета и общее ----------
+   Цвета из v1 (--color-*). Свои — только здесь, в правилах ниже hex-кодов нет. Те же, что на /child-psy. */
+.adhd-adult-page {
+  --adhd-adult-muted: #625f6a;          /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1 */
+  --adhd-adult-line: #d9d8df;           /* тонкие линии между пунктами на белом */
+  --adhd-adult-on-dark-muted: #b9b4c4;  /* второстепенный текст на тёмном #2b2334: 7,4:1 */
+}
+
+/* Отступ закреплённых при прокрутке элементов от верха окна: под шапкой сайта на Тильде (около 78 px)
+   с зазором, как на /child-psy (6.5rem = 104 px). Сейчас на странице закреплённых элементов нет. */
+.adhd-adult-page { --adhd-adult-sticky-top: 6.5rem; }
+
+/* Серый текст v1 (#7b7b7c) даёт на #f5f5f5 только 3,9:1: для текста мельче 24 px мало
+   (academy-base/README.md, «Что ещё не готово»). Берём темнее, как на /child-psy и /alumni. */
+.adhd-adult-page { --body-text-color: var(--adhd-adult-muted); --section-subtitle-color: var(--adhd-adult-muted); }
+
+.adhd-adult-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Боковые поля страницы: до 767 px ровно 16 px, как на /child-psy и /neurodivergence (решение Дарьи 05.11.2026).
+   От 768 px — формула v1. Меняем только токен --page-padding; два класса — чтобы перебить v1. */
+.main-wrapper.adhd-adult-page { --page-padding: 1rem; }
+@media (min-width: 48rem) {
+  .main-wrapper.adhd-adult-page { --page-padding: clamp(1rem, 4.7619vw, 5rem); }
+}
+
+/* Списки на странице без браузерных точек и отступов: номера и линии рисуются ниже */
+.adhd-adult-page :is(.adhd-adult-hero_tags, .adhd-adult-hero_points, .adhd-adult-hero_features, .adhd-adult-compare_rows,
+  .adhd-adult-skills_grid, .adhd-adult-format_steps, .adhd-adult-program_list, .adhd-adult-program_items) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+
+/* ---------- 1. Первый экран и факты ----------
+   Как первый экран /child-psy (эталон В3, светлая версия): белая карточка, плашки формата, заголовок, для кого курс,
+   польза курса в серой плашке (пункты через тонкие линии, без иконок), старт строкой и кнопка; справа фото.
+   Роли текста v1: H1 — hero_heading; для кого — is-summary; пункты — content-heading is-compact;
+   старт — body-text is-callout. Плашки — meta-pill.
+   Телефон до 520 px: фото полосой сверху, заголовок, старт и кнопка, плашка после них.
+   Планшет 521–1024 px: заголовок, плашка, старт и кнопка, фото последним.
+   Компьютер: две колонки. Обёртка .adhd-adult-hero_text до 1024 px «прозрачная» (display: contents),
+   чтобы её части встали в сетку карточки.
+   Под карточкой шесть фактов белыми карточками: телефон столбиком, от 521 px по две, от 1025 px по три. */
+.adhd-adult-page .adhd-adult-hero_component { padding-top: 0.75rem; }
+.adhd-adult-page .adhd-adult-hero_card {
+  display: grid;
+  grid-template-areas: "photo" "header" "cta" "panel";
+  gap: 1.25rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--color-surface-primary);
+}
+.adhd-adult-page .adhd-adult-hero_text { display: contents; }
+
+/* плашки формата, заголовок и для кого курс */
+.adhd-adult-page .adhd-adult-hero_header { grid-area: header; display: grid; gap: 0.5rem; padding: 0.25rem 0.25rem 0; }
+.adhd-adult-page .adhd-adult-hero_tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-bottom: 0.25rem; }
+
+/* серая плашка с пользой курса: два тёмных пункта, между ними тонкая линия */
+.adhd-adult-page .adhd-adult-hero_panel {
+  grid-area: panel;
+  padding: 0.375rem 1.25rem;
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+.adhd-adult-page .adhd-adult-hero_points { display: grid; }
+.adhd-adult-page .adhd-adult-hero_point {
+  padding-block: 0.875rem;
+  border-top: 1px solid var(--adhd-adult-line);
+  color: var(--color-text-primary);
+  text-wrap: pretty;
+}
+.adhd-adult-page .adhd-adult-hero_point:first-child { border-top: 0; }
+
+/* старт строкой и кнопка. Ширина кнопки — как в Hero web-academy: на ширину колонки, не шире 38.3125rem.
+   Высоту, кегль и поля задаёт button_component, здесь не трогаем. */
+.adhd-adult-page .adhd-adult-hero_cta { grid-area: cta; display: grid; gap: 0.875rem; padding: 0 0.25rem; }
+.adhd-adult-page .adhd-adult-hero_start { --body-text-color: var(--color-text-primary); }
+.adhd-adult-page .adhd-adult-hero_buttons { display: grid; width: 100%; max-width: 38.3125rem; }
+
+/* фото: рамка задаёт размер, снимок заполняет её целиком. На телефоне полосой сверху, кадр по лицу.
+   Пока снимок грузится, на его месте серый фон страницы */
+.adhd-adult-page .adhd-adult-hero_media {
+  grid-area: photo;
+  position: relative;
+  display: block;
+  height: 8.5rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+.adhd-adult-page .adhd-adult-hero_photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+
+/* шесть фактов: заголовок прижат к верху, пояснение к низу */
+.adhd-adult-page .adhd-adult-hero_features { display: grid; gap: var(--card-grid-gap); margin-top: var(--card-grid-gap); }
+.adhd-adult-page .adhd-adult-hero_feature {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.adhd-adult-page .adhd-adult-hero_feature .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+
+@media (min-width: 32.5625rem) {
+  .adhd-adult-page .adhd-adult-hero_card { grid-template-areas: "header" "panel" "cta" "photo"; gap: 1.5rem; padding: 1.5rem; border-radius: 1.75rem; }
+  .adhd-adult-page .adhd-adult-hero_header { padding: 0.5rem 0.25rem 0; }
+  .adhd-adult-page .adhd-adult-hero_panel { padding: 0.5rem 1.5rem; border-radius: 1.25rem; }
+  .adhd-adult-page .adhd-adult-hero_cta { gap: 1rem; }
+  .adhd-adult-page .adhd-adult-hero_media { height: 22rem; border-radius: 1.25rem; }
+  .adhd-adult-page .adhd-adult-hero_photo { object-position: 50% 28%; }
+  .adhd-adult-page .adhd-adult-hero_features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 48rem) {
+  .adhd-adult-page .adhd-adult-hero_component { padding-top: 1.25rem; }
+  .adhd-adult-page .adhd-adult-hero_card { padding: 2.25rem; gap: 1.75rem; }
+  .adhd-adult-page .adhd-adult-hero_header { gap: 0.75rem; }
+  .adhd-adult-page .adhd-adult-hero_media { height: 25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .adhd-adult-hero_component { padding-top: 1.5rem; }
+  /* фото уже текста: вертикальный снимок 448 × 550 не растягивается сильнее, чем на старой странице */
+  .adhd-adult-page .adhd-adult-hero_card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+    grid-template-areas: "text photo";
+    gap: clamp(2.5rem, 3.9vw, 3.5rem);
+    padding: clamp(2.25rem, 3.3vw, 3rem);
+  }
+  .adhd-adult-page .adhd-adult-hero_text { grid-area: text; display: flex; flex-direction: column; gap: 1.75rem; }
+  /* в левой колонке части идут друг за другом: имена клеток телефона и планшета здесь не нужны */
+  .adhd-adult-page .adhd-adult-hero_text > * { grid-area: auto; }
+  .adhd-adult-page .adhd-adult-hero_header { padding: 0; }
+  .adhd-adult-page .adhd-adult-hero_cta { padding: 0; }
+  /* высоту фото задаёт левая колонка, не ниже 26rem, чтобы фото не превращалось в полосу */
+  .adhd-adult-page .adhd-adult-hero_media { height: auto; min-height: 26rem; }
+  .adhd-adult-page .adhd-adult-hero_photo { object-position: 50% 35%; }
+  .adhd-adult-page .adhd-adult-hero_features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .adhd-adult-page .adhd-adult-hero_feature { padding: 1.5rem; }
+}
+
+
+/* ---------- 2. Почему коучинг, а не психотерапия ----------
+   Одна белая таблица сравнения. Строка — признак (content-heading is-card) и две клетки. В клетке подпись
+   «Коучинг» или «Психотерапия» (is-caption, серым), тезис (content-heading is-compact, тёмным) и пояснение
+   (is-caption, серым): различия читаются по одним тезисам. Строки разделены тонкими линиями.
+   Поля 16 px, на компьютере 24 px.
+   Телефон: признак, под ним клетки друг под другом. Планшет (от 768 px): клетки в две колонки под признаком.
+   Компьютер (от 1025 px): три колонки (признак, коучинг, психотерапия), подписи колонок одной строкой сверху,
+   подписи в клетках остаются только для скринридера. */
+.adhd-adult-page .adhd-adult-compare_table {
+  padding: 0 var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.adhd-adult-page .adhd-adult-compare_head { display: none; }
+.adhd-adult-page .adhd-adult-compare_row { display: grid; gap: 1rem; padding-block: 1.25rem; border-top: 1px solid var(--adhd-adult-line); }
+.adhd-adult-page .adhd-adult-compare_row:first-child { border-top: 0; }
+.adhd-adult-page .adhd-adult-compare_aspect { color: var(--color-text-primary); text-wrap: balance; }
+.adhd-adult-page .adhd-adult-compare_cell { display: grid; align-content: start; gap: 0.5rem; }
+.adhd-adult-page .adhd-adult-compare_label { margin-bottom: -0.125rem; }
+.adhd-adult-page .adhd-adult-compare_thesis { color: var(--color-text-primary); text-wrap: balance; }
+.adhd-adult-page .adhd-adult-compare_cell .body-text_component { text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .adhd-adult-page .adhd-adult-compare_row { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; row-gap: 1rem; padding-block: 1.5rem; }
+  .adhd-adult-page .adhd-adult-compare_aspect { grid-column: 1 / -1; }
+}
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .adhd-adult-compare_table { padding: 0 1.5rem; }
+  .adhd-adult-page :is(.adhd-adult-compare_head, .adhd-adult-compare_row) {
+    grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 3vw, 3rem);
+  }
+  .adhd-adult-page .adhd-adult-compare_head { display: grid; padding-block: 1.25rem 1rem; border-bottom: 1px solid var(--adhd-adult-line); }
+  .adhd-adult-page .adhd-adult-compare_row { padding-block: 1.75rem; }
+  .adhd-adult-page .adhd-adult-compare_row:first-child { border-top: 0; }
+  .adhd-adult-page .adhd-adult-compare_aspect { grid-column: auto; }
+  .adhd-adult-page .adhd-adult-compare_label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+
+/* ---------- 3. Знания, которые станут частью вашей практики ----------
+   Белые карточки: иллюстрация во всю ширину сверху (у картинок свой сиреневый фон), ниже заголовок
+   (content-heading is-card) и пояснение (is-caption). Поля текста 16 px.
+   Телефон — столбиком, от 521 px по две, от 1025 px четыре в ряд. */
+.adhd-adult-page .adhd-adult-skills_grid { display: grid; gap: var(--card-grid-gap); }
+.adhd-adult-page .adhd-adult-skills_card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.adhd-adult-page .adhd-adult-skills_image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1256 / 838;
+  object-fit: cover;
+  background: var(--color-accent-soft);
+}
+.adhd-adult-page .adhd-adult-skills_text { display: grid; align-content: start; gap: 0.5rem; padding: var(--card-padding); }
+.adhd-adult-page .adhd-adult-skills_text .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+@media (min-width: 32.5625rem) {
+  .adhd-adult-page .adhd-adult-skills_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .adhd-adult-skills_grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .adhd-adult-page .adhd-adult-skills_text { padding: 1.25rem 1.5rem 1.5rem; }
+}
+
+
+/* ---------- 4. Как вы будете учиться ----------
+   Белая плашка: пять шагов, номер в сером кружке, кружки соединены тонкой линией; рядом фото.
+   Шаг: название (content-heading is-compact) и пояснение (is-caption). Поля 16 px, на компьютере 24 px.
+   Телефон и планшет: фото под шагами. От 1025 px две колонки, фото на высоту списка. */
+.adhd-adult-page .adhd-adult-format_plate {
+  display: grid;
+  gap: 1.5rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.adhd-adult-page .adhd-adult-format_steps { display: grid; padding: 0.25rem 0 0; }
+.adhd-adult-page .adhd-adult-format_step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  column-gap: 1rem;
+  padding-bottom: 1.5rem;
+}
+.adhd-adult-page .adhd-adult-format_step:last-child { padding-bottom: 0; }
+/* линия от кружка к следующему шагу */
+.adhd-adult-page .adhd-adult-format_step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  top: 2.5rem;
+  bottom: 0;
+  width: 1px;
+  background: var(--adhd-adult-line);
+}
+.adhd-adult-page .adhd-adult-format_number {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  --body-text-color: var(--color-text-primary);
+}
+.adhd-adult-page .adhd-adult-format_text { display: grid; gap: 0.375rem; padding-top: 0.5rem; }
+.adhd-adult-page .adhd-adult-format_text .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.adhd-adult-page .adhd-adult-format_photo {
+  display: block;
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+  object-position: 50% 35%;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+@media (min-width: 32.5625rem) {
+  .adhd-adult-page .adhd-adult-format_photo { height: 20rem; }
+}
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .adhd-adult-format_plate {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: clamp(2.5rem, 4vw, 4rem);
+    padding: 1.5rem;
+  }
+  .adhd-adult-page .adhd-adult-format_steps { align-self: center; padding: 0.75rem 0 0.75rem 0.75rem; }
+  /* высоту фото задаёт список шагов */
+  .adhd-adult-page .adhd-adult-format_photo { height: 0; min-height: 100%; }
+}
+
+
+/* ---------- 5. Автор и преподаватель курса ----------
+   Белая карточка как у преподавателей /child-psy: круглое фото, имя (content-heading is-card), первая строка
+   описания серым (is-caption), дальше два абзаца (body-text). Поля 16 px, на компьютере 24 px.
+   Телефон: фото 5rem слева от имени, описание ниже. От 768 px фото 9rem слева на высоту карточки, текст справа. */
+.adhd-adult-page .adhd-adult-teacher_card {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  column-gap: 1rem;
+  row-gap: 1rem;
+  align-items: center;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.adhd-adult-page .adhd-adult-teacher_photo { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 50%; background: var(--color-page-background); }
+.adhd-adult-page .adhd-adult-teacher_photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.adhd-adult-page .adhd-adult-teacher_name { display: grid; gap: 0.25rem; }
+.adhd-adult-page .adhd-adult-teacher_name .content-heading_component { color: var(--color-text-primary); }
+.adhd-adult-page .adhd-adult-teacher_bio { grid-column: 1 / -1; display: grid; gap: 0.75rem; max-width: 50rem; }
+.adhd-adult-page .adhd-adult-teacher_bio .body-text_component { text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .adhd-adult-page .adhd-adult-teacher_card { grid-template-columns: 9rem minmax(0, 1fr); column-gap: 2rem; row-gap: 1rem; }
+  .adhd-adult-page .adhd-adult-teacher_photo { grid-row: 1 / 3; align-self: start; }
+  .adhd-adult-page .adhd-adult-teacher_name { align-self: end; }
+  .adhd-adult-page .adhd-adult-teacher_bio { grid-column: 2; align-self: start; }
+}
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .adhd-adult-teacher_card { grid-template-columns: 11rem minmax(0, 1fr); column-gap: 2.5rem; padding: 1.5rem; }
+}
+
+
+/* ---------- 6. Программа обучения ----------
+   Карточка семинара как «Программа» на /adult-adhd-therapy: тёмная шапка с названием (content-heading is-card),
+   ниже белая часть с темами (body-text, тёмным) через тонкие линии. Поля 16 px, на компьютере 24 px.
+   Телефон и планшет — столбиком, от 1025 px два семинара рядом. */
+.adhd-adult-page .adhd-adult-program_list { display: grid; gap: var(--card-grid-gap); }
+.adhd-adult-page .adhd-adult-program_card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.adhd-adult-page .adhd-adult-program_head { padding: var(--card-padding); background: var(--color-surface-dark); }
+.adhd-adult-page .adhd-adult-program_head .content-heading_component { color: var(--color-text-on-dark); }
+.adhd-adult-page .adhd-adult-program_items { display: grid; align-content: start; padding: 0.25rem var(--card-padding) var(--card-padding); --body-text-color: var(--color-text-primary); }
+.adhd-adult-page .adhd-adult-program_items > li { padding-block: 0.875rem; border-top: 1px solid var(--adhd-adult-line); text-wrap: pretty; }
+.adhd-adult-page .adhd-adult-program_items > li:first-child { border-top: 0; }
+.adhd-adult-page .adhd-adult-program_items > li:last-child { padding-bottom: 0; }
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .adhd-adult-program_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .adhd-adult-page .adhd-adult-program_head { padding: 1.5rem; }
+  .adhd-adult-page .adhd-adult-program_items { padding: 0.5rem 1.5rem 1.5rem; }
+}
+
+
+/* ---------- 7–8. Удостоверение и «Почему выбирают нас» ----------
+   Общие блоки: стили в diploma.css и academy.css (копии, не править).
+   Единственная добавка: образец удостоверения — скан документа со своими краями (тот же, что на /ifs),
+   а общий блок обрезает картинку по рамке. Поэтому скан показан целиком на белой карточке с полями,
+   как на старой странице. Размер рамки и скругление — из общего блока. */
+.adhd-adult-page .diploma_media { background: var(--color-surface-primary); }
+.adhd-adult-page .diploma_image { inset: var(--card-padding); width: calc(100% - 2 * var(--card-padding)); height: calc(100% - 2 * var(--card-padding)); object-fit: contain; }
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .diploma_image { inset: 2rem; width: calc(100% - 4rem); height: calc(100% - 4rem); }
+}
+
+
+/* ---------- 9–10. Цена и форма ----------
+   Цена — стили внутри блока генератора, форма — request-form.css (копия общего компонента, кладёт
+   request-form-sync.mjs). Здесь только шрифт, отступы и межстрочные, как на /adult-adhd-therapy. */
+
+/* колонка шириной 64rem по центру: вопросы и ответы (блок цены задаёт ту же ширину сам, раскладка wa-narrow) */
+.adhd-adult-page .adhd-adult-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+
+/* Блок цены приходит со своим шрифтом: Google Fonts price-sync.mjs убирает, а здесь блок переключается
+   на шрифт v1, как на /child-psy */
+.adhd-adult-page .price-auto_component { font-family: var(--font-family-body); }
+/* Отступы блока цены — как у секций v1: сверху 0, снизу --section-space (60, 80, 100, 150 px).
+   [data-layout] в селекторе — чтобы перебить стили блока, которые идут ниже по странице. */
+.adhd-adult-page .price-auto_component[data-layout] { --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
+
+/* Межстрочные блока цены и формы — как у ролей v1 (просьба Дарьи 07.11.2026 на /adult-adhd-therapy:
+   «межстрочный интервал тоже из v1»). Оба блока общие и приходят со своими стилями, их файлы не правим.
+   Каждому тексту — межстрочный той роли v1, на которую он похож (значения из academy-base/v1.css):
+   заголовок блока — section-title (1.1, от 521 px 1.0); название карточки — content-heading (1.1);
+   подзаголовок, подписи, пункты с галочками — is-caption (1.35, от 521 px 1.2); подводка — body-text (1.3, от 521 px 1.2);
+   плашка повышения — is-callout (1.3); мелкие пояснения, подписи полей, согласие — is-fine-print (1.4);
+   ярлыки — meta-pill (1.3); кнопки формы — button (1.07). Кегли и насыщенность у блоков свои, их не трогаем.
+   Три класса в селекторе — чтобы перебить стили блоков, которые идут ниже по странице. */
+.adhd-adult-page .price-auto_component .price-block_heading { line-height: 1.1; }
+.adhd-adult-page .price-auto_component .price-card_name { line-height: 1.1; }
+.adhd-adult-page .price-auto_component .price-block_lead { line-height: 1.3; }
+.adhd-adult-page .price-auto_component :is(.price-card_sub, .price-check, .price-caption) { line-height: 1.35; }
+.adhd-adult-page .price-auto_component .price-rise_title { line-height: 1.3; }
+.adhd-adult-page .price-auto_component :is(.price-check_note, .price-rise_note, .price-tag_was, .price-switch_legend) { line-height: 1.4; }
+.adhd-adult-page .price-auto_component :is(.price-card_badge, .price-sticker_chip) { line-height: 1.3; }
+.adhd-adult-page .request-form_component :is(.request-form_label, .request-form_hint, .request-form_note, .request-form_legal, .request-form_tip, .request-form_link-button, .request-form_lecture) { line-height: 1.4; }
+.adhd-adult-page .request-form_component :is(.request-form_submit, .request-form_choice-option, .request-form_bot) { line-height: 1.07; }
+@media (min-width: 32.5625rem) {
+  .adhd-adult-page .price-auto_component .price-block_heading { line-height: 1; }
+  .adhd-adult-page .price-auto_component .price-block_lead { line-height: 1.2; }
+  .adhd-adult-page .price-auto_component :is(.price-card_sub, .price-check, .price-caption) { line-height: 1.2; }
+}
+
+
+/* ---------- 11. Вопросы и ответы ----------
+   Как на /child-psy: белые карточки, вопрос — content-heading is-compact, ответ — body-text, плюс-крестик справа.
+   Поля 16 px, на компьютере 24 px. Кегли не задаются: только роли v1. */
+.adhd-adult-page .adhd-adult-faq_list { display: grid; gap: 0.5rem; }
+.adhd-adult-page .adhd-adult-faq_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.adhd-adult-page .adhd-adult-faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.adhd-adult-page .adhd-adult-faq_question::-webkit-details-marker { display: none; }
+.adhd-adult-page .adhd-adult-faq_question .content-heading_component { color: var(--color-text-primary); text-wrap: pretty; }
+.adhd-adult-page .adhd-adult-faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color 150ms ease;
+}
+.adhd-adult-page .adhd-adult-faq_icon::before,
+.adhd-adult-page .adhd-adult-faq_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.adhd-adult-page .adhd-adult-faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.adhd-adult-page .adhd-adult-faq_item[open] .adhd-adult-faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .adhd-adult-page .adhd-adult-faq_question:hover .adhd-adult-faq_icon { background: var(--adhd-adult-line); }
+}
+.adhd-adult-page .adhd-adult-faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.adhd-adult-page .adhd-adult-faq_answer .body-text_component { max-width: 62ch; }
+.adhd-adult-page .adhd-adult-faq_answer a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (min-width: 64.0625rem) {
+  .adhd-adult-page .adhd-adult-faq_question { padding: 1.25rem 1.5rem; }
+  .adhd-adult-page .adhd-adult-faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adhd-adult-page :is(.adhd-adult-faq_icon, .adhd-adult-faq_icon::before, .adhd-adult-faq_icon::after) { transition: none; }
+}
+</style>
