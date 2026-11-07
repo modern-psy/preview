@@ -584,12 +584,53 @@
 
       /* ---------- Блок 2: цепочка результата ---------- */
       .section_chain { padding-bottom: var(--space-between-sections); }
+      /* Блок на цветной плашке, как «Дело не в том, что вы чего-то не умеете»:
+         размытая картинка градиента и зерно; ширина и скругление те же. */
       .chain_component {
+        position: relative;
         display: flex;
         width: 100%;
+        max-width: 75rem;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 3.125rem 2rem 3rem;
         flex-direction: column;
         align-items: center;
-        gap: 3.5rem;
+        gap: 3rem;
+        border-radius: 1rem;
+      }
+      .chain_backdrop {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        overflow: clip;
+        background: #000000;
+        border-radius: inherit;
+      }
+      .chain_backdrop-image {
+        position: absolute;
+        top: -17%;
+        left: -7.68%;
+        width: 126.3%;
+        height: 134%;
+        max-width: none;
+        object-fit: cover;
+        filter: blur(38.5px);
+        transform: rotate(180deg) scale(1.03);
+      }
+      .chain_grain {
+        position: absolute;
+        inset: 0;
+        background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+        background-position: top left;
+        background-size: 31.25rem 31.25rem;
+        mix-blend-mode: multiply;
+        opacity: 0.4;
+      }
+      .chain_header,
+      .chain_body {
+        position: relative;
+        z-index: 1;
       }
       .chain_header {
         display: flex;
@@ -600,24 +641,25 @@
         gap: 1rem;
         text-align: center;
       }
-      /* Надпись над заголовком и заголовок — один в один как у «Что вы получаете» */
+      /* Надпись над заголовком на цветной плашке — светлая, как в тёмной карточке первого экрана */
       .chain_eyebrow {
         display: inline-flex;
         min-height: 1.75rem;
         padding: 0.5rem 0.875rem;
         align-items: center;
-        background: rgba(0, 0, 0, 0.06);
+        background: rgba(255, 255, 255, 0.16);
         border-radius: 3rem;
-        color: var(--color-text-dark);
+        color: #ffffff;
         font-size: 0.75rem;
         font-weight: 500;
         line-height: 1;
         text-transform: uppercase;
+        backdrop-filter: blur(4px);
       }
       .chain_heading {
         max-width: 44rem;
         margin: 0;
-        color: var(--color-text-button);
+        color: #ffffff;
         font-size: clamp(2.25rem, 2.857vw, 3rem);
         font-weight: 700;
         line-height: 1.125;
@@ -654,7 +696,7 @@
         align-items: center;
       }
       .chain_step:not(.is-final) .chain_marker { width: calc(100% + var(--chain-gap)); }
-      /* Номер как в блоке созвонов: чёрный круг — шаг пройден */
+      /* Номер как в блоке созвонов, только на тёмной плашке наоборот: белый круг — шаг пройден */
       .chain_number {
         display: inline-flex;
         width: 2.5rem;
@@ -662,10 +704,10 @@
         flex: none;
         align-items: center;
         justify-content: center;
-        background: #000000;
-        border: 2px solid #000000;
+        background: #ffffff;
+        border: 2px solid #ffffff;
         border-radius: 50%;
-        color: #ffffff;
+        color: #000000;
         font-size: 1.125rem;
         line-height: 1;
         letter-spacing: -0.01em;
@@ -676,14 +718,14 @@
         margin-left: 0.5rem;
         flex: 1;
         overflow: clip;
-        background: rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.24);
         border-radius: 1px;
       }
       /* Заполнение линии: долю в --chain-fill ставит скрипт, без скрипта линия полная */
       .chain_link::after {
         position: absolute;
         inset: 0;
-        background: #000000;
+        background: #ffffff;
         content: "";
         transform: scaleX(var(--chain-fill, 1));
         transform-origin: left;
@@ -694,7 +736,7 @@
         height: 1rem;
         margin: 0 0.5rem 0 -0.625rem;
         flex: none;
-        color: #000000;
+        color: #ffffff;
       }
 
       /* Карточка шага: картинка сверху, текст снизу. Белая, как карточки первого экрана. */
@@ -720,10 +762,13 @@
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
+        container-type: inline-size;
       }
+      /* Кегль следует за шириной карточки: длинное «записываются» помещается целиком,
+         на широком экране — до 28px */
       .chain_step-heading {
         margin: 0;
-        font-size: 1.75rem;
+        font-size: clamp(1.25rem, 11.5cqi, 1.75rem);
         font-weight: 700;
         line-height: 1.2143;
         letter-spacing: -0.02em;
@@ -738,6 +783,7 @@
       /* Подсвеченный шаг — чёрная карточка. Без скрипта подсвечен итог, «Больше обращений». */
       .chain_step.is-final .chain_card {
         --chain-surface: #000000;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
         color: #ffffff;
       }
       .chain_step.is-final .chain_step-text { color: #f5f5f5; }
@@ -821,11 +867,11 @@
         border-radius: 50%;
       }
 
-      /* Сноска: тихая, но читается (контраст 5.6:1) */
+      /* Сноска: тихая, светлая на плашке, как описание в «Дело не в том…» */
       .chain_note {
         max-width: 46rem;
         margin: 0;
-        color: #5e5a6a;
+        color: #f5f5f5;
         font-size: 1rem;
         line-height: 1.45;
         text-align: center;
@@ -835,16 +881,16 @@
       /* Со скриптом: черная подсветка идёт по шагам при прокрутке, номера и линия
          заполняются следом. Текст читается в любом состоянии. */
       .chain_list.is-animated .chain_number {
-        background: #ffffff;
-        color: #000000;
+        background: transparent;
+        color: #ffffff;
         transition: background-color 300ms ease, color 300ms ease;
       }
       .chain_list.is-animated .chain_step.is-reached .chain_number {
-        background: #000000;
-        color: #ffffff;
+        background: #ffffff;
+        color: #000000;
       }
       .chain_list.is-animated .chain_arrow {
-        opacity: 0.24;
+        opacity: 0.32;
         transition: opacity 300ms ease;
       }
       .chain_list.is-animated .chain_step.is-passed .chain_arrow { opacity: 1; }
@@ -859,23 +905,27 @@
       .chain_list.is-animated .chain_step-text { transition: color 450ms ease; }
       .chain_list.is-animated .chain_step.is-final .chain_card {
         --chain-surface: #ffffff;
+        box-shadow: none;
         color: var(--color-text-button);
       }
       .chain_list.is-animated .chain_step.is-final .chain_step-text { color: inherit; }
+      /* Тонкая светлая кромка, чтобы чёрная карточка не терялась на тёмном краю плашки */
       .chain_list.is-animated .chain_step.is-current .chain_card {
         --chain-surface: #000000;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
         color: #ffffff;
         transform: translateY(-0.375rem);
       }
       .chain_list.is-animated .chain_step.is-current .chain_step-text { color: #f5f5f5; }
 
       @media screen and (max-width: 74.9375rem) {
-        .chain_step-heading { font-size: 1.5rem; }
         .chain_step-text { font-size: 1rem; line-height: 1.45; }
       }
       /* Планшет и телефон: цепочка сверху вниз, номер слева, как у созвонов */
       @media screen and (max-width: 61.9375rem) {
+        .chain_component { padding: 3rem 2rem 3.5rem; }
         .chain_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+        .chain_step-heading { font-size: 1.5rem; }
         .chain_list { max-width: 40rem; grid-template-columns: minmax(0, 1fr); }
         .chain_step {
           display: grid;
@@ -901,7 +951,7 @@
         .chain_list.is-animated .chain_step.is-current .chain_card { transform: none; }
       }
       @media screen and (max-width: 32.5rem) {
-        .chain_component { gap: 2.5rem; }
+        .chain_component { padding: 2.5rem 1rem 3rem; gap: 2.5rem; }
         .chain_eyebrow { font-size: 0.6875rem; line-height: 1.2; }
         .chain_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
         .chain_step { gap: 0.75rem; }
@@ -940,14 +990,22 @@
         padding: 0;
         pointer-events: auto;
       }
+      /* Слои сцены: цветная плашка (0) — карточки первого экрана (1) — текст и карточки блока 2 (2) */
       .story_component.is-story .section_chain {
         position: absolute;
-        z-index: 2;
         inset: 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
         padding: 0;
+      }
+      .story_component.is-story .chain_header,
+      .story_component.is-story .chain_body { z-index: 2; }
+      /* Плашка проявляется за карточками, когда текст первого экрана уходит вверх */
+      /* Только прозрачность: размытая картинка не перерисовывается на каждом кадре */
+      .story_component.is-story .chain_backdrop {
+        opacity: var(--story-panel, 0);
+        will-change: opacity;
       }
       /* Части блока 2 проявляются по ходу прокрутки (доли от 0 до 1 ставит скрипт) */
       .story_component.is-story .chain_header {
@@ -964,8 +1022,11 @@
         display: block;
         pointer-events: none;
       }
+      /* Когда карточки блока 2 проявились целиком, белые карточки под ними прячутся,
+         иначе их край выглядывает из-под приподнятой подсвеченной карточки */
       .hero_spines.is-morphing .hero_spine {
         position: absolute;
+        opacity: var(--story-boxes, 1);
         transition: none;
       }
       /* Содержимое первого экрана тает под белым слоем, остаются чистые карточки */
@@ -984,6 +1045,7 @@
         display: block;
         background: #ffffff;
         border-radius: 1rem;
+        opacity: var(--story-boxes, 1);
       }
     </style>
   </head>
@@ -1168,8 +1230,12 @@
             <div class="padding-global">
               <div class="container-large">
                 <div class="chain_component">
+                  <div class="chain_backdrop" aria-hidden="true">
+                    <img class="chain_backdrop-image" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" loading="lazy" decoding="async" />
+                    <div class="chain_grain"></div>
+                  </div>
                   <div class="chain_header">
-                    <div class="chain_eyebrow">Зачем вам блог</div>
+                    <div class="chain_eyebrow">От&nbsp;поста до&nbsp;записи</div>
                     <h2 class="chain_heading" id="chain-heading">Как регулярный блог работает на&nbsp;вашу практику</h2>
                   </div>
                   <div class="chain_body">
@@ -1190,8 +1256,8 @@
                           </span>
                         </div>
                         <div class="chain_copy">
-                          <h3 class="chain_step-heading">Регулярный контент</h3>
-                          <p class="chain_step-text">Вы&nbsp;публикуетесь каждую неделю по&nbsp;понятному плану</p>
+                          <h3 class="chain_step-heading">Вы&nbsp;в&nbsp;ленте каждую неделю</h3>
+                          <p class="chain_step-text">Задания и&nbsp;созвоны клуба помогают доводить посты до&nbsp;публикации</p>
                         </div>
                       </div>
                     </li>
@@ -1212,7 +1278,7 @@
                         </div>
                         <div class="chain_copy">
                           <h3 class="chain_step-heading">Вас узнают</h3>
-                          <p class="chain_step-text">Подписчики запоминают вашу тему и&nbsp;стиль</p>
+                          <p class="chain_step-text">Читатель регулярно видит ваши посты и&nbsp;запоминает, о&nbsp;чём вы&nbsp;пишете</p>
                         </div>
                       </div>
                     </li>
@@ -1227,8 +1293,8 @@
                           <span class="chain_bubble is-reader">Сохранила ваш пост про тревогу</span>
                         </div>
                         <div class="chain_copy">
-                          <h3 class="chain_step-heading">Растёт доверие</h3>
-                          <p class="chain_step-text">Люди видят, как вы&nbsp;думаете и&nbsp;работаете</p>
+                          <h3 class="chain_step-heading">Вам доверяют</h3>
+                          <p class="chain_step-text">Из постов читатель понимает, как вы&nbsp;думаете и&nbsp;работаете</p>
                         </div>
                       </div>
                     </li>
@@ -1241,13 +1307,13 @@
                           <span class="chain_bubble is-request"><span class="chain_dot"></span>Можно записаться на&nbsp;консультацию?</span>
                         </div>
                         <div class="chain_copy">
-                          <h3 class="chain_step-heading">Больше обращений</h3>
-                          <p class="chain_step-text">Тем, кто выбирает специалиста, проще выбрать вас</p>
+                          <h3 class="chain_step-heading">К&nbsp;вам записываются</h3>
+                          <p class="chain_step-text">Когда читателю нужен психолог, проще выбрать того, кого он&nbsp;уже читает</p>
                         </div>
                       </div>
                     </li>
                     </ol>
-                    <p class="chain_note">Результат зависит от&nbsp;ниши, регулярности и&nbsp;вашей практики. Клуб даёт систему и&nbsp;опору</p>
+                    <p class="chain_note">Сколько будет обращений, зависит от&nbsp;ниши и&nbsp;вашей практики. Клуб помогает с&nbsp;первым шагом: публиковаться каждую неделю</p>
                   </div>
                 </div>
               </div>
@@ -2461,7 +2527,7 @@
         var ghost = story && story.querySelector(".story_ghost");
         var head = document.querySelector("[data-story-head]");
         var component = story && story.querySelector(".chain_component");
-        var sceneQuery = window.matchMedia("(min-width: 62rem) and (min-height: 40rem)");
+        var sceneQuery = window.matchMedia("(min-width: 62rem) and (min-height: 44rem)");
 
         var scene = false, morphing = false, from = null, to = null, run = 0;
         var smooth = window.scrollY, frame = 0;
@@ -2497,6 +2563,7 @@
           morphing = false;
           spines.classList.remove("is-morphing");
           spines.style.removeProperty("--story-cover");
+          spines.style.removeProperty("--story-boxes");
           items.concat(ghost).forEach(function (el) { el.removeAttribute("style"); });
         }
 
@@ -2555,11 +2622,15 @@
               place(ghost, { left: from[0].left, top: from[0].top, width: 0, height: from[0].height }, to[0], g);
               spines.style.setProperty("--story-cover", clamp(m / 0.3).toFixed(3));
             }
-            story.style.setProperty("--story-cards", clamp((m - 0.55) / 0.3).toFixed(3));
+            var shown = clamp((m - 0.55) / 0.3);
+            story.style.setProperty("--story-cards", shown.toFixed(3));
+            if (morphing) spines.style.setProperty("--story-boxes", shown >= 0.999 ? "0" : "1");
             story.style.setProperty("--story-track", clamp((m - 0.8) / 0.2).toFixed(3));
-            // Заголовок блока 2 проявляется, только когда текст первого экрана ушёл с его места
+            // Плашка и заголовок блока 2 проявляются, только когда текст первого экрана уходит с их места
             var gap = component.getBoundingClientRect().top - (head.getBoundingClientRect().bottom + lag);
-            story.style.setProperty("--story-header", clamp((gap - 24) / 160).toFixed(3));
+            var panel = clamp((gap + 60) / 220);
+            story.style.setProperty("--story-panel", panel.toFixed(3));
+            story.style.setProperty("--story-header", Math.min(panel, clamp((gap + 10) / 160)).toFixed(3));
             var p = (s - 0.75 * vh) / (1.1 * vh);
             var h = p < 0 ? -1 : clamp(p) * (steps.length - 1);
             setSteps(h);
