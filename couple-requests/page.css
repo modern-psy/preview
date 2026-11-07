@@ -1,0 +1,472 @@
+/* ==========================================================================
+   Лендинг «Работа с темой отношений в практике психолога» · повышение квалификации · modern-psy.ru/couple-requests
+   Пересобран 07.11.2026 на общих стилях v1 (раньше страница была на своей системе dd-).
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета, каркас
+   main-wrapper → padding-global → container-xlarge (1520 px, поля от 16 px), отступы секций
+   section-spacing_component, H1 hero_heading, роли текста body-text_component и кнопка button_component.
+   Здесь только раскладка блоков и цвета, которых нет в v1. Устроено как на /child-psy.
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста, переопределять --hero-heading-size
+   и поля кнопки. Размер текста меняется только сменой класса роли в index.html (таблица в academy-base/README.md).
+
+   Все правила начинаются с .couple-requests-page, чтобы не задеть соседние блоки Тильды.
+   Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px. Других не добавлять.
+   ========================================================================== */
+
+
+/* ---------- 0. Цвета и общие настройки ----------
+   Цвета из v1 (--color-*). Свои — только здесь, в правилах ниже hex-кодов нет. Значения — как на /child-psy. */
+.couple-requests-page {
+  --couple-muted: #625f6a;              /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1 */
+  --couple-line: #d9d8df;               /* тонкие линии между пунктами, маркеры списков */
+  --couple-on-dark-muted: #b9b4c4;      /* текст карточек на тёмной плашке: на #2b2334 7,4:1, на карточке около 6:1 */
+  --couple-dark-card: rgb(255 255 255 / 8%); /* карточка на тёмной плашке, как на /child-psy */
+}
+
+/* Отступ закреплённого при прокрутке заголовка «Программы» от верха окна: под шапкой сайта на Тильде
+   (около 78 px) с зазором, как на /child-psy и /neurodivergence (6.5rem = 104 px). */
+.couple-requests-page { --couple-sticky-top: 6.5rem; }
+
+/* Серый текст v1 (#7b7b7c) даёт на белом 4,2:1, на #f5f5f5 — 3,9:1: для текста мельче 24 px мало.
+   На этой странице берём темнее, как на /child-psy и /alumni. */
+.couple-requests-page { --body-text-color: var(--couple-muted); --section-subtitle-color: var(--couple-muted); }
+
+.couple-requests-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Боковые поля страницы: до 767 px ровно 16 px, как на /child-psy и /neurodivergence (решение Дарьи 05.11.2026).
+   От 768 px — формула v1. Меняем только токен --page-padding, которым пользуется padding-global. */
+.main-wrapper.couple-requests-page { --page-padding: 1rem; }
+@media (min-width: 48rem) {
+  .main-wrapper.couple-requests-page { --page-padding: clamp(1rem, 4.7619vw, 5rem); }
+}
+
+/* Списки в карточках без браузерных точек и отступов */
+.couple-requests-page :is(.couple-hero_points, .couple-hero_facts, .couple-context_grid, .couple-audience_grid, .couple-skills_grid, .couple-cases_grid, .couple-format_list, .couple-program_list, .couple-program_points) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.couple-requests-page .couple-cases_quote { margin: 0; }
+
+/* Подзаголовок секции не шире 46rem (около 80 знаков в строке): в «Кейсах» на широком экране строка доходила до 100 знаков */
+.couple-requests-page .section-header_component.is-left .section-subtitle_component { max-width: 46rem; }
+
+/* Колонка шириной 64rem по центру: «98 %», вопросы и ответы (блок цены задаёт ту же ширину сам, layout wa-narrow) */
+.couple-requests-page .couple-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+
+
+/* ---------- 1. Первый экран ----------
+   Эталон В3 «Описание в плашке», светлая версия, как на /child-psy: белая карточка, польза курса в серой плашке,
+   старт строкой и кнопка, справа фото. Под карточкой четыре факта белыми карточками (как на старой странице).
+   Роли текста v1: H1 — hero_heading (вторая строка названия серым, тем же кеглем); подводка — body-text is-summary;
+   подводка в плашке — is-caption; пункты — content-heading is-compact; старт — is-callout.
+   Телефон до 520 px: фото полосой сверху, заголовок, старт и кнопка, плашка после них.
+   Планшет 521–1024 px: заголовок, плашка, старт и кнопка, фото последним.
+   Компьютер: две колонки. Обёртка .couple-hero_text до 1024 px «прозрачная» (display: contents),
+   чтобы её части встали в сетку карточки. */
+.couple-requests-page .couple-hero_component { padding-top: 0.75rem; }
+.couple-requests-page .couple-hero_card {
+  display: grid;
+  grid-template-areas: "photo" "header" "cta" "panel";
+  gap: 1.25rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-hero_text { display: contents; }
+.couple-requests-page .couple-hero_header { grid-area: header; display: grid; gap: 0.5rem; padding: 0.25rem 0.25rem 0; }
+/* «в практике психолога» — вторая строка H1, серым */
+.couple-requests-page .couple-hero_title-rest { display: block; color: var(--couple-muted); }
+
+.couple-requests-page .couple-hero_panel {
+  grid-area: panel;
+  display: grid;
+  gap: 0.875rem;
+  padding: 1.25rem 1.25rem 0.375rem;
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+.couple-requests-page .couple-hero_points { display: grid; }
+.couple-requests-page .couple-hero_point {
+  padding-block: 0.875rem;
+  border-top: 1px solid var(--couple-line);
+  color: var(--color-text-primary);
+  text-wrap: pretty;
+}
+
+/* старт строкой и кнопка: кнопка растянута по колонке, не шире 38.3125rem (как .hero_actions web-academy) */
+.couple-requests-page .couple-hero_cta { grid-area: cta; display: grid; gap: 0.875rem; padding: 0 0.25rem; }
+.couple-requests-page .couple-hero_start { --body-text-color: var(--color-text-primary); }
+.couple-requests-page .couple-hero_buttons { display: grid; width: 100%; max-width: 38.3125rem; }
+
+/* фото: на телефоне полосой сверху, лица обоих в кадре; пока грузится — серый фон страницы */
+.couple-requests-page .couple-hero_photo {
+  grid-area: photo;
+  display: block;
+  width: 100%;
+  height: 9rem;
+  object-fit: cover;
+  object-position: 50% 30%;
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+
+/* факты — белые карточки на фоне страницы: на телефоне столбиком, от 521 px по две, от 1025 px в ряд */
+.couple-requests-page .couple-hero_facts { display: grid; gap: var(--card-grid-gap); margin-top: var(--card-grid-gap); }
+.couple-requests-page .couple-hero_fact {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-hero_fact .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+
+@media (min-width: 32.5625rem) {
+  .couple-requests-page .couple-hero_card { grid-template-areas: "header" "panel" "cta" "photo"; gap: 1.5rem; padding: 1.5rem; border-radius: 1.75rem; }
+  .couple-requests-page .couple-hero_header { padding: 0.5rem 0.25rem 0; }
+  .couple-requests-page .couple-hero_panel { padding: 1.5rem 1.5rem 0.5rem; border-radius: 1.25rem; }
+  .couple-requests-page .couple-hero_cta { gap: 1rem; }
+  .couple-requests-page .couple-hero_photo { height: 22rem; border-radius: 1.25rem; object-position: 50% 40%; }
+  .couple-requests-page .couple-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 48rem) {
+  .couple-requests-page .couple-hero_component { padding-top: 1.25rem; }
+  .couple-requests-page .couple-hero_card { padding: 2.25rem; gap: 1.75rem; }
+  .couple-requests-page .couple-hero_header { gap: 0.75rem; }
+  .couple-requests-page .couple-hero_photo { height: 25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-hero_component { padding-top: 1.5rem; }
+  .couple-requests-page .couple-hero_card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    grid-template-areas: "text photo";
+    gap: clamp(2.5rem, 3.9vw, 3.5rem);
+    padding: clamp(2.25rem, 3.3vw, 3rem);
+  }
+  .couple-requests-page .couple-hero_text { grid-area: text; display: flex; flex-direction: column; gap: 1.75rem; }
+  .couple-requests-page .couple-hero_text > * { grid-area: auto; }
+  .couple-requests-page .couple-hero_header { padding: 0; }
+  .couple-requests-page .couple-hero_cta { padding: 0; }
+  /* высоту фото задаёт левая колонка, а не размер снимка; не ниже 26rem */
+  .couple-requests-page .couple-hero_photo { height: 0; min-height: max(100%, 26rem); object-position: 50% 50%; }
+  .couple-requests-page .couple-hero_facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .couple-requests-page .couple-hero_fact { padding: 1.5rem; }
+}
+
+
+/* ---------- 2. Один клиент — иногда уже пара ----------
+   Три белые карточки с фото. Телефон: фото сверху. 521–1024 px: фото слева (40 %), текст справа.
+   От 1025 px: три в ряд, фото сверху. Поля 16 px, на компьютере 24 px; заголовок к верху, абзац к низу. */
+.couple-requests-page .couple-context_grid { display: grid; gap: var(--card-grid-gap); }
+.couple-requests-page .couple-context_card {
+  display: grid;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-context_image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 736 / 648;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+.couple-requests-page .couple-context_text { display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem; }
+.couple-requests-page .couple-context_text .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+@media (min-width: 32.5625rem) {
+  .couple-requests-page .couple-context_card { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: 1.25rem; align-items: stretch; }
+  .couple-requests-page .couple-context_image { height: 100%; min-height: 11rem; }
+  .couple-requests-page .couple-context_text { padding-block: 0.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-context_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .couple-requests-page .couple-context_card { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 1.5rem; padding: 1.5rem; }
+  .couple-requests-page .couple-context_image { height: auto; min-height: 0; }
+  .couple-requests-page .couple-context_text { padding-block: 0; }
+}
+
+
+/* ---------- 3. Для кого этот курс ----------
+   Три белые карточки, заголовок к верху, текст к низу. Столбиком до 1024 px, от 1025 px в ряд. */
+.couple-requests-page .couple-audience_grid { display: grid; gap: var(--card-grid-gap); }
+.couple-requests-page .couple-audience_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-audience_card .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.couple-requests-page .couple-audience_card .body-text_component { max-width: 36rem; }
+@media (min-width: 48rem) {
+  .couple-requests-page .couple-audience_card { gap: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-audience_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .couple-requests-page .couple-audience_card { gap: 2rem; padding: 1.5rem; }
+}
+
+
+/* ---------- 4. Чему вы научитесь на курсе ----------
+   Тёмная плашка #2B2334 внутри контейнера (на старой странице — сиреневая), как «ключ к пониманию психики» на /child-psy.
+   Шесть карточек на полупрозрачном белом: столбиком, от 768 px по две, от 1025 px по три.
+   Поля плашки 16 px, дальше растут до 40 px; поля карточек 16 px, на компьютере 24 px. */
+.couple-requests-page .couple-skills_plate {
+  padding: 2rem var(--card-padding) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+  --body-text-color: var(--color-text-on-dark-muted);
+}
+.couple-requests-page .couple-skills_plate .section-title_component { color: var(--color-text-on-dark); }
+.couple-requests-page .couple-skills_plate .section-header_component { max-width: 50rem; }
+.couple-requests-page .couple-skills_grid { display: grid; gap: var(--card-grid-gap); }
+.couple-requests-page .couple-skills_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--couple-dark-card);
+  --body-text-color: var(--couple-on-dark-muted);
+}
+.couple-requests-page .couple-skills_card .content-heading_component { color: var(--color-text-on-dark); text-wrap: balance; }
+@media (min-width: 32.5625rem) {
+  .couple-requests-page .couple-skills_plate { padding: 2.5rem 1.5rem 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .couple-requests-page .couple-skills_plate { padding: 3rem 2.5rem 2.5rem; }
+  .couple-requests-page .couple-skills_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .couple-requests-page .couple-skills_card { gap: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-skills_plate { padding: var(--section-inset-space) clamp(2rem, 23.75vw - 17rem, 4.375rem) clamp(2rem, 23.75vw - 17rem, 4.375rem); }
+  .couple-requests-page .couple-skills_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .couple-requests-page .couple-skills_card { gap: 1.5rem; padding: 1.5rem; }
+}
+
+
+/* ---------- 5. Разберём кейсы из реальной практики ----------
+   Белые карточки: реплика клиента на сером фоне страницы, тема и подход, пометка мелким текстом внизу.
+   Столбиком, от 768 px по две, от 1025 px по три. Пометка прижата к низу карточки. */
+.couple-requests-page .couple-cases_grid { display: grid; gap: var(--card-grid-gap); }
+.couple-requests-page .couple-cases_card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-cases_quote {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+  --body-text-color: var(--color-text-primary);
+}
+.couple-requests-page .couple-cases_text { display: grid; gap: 0.5rem; }
+.couple-requests-page .couple-cases_text .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.couple-requests-page .couple-cases_note { margin-top: auto; }
+@media (min-width: 48rem) {
+  .couple-requests-page .couple-cases_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-cases_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .couple-requests-page .couple-cases_card { gap: 1.25rem; padding: 1.5rem; }
+}
+
+
+/* ---------- 6. Авторы и преподаватель ----------
+   Одна белая карточка не шире 56rem: на телефоне фото сверху, от 768 px текст слева, фото справа на высоту карточки.
+   Имя — content-heading is-card, роль серым (is-caption), описание — body-text. Поля 16 px, на компьютере 24 px. */
+.couple-requests-page .couple-teacher_card {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 56rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-teacher_text { display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; order: 2; }
+.couple-requests-page .couple-teacher_name { display: grid; gap: 0.25rem; }
+.couple-requests-page .couple-teacher_name .content-heading_component { color: var(--color-text-primary); }
+.couple-requests-page .couple-teacher_role { --body-text-color: var(--couple-muted); }
+.couple-requests-page .couple-teacher_photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 608 / 576;
+  object-fit: cover;
+  object-position: 50% 20%;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+@media (min-width: 32.5625rem) {
+  .couple-requests-page .couple-teacher_photo { aspect-ratio: 4 / 3; }
+}
+@media (min-width: 48rem) {
+  .couple-requests-page .couple-teacher_card { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 2rem; }
+  .couple-requests-page .couple-teacher_text { order: 0; padding-block: 0.5rem; }
+  .couple-requests-page .couple-teacher_photo { aspect-ratio: 608 / 576; }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-teacher_card { padding: 1.5rem; }
+}
+
+
+/* ---------- 7. Как устроено обучение ----------
+   Белая плашка: слева заголовок и четыре пункта через тонкие линии, справа картинка «чат с куратором».
+   До 1024 px картинка под списком, не шире 30rem. Поля 16 px, дальше до 24–40 px. */
+.couple-requests-page .couple-format_plate {
+  display: grid;
+  gap: 2rem;
+  padding: 2rem var(--card-padding) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-format_text { display: grid; gap: 1.5rem; align-content: start; }
+.couple-requests-page .couple-format_list { display: grid; }
+.couple-requests-page .couple-format_item {
+  display: grid;
+  gap: 0.375rem;
+  padding-block: 1rem;
+  border-top: 1px solid var(--couple-line);
+}
+.couple-requests-page .couple-format_item:last-child { padding-bottom: 0; }
+.couple-requests-page .couple-format_item .content-heading_component { color: var(--color-text-primary); }
+.couple-requests-page .couple-format_item .body-text_component { max-width: 38rem; }
+.couple-requests-page .couple-format_image { display: block; width: 100%; max-width: 30rem; height: auto; justify-self: center; }
+@media (min-width: 32.5625rem) {
+  .couple-requests-page .couple-format_plate { padding: 2.5rem 1.5rem 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .couple-requests-page .couple-format_plate { padding: 3rem 2.5rem 2.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-format_plate {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 4vw, 4rem);
+    align-items: center;
+    padding: var(--section-inset-space) clamp(2rem, 23.75vw - 17rem, 4.375rem);
+  }
+  .couple-requests-page .couple-format_image { max-width: 32rem; }
+}
+
+
+/* ---------- 8. Программа обучения ----------
+   Как «Программа обучения» на /child-psy: слева заголовок и время занятий, справа занятия белыми карточками.
+   Занятие: номер серым (is-caption), тема (content-heading is-compact), пункты (is-caption) с маленьким маркером.
+   Последняя карточка «Групповая супервизия» тёмная. Поля 16 px, на компьютере 24 px.
+   Телефон: номер над темой. От 768 px: номер слева в своей колонке.
+   От 1025 px: заголовок слева и закреплён при прокрутке (is-split v1), занятия справа. */
+.couple-requests-page .couple-program_layout { --section-layout-columns: minmax(0, 0.8fr) minmax(0, 1fr); }
+.couple-requests-page .couple-program_list { display: grid; gap: var(--card-grid-gap); }
+.couple-requests-page .couple-program_lesson {
+  display: grid;
+  gap: 0.5rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couple-requests-page .couple-program_number { --body-text-color: var(--couple-muted); }
+.couple-requests-page .couple-program_text { display: grid; gap: 0.625rem; }
+.couple-requests-page .couple-program_text .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.couple-requests-page .couple-program_points { display: grid; gap: 0.375rem; }
+/* маркер пункта — маленькая серая точка на высоте первой строки */
+.couple-requests-page .couple-program_points li { position: relative; padding-left: 1rem; }
+.couple-requests-page .couple-program_points li::before {
+  content: "";
+  position: absolute;
+  left: 0.125rem;
+  top: 0.55em;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--couple-line);
+}
+.couple-requests-page .couple-program_lesson.is-final { background: var(--color-surface-dark); --body-text-color: var(--couple-on-dark-muted); }
+.couple-requests-page .couple-program_lesson.is-final .content-heading_component { color: var(--color-text-on-dark); }
+.couple-requests-page .couple-program_lesson.is-final .couple-program_number { --body-text-color: var(--couple-on-dark-muted); }
+@media (min-width: 48rem) {
+  .couple-requests-page .couple-program_lesson { grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: 1.5rem; align-items: baseline; }
+}
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-program_lesson { padding: 1.5rem; }
+  .couple-requests-page .couple-program_layout .section-header_component { position: sticky; top: var(--couple-sticky-top); }
+}
+
+
+/* ---------- 9–14. Общие блоки: удостоверение, «Почему выбирают нас», «98 %», цена, форма, вопросы ----------
+   Удостоверение — diploma.css (копия общего блока, не править), «Почему выбирают нас» и «98 %» — academy.css (копия),
+   форма — request-form.css (копия общего компонента, кладёт request-form-sync.mjs), цена — стили внутри блока генератора.
+   Здесь только шрифт и отступы блока цены и вопросы-ответы на ролях v1 — как на /child-psy. */
+
+/* Блок цены приходит со своим шрифтом: Google Fonts price-sync.mjs убирает, а здесь блок переключается на шрифт v1 */
+.couple-requests-page .price-auto_component { font-family: var(--font-family-body); }
+/* Отступы блока цены — как у секций v1: сверху 0, снизу --section-space.
+   [data-layout] в селекторе — чтобы перебить стили блока, которые идут ниже по странице. */
+.couple-requests-page .price-auto_component[data-layout] { --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
+
+/* Вопросы и ответы: белые карточки, вопрос — content-heading is-compact, ответ — body-text, плюс-крестик справа. */
+.couple-requests-page .couple-faq_list { display: grid; gap: 0.5rem; }
+.couple-requests-page .couple-faq_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.couple-requests-page .couple-faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.couple-requests-page .couple-faq_question::-webkit-details-marker { display: none; }
+.couple-requests-page .couple-faq_question .content-heading_component { color: var(--color-text-primary); text-wrap: pretty; }
+.couple-requests-page .couple-faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color 150ms ease;
+}
+.couple-requests-page .couple-faq_icon::before,
+.couple-requests-page .couple-faq_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.couple-requests-page .couple-faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.couple-requests-page .couple-faq_item[open] .couple-faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .couple-requests-page .couple-faq_question:hover .couple-faq_icon { background: var(--couple-line); }
+}
+.couple-requests-page .couple-faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.couple-requests-page .couple-faq_answer .body-text_component { max-width: 62ch; }
+.couple-requests-page .couple-faq_answer a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (min-width: 64.0625rem) {
+  .couple-requests-page .couple-faq_question { padding: 1.25rem 1.5rem; }
+  .couple-requests-page .couple-faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .couple-requests-page :is(.couple-faq_icon, .couple-faq_icon::before, .couple-faq_icon::after) { transition: none; }
+}
