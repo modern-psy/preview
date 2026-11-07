@@ -1695,6 +1695,136 @@
         .cases_description { font-size: 1rem; }
       }
 
+      /* ---------- Блок 5 без месяцев: три направления ---------- */
+
+      /* Б. Голоса: цитаты сообщениями, под каждой то, что за ней стоит.
+         07.11 Дарья: аккуратнее, тексты не гигантские, итог белый */
+      .voices_thread {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        gap: 2rem;
+      }
+      .voices_item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      .voices_item.is-right { align-items: flex-end; }
+      .voices_bubble {
+        max-width: 34rem;
+        margin: 0;
+        padding: 1.125rem 1.375rem 1.25rem;
+        background: #000000;
+        border-radius: 1.25rem 1.25rem 1.25rem 0.375rem;
+        color: #ffffff;
+        font-size: clamp(1.25rem, 1.9vw, 1.75rem);
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        text-wrap: balance;
+      }
+      .voices_item.is-right .voices_bubble { border-radius: 1.25rem 1.25rem 0.375rem 1.25rem; }
+      .voices_label {
+        display: block;
+        margin-bottom: 0.375rem;
+        color: #c9c6d1;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        line-height: 1.2;
+        letter-spacing: 0;
+      }
+      .voices_tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .voices_item.is-right .voices_tags { justify-content: flex-end; }
+      .voices_tag {
+        display: inline-flex;
+        padding: 0.375rem 0.75rem 0.375rem 0.375rem;
+        align-items: center;
+        gap: 0.5rem;
+        background: #ffffff;
+        border-radius: 3rem;
+        color: var(--color-text-button);
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.25;
+      }
+      .voices_tick {
+        display: inline-flex;
+        width: 1.375rem;
+        height: 1.375rem;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-highlight);
+        border-radius: 50%;
+      }
+      .voices_tick svg {
+        width: 0.875rem;
+        height: 0.875rem;
+        fill: none;
+        stroke: var(--color-text-button);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      /* Итог: к чему это приводит в практике, белая карточка */
+      .voices_result {
+        display: flex;
+        width: 100%;
+        padding: 1.5rem 1.75rem 1.75rem;
+        flex-direction: column;
+        gap: 1.25rem;
+        background: #ffffff;
+        border-radius: 1.25rem;
+        color: var(--color-text-button);
+      }
+      .voices_result-label {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+      .voices_result-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+      }
+      .voices_result-list li {
+        font-size: clamp(1.125rem, 1.4vw, 1.375rem);
+        font-weight: 600;
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+        text-wrap: balance;
+      }
+      .voices_result-list li + li { border-left: 1px solid rgba(51, 47, 65, 0.12); }
+      .voices_result-list li + li > span { display: block; padding-left: 1.5rem; }
+
+      @media screen and (max-width: 61.9375rem) {
+        .voices_result { padding: 1.25rem 1.5rem 1.5rem; gap: 1rem; }
+      }
+      @media screen and (max-width: 47.9375rem) {
+        .voices_result-list { grid-template-columns: minmax(0, 1fr); gap: 0; }
+        .voices_result-list li + li { border-left: 0; border-top: 1px solid rgba(51, 47, 65, 0.12); }
+        .voices_result-list li > span, .voices_result-list li + li > span { padding: 0.75rem 0; }
+        .voices_result-list li:first-child > span { padding-top: 0; }
+        .voices_result-list li:last-child > span { padding-bottom: 0; }
+        .voices_item.is-right { align-items: flex-start; }
+        .voices_item.is-right .voices_bubble { border-radius: 1.25rem 1.25rem 1.25rem 0.375rem; }
+        .voices_item.is-right .voices_tags { justify-content: flex-start; }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .voices_thread { gap: 1.5rem; }
+        .voices_bubble { padding: 1rem 1.125rem 1.125rem; font-size: 1.25rem; }
+        .voices_tag { font-size: 0.9375rem; }
+        .voices_result { padding: 1.125rem 1rem 1.25rem; }
+        .voices_result-list li { font-size: 1.125rem; }
+      }
+
       /* ---------- Блок 6: кто стоит за клубом ---------- */
       .section_team { padding-bottom: var(--space-between-sections); }
       /* Серая плашка, как у блока 3 и прежней карточки ведущего */
@@ -2742,28 +2872,45 @@
             </div>
           </div>
         </section>
-        <section class="section_growth is-wall" id="growth-wall" aria-labelledby="growth-wall-heading">
+        <section class="section_growth is-voices" id="growth-voices" aria-labelledby="growth-voices-heading">
           <div class="padding-global">
             <div class="container-large">
               <div class="growth_component">
                 <div class="growth_header">
-                  <h2 class="growth_heading" id="growth-wall-heading">Что меняется за&nbsp;время в&nbsp;клубе</h2>
+                  <h2 class="growth_heading" id="growth-voices-heading">Что меняется за&nbsp;время в&nbsp;клубе</h2>
                   <p class="growth_note">У&nbsp;каждого свой темп. Здесь средний срез по&nbsp;участникам клуба</p>
                 </div>
-                <ul class="results_wall">
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Первые материалы опубликованы</p></div></li>
-                    <li class="results_tile is-quote"><div class="results_tile-inner"><span class="results_quotes-label">Из&nbsp;анкеты</span><p class="results_tile-text">«Опубликовала то, что откладывала»</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Понятный ритм недели</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Нет страха «белого листа»</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Регулярность стала привычкой</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Сложился узнаваемый стиль</p></div></li>
-                    <li class="results_tile is-quote"><div class="results_tile-inner"><span class="results_quotes-label">Из&nbsp;анкеты</span><p class="results_tile-text">«Наконец придумала, о&nbsp;чём писать»</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Понятно, о&nbsp;чём писать</p></div></li>
-                    <li class="results_tile is-quote"><div class="results_tile-inner"><span class="results_quotes-label">Из&nbsp;анкеты</span><p class="results_tile-text">«Стала выходить регулярнее»</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Блог стал частью практики</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">О&nbsp;вас говорят «видела ваш пост»</p></div></li>
-                    <li class="results_tile"><div class="results_tile-inner"><span class="results_check" aria-hidden="true"></span><p class="results_tile-text">Появляются обращения с&nbsp;упоминанием блога</p></div></li>
+                <ul class="voices_thread">
+                  <li class="voices_item is-left">
+                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участника</span>«Опубликовала то, что откладывала»</p>
+                    <ul class="voices_tags">
+                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Первые материалы опубликованы</span></li>
+                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Нет страха «белого листа»</span></li>
+                    </ul>
+                  </li>
+                  <li class="voices_item is-right">
+                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участника</span>«Наконец придумала, о&nbsp;чём писать»</p>
+                    <ul class="voices_tags">
+                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Понятно, о&nbsp;чём писать</span></li>
+                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Сложился узнаваемый стиль</span></li>
+                    </ul>
+                  </li>
+                  <li class="voices_item is-left">
+                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участника</span>«Стала выходить регулярнее»</p>
+                    <ul class="voices_tags">
+                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Понятный ритм недели</span></li>
+                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Регулярность стала привычкой</span></li>
+                    </ul>
+                  </li>
                 </ul>
+                <div class="voices_result">
+                  <p class="voices_result-label">Со&nbsp;временем</p>
+                  <ul class="voices_result-list">
+                    <li><span>Блог стал частью практики</span></li>
+                    <li><span>О&nbsp;вас говорят «видела ваш пост»</span></li>
+                    <li><span>Появляются обращения с&nbsp;упоминанием блога</span></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
