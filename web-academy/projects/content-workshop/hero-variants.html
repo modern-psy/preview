@@ -2078,11 +2078,53 @@
 
       /* ---------- Блок 7: как проходит неделя в клубе ---------- */
       .section_week { padding-bottom: var(--space-between-sections); }
+      /* Градиентная плашка: размытая картинка страницы и зерно, как у блока 2 */
       .week_component {
+        position: relative;
         display: flex;
+        width: 100%;
+        max-width: 75rem;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 3.5rem 2rem 2.5rem;
         flex-direction: column;
         align-items: center;
         gap: 3.5rem;
+        border-radius: 1rem;
+      }
+      .week_backdrop {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        overflow: clip;
+        background: #000000;
+        border-radius: inherit;
+      }
+      .week_backdrop-image {
+        position: absolute;
+        top: -17%;
+        left: -7.68%;
+        width: 126.3%;
+        height: 134%;
+        max-width: none;
+        object-fit: cover;
+        filter: blur(38.5px);
+        transform: rotate(180deg) scale(1.03);
+      }
+      .week_grain {
+        position: absolute;
+        inset: 0;
+        background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+        background-position: top left;
+        background-size: 31.25rem 31.25rem;
+        mix-blend-mode: multiply;
+        opacity: 0.4;
+      }
+      .week_header,
+      .week_plan,
+      .week_reasons {
+        position: relative;
+        z-index: 1;
       }
       .week_header {
         display: flex;
@@ -2094,7 +2136,7 @@
       }
       .week_heading {
         margin: 0;
-        color: var(--color-text-button);
+        color: #ffffff;
         font-size: clamp(2.25rem, 2.857vw, 3rem);
         font-weight: 700;
         line-height: 1.125;
@@ -2103,7 +2145,7 @@
       }
       .week_description {
         margin: 0;
-        color: var(--color-text-dark);
+        color: #f5f5f5;
         font-size: 1.375rem;
         font-weight: 500;
         line-height: 1.2727;
@@ -2159,6 +2201,10 @@
         margin: 0;
         font-size: 0.875rem;
         line-height: 1.35;
+        /* Длинные слова вроде «исследования» переносятся по слогам, короткие нет */
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        hyphenate-limit-chars: 10 4 4;
       }
       .week_nowrap { white-space: nowrap; }
       /* Время и периодичность — плашкой внизу карточки */
@@ -2179,9 +2225,10 @@
       /* Воскресенье: выходной, без заливки */
       .week_day.is-off .week_day-card {
         background: transparent;
-        box-shadow: inset 0 0 0 1px rgba(51, 47, 65, 0.16);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
       }
-      .week_day.is-off .week_day-title { color: #5e5a6a; }
+      .week_day.is-off .week_day-name,
+      .week_day.is-off .week_day-title { color: #ffffff; }
 
       /* Бот: тонкая полоса под всеми днями, он не привязан к дню */
       .week_bot {
@@ -2227,7 +2274,7 @@
       }
       .week_reasons-heading {
         margin: 0;
-        color: var(--color-text-button);
+        color: #ffffff;
         font-size: 2rem;
         font-weight: 700;
         line-height: 1.15;
@@ -2239,6 +2286,14 @@
       .week_reasons .tabs_panels { display: flex; }
       .week_reasons .tabs_panel { flex: 1; gap: 1.25rem; }
       .week_reasons .tabs_list { gap: 0.75rem; }
+      .week_reasons .tabs_trigger { background: rgba(255, 255, 255, 0.14); color: #f5f5f5; }
+      .week_reasons .tabs_trigger .tabs_trigger-number { background: rgba(255, 255, 255, 0.18); color: #ffffff; }
+      .week_reasons .tabs_trigger:hover:not([aria-selected="true"]) { background: rgba(255, 255, 255, 0.22); }
+      .week_reasons .tabs_trigger[aria-selected="true"] { background: #ffffff; color: var(--color-text-button); }
+      .week_reasons .tabs_trigger[aria-selected="true"] .tabs_trigger-number { background: #000000; color: #ffffff; }
+      /* Цвет текста ссылок страница задаёт через --link-color (с !important), поэтому меняем переменную */
+      .week_reasons .button.is-tabs { --link-color: var(--color-text-button); background: #ffffff; border-color: #ffffff; color: var(--color-text-button); }
+      .week_reasons .button.is-tabs:hover { background: #f1eef8; border-color: #f1eef8; }
       .week_reasons .tabs_trigger { min-height: 4.25rem; }
       .week_reasons .tabs_panel-heading { font-size: 2rem; line-height: 1.15; }
       .week_panel-text {
@@ -2301,15 +2356,20 @@
         .week_day-card { padding: 0.75rem; min-height: 12rem; }
         .week_day-name { font-size: 0.8125rem; }
         .week_day-title { font-size: 1.0625rem; }
-        /* Колонки узкие: длинные слова вроде «исследования» переносятся по слогам */
-        .week_day-text { font-size: 0.8125rem; hyphens: auto; }
+        /* Колонки узкие: поля плашки и карточек меньше */
+        .week_component { padding-right: 1.25rem; padding-left: 1.25rem; }
+        .week_days { gap: 0.375rem; }
+        .week_day-card { padding: 0.75rem 0.625rem; }
+        .week_day-text { font-size: 0.8125rem; }
         .week_day-time { font-size: 0.75rem; padding: 0.3125rem 0.5rem; }
         .week_panel-text { font-size: 1.25rem; }
         .week_reasons .tabs_panel-heading { font-size: 1.75rem; }
       }
       /* Планшет и телефон: дни списком сверху вниз, день слева, дело справа */
       @media screen and (max-width: 61.9375rem) {
-        .week_component { gap: 2.5rem; }
+        .week_component { padding: 3rem 1.5rem 2rem; gap: 2.5rem; }
+        /* Лента табов листается внутри плашки, а не до краёв экрана */
+        .week_reasons .tabs_list { width: 100%; margin-right: 0; margin-left: 0; padding-right: 0; padding-left: 0; }
         .week_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
         .week_description { font-size: 1.1875rem; }
         .week_days { grid-template-columns: minmax(0, 1fr); }
@@ -2324,11 +2384,12 @@
         .week_day-name { font-size: 0.9375rem; }
         .week_day-title { font-size: 1.125rem; }
         .week_day-copy { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0 0.375rem; }
-        .week_day-text { font-size: 1rem; hyphens: manual; }
+        .week_day-text { font-size: 1rem; -webkit-hyphens: manual; hyphens: manual; }
         .week_day-time { margin: 0; font-size: 0.8125rem; }
         .week_reasons-heading { font-size: 1.75rem; }
       }
       @media screen and (max-width: 32.5rem) {
+        .week_component { padding: 2.5rem 1rem 1.25rem; gap: 2rem; }
         .week_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
         .week_description { font-size: 1rem; line-height: 1.45; }
         .week_day-card { padding: 0.875rem 1rem; grid-template-columns: 6.75rem minmax(0, 1fr); }
@@ -2339,6 +2400,347 @@
         .week_panel-text { font-size: 1rem; }
         .week_reasons .tabs_panel-heading { font-size: 1.5rem; }
         .week_mini-day { height: 2.5rem; font-size: 0.8125rem; }
+      }
+
+      /* ---------- Блок 8: что входит и цена ---------- */
+      /* Цена и пробный период — два отдельных предложения, между ними заметный зазор */
+      .section_price { padding-bottom: 2.5rem; }
+      .price_component {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+      }
+      .price_heading {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: clamp(2.25rem, 2.857vw, 3rem);
+        font-weight: 700;
+        line-height: 1.125;
+        letter-spacing: -0.025em;
+        text-align: center;
+        text-wrap: balance;
+      }
+      .price_layout {
+        display: grid;
+        width: 100%;
+        grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+        align-items: stretch;
+        gap: 1rem;
+      }
+      /* Цена — на тёмной карточке с размытой картинкой, как прежний блок цены */
+      .price_offer {
+        position: relative;
+        display: flex;
+        min-width: 0;
+        overflow: clip;
+        background: #000000;
+        border-radius: 1.25rem;
+        color: #ffffff;
+      }
+      .price_offer-bg {
+        position: absolute;
+        top: -60%;
+        left: -40%;
+        width: 260%;
+        height: 180%;
+        max-width: none;
+        object-fit: cover;
+        filter: blur(38.5px);
+        transform: rotate(180deg);
+      }
+      .price_offer-grain {
+        position: absolute;
+        inset: 0;
+        background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+        background-size: 31.25rem 31.25rem;
+        mix-blend-mode: multiply;
+        opacity: 0.4;
+        pointer-events: none;
+      }
+      .price_offer-content {
+        position: relative;
+        display: flex;
+        width: 100%;
+        padding: 2rem;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 2.5rem;
+      }
+      .price_offer-sum {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .price_offer-label {
+        margin: 0;
+        color: #f5f5f5;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .price_amount {
+        display: flex;
+        margin: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0 0.625rem;
+      }
+      .price_value {
+        font-size: clamp(3rem, 4.4vw, 4.5rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        white-space: nowrap;
+      }
+      .price_unit { font-size: 1.25rem; font-weight: 600; }
+      .price_week {
+        margin: 0;
+        color: #f5f5f5;
+        font-size: 1.125rem;
+      }
+      .price_offer-action {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .price_button { max-width: none; white-space: normal; }
+      .price_terms {
+        margin: 0;
+        color: #f5f5f5;
+        font-size: 0.9375rem;
+        line-height: 1.35;
+      }
+
+      /* Состав: три колонки на белой карточке */
+      .price_includes {
+        display: grid;
+        min-width: 0;
+        padding: 2rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+        background: #ffffff;
+        border-radius: 1.25rem;
+        color: var(--color-text-button);
+      }
+      .price_group {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .price_group + .price_group { padding-left: 1.5rem; border-left: 1px solid rgba(51, 47, 65, 0.12); }
+      .price_group-title {
+        margin: 0;
+        font-size: 1.375rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+      }
+      .price_list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .price_item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.625rem;
+      }
+      .price_check {
+        display: inline-flex;
+        width: 1.375rem;
+        height: 1.375rem;
+        margin-top: 0.0625rem;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-highlight);
+        border-radius: 50%;
+      }
+      .price_check svg {
+        width: 0.875rem;
+        height: 0.875rem;
+        fill: none;
+        stroke: var(--color-text-button);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .price_item-copy { display: flex; min-width: 0; flex-direction: column; gap: 0.25rem; }
+      /* Колонки узкие на ноутбуке: длинные слова вроде «Амбассадорская» переносятся по слогам */
+      .price_item-title {
+        margin: 0;
+        font-size: 1.0625rem;
+        font-weight: 600;
+        line-height: 1.3;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        hyphenate-limit-chars: 12 5 5;
+      }
+      .price_item-text {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 0.9375rem;
+        line-height: 1.4;
+      }
+
+      /* Баллы: под ценой и составом, колонки совпадают с ними */
+      .price_points {
+        display: grid;
+        width: 100%;
+        margin-top: -2rem;
+        padding: 1.5rem 2rem;
+        grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+        align-items: center;
+        gap: 1rem 3rem;
+        background: #ffffff;
+        border-radius: 1.25rem;
+        color: var(--color-text-button);
+      }
+      .price_points-copy { display: flex; flex-direction: column; gap: 0.375rem; }
+      .price_points-title {
+        margin: 0;
+        font-size: 1.375rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+      }
+      .price_points-text {
+        margin: 0;
+        color: #5e5a6a;
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+      .price_rewards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .price_reward {
+        display: inline-flex;
+        padding: 0.625rem 1rem;
+        background: #eeeeef;
+        border-radius: 3rem;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.25;
+      }
+
+      /* ---------- Пробный период: билет с корешком ---------- */
+      .section_trial { padding-top: 0; padding-bottom: var(--space-between-sections); }
+      .trial_component {
+        display: grid;
+        grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+        overflow: clip;
+        border-radius: 1.25rem;
+      }
+      .trial_stub {
+        display: flex;
+        padding: 2rem;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 1rem;
+        background: var(--color-highlight);
+        color: var(--color-text-button);
+      }
+      .trial_badge {
+        display: inline-flex;
+        margin: 0;
+        padding: 0.5rem 0.875rem;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 3rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1;
+      }
+      .trial_heading {
+        margin: 0;
+        font-size: clamp(2rem, 2.6vw, 2.5rem);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      /* Линия отрыва: пунктир и два полукруглых выреза цвета страницы */
+      .trial_body {
+        position: relative;
+        display: flex;
+        padding: 2rem 2rem 2rem 2.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem 2rem;
+        background: #ffffff;
+        border-left: 2px dashed rgba(51, 47, 65, 0.24);
+      }
+      .trial_body::before,
+      .trial_body::after {
+        position: absolute;
+        left: -0.875rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: #eeeeef;
+        border-radius: 50%;
+        content: "";
+      }
+      .trial_body::before { top: -0.75rem; }
+      .trial_body::after { bottom: -0.75rem; }
+      .trial_list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .trial_item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.625rem;
+        color: var(--color-text-button);
+        font-size: 1.125rem;
+        font-weight: 500;
+        line-height: 1.35;
+      }
+      .trial_button { white-space: normal; }
+
+      /* Ноутбук: цена над составом, сумма слева, кнопка справа */
+      @media screen and (max-width: 74.9375rem) {
+        .price_layout { grid-template-columns: minmax(0, 1fr); }
+        .price_offer-content { flex-direction: row; flex-wrap: wrap; align-items: flex-end; }
+        .price_offer-action { width: min(100%, 22rem); }
+        .price_offer-bg { top: -150%; left: -20%; width: 160%; height: 400%; }
+        .trial_component { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); }
+      }
+      /* Планшет: группы состава друг под другом */
+      @media screen and (max-width: 61.9375rem) {
+        .price_component { gap: 2.5rem; }
+        .price_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+        .price_includes { padding: 1.5rem; grid-template-columns: minmax(0, 1fr); gap: 0; }
+        .price_points { margin-top: -1.5rem; padding: 1.5rem; grid-template-columns: minmax(0, 1fr); }
+        .price_group + .price_group { margin-top: 1.5rem; padding-top: 1.5rem; padding-left: 0; border-left: 0; border-top: 1px solid rgba(51, 47, 65, 0.12); }
+        .price_list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.5rem; }
+        .trial_component { grid-template-columns: minmax(0, 1fr); }
+        /* Билет вертикально: линия отрыва горизонтальная, вырезы слева и справа */
+        .trial_body { padding: 2rem; border-top: 2px dashed rgba(51, 47, 65, 0.24); border-left: 0; }
+        .trial_body::before,
+        .trial_body::after { top: -0.875rem; bottom: auto; }
+        .trial_body::before { left: -0.75rem; }
+        .trial_body::after { left: auto; right: -0.75rem; }
+      }
+      @media screen and (max-width: 47.9375rem) {
+        .price_offer-content { flex-direction: column; align-items: stretch; }
+        .price_offer-action { width: 100%; }
+        .price_list { grid-template-columns: minmax(0, 1fr); }
+        .trial_button { width: 100%; }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .price_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+        .price_offer-content { padding: 1.5rem 1.25rem; gap: 2rem; }
+        .price_includes { padding: 1.25rem 1rem; }
+        .price_points { padding: 1.25rem 1rem; }
+        .price_reward { font-size: 0.9375rem; padding: 0.5rem 0.875rem; }
+        .trial_stub { padding: 1.5rem 1.25rem; }
+        .trial_body { padding: 1.5rem 1.25rem; }
+        .trial_item { font-size: 1rem; }
       }
 
       /* ---------- Блок бота без видео (видео теперь в карточке ведущего) ---------- */
@@ -2379,6 +2781,12 @@
         .section_bot .bot_feature-card { padding: 1rem; flex-direction: row; gap: 1rem; }
         .section_bot .bot_feature-icon { font-size: 2rem; }
         .section_bot .bot_feature-card h3 { font-size: 1.25rem; }
+      }
+
+      /* ---------- Скриншот созвона на планшете и телефоне: только верхняя часть ---------- */
+      @media screen and (max-width: 61.9375rem) {
+        .section_calls .calls_image-wrapper { aspect-ratio: 469 / 600; }
+        .section_calls .calls_image { object-position: top center; }
       }
     </style>
   </head>
@@ -2443,7 +2851,7 @@
                   </div>
                   <div class="hero_actions">
                     <a class="button is-primary" href="#price">Вступить в клуб</a>
-                    <a class="button is-secondary" href="#price">Получить пробные дни</a>
+                    <a class="button is-secondary" href="#trial">Получить пробные дни</a>
                   </div>
                 </div>
               </div>
@@ -2813,7 +3221,7 @@
                     </li>
                 </ul>
                 <div class="who_actions">
-                  <a class="button is-primary" href="#price">Воспользоваться пробным периодом</a>
+                  <a class="button is-primary" href="#trial">Воспользоваться пробным периодом</a>
                   <a class="button is-secondary" href="#cases">Посмотреть результаты участников</a>
                 </div>
               </div>
@@ -3134,6 +3542,10 @@
           <div class="padding-global">
             <div class="container-large">
               <div class="week_component">
+                <div class="week_backdrop" aria-hidden="true">
+                  <img class="week_backdrop-image" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" loading="lazy" decoding="async">
+                  <div class="week_grain"></div>
+                </div>
                 <div class="week_header">
                   <h2 class="week_heading" id="week-heading">Как проходит неделя в&nbsp;клубе</h2>
                   <p class="week_description">Один посильный маршрут на&nbsp;неделю. Остальное по&nbsp;желанию</p>
@@ -3665,108 +4077,84 @@
             </div>
           </div>
         </section>
-
-        <section class="section_pricing" id="price" data-node-id="611:1448">
+        <section class="section_price" id="price" aria-labelledby="price-heading">
           <div class="padding-global">
             <div class="container-large">
-              <div class="pricing_component">
-                <div class="pricing_header">
-                  <h2 class="pricing_heading">Ваш опыт заслуживает большей видимости</h2>
-                  <p class="pricing_description">
-                    Вы умеете помогать людям. Клуб помогает регулярно рассказывать
-                    об этом: собирать из практики понятный контент, публиковать его и
-                    не оставаться с этим в одиночку.
-                  </p>
+              <div class="price_component">
+                <h2 class="price_heading" id="price-heading">Что входит в&nbsp;подписку</h2>
+                <div class="price_layout">
+                  <div class="price_offer">
+                    <img class="price_offer-bg" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+                    <div class="price_offer-grain" aria-hidden="true"></div>
+                    <div class="price_offer-content">
+                      <div class="price_offer-sum">
+                        <p class="price_offer-label">Подписка на&nbsp;месяц</p>
+                        <p class="price_amount"><span class="price_value">7&nbsp;900&nbsp;₽</span> <span class="price_unit">в&nbsp;месяц</span></p>
+                        <p class="price_week">около 1&nbsp;975&nbsp;₽ в&nbsp;неделю</p>
+                      </div>
+                      <div class="price_offer-action">
+                        <a class="button is-pricing price_button" href="#popup:getcourse">Вступить в&nbsp;клуб</a>
+                        <p class="price_terms">Остановить можно в&nbsp;любой момент</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="price_includes">
+                    <div class="price_group">
+                      <h3 class="price_group-title">Живая работа</h3>
+                      <ul class="price_list">
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Живые созвоны</p><p class="price_item-text">По&nbsp;субботам с&nbsp;14:00 до&nbsp;16:00: показываете черновики и&nbsp;пробуете приёмы</p></div></div></li>
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Обратная связь по&nbsp;работе</p><p class="price_item-text">Конкретно: что уже работает, что усилить и&nbsp;что можно убрать</p></div></div></li>
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Задания недели</p><p class="price_item-text">Разной сложности: выбираете формат и&nbsp;объём, которые реально сделать</p></div></div></li>
+                      </ul>
+                    </div>
+                    <div class="price_group">
+                      <h3 class="price_group-title">Инструменты</h3>
+                      <ul class="price_list">
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Бот-помощник</p><p class="price_item-text">Помогает с&nbsp;видео, сценариями и&nbsp;идеями, напоминает о&nbsp;задании</p></div></div></li>
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Библиотека шаблонов</p><p class="price_item-text">Опоры для постов, сторис, рилсов и&nbsp;сценариев</p></div></div></li>
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Стартовый набор для&nbsp;монтажа</p><p class="price_item-text">Шрифты, звуки и&nbsp;базовые элементы оформления для рилсов</p></div></div></li>
+                      </ul>
+                    </div>
+                    <div class="price_group">
+                      <h3 class="price_group-title">Сообщество и&nbsp;рост</h3>
+                      <ul class="price_list">
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Чат участников</p><p class="price_item-text">Можно показать черновик, спросить совета и&nbsp;увидеть, как справляются другие</p></div></div></li>
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Амбассадорская программа АСП</p><p class="price_item-text">Самые креативные участники могут получить приглашение в&nbsp;программу Академии</p></div></div></li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-
-                <div class="pricing_card">
-                  <img
-                    class="pricing_background"
-                    src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp"
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="pricing_grain" aria-hidden="true"></div>
-                  <svg class="pricing_icon-definitions" aria-hidden="true">
-                    <symbol id="content-workshop-pricing-sparkle" viewBox="0 0 24 24">
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M11.2984 3.44685C11.5765 2.85105 12.4234 2.85105 12.7015 3.44685L15.0811 8.54535C15.1576 8.71005 15.29 8.84235 15.4556 8.91885L20.5531 11.2984C21.1489 11.5765 21.1489 12.4234 20.5531 12.7015L15.4556 15.0811C15.29 15.1576 15.1576 15.2899 15.0811 15.4546L12.7015 20.5531C12.4234 21.1489 11.5765 21.1489 11.2984 20.5531L8.91975 15.4546C8.84235 15.2899 8.71005 15.1576 8.54535 15.0811L3.44685 12.7015C2.85105 12.4234 2.85105 11.5765 3.44685 11.2984L8.54535 8.91885C8.71005 8.84235 8.84235 8.71005 8.91975 8.54535L11.2984 3.44685Z"
-                        fill="none"
-                        stroke="white"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </symbol>
-                  </svg>
-
-                  <div class="pricing_offer-main">
-                    <div class="pricing_eyebrow">Подписка</div>
-                    <p class="pricing_price">
-                      <strong>9 900 ₽</strong> <span>в месяц</span>
-                    </p>
+                <div class="price_points">
+                  <div class="price_points-copy">
+                    <h3 class="price_points-title">Баллы за&nbsp;задания</h3>
+                    <p class="price_points-text">За&nbsp;выполненные задания в&nbsp;клубе начисляются баллы. Их&nbsp;можно обменять:</p>
                   </div>
-
-                  <div class="pricing_benefits">
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Стартовый набор для&nbsp;монтажа</h3>
-                      <p>Шрифты, звуки и базовые элементы оформления для рилсов и коротких видео</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Поддержка в&nbsp;создании контента</h3>
-                      <p>Вы не остаётесь один на один с идеями: рядом есть группа, задания и обратная связь</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Амбассадорская программа АСП</h3>
-                      <p>Самые креативные участники могут получить приглашение в программу Академии</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Еженедельный рабочий ритм</h3>
-                      <p>Каждая неделя заканчивается готовым материалом, а не новым списком идей</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Живые созвоны</h3>
-                      <p>Показываете черновики, пробуете приёмы и получаете обратную связь по работе</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Бот-помощник и&nbsp;напоминания</h3>
-                      <p>Бот помогает с видео, сценариями, идеями и не даёт неделе раствориться</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Библиотека шаблонов</h3>
-                      <p>Опоры для постов, сторис, рилсов и сценариев, с которых легче начать</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Задания разной сложности</h3>
-                      <p>Выбираете формат и объём, которые реально сделать на этой неделе</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Обратная связь по&nbsp;работе</h3>
-                      <p>Конкретно: что уже работает, что усилить и что можно убрать</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Среда без&nbsp;гонки</h3>
-                      <p>Без рейтингов и сравнения по охватам — с фокусом на регулярность и качество</p>
-                    </article>
-                    <article class="pricing_benefit">
-                      <h3><svg class="pricing_check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><use href="#content-workshop-pricing-sparkle"></use></svg>Гибкие условия</h3>
-                      <p>Без годовых обязательств и сложных условий: подписку можно остановить в любой момент</p>
-                    </article>
-                  </div>
-
-                  <div class="pricing_action">
-                    <a class="button is-pricing" href="#popup:getcourse">
-                      Оформить подписку
-                    </a>
-                    <p>
-                      Помесячная подписка без долгого контракта. Остановить можно в
-                      любой момент.
-                    </p>
-                  </div>
+                  <ul class="price_rewards">
+                    <li><span class="price_reward">Неделя в&nbsp;клубе для друга</span></li>
+                    <li><span class="price_reward">Мерч АСП</span></li>
+                    <li><span class="price_reward">Посещение конференции АСП</span></li>
+                    <li><span class="price_reward">Учёба в&nbsp;Академии</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section_trial" id="trial" aria-labelledby="trial-heading">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="trial_component">
+                <div class="trial_stub">
+                  <p class="trial_badge">Только для новых участников</p>
+                  <h2 class="trial_heading" id="trial-heading">Пробные 3&nbsp;дня за&nbsp;900&nbsp;₽</h2>
+                </div>
+                <div class="trial_body">
+                  <ul class="trial_list">
+                    <li><div class="trial_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Всё, что входит в&nbsp;обычную подписку</div></li>
+                    <li><div class="trial_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Скидка на&nbsp;дальнейшую оплату месячной подписки</div></li>
+                  </ul>
+                  <!-- Куда ведёт кнопка пробного периода, пока не известно: ссылку на оплату пришлют -->
+                  <a class="button is-primary trial_button" href="#popup:trial">Воспользоваться пробным периодом</a>
                 </div>
               </div>
             </div>
