@@ -11,10 +11,10 @@ const shared = new URL('../web-academy/shared/academy/', import.meta.url);
 
 const FORM = {
   mode: 'course',
-  // Имя нативной формы Тильды, которая уже стоит на modern-psy.ru/adult-adhd-therapy (rec1981798501).
-  // Сейчас у неё имя «course-rl» (форма скопирована со страницы /course-rl). Если в Тильде её переименуют,
-  // поменять здесь и пересобрать.
-  nativeMarker: 'course-rl',
+  // Имя нативной формы Тильды на modern-psy.ru/adult-adhd-therapy (rec1981798501). До 07.11.2026 она называлась
+  // «course-rl» (скопирована со страницы /course-rl), по просьбе Дарьи переименована в «adult-adhd-therapy».
+  // Имя здесь и formname нативной формы в Тильде должны совпадать, иначе заявки не уйдут.
+  nativeMarker: 'adult-adhd-therapy',
   heading: 'Первая встреча 31 января',
   description: 'Оставьте заявку, и мы свяжемся с вами. Ответим на вопросы и поможем выбрать: один вебинар или весь цикл',
   submitLabel: 'Оставить заявку',
