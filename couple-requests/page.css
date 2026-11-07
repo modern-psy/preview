@@ -304,13 +304,18 @@
 .couple-requests-page .couple-teacher_name { display: grid; gap: 0.25rem; }
 .couple-requests-page .couple-teacher_name .content-heading_component { color: var(--color-text-primary); }
 .couple-requests-page .couple-teacher_role { --body-text-color: var(--couple-muted); }
+/* Фото — вырезанный портрет на прозрачном фоне, макушка в файле упирается в верхний край. Поэтому снимок не обрезаем,
+   а целиком вписываем в серую рамку и ставим на её нижний край; над головой остаётся поле (padding-top),
+   по бокам — серый фон. Правка Дарьи 07.11.2026: «фото обрезается по верху, надо сдвинуть ниже». */
 .couple-requests-page .couple-teacher_photo {
   display: block;
+  box-sizing: border-box;
   width: 100%;
   height: auto;
   aspect-ratio: 608 / 576;
-  object-fit: cover;
-  object-position: 50% 20%;
+  padding-top: 1.5rem;
+  object-fit: contain;
+  object-position: 50% 100%;
   border-radius: 0.75rem;
   background: var(--color-page-background);
 }
@@ -320,7 +325,7 @@
 @media (min-width: 48rem) {
   .couple-requests-page .couple-teacher_card { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 2rem; }
   .couple-requests-page .couple-teacher_text { order: 0; padding-block: 0.5rem; }
-  .couple-requests-page .couple-teacher_photo { aspect-ratio: 608 / 576; }
+  .couple-requests-page .couple-teacher_photo { aspect-ratio: 608 / 576; padding-top: 2rem; }
 }
 @media (min-width: 64.0625rem) {
   .couple-requests-page .couple-teacher_card { padding: 1.5rem; }
