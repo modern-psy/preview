@@ -1378,7 +1378,8 @@
         .who_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
         .who_card { padding: 1.25rem 1rem; gap: 1.25rem; }
         .who_actions { flex-direction: column; }
-        .who_actions .button { flex: none; width: 100%; }
+        /* На узком телефоне длинная надпись переносится, а не вылезает за кнопку */
+        .who_actions .button { flex: none; width: 100%; white-space: normal; }
       }
 
       /* ---------- Блок 5: что меняется за время в клубе ---------- */
@@ -1983,7 +1984,14 @@
         line-height: 1.444;
         letter-spacing: -0.01em;
       }
-      .team_card .button.is-film { margin-top: auto; }
+      /* Подпись к фильму и кнопка прижаты к низу карточки */
+      .team_film {
+        display: flex;
+        margin-top: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.625rem;
+      }
 
       /* Цифры Академии: три плитки, выпускники — чёрная с портретами */
       .team_stats {
@@ -2796,13 +2804,13 @@
         <div class="padding-global">
           <div class="container-large">
             <div class="nav_inner">
-              <a class="nav_logo" href="./" aria-label="АСП — на главную">
+              <a class="nav_logo" href="./" aria-label="АСП, на главную">
                 <img
                   class="nav_logo-image"
                   src="https://static.tildacdn.com/tild6138-3163-4231-a430-353235306465/logo-asp.svg"
                   width="84"
                   height="30"
-                  alt="Академия современной психологии"
+                  alt="Академия Современной Психологии"
                 />
               </a>
 
@@ -2810,12 +2818,12 @@
                 <nav class="nav_links" aria-label="Основная навигация">
                   <a class="nav_link" href="#inside">Что внутри</a>
                   <a class="nav_link" href="#results">Результаты</a>
-                  <a class="nav_link" href="#curator">Куратор</a>
+                  <a class="nav_link" href="#curator">Кто ведёт</a>
                   <a class="nav_link" href="#price">Стоимость</a>
                 </nav>
 
                 <a class="button is-nav" href="#price">
-                  Зарегистрироваться
+                  Вступить в клуб
                 </a>
               </div>
 
@@ -2903,7 +2911,7 @@
                         </div></div>
                       <div class="hero_spine-copy">
                         <h2 class="hero_spine-heading">Узнаваемость</h2>
-                        <p class="hero_spine-text">Вы появляетесь в&nbsp;ленте каждую неделю, и&nbsp;ваше имя начинают запоминать</p>
+                        <p class="hero_spine-text">Ваше имя становится знакомым читателям, и&nbsp;вас узнают среди других психологов</p>
                       </div>
                     </div>
                     <span class="hero_spine-progress" aria-hidden="true"></span>
@@ -2929,7 +2937,7 @@
                         </div></div>
                       <div class="hero_spine-copy">
                         <h2 class="hero_spine-heading">Доверие</h2>
-                        <p class="hero_spine-text">Читатели заранее видят, как вы работаете, и&nbsp;записаться к&nbsp;вам уже не&nbsp;страшно</p>
+                        <p class="hero_spine-text">Ещё до&nbsp;первой встречи человек знает ваш подход, и&nbsp;прийти на&nbsp;консультацию уже не&nbsp;страшно</p>
                       </div>
                     </div>
                     <span class="hero_spine-progress" aria-hidden="true"></span>
@@ -2977,7 +2985,7 @@
                   </div>
                   <div class="chain_header">
                     <div class="chain_eyebrow">От&nbsp;поста до&nbsp;записи</div>
-                    <h2 class="chain_heading" id="chain-heading">Как регулярный блог работает на&nbsp;вашу практику</h2>
+                    <h2 class="chain_heading" id="chain-heading">Как регулярный блог приводит к&nbsp;записи на&nbsp;консультацию</h2>
                   </div>
                   <div class="chain_body">
                     <ol class="chain_list" data-chain>
@@ -3079,7 +3087,7 @@
                         <p class="pain_quote">«О&nbsp;чём писать, чтобы это было профессионально и&nbsp;не&nbsp;банально?»</p>
                         <div class="pain_reason">
                           <span class="pain_label">Что за&nbsp;этим</span>
-                          <p class="pain_reason-text">Нет рамки темы и&nbsp;понимания, что допустимо показывать специалисту</p>
+                          <p class="pain_reason-text">Непонятно, какие темы выбрать и&nbsp;что специалисту уместно показывать</p>
                         </div>
                         <div class="pain_answer">
                           <span class="pain_label is-answer"><span class="pain_dot" aria-hidden="true"></span>Ответ клуба</span>
@@ -3103,7 +3111,7 @@
                     </li>
                     <li class="pain_item" style="--pain-index: 2">
                       <div class="pain_card">
-                        <h3 class="pain_card-title">Не&nbsp;получается регулярно</h3>
+                        <h3 class="pain_card-title">Не&nbsp;получается писать каждую неделю</h3>
                         <p class="pain_quote">«Начинаю и&nbsp;бросаю. Без дедлайна всё откладывается»</p>
                         <div class="pain_reason">
                           <span class="pain_label">Что за&nbsp;этим</span>
@@ -3131,7 +3139,7 @@
                     </li>
                   </ul>
                 </div>
-                <p class="pain_bridge">Дело не&nbsp;в&nbsp;таланте и&nbsp;не&nbsp;в&nbsp;дисциплине. Показываться учатся, как любому навыку: в&nbsp;ритме и&nbsp;в&nbsp;среде, а&nbsp;не&nbsp;силой воли</p>
+                <p class="pain_bridge">Показываться учатся, как любому навыку: в&nbsp;ритме и&nbsp;среди коллег</p>
               </div>
             </div>
           </div>
@@ -3154,11 +3162,11 @@
                 <div class="cta_content">
                   <div class="cta_copy">
                     <h2 class="cta_heading">
-                      Дело не&nbsp;в&nbsp;том, что&nbsp;вы чего-то не&nbsp;умеете
+                      Регулярность держится на&nbsp;ритме и&nbsp;людях рядом
                     </h2>
                     <p class="cta_description">
-                      Обычно не хватает системы, ритма и людей рядом. В одиночку
-                      контент быстро снова уходит «на потом».
+                      В&nbsp;одиночку контент быстро уходит «на&nbsp;потом». В&nbsp;клубе есть задание на&nbsp;неделю,
+                      созвоны и&nbsp;поддержка коллег
                     </p>
                   </div>
 
@@ -3208,13 +3216,13 @@
                     <li class="who_item">
                       <div class="who_card">
                         <span class="who_level" aria-hidden="true"><span class="who_level-bar is-on"></span><span class="who_level-bar is-on"></span><span class="who_level-bar is-on"></span></span>
-                        <h3 class="who_title">Хотите получить систему</h3>
+                        <h3 class="who_title">Ведёте блог и&nbsp;хотите систему</h3>
                         <div class="who_gets">
                           <p class="who_label">Что получите</p>
                           <ul class="who_list">
                             <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Контент-план</span></li>
-                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Инструменты</span></li>
-                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Рабочий процесс, который можно масштабировать</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Бот, шаблоны и&nbsp;набор для монтажа</span></li>
+                            <li class="who_list-item"><span class="who_check" aria-hidden="true"></span><span>Порядок работы, который повторяется каждую неделю</span></li>
                           </ul>
                         </div>
                       </div>
@@ -3222,7 +3230,7 @@
                 </ul>
                 <div class="who_actions">
                   <a class="button is-primary" href="#trial">Воспользоваться пробным периодом</a>
-                  <a class="button is-secondary" href="#cases">Посмотреть результаты участников</a>
+                  <a class="button is-secondary" href="#cases">Истории участников</a>
                 </div>
               </div>
             </div>
@@ -3234,7 +3242,7 @@
               <div class="growth_component">
                 <div class="growth_header">
                   <h2 class="growth_heading" id="growth-heading">Что меняется за&nbsp;время в&nbsp;клубе</h2>
-                  <p class="growth_note">У&nbsp;каждого свой темп. Здесь средний срез по&nbsp;участникам клуба</p>
+                  <p class="growth_note">У&nbsp;каждого свой темп. Результаты собраны по&nbsp;анкетам участников клуба</p>
                 </div>
                 <ol class="results_timeline">
                     <li class="results_stage">
@@ -3243,8 +3251,8 @@
                         <span class="results_bar" aria-hidden="true" style="--share: 0.16666666666666666"></span>
                         <ul class="results_list">
                           <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Вы&nbsp;опубликовали первые материалы</span></li>
-                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Есть понятный ритм недели</span></li>
-                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Пропал страх «белого листа»</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>У&nbsp;вас есть понятный ритм недели</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Вы&nbsp;больше не&nbsp;боитесь «белого листа»</span></li>
                         </ul>
                         <div class="results_quotes">
                           <p class="results_quotes-label">Из&nbsp;анкет участников</p>
@@ -3257,8 +3265,8 @@
                         <p class="results_when"><span class="results_prefix">через</span> <span class="results_number">3</span> <span class="results_unit">месяца</span></p>
                         <span class="results_bar" aria-hidden="true" style="--share: 0.5"></span>
                         <ul class="results_list">
-                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Регулярность стала привычкой</span></li>
-                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Сложился узнаваемый стиль</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Вы&nbsp;публикуете каждую неделю</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>У&nbsp;вас сложился узнаваемый стиль</span></li>
                           <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Вы&nbsp;знаете, о&nbsp;чём писать</span></li>
                         </ul>
                         <div class="results_quotes">
@@ -3273,9 +3281,9 @@
                         <p class="results_when"><span class="results_prefix">через</span> <span class="results_number">6</span> <span class="results_unit">месяцев</span></p>
                         <span class="results_bar" aria-hidden="true" style="--share: 1"></span>
                         <ul class="results_list">
-                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Блог стал частью практики</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Блог стал частью вашей практики</span></li>
                           <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>О&nbsp;вас говорят «видела ваш пост»</span></li>
-                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Появляются обращения с&nbsp;упоминанием блога</span></li>
+                          <li class="results_list-item"><span class="results_check" aria-hidden="true"></span><span>Вам приходят обращения с&nbsp;упоминанием блога</span></li>
                         </ul>
                       </div>
                     </li>
@@ -3290,28 +3298,28 @@
               <div class="growth_component">
                 <div class="growth_header">
                   <h2 class="growth_heading" id="growth-voices-heading">Что меняется за&nbsp;время в&nbsp;клубе</h2>
-                  <p class="growth_note">У&nbsp;каждого свой темп. Здесь средний срез по&nbsp;участникам клуба</p>
+                  <p class="growth_note">У&nbsp;каждого свой темп. Результаты собраны по&nbsp;анкетам участников клуба</p>
                 </div>
                 <ul class="voices_thread">
                   <li class="voices_item is-left">
-                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участника</span>«Опубликовала то, что откладывала»</p>
+                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участницы</span>«Опубликовала то, что откладывала»</p>
                     <ul class="voices_tags">
                       <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Первые материалы опубликованы</span></li>
                       <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Нет страха «белого листа»</span></li>
                     </ul>
                   </li>
                   <li class="voices_item is-right">
-                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участника</span>«Наконец придумала, о&nbsp;чём писать»</p>
+                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участницы</span>«Наконец придумала, о&nbsp;чём писать»</p>
                     <ul class="voices_tags">
                       <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Понятно, о&nbsp;чём писать</span></li>
                       <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Сложился узнаваемый стиль</span></li>
                     </ul>
                   </li>
                   <li class="voices_item is-left">
-                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участника</span>«Стала выходить регулярнее»</p>
+                    <p class="voices_bubble"><span class="voices_label">Из&nbsp;анкеты участницы</span>«Стала выходить регулярнее»</p>
                     <ul class="voices_tags">
                       <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Понятный ритм недели</span></li>
-                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Регулярность стала привычкой</span></li>
+                      <li><span class="voices_tag"><span class="voices_tick"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Публиковаться каждую неделю стало привычкой</span></li>
                     </ul>
                   </li>
                 </ul>
@@ -3332,7 +3340,7 @@
             <div class="container-large">
               <div class="cases_component">
                 <div class="cases_header">
-                  <h2 class="cases_heading" id="cases-heading">Как клуб раскрывает специалиста</h2>
+                  <h2 class="cases_heading" id="cases-heading">Что изменилось у&nbsp;участников</h2>
                   <p class="cases_description">Истории участников: с&nbsp;чем они пришли в&nbsp;клуб и&nbsp;что изменилось</p>
                 </div>
                 <ul class="cases_list">
@@ -3340,7 +3348,7 @@
                       <article class="cases_card">
                         <div class="cases_photo is-lilac">
                           <span class="cases_initials" aria-hidden="true">АГ</span>
-                          <p class="cases_before">Два года веду блог в&nbsp;Телеграме и&nbsp;считал себя пишущим человеком. Инстаграм и&nbsp;видео казались пугающими и&nbsp;непонятными</p>
+                          <p class="cases_before">Два года веду блог в&nbsp;Телеграме и&nbsp;считал себя пишущим человеком. Видео в&nbsp;соцсетях казалось пугающим и&nbsp;непонятным</p>
                         </div>
                         <h3 class="cases_name">Андрей Громов</h3>
                         <p class="cases_after"><strong>За&nbsp;два месяца закрыл большинство целей.</strong> Записал первые рилсы, хотя думал, что это не&nbsp;моё, и&nbsp;теперь кайфую от&nbsp;монтажа и&nbsp;сценариев</p>
@@ -3481,32 +3489,39 @@
                       <div class="team_identity">
                         <p class="team_badge">Ведущий клуба</p>
                         <div class="team_person">
-                          <img class="team_avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="1680" height="1680" alt="Психолог Роман Дубченко, ведущий мастерской" loading="lazy" decoding="async">
+                          <img class="team_avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="1680" height="1680" alt="Психолог Роман Дубченко, ведущий клуба" loading="lazy" decoding="async">
                           <div class="team_person-copy">
                             <h3 class="team_title">Роман Дубченко</h3>
                             <p class="team_meta">психолог, предприниматель, автор блога @romind.psy</p>
+                            <!-- Цифры примерные, Дарья заменит на реальные -->
+                            <p class="team_meta">[10&nbsp;000] подписчиков, ведёт блог с&nbsp;[2021] года</p>
                           </div>
                         </div>
                       </div>
                       <p class="team_text">
-                        Ведёт мастерскую и сам каждую неделю проходит тот же путь, что и
+                        Ведёт клуб и сам каждую неделю проходит тот же путь, что и
                         участники: выбирает тему, собирает материал и доводит его до
-                        публикации. Разбирает не теорию, а живую работу — прямо по ходу
+                        публикации. Разбирает не теорию, а живую работу: прямо по ходу
                         процесса.
                       </p>
-                      <a class="button is-film" href="https://www.youtube.com/watch?v=1rr9vQ0VCDQ&amp;t=151s" target="_blank" rel="noopener noreferrer">
-                        <span class="host_play-icon" aria-hidden="true"><svg viewBox="0 0 16 18" focusable="false"><path d="M15 9 1 17V1l14 8Z"></path></svg></span>
-                        <span>Смотреть фильм о&nbsp;работе с&nbsp;EMDR</span>
-                      </a>
+                      <!-- Фильм Романа: пример того, как он рассказывает о своей работе на видео -->
+                      <div class="team_film">
+                        <p class="team_meta">Пример того, как Роман рассказывает о&nbsp;своей работе на&nbsp;видео</p>
+                        <a class="button is-film" href="https://www.youtube.com/watch?v=1rr9vQ0VCDQ&amp;t=151s" target="_blank" rel="noopener noreferrer">
+                          <span class="host_play-icon" aria-hidden="true"><svg viewBox="0 0 16 18" focusable="false"><path d="M15 9 1 17V1l14 8Z"></path></svg></span>
+                          <span>Смотреть фильм Романа об&nbsp;EMDR</span>
+                        </a>
+                      </div>
                     </div>
                   </article>
                   <article class="team_card is-academy">
                     <div class="team_copy">
                       <div class="team_identity">
                         <p class="team_badge">Организатор клуба</p>
-                        <h3 class="team_title">Академия современной психологии</h3>
+                        <h3 class="team_title">Академия Современной Психологии</h3>
                       </div>
-                      <p class="team_text">С&nbsp;2021 года готовим специалистов к&nbsp;работе с&nbsp;клиентами, а&nbsp;не&nbsp;только к&nbsp;изучению теории</p>
+                      <p class="team_text">С&nbsp;2021 года учит психологов работать с&nbsp;клиентами: занятия в&nbsp;парах и&nbsp;тройках, разбор реальных случаев</p>
+                      <p class="team_meta">Баллы клуба можно обменять на&nbsp;скидку на&nbsp;обучение в&nbsp;Академии или посещение её&nbsp;конференции</p>
                       <ul class="team_stats">
                         <li class="team_stat">
                           <div class="team_stat-inner">
@@ -3530,7 +3545,7 @@
                       </ul>
                     </div>
                     <div class="team_academy-photo">
-                      <img class="team_photo-image" src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp" width="1401" height="1123" alt="Участники очного мероприятия Академии современной психологии" loading="lazy" decoding="async">
+                      <img class="team_photo-image" src="https://static.tildacdn.com/tild3864-3737-4638-b165-393737376238/img-environment.webp" width="1401" height="1123" alt="Участники очного мероприятия Академии Современной Психологии" loading="lazy" decoding="async">
                     </div>
                   </article>
                 </div>
@@ -3595,6 +3610,7 @@
                         <p class="week_day-name">Пятница</p>
                         <div class="week_day-copy">
                           <p class="week_day-title">День контента</p>
+                          <p class="week_day-text">готовите контент к&nbsp;публикации</p>
                         </div>
                       </div>
                     </li>
@@ -3653,7 +3669,7 @@
                     <div class="tabs_panels">
                     <article class="tabs_panel week_panel" id="week-panel-1" role="tabpanel" aria-labelledby="week-tab-1" tabindex="0">
                       <h4 class="tabs_panel-heading">Не&nbsp;нужно выбирать, с&nbsp;чего начать</h4>
-                      <p class="week_panel-text">Каждую неделю у&nbsp;вас одна конкретная задача и&nbsp;готовая рамка для неё. Вы&nbsp;тратите время на&nbsp;текст, а&nbsp;не&nbsp;на&nbsp;раздумья о&nbsp;теме. Если сил на&nbsp;большее нет, достаточно выполнить основное задание.</p>
+                      <p class="week_panel-text">Каждую неделю у&nbsp;вас одна конкретная задача и&nbsp;готовая рамка для неё. Задание на&nbsp;выбор, например: в&nbsp;понедельник на&nbsp;личные темы, в&nbsp;среду на&nbsp;научные. Вы&nbsp;тратите время на&nbsp;текст, а&nbsp;не&nbsp;на&nbsp;раздумья о&nbsp;теме. Если сил на&nbsp;большее нет, достаточно выполнить основное задание.</p>
                       <div class="week_panel-when">
                         <p class="week_panel-label">Когда: Понедельник и&nbsp;среда</p>
                         <span class="week_mini" aria-hidden="true"><span class="week_mini-day is-on">Пн</span><span class="week_mini-day">Вт</span><span class="week_mini-day is-on">Ср</span><span class="week_mini-day">Чт</span><span class="week_mini-day">Пт</span><span class="week_mini-day">Сб</span><span class="week_mini-day">Вс</span></span>
@@ -3669,7 +3685,7 @@
                     </article>
                     <article class="tabs_panel week_panel" id="week-panel-3" role="tabpanel" aria-labelledby="week-tab-3" tabindex="0" hidden>
                       <h4 class="tabs_panel-heading">Живой ритм вместо силы воли</h4>
-                      <p class="week_panel-text">Созвон задаёт регулярность: к&nbsp;субботе у&nbsp;вас что-то готово, и&nbsp;это можно обсудить. Мы&nbsp;разбираем материалы участников, отвечаем на&nbsp;вопросы и&nbsp;планируем следующую неделю. Если не&nbsp;получилось подключиться, запись остаётся доступной.</p>
+                      <p class="week_panel-text">Созвон задаёт ритм недели: к&nbsp;субботе у&nbsp;вас что-то готово, и&nbsp;это можно обсудить. Мы&nbsp;разбираем материалы участников, отвечаем на&nbsp;вопросы и&nbsp;планируем следующую неделю. Если не&nbsp;получилось подключиться, запись остаётся доступной.</p>
                       <div class="week_panel-when">
                         <p class="week_panel-label">Когда: Суббота, 14:00–16:00</p>
                         <span class="week_mini" aria-hidden="true"><span class="week_mini-day">Пн</span><span class="week_mini-day">Вт</span><span class="week_mini-day">Ср</span><span class="week_mini-day">Чт</span><span class="week_mini-day">Пт</span><span class="week_mini-day is-on">Сб</span><span class="week_mini-day">Вс</span></span>
@@ -3677,7 +3693,7 @@
                     </article>
                     <article class="tabs_panel week_panel" id="week-panel-4" role="tabpanel" aria-labelledby="week-tab-4" tabindex="0" hidden>
                       <h4 class="tabs_panel-heading">Прямо говорит, что работает</h4>
-                      <p class="week_panel-text">Ведущий смотрит ваши материалы и&nbsp;прямо говорит, что работает, а&nbsp;что стоит поправить. Так вы&nbsp;замечаете свои сильные стороны и&nbsp;не&nbsp;повторяете одни и&nbsp;те&nbsp;же ошибки.</p>
+                      <p class="week_panel-text">Ведущий смотрит ваши материалы и&nbsp;прямо говорит, что работает, а&nbsp;что стоит поправить. Ответ в&nbsp;течение [срок]. Так вы&nbsp;замечаете свои сильные стороны и&nbsp;не&nbsp;повторяете одни и&nbsp;те&nbsp;же ошибки.</p>
                       <div class="week_panel-when is-host">
                         <img class="week_panel-avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="1680" height="1680" alt="" loading="lazy" decoding="async">
                         <p class="week_panel-label"><span class="week_panel-name">Роман Дубченко</span>ведущий клуба</p>
@@ -4104,13 +4120,13 @@
                     <div class="price_offer-grain" aria-hidden="true"></div>
                     <div class="price_offer-content">
                       <div class="price_offer-sum">
-                        <p class="price_offer-label">Подписка на&nbsp;месяц</p>
+                        <p class="price_offer-label">Подписка</p>
                         <p class="price_amount"><span class="price_value">7&nbsp;900&nbsp;₽</span> <span class="price_unit">в&nbsp;месяц</span></p>
                         <p class="price_week">около 1&nbsp;975&nbsp;₽ в&nbsp;неделю</p>
                       </div>
                       <div class="price_offer-action">
                         <a class="button is-pricing price_button" href="#popup:getcourse">Вступить в&nbsp;клуб</a>
-                        <p class="price_terms">Остановить можно в&nbsp;любой момент</p>
+                        <p class="price_terms">Остановить можно в&nbsp;любой момент: доступ сохранится до&nbsp;конца оплаченного периода. Ссылка на&nbsp;чат и&nbsp;бота придёт сразу после оплаты</p>
                       </div>
                     </div>
                   </div>
@@ -4119,7 +4135,7 @@
                       <h3 class="price_group-title">Живая работа</h3>
                       <ul class="price_list">
                         <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Живые созвоны</p><p class="price_item-text">По&nbsp;субботам с&nbsp;14:00 до&nbsp;16:00: показываете черновики и&nbsp;пробуете приёмы</p></div></div></li>
-                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Обратная связь по&nbsp;работе</p><p class="price_item-text">Конкретно: что уже работает, что усилить и&nbsp;что можно убрать</p></div></div></li>
+                        <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Обратная связь по&nbsp;работе</p><p class="price_item-text">Что уже работает, что усилить и&nbsp;что убрать</p></div></div></li>
                         <li><div class="price_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><div class="price_item-copy"><p class="price_item-title">Задания недели</p><p class="price_item-text">Разной сложности: выбираете формат и&nbsp;объём, которые реально сделать</p></div></div></li>
                       </ul>
                     </div>
@@ -4149,7 +4165,7 @@
                     <li><span class="price_reward">Неделя в&nbsp;клубе для друга</span></li>
                     <li><span class="price_reward">Мерч АСП</span></li>
                     <li><span class="price_reward">Посещение конференции АСП</span></li>
-                    <li><span class="price_reward">Учёба в&nbsp;Академии</span></li>
+                    <li><span class="price_reward">Скидки на&nbsp;обучение в&nbsp;Академии</span></li>
                   </ul>
                 </div>
               </div>
@@ -4193,7 +4209,7 @@
                   <div class="faq_grain" aria-hidden="true"></div>
                   <div class="faq_heading-wrapper">
                     <div class="faq_eyebrow">Частые вопросы</div>
-                    <h2 class="faq_heading">В&nbsp;клуб можно прийти не&nbsp;«готовым блогером», а&nbsp;живым специалистом</h2>
+                    <h2 class="faq_heading">В&nbsp;клуб приходят и&nbsp;без опыта в&nbsp;блоге</h2>
                   </div>
                   <div class="faq_actions">
                     <a class="button is-faq-primary" href="#popup:getcourse">Вступить в клуб</a>
@@ -4209,7 +4225,7 @@
                     </button>
                     <div class="faq_answer" id="faq-answer-1" role="region" aria-labelledby="faq-question-1" aria-hidden="true">
                       <div class="faq_answer-inner">
-                        <p>Это нормальная стартовая точка. Клуб не&nbsp;требует ежедневных публикаций и&nbsp;постоянного присутствия в&nbsp;сторис. Мы строим процесс вокруг маленьких регулярных шагов: одна единица контента в&nbsp;неделю, работа прямо на&nbsp;созвоне и&nbsp;помощь бота с&nbsp;рутиной.</p>
+                        <p>Это нормальная стартовая точка. Клуб не&nbsp;требует ежедневных публикаций и&nbsp;постоянного присутствия в&nbsp;сторис. Мы строим процесс вокруг маленьких шагов: один пост или ролик в&nbsp;неделю, работа прямо на&nbsp;созвоне и&nbsp;помощь бота с&nbsp;рутиной.</p>
                         <p>Вам не&nbsp;нужно освобождать целые дни под блог. Достаточно встроиться в&nbsp;понятный ритм, где контент перестаёт быть огромной задачей «на&nbsp;потом» и&nbsp;становится частью профессиональной практики.</p>
                       </div>
                     </div>
@@ -4220,8 +4236,8 @@
                     </button>
                     <div class="faq_answer" id="faq-answer-2" role="region" aria-labelledby="faq-question-2" aria-hidden="true">
                       <div class="faq_answer-inner">
-                        <p>Так тоже можно. В&nbsp;клубе камера не&nbsp;является обязательным входом. Вы можете начать с&nbsp;текстов, каруселей, заметок, сторис, ответов на&nbsp;частые вопросы клиентов и&nbsp;коротких профессиональных наблюдений.</p>
-                        <p>Главная задача на&nbsp;старте — научиться ясно формулировать свои мысли и&nbsp;регулярно выпускать их наружу. А&nbsp;видео можно подключить позже, если и&nbsp;когда появится готовность.</p>
+                        <p>Так тоже можно. Камера в&nbsp;клубе не&nbsp;обязательна. Вы можете начать с&nbsp;текстов, каруселей, заметок, сторис, ответов на&nbsp;частые вопросы клиентов и&nbsp;коротких профессиональных наблюдений.</p>
+                        <p>Главная задача на&nbsp;старте: научиться ясно формулировать свои мысли и&nbsp;публиковать их&nbsp;каждую неделю. А&nbsp;видео можно подключить позже, если и&nbsp;когда появится готовность.</p>
                       </div>
                     </div>
                   </div>
@@ -4231,18 +4247,18 @@
                     </button>
                     <div class="faq_answer" id="faq-answer-3" role="region" aria-labelledby="faq-question-3" aria-hidden="true">
                       <div class="faq_answer-inner">
-                        <p>Это хорошая опора, а&nbsp;не&nbsp;проблема. В&nbsp;клубе мы не&nbsp;делаем контент ради хайпа или громких заявлений. Мы учимся говорить о&nbsp;сложных темах ясно, аккуратно и&nbsp;этично, чтобы вас понимали не&nbsp;только коллеги, но&nbsp;и&nbsp;потенциальные клиенты.</p>
-                        <p>Обратная связь устроена бережно: мы обсуждаем не&nbsp;вас как специалиста, а&nbsp;конкретный материал — где усилить мысль, что упростить, какой пример добавить, как сохранить точность и&nbsp;при этом не&nbsp;перегрузить текст.</p>
+                        <p>Так и&nbsp;задумано: в&nbsp;клубе учатся говорить о&nbsp;сложных темах ясно и&nbsp;этично, чтобы вас понимали коллеги и&nbsp;клиенты. Контент ради хайпа и&nbsp;громких заявлений мы не&nbsp;делаем.</p>
+                        <p>Обратная связь устроена бережно: обсуждаем только материал. Где усилить мысль, что упростить, какой пример добавить, как сохранить точность и&nbsp;при этом не&nbsp;перегрузить текст.</p>
                       </div>
                     </div>
                   </div>
                   <div class="faq_item" data-accordion-item>
                     <button class="faq_question" id="faq-question-4" type="button" aria-expanded="false" aria-controls="faq-answer-4">
-                      <span>Мне не&nbsp;нужен ещё один курс в&nbsp;записи — мне нужна практика и&nbsp;поддержка</span><span class="faq_icon" aria-hidden="true"></span>
+                      <span>Мне не&nbsp;нужен ещё один курс в&nbsp;записи. Мне нужна практика и&nbsp;поддержка</span><span class="faq_icon" aria-hidden="true"></span>
                     </button>
                     <div class="faq_answer" id="faq-answer-4" role="region" aria-labelledby="faq-question-4" aria-hidden="true">
                       <div class="faq_answer-inner">
-                        <p>Клуб отличается от&nbsp;курса тем, что здесь вы не&nbsp;просто смотрите уроки. Вы регулярно делаете контент: выбираете тему, собираете материал, получаете обратную связь, дорабатываете и&nbsp;публикуете. Есть ритм, группа, дедлайны, куратор и&nbsp;бот — среда, которая помогает не&nbsp;бросить после первого вдохновения.</p>
+                        <p>В&nbsp;клубе вы делаете контент каждую неделю: выбираете тему, собираете материал, получаете обратную связь, дорабатываете и&nbsp;публикуете. Рядом ритм, группа, дедлайны, куратор и&nbsp;бот: всё это помогает не&nbsp;бросить, когда первое вдохновение пройдёт.</p>
                       </div>
                     </div>
                   </div>
@@ -4259,7 +4275,7 @@
             <div class="footer_inner">
               <div class="footer_top" data-node-id="700:532">
                 <div class="footer_identity" data-node-id="700:492">
-                  <a class="footer_logo" href="https://modern-psy.ru/" aria-label="Академия Современной Психологии — на главную">
+                  <a class="footer_logo" href="https://modern-psy.ru/" aria-label="Академия Современной Психологии, на главную">
                     <img
                       class="footer_logo-image"
                       src="https://static.tildacdn.com/tild6138-3163-4231-a430-353235306465/logo-asp.svg"
