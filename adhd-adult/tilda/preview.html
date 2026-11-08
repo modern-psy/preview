@@ -353,8 +353,9 @@
 
 
 /* ---------- 6. Программа обучения ----------
-   Карточка семинара как «Программа» на /adult-adhd-therapy: тёмная шапка с названием (content-heading is-card),
-   ниже белая часть с темами (body-text, тёмным) через тонкие линии. Поля 16 px, на компьютере 24 px.
+   Карточка семинара как «Программа» на /adult-adhd-therapy: тёмная шапка с названием (content-heading is-card)
+   и датой со временем (is-caption), ниже белая часть с темами (body-text, тёмным) через тонкие линии.
+   Поля 16 px, на компьютере 24 px.
    Телефон и планшет — столбиком, от 1025 px два семинара рядом. */
 .adhd-adult-page .adhd-adult-program_list { display: grid; gap: var(--card-grid-gap); }
 .adhd-adult-page .adhd-adult-program_card {
@@ -364,8 +365,11 @@
   border-radius: var(--radius-card, 1rem);
   background: var(--color-surface-primary);
 }
-.adhd-adult-page .adhd-adult-program_head { padding: var(--card-padding); background: var(--color-surface-dark); }
+.adhd-adult-page .adhd-adult-program_head { display: grid; gap: 0.375rem; padding: var(--card-padding); background: var(--color-surface-dark); }
 .adhd-adult-page .adhd-adult-program_head .content-heading_component { color: var(--color-text-on-dark); }
+/* дата и время семинара под названием: светло-серым на тёмном (7,4:1). Прячет page.js, если старт в CMS другой */
+.adhd-adult-page .adhd-adult-program_meta { --body-text-color: var(--adhd-adult-on-dark-muted); }
+.adhd-adult-page .adhd-adult-program_meta[hidden] { display: none; }
 .adhd-adult-page .adhd-adult-program_items { display: grid; align-content: start; padding: 0.25rem var(--card-padding) var(--card-padding); --body-text-color: var(--color-text-primary); }
 .adhd-adult-page .adhd-adult-program_items > li { padding-block: 0.875rem; border-top: 1px solid var(--adhd-adult-line); text-wrap: pretty; }
 .adhd-adult-page .adhd-adult-program_items > li:first-child { border-top: 0; }
@@ -756,10 +760,11 @@
               <div class="section-header_component is-left is-responsive">
                 <h2 class="section-title_component is-left is-responsive" id="program-heading">Программа обучения</h2>
               </div>
-              <ol class="adhd-adult-program_list">
+              <ol class="adhd-adult-program_list" data-seminar-start="2027-03-13">
                 <li class="adhd-adult-program_card">
                   <div class="adhd-adult-program_head">
                     <h3 class="content-heading_component is-card">Семинар 1</h3>
+                    <p class="body-text_component is-caption adhd-adult-program_meta" data-seminar-date>13&nbsp;марта, с&nbsp;15:00 до&nbsp;20:00</p>
                   </div>
                   <ul class="adhd-adult-program_items">
                     <li class="body-text_component">Коучинг при&nbsp;СДВГ, его цели и&nbsp;отличие от&nbsp;психологического консультирования и&nbsp;психотерапии</li>
@@ -774,6 +779,7 @@
                 <li class="adhd-adult-program_card">
                   <div class="adhd-adult-program_head">
                     <h3 class="content-heading_component is-card">Семинар 2</h3>
+                    <p class="body-text_component is-caption adhd-adult-program_meta" data-seminar-date>20&nbsp;марта, с&nbsp;15:00 до&nbsp;20:00</p>
                   </div>
                   <ul class="adhd-adult-program_items">
                     <li class="body-text_component">Определение индивидуальных последствий (позитивных и&nbsp;негативных)</li>
@@ -2525,6 +2531,9 @@ const init = () => {
        hours            — «16 академических часов» в фактах первого экрана.
      Если поток в листе ожидания или у него нет даты, вместо даты: «Формируем лист ожидания»
      и «Запишитесь в лист ожидания» (как на старой странице).
+     Даты семинаров в программе написаны в разметке (в CMS есть только старт потока). Если старт в CMS
+     не совпадает с data-seminar-start у списка семинаров или поток в листе ожидания, строки с датами
+     семинаров прячутся, чтобы не показать устаревшие.
      Если API не ответил или поле в CMS пустое, остаётся текст из разметки. */
   const API = 'https://modern-psy-asp-prod-8ceb.twc1.net';
   const SLUG = 'adhd-adult';
@@ -2536,12 +2545,17 @@ const init = () => {
       .finally(() => clearTimeout(timer));
   };
   const put = (key, text) => document.querySelectorAll(`[data-cms="${key}"]`).forEach(node => { node.textContent = text; node.dataset.cmsState = 'ready'; });
-  if (document.querySelector('[data-cms="start"], [data-cms="enrollment-start"]')) {
+  if (document.querySelector('[data-cms="start"], [data-cms="enrollment-start"], [data-seminar-start]')) {
     getJson('/api/public/course/' + SLUG)
       .then(course => {
         const stream = course.nearestStream || {};
         const date = new Date((stream.startDate || '') + 'T00:00:00Z');
         const waitlist = /лист ожидания/i.test(stream.status || '') || !Number.isFinite(date.getTime());
+        document.querySelectorAll('[data-seminar-start]').forEach(list => {
+          if (!waitlist && list.dataset.seminarStart === stream.startDate) return;
+          list.querySelectorAll('[data-seminar-date]').forEach(node => { node.hidden = true; });
+          console.warn('[adhd-adult] старт потока в CMS не совпадает с датами семинаров, даты в программе скрыты');
+        });
         if (waitlist) {
           put('start', 'Формируем лист ожидания');
           put('enrollment-start', 'Запишитесь в лист ожидания');

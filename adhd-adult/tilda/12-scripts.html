@@ -14,6 +14,9 @@ const init = () => {
        hours            — «16 академических часов» в фактах первого экрана.
      Если поток в листе ожидания или у него нет даты, вместо даты: «Формируем лист ожидания»
      и «Запишитесь в лист ожидания» (как на старой странице).
+     Даты семинаров в программе написаны в разметке (в CMS есть только старт потока). Если старт в CMS
+     не совпадает с data-seminar-start у списка семинаров или поток в листе ожидания, строки с датами
+     семинаров прячутся, чтобы не показать устаревшие.
      Если API не ответил или поле в CMS пустое, остаётся текст из разметки. */
   const API = 'https://modern-psy-asp-prod-8ceb.twc1.net';
   const SLUG = 'adhd-adult';
@@ -25,12 +28,17 @@ const init = () => {
       .finally(() => clearTimeout(timer));
   };
   const put = (key, text) => document.querySelectorAll(`[data-cms="${key}"]`).forEach(node => { node.textContent = text; node.dataset.cmsState = 'ready'; });
-  if (document.querySelector('[data-cms="start"], [data-cms="enrollment-start"]')) {
+  if (document.querySelector('[data-cms="start"], [data-cms="enrollment-start"], [data-seminar-start]')) {
     getJson('/api/public/course/' + SLUG)
       .then(course => {
         const stream = course.nearestStream || {};
         const date = new Date((stream.startDate || '') + 'T00:00:00Z');
         const waitlist = /лист ожидания/i.test(stream.status || '') || !Number.isFinite(date.getTime());
+        document.querySelectorAll('[data-seminar-start]').forEach(list => {
+          if (!waitlist && list.dataset.seminarStart === stream.startDate) return;
+          list.querySelectorAll('[data-seminar-date]').forEach(node => { node.hidden = true; });
+          console.warn('[adhd-adult] старт потока в CMS не совпадает с датами семинаров, даты в программе скрыты');
+        });
         if (waitlist) {
           put('start', 'Формируем лист ожидания');
           put('enrollment-start', 'Запишитесь в лист ожидания');
