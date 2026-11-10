@@ -125,8 +125,11 @@ body { margin: 0; background: #f5f5f5; }
 .hr-actions .button_component { width: 100%; }
 /* фото вертикальное: contain: size не даёт ему растягивать блок под свои пропорции, высоту на телефоне задают
    кнопка и плитки поверх фото (верхний отступ .hr-cta = видимая полоса фото над кнопкой).
-   На телефоне кадр сдвинут вниз (75 %), чтобы лицо клиента поднялось в видимую полосу и над головой остался воздух. */
-.hr-photo { grid-area: photo; width: 100%; height: 100%; min-height: 0; contain: size; aspect-ratio: auto; object-fit: cover; object-position: 50% 75%; border-radius: 1.25rem; display: block; background: var(--fld-raise); }
+   Кадр по вертикали привязан к макушке клиента, а не задан процентом: процент на разной ширине телефона
+   сдвигает фото по-разному, и на широких телефонах голова обрезалась. Расчёт: ширина фото = 100cqi − 4rem
+   (поля страницы и плашки), макушка на исходнике на 27,8 % ширины от верха, поэтому сдвиг
+   «1rem − 0.278 × ширина» ставит макушку ровно на 16px ниже верхнего края. Число 1rem можно менять. */
+.hr-photo { grid-area: photo; width: 100%; height: 100%; min-height: 0; contain: size; aspect-ratio: auto; object-fit: cover; object-position: 50% calc(1rem - 0.278 * (100cqi - 4rem)); border-radius: 1.25rem; display: block; background: var(--fld-raise); }
 /* плашка пользы: описание и три строки с иконками в кружках, между кружками пунктир */
 .fld-panel { background: var(--fld-raise); border-radius: 1.25rem; padding: 1rem 1rem 0.25rem; display: grid; gap: 0.5rem; }
 .fld-lead { --body-text-color: var(--fld-text); }
@@ -145,7 +148,7 @@ body { margin: 0; background: #f5f5f5; }
   .hr { padding: 1.5rem; gap: 1.25rem; }
   .hr-head { padding: 0.5rem 0.25rem 0; }
   .hr-cta { padding: 13.75rem 1.25rem 1.25rem; gap: 1rem; background: linear-gradient(180deg, rgb(43 35 52 / 0) 38%, rgb(43 35 52 / 86%) 64%, #2b2334 100%); }
-  .hr-photo { object-position: 50% 40%; }  /* фото шире полосы: кадр выше, чтобы над головой остался воздух */
+  .hr-photo { object-position: 50% calc(1.5rem - 0.278 * (100cqi - 5rem)); }  /* поля плашки шире: ширина фото 100cqi − 5rem, макушка на 24px ниже края */
   .hr-actions { gap: 1rem; }
   .fld-panel { padding: 1rem 1.125rem 0.375rem; }
   .fld-tiles { gap: 0.75rem; }
