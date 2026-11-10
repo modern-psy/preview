@@ -113,9 +113,9 @@
       + '<a class="flagship-card_component" href="' + esc(card.url) + '">'
       + '<span class="flagship-card_media">' + coverHtml(card, 'flagship-card', false) + promoHtml(card, today) + '</span>'
       + '<span class="flagship-card_body">'
-      + '<span class="flagship-card_type body-text_component is-fine-print">' + esc(upperFirst(card.subtitle)) + '</span>'
+      + '<span class="flagship-card_type body-text_component is-fine-print">' + esc(upperFirst(card.subtitle)).replace(/\s*·\s*/g, ', ') + '</span>'
       + '<h3 class="flagship-card_title content-heading_component is-card">' + typo(esc(card.title)) + '</h3>'
-      + (meta.length ? '<span class="flagship-card_meta body-text_component is-caption">' + meta.join('<i aria-hidden="true">·</i>') + '</span>' : '')
+      + (meta.length ? '<span class="flagship-card_meta body-text_component is-caption">' + meta.join(', ') + '</span>' : '')
       + priceHtml(card, 'flagship-card')
       + '</span></a></li>';
   }
@@ -139,7 +139,7 @@
       + '<a class="last-chance_card" href="' + esc(card.url) + '">'
       + '<span class="last-chance_thumb">' + coverHtml(card, 'last-chance', false) + '</span>'
       + '<span class="last-chance_body">'
-      + '<span class="last-chance_status">Последний шанс</span>'
+      + '<span class="last-chance_status">' + (card.startDate ? 'Идёт с' + NBSP + day(card.startDate) : 'Поток идёт') + '</span>'
       + '<h3 class="last-chance_title body-text_component is-callout">' + typo(esc(card.title)) + '</h3>'
       + '<span class="last-chance_kind body-text_component is-fine-print">' + kind + '</span>'
       + priceHtml(card, 'last-chance')
@@ -203,7 +203,8 @@
 
   function eventMeta(e, today) {
     var when = day(e.date, today) + (e.time ? ', ' + e.time : '');
-    return [when, e.kind || 'мероприятие', e.note || 'бесплатно'].map(esc).join(' · ');
+    // средняя точка в подписях из данных каталога тоже становится запятой
+    return [when, e.kind || 'событие', e.note || 'бесплатно'].map(esc).join(', ').replace(/\s*·\s*/g, ', ');
   }
 
   // Большая карточка выбранного мероприятия
@@ -240,13 +241,13 @@
       var m = info[c.slug] || {};
       var meta = [];
       if (m.lessons) meta.push(esc(m.lessons));
-      if (m.grant) meta.push('грант ' + rub(m.grant));
+      if (m.grant) meta.push('грант ' + rub(m.grant) + ' на' + NBSP + 'полный курс');
       return '<li class="free-mini_item">'
         + '<a class="free-mini_link" href="' + esc(String(c.url || '').split('?')[0]) + '">'
         + '<span class="free-mini_thumb">' + coverHtml(c, 'free-mini', false) + '</span>'
         + '<span class="free-mini_body">'
         + '<span class="free-mini_title body-text_component is-callout">' + typo(esc(c.title)) + '</span>'
-        + (meta.length ? '<span class="free-mini_meta body-text_component is-fine-print">' + meta.join(' · ') + '</span>' : '')
+        + (meta.length ? '<span class="free-mini_meta body-text_component is-fine-print">' + meta.join(', ') + '</span>' : '')
         + '</span></a></li>';
     }).join('');
   }
@@ -270,7 +271,7 @@
     if (!a) return '';
     return '<div class="teachers-panel_head">'
       + '<h3 class="teachers-panel_title content-heading_component is-prominent">' + esc(a.name) + '</h3>'
-      + (a.url ? '<a class="teachers-panel_link body-text_component is-caption" href="' + esc(a.url) + '"'
+      + (a.url ? '<a class="teachers-panel_link" href="' + esc(a.url) + '"'
         + (a.courseTitle ? ' aria-label="Перейти к курсу «' + esc(a.courseTitle) + '»"' : '') + '>Перейти к&nbsp;курсу</a>' : '')
       + '</div>'
       + '<ul class="teachers-panel_list">' + a.people.map(function (k) {
@@ -610,7 +611,7 @@
       var old = box.querySelector('iframe');
       if (old) old.remove();
       box.querySelector('[data-conf-poster-img]').src = tabs[i].getAttribute('data-conf-poster');
-      box.querySelector('[data-conf-caption]').textContent = tabs[i].getAttribute('data-conf-name') + ' · ' + tabs[i].getAttribute('data-conf-year');
+      box.querySelector('[data-conf-caption]').textContent = tabs[i].getAttribute('data-conf-name') + ', ' + tabs[i].getAttribute('data-conf-year');
       box.setAttribute('aria-labelledby', tabs[i].id);
       if (focus) tabs[i].focus();
     }
@@ -811,19 +812,44 @@
     var nick = form.querySelector('[name="telegram"]');
     var submit = form.querySelector('[data-pick-submit]');
     var status = form.querySelector('[data-pick-status]');
-    var messenger = function () { var r = form.querySelector('[name="messenger"]:checked'); return r ? r.value : 'max'; };
+    var messenger = function () { var r = form.querySelector('[name="messenger"]:checked'); return r ? r.value : 'telegram'; };
     var nickValue = function () { var v = nick.value.trim().replace(/^@?/, '@'); return /^@[A-Za-z0-9_]{3,32}$/.test(v) ? v : ''; };
     function valid() {
       var digits = phone.value.replace(/\D/g, '').length;
       return name.value.trim().length > 1 && digits >= 10 && digits <= 15 && (messenger() !== 'telegram' || !!nickValue());
     }
     function check() { submit.disabled = !valid(); }
-    form.addEventListener('input', check);
+    // Подсказка под полем: появляется, когда человек ввёл что-то и ушёл из поля, а значение не подходит.
+    // Пока поле не трогали, ошибку не показываем
+    function fieldOk(el) {
+      if (el === name) return name.value.trim().length > 1;
+      if (el === phone) { var d = phone.value.replace(/\D/g, '').length; return d >= 10 && d <= 15; }
+      if (el === nick) return !!nickValue();
+      return true;
+    }
+    function showHint(el) {
+      var hint = form.querySelector('[data-pick-hint="' + el.name + '"]');
+      if (!hint) return;
+      var bad = !!el.getAttribute('data-touched') && !el.disabled && !fieldOk(el);
+      hint.hidden = !bad;
+      el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    }
+    form.addEventListener('focusout', function (e) {
+      var el = e.target;
+      if (!el.classList || !el.classList.contains('pick-field_input') || !el.value.trim()) return;
+      el.setAttribute('data-touched', '1');
+      showHint(el);
+    });
+    form.addEventListener('input', function (e) {
+      if (e.target.getAttribute && e.target.getAttribute('data-touched')) showHint(e.target);
+      check();
+    });
     form.addEventListener('change', function (e) {
       if (e.target.name === 'messenger') {
         var tg = e.target.value === 'telegram';
         nickBox.hidden = !tg;
         nick.disabled = !tg;
+        showHint(nick);
         if (tg) nick.focus();
       }
       check();
@@ -844,7 +870,7 @@
       }).then(function (result) {
         submit.removeAttribute('aria-busy');
         if (result === 'error') {
-          status.textContent = 'Не получилось отправить заявку. Попробуйте ещё раз чуть позже';
+          status.innerHTML = 'Не\u00a0получилось отправить заявку. Попробуйте ещё раз или напишите нам в\u00a0<a href="https://t.me/welcometoasp_bot" target="_blank" rel="noopener">Telegram</a>';
           check();
           return;
         }

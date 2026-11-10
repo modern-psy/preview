@@ -209,7 +209,7 @@ function trustModel(data, H) {
     + `<span class="trust-score_count body-text_component is-caption">${word} студентов на&nbsp;${howMany} независимых площадках</span></div></li>`
     + data.platforms.map((p) => '<li><a class="trust-score_tile" href="' + H.esc(p.url) + '" target="_blank" rel="noopener">'
       + `<span class="trust-score_value">${t(p.score)}</span>`
-      + `<span class="trust-score_count body-text_component is-caption">${t(p.count)}${p.extra ? ' · ' + t(p.extra) : ''}</span>`
+      + `<span class="trust-score_count body-text_component is-caption">${t(p.count)}${p.extra ? ', ' + t(p.extra) : ''}</span>`
       + `<img class="trust-score_logo" src="${H.esc(p.logo)}" alt="${H.esc(p.name)}" width="${p.width}" height="${p.height}" loading="lazy" decoding="async">`
       + '<span class="visually-hidden">: читать отзывы на площадке</span></a></li>').join('');
 
@@ -220,7 +220,7 @@ function trustModel(data, H) {
     + `<div class="trust-video_component"${r.video ? ` data-trust-video="${H.esc(r.video)}"` : ''}${r.kinescope ? ` data-trust-kin="${H.esc(r.kinescope)}"` : ''} data-trust-title="Видеоотзыв: ${H.esc(r.name)}">`
     + `<img class="trust-video_poster" src="${H.esc(r.image)}" alt="" width="480" height="600" style="object-position:${r.position || '50% 25%'}" loading="lazy" decoding="async">`
     + `<button class="trust-video_play" type="button" aria-label="Смотреть видеоотзыв: ${H.esc(r.name)}"><span class="trust-video_play-icon">${TRUST_ICONS.play}</span></button></div>`
-    + `<p class="trust-video_caption">«${t(r.quote)}»<span>${t(r.name)} · ${t(r.course)}</span></p></li>`;
+    + `<p class="trust-video_caption">«${t(r.quote)}»<span>${t(r.name)}, курс «${t(r.course)}»</span></p></li>`;
   const quote = (r) => '<article class="trust-quote_card">'
     + `<p class="trust-quote_text">«${t(r.quote)}»</p>`
     + (r.text ? `<p class="trust-quote_more body-text_component is-fine-print">${t(r.text)}</p>` : '')
@@ -298,7 +298,7 @@ async function main() {
     : 'скоро';
 
   // Под ценой: рассрочка, дата старта и диплом. Нет цены в месяц — остаются дата и диплом
-  const startTerms = `${start?.price?.monthly ? `в${NBSP}рассрочку на${NBSP}24${NBSP}мес${NBSP}· ` : ''}старт${NBSP}${startDate}${NBSP}· диплом`;
+  const startTerms = `${start?.price?.monthly ? `в${NBSP}рассрочку от${NBSP}банка на${NBSP}24${NBSP}мес, ` : ''}старт${NBSP}${startDate}, диплом`;
   const startPrice = start?.price?.monthly
     ? `${start.price.from ? 'от' + NBSP : ''}${new Intl.NumberFormat('ru-RU').format(start.price.monthly).replace(/\s/g, ' ')}${NBSP}₽/мес <span class="home-door_price-terms body-text_component is-fine-print">${startTerms}</span>`
     : `<span class="home-door_price-terms body-text_component is-fine-print">${startTerms}</span>`;

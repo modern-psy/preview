@@ -13,7 +13,8 @@
 /* ---------- 0. Переменные ---------- */
 .home-page {
   --home-bg: #f5f5f5;            /* фон страницы */
-  --home-white: #ffffff;         /* белый: текст, обводки и кнопки на тёмных блоках */
+  --home-white: #ffffff;
+  --home-error-on-dark: #ffb4b4;  /* ошибка в форме на тёмном фоне */         /* белый: текст, обводки и кнопки на тёмных блоках */
   --home-surface: var(--home-white); /* карточки */
   --home-line: #e8e7ee;          /* тонкие границы */
   --home-line-hover: #cfd1db;    /* граница карточки при наведении */
@@ -367,6 +368,8 @@ body:has(.home-page) {
   margin-top: 1.25rem;
 }
 .home-door_actions .home-button_component { margin-top: 0; }
+/* Если на узком десктопе надпись переносится, обе кнопки остаются одной высоты */
+.home-door_actions { grid-auto-rows: 1fr; }
 
 /* Кнопка: одна на всю страницу, размеры — из кнопки Web Academy (shared/academy/button.css):
    высота 50 → 64 px, текст 16 → 19 px, растут с шириной экрана */
@@ -820,16 +823,23 @@ body:has(.home-page) {
 .teachers-panel_head {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 0.5rem 1.5rem;
   margin-bottom: 1.25rem;
 }
+/* Ссылка на курс выбранного подхода — маленькая серая кнопка */
 .teachers-panel_link {
-  color: var(--home-accent);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--home-line);
+  color: var(--home-text);
+  font: 500 0.875rem/1.2 var(--home-font);
+  text-decoration: none;
+  transition: background-color var(--home-motion);
 }
 /* Карточки одной лентой: высота блока не зависит от числа людей в подходе */
 .teachers-panel_list {
@@ -1324,7 +1334,7 @@ body:has(.home-page) {
 .pick-field_input { display: block; width: 100%; height: 3.75rem; padding: 1.375rem 1rem 0.375rem; border: 1px solid color-mix(in srgb, var(--home-white) 28%, transparent); border-radius: 0.75rem; background: transparent; color: var(--home-white); font: inherit; font-size: 1rem; transition: border-color var(--home-motion); }
 .pick-field_input:focus { border-color: var(--home-white); outline: none; }
 .pick-field_label { position: absolute; top: 50%; left: 1rem; max-width: calc(100% - 2rem); overflow: hidden; color: color-mix(in srgb, var(--home-white) 62%, transparent); font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; transform: translateY(-50%); transform-origin: left center; pointer-events: none; transition: transform var(--home-motion), top var(--home-motion); }
-.pick-field_input:focus + .pick-field_label, .pick-field_input:not(:placeholder-shown) + .pick-field_label { top: 0.875rem; transform: translateY(-15%) scale(0.78); }
+.pick-field_input:focus + .pick-field_label, .pick-field_input:not(:placeholder-shown) + .pick-field_label { top: 0.625rem; transform: translateY(-15%) scale(0.78); }
 .pick-messenger_component { margin: 0; padding: 0; border: 0; }
 .pick-messenger_legend { margin-bottom: 0.625rem; padding: 0; color: var(--home-on-dark-muted); font-size: 0.9375rem; }
 .pick-messenger_options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
@@ -1339,7 +1349,13 @@ body:has(.home-page) {
 .pick-form_submit:disabled { background-color: color-mix(in srgb, var(--home-white) 14%, transparent); color: color-mix(in srgb, var(--home-white) 60%, transparent); cursor: default; }
 .pick-form_submit[aria-busy="true"] { cursor: progress; }
 .pick-form_status:empty { display: none; }
-.pick-form_status { color: #ffb4b4; font-size: 0.875rem; line-height: 1.4; }
+.pick-form_status { color: var(--home-error-on-dark); font-size: 0.875rem; line-height: 1.4; }
+.pick-form_status a { color: inherit; }
+/* Подсказка под полем, когда значение не подходит */
+.pick-field_hint { margin-top: -0.125rem; color: var(--home-error-on-dark); font-size: 0.8125rem; line-height: 1.35; }
+.pick-field_hint[hidden] { display: none; }
+.pick-messenger_component .pick-field_hint { margin-top: 0.375rem; }
+.pick-field_input[aria-invalid="true"] { border-color: var(--home-error-on-dark); }
 .pick-form_legal { color: color-mix(in srgb, var(--home-white) 62%, transparent); font-size: 0.75rem; line-height: 1.4; }
 .pick-form_legal a { color: inherit; }
 .pick-form_success { display: grid; gap: 0.5rem; padding: 1.5rem; border-radius: var(--home-radius); background-color: color-mix(in srgb, var(--home-white) 7%, transparent); }
@@ -1357,7 +1373,7 @@ body:has(.home-page) {
   .free-tabs_tab:not(.is-active):hover { background-color: var(--home-bg); }
   .free-mini_link:hover .free-mini_title { color: var(--home-accent); }
   .teachers-nav_tab:not(.is-active):hover { background-color: var(--home-soft); color: var(--home-soft-text); }
-  .teachers-panel_link:hover { color: var(--home-accent-hover); }
+  .teachers-panel_link:hover { background-color: var(--home-line-hover); }
   .practice-switch_button[aria-pressed="false"]:hover { background-color: #ecebf0; }
   .practice_button:hover { background-color: #dcd7f7; }
   .conf-list_tab:not(.is-active):hover .conf-list_name { color: var(--home-accent); }
