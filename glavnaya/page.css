@@ -561,47 +561,67 @@ body:has(.home-page) {
 .section_home-last-chance { padding-top: calc(var(--home-section) * 0.75); }
 .section_home-last-chance[hidden] { display: none; }
 
+/* Колонки по числу курсов: три курса занимают всю строку, а не три четверти */
 .last-chance_list {
   display: grid;
   gap: var(--home-gap);
 }
-@media (min-width: 48rem) { .last-chance_list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 64.0625rem) { .last-chance_list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.last-chance_item { display: flex; min-width: 0; }
+@media (min-width: 48rem) { .last-chance_list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); } }
+.last-chance_item { display: flex; min-width: 0; container-type: inline-size; }
 
+/* Узкая карточка: картинка и ярлык сверху в одну строку, название под ними на всю ширину.
+   Так длинные слова вроде «Когнитивно-поведенческая» не вылезают за край */
 .last-chance_card {
-  display: flex;
-  gap: 0.875rem;
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  grid-template-rows: auto auto auto 1fr;
+  grid-template-areas: "thumb status" "title title" "kind kind" "price price";
+  column-gap: 0.875rem;
   width: 100%;
   padding: var(--home-card-pad);
   border-radius: var(--home-radius);
   background-color: var(--home-surface);
 }
+.last-chance_body { display: contents; }
 .last-chance_thumb {
-  flex: 0 0 auto;
-  width: 5rem;
-  height: 5rem;
+  grid-area: thumb;
+  width: 4rem;
+  height: 4rem;
   overflow: hidden;
   border-radius: 0.75rem;
   background-color: var(--home-soft);
 }
 .last-chance_image { width: 100%; height: 100%; object-fit: cover; object-position: 78% 14%; }
-.last-chance_body { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
 .last-chance_status {
+  grid-area: status;
+  align-self: center;
+  justify-self: start;
   padding: 0.1875rem 0.5rem;
   border-radius: 999px;
   background-color: var(--home-warn-bg);
   color: var(--home-warn-text);
   font-size: 0.75rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 .last-chance_title {
+  grid-area: title;
+  margin-top: 0.75rem;
   transition: color var(--home-motion);
-  margin-top: 0.5rem;
   overflow-wrap: break-word;
 }
-.last-chance_kind { margin-top: 0.375rem; color: var(--home-muted); }
-.last-chance_price { display: flex; flex-direction: column; margin-top: auto; padding-top: 0.75rem; }
+.last-chance_kind { grid-area: kind; margin-top: 0.375rem; color: var(--home-muted); }
+.last-chance_price { grid-area: price; align-self: end; display: flex; flex-direction: column; padding-top: 0.75rem; }
+/* Широкая карточка (телефон, десктоп с тремя курсами): картинка слева, текст справа, как раньше */
+@container (min-width: 21rem) {
+  .last-chance_card {
+    grid-template-columns: 5rem minmax(0, 1fr);
+    grid-template-areas: "thumb status" "thumb title" "thumb kind" "thumb price";
+  }
+  .last-chance_thumb { width: 5rem; height: 5rem; }
+  .last-chance_status { align-self: start; }
+  .last-chance_title { margin-top: 0.5rem; }
+}
 .last-chance_price-old { color: var(--home-muted); }
 .last-chance_price-main { font-size: 1.125rem; font-weight: 500; letter-spacing: -0.03em; }
 .last-chance_price-terms { color: var(--home-muted); }
@@ -626,6 +646,7 @@ body:has(.home-page) {
 @media (min-width: 64.0625rem) { .directions_list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .directions_tile {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -637,6 +658,25 @@ body:has(.home-page) {
   background-color: color-mix(in srgb, var(--home-white) 8%, transparent);
   transition: background-color var(--home-motion), border-color var(--home-motion);
 }
+/* Слово с дефисом не рвём на конце строки («мини- / курсы») */
+.home-nowrap { white-space: nowrap; }
+/* Название не заходит под стрелку */
+.directions_name { padding-right: 3rem; }
+/* Кнопка со стрелкой: показывает, что плитка ведёт на страницу раздела */
+.directions_arrow {
+  position: absolute;
+  top: var(--home-card-pad);
+  right: var(--home-card-pad);
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--home-white) 12%, transparent);
+  color: var(--home-white);
+  transition: background-color var(--home-motion), color var(--home-motion), transform var(--home-motion);
+}
+.directions_arrow svg { width: 1.125rem; height: 1.125rem; }
 .directions_count { color: var(--home-on-dark-muted); }
 .directions_caption { margin-top: auto; padding-top: 0.5rem; color: var(--home-on-dark-muted); }
 
@@ -1388,6 +1428,7 @@ body:has(.home-page) {
   .pick-messenger_input:not(:checked) + .pick-messenger_option:hover { border-color: var(--home-white); }
   .pick-form_submit:not(:disabled):hover { background-color: var(--home-accent-hover); }
   .directions_tile:hover { background-color: color-mix(in srgb, var(--home-white) 14%, transparent); border-color: color-mix(in srgb, var(--home-white) 20%, transparent); }
+  .directions_tile:hover .directions_arrow { background-color: var(--home-white); color: var(--home-dark); transform: translateX(0.125rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
