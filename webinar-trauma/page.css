@@ -79,10 +79,16 @@ body { margin: 0; background: #f5f5f5; }
 .wa-in { max-width: 95rem; margin-inline: auto; }
 .wa .section-subtitle_component { max-width: 44ch; }
 .wa .on-dark { color: var(--wa-on-dark); }
-/* кнопки — button_component из v1; страница задаёт только ширину: на телефоне во всю колонку */
+/* кнопки — button_component из v1; страница задаёт ширину: на телефоне во всю колонку.
+   От 521px кнопка по ширине текста, поэтому поля по бокам 24px (минимум по правилам вёрстки, раздел 8):
+   у общей фиолетовой кнопки v1 поля всего 12px, и текст прилипает к краям. Светлой кнопке то же самое
+   через её переменную. Можно править число 1.5rem, если дизайн попросит другие поля. */
 .wa .button_component { width: 100%; }
 .wa button:focus-visible, .wa a:focus-visible { outline: 2px solid var(--wa-accent); outline-offset: 3px; }
-@container stage (min-width: 32.5625rem) { .wa .button_component { width: auto; } }
+@container stage (min-width: 32.5625rem) {
+  .wa { --button-light-padding-inline: 1.5rem; }
+  .wa .button_component { width: auto; padding-inline: 1.5rem; }
+}
 .wa .ic { width: 1.25rem; height: 1.25rem; flex: none; display: block; }
 /* подписи внутри SVG-схем и обложки подарка — тем же шрифтом, что и страница (атрибут font-family в разметке перебиваем) */
 .wa svg text { font-family: var(--font-family-body); }
@@ -280,48 +286,58 @@ body { margin: 0; background: #f5f5f5; }
 }
 
 
-/* ---------- 5 · Кому подойдёт вебинар: четыре плитки и фото справа ----------
-   В плитке только заголовок, он прижат к низу: так ряд плиток читается ровно при разной длине строк. */
+/* ---------- 5 · Кому подойдёт вебинар: карточки друг под другом, фото справа ----------
+   Как на /webinar-rodbt и «Психиатрии для психологов»: в карточке заголовок и короткое пояснение.
+   До 768px фото под списком, от 768px справа и тянется на высоту списка. Тексты правим в index.html. */
 .au { display: grid; gap: var(--gap); }
 .au-list { display: grid; gap: var(--gap); }
-.au-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 0.5rem; align-content: end; }
-.wa .au-card .content-heading_component { text-wrap: balance; overflow-wrap: break-word; }
-@container stage (min-width: 32.5625rem) { .au-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .au-card { min-height: 8.5rem; } }
+.au-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 0.5rem; align-content: start; }
 .au-photo { margin: 0; border-radius: var(--r); overflow: hidden; aspect-ratio: 16 / 11; background: var(--wa-grey); }
 .au-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 40% 40%; display: block; }
 @container stage (min-width: 48rem) {
   .au { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
-  .au-card { padding: 1.25rem 1.5rem 1.5rem; min-height: 10rem; }
+  .au-card { padding: 1.25rem 1.5rem 1.5rem; }
   .au-photo { aspect-ratio: auto; min-height: 100%; }
 }
-/* планшет: рядом с фото четыре плитки слишком узкие для слов вроде «Практикующим», поэтому фото уходит под плитки полосой */
-@container stage (min-width: 48rem) and (max-width: 64rem) {
-  .au { grid-template-columns: 1fr; }
-  .au-card { min-height: 8.5rem; }
-  .au-photo { aspect-ratio: 16 / 7; min-height: 0; }
-}
 
 
-/* ---------- 6 · Что будет на вебинаре: тема слева, три случая справа одной колонкой ---------- */
+/* ---------- 6 · Что будет на вебинаре: тема слева, три случая справа одной колонкой ----------
+   Акцентный блок: тёмная плашка во всю ширину, как «Разбор трёх случаев» (цвет #2B2334 из токена --wa-dark).
+   Десктоп: две колонки на всю плашку, слева заголовок, дата и кнопка внизу, справа список; длина строк описаний
+   ограничена 60 знаками, поэтому текст не растягивается.
+   Название случая должно читаться на лету, поэтому оно отделено от абзаца тремя способами: крупнее (роль is-card),
+   белое, а абзац приглушённый серо-сиреневый, и между ними больше воздуха. Номера светло-сиреневые.
+   Все пары на тёмном фоне контрастнее 4,5:1. */
+.ag-plate { background: var(--wa-dark); color: #fff; border-radius: var(--r); padding: var(--card-pad);
+  --body-text-color: var(--wa-on-dark-3); --section-subtitle-color: var(--wa-on-dark-3); }
+.wa .ag-plate .content-heading_component { color: #fff; }
 .ag { display: grid; gap: var(--head-gap); }
 .ag-aside { display: grid; gap: 1.25rem; align-content: start; }
 .ag-facts { display: grid; gap: 0.625rem; padding-top: 0.25rem; }
-.ag-facts li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--wa-ink); }
-.ag-facts .ic { margin-top: 0.1rem; color: var(--wa-ink-2); }
+.ag-facts li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--wa-on-dark-2); }
+.ag-facts .ic { margin-top: 0.1rem; color: var(--wa-on-dark-3); }
 /* кнопка под программой: ближе к списку, чем общий отступ между колонками блока */
 .ag-cta { margin-top: calc(1.5rem - var(--head-gap)); }
-.ag-list { background: #fff; border-radius: var(--r); padding: 0.5rem var(--card-pad); display: grid; }
-.ag-item { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--wa-line); align-items: start; }
+.ag-list { background: var(--wa-dark-2); border-radius: calc(var(--r) - 0.25rem); padding: 0.5rem var(--card-pad); display: grid; }
+.ag-item { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--wa-dark-line); align-items: start; }
 .ag-item:first-child { border-top: 0; }
-.ag-copy { display: grid; gap: 0.375rem; min-width: 0; }
-.ag-num { font-family: var(--font-family-body); font-size: var(--h3); font-weight: 500; color: var(--wa-accent); letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.ag-copy { display: grid; gap: 0.625rem; min-width: 0; }
+.ag-num { font-family: var(--font-family-body); font-size: var(--h3); font-weight: 500; color: var(--wa-accent-soft); letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
 @container stage (min-width: 48rem) {
+  .ag-plate { padding: 2rem; }
   .ag-list { padding: 1rem 2rem; }
   .ag-item { padding: 1.25rem 0; }
 }
 @container stage (min-width: 64.0625rem) {
-  .ag { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: 4rem; align-items: start; }
-  .ag-cta { grid-column: 2; }
+  .ag-plate { padding: 3rem; }
+  /* слева заголовок и факты сверху, кнопка снизу; список справа на всю высоту.
+     Список не шире 42rem (672px), чтобы строки не растягивались; левая колонка забирает остальное место,
+     но не уже 18rem, чтобы заголовок не ломался по словам. */
+  .ag { grid-template-columns: minmax(18rem, 1fr) minmax(0, 42rem); column-gap: 4rem; row-gap: 0; align-items: start; }
+  .ag-aside { grid-column: 1; grid-row: 1; }
+  .ag-list { grid-column: 2; grid-row: 1 / span 2; }
+  .ag-cta { grid-column: 1; grid-row: 2; align-self: end; margin-top: 2rem; }
+  .ag-copy { gap: 0.75rem; }
   .ag-list { padding: 1.25rem 2.5rem; }
   .ag-item { padding: 1.5rem 0; }
   .ag-desc { max-width: 60ch; }
