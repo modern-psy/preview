@@ -667,6 +667,25 @@
 .wa .signup_step-title { color: #fff; }
 .signup_step-description { --body-text-color: var(--wa-on-dark-3); }
 
+/* Подарок (чек-лист): невысокая плашка, текст слева. Обложка лежит фоном справа: крупно, повёрнута на −11°
+   и уходит за правый и нижний край, лишнее срезает overflow. Один в один с /webinar-rodbt. */
+/* телефон: текст на всю ширину, под ним место для наклонной обложки в правом нижнем углу */
+.gift_component { position: relative; display: grid; margin-top: auto; padding: 1.25rem; overflow: hidden; border-radius: calc(var(--r) - 0.25rem); background: var(--wa-dark-2); }
+.gift_copy { position: relative; z-index: 1; display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0.625rem; padding-bottom: 5.5rem; }
+.gift_label { display: inline-flex; align-self: flex-start; padding: 0.3125rem 0.75rem; border-radius: 999px; background: rgb(255 255 255 / 14%); color: #fff; font-size: 0.875rem; font-weight: 500; line-height: 1.3; letter-spacing: 0; }
+.wa .gift_heading { color: #fff; text-wrap: balance; }
+.gift_text { --body-text-color: var(--wa-on-dark-3); }
+.gift_image { position: absolute; z-index: 0; right: -1.75rem; bottom: -4.5rem; width: 11.5rem; height: auto; transform: rotate(-11deg); pointer-events: none; }
+@container stage (min-width: 32.5625rem) {
+  /* от 521px: текст слева на 62 % ширины, обложка фоном справа сверху */
+  .gift_component { padding: 1.5rem; min-height: 10.5rem; }
+  .gift_copy { max-width: 62%; padding-bottom: 0; }
+  .gift_image { right: -2.75rem; bottom: auto; top: -0.5rem; width: 16rem; }
+}
+@container stage (min-width: 64.0625rem) {
+  .gift_image { right: -3.375rem; top: -0.25rem; width: 17rem; }
+}
+
 /* карточка записи: заголовок, подсказка и кнопки мессенджеров, которые рисует BotHelp */
 .lead-form_component { display: flex; min-width: 0; flex-direction: column; gap: 1.5rem; align-self: start; padding: var(--card-pad); border-radius: calc(var(--r) - 0.25rem); background: #fff; }
 .lead-form_intro { display: flex; flex-direction: column; gap: 0.5rem; }
