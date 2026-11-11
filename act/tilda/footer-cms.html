@@ -1,0 +1,236 @@
+<!-- CMS для Hero и цен: вставить весь файл одним T123 после содержательных блоков. Данные и скрипт не разделять. -->
+<script type="application/json" data-price-snapshot>{"title":"АСТ: Терапия принятия и ответственности","streams":[{"label":"Поток 26 октября 2026","date":"26 октября 2026","startDate":"2026-10-26","status":"Идёт набор","schedule":"По понедельникам и четвергам 18:00–20:30","tone":"open","prices":[{"tariff":"Полный","description":"","content":{"count":4,"rows":[{"text":"Контекстуально-поведенческое мышление терапевта","included":true},{"text":"Терапевтические отношения и позиция специалиста","included":true},{"text":"Практические навыки АСТ-терапевта","included":true},{"text":"Этика, границы и профессиональная ответственность","included":true},{"text":"АСТ в работе с запросами — сессия «за стеклом» и разбор","included":false}]},"list":168000,"sale":146000,"benefit":22000,"months":24,"perMonth":7000,"next":null},{"tariff":"Расширенный","description":"","content":{"count":5,"rows":[{"text":"Контекстуально-поведенческое мышление терапевта","included":true},{"text":"Терапевтические отношения и позиция специалиста","included":true},{"text":"Практические навыки АСТ-терапевта","included":true},{"text":"Этика, границы и профессиональная ответственность","included":true},{"text":"АСТ в работе с запросами — сессия «за стеклом» и разбор","included":true}]},"list":207000,"sale":180000,"benefit":27000,"months":24,"perMonth":8625,"next":null}]},{"label":"АСТ 1 февраля","date":"1 февраля 2027","startDate":"2027-02-01","status":"Идёт набор","schedule":"","tone":"open","prices":[{"tariff":"Полный","description":"","content":{"count":4,"rows":[{"text":"Контекстуально-поведенческое мышление терапевта","included":true},{"text":"Терапевтические отношения и позиция специалиста","included":true},{"text":"Практические навыки АСТ-терапевта","included":true},{"text":"Этика, границы и профессиональная ответственность","included":true},{"text":"АСТ в работе с запросами — сессия «за стеклом» и разбор","included":false}]},"list":133000,"sale":115000,"benefit":18000,"months":24,"perMonth":5542,"next":{"at":"2026-10-19T21:00:00.000Z","label":"20 октября","price":125000}},{"tariff":"Расширенный","description":"","content":{"count":5,"rows":[{"text":"Контекстуально-поведенческое мышление терапевта","included":true},{"text":"Терапевтические отношения и позиция специалиста","included":true},{"text":"Практические навыки АСТ-терапевта","included":true},{"text":"Этика, границы и профессиональная ответственность","included":true},{"text":"АСТ в работе с запросами — сессия «за стеклом» и разбор","included":true}]},"list":161000,"sale":140000,"benefit":21000,"months":24,"perMonth":6708,"next":{"at":"2026-10-19T21:00:00.000Z","label":"20 октября","price":150000}}]}]}</script>
+<!-- Hero и цены: живая CMS, оба потока, резервный снимок. -->
+<script>
+(()=>{'use strict';const ACT_ICONS={"check":"data:image/svg+xml;base64,PCEtLSBAbGljZW5zZSBsdWNpZGUtc3RhdGljIHYxLjQwLjAgLSBJU0MgLS0+CjxzdmcKICBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1jaGVjayIKICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgd2lkdGg9IjI0IgogIGhlaWdodD0iMjQiCiAgdmlld0JveD0iMCAwIDI0IDI0IgogIGZpbGw9Im5vbmUiCiAgc3Ryb2tlPSJjdXJyZW50Q29sb3IiCiAgc3Ryb2tlLXdpZHRoPSIyIgogIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIKICBzdHJva2UtbGluZWpvaW49InJvdW5kIgo+CiAgPHBhdGggZD0iTTIwIDYgOSAxN2wtNS01IiAvPgo8L3N2Zz4K","x":"data:image/svg+xml;base64,PCEtLSBAbGljZW5zZSBsdWNpZGUtc3RhdGljIHYxLjQwLjAgLSBJU0MgLS0+CjxzdmcKICBjbGFzcz0ibHVjaWRlIGx1Y2lkZS14IgogIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICB3aWR0aD0iMjQiCiAgaGVpZ2h0PSIyNCIKICB2aWV3Qm94PSIwIDAgMjQgMjQiCiAgZmlsbD0ibm9uZSIKICBzdHJva2U9ImN1cnJlbnRDb2xvciIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTggNiA2IDE4IiAvPgogIDxwYXRoIGQ9Im02IDYgMTIgMTIiIC8+Cjwvc3ZnPgo="};const modules={};
+modules["cms-model.mjs"]=(()=>{
+// Привязка к Public API. Менять данные курса нужно в CMS, а не в этом файле.
+const API = 'https://modern-psy-asp-prod-8ceb.twc1.net';
+const SLUG = 'act';
+const text = value => typeof value === 'string' ? value.trim() : '';
+const statusKey = value => text(value).toLowerCase().replaceAll('ё', 'е');
+const visible = new Set(['идет набор', 'последний шанс', 'лист ожидания', 'старт в любое время']);
+function formatStart(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
+  const date = new Date(`${value}T00:00:00Z`);
+  if (!Number.isFinite(+date) || date.toISOString().slice(0, 10) !== value) return null;
+  return new Intl.DateTimeFormat('ru-RU', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'}).format(date).replace(/\s*г\.$/, '').trim();
+}
+function createHeroModel(course, card) {
+  if (course?.slug !== SLUG || !text(course.title) || !Array.isArray(course.streams)) throw new Error('Некорректная карточка ACT');
+  const streams = course.streams.filter(s => visible.has(statusKey(s.status))).map(s => ({
+    label: text(s.label), date: formatStart(s.startDate), startDate: formatStart(s.startDate) ? s.startDate : null,
+    status: text(s.status).replace(/^Идет/, 'Идёт'), schedule: text(s.schedule),
+    tone: statusKey(s.status) === 'лист ожидания' ? 'neutral' : statusKey(s.status) === 'последний шанс' ? 'warn' : 'open'
+  })).sort((a, b) => (a.startDate || '9999').localeCompare(b.startDate || '9999'));
+  return {
+    title: text(course.title), description: text(course.description), educationLevel: text(course.educationLevel),
+    documents: [...new Set((Array.isArray(course.documents) ? course.documents : []).map(text).filter(Boolean))],
+    hours: card?.slug === SLUG && Number.isInteger(card.hours) && card.hours > 0 ? card.hours : null,
+    streams
+  };
+}
+const escapeHtml = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+const copy = value => escapeHtml(value).replace(/(^|[\s>])(в|и|к|о|с|у|во|до|за|из|на|не|но|об|от|по|со|без|для|под|при|про) /giu, '$1$2&nbsp;');
+function renderTitle(title) {
+  return copy(title);
+}
+function renderStreamsLine(streams) {
+  const dates = streams.filter(stream => stream.startDate).map(stream => {
+    const date = new Intl.DateTimeFormat('ru-RU', {day: 'numeric', month: 'long', timeZone: 'UTC'}).format(new Date(`${stream.startDate}T00:00:00Z`));
+    return `<time datetime="${escapeHtml(stream.startDate)}">${copy(date)}</time>`;
+  });
+  if (!dates.length) return '';
+  return `Старт ${dates.length === 1 ? dates[0] : dates.slice(0, -1).join(', ') + ' и ' + dates.at(-1)}`;
+}
+function renderStreams(streams) {
+  return streams.map(stream => `<li class="act-streams_card" aria-label="${escapeHtml(stream.label || stream.date || 'Поток курса')}">
+    <div class="act-streams_top"><span class="chip is-${stream.tone}">${copy(stream.status)}</span></div>
+    <p class="act-streams_date text-size-body text-weight-medium">${stream.date ? `<time datetime="${escapeHtml(stream.startDate)}">${copy(stream.date)}</time>` : copy(stream.label || 'Дата уточняется')}</p>
+    ${stream.schedule ? `<p class="act-streams_schedule text-size-note text-color-secondary">${copy(stream.schedule)}</p>` : ''}
+  </li>`).join('');
+}
+// Одни и те же функции используются при сборке и при обновлении страницы в браузере.
+function renderCmsField(field, model) {
+  if (field === 'course-title') return renderTitle(model.title);
+  if (field === 'course-description') return copy(model.description);
+  if (field === 'education-level') return copy(model.educationLevel);
+  if (field === 'documents') return model.documents.map(copy).join('<br>');
+  if (field === 'course-hours') return model.hours === null ? '' : `${model.hours}&nbsp;академ.&nbsp;ч.`;
+  if (field === 'streams') return renderStreams(model.streams);
+  if (field === 'streams-line') return renderStreamsLine(model.streams);
+  throw new Error(`Неизвестное поле Hero: ${field}`);
+}
+
+return {API,SLUG,formatStart,createHeroModel,escapeHtml,renderTitle,renderStreamsLine,renderStreams,renderCmsField};})();
+modules["tariff-content.mjs"]=(()=>{
+// Состав осенних и зимних тарифов: https://modern-psy.ru/act, проверено 13.10.2026.
+// На лендинге «Полный» — 4 модуля, «Расширенный» — 5.
+// Названия и порядок взяты из программы; дополнительный пятый — работа с запросами.
+// В Public API состав пока отсутствует. Не переносить его на другие потоки по цене.
+const modules = [
+  'Контекстуально-поведенческое мышление терапевта',
+  'Терапевтические отношения и позиция специалиста',
+  'Практические навыки АСТ-терапевта',
+  'Этика, границы и профессиональная ответственность',
+  'АСТ в работе с запросами — сессия «за стеклом» и разбор'
+];
+function tariffContent(startDate, title) {
+  if (!['2026-10-26', '2027-02-01'].includes(startDate) || !['Полный', 'Расширенный'].includes(title)) return null;
+  const count = title === 'Полный' ? 4 : 5;
+  return {count, rows: modules.map((text, index) => ({text, included: index < count}))};
+}
+
+return {tariffContent};})();
+modules["price-model.mjs"]=(()=>{
+const {createHeroModel, escapeHtml, formatStart}=modules["cms-model.mjs"];
+const {tariffContent}=modules["tariff-content.mjs"];
+
+// Композиция и расчёт рассрочки — из утверждённого pricing-scenarios.
+// Цены менять в CMS. Состав до появления поля API хранится в tariff-content.mjs.
+const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
+const money = value => new Intl.NumberFormat('ru-RU').format(Math.round(value)) + '\u00a0₽';
+const date = value => new Intl.DateTimeFormat('ru-RU', {day: 'numeric', month: 'long', timeZone: 'Europe/Moscow'}).format(new Date(value));
+const t = escapeHtml;
+
+function createPriceModel(course) {
+  const hero = createHeroModel(course, null);
+  const streams = hero.streams.filter(stream => stream.tone !== 'neutral').map(stream => {
+    const source = course.streams.find(item => item.startDate === stream.startDate);
+    const pricing = source.pricing;
+    if (!pricing) throw new Error('У потока нет цены');
+    const tariffs = pricing.hasTariffs ? pricing.tariffs || [] : [pricing];
+    if (!tariffs.length) throw new Error('У потока нет тарифов');
+    const prices = tariffs.map(selected => {
+    const list = selected.currentPrice ?? selected.price;
+    if (!positive(list)) throw new Error('Некорректная цена потока');
+    const once = positive(selected.fullPaymentPrice) && selected.fullPaymentPrice < list ? selected.fullPaymentPrice : null;
+    const sale = once ?? list;
+    const months = positive(selected.installmentPerMonth) && positive(selected.installmentMonths) ? selected.installmentMonths : 24;
+    const perMonth = positive(selected.installmentPerMonth) ? selected.installmentPerMonth : Math.round(list / 24);
+    const nextSource = selected.nextPriceChange;
+    const nextList = nextSource?.price;
+    const nextOnce = nextSource?.fullPaymentPrice;
+    const next = positive(nextList) && Number.isFinite(Date.parse(nextSource.at)) ? {
+      at: nextSource.at, label: date(nextSource.at), price: positive(nextOnce) && nextOnce < nextList ? nextOnce : nextList
+    } : null;
+    return {tariff: pricing.hasTariffs ? selected.title : '', description: selected.description || '', content: tariffContent(stream.startDate, selected.title), list, sale, benefit: list - sale, months, perMonth, next};
+    }).sort((a, b) => a.list - b.list);
+    return {...stream, prices};
+  });
+  if (!streams.length) throw new Error('Нет потоков с открытой продажей');
+  return {title: hero.title, streams};
+}
+
+function renderPriceCard(model, selectedDate) {
+  const stream = model.streams.find(item => item.startDate === selectedDate) || model.streams[0];
+  const moneyHtml = price => `<p class="price-tag"><span class="text-size-section-title">${money(price.sale).replace('\u00a0₽', '')}</span><span class="text-size-lead text-color-secondary">₽</span></p><p class="price-caption text-size-note">${price.benefit ? `<span><span class="price-caption_benefit text-weight-medium">Выгода ${money(price.benefit)}</span> при оплате сразу</span>` : ''}<span>Или ${money(price.perMonth)}/мес в рассрочку на ${price.months} мес</span></p>`;
+  const rise = price => price.next && price.next.price > price.sale ? `<div class="price-wide_foot"><p class="price-rise"><span class="text-size-note text-weight-medium">С ${t(price.next.label)} — ${money(price.next.price)}</span><span class="text-size-note text-color-secondary">Подорожает на ${money(price.next.price - price.sale)}</span></p></div>` : '';
+  const start = `Старт <time datetime="${t(stream.startDate)}">${t(formatStart(stream.startDate))}</time>`;
+  if (stream.prices.length > 1) return `<ul class="price-cards" role="list" data-price-stream="${t(stream.startDate)}">${stream.prices.map((price, index) => `<li class="price-card_component${index === stream.prices.length - 1 ? ' is-featured' : ''}">${index === stream.prices.length - 1 ? '<span class="price-card_badge text-size-note">\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u043c</span>' : ''}<div class="price-card_head"><h3 class="text-size-block-title">${t(price.tariff)}</h3><p class="text-size-note text-color-secondary">${start}</p></div><div class="price-card_money">${moneyHtml(price)}</div>${renderTariffContent(price)}<div class="price-card_foot">${rise(price)}</div></li>`).join('')}</ul>`;
+  const price = stream.prices[0];
+  return `<div class="price-wide_component is-plain" data-price-stream="${t(stream.startDate)}"><div class="price-wide_main"><span class="price-wide_chip text-size-note">${t(price.tariff || 'Полный курс')}</span><div class="price-wide_title"><h3 class="text-size-block-title">${t(model.title)}</h3><p class="text-size-note text-color-secondary">${start}</p></div></div><div class="price-wide_side"><div class="price-wide_money">${moneyHtml(price)}${rise(price)}</div></div></div>`;
+}
+
+function renderTariffContent(price) {
+  if (!price.content) return price.description ? `<p class="price-card_list text-size-note">${t(price.description)}</p>` : '';
+  return `<div class="price-card_list"><p class="text-size-note text-weight-medium">${price.content.count} ${price.content.count === 4 ? '\u043c\u043e\u0434\u0443\u043b\u044f' : '\u043c\u043e\u0434\u0443\u043b\u0435\u0439'} \u0432 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435</p><ul class="price-check" role="list">${price.content.rows.map(row => `<li class="price-check_item${row.included ? '' : ' is-off'}"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('${row.included ? ACT_ICONS.check : ACT_ICONS.x}')"></span><span class="text-size-note">${t(row.text)}${row.included ? '' : '<span class="visually-hidden">\u041d\u0435 \u0432\u0445\u043e\u0434\u0438\u0442</span>'}</span></li>`).join('')}</ul></div>`;
+}
+
+function renderPriceBlock(model, selectedDate) {
+  const picked = model.streams.find(item => item.startDate === selectedDate)?.startDate || model.streams[0].startDate;
+  const controls = model.streams.map(stream => `<label class="segmented_item"><input class="segmented_input" type="radio" name="act-price-stream" value="${t(stream.startDate)}"${picked === stream.startDate ? ' checked' : ''}><span class="segmented_label text-size-note">${t(date(stream.startDate + 'T12:00:00Z'))}</span></label>`).join('');
+  return `<div class="price-block_component"><div class="price-block_head"><h2 class="text-size-section-title" id="act-price-heading">Стоимость обучения</h2><fieldset class="price-switch"><legend class="price-switch_legend text-size-note text-color-secondary">Старт</legend><div class="segmented_component">${controls}</div></fieldset></div><div data-price-card aria-live="polite">${renderPriceCard(model, picked)}</div></div>`;
+}
+
+// Общие условия — текст из утверждённой библиотеки, не поля конкретного тарифа.
+function renderTerms() {
+  return `<section class="price-terms_component" aria-labelledby="act-terms-heading"><h3 class="text-size-block-title" id="act-terms-heading">Гибкие условия оплаты</h3><dl class="price-terms_list"><div class="price-terms_row"><dt class="text-size-body text-weight-medium">Рассрочка до 24 месяцев</dt><dd class="price-terms_body text-size-note text-color-secondary">От банков-партнёров. Платёж делится на равные части, платите со второго месяца обучения.</dd></div><div class="price-terms_row"><dt class="text-size-body text-weight-medium">Персональные скидки</dt><dd class="price-terms_body"><ul class="price-discounts" role="list"><li class="price-discounts_item"><span class="price-discounts_value text-size-note text-weight-medium">−10 %</span><span class="text-size-note text-color-secondary">новым студентам</span></li><li class="price-discounts_item"><span class="price-discounts_value text-size-note text-weight-medium">−20 %</span><span class="text-size-note text-color-secondary">вам и&nbsp;коллеге, которого вы&nbsp;пригласили<span class="price-discounts_note text-size-caption-md text-color-secondary">если он ещё не&nbsp;учился у&nbsp;нас</span></span></li><li class="price-discounts_item"><span class="price-discounts_value text-size-note text-weight-medium">до −20 %</span><span class="text-size-note text-color-secondary">нашим выпускникам за отзыв</span></li></ul></dd></div><div class="price-terms_row"><dt class="text-size-body text-weight-medium">Налоговый вычет 13 %</dt><dd class="price-terms_body text-size-note text-color-secondary">Подробно расскажем, как оформить документы, чтобы вернуть 13 % от стоимости обучения.</dd></div></dl></section>`;
+}
+
+return {createPriceModel,renderPriceCard,renderPriceBlock};})();
+modules["price-client.mjs"]=(()=>{
+const {createPriceModel, renderPriceBlock, renderPriceCard}=modules["price-model.mjs"];
+
+let current;
+let root;
+function initPrice() {
+  root = document.querySelector('[data-cms-price]');
+  if (!root || root.dataset.priceInitialized) return;
+  current = JSON.parse(document.querySelector('[data-price-snapshot]').textContent);
+  root.dataset.priceInitialized = 'true';
+  root.addEventListener('change', event => {
+    if (!event.target.matches('.segmented_input')) return;
+    root.querySelector('[data-price-card]').innerHTML = renderPriceCard(current, event.target.value);
+  });
+}
+
+function updatePrice(course) {
+  if (!root) return;
+  try {
+    const updated = createPriceModel(course);
+    const selected = root.querySelector('.segmented_input:checked')?.value;
+    root.innerHTML = renderPriceBlock(updated, selected);
+    current = updated;
+    root.dataset.cmsState = 'ready';
+  } catch {
+    // Повреждённая цена не заменяет проверенный снимок сборки.
+    root.dataset.cmsState = 'fallback';
+  }
+}
+
+return {initPrice,updatePrice};})();
+modules["course-cms.mjs"]=(()=>{
+const {API, SLUG, createHeroModel, renderCmsField}=modules["cms-model.mjs"];
+
+const {initPrice, updatePrice}=modules["price-client.mjs"];
+initPrice();
+
+// До ответа виден снимок CMS со сборки. При сетевой ошибке он остаётся на странице.
+const root = document.querySelector('[data-cms-hero]');
+if (root && !root.hasAttribute('data-cms-initialized')) {
+  root.setAttribute('data-cms-initialized', '');
+  root.dataset.cmsState = 'loading';
+  root.setAttribute('aria-busy', 'true');
+  const fields = [...root.querySelectorAll('[data-cms]')];
+  // Название и описание из снимка остаются читаемыми во время обновления CMS.
+  fields.filter(node => !['course-title', 'course-description'].includes(node.dataset.cms)).forEach(node => node.classList.add('skeleton'));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  const load = path => fetch(API + path, {headers: {Accept: 'application/json'}, signal: controller.signal}).then(r => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  });
+  Promise.allSettled([load(`/api/public/course/${SLUG}`), load('/api/public/catalog')]).then(([courseResult, catalogResult]) => {
+    if (courseResult.status !== 'fulfilled') throw new Error('CMS недоступна');
+    // Каталог может отказать отдельно: тогда сохраняем только снимок часов, остальные поля обновляем.
+    const card = catalogResult.status === 'fulfilled'
+      ? catalogResult.value.cards?.find(item => item.slug === SLUG)
+      : {slug: SLUG, hours: Number(root.dataset.cmsHours)};
+    const model = createHeroModel(courseResult.value, card);
+    updatePrice(courseResult.value);
+    fields.forEach(node => {
+      const field = node.dataset.cms === 'streams' && node.dataset.cmsLayout === 'line' ? 'streams-line' : node.dataset.cms;
+      const html = renderCmsField(field, model);
+      node.innerHTML = html;
+      const block = node.closest('[data-cms-block]') || node;
+      block.hidden = !html;
+      node.dataset.cmsState = 'ready';
+    });
+    root.dataset.cmsState = catalogResult.status === 'fulfilled' ? 'ready' : 'partial';
+  }).catch(() => {
+    root.dataset.cmsState = 'fallback';
+    const priceRoot = document.querySelector('[data-cms-price]');
+    if (priceRoot) priceRoot.dataset.cmsState = 'fallback';
+  }).finally(() => {
+    clearTimeout(timer);
+    root.setAttribute('aria-busy', 'false');
+    fields.forEach(node => node.classList.remove('skeleton'));
+  });
+}
+
+if(!root && document.querySelector('[data-cms-price]')){fetch(API+'/api/public/course/'+SLUG,{signal:AbortSignal.timeout(8000)}).then(response=>{if(!response.ok)throw new Error('CMS');return response.json();}).then(updatePrice).catch(()=>{document.querySelector('[data-cms-price]').dataset.cmsState='fallback';});}
+
+return {};})();
+})();
+</script>

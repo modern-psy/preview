@@ -1,0 +1,39 @@
+<!-- Преподаватели и видео работают во всех отдельных T123. -->
+<script>
+// Преподаватели, видео и отзывы ACT во всех отдельных T123.
+(() => {
+  for(const page of document.querySelectorAll('.act-course-page')){
+  if(page.dataset.courseInitialized)continue;
+  page.dataset.courseInitialized='true';
+  page.addEventListener('click',event=>{
+    const tab=event.target.closest('[data-teacher-tab]');
+    if(tab){
+      const component=tab.closest('[data-teacher-tabs]');
+      component.querySelectorAll('[data-teacher-tab]').forEach(button=>{const active=button===tab;button.classList.toggle('is-active',active);button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;});
+      component.querySelectorAll('[role="tabpanel"]').forEach(panel=>panel.hidden=panel.id!==tab.getAttribute('aria-controls'));
+      return;
+    }
+    const video=event.target.closest('[data-video-play]');
+    if(video){
+      const container=video.closest('[data-video]');
+      const iframe=document.createElement('iframe');iframe.className='act-video_frame';
+      iframe.src=`https://kinescope.io/embed/${container.dataset.video}?autoplay=1`;
+      iframe.title=video.getAttribute('aria-label');iframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media';iframe.allowFullscreen=true;
+      container.replaceChildren(iframe);return;
+    }
+    const control=event.target.closest('[data-reviews-prev],[data-reviews-next]');
+    if(control){const track=page.querySelector('[data-review-track]');const card=track.querySelector('.act-reviews_card');track.scrollBy({left:(card.getBoundingClientRect().width+16)*(control.hasAttribute('data-reviews-next')?1:-1),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});}
+  });
+  page.addEventListener('keydown',event=>{
+    const current=event.target.closest('[data-teacher-tab]');
+    if(!current||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(event.key))return;
+    event.preventDefault();
+    const buttons=[...current.closest('[data-teacher-tabs]').querySelectorAll('[data-teacher-tab]')];
+    let index=buttons.indexOf(current);
+    index=event.key==='Home'?0:event.key==='End'?buttons.length-1:(index+(['ArrowRight','ArrowDown'].includes(event.key)?1:-1)+buttons.length)%buttons.length;
+    buttons[index].click();buttons[index].focus();
+  });
+  }
+})();
+
+</script>
