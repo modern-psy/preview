@@ -1,0 +1,849 @@
+/* ==========================================================================
+   Лендинг «АСТ: Терапия принятия и ответственности» · профессиональная переподготовка · modern-psy.ru/act
+   Пересборка на общих стилях v1 с 11.11.2026, по блокам.
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета, каркас
+   main-wrapper → padding-global → container-xlarge (1520 px, поля от 16 px), отступы секций
+   section-spacing_component, H1 hero_heading, роли текста body-text_component и кнопка button_component.
+   Здесь только раскладка блоков и цвета, которых нет в v1.
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста, переопределять --hero-heading-size
+   и поля кнопки. Размер текста меняется только сменой класса роли в index.html (таблица в academy-base/README.md).
+
+   Все правила начинаются с .act-page, чтобы не задеть соседние блоки Тильды.
+   Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px. Других не добавлять.
+   ========================================================================== */
+
+
+/* ---------- 0. Цвета и поля страницы ----------
+   Цвета из v1 (--color-*). Свои — только здесь, в правилах ниже hex-кодов нет. */
+.act-page {
+  --act-muted: #625f6a;   /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1, как на /child-psy */
+  --act-line: #d9d8df;    /* обводка кружков с иконками в фактах, тонкие линии */
+  --act-dark-tab: #3a2f48;       /* кнопка модуля на тёмной плашке программы, как на «Тренингах для детей» */
+  --act-dark-tab-hover: #463a56; /* она же при наведении */
+  --act-tab-idle: #e8e6ee;       /* имя преподавателя, как в блоке преподавателей «Клинической» */
+  --act-photo-lavender: #d7d6ef; /* фон под портретами преподавателей: тот же сиреневый, на котором они вырезаны */
+  --act-control-hover: #514c5d;  /* стрелка ленты при наведении */
+  --act-control-off: #d0cdd9;    /* стрелка ленты в конце ленты */
+  --act-control-off-icon: #a8a7ad; /* её значок */
+}
+
+/* Серый текст v1 (#7b7b7c) даёт на белом 4,2:1, на #f5f5f5 — 3,9:1: для текста мельче 24 px мало
+   (academy-base/README.md, «Что ещё не готово»). Берём темнее, как на /child-psy и /alumni. */
+.act-page { --body-text-color: var(--act-muted); --section-subtitle-color: var(--act-muted); }
+
+.act-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Боковые поля страницы: до 767 px ровно 16 px, как на /child-psy и /neurodivergence (решение Дарьи 05.11.2026),
+   от 768 px — формула v1. Меняем только токен --page-padding; два класса — чтобы перебить v1. */
+.main-wrapper.act-page { --page-padding: 1rem; }
+@media (min-width: 48rem) {
+  .main-wrapper.act-page { --page-padding: clamp(1rem, 4.7619vw, 5rem); }
+}
+
+
+/* ---------- 1. Первый экран ----------
+   Композиция К4 «Бесплатная часть»; каркас, отступы и кнопки — как в первом экране /child-psy.
+   Роли текста v1: плашка уровня — meta-pill_component; H1 — hero_heading; описание — body-text_component is-summary;
+   старт — is-callout; плашка бесплатных лекций — content-heading_component is-compact и is-fine-print;
+   факты — is-caption.
+   Телефон: фото полосой сверху, заголовок, старт и кнопки (главная кнопка видна без прокрутки), плашка описания,
+   плашка бесплатных лекций. Планшет: заголовок, плашка описания, старт и кнопки, фото с плашкой поверх.
+   Компьютер: текст слева, фото справа. Обёртки .act-hero_text и .act-hero_media до 520 px «прозрачные»
+   (display: contents), чтобы их части встали в сетку карточки в нужном порядке. */
+.act-page .act-hero_component { padding-top: 0.75rem; }
+.act-page .act-hero_card {
+  display: grid;
+  grid-template-areas: "photo" "header" "cta" "panel" "promo";
+  gap: 1.25rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--color-surface-primary);
+}
+.act-page .act-hero_text,
+.act-page .act-hero_media { display: contents; }
+.act-page .act-hero_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+
+.act-page .act-hero_header { grid-area: header; display: grid; justify-items: start; gap: 0.5rem; padding: 0.25rem 0.25rem 0; }
+.act-page .act-hero_level { margin-bottom: 0.25rem; }
+
+/* плашка под заголовком, как в первом экране «Тренингов для детей»: описание, под ним три пункта.
+   Иконки в кружках связаны пунктиром, между пунктами тонкая линия (начинается после кружка).
+   Плашка серая, кружки белые с обводкой, как на /child-psy (выбран светлый вариант, 11.11.2026). */
+.act-page .act-hero_card {
+  --act-panel-bg: var(--color-page-background);
+  --act-panel-field: var(--color-surface-primary);
+  --act-panel-line: var(--act-line);
+  --act-panel-dash: var(--act-line);
+}
+.act-page .act-hero_panel { grid-area: panel; display: grid; gap: 0.5rem; padding: 1rem 1rem 0.25rem; border-radius: 1.25rem; background: var(--act-panel-bg); }
+.act-page .act-hero_rows { position: relative; display: grid; margin: 0; padding: 0; list-style: none; }
+.act-page .act-hero_rows::before { content: ""; position: absolute; top: 1.75rem; bottom: 1.75rem; left: 1.0625rem; border-left: 1.5px dashed var(--act-panel-dash); }
+.act-page .act-hero_row { position: relative; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0.75rem; align-items: center; padding: 0.75rem 0; --body-text-color: var(--color-text-primary); }
+.act-page .act-hero_row + .act-hero_row::before { content: ""; position: absolute; top: 0; right: 0; left: 3rem; border-top: 1px solid var(--act-panel-line); }
+.act-page .act-hero_row-icon { position: relative; z-index: 1; display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--act-panel-field); box-shadow: inset 0 0 0 1px var(--act-panel-line); color: var(--color-text-primary); }
+
+/* старт строкой и кнопки: ширина кнопок как в Hero web-academy (растянуты, не шире 38.3125rem).
+   Вторая кнопка is-light на белой карточке не видна, поэтому фон серый, как на /child-psy */
+.act-page .act-hero_cta { grid-area: cta; display: grid; gap: 0.875rem; padding: 0 0.25rem; }
+.act-page .act-hero_start { --body-text-color: var(--color-text-primary); }
+.act-page .act-hero_buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 0.5rem 1rem; width: 100%; max-width: 38.3125rem; }
+.act-page .button_component.act-hero_secondary { background: var(--color-page-background); }
+
+/* фото: на телефоне полосой сверху; пока снимок грузится, на его месте серый фон страницы */
+.act-page .act-hero_photo {
+  grid-area: photo;
+  display: block;
+  width: 100%;
+  height: 8.5rem;
+  object-fit: cover;
+  object-position: 50% 40%;
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+
+/* фиолетовая плашка «2 лекции курса бесплатно» — единственное фиолетовое пятно первого экрана кроме кнопки.
+   Ссылка ведёт к блоку бесплатных лекций; цвет текста с !important, потому что custom.css сайта
+   красит все ссылки правилом a { color: inherit !important } */
+.act-page .act-hero_promo {
+  grid-area: promo;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem 0.75rem 0.75rem;
+  border-radius: 1rem;
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-dark) !important;
+  text-decoration: none;
+  --body-text-color: var(--color-text-on-dark);
+}
+.act-page .act-hero_promo-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  color: var(--color-accent-primary);
+}
+.act-page .act-hero_promo-icon .act-hero_icon { width: 1rem; height: 1rem; margin-left: 2px; }
+.act-page .act-hero_promo-text { display: grid; gap: 0.125rem; min-width: 0; }
+
+/* факты под карточкой: на телефоне столбиком, от 521 px по два, от 1025 px в ряд */
+.act-page .act-hero_facts { display: grid; gap: 0.75rem; margin-top: 1rem; padding: 0 0.25rem; --body-text-color: var(--color-text-primary); }
+.act-page .act-hero_fact { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: center; }
+.act-page .act-hero_fact-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  box-shadow: inset 0 0 0 1px var(--act-line);
+  color: var(--color-text-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .act-page .act-hero_promo { transition: background-color 150ms ease-in-out; }
+  .act-page .act-hero_promo:hover { background: var(--color-accent-text); }
+}
+
+@media (min-width: 32.5625rem) {
+  /* от 521 px фото с плашкой поверх: обёртка медиа снова блок, плашка лежит у нижнего края фото */
+  .act-page .act-hero_card { grid-template-areas: "header" "panel" "cta" "media"; gap: 1.5rem; padding: 1.5rem; border-radius: 1.75rem; }
+  .act-page .act-hero_panel { padding: 1.25rem 1.5rem 0.375rem; }
+  .act-page .act-hero_media { grid-area: media; display: block; position: relative; }
+  .act-page .act-hero_header { padding: 0.5rem 0.25rem 0; }
+  .act-page .act-hero_cta { gap: 1rem; }
+  .act-page .act-hero_photo { height: 22rem; border-radius: 1.25rem; }
+  .act-page .act-hero_promo { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; max-width: 24rem; }
+  .act-page .act-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.75rem; }
+}
+@media (min-width: 48rem) {
+  .act-page .act-hero_component { padding-top: 1.25rem; }
+  .act-page .act-hero_card { padding: 2.25rem; gap: 1.75rem; }
+  .act-page .act-hero_header { gap: 0.75rem; }
+  .act-page .act-hero_photo { height: 25rem; }
+  .act-page .act-hero_promo { left: 1.25rem; bottom: 1.25rem; right: auto; }
+  .act-page .act-hero_facts { margin-top: 1.25rem; padding: 0 0.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .act-page .act-hero_component { padding-top: 1.5rem; }
+  .act-page .act-hero_card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    grid-template-areas: "text media";
+    gap: clamp(2.5rem, 3.9vw, 3.5rem);
+    padding: clamp(2.25rem, 3.3vw, 3rem);
+  }
+  /* левая колонка: заголовок сверху, старт и кнопки прижаты к низу */
+  .act-page .act-hero_text { grid-area: text; display: flex; flex-direction: column; justify-content: space-between; gap: 1.75rem; }
+  .act-page .act-hero_text > * { grid-area: auto; }
+  .act-page .act-hero_header { padding: 0; }
+  .act-page .act-hero_panel { padding: 1.25rem 1.5rem 0.625rem; }
+  .act-page .act-hero_cta { padding: 0; }
+  /* высоту фото задаёт левая колонка, не ниже 26rem */
+  .act-page .act-hero_media { min-height: 26rem; }
+  .act-page .act-hero_photo { position: absolute; inset: 0; height: 100%; }
+  /* четыре факта в ряд, ширина колонок пропорциональна длине текста, как на /child-psy */
+  .act-page .act-hero_facts {
+    grid-template-columns: minmax(13.75rem, 1fr) minmax(19.5rem, 1.6fr) minmax(19.5rem, 1.6fr) minmax(13.75rem, 1fr);
+    gap: 1.25rem clamp(1.5rem, 2.8vw, 2.5rem);
+    margin-top: 1.5rem;
+  }
+}
+
+
+/* ---------- 2. Обновлённая программа на основе стандартов ACBS ----------
+   Четыре белые карточки с декоративной линией в правом верхнем углу, как в /act. Поля карточек — --card-padding v1
+   (16 px), на компьютере 24 px, как у крупных плашек. Заголовок прижат к верху, текст — к низу (просьба Дарьи
+   05.11.2026 для карточек одной высоты). Линия занимает угол фиксированной высоты: место под неё оставлено
+   только справа от заголовка и по высоте заголовка, текст ниже идёт на всю ширину карточки. */
+.act-page .act-foundation_grid { display: grid; gap: var(--card-grid-gap); }
+.act-page .act-foundation_card {
+  --act-decor-size: 4.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  overflow: hidden;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.act-page .act-foundation_card .content-heading_component {
+  position: relative;
+  min-height: calc(var(--act-decor-size) - var(--card-padding));
+  padding-right: var(--act-decor-size);
+  color: var(--color-text-primary);
+}
+.act-page .act-foundation_card .body-text_component { position: relative; }
+.act-page .act-foundation_decor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: var(--act-decor-size);
+  object-fit: contain;
+  object-position: right top;
+  pointer-events: none;
+}
+@media (min-width: 48rem) {
+  .act-page .act-foundation_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .act-page .act-foundation_card { --act-decor-size: 6rem; min-height: 12rem; padding: 1.5rem; }
+  .act-page .act-foundation_card .content-heading_component { min-height: calc(var(--act-decor-size) - 1.5rem); }
+}
+
+/* Тёмная плашка из библиотеки («Тёмная плашка с пунктами», как блок 2 на /child-psy; выбор Дарьи 11.11.2026):
+   плашка #2B2334 внутри контейнера, поля — токен v1 --section-inset-space, заголовок и подводка по центру,
+   четыре полупрозрачные карточки. Линии-картинки приглушены, чтобы не спорить с текстом. */
+.act-page .act-foundation_component.is-dark .section-layout_component {
+  padding: var(--section-inset-space) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+}
+.act-page .act-foundation_component.is-dark .section-title_component { color: var(--color-text-on-dark); text-align: center; }
+.act-page .act-foundation_component.is-dark .section-header_component { align-items: center; max-width: 50rem; margin-inline: auto; text-align: center; }
+.act-page .act-foundation_component.is-dark .act-foundation_card { background: rgb(255 255 255 / 8%); --body-text-color: var(--color-text-on-dark-muted); }
+.act-page .act-foundation_component.is-dark .act-foundation_card .content-heading_component { color: var(--color-text-on-dark); }
+.act-page .act-foundation_component.is-dark .act-foundation_decor { opacity: 0.55; }
+@media (min-width: 32.5625rem) { .act-page .act-foundation_component.is-dark .section-layout_component { padding-inline: 1.5rem; } }
+@media (min-width: 48rem) { .act-page .act-foundation_component.is-dark .section-layout_component { padding-inline: 2.5rem; } }
+@media (min-width: 64.0625rem) { .act-page .act-foundation_component.is-dark .section-layout_component { padding-inline: clamp(2rem, 4.8vw, 4.375rem); } }
+
+
+/* ---------- 3. Сильное сообщество ----------
+   Композиция «Встречаемся вживую» с главной: белая плашка, видео слева, список конференций справа,
+   описание выбранной под списком. Цвета и поля — токены v1 и этой страницы, размеры текста — роли v1.
+   Видео 16:9 до 1024 px; от 1025 px — во всю высоту колонки списка. Весь блок — колонка 80rem по центру. */
+/* колонка шириной 80rem по центру — как блок цены этой страницы (генератор цен, колонка 80rem);
+   64rem было слишком узко (Дарья, 11.11.2026). Подводка — не шире 48rem */
+.act-page .act-conf_component .section-layout_component { width: 100%; max-width: 80rem; margin-inline: auto; }
+.act-page .act-conf_component .section-subtitle_component { max-width: 48rem; }
+.act-page .act-conf_panel {
+  display: grid;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: 1.5rem;
+  background: var(--color-surface-primary);
+}
+.act-page .act-conf_panel > * { min-width: 0; }
+.act-page .act-conf_icon { display: block; width: 0.75rem; height: 0.75rem; margin-left: 2px; }
+.act-page .act-conf_video {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 1rem;
+  background: var(--color-surface-dark);
+}
+.act-page .act-conf_poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* затемнение снизу, чтобы подпись и кнопка читались на любой обложке */
+.act-page .act-conf_video::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 50%, color-mix(in srgb, var(--color-surface-dark) 72%, transparent)); pointer-events: none; }
+.act-page .act-conf_video iframe { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; border: 0; }
+/* кнопка «Смотреть, как это было»: белая пилюля с тёмным кружком; цвет текста с !important против custom.css сайта */
+.act-page .act-conf_play {
+  position: absolute;
+  z-index: 2;
+  left: 1rem;
+  bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 3rem;
+  padding: 0.5rem 1.125rem 0.5rem 0.5rem;
+  border: 0;
+  border-radius: 6rem;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary) !important;
+  cursor: pointer;
+  --body-text-color: var(--color-text-primary);
+}
+.act-page .act-conf_play-icon,
+.act-page .act-conf_tab-play { display: grid; flex: none; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; }
+.act-page .act-conf_play-icon { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.act-page .act-conf_caption { position: absolute; z-index: 2; right: 1rem; bottom: 1.875rem; max-width: 45%; text-align: right; --body-text-color: var(--color-text-on-dark); }
+/* подпись на видео прячется, когда само видео уже 34rem: рядом с кнопкой она не помещается
+   (телефон и компьютер 1025–1279 px, где видео в половину блока). Название видно в списке. */
+.act-page .act-conf_video { container-type: inline-size; }
+@container (max-width: 34rem) { .act-page .act-conf_caption { display: none; } }
+
+/* список конференций по годам: строки через тонкие линии; выбранная — фиолетовое название и тёмный кружок */
+.act-page .act-conf_list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--act-line); }
+.act-page .act-conf_item { border-bottom: 1px solid var(--act-line); }
+.act-page .act-conf_tab {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) 2rem;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.75rem 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.act-page .act-conf_year { font-variant-numeric: tabular-nums; }
+.act-page .act-conf_text { display: grid; gap: 0.125rem; min-width: 0; }
+.act-page .act-conf_name { color: var(--color-text-primary); transition: color 150ms ease-in-out; }
+.act-page .act-conf_tab-play { background: var(--color-page-background); color: var(--act-muted); transition: background-color 150ms ease-in-out, color 150ms ease-in-out; }
+.act-page .act-conf_tab.is-active .act-conf_name { color: var(--color-accent-text); }
+.act-page .act-conf_tab.is-active .act-conf_year { --body-text-color: var(--color-text-primary); }
+.act-page .act-conf_tab.is-active .act-conf_tab-play { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.act-page .act-conf_stories { margin-top: 1rem; }
+@media (hover: hover) and (pointer: fine) {
+  .act-page .act-conf_tab:not(.is-active):hover .act-conf_name { color: var(--color-accent-text); }
+  .act-page .act-conf_play:hover { background: var(--color-text-on-dark-muted); }
+}
+@media (min-width: 48rem) {
+  .act-page .act-conf_panel { padding: 1.5rem; }
+  .act-page .act-conf_play { left: 1.5rem; bottom: 1.5rem; }
+  .act-page .act-conf_caption { right: 1.5rem; bottom: 2.375rem; }
+}
+@media (min-width: 64.0625rem) {
+  /* видео и список поровну: блок уже, сужается сторона с видео (было 1,55 : 1) */
+  .act-page .act-conf_panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; }
+  .act-page .act-conf_video { aspect-ratio: auto; min-height: 100%; }
+}
+
+
+/* ---------- 4. Преимущества обучения в Академии ----------
+   Белые карточки: иконка в кружке на сером фоне и заголовок в одной строке сверху, текст прижат к низу
+   (карточки в ряду одной высоты, абзацы на одной линии). Поля — --card-padding v1, на компьютере 24 px. */
+.act-page .act-benefits_grid { display: grid; gap: var(--card-grid-gap); }
+.act-page .act-benefits_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.act-page .act-benefits_head { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); align-items: center; gap: 0.75rem; }
+.act-page .act-benefits_head .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.act-page .act-benefits_icon-wrap { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--color-page-background); color: var(--color-text-primary); }
+.act-page .act-benefits_icon { display: block; width: 1.25rem; height: 1.25rem; }
+.act-page .act-benefits_body { display: grid; gap: 0.5rem; }
+@media (min-width: 48rem) {
+  .act-page .act-benefits_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .act-page .act-benefits_card { padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .act-page .act-benefits_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* список запросов в новом тексте: плашки на сером фоне вместо одной длинной фразы */
+.act-page .act-benefits_chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.act-page .act-benefits_chip { padding: 0.375rem 0.75rem; border-radius: 6rem; background: var(--color-page-background); --body-text-color: var(--color-text-primary); }
+
+/* «Сетка с акцентом» (выбор Дарьи 11.11.2026): от 1025 px карточка с запросами на две колонки рядом с первой,
+   три карточки в ряд, «Принципы ACBS» полосой во всю ширину: иконка и заголовок слева, текст справа.
+   На планшете карточка с запросами на всю ширину, остальные по две. */
+@media (min-width: 64.0625rem) {
+  .act-page .act-benefits_component.is-bento .act-benefits_card.is-2 { grid-column: span 2; }
+  .act-page .act-benefits_component.is-bento .act-benefits_card.is-6 { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center; gap: 2rem; }
+}
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .act-page .act-benefits_component.is-bento .act-benefits_card.is-2 { grid-column: 1 / -1; }
+}
+
+
+/* ---------- 5. Почему мы ориентировались на стандарты ACBS ----------
+   Три шага одной истории без сетки карточек: белая плашка «проблема», затем принципы ACBS на фоне страницы
+   (сетка 2×2 через тонкие линии), затем белая плашка «Международный язык». От 1025 px заголовок слева
+   и закреплён при прокрутке (под шапкой сайта, 6.5rem), шаги справа. Жирные места в тексте — strong,
+   цвет основного текста. */
+.act-page .act-standards_flow { display: grid; gap: var(--card-grid-gap); min-width: 0; }
+.act-page .act-standards_plate {
+  display: grid;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.act-page .act-standards_plate .content-heading_component { color: var(--color-text-primary); }
+.act-page .act-standards_component strong { font-weight: 600; color: var(--color-text-primary); }
+.act-page .act-standards_principles { display: grid; gap: 1rem; padding: 1rem 0; }
+.act-page .act-standards_lead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; }
+.act-page .act-standards_lead .body-text_component { flex: 1 1 18rem; max-width: 36rem; }
+.act-page .act-standards_logo { display: block; width: auto; height: 3rem; }
+.act-page .act-standards_list { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--act-line); }
+.act-page .act-standards_item { display: grid; gap: 0.25rem; padding: 1rem 0; border-bottom: 1px solid var(--act-line); }
+.act-page .act-standards_item .content-heading_component { color: var(--color-text-primary); }
+@media (min-width: 48rem) {
+  .act-page .act-standards_plate { padding: 1.5rem; }
+  .act-page .act-standards_list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; }
+}
+@media (min-width: 64.0625rem) {
+  .act-page .act-standards_component .section-layout_component { --section-layout-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); align-items: start; }
+  .act-page .act-standards_component .section-header_component { position: sticky; top: 6.5rem; }
+}
+
+
+/* ---------- 6. Чему вы научитесь на курсе ----------
+   Белая плашка на сером фоне страницы (сиреневая убрана: низкий контраст), внутри чек-лист без карточек:
+   галочка в сером кружке, подзаголовок и текст, пункты через тонкие линии. Поля плашки по вертикали —
+   токен v1 --section-inset-space. Телефон — одна колонка; от 768 px — две. */
+.act-page .act-outcomes_plate {
+  padding: var(--section-inset-space) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.act-page .act-outcomes_list { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--act-line); }
+.act-page .act-outcomes_item {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.875rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--act-line);
+}
+.act-page .act-outcomes_mark { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--color-page-background); color: var(--color-text-primary); }
+.act-page .act-outcomes_icon { display: block; width: 1.25rem; height: 1.25rem; }
+.act-page .act-outcomes_text { display: grid; gap: 0.25rem; padding-top: 0.375rem; }
+.act-page .act-outcomes_text .content-heading_component { color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) { .act-page .act-outcomes_plate { padding-inline: 1.5rem; } }
+@media (min-width: 48rem) {
+  .act-page .act-outcomes_plate { padding-inline: 2.5rem; }
+  .act-page .act-outcomes_list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .act-page .act-outcomes_plate { padding-inline: clamp(2rem, 4.8vw, 4.375rem); }
+}
+
+
+/* ---------- 7. Программа обучения ----------
+   Блок «Программа курса» с /treningi-dlya-detey: раскладка, цвета и анимация оттуда, размеры текста — роли v1.
+   Тёмная плашка; слева модули кнопками (выбранный — фиолетовый), справа белая панель выбранного модуля.
+   До 1024 px модули сверху, панель под ними; от 1025 px — 2 : 3, колонка модулей закреплена при прокрутке
+   (6.5rem под шапкой сайта). Без скрипта (нет data-ready) кнопки скрыты, все панели видны подряд. */
+.act-page .act-modules_plate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-section-content, 2.5rem);
+  padding: var(--section-inset-space) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+}
+.act-page .act-modules_plate .section-title_component { color: var(--color-text-on-dark); }
+.act-page .act-modules_layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); gap: var(--card-grid-gap); }
+.act-page .act-modules_nav { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.act-page .act-modules_tab {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1rem;
+  border: 0;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--act-dark-tab);
+  color: var(--color-text-on-dark);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease-in-out;
+}
+.act-page .act-modules_tab[aria-selected="true"] { background: var(--color-accent-primary); }
+.act-page .act-modules_tab:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 2px; }
+.act-page .act-modules_tab-label { --body-text-color: var(--color-accent-soft); }
+.act-page .act-modules_tab[aria-selected="true"] .act-modules_tab-label { --body-text-color: var(--color-text-on-dark); }
+.act-page .act-modules_tab-title { color: var(--color-text-on-dark); text-wrap: pretty; }
+.act-page .act-modules_panels { display: grid; min-width: 0; }
+.act-page .act-modules_panel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  --body-text-color: var(--color-text-primary);
+}
+.act-page .act-modules_panel[hidden] { display: none; }
+.act-page .act-modules_panel.is-entering { animation: act-modules-slide-in 320ms ease-out; }
+@keyframes act-modules-slide-in { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: none; } }
+.act-page .act-modules_head { display: grid; gap: 0.375rem; }
+.act-page .act-modules_head .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.act-page .act-modules_meta { --body-text-color: var(--act-muted); }
+.act-page .act-modules_group { display: flex; min-width: 0; flex-direction: column; gap: 0.75rem; }
+.act-page .act-modules_group + .act-modules_group { padding-top: 1.25rem; border-top: 1px solid var(--act-line); }
+.act-page .act-modules_list-title { font-weight: 600; --body-text-color: var(--act-muted); }
+.act-page .act-modules_topics { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.act-page .act-modules_topic { position: relative; padding-left: 1.25rem; text-wrap: pretty; }
+.act-page .act-modules_topic::before { position: absolute; top: 0.5em; left: 0; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-accent-primary); content: ""; }
+.act-page .act-modules_check { align-self: flex-start; padding: 0.375rem 0.75rem; border-radius: 6rem; background: var(--color-page-background); }
+.act-page [data-program-tabs]:not([data-ready]) .act-modules_nav { display: none; }
+.act-page [data-program-tabs]:not([data-ready]) .act-modules_panels { gap: var(--card-grid-gap); }
+@media (min-width: 32.5625rem) { .act-page .act-modules_plate { padding-inline: 1.5rem; } }
+@media (min-width: 48rem) {
+  .act-page .act-modules_panel { padding: 1.5rem; gap: 1.5rem; }
+  .act-page .act-modules_tab { padding: 1.125rem 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .act-page .act-modules_plate { padding-inline: 2.5rem; }
+  .act-page .act-modules_layout { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: stretch; }
+  .act-page .act-modules_nav { position: sticky; top: 6.5rem; align-self: start; }
+  .act-page .act-modules_panel { padding: 2.5rem; }
+  /* темы в две колонки: у третьего модуля больше тридцати пунктов */
+  .act-page .act-modules_topics { display: block; columns: 2; column-gap: 2rem; }
+  .act-page .act-modules_topic { break-inside: avoid; margin-bottom: 0.625rem; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .act-page .act-modules_tab:not([aria-selected="true"]):hover { background: var(--act-dark-tab-hover); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .act-page .act-modules_panel.is-entering { animation: none; }
+  .act-page .act-modules_tab { transition: none; }
+}
+
+
+/* ---------- 8. Бесплатные лекции ----------
+   Композиция с /child-psy и /neurodivergence в светлом цвете (перед блоком тёмная программа): белая плашка,
+   слева текст, три условия и фиолетовая кнопка; справа серая карточка «Вы получите» с двумя лекциями.
+   Поля 16 px, на компьютере 24 px. Кнопка на телефоне во всю ширину, с планшета по тексту.
+   Телефон и планшет: карточка под текстом. Компьютер (от 1025 px): две колонки. */
+.act-page .act-free_plate {
+  display: grid;
+  gap: 2rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.act-page .act-free_text { display: grid; gap: 1.5rem; align-content: start; }
+.act-page .act-free_text .section-title_component { max-width: 22ch; }
+.act-page .act-free_copy { display: grid; gap: 0.5rem; }
+.act-page .act-free_copy .content-heading_component { color: var(--color-text-primary); }
+.act-page .act-free_copy .body-text_component { max-width: 40ch; }
+.act-page .act-free_checks { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.act-page .act-free_checks li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; align-items: start; --body-text-color: var(--color-text-primary); }
+.act-page .act-free_icon { display: block; width: 1.25rem; height: 1.25rem; }
+.act-page .act-free_actions { display: grid; }
+.act-page .act-free_card {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-page-background);
+}
+.act-page .act-free_lessons { display: grid; margin: 0; padding: 0; list-style: none; }
+.act-page .act-free_lesson {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  padding-block: 1rem;
+  border-top: 1px solid var(--act-line);
+}
+.act-page .act-free_lesson:first-child { padding-top: 0; border-top: 0; }
+/* кружок «играть» белый с тёмным треугольником: фиолетовым в блоке остаётся только кнопка */
+.act-page .act-free_play { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); }
+.act-page .act-free_play .act-free_icon { width: 1rem; height: 1rem; margin-left: 0.125rem; }
+.act-page .act-free_lesson-text { display: grid; gap: 0.25rem; }
+.act-page .act-free_lesson-text .content-heading_component { color: var(--color-text-primary); }
+.act-page .act-free_note { padding: 0.75rem 1rem; border-radius: 0.625rem; background: var(--color-surface-primary); }
+@media (min-width: 48rem) {
+  .act-page .act-free_actions { display: flex; }
+}
+@media (min-width: 64.0625rem) {
+  .act-page .act-free_plate { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 3rem; align-items: center; padding: 1.5rem; }
+  .act-page .act-free_card { padding: 1.5rem; }
+}
+
+
+/* ---------- 9. Авторы и преподаватели курса ----------
+   Композиция блока преподавателей с «Клинической психологии»: размеры, отступы и цвета вкладок, стрелок,
+   плашки роли и ширины карточек — из общих стилей teachers.css, teacher-card.css, review-controls.css;
+   размеры текста — роли v1. До 1024 px имена над лентой (прокрутка вбок, три ряда на телефоне, два на планшете);
+   от 1025 px — колонкой слева шириной по самому длинному имени. Лента прокручивается с защёлкиванием. */
+.act-page .act-tutors_component { overflow-x: clip; }
+.act-page .act-tutors_header { display: flex; flex-direction: column; gap: 1rem; }
+.act-page .act-tutors_controls { display: flex; flex: none; gap: 0.75rem; }
+.act-page .act-tutors_controls[hidden] { display: none; }
+.act-page .act-tutors_control {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0.625rem;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  cursor: pointer;
+  transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+}
+.act-page .act-tutors_control:disabled { background: var(--act-control-off); color: var(--act-control-off-icon); cursor: default; }
+.act-page .act-tutors_control.is-previous .act-tutors_arrow { transform: rotate(180deg); }
+.act-page .act-tutors_arrow { display: block; width: 1.375rem; height: 1.375rem; }
+.act-page .act-tutors_layout { display: grid; min-width: 0; gap: 0.75rem; align-items: start; }
+.act-page .act-tutors_nav { min-width: 0; overflow: hidden; border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.act-page .act-tutors_tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(3, auto);
+  justify-content: start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.act-page .act-tutors_tabs::-webkit-scrollbar { display: none; }
+.act-page .act-tutors_tab {
+  position: relative;
+  display: block;
+  width: max-content;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--act-tab-idle);
+  color: var(--color-text-primary) !important;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+  --body-text-color: var(--color-text-primary);
+}
+/* невидимое поле до 44 px высотой, чтобы палец попадал */
+.act-page .act-tutors_tab::after { content: ""; position: absolute; inset: 50% 0 auto; min-height: 2.75rem; transform: translateY(-50%); }
+.act-page .act-tutors_tab[aria-current="true"] { background: var(--color-text-primary); color: var(--color-text-on-dark) !important; --body-text-color: var(--color-text-on-dark); }
+.act-page .act-tutors_track {
+  min-width: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.act-page .act-tutors_track::-webkit-scrollbar { display: none; }
+.act-page .act-tutors_track:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0.25rem; }
+.act-page .act-tutors_list { display: flex; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.act-page .act-tutors_slide { flex: none; width: 85%; scroll-snap-align: start; }
+.act-page .act-tutors_card { display: flex; flex-direction: column; gap: 0.75rem; }
+/* фон под фото — сиреневый, как фон самих портретов: круг вокруг портрета не читается */
+.act-page .act-tutors_media { position: relative; aspect-ratio: 24 / 25; overflow: hidden; border-radius: var(--radius-card, 1rem); background: var(--act-photo-lavender); }
+.act-page .act-tutors_media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.act-page .act-tutors_tag {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--color-text-primary);
+  line-height: 1;
+  --body-text-color: var(--color-text-on-dark);
+}
+.act-page .act-tutors_copy { display: grid; gap: 0.5rem; }
+.act-page .act-tutors_copy .content-heading_component { color: var(--color-text-primary); }
+@media (hover: hover) and (pointer: fine) {
+  .act-page .act-tutors_tab:not([aria-current="true"]):hover { background: var(--color-accent-soft); }
+  .act-page .act-tutors_control:not(:disabled):hover { background: var(--act-control-hover); }
+}
+@media (min-width: 32.5625rem) {
+  .act-page .act-tutors_slide { width: calc((100% - 0.75rem) / 1.75); }
+  .act-page .act-tutors_tag { padding: 0.625rem; }
+}
+@media (min-width: 48rem) {
+  .act-page .act-tutors_header { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 1.5rem; }
+  .act-page .act-tutors_layout { gap: 1rem; }
+  .act-page .act-tutors_tabs { grid-template-rows: repeat(2, auto); padding: 1rem; }
+  .act-page .act-tutors_tab { padding: 0.75rem 0.875rem; }
+  .act-page .act-tutors_list { gap: 1rem; }
+  .act-page .act-tutors_slide { width: calc((100% - 1rem) / 2); }
+  .act-page .act-tutors_card { gap: 1rem; }
+  .act-page .act-tutors_tag { left: 1rem; bottom: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .act-page .act-tutors_layout { grid-template-columns: max-content minmax(0, 1fr); }
+  .act-page .act-tutors_tabs { grid-auto-flow: row; grid-template-rows: none; overflow: visible; }
+  .act-page .act-tutors_slide { width: calc((100% - 1rem) / 1.65); }
+  .act-page .act-tutors_card { gap: 1.25rem; }
+  .act-page .act-tutors_media { aspect-ratio: 9 / 10; }
+}
+@media (min-width: 75rem) {
+  .act-page .act-tutors_slide { width: calc((100% - 2rem) / 2.7); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .act-page .act-tutors_track { scroll-behavior: auto; }
+  .act-page :is(.act-tutors_tab, .act-tutors_control) { transition: none; }
+}
+
+
+
+/* ---------- 10. Диплом ----------
+   Стили блока — diploma.css (общий компонент, не править). Здесь только ссылка на лицензию в реестре:
+   подчёркнута, цвет текста с !important против a { color: inherit !important } в custom.css сайта. */
+.act-page .act-diploma_license-link { color: var(--color-accent-text) !important; text-decoration: underline; text-underline-offset: 0.15em; }
+
+
+/* ---------- 11. Отзывы выпускников ----------
+   Лента видеоотзывов: шапка и стрелки — те же классы, что у преподавателей (act-tutors_header, act-tutors_control).
+   Карточка: вертикальная обложка 397 : 450, белая кнопка «играть» по центру, ниже имя и текст. */
+.act-page .act-reviews_component { overflow-x: clip; }
+.act-page .act-reviews_track { min-width: 0; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; }
+.act-page .act-reviews_track::-webkit-scrollbar { display: none; }
+.act-page .act-reviews_track:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0.25rem; }
+.act-page .act-reviews_list { display: flex; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.act-page .act-reviews_slide { flex: none; width: 85%; scroll-snap-align: start; }
+.act-page .act-reviews_card { display: flex; flex-direction: column; gap: 0.75rem; }
+.act-page .act-reviews_media { position: relative; aspect-ratio: 397 / 450; overflow: hidden; border-radius: var(--radius-card, 1rem); background: var(--color-surface-dark); }
+.act-page .act-reviews_media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.act-page .act-reviews_trigger { position: absolute; inset: 0; display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+.act-page .act-reviews_trigger img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.act-page .act-reviews_play { position: absolute; inset: 0; display: grid; place-items: center; width: 3.5rem; height: 3.5rem; margin: auto; border-radius: 50%; background: var(--color-surface-primary); color: var(--color-text-primary); transition: transform 200ms ease-out; }
+.act-page .act-reviews_play-icon { width: 1.25rem; height: 1.25rem; margin-left: 0.1875rem; }
+.act-page .act-reviews_trigger:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -0.25rem; }
+.act-page .act-reviews_copy { display: grid; gap: 0.5rem; }
+.act-page .act-reviews_copy .content-heading_component { color: var(--color-text-primary); }
+@media (hover: hover) and (pointer: fine) {
+  .act-page .act-reviews_trigger:hover .act-reviews_play { transform: scale(1.08); }
+}
+@media (min-width: 32.5625rem) { .act-page .act-reviews_slide { width: calc((100% - 0.75rem) / 1.75); } }
+@media (min-width: 48rem) {
+  .act-page .act-reviews_list { gap: 1rem; }
+  .act-page .act-reviews_slide { width: calc((100% - 1rem) / 2); }
+  .act-page .act-reviews_card { gap: 1rem; }
+}
+@media (min-width: 64.0625rem) { .act-page .act-reviews_slide { width: calc((100% - 2rem) / 3); } }
+@media (min-width: 80rem) { .act-page .act-reviews_slide { width: calc((100% - 3rem) / 4); } }
+@media (prefers-reduced-motion: reduce) {
+  .act-page .act-reviews_track { scroll-behavior: auto; }
+  .act-page .act-reviews_play { transition: none; }
+}
+
+
+/* ---------- 12–13. «Почему выбирают нас» и «98 % студентов» ----------
+   Стили — academy.css (копия общего компонента, не править). Здесь только колонка 64rem по центру для «98 %»,
+   как на /child-psy. */
+.act-page .act-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+
+/* ---------- 14. Стоимость ----------
+   Блок цены с modern-psy.ru/act как есть (переносит price-sync.mjs). Здесь только обвязка под v1:
+   шрифт v1 вместо своего из Google Fonts и отступы как у секций v1: сверху 0, снизу --section-space. */
+.act-page .price-auto_component { font-family: var(--font-family-body); --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
+
+/* ---------- 14–15. Межстрочные блока цены и формы ----------
+   Форма — request-form.css (копия общего компонента, кладёт request-form-sync.mjs). Оба блока общие
+   и приходят со своими стилями, их файлы не правим. Межстрочные — как у ролей v1, так же как
+   на /adhd-adult и /adult-adhd-therapy (просьба Дарьи 07.11.2026: «межстрочный интервал тоже из v1»).
+   Кегли и насыщенность у блоков свои, их не трогаем. Три класса в селекторе — чтобы перебить
+   стили блоков, которые идут ниже по странице. */
+.act-page .price-auto_component .price-block_heading { line-height: 1.1; }
+.act-page .price-auto_component .price-card_name { line-height: 1.1; }
+.act-page .price-auto_component .price-block_lead { line-height: 1.3; }
+.act-page .price-auto_component :is(.price-card_sub, .price-check, .price-caption) { line-height: 1.35; }
+.act-page .price-auto_component .price-rise_title { line-height: 1.3; }
+.act-page .price-auto_component :is(.price-check_note, .price-rise_note, .price-tag_was, .price-switch_legend) { line-height: 1.4; }
+.act-page .price-auto_component :is(.price-card_badge, .price-sticker_chip) { line-height: 1.3; }
+.act-page .request-form_component :is(.request-form_label, .request-form_hint, .request-form_note, .request-form_legal, .request-form_tip, .request-form_link-button, .request-form_lecture) { line-height: 1.4; }
+.act-page .request-form_component :is(.request-form_submit, .request-form_choice-option, .request-form_bot) { line-height: 1.07; }
+@media (min-width: 32.5625rem) {
+  .act-page .price-auto_component .price-block_heading { line-height: 1; }
+  .act-page .price-auto_component .price-block_lead { line-height: 1.2; }
+  .act-page .price-auto_component :is(.price-card_sub, .price-check, .price-caption) { line-height: 1.2; }
+}
+
+/* ---------- 16. Вопросы и ответы ----------
+   Как на /child-psy и /adhd-adult: колонка 64rem (act-narrow), белые карточки, вопрос — content-heading
+   is-compact, ответ — body-text, плюс-крестик справа. Поля 16 px, на компьютере 24 px.
+   Кегли не задаются: только роли v1. */
+.act-page .act-faq_list { display: grid; gap: 0.5rem; }
+.act-page .act-faq_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.act-page .act-faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.act-page .act-faq_question::-webkit-details-marker { display: none; }
+.act-page .act-faq_question .content-heading_component { color: var(--color-text-primary); text-wrap: pretty; }
+.act-page .act-faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color 150ms ease;
+}
+.act-page .act-faq_icon::before,
+.act-page .act-faq_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.act-page .act-faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.act-page .act-faq_item[open] .act-faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .act-page .act-faq_question:hover .act-faq_icon { background: var(--act-line); }
+}
+.act-page .act-faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.act-page .act-faq_answer .body-text_component { max-width: 62ch; }
+.act-page .act-faq_answer a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (min-width: 64.0625rem) {
+  .act-page .act-faq_question { padding: 1.25rem 1.5rem; }
+  .act-page .act-faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .act-page :is(.act-faq_icon, .act-faq_icon::before, .act-faq_icon::after) { transition: none; }
+}
