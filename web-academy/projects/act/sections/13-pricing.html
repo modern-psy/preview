@@ -1,2 +1,721 @@
 <!-- Секция 13: Стоимость обучения -->
-<section class="section_pricing" data-act-section="pricing" aria-labelledby="act-price-heading"><div class="padding-global"><div class="container-large"><div class="padding-section-small"><div data-cms-price data-cms-state="snapshot"><div class="price-block_component"><div class="price-block_head"><h2 class="text-size-section-title" id="act-price-heading">Стоимость обучения</h2><fieldset class="price-switch"><legend class="price-switch_legend text-size-note text-color-secondary">Старт</legend><div class="segmented_component"><label class="segmented_item"><input class="segmented_input" type="radio" name="act-price-stream" value="2026-10-26" checked><span class="segmented_label text-size-note">26 октября</span></label><label class="segmented_item"><input class="segmented_input" type="radio" name="act-price-stream" value="2027-02-01"><span class="segmented_label text-size-note">1 февраля</span></label></div></fieldset></div><div data-price-card aria-live="polite"><ul class="price-cards" role="list" data-price-stream="2026-10-26"><li class="price-card_component"><div class="price-card_head"><h3 class="text-size-block-title">Полный</h3><p class="text-size-note text-color-secondary">Старт <time datetime="2026-10-26">26 октября 2026</time></p></div><div class="price-card_money"><p class="price-tag"><span class="text-size-section-title">146 000</span><span class="text-size-lead text-color-secondary">₽</span></p><p class="price-caption text-size-note"><span><span class="price-caption_benefit text-weight-medium">Выгода 22 000 ₽</span> при оплате сразу</span><span>Или 7 000 ₽/мес в рассрочку на 24 мес</span></p></div><div class="price-card_list"><p class="text-size-note text-weight-medium">4 модуля в программе</p><ul class="price-check" role="list"><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Контекстуально-поведенческое мышление терапевта</span></li><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Терапевтические отношения и позиция специалиста</span></li><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Практические навыки АСТ-терапевта</span></li><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Этика, границы и профессиональная ответственность</span></li><li class="price-check_item is-off"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/x.svg')"></span><span class="text-size-note">АСТ в работе с запросами — сессия «за стеклом» и разбор<span class="visually-hidden">Не входит</span></span></li></ul></div><div class="price-card_foot"></div></li><li class="price-card_component is-featured"><span class="price-card_badge text-size-note">Рекомендуем</span><div class="price-card_head"><h3 class="text-size-block-title">Расширенный</h3><p class="text-size-note text-color-secondary">Старт <time datetime="2026-10-26">26 октября 2026</time></p></div><div class="price-card_money"><p class="price-tag"><span class="text-size-section-title">180 000</span><span class="text-size-lead text-color-secondary">₽</span></p><p class="price-caption text-size-note"><span><span class="price-caption_benefit text-weight-medium">Выгода 27 000 ₽</span> при оплате сразу</span><span>Или 8 625 ₽/мес в рассрочку на 24 мес</span></p></div><div class="price-card_list"><p class="text-size-note text-weight-medium">5 модулей в программе</p><ul class="price-check" role="list"><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Контекстуально-поведенческое мышление терапевта</span></li><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Терапевтические отношения и позиция специалиста</span></li><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Практические навыки АСТ-терапевта</span></li><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">Этика, границы и профессиональная ответственность</span></li><li class="price-check_item"><span class="icon is-md" aria-hidden="true" style="--icon-url: url('/act/icons/check.svg')"></span><span class="text-size-note">АСТ в работе с запросами — сессия «за стеклом» и разбор</span></li></ul></div><div class="price-card_foot"></div></li></ul></div></div></div></div></div></div></section>
+<div class="section_pricing" data-act-section="pricing">
+<!-- ============================================================
+     БЛОК ЦЕНЫ ИЗ CMS · курс act · https://modern-psy.ru/act
+     Один блок T123 целиком. Собран на странице /pricing (исходники с
+     комментариями: apps/preview/pricing/src/). Руками не править.
+     Заменяет на странице:
+     • блок T123 «Стоимость обучения» с табами потоков (rec4766225501): скрыть, новый блок встаёт на его место, перед формой «Занятия начнутся 26 октября». Блок rec4791562601 (скрипт первого экрана) не трогать: без секции цены он обновляет только первый экран.
+     Сценарий скрипт выбирает сам по CMS. Цены ниже — снимок на
+     1 ноября 2026 г. в 10:54 (тарифы), видны до ответа CMS.
+     Блок микроразметки курса (второй блок из /pricing) скрипт
+     обновляет сам. Настройки у секции: data-course, data-system,
+     data-terms, data-layout, style с --pa-space-top/bottom.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400..700&display=swap">
+
+<style>
+.pa-r{--pa-section-background:#eff2f9;--color-page-background:#f5f5f5;--color-surface-primary:#ffffff;--color-text-primary:#332f41;--color-text-secondary:#747476;--color-text-on-dark:#ffffff;--color-accent-primary:#7c5cdb;--color-accent-soft:#dad6ff;--color-focus:#7c5cdb;--color-surface-dark:#2b2334;--color-text-on-dark-muted:#e6e5eb;--radius-card:0.75rem;--motion-duration:150ms;--motion-easing:ease-in-out;--transition-site:var(--motion-duration) var(--motion-easing);--fade-duration:220ms;--color-accent-text:#644ab2;--line:#e8e6ee;--line-strong:#cfd1db;--text-quiet:#5e5a6a;--dark-text:var(--color-text-on-dark-muted);--dark-muted:#bdb7b7;--dark-line:rgb(255 255 255 / 14%);--dark-chip:rgb(255 255 255 / 14%);--check:#0a6b4e;--check-on-dark:#7fcfb4;--promo-surface:#ffe110;--promo-text:#3d3a2a;--promo-bg-strong:color-mix(in srgb,var(--promo-surface) 80%,#ffffff);--promo-bg-soft:color-mix(in srgb,var(--promo-surface) 35%,#ffffff);display:block;position:relative;padding:var(--pa-space-top,4rem) 0 var(--pa-space-bottom,0);background-color:var(--pa-section-background);color:var(--color-text-primary);font-family:"Wix Madefor Text",Arial,sans-serif;font-variant-numeric:lining-nums proportional-nums;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+@media (min-width:48rem){.pa-r{--radius-card:1rem;padding-top:var(--pa-space-top,7.5rem)}
+}
+.pa-r[hidden]{display:none}
+.pa-r *,.pa-r *::before,.pa-r *::after{box-sizing:border-box}
+.pa-r ::selection{background:var(--color-accent-soft);color:var(--color-text-primary)}
+.pa-r :where(p,h2,h3,ul,dl,dd,fieldset,legend){margin:0}
+.pa-r :where(h2,h3){font:inherit}
+.price-auto_sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.price-auto_padding{padding-inline:1rem}
+.price-auto_container{width:100%;max-width:80rem;margin-inline:auto}
+@media (min-width:62rem){.price-auto_padding{padding-inline:2.5rem}
+}
+.pa-r[data-layout="academy"] .price-auto_padding{padding-inline:1rem}
+.pa-r[data-layout="academy"] .price-auto_container{max-width:95rem}
+@media (min-width:48rem){.pa-r[data-layout="academy"] .price-auto_padding{padding-inline:1.5rem}
+}
+@media (min-width:64.0625rem){.pa-r[data-layout="academy"] .price-block_component{width:calc((100% - 11rem) / 12 * 10 + 9rem);margin-inline:auto}
+}
+@media (min-width:75rem){.pa-r[data-layout="academy"] .price-auto_padding{padding-inline:5rem}
+}
+.pa-r[id]{scroll-margin-top:2rem}
+.pa-r[data-layout="wa-narrow"]{--pa-space-top:3.5rem;--pa-space-bottom:3.5rem}
+.pa-r[data-layout="wa-narrow"] .price-auto_padding{padding-inline:1rem}
+.pa-r[data-layout="wa-narrow"] .price-auto_container{max-width:64rem}
+@media (min-width:48rem){.pa-r[data-layout="wa-narrow"]{--pa-space-top:5rem;--pa-space-bottom:5rem}
+.pa-r[data-layout="wa-narrow"] .price-auto_padding{padding-inline:clamp(1.5rem,4.76vw,5rem)}
+}
+@media (min-width:64.0625rem){.pa-r[data-layout="wa-narrow"]{--pa-space-top:6.5rem;--pa-space-bottom:6.5rem}
+}
+.pa-r[data-layout="academy"][id]{scroll-margin-top:50px}
+@media (min-width:48rem){.pa-r[data-layout="academy"][id]{scroll-margin-top:100px}
+}
+.pa-r .price-block_component{display:flex;min-width:0;flex-direction:column;gap:1.5rem;color:var(--color-text-primary);container:price-block / inline-size}
+.pa-r .price-block_head{display:flex;flex-direction:column;align-items:center;gap:1.5rem;text-align:center}
+.pa-r .price-block_title{display:flex;min-width:0;max-width:48rem;flex-direction:column;align-items:center;gap:0.75rem}
+.pa-r .price-block_heading{width:100%;min-width:0;color:inherit;font-size:2rem;font-weight:400;line-height:1;letter-spacing:-0.06em;text-wrap:balance;overflow-wrap:anywhere}
+@media (min-width:32.5625rem){.pa-r .price-block_heading{font-size:2.25rem}
+}
+@media (min-width:48rem){.pa-r .price-block_heading{font-size:2.75rem}
+}
+@media (min-width:64.0625rem){.pa-r .price-block_heading{font-size:3.25rem}
+}
+.pa-r .price-block_lead{color:var(--text-quiet);font-size:1rem;line-height:1.4;text-wrap:balance}
+.pa-r .price-block_controls{display:flex;min-width:0;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:0.75rem 1rem}
+.pa-r .price-switch{display:flex;min-width:0;flex-direction:column;padding:0;border:0}
+.pa-r .price-switch_legend{float:left;width:100%;margin-bottom:0.5rem;padding:0;color:var(--text-quiet);font-size:0.875rem;line-height:1.2;text-align:center}
+.pa-r .price-switch_legend + *{clear:both}
+.pa-r .segmented_component{display:grid;min-width:17rem;grid-auto-columns:minmax(0,1fr);grid-auto-flow:column;gap:0.125rem;padding:0.25rem;border-radius:0.75rem;background:#e8e6ee}
+.pa-r .segmented_item{position:relative;display:flex;min-width:0}
+.pa-r .segmented_input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.pa-r .segmented_label{display:flex;flex:1;min-width:0;min-height:2.75rem;align-items:center;justify-content:center;padding:0.375rem 0.75rem;border-radius:0.5rem;color:var(--color-text-primary);font-size:0.9375rem;font-weight:444;line-height:1.1;letter-spacing:-0.01em;text-align:center;transition:background-color var(--transition-site),color var(--transition-site)}
+.pa-r .segmented_input:checked + .segmented_label{background:var(--color-surface-dark);color:var(--color-text-on-dark)}
+.pa-r .segmented_input:focus-visible + .segmented_label{outline:2px solid var(--color-focus);outline-offset:2px}
+@media (hover:hover) and (pointer:fine){.pa-r .segmented_input:not(:checked):hover + .segmented_label{background:var(--color-surface-primary)}
+}
+@media (max-width:47.9375rem){.pa-r .price-block_controls{align-self:stretch;flex-direction:column;align-items:stretch}
+.pa-r .segmented_component{min-width:0}
+}
+@media (max-width:32.5rem){.pa-r .segmented_label{padding-inline:0.375rem;font-size:0.875rem;letter-spacing:-0.02em}
+}
+.pa-r .price-tag{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.25rem 0.375rem;margin:0;color:var(--color-text-primary)}
+.pa-r .price-tag_number{font-size:clamp(2.25rem,1.95rem + 1vw,2.75rem);font-weight:500;line-height:1;letter-spacing:-0.045em;white-space:nowrap}
+.pa-r .price-tag_unit{color:var(--color-text-secondary);font-size:1.5rem;font-weight:444;line-height:1;letter-spacing:-0.02em}
+.pa-r .price-wide_money .price-tag_unit{font-size:1.75rem}
+.pa-r .price-tag_was{display:inline-flex;align-self:center;flex-direction:column;gap:0.125rem;margin-left:0.5rem;color:var(--color-text-secondary);font-size:0.875rem;line-height:1.2}
+.pa-r .price-old{text-decoration:line-through;text-decoration-thickness:1px}
+.pa-r .price-icon{display:block;flex:none}
+.pa-r .is-fading{animation:price-auto-fade var(--fade-duration) var(--motion-easing) both}
+@keyframes price-auto-fade{from{opacity:0;transform:translateY(0.25rem)}
+}
+.pa-r .price-caption{display:flex;flex-direction:column;gap:0.125rem;margin-top:0.75rem;color:var(--color-text-secondary);font-size:0.9375rem;line-height:1.4}
+.pa-r .price-caption_benefit{color:var(--color-accent-text);font-weight:600}
+.pa-r .price-rise{display:flex;align-items:center;gap:0.75rem;margin:0;color:var(--color-text-primary)}
+.pa-r .price-rise_icon{box-sizing:content-box;width:1.125rem;height:1.125rem;flex:none;padding:0.5rem;border-radius:50%;background:var(--color-page-background);color:var(--color-text-primary)}
+.pa-r .price-wide_foot .price-rise_icon{background:var(--color-surface-primary)}
+.pa-r .price-rise_text{display:flex;min-width:0;flex-direction:column;gap:0.0625rem}
+.pa-r .price-rise_title{font-size:0.9375rem;font-weight:500;line-height:1.3}
+.pa-r .price-rise_note{color:var(--color-text-secondary);font-size:0.8125rem;line-height:1.3}
+.pa-r .price-check{display:flex;flex-direction:column;gap:0.75rem;padding:0;list-style:none;color:var(--color-text-primary);font-size:0.9375rem;line-height:1.4}
+.pa-r .price-check_item{display:grid;grid-template-columns:1.125rem minmax(0,1fr);gap:0.625rem;align-items:start}
+.pa-r .price-check_item .price-icon{width:1.125rem;height:1.125rem;margin-top:0.125rem;color:var(--check)}
+.pa-r .price-check_note{display:block;margin-top:0.125rem;color:var(--color-text-secondary);font-size:0.8125rem;line-height:1.35}
+.pa-r .is-featured .price-check_note{color:var(--dark-muted)}
+.pa-r .price-check_item.is-off{color:var(--color-text-secondary)}
+.pa-r .price-check_item.is-off .price-icon{color:var(--line-strong)}
+.pa-r .price-icon.is-check,.pa-r .price-icon.is-cross{background-color:currentColor;-webkit-mask:var(--icon) center / contain no-repeat;mask:var(--icon) center / contain no-repeat}
+.pa-r .price-icon.is-check{--icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6 9 17l-5-5' fill='none' stroke='%23000' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.pa-r .price-icon.is-cross{--icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7 7 17' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")}
+.pa-r .price-terms_component{display:flex;flex-direction:column;gap:1.5rem;padding-top:1rem;color:var(--color-text-primary)}
+.pa-r .price-terms_heading{font-size:clamp(1.75rem,1.5rem + 1vw,2.25rem);font-weight:444;line-height:1.1;letter-spacing:-0.03em;text-align:center}
+.pa-r .price-terms_list{display:grid;grid-template-columns:minmax(0,1fr)}
+.pa-r .price-terms_row{display:flex;min-width:0;flex-direction:column;gap:0.875rem;padding-block:1.25rem;container-type:inline-size}
+.pa-r .price-terms_row:first-child{padding-top:0}
+.pa-r .price-terms_row:last-child{padding-bottom:0}
+.pa-r .price-terms_row + .price-terms_row{border-top:1px solid var(--line-strong)}
+.pa-r .price-terms_title{font-size:1.25rem;font-weight:500;line-height:1.2;letter-spacing:-0.02em}
+.pa-r .price-terms_body{min-width:0}
+.pa-r .price-terms_text{max-width:34rem;color:var(--text-quiet);font-size:1rem;line-height:1.45;text-wrap:pretty}
+@media (min-width:48rem){.pa-r .price-terms_list{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pa-r .price-terms_row{padding:0 1.5rem}
+.pa-r .price-terms_row:first-child{padding-left:0}
+.pa-r .price-terms_row:last-child{padding-right:0}
+.pa-r .price-terms_row + .price-terms_row{border-top:0;border-left:1px solid var(--line-strong)}
+}
+@media (min-width:64.0625rem){.pa-r .price-terms_component{gap:2rem;padding-top:1.5rem}
+.pa-r .price-terms_row{padding-inline:2rem}
+.pa-r .price-terms_row:first-child{padding-left:0}
+.pa-r .price-terms_row:last-child{padding-right:0}
+}
+.pa-r .price-discounts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:0.625rem 0.875rem;padding:0;list-style:none}
+.pa-r .price-discounts_item{display:grid;grid-column:1 / -1;grid-template-columns:subgrid;align-items:baseline}
+.pa-r .price-discounts_value{display:inline-flex;align-items:baseline;justify-content:center;gap:0.25rem;padding:0.3125rem 0.625rem;border-radius:0.5rem;background:var(--color-surface-primary);color:var(--color-text-primary);font-size:1rem;font-weight:600;line-height:1.25;letter-spacing:-0.02em;white-space:nowrap}
+.pa-r .price-discounts_prefix{font-weight:500}
+.pa-r .price-discounts_label{color:var(--text-quiet);font-size:0.9375rem;line-height:1.4;text-wrap:pretty}
+.pa-r .price-discounts_note{display:block;margin-top:0.125rem;color:var(--color-text-secondary);font-size:0.8125rem;line-height:1.35}
+@container (max-width:15rem){.pa-r .price-discounts{grid-template-columns:minmax(0,1fr);row-gap:0.875rem}
+.pa-r .price-discounts_item{display:flex;flex-direction:column;align-items:flex-start;gap:0.375rem}
+}
+.pa-r .price-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:0.75rem;margin:0;padding:0;list-style:none}
+.pa-r .price-card_component{position:relative;display:flex;min-width:0;flex-direction:column;--card-pad-x:1.5rem;padding:1.5rem var(--card-pad-x);border-radius:var(--radius-card);background:var(--color-surface-primary)}
+.pa-r .price-card_badge{position:absolute;top:0;left:var(--card-pad-x);z-index:1;padding:0.4375rem 0.75rem;border-radius:6rem;background:var(--color-accent-primary);color:var(--color-text-on-dark);font-size:0.8125rem;font-weight:500;line-height:1.15;white-space:nowrap;transform:translateY(-50%)}
+.pa-r .price-card_head{display:flex;flex-direction:column;gap:0.375rem}
+.pa-r .price-card_name{font-size:clamp(1.5rem,1.3rem + 0.6vw,1.875rem);font-weight:500;line-height:1.15;letter-spacing:-0.025em;text-wrap:balance}
+.pa-r .price-cards.is-count-3 .price-card_name{font-size:clamp(1.5rem,1.35rem + 0.3vw,1.625rem)}
+.pa-r .price-card_component:has(> .price-card_badge){padding-top:2.25rem}
+.pa-r .price-card_sub{color:var(--color-text-secondary);font-size:0.9375rem;line-height:1.4}
+.pa-r .price-card_money{margin-top:1.75rem}
+.pa-r .price-card_list{flex:1}
+.pa-r .price-card_list:not(:empty){margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--line)}
+.pa-r .price-card_foot{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+.pa-r .price-card_component.is-featured{background:var(--color-surface-dark);color:var(--dark-text)}
+.pa-r .is-featured .price-card_name,.pa-r .is-featured .price-tag{color:var(--color-text-on-dark)}
+.pa-r .is-featured .price-card_sub,.pa-r .is-featured .price-tag_unit,.pa-r .is-featured .price-tag_was,.pa-r .is-featured .price-caption,.pa-r .is-featured .price-rise_note{color:var(--dark-muted)}
+.pa-r .is-featured .price-caption_benefit{color:var(--color-accent-soft)}
+.pa-r .is-featured .price-card_list:not(:empty),.pa-r .is-featured .price-card_foot{border-top-color:var(--dark-line)}
+.pa-r .is-featured .price-check{color:var(--dark-text)}
+.pa-r .is-featured .price-check_item .price-icon{color:var(--check-on-dark)}
+.pa-r .is-featured .price-rise{color:var(--color-text-on-dark)}
+.pa-r .is-featured .price-rise_icon{background:var(--dark-chip);color:var(--color-text-on-dark)}
+.pa-r[data-scenario="waitlist"] .price-card_component.is-featured{order:-1}
+@media (max-width:47.99rem){.pa-r[data-scenario="tariffs"] .price-card_component.is-featured{order:1}
+.pa-r:not([data-scenario="waitlist"]) .price-card_component:not(:first-child):has(> .price-card_badge,> .price-sticker_component){margin-top:0.75rem}
+}
+@media (min-width:48rem){.pa-r .price-cards.is-count-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pa-r .price-cards.is-count-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pa-r .price-cards{grid-template-rows:auto auto 1fr auto;gap:0 1rem}
+.pa-r .price-card_component{--card-pad-x:1.75rem;display:grid;grid-row:span 4;grid-template-rows:subgrid;padding:1.75rem var(--card-pad-x)}
+.pa-r .price-card_component.is-featured{order:0}
+.pa-r .price-cards:has(.is-featured) > .price-card_component:not(.is-featured){margin-block:1rem}
+.pa-r .price-card_component.is-featured{padding-block:2.75rem}
+}
+@media (min-width:48rem){.pa-r .price-cards.is-count-3{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto 1fr auto;row-gap:0}
+.pa-r .price-cards.is-count-3 > .price-card_component.is-featured{margin-bottom:1.75rem}
+.pa-r .price-cards.is-count-3 > .price-card_component.is-featured{grid-column:1 / -1;grid-row:auto;grid-template-areas:"head list" "money list" "foot list";grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:2rem;order:-1}
+.pa-r .price-cards.is-count-3 > .is-featured > .price-card_head{grid-area:head}
+.pa-r .price-cards.is-count-3 > .is-featured > .price-card_money{grid-area:money}
+.pa-r .price-cards.is-count-3 > .is-featured > .price-card_list{grid-area:list}
+.pa-r .price-cards.is-count-3 > .is-featured > .price-card_foot{grid-area:foot}
+.pa-r .price-cards.is-count-3 > .is-featured > .price-card_list:not(:empty){margin-top:0;padding:0 0 0 2rem;border-top:0;border-left:1px solid var(--dark-line)}
+.pa-r .price-cards.is-count-3 > .price-card_component:not(.is-featured){margin-block:0}
+}
+@container price-block (min-width:65rem){.pa-r .price-cards.is-count-3{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto auto 1fr auto}
+.pa-r .price-cards.is-count-3 > .price-card_component.is-featured{grid-column:auto;grid-row:span 4;grid-template-areas:none;grid-template-columns:none;grid-template-rows:subgrid;margin-bottom:0;order:0}
+.pa-r .price-cards.is-count-3 > .is-featured > .price-card_head,.pa-r .price-cards.is-count-3 > .is-featured > .price-card_money,.pa-r .price-cards.is-count-3 > .is-featured > .price-card_list,.pa-r .price-cards.is-count-3 > .is-featured > .price-card_foot{grid-area:auto}
+.pa-r .price-cards.is-count-3 > .is-featured > .price-card_list:not(:empty){margin-top:1.5rem;padding:1.5rem 0 0;border-top:1px solid var(--dark-line);border-left:0}
+.pa-r .price-cards.is-count-3 > .price-card_component:not(.is-featured){margin-block:1rem}
+}
+@media (min-width:64.0625rem){.pa-r .price-card_component{--card-pad-x:2rem;padding-block:2rem}
+.pa-r .price-card_component.is-featured{padding-block:3rem}
+.pa-r .price-cards.is-count-3 .price-card_component{--card-pad-x:1.75rem}
+}
+.pa-r .price-wide_component{display:grid;grid-template-areas:"main" "side";grid-template-columns:minmax(0,1fr);position:relative;border-radius:var(--radius-card);background:var(--color-surface-primary)}
+.pa-r .price-wide_main{display:flex;min-width:0;flex-direction:column;grid-area:main;padding:1.5rem}
+.pa-r .price-wide_chip{align-self:flex-start;padding:0.4375rem 0.75rem;border-radius:6rem;background:var(--color-page-background);color:var(--color-text-primary);font-size:0.8125rem;font-weight:500;line-height:1}
+.pa-r .price-wide_title{display:flex;flex-direction:column;gap:0.375rem;margin-top:1.25rem}
+.pa-r .price-wide_name{font-size:clamp(1.5rem,1.3rem + 0.6vw,1.875rem);font-weight:500;line-height:1.2;letter-spacing:-0.02em}
+.pa-r .price-wide_sub{color:var(--color-text-secondary);font-size:0.9375rem;line-height:1.4}
+.pa-r .price-wide_money{margin-top:auto;padding-top:2rem}
+.pa-r .price-wide_money .price-tag_number{font-size:clamp(2.5rem,2rem + 1.6vw,3.25rem)}
+.pa-r .price-wide_side{display:flex;min-width:0;flex-direction:column;gap:1rem;grid-area:side;padding:1.5rem;border-top:1px solid var(--line)}
+.pa-r .price-wide_side-title{font-size:1.0625rem;font-weight:500;line-height:1.25}
+.pa-r .price-wide_foot{margin-top:1.5rem;padding:0.875rem 1rem;border-radius:0.75rem;background:var(--color-page-background)}
+.pa-r .price-wide_component.is-plain .price-wide_money{margin-top:0;padding-top:0}
+@media (min-width:48rem){.pa-r .price-wide_component{grid-template-areas:"main side";grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.pa-r .price-wide_main,.pa-r .price-wide_side{padding:2rem}
+.pa-r .price-wide_side{border-top:0;border-left:1px solid var(--line)}
+.pa-r .price-wide_foot{margin-top:1.75rem;padding:1rem 1.25rem}
+}
+@media (min-width:64.0625rem){.pa-r .price-wide_component{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.pa-r .price-wide_main,.pa-r .price-wide_side{padding:2.25rem 2.5rem}
+}
+.pa-r .price-sticker_component{position:absolute;z-index:2;top:-0.875rem;right:1.25rem;transform:rotate(-5deg);pointer-events:none}
+.pa-r .price-sticker_coupon{--cut:3.5rem;display:inline-flex;overflow:hidden;border-radius:0.5rem;color:var(--promo-text);font-size:0.9375rem;line-height:1.2;white-space:nowrap;-webkit-mask:radial-gradient(circle at var(--cut) 0,transparent 0.25rem,black 0.2813rem),radial-gradient(circle at var(--cut) 100%,transparent 0.25rem,black 0.2813rem);-webkit-mask-composite:source-in;mask:radial-gradient(circle at var(--cut) 0,transparent 0.25rem,black 0.2813rem),radial-gradient(circle at var(--cut) 100%,transparent 0.25rem,black 0.2813rem);mask-composite:intersect}
+.pa-r .price-sticker_value{width:var(--cut);padding:0.4375rem 0;background:var(--promo-bg-strong);font-weight:600;text-align:center}
+.pa-r .price-sticker_until{padding:0.4375rem 0.75rem;background:var(--promo-bg-soft)}
+.pa-r .price-card_component > .price-sticker_component{top:-0.75rem;right:-0.625rem;transform:rotate(5deg)}
+.pa-r .price-wide_component > .price-sticker_component{top:-0.875rem;right:-0.5rem;transform:rotate(4deg)}
+.pa-r .price-block_component:has(.price-sticker_component){row-gap:2.25rem}
+.pa-r .price-cards:has(.price-sticker_component,.price-card_badge){padding-top:0.25rem}
+.pa-r .price-cards.is-count-3 .price-sticker_coupon{--cut:3rem;font-size:0.8125rem}
+.pa-r .price-cards.is-count-3 .price-sticker_value,.pa-r .price-cards.is-count-3 .price-sticker_until{padding-block:0.375rem}
+@media (max-width:64rem){.pa-r .price-sticker_coupon{--cut:3rem;font-size:0.8125rem}
+.pa-r .price-sticker_value,.pa-r .price-sticker_until{padding-block:0.375rem}
+}
+@media (prefers-reduced-motion:reduce){.pa-r{--transition-site:0ms linear}
+.pa-r .is-fading{animation:none}
+}
+</style>
+
+<section class="price-auto_component pa-r" data-price-auto data-course="act" data-api="https://modern-psy-asp-prod-8ceb.twc1.net" data-system="figure" data-terms="on" data-scenario="tariffs" style="--pa-space-top: 0; --pa-space-bottom: 4rem; --pa-section-background: #f5f5ff">
+  <div class="price-auto_padding">
+    <div class="price-auto_container" data-price-auto-body>
+      <div class="price-block_component"><div class="price-block_head"><div class="price-block_title"><h2 class="price-block_heading">Стоимость обучения</h2><p class="price-block_lead">АСТ: Терапия принятия и ответственности, профессиональная переподготовка</p></div><div class="price-block_controls"><fieldset class="price-switch"><legend class="price-switch_legend">Старт</legend><div class="segmented_component"><label class="segmented_item"><input class="segmented_input" type="radio" id="price-auto-act-1-stream-0" name="price-auto-act-1-stream" value="2026-10-26" data-price-auto-stream checked><span class="segmented_label">26 октября</span></label><label class="segmented_item"><input class="segmented_input" type="radio" id="price-auto-act-1-stream-1" name="price-auto-act-1-stream" value="2027-02-01" data-price-auto-stream><span class="segmented_label">1 февраля 2027</span></label></div></fieldset></div></div><ul class="price-cards is-count-2" role="list"><li class="price-card_component"><div class="price-card_head"><h3 class="price-card_name">Полный</h3><p class="price-card_sub">4 модуля в программе</p></div><div class="price-card_money"><p class="price-tag" data-price-auto-total><span class="price-tag_number">146 000</span><span class="price-tag_unit">₽</span></p><p class="price-caption"><span class="price-caption_line"><b class="price-caption_benefit">выгода 22 000 ₽</b> при оплате сразу</span><span class="price-caption_line">или 7 000 ₽⁠/⁠мес в рассрочку на 24 мес</span></p></div><div class="price-card_list"><ul class="price-check" role="list"><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Контекстуально-поведенческое мышление терапевта</span></li><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Терапевтические отношения и позиция специалиста</span></li><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Практические навыки АСТ-терапевта</span></li><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Этика, границы и профессиональная ответственность</span></li><li class="price-check_item is-off"><span class="price-icon is-cross" aria-hidden="true"></span><span>АСТ в работе с запросами: сессия «за стеклом» и разбор<span class="price-auto_sr">, не входит</span></span></li></ul></div></li><li class="price-card_component is-featured"><span class="price-card_badge">Рекомендуем</span><div class="price-card_head"><h3 class="price-card_name">Расширенный</h3><p class="price-card_sub">5 модулей в программе</p></div><div class="price-card_money"><p class="price-tag" data-price-auto-total><span class="price-tag_number">180 000</span><span class="price-tag_unit">₽</span></p><p class="price-caption"><span class="price-caption_line"><b class="price-caption_benefit">выгода 27 000 ₽</b> при оплате сразу</span><span class="price-caption_line">или 8 625 ₽⁠/⁠мес в рассрочку на 24 мес</span></p></div><div class="price-card_list"><ul class="price-check" role="list"><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Контекстуально-поведенческое мышление терапевта</span></li><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Терапевтические отношения и позиция специалиста</span></li><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Практические навыки АСТ-терапевта</span></li><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>Этика, границы и профессиональная ответственность</span></li><li class="price-check_item"><span class="price-icon is-check" aria-hidden="true"></span><span>АСТ в работе с запросами: сессия «за стеклом» и разбор</span></li></ul></div></li></ul><section class="price-terms_component" aria-labelledby="price-auto-act-1-terms"><h3 class="price-terms_heading" id="price-auto-act-1-terms">Гибкие условия оплаты</h3><dl class="price-terms_list"><div class="price-terms_row"><dt class="price-terms_title">Рассрочка до 24 месяцев</dt><dd class="price-terms_body"><p class="price-terms_text">От банков-партнёров. Платёж делится на равные части, платите со второго месяца обучения.</p></dd></div><div class="price-terms_row"><dt class="price-terms_title">Персональные скидки</dt><dd class="price-terms_body"><ul class="price-discounts" role="list"><li class="price-discounts_item"><p class="price-discounts_value"><span>−10 %</span></p><p class="price-discounts_label">новым студентам</p></li><li class="price-discounts_item"><p class="price-discounts_value"><span>−20 %</span></p><p class="price-discounts_label">вам и коллеге, которого вы пригласили<span class="price-discounts_note">если он ещё не учился у нас</span></p></li><li class="price-discounts_item"><p class="price-discounts_value"><span class="price-discounts_prefix">до</span><span>−20 %</span></p><p class="price-discounts_label">нашим выпускникам за отзыв</p></li></ul></dd></div><div class="price-terms_row"><dt class="price-terms_title">Налоговый вычет 13 %</dt><dd class="price-terms_body"><p class="price-terms_text">Подробно расскажем, как оформить документы, чтобы вернуть 13 % от стоимости обучения.</p></dd></div></dl></section></div>
+    </div>
+  </div>
+  <script type="application/json" data-price-auto-snapshot>{"slug":"act","title":"АСТ: Терапия принятия и ответственности","educationLevel":"Профессиональная переподготовка","promo":{"active":false},"streams":[{"startDate":"2026-10-26","status":"Последний шанс","pricing":{"hasTariffs":true,"tariffs":[{"price":207000,"fullPaymentPrice":180000,"title":"Расширенный"},{"price":168000,"fullPaymentPrice":146000,"title":"Полный"}]},"promo":{"active":false}},{"startDate":"2027-02-01","status":"Идет набор","pricing":{"hasTariffs":true,"tariffs":[{"price":143000,"fullPaymentPrice":125000,"installmentMonths":24,"installmentPerMonth":5958,"nextPriceChange":{"at":"2026-11-19T21:00:00.000Z","price":184000,"fullPaymentPrice":160000},"priceSchedule":[{"at":"2026-11-19T21:00:00.000Z","price":184000,"fullPaymentPrice":160000},{"at":"2026-12-14T21:00:00.000Z","price":168000,"fullPaymentPrice":146000}],"title":"Полный"},{"price":171000,"fullPaymentPrice":150000,"installmentMonths":24,"installmentPerMonth":7125,"nextPriceChange":{"at":"2026-11-19T21:00:00.000Z","price":184000,"fullPaymentPrice":160000},"priceSchedule":[{"at":"2026-11-19T21:00:00.000Z","price":184000,"fullPaymentPrice":160000},{"at":"2026-12-14T21:00:00.000Z","price":207000,"fullPaymentPrice":180000}],"title":"Расширенный"}]},"promo":{"active":false}}],"snapshotAt":"2026-11-01T07:54:37.822Z"}</script>
+  <script type="application/json" data-price-auto-extra>{"tariffs":{"Полный":{"description":"4 модуля в программе","includes":["Контекстуально-поведенческое мышление терапевта","Терапевтические отношения и позиция специалиста","Практические навыки АСТ-терапевта","Этика, границы и профессиональная ответственность"]},"Расширенный":{"description":"5 модулей в программе","includes":["Контекстуально-поведенческое мышление терапевта","Терапевтические отношения и позиция специалиста","Практические навыки АСТ-терапевта","Этика, границы и профессиональная ответственность","АСТ в работе с запросами: сессия «за стеклом» и разбор"]}}}</script>
+</section>
+
+<script>
+(function (global) {
+'use strict';
+var TEXT = {
+heading: 'Стоимость обучения',
+waitlistHeading: 'Запишитесь в лист ожидания',
+termsHeading: 'Гибкие условия оплаты',
+recommended: 'Рекомендуем',
+lastChance: 'поток уже идёт, ещё можно присоединиться',
+anytime: 'старт в любое время',
+includes: 'Что входит',
+addon: 'Можно добавить',
+};
+var BOOKING_BENEFITS = [
+'Свяжемся первыми, когда откроется набор',
+'Купите курс по самой низкой цене, до первого повышения',
+'Место за вами, даже если группа наберётся раньше старта',
+];
+var WAITLIST_FREE = ['Напишем, когда откроется набор', 'Цену и даты узнаете вместе со всеми'];
+var DISCOUNTS = [
+{ value: '−10', label: 'новым студентам' },
+{ value: '−20', label: 'вам и коллеге, которого вы пригласили', note: 'если он ещё не учился у нас' },
+{ prefix: 'до', value: '−20', label: 'нашим выпускникам за отзыв' },
+];
+var TERMS = {
+installmentTitle: 'Рассрочка до 24 месяцев',
+installment: 'От банков-партнёров. Платёж делится на равные части, платите со второго месяца обучения.',
+discountsTitle: 'Персональные скидки',
+taxTitle: 'Налоговый вычет 13 %',
+tax: 'Подробно расскажем, как оформить документы, чтобы вернуть 13 % от стоимости обучения.',
+};
+var OPEN = ['Идет набор', 'Идёт набор', 'Последний шанс', 'Старт в любое время'];
+var WAITLIST = 'Лист ожидания';
+var MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+var DAY_MS = 864e5;
+var NBSP = ' ';
+var MINUS = '−';
+var JOIN = '⁠';
+function norm(v) { return String(v || '').toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]/g, ''); }
+function num(v) { return v == null || v === '' || isNaN(Number(v)) ? null : Number(v); }
+function digits(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, NBSP); }
+function rub(n) { return digits(n) + NBSP + '₽'; }
+function perMonth(n) { return rub(n) + JOIN + '/' + JOIN + 'мес'; }
+function nb(text) { return String(text == null ? '' : text).replace(/(^|[\s(«])([а-яёА-ЯЁ]{1,2}|\d+) /g, '$1$2' + NBSP).replace(/(^|[\s(«])([а-яёА-ЯЁ]{1,2}|\d+) /g, '$1$2' + NBSP); }
+function esc(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function t(v) { return esc(nb(v)); }
+function plural(n, one, few, many) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many; }
+function moscow(ms) {
+var d = new Date(ms + 3 * 36e5);
+return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate() };
+}
+function partsOf(iso) {
+if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) { var a = iso.split('-').map(Number); return { y: a[0], m: a[1], d: a[2] }; }
+var ms = Date.parse(iso);
+return isNaN(ms) ? null : moscow(ms);
+}
+function dayLabel(iso, now) {
+var p = iso && partsOf(iso);
+if (!p) return null;
+return p.d + ' ' + MONTHS[p.m - 1] + (p.y !== moscow(now).y ? ' ' + p.y : '');
+}
+function todayIso(now) { var p = moscow(now); return p.y + '-' + String(p.m).padStart(2, '0') + '-' + String(p.d).padStart(2, '0'); }
+function priceOf(src, promo, now) {
+var regList = num(src.priceBeforeDiscount != null ? src.priceBeforeDiscount : (src.currentPrice != null ? src.currentPrice : src.price));
+var regOnce = num(src.fullPaymentPriceBeforeDiscount != null ? src.fullPaymentPriceBeforeDiscount : src.fullPaymentPrice);
+var saleList = num(src.currentPrice != null ? src.currentPrice : src.price);
+var saleOnce = num(src.fullPaymentPrice);
+var cmsMonth = num(src.installmentPerMonth);
+var next = src.nextPriceChange || null;
+var moved = false;
+var steps = (src.priceSchedule || []).filter(function (s) { return s && s.at && num(s.price) != null; })
+.sort(function (a, b) { return Date.parse(a.at) - Date.parse(b.at); });
+while (next && next.at && Date.parse(next.at) <= now) {
+regList = num(next.price);
+regOnce = num(next.fullPaymentPrice);
+moved = true;
+var after = Date.parse(next.at);
+next = steps.filter(function (s) { return Date.parse(s.at) > after; })[0] || null;
+}
+if (!promo) { saleList = regList; saleOnce = regOnce; }
+else if (moved) {
+if (regOnce != null) saleOnce = Math.round(regOnce * (1 - promo.percent / 100));
+else saleList = Math.round(regList * (1 - promo.percent / 100));
+}
+if (regList == null && saleOnce == null) return null;
+if (moved) cmsMonth = null;
+var twoPrices = regOnce != null && regList != null && regOnce < regList;
+var sale = saleOnce != null ? saleOnce : saleList;
+var was = saleOnce != null ? regOnce : regList;
+var discountedInstallment = !twoPrices && Boolean(promo) && was != null && was > sale;
+var p = {
+sale: sale,
+was: promo && was != null && was > sale ? was : null,
+official: regList,
+twoPrices: twoPrices,
+benefit: twoPrices ? regList - sale : 0,
+free: sale === 0,
+perMonth: discountedInstallment ? Math.round(sale / 24) : (cmsMonth || (regList ? Math.round(regList / 24) : null)),
+months: cmsMonth && !discountedInstallment ? (num(src.installmentMonths) || 24) : 24,
+next: null,
+};
+if (next) {
+var nextOnce = num(next.fullPaymentPrice), nextList = num(next.price);
+var nextSale = nextOnce != null && (nextList == null || nextOnce < nextList) ? nextOnce : nextList;
+var nowRegular = was != null ? was : sale;
+if (nextSale != null && nextSale > nowRegular) p.next = { at: next.at, day: dayLabel(next.at, now), price: nextSale, diff: nextSale - nowRegular };
+}
+return p;
+}
+function promoOf(raw, now) {
+raw = raw || {};
+var on = raw.active && num(raw.discountPercent) && (!raw.until || String(raw.until).slice(0, 10) >= todayIso(now));
+return on ? { percent: num(raw.discountPercent), until: dayLabel(raw.until, now) } : null;
+}
+function model(course, now) {
+now = now || Date.now();
+var coursePromo = promoOf(course.promo, now);
+var all = course.streams || [];
+var open = all.filter(function (s) { return OPEN.indexOf(s.status) !== -1 && s.pricing; })
+.sort(function (a, b) { return String(a.startDate || '9999').localeCompare(String(b.startDate || '9999')); });
+var streams = [];
+open.forEach(function (s, index) {
+var pr = s.pricing;
+var promo = s.promo ? promoOf(s.promo, now) : coursePromo;
+var items = [];
+if (pr.hasTariffs) {
+(pr.tariffs || []).forEach(function (tariff) {
+var price = priceOf(tariff, promo, now);
+if (price) items.push({ name: tariff.title, description: tariff.description || null, price: price });
+});
+items.sort(function (a, b) { return a.price.sale - b.price.sale; });
+if (items.length === 1) items = [{ name: course.title, description: null, price: items[0].price }];
+} else {
+var price = priceOf(pr, promo, now);
+if (price) items.push({ name: course.title, description: null, price: price });
+}
+var anytime = s.status === 'Старт в любое время' || !s.startDate;
+if (items.length) {
+streams.push({
+id: s.startDate || 'stream-' + index,
+startDate: s.startDate || null,
+start: anytime ? null : dayLabel(s.startDate, now),
+anytime: anytime,
+lastChance: s.status === 'Последний шанс',
+promo: promo,
+items: items,
+});
+}
+});
+var waiting = !streams.length ? all.filter(function (s) { return s.status === WAITLIST; })[0] : null;
+return {
+title: course.title || '',
+level: course.educationLevel || null,
+streams: streams,
+waitlist: waiting ? { booking: num(waiting.pricing && waiting.pricing.bookingPrice) } : null,
+};
+}
+function scenarioOf(m, opts) {
+if (!m.streams.length) return m.waitlist ? 'waitlist' : 'none';
+var tariffs = m.streams.some(function (s) { return s.items.length > 1; });
+if (tariffs) return 'tariffs';
+var p = m.streams[0].items[0].price;
+if (m.streams.length === 1 && p.twoPrices && !p.free && opts.system === 'compare') return 'compare';
+return 'single';
+}
+var ICON_CHECK = '<span class="price-icon is-check" aria-hidden="true"></span>';
+var ICON_CROSS = '<span class="price-icon is-cross" aria-hidden="true"></span>';
+var ICON_RISE = '<svg class="price-rise_icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function priceTag(value, o) {
+o = o || {};
+var isNumber = typeof value === 'number';
+var unit = isNumber ? '<span class="price-tag_unit">₽' + (o.month ? JOIN + '/' + JOIN + 'мес' : '') + '</span>' : '';
+var was = o.was != null ? '<span class="price-tag_was"><s class="price-old"><span class="price-auto_sr">вместо </span>' + rub(o.was) + '</s></span>' : '';
+return '<p class="price-tag' + (o.small ? ' is-small"' : '" data-price-auto-total') + '><span class="price-tag_number">' + (isNumber ? digits(value) : t(value)) + '</span>' + unit + was + '</p>';
+}
+function priceMain(p) {
+if (p.free) return priceTag('Бесплатно');
+return priceTag(p.sale, { was: p.was });
+}
+function caption(p) {
+if (p.free) return '';
+var lines = [];
+if (p.twoPrices) lines.push(p.benefit > 0 ? '<b class="price-caption_benefit">' + t('выгода ' + rub(p.benefit)) + '</b> ' + t('при оплате сразу') : t('при оплате сразу'));
+if (p.perMonth) lines.push(t('или ' + perMonth(p.perMonth) + ' в рассрочку на ' + p.months + ' мес'));
+return lines.length ? '<p class="price-caption">' + lines.map(function (l) { return '<span class="price-caption_line">' + l + '</span>'; }).join('') + '</p>' : '';
+}
+function rise(p) {
+if (!p.next || !p.next.day) return '';
+return '<p class="price-rise">' + ICON_RISE + '<span class="price-rise_text"><span class="price-rise_title">' + t('С ' + p.next.day + ': ' + rub(p.next.price)) + '</span>'
++ '<span class="price-rise_note">' + t('подорожает на ' + rub(p.next.diff)) + '</span></span></p>';
+}
+function sticker(stream) {
+if (!stream.promo) return '';
+return '<span class="price-sticker_component"><span class="price-sticker_coupon"><span class="price-auto_sr">Курс месяца: </span>'
++ '<span class="price-sticker_value">' + MINUS + stream.promo.percent + NBSP + '%</span>'
++ (stream.promo.until ? '<span class="price-sticker_until">' + t('до ' + stream.promo.until) + '</span>' : '') + '</span></span>';
+}
+function checklist(list) {
+return '<ul class="price-check" role="list">' + list.map(function (row) {
+var r = typeof row === 'string' ? { text: row, has: true } : row;
+var parts = String(r.text).split(' | ');
+var note = r.note || parts[1] || '';
+return '<li class="price-check_item' + (r.has ? '' : ' is-off') + '">' + (r.has ? ICON_CHECK : ICON_CROSS)
++ '<span>' + t(parts[0]) + (note ? '<span class="price-check_note">' + t(note) + '</span>' : '')
++ (r.has ? '' : '<span class="price-auto_sr">, не входит</span>') + '</span></li>';
+}).join('') + '</ul>';
+}
+function tariffInfo(name, tariffs) {
+var key = norm(name), best = null;
+Object.keys(tariffs || {}).forEach(function (k) {
+if (key.indexOf(norm(k)) !== -1 && (!best || k.length > best.length)) best = k;
+});
+return best ? tariffs[best] : {};
+}
+function featureRows(items, tariffs) {
+var infos = items.map(function (item) { return tariffInfo(item.name, tariffs); });
+var rows = [];
+infos.slice().sort(function (a, b) { return (b.includes || []).length - (a.includes || []).length; })
+.forEach(function (info) { (info.includes || []).forEach(function (text) { if (rows.indexOf(text) === -1) rows.push(text); }); });
+return items.map(function (item, i) {
+var own = infos[i].includes || [];
+return { description: item.description || infos[i].description || null, list: rows.map(function (text) { return { text: text, has: own.indexOf(text) !== -1 }; }) };
+});
+}
+function terms(uid) {
+var row = function (title, body) { return '<div class="price-terms_row"><dt class="price-terms_title">' + t(title) + '</dt><dd class="price-terms_body">' + body + '</dd></div>'; };
+var discounts = '<ul class="price-discounts" role="list">' + DISCOUNTS.map(function (d) {
+return '<li class="price-discounts_item"><p class="price-discounts_value">' + (d.prefix ? '<span class="price-discounts_prefix">' + t(d.prefix) + '</span>' : '')
++ '<span>' + t(d.value) + NBSP + '%</span></p><p class="price-discounts_label">' + t(d.label) + (d.note ? '<span class="price-discounts_note">' + t(d.note) + '</span>' : '') + '</p></li>';
+}).join('') + '</ul>';
+return '<section class="price-terms_component" aria-labelledby="' + uid + '-terms"><h3 class="price-terms_heading" id="' + uid + '-terms">' + t(TEXT.termsHeading) + '</h3><dl class="price-terms_list">'
++ row(TERMS.installmentTitle, '<p class="price-terms_text">' + t(TERMS.installment) + '</p>')
++ row(TERMS.discountsTitle, discounts)
++ row(TERMS.taxTitle, '<p class="price-terms_text">' + t(TERMS.tax) + '</p>')
++ '</dl></section>';
+}
+function streamSwitch(m, stream, uid) {
+if (m.streams.length < 2) return '';
+var name = uid + '-stream';
+return '<fieldset class="price-switch"><legend class="price-switch_legend">Старт</legend><div class="segmented_component">'
++ m.streams.map(function (s, i) {
+return '<label class="segmented_item"><input class="segmented_input" type="radio" id="' + name + '-' + i + '" name="' + name + '" value="' + esc(s.id) + '" data-price-auto-stream'
++ (s.id === stream.id ? ' checked' : '') + '><span class="segmented_label">' + t(s.start || 'в любое время') + '</span></label>';
+}).join('') + '</div></fieldset>';
+}
+function startLine(stream) {
+if (stream.lastChance) return TEXT.lastChance;
+return stream.start ? 'старт ' + stream.start : TEXT.anytime;
+}
+function card(o) {
+return '<li class="price-card_component' + (o.featured ? ' is-featured' : '') + '">'
++ (o.tag ? '<span class="price-card_badge">' + t(o.tag) + '</span>' : '') + (o.sticker || '')
++ '<div class="price-card_head"><h3 class="price-card_name">' + t(o.title) + '</h3>' + (o.sub ? '<p class="price-card_sub">' + t(o.sub) + '</p>' : '') + '</div>'
++ '<div class="price-card_money">' + o.price + (o.caption || '') + '</div>'
++ '<div class="price-card_list">' + (o.list && o.list.length ? checklist(o.list) : '') + '</div>'
++ (o.foot ? '<div class="price-card_foot">' + o.foot + '</div>' : '')
++ '</li>';
+}
+function cardGrid(list) { return '<ul class="price-cards is-count-' + Math.min(list.length, 3) + '" role="list">' + list.join('') + '</ul>'; }
+function bundleCards() { return []; }
+function addonCards() { return ''; }
+function wideCard(m, stream, p, includes) {
+var money = '<div class="price-wide_money">' + priceMain(p) + caption(p) + (p.next ? '<div class="price-wide_foot">' + rise(p) + '</div>' : '') + '</div>';
+var side = includes && includes.length ? '<p class="price-wide_side-title">' + t(TEXT.includes) + '</p>' + checklist(includes) : '';
+return '<div class="price-wide_component' + (side ? '' : ' is-plain') + '">' + sticker(stream)
++ '<div class="price-wide_main">' + (m.level ? '<span class="price-wide_chip">' + t(m.level) + '</span>' : '')
++ '<div class="price-wide_title"><h3 class="price-wide_name">' + t(m.title) + '</h3><p class="price-wide_sub">' + t(startLine(stream)) + '</p></div>'
++ (side ? money : '') + '</div>'
++ '<div class="price-wide_side">' + (side || money) + '</div>'
++ '</div>';
+}
+function frame(o) {
+return '<div class="price-block_component">'
++ '<div class="price-block_head"><div class="price-block_title"><h2 class="price-block_heading">' + t(o.heading) + '</h2>' + (o.lead ? '<p class="price-block_lead">' + o.lead + '</p>' : '') + '</div>'
++ (o.controls ? '<div class="price-block_controls">' + o.controls + '</div>' : '') + '</div>'
++ o.body + (o.terms ? terms(o.uid) : '') + '</div>';
+}
+function lead(m, stream) {
+var parts = [m.title];
+if (stream && m.streams.length === 1) parts.push(startLine(stream));
+if (m.level) parts.push(m.level.toLowerCase());
+return parts.map(t).join(', ');
+}
+function render(m, state, opts) {
+state = state || {};
+opts = opts || {};
+var uid = opts.uid || 'price-auto';
+var scenario = scenarioOf(m, opts);
+if (scenario === 'none') return '';
+if (scenario === 'waitlist') {
+var cards = [card({ title: 'Лист ожидания', sub: 'Без оплаты', price: priceTag('Бесплатно'), list: WAITLIST_FREE })];
+if (m.waitlist.booking) cards.push(card({ featured: true, tag: 'Место за вами', title: 'Бронь места', sub: 'Место в следующем потоке', price: priceTag(m.waitlist.booking), list: BOOKING_BENEFITS }));
+return frame({ heading: TEXT.waitlistHeading, lead: lead(m, null), body: cardGrid(cards), terms: opts.terms, uid: uid });
+}
+var stream = m.streams.filter(function (s) { return s.id === state.stream; })[0] || m.streams[0];
+var controls = streamSwitch(m, stream, uid);
+var first = stream.items[0].price;
+var showTerms = opts.terms && !first.free;
+var addons = addonCards(opts.addons);
+var body;
+if (stream.items.length > 1) {
+var infos = stream.items.map(function (item) { return tariffInfo(item.name, opts.tariffs); });
+var bundleAt = -1;
+infos.forEach(function (info, i) { if (bundleAt === -1 && info.kind === 'bundle') bundleAt = i; });
+var top = stream.items.length - 1;
+var rows = featureRows(stream.items, opts.tariffs);
+body = cardGrid(bundleAt !== -1 ? bundleCards(stream, infos, bundleAt, opts.tariffs) : stream.items.map(function (item, i) {
+var p = item.price;
+return card({
+featured: i === top, tag: i === top ? TEXT.recommended : '', sticker: p.was ? sticker(stream) : '',
+title: item.name, sub: rows[i].description, price: priceMain(p), caption: caption(p), list: rows[i].list, foot: rise(p),
+});
+}));
+return frame({ heading: TEXT.heading, lead: lead(m, stream), controls: controls, body: body + addons, terms: showTerms, uid: uid });
+}
+if (scenario === 'compare') {
+body = cardGrid([
+card({ featured: true, tag: first.benefit > 0 ? 'Выгода ' + rub(first.benefit) : '', sticker: sticker(stream), title: 'Оплата сразу', sub: 'Один платёж', price: priceTag(first.sale, { was: first.was }), foot: rise(first) }),
+card({ title: 'В рассрочку', sub: 'Официальная цена, ' + first.months + ' ' + plural(first.months, 'ежемесячный платёж', 'ежемесячных платежа', 'ежемесячных платежей'), price: priceTag(first.perMonth, { month: true }) }),
+]);
+return frame({ heading: TEXT.heading, lead: lead(m, stream), controls: controls, body: body + addons, terms: showTerms, uid: uid });
+}
+return frame({ heading: TEXT.heading, controls: controls, body: wideCard(m, stream, first, opts.includes) + addons, terms: showTerms, uid: uid });
+}
+function dayBefore(iso) {
+var d = moscow(Date.parse(iso) - DAY_MS);
+return d.y + '-' + String(d.m).padStart(2, '0') + '-' + String(d.d).padStart(2, '0');
+}
+function offerLd(p, url, name) {
+var o = { '@type': 'Offer', price: String(p.sale), priceCurrency: 'RUB', availability: 'https://schema.org/InStock', url: url };
+if (name) o.name = name;
+if (p.next && p.next.at) o.priceValidUntil = dayBefore(p.next.at);
+return o;
+}
+function instancesLd(m, url, instructor) {
+return m.streams.map(function (s) {
+var i = { '@type': 'CourseInstance', courseMode: 'online', location: { '@type': 'VirtualLocation', url: url } };
+if (s.start) i.name = 'Поток ' + s.start;
+if (s.startDate) i.startDate = s.startDate;
+if (instructor) i.instructor = instructor;
+i.offers = s.items.length > 1
+? s.items.map(function (item) { return offerLd(item.price, url, item.name); })
+: offerLd(s.items[0].price, url);
+return i;
+});
+}
+function updateLd(slug, m) {
+if (typeof document === 'undefined' || !slug) return;
+Array.prototype.forEach.call(document.querySelectorAll('script[type="application/ld+json"][data-price-auto-ld]'), function (el) {
+if (el.getAttribute('data-price-auto-ld') !== slug) return;
+try {
+var data = JSON.parse(el.textContent);
+var old = Array.isArray(data.hasCourseInstance) ? data.hasCourseInstance[0] : data.hasCourseInstance;
+var list = instancesLd(m, data.url, old && old.instructor);
+if (list.length) data.hasCourseInstance = list; else delete data.hasCourseInstance;
+el.textContent = JSON.stringify(data, null, 2);
+} catch (e) { /* разметку не трогаем, если её не прочитать */ }
+});
+}
+var api = { model: model, render: render, scenarioOf: scenarioOf, instancesLd: instancesLd };
+if (typeof document === 'undefined') { global.PriceAuto = api; return; }
+function plain(el) { return el.outerHTML.replace(/ checked(="[^"]*")?/g, '').replace(/ is-fading/g, ''); }
+function sig(el) { return el.tagName + '.' + (el.classList[0] || ''); }
+function ownText(el) { return Array.prototype.filter.call(el.childNodes, function (n) { return n.nodeType === 3; }).map(function (n) { return n.nodeValue; }).join('|'); }
+function fadeIn(el) { el.classList.add('is-fading'); }
+function syncAttributes(oldEl, newEl) {
+var fading = oldEl.classList.contains('is-fading');
+Array.prototype.slice.call(oldEl.attributes).forEach(function (a) { if (a.name !== 'checked' && !newEl.hasAttribute(a.name)) oldEl.removeAttribute(a.name); });
+Array.prototype.slice.call(newEl.attributes).forEach(function (a) { if (a.name !== 'checked' && oldEl.getAttribute(a.name) !== a.value) oldEl.setAttribute(a.name, a.value); });
+if (fading) oldEl.classList.add('is-fading');
+}
+function morph(oldEl, newEl) {
+if (plain(oldEl) === plain(newEl)) return;
+if (sig(oldEl) !== sig(newEl) || ownText(oldEl) !== ownText(newEl)) { oldEl.replaceWith(newEl); fadeIn(newEl); return; }
+syncAttributes(oldEl, newEl);
+var oldKids = Array.prototype.slice.call(oldEl.children);
+var next = 0;
+Array.prototype.slice.call(newEl.children).forEach(function (newKid) {
+var match = -1;
+for (var i = next; i < oldKids.length; i++) { if (sig(oldKids[i]) === sig(newKid)) { match = i; break; } }
+if (match === -1) { oldEl.insertBefore(newKid, oldKids[next] || null); fadeIn(newKid); return; }
+oldKids.slice(next, match).forEach(function (k) { k.remove(); });
+morph(oldKids[match], newKid);
+next = match + 1;
+});
+oldKids.slice(next).forEach(function (k) { k.remove(); });
+}
+var counter = 0;
+function setup(root) {
+if (root.__priceAuto) return root.__priceAuto;
+var body = root.querySelector('[data-price-auto-body]');
+if (!body) return null;
+var snapshotEl = root.querySelector('script[data-price-auto-snapshot]');
+var snapshot = null;
+try { snapshot = snapshotEl ? JSON.parse(snapshotEl.textContent) : null; } catch (e) { snapshot = null; }
+var extraEl = root.querySelector('script[data-price-auto-extra]');
+var extra = {};
+try { extra = extraEl ? JSON.parse(extraEl.textContent) || {} : {}; } catch (e) { extra = {}; }
+var slug = (root.getAttribute('data-course') || '').trim();
+counter += 1;
+var opts = {
+system: root.getAttribute('data-system') === 'compare' ? 'compare' : 'figure',
+terms: root.getAttribute('data-terms') !== 'off',
+includes: Array.isArray(extra.includes) ? extra.includes : [],
+tariffs: extra.tariffs && typeof extra.tariffs === 'object' ? extra.tariffs : {},
+addons: Array.isArray(extra.addons) ? extra.addons : [],
+uid: 'price-auto-' + (slug.replace(/[^a-z0-9-]/gi, '') || 'course') + '-' + counter,
+};
+var state = { stream: null };
+var current = null;
+var live = document.createElement('p');
+live.className = 'price-auto_sr';
+live.setAttribute('aria-live', 'polite');
+root.appendChild(live);
+function paint(fade) {
+var html = render(current, state, opts);
+root.hidden = !html;
+root.setAttribute('data-scenario', scenarioOf(current, opts));
+var oldRoot = body.firstElementChild;
+if (!html) { body.innerHTML = ''; return; }
+if (!fade || !oldRoot) { body.innerHTML = html; return; }
+var tpl = document.createElement('template');
+tpl.innerHTML = html;
+morph(oldRoot, tpl.content.firstElementChild);
+}
+function show(course, fade) {
+current = model(course, Date.now());
+paint(fade);
+updateLd(slug, current);
+}
+body.addEventListener('change', function (event) {
+var el = event.target;
+if (!el.hasAttribute || !el.hasAttribute('data-price-auto-stream') || !current) return;
+state.stream = el.value;
+paint(true);
+var again = document.getElementById(el.id);
+if (again) again.focus({ preventScroll: true });
+var total = body.querySelector('[data-price-auto-total]');
+if (total) live.textContent = Array.prototype.map.call(total.childNodes, function (n) { return n.textContent; }).join(' ');
+});
+body.addEventListener('animationend', function (event) { event.target.classList.remove('is-fading'); });
+var ctl = { show: show, options: opts, snapshot: snapshot, repaint: function () { if (current) paint(true); } };
+root.__priceAuto = ctl;
+if (snapshot) current = model(snapshot, Date.now());
+return ctl;
+}
+function load(root) {
+if (root.__priceAutoLoaded) return;
+root.__priceAutoLoaded = true;
+var ctl = setup(root);
+if (!ctl) return;
+var base = (root.getAttribute('data-api') || '').replace(/\/+$/, '');
+var slug = (root.getAttribute('data-course') || '').trim();
+var fallback = function (err) {
+if (err) console.error('[price-auto] цены из CMS не загрузились, остаётся снимок из вёрстки.', err);
+root.setAttribute('data-cms-state', 'error');
+if (ctl.snapshot) ctl.show(ctl.snapshot, true);
+};
+if (!base || !slug || !window.fetch) { fallback(); return; }
+var abort = window.AbortController ? new AbortController() : null;
+var timer = abort && setTimeout(function () { abort.abort(); }, 8000);
+root.setAttribute('data-cms-state', 'loading');
+fetch(base + '/api/public/course/' + encodeURIComponent(slug), { headers: { Accept: 'application/json' }, signal: abort ? abort.signal : undefined })
+.then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+.then(function (course) {
+if (!course || course.error || !Array.isArray(course.streams)) throw new Error((course && course.error) || 'нет потоков в ответе');
+ctl.show(course, true);
+root.setAttribute('data-cms-state', 'ready');
+})
+.catch(fallback)
+.then(function () { if (timer) clearTimeout(timer); });
+}
+api.load = load;
+global.PriceAuto = api;
+function init() { Array.prototype.forEach.call(document.querySelectorAll('[data-price-auto]'), load); }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+</div>

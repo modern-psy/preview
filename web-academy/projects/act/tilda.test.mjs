@@ -10,17 +10,22 @@ const manifest=JSON.parse(await read('manifest.json'));
 const contract=JSON.parse(await readFile(new URL('./data/form-contract.json',import.meta.url)));
 const parts=await Promise.all(manifest.sections.map(read));
 const body=parts.join('\n');
+// Разметка без скриптов: у блока цены с Тильды в скрипте есть HTML-шаблоны.
+const markup=body.replace(/<script\b[\s\S]*?<\/script>/g,'');
 const files=Object.fromEntries(await Promise.all(manifest.files.map(async file=>[file.name,await read(file.name)])));
 
-test('16 последовательных BODY: один T123 — одна целая секция, без хедера и футера',()=>{
- assert.equal(parts.length,16);
+test('15 последовательных BODY: один T123 — одна целая секция, без хедера и футера',()=>{
+ assert.equal(parts.length,15);
  parts.forEach((part,index)=>{
   const n=String(index+1).padStart(2,'0');
   assert.ok(manifest.sections[index].startsWith(n+'-body-'));
   assert.ok(part.startsWith('<!-- Секция '+n+':'));
-  assert.equal((part.match(/<section\b/g)||[]).length,1);
-  assert.equal((part.match(/<\/section>/g)||[]).length,1);
-  assert.equal((part.match(/data-act-part="/g)||[]).length,1);
+  // Блок цены с Тильды переносится как есть: внутри него своя секция условий оплаты.
+  if(!manifest.sections[index].endsWith('-body-pricing.html')){
+   assert.equal((part.match(/<section\b/g)||[]).length,1);
+   assert.equal((part.match(/<\/section>/g)||[]).length,1);
+   assert.equal((part.match(/data-act-part="/g)||[]).length,1);
+  }
   assert.doesNotMatch(part,/<header\b|<footer\b/);
  });
  assert.equal((body.match(/<h1\b/g)||[]).length,1);
@@ -41,7 +46,7 @@ test('Якоря из Hero существуют один раз, а попап �
  for(const id of ['act-program','act-trial'])assert.equal(ids.filter(value=>value===id).length,1);
  for(const popup of manifest.actions.existingPopupHashes)assert.ok(!ids.includes(popup.slice(1)));
  assert.match(body,/href="#free-lessons-act"\s+data-tilda-popup-link/);
- for(const match of body.matchAll(/(?:aria-labelledby|aria-describedby|aria-controls|for)="([^"]+)"/g))for(const id of match[1].split(/\s+/))assert.ok(ids.includes(id),id);
+ for(const match of markup.matchAll(/(?:aria-labelledby|aria-describedby|aria-controls|for)="([^"]+)"/g))for(const id of match[1].split(/\s+/))assert.ok(ids.includes(id),id);
 });
 test('CSS ограничен ACT и не задаёт viewport-height каждому экспортному wrapper',()=>{
  const css=manifest.styles.map(name=>files[name]).join('\n');
@@ -53,14 +58,13 @@ test('CSS ограничен ACT и не задаёт viewport-height каждо
 });
 test('Hero и цены имеют live CMS с резервным снимком, условия не дублируются при обновлении',()=>{
  assert.match(files['01-body-hero.html'],/data-cms-hero/);
- assert.match(files['13-body-pricing.html'],/data-cms-price/);
+ assert.ok(files['13-body-pricing.html'].includes('data-price-auto data-course="act"'));
  assert.match(files['footer-cms.html'],/data-price-snapshot/);
  assert.equal((files['footer-cms.html'].match(/<script type="application\/json" data-price-snapshot>/g)||[]).length,1);
  assert.ok(files['footer-cms.html'].indexOf('type="application/json"')<files['footer-cms.html'].indexOf('const ACT_ICONS'));
  assert.match(files['footer-cms.html'],/api\/public\/course\//);
  assert.match(files['footer-cms.html'],/api\/public\/catalog/);
- assert.doesNotMatch(files['13-body-pricing.html'],/price-terms_component/);
- assert.equal((body.match(/class="price-terms_component"/g)||[]).length,1);
+ assert.equal((markup.match(/class="price-terms_component"/g)||[]).length,1);
 });
 test('Форма привязана к точному native marker и MAX, success зависит от нативного события',()=>{
  assert.match(files['14-body-lead.html'],new RegExp(`data-tilda-form-name="${contract.nativeMarker}"`));

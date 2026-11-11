@@ -14,17 +14,16 @@ const formContract=JSON.parse(await readFile(path.join(here,'data/form-contract.
 if(formContract.transportEnabled)throw new Error('Локальная сборка ACT не должна подключать отправку заявок');
 const original=await readFile(path.join(approved,'index.html'),'utf8');
 const hero=original.match(/<section class="section_hero"[\s\S]*?<\/section>/)[0];
-const approvedPricing=original.slice(original.indexOf('<section class="section_pricing"'),original.indexOf('</main>'));
-const paymentTerms=approvedPricing.match(/<section class="price-terms_component"[\s\S]*?<\/section>/)?.[0];
-if(!paymentTerms)throw new Error('Не найден согласованный блок условий оплаты');
-const pricing=approvedPricing.replace(paymentTerms,'');
+// Цена: блок генератора, который уже стоит на modern-psy.ru/act (T123 rec4766225501), без изменений.
+// Источник — apps/tilda/pricing-auto/act.html (собирается на странице /pricing). Условия оплаты внутри него.
+const livePricing=await readFile(path.resolve(preview,'../tilda/pricing-auto/act.html'),'utf8');
+if(!livePricing.includes('data-price-auto'))throw new Error('Не найден блок цены с Тильды: apps/tilda/pricing-auto/act.html');
 const snapshot=original.match(/<script type="application\/json" data-price-snapshot>[\s\S]*?<\/script>/)[0];
 const {sections,dialog}=renderSections(content,{formId:formContract.formId,copy:{...leadCopy,...formContract.consent,nativeMarker:formContract.previewMarker}});
 const normalized=html=>html.replaceAll('/act-hero-variants/','/act/').replaceAll('src="assets/','src="/act/assets/').replaceAll('https://modern-psy.ru/act#rec2371385461','#rec2371385461').replaceAll('https://modern-psy.ru/act#rec781271521','#rec781271521');
 sections.unshift({key:'hero',title:'Первый экран',html:hero.replace('class="section_hero"','class="section_hero" data-act-section="hero"')});
-sections.splice(sections.findIndex(s=>s.key==='lead'),0,{key:'pricing',title:'Стоимость обучения',html:pricing.replace('class="section_pricing"','class="section_pricing" data-act-section="pricing"')});
-const termsContent=paymentTerms.replace(/^<section /,'<div ').replace(/<\/section>$/,'</div>').replace('<h3 ','<h2 ').replace('</h3>','</h2>');
-sections.splice(sections.findIndex(s=>s.key==='lead')+1,0,{key:'terms',title:'Гибкие условия оплаты',html:`<section class="section_terms" id="act-payment-terms" data-act-section="terms" aria-labelledby="act-terms-heading"><div class="padding-global"><div class="container-large"><div class="padding-section-small">${termsContent}</div></div></div></section>`});
+sections.splice(sections.findIndex(s=>s.key==='lead'),0,{key:'pricing',title:'Стоимость обучения',html:`<div class="section_pricing" data-act-section="pricing">\n${livePricing}\n</div>`});
+// Отдельной секции «Гибкие условия оплаты» нет: как на сайте, они внутри блока цены.
 for(const s of sections)s.html=normalized(s.html);
 await Promise.all([mkdir(path.join(output,'assets'),{recursive:true}),mkdir(path.join(output,'icons'),{recursive:true}),mkdir(path.join(output,'sections'),{recursive:true}),mkdir(path.join(here,'sections'),{recursive:true})]);
 await mkdir(path.join(output,'assets/icons'),{recursive:true});

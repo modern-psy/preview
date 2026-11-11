@@ -41,6 +41,12 @@ const bodyNames=[];
 for(const section of sections){
   const source=(await readFile(path.join(here,'sections',section.file),'utf8')).replace(/^<!--[\s\S]*?-->\s*/,'').trim();
   const name=`${String(section.number).padStart(2,'0')}-body-${section.key}.html`;
+  if(section.key==='pricing'){
+    // Блок цены уже стоит на странице (T123 rec4766225501). Его не меняем: здесь та же копия, apps/tilda/pricing-auto/act.html.
+    files[name]=`<!-- Секция ${String(section.number).padStart(2,'0')}: ${section.title}. Уже на странице: T123 rec4766225501, не перезаливать. -->\n`+(await readFile(path.resolve(here,'../../../../tilda/pricing-auto/act.html'),'utf8')).trim()+'\n';
+    bodyNames.push(name);
+    continue;
+  }
   const html=`<div class="act-page" data-act-part="${section.key}"><div class="academy-page act-course-page" data-academy-anchor-scroll>${productionHtml(source)}</div></div>`;
   files[name]=`<!-- Секция ${String(section.number).padStart(2,'0')}: ${section.title} -->\n`+prettyHtml(html)+'\n';
   bodyNames.push(name);

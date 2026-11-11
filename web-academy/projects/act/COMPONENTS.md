@@ -14,7 +14,6 @@
 12. Почему выбирают нас — sections/12-why.html
 13. Стоимость обучения — sections/13-pricing.html
 14. Оставьте заявку на обучение АСТ — sections/14-lead.html
-15. Гибкие условия оплаты — sections/15-terms.html
-16. Ответы на популярные вопросы — sections/16-faq.html
+15. Ответы на популярные вопросы — sections/15-faq.html
 
 Hero и цена: согласованный проект act-hero-variants. Прочие композиции: текущий ACT. FAQ: shared/academy/faq-render.mjs и исходные вопросы/ответы data/content.json. Условия оплаты — отдельная секция после формы; CMS обновляет только карточки цен над формой. Поведение аккордеонов: shared/academy/components.js; якоря: shared/academy/anchor-scroll.js. Форма заявки: shared/academy/lead-form-render.mjs, lead-form.css и lead-form.js; тексты и локальный контракт — data/lead-form.json и data/form-contract.json. Локальные адаптеры преподавателей, видео и бесплатного окна: course.js. Тильда в этой сборке не меняется.

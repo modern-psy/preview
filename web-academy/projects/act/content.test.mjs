@@ -2,29 +2,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {rich,renderCourseFaq} from './render-sections.mjs';
-import {renderPriceBlock} from '../../../act/price-model.mjs';
 import {renderLeadForm} from '../../shared/academy/lead-form-render.mjs';
 const content=JSON.parse(await readFile(new URL('./data/content.json',import.meta.url)));
 const page=await readFile(new URL('../../../act/index.html',import.meta.url),'utf8');
 const manifest=JSON.parse(await readFile(new URL('../../../act/sections.json',import.meta.url)));
 
-test('Цены перед формой, условия после формы; один H1 и уникальные ID',()=>{
- assert.deepEqual(manifest.map(s=>s.key),['hero','foundation','community','benefits','standards','outcomes','program','trial','teachers','diploma','reviews','why','pricing','lead','terms','faq']);
+test('Цена перед формой, как на сайте; один H1 и уникальные ID',()=>{
+ assert.deepEqual(manifest.map(s=>s.key),['hero','foundation','community','benefits','standards','outcomes','program','trial','teachers','diploma','reviews','why','pricing','lead','faq']);
  assert.equal((page.match(/<h1\b/g)||[]).length,1);
  assert.doesNotMatch(page,/<header\b|<footer\b/);
  const ids=[...page.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(ids.length,new Set(ids).size);
  for(const target of ['rec2371385461','rec781271521'])assert.ok(ids.includes(target));
 });
-test('CMS не возвращает условия в цену, FAQ использует готовую композицию и исходные ответы',()=>{
- const snapshot=JSON.parse(page.match(/data-price-snapshot>([\s\S]*?)<\/script>/)[1]);
- for(const stream of snapshot.streams){
-  const html=renderPriceBlock(snapshot,stream.startDate);
-  assert.doesNotMatch(html,/price-terms_component|act-terms-heading/);
-  assert.match(html,new RegExp(`data-price-stream="${stream.startDate}"`));
- }
- assert.equal((page.match(/class="price-terms_component"/g)||[]).length,1);
- assert.ok(page.indexOf('data-act-section="lead"')<page.indexOf('data-act-section="terms"'));
+test('Цена — блок с Тильды без изменений, условия оплаты один раз; FAQ использует готовую композицию и исходные ответы',async()=>{
+ const live=await readFile(new URL('../../../../tilda/pricing-auto/act.html',import.meta.url),'utf8');
+ assert.ok(page.includes(live),'блок цены отличается от apps/tilda/pricing-auto/act.html');
+ // Скрипт блока цены рисует условия из шаблона: считаем только разметку, без <script>.
+ assert.equal((page.replace(/<script\b[\s\S]*?<\/script>/g,'').match(/class="price-terms_component"/g)||[]).length,1);
+ assert.doesNotMatch(page,/data-act-section="terms"/);
+ assert.ok(page.indexOf('data-act-section="pricing"')<page.indexOf('data-act-section="lead"'));
  assert.ok(page.includes(renderCourseFaq(content.faq)));
  assert.equal((page.match(/class="faq_item accordion_item"/g)||[]).length,6);
  assert.doesNotMatch(page,/class="act-faq_/);
