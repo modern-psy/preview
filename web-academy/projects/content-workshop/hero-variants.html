@@ -2843,362 +2843,6 @@
       }
     </style>
     <style>
-      /* ---------- Первый экран в трёх вариантах друг под другом (12.11.2026) ----------
-         Временно, пока выбираем: 1 — основной первый экран с корешками (стили выше),
-         2 — «Три результата сразу», 3 — три колонки по референсу (отдельный блок стилей ниже).
-         Когда вариант выберут, лишние секции #variant-b / #variant-c и их стили убрать.
-         Тексты везде утверждённые: заголовок, подзаголовок, подписи трёх результатов. */
-      .fsv {
-        padding-top: 3.5rem;
-        padding-bottom: 6rem;
-      }
-      /* Текст первого экрана: по центру во втором варианте, по левому краю в третьем */
-      .fsv_copy {
-        display: flex;
-        min-width: 0;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.75rem;
-        text-align: left;
-      }
-      .fsv .hero_heading-wrapper { align-items: flex-start; }
-      .fsv .hero_actions { justify-content: flex-start; flex-wrap: wrap; }
-      .fsv .hero_description { max-width: 36rem; font-size: 1.25rem; }
-      /* Подсветка «клиенты выбирают вас» идёт за строками, а не одним блоком со ступенькой */
-      .fsv .hero_heading-highlight {
-        display: inline;
-        padding: 0 0.08em;
-        background: var(--color-highlight);
-        border-radius: 0.5rem;
-        -webkit-box-decoration-break: clone;
-        box-decoration-break: clone;
-      }
-      .fsv .hero_heading-highlight::before { display: none; }
-      @media screen and (min-width: 62rem) {
-        .fsv .hero_heading-highlight { white-space: nowrap; }
-      }
-      /* Макеты: размер следует за шириной карточки */
-      .fsv_visual {
-        display: flex;
-        min-height: 0;
-        flex: 1;
-        align-items: center;
-        justify-content: center;
-        container-type: inline-size;
-      }
-      .fsv_visual .hero_social,
-      .fsv_visual .hero_blog { font-size: calc(100cqi / 32); }
-      .fsv_visual .hero_chat { width: 100%; }
-      .fsv_visual .hero_chat-message { font-size: clamp(0.875rem, 4.2cqi, 1rem); }
-      .fsv .hero_chat-message.is-light { background: #eeeeef; border-color: transparent; }
-      .fsv_result { display: flex; flex-direction: column; gap: 0.375rem; }
-      .fsv_result-title {
-        margin: 0;
-        color: var(--color-text-button);
-        font-size: 1.5rem;
-        font-weight: 700;
-        line-height: 1.2;
-        letter-spacing: -0.02em;
-      }
-      .fsv_result-text {
-        margin: 0;
-        color: #5e5a6a;
-        font-size: 1rem;
-        line-height: 1.45;
-      }
-      /* ---------- 2. Три результата сразу ---------- */
-      .fsv_center { display: flex; justify-content: center; }
-      .fsv_center .fsv_copy { align-items: center; text-align: center; }
-      .fsv_center .hero_heading-wrapper { align-items: center; }
-      .fsv_center .hero_actions { justify-content: center; }
-      .fsv_center .hero_description { max-width: 46rem; }
-      /* Сброс страницы ставит спискам margin и padding 0 с !important, поэтому отступы у обёрток */
-      .fsv_cards-wrap { margin-top: 3.5rem; }
-      .fsv .fsv_cards {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1rem;
-      }
-      .fsv_cards li { display: flex; min-width: 0; }
-      .fsv_card {
-        display: flex;
-        min-height: 27rem;
-        padding: 1.5rem;
-        flex: 1;
-        flex-direction: column;
-        gap: 1.5rem;
-        background: #ffffff;
-        border-radius: 1.25rem;
-      }
-      /* Планшет: карточки второго варианта листаются вбок */
-      @media screen and (max-width: 61.9375rem) {
-        .fsv { padding-top: 2.5rem; padding-bottom: 4.5rem; }
-        .fsv_cards-wrap { margin-top: 2.5rem; }
-        .fsv .fsv_cards {
-          grid-template-columns: none;
-          grid-auto-columns: minmax(18rem, 46%);
-          grid-auto-flow: column;
-          overflow-x: auto;
-          scroll-snap-type: x mandatory;
-          scrollbar-width: none;
-        }
-        .fsv_cards li { scroll-snap-align: start; }
-        .fsv_card { min-height: 25rem; }
-      }
-      @media screen and (max-width: 47.9375rem) {
-        .fsv .fsv_cards { grid-auto-columns: 86%; }
-      }
-      @media screen and (max-width: 32.5rem) {
-        .fsv .hero_description { font-size: 1.0625rem; }
-        .fsv .hero_actions { width: 100%; }
-        .fsv .hero_actions .button { width: 100%; }
-        .fsv_result-title { font-size: 1.375rem; }
-        .fsv_result-text { font-size: 0.9375rem; }
-        .fsv_card { min-height: 0; padding: 1.25rem 1rem; }
-        .fsv_card .fsv_visual { min-height: 14rem; }
-      }
-    </style>
-    <style>
-      /* ---------- Первый экран, вариант 3: три колонки по референсу aurevo.framer.website (12.11.2026) ----------
-         Слева текст, в центре градиент с иллюстрацией и чипами, справа оценка участников
-         и карточка пробных дней. */
-      .fsv_trio-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 0.85fr);
-        align-items: stretch;
-        gap: 2rem;
-      }
-      .fsv.is-trio .fsv_copy { padding-top: 0.5rem; }
-      .fsv.is-trio .hero_heading { font-size: clamp(2.5rem, 3.75vw, 3.75rem); }
-      /* В узкой колонке подсветка переносится вместе со строками */
-      .fsv.is-trio .hero_heading-highlight { white-space: normal; }
-      .fsv.is-trio .hero_description { color: #5e5a6a; }
-      /* В узкой колонке кнопки тянутся на всю её ширину: в одну строку, если помещаются,
-         иначе друг под другом одинаковой ширины */
-      @media screen and (min-width: 75rem) {
-        .fsv.is-trio .hero_actions { width: 100%; }
-        .fsv.is-trio .hero_actions .button { flex: 1 1 auto; padding-right: 1.5rem; padding-left: 1.5rem; }
-      }
-
-      /* Плашка над заголовком: что это за продукт */
-      .fsv_trio-badge {
-        display: inline-flex;
-        margin: 0;
-        padding: 0.5rem 1rem;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--color-highlight);
-        border-radius: 3rem;
-        color: var(--color-text-dark);
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.25;
-      }
-      .fsv_trio-badge svg { width: 1.125rem; height: 1.125rem; flex: none; }
-
-      /* Общий фон для градиентной картинки и карточки пробных дней:
-         градиент страницы, зерно и вертикальные «рифлёные» полосы, как стекло */
-      .fsv_trio-glass {
-        position: absolute;
-        z-index: 0;
-        inset: 0;
-        overflow: clip;
-        background: #000000;
-        border-radius: inherit;
-      }
-      .fsv_trio-glass img {
-        position: absolute;
-        top: -17%;
-        left: -7.68%;
-        width: 126.3%;
-        height: 134%;
-        max-width: none;
-        object-fit: cover;
-        opacity: 0.9;
-        filter: blur(38.5px);
-        transform: rotate(180deg) scale(1.03);
-      }
-      .fsv_trio-trial .fsv_trio-glass img { top: -40%; left: -30%; width: 160%; height: 180%; transform: rotate(90deg); }
-      .fsv_trio-grain {
-        position: absolute;
-        inset: 0;
-        background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
-        background-size: 31.25rem 31.25rem;
-        mix-blend-mode: multiply;
-        opacity: 0.4;
-      }
-      .fsv_trio-flutes {
-        position: absolute;
-        inset: 0;
-        background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 55%, rgba(0, 0, 0, 0.07));
-        background-size: 2rem 100%;
-      }
-
-      /* Центр: градиент, на нём пост и сообщение от читателя, внизу чипы */
-      .fsv_trio-art {
-        position: relative;
-        display: flex;
-        min-height: 38rem;
-        padding: 1.5rem;
-        flex-direction: column;
-        border-radius: 1.5rem;
-        container-type: inline-size;
-      }
-      .fsv_trio-scene { position: relative; z-index: 1; flex: 1; min-height: 22rem; }
-      .fsv_trio-scene .hero_app.is-instagram {
-        top: 4%;
-        bottom: auto;
-        left: 50%;
-        font-size: min(1.0625rem, calc(100cqi / 20));
-        transform: translateX(-46%) rotate(2deg);
-        box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
-      }
-      .fsv_trio-scene .hero_chat-message.is-dark {
-        position: absolute;
-        z-index: 3;
-        top: 62%;
-        left: 0;
-        width: min(82%, 21rem);
-        margin: 0;
-        padding: 0.875rem;
-        font-size: min(1rem, calc(100cqi / 22));
-        box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.35);
-        transform: rotate(-2deg);
-      }
-      .fsv_trio-scene .hero_chat-avatar { width: 2.25rem; height: 2.25rem; }
-      .fsv_trio-tags-wrap { position: relative; z-index: 2; margin-top: 1.5rem; }
-      .fsv .fsv_trio-tags {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 0.5rem;
-        list-style: none;
-      }
-      /* Отступы у span: сброс страницы обнуляет padding у li */
-      .fsv_trio-tag {
-        display: block;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.82);
-        border-radius: 3rem;
-        color: var(--color-text-button);
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.25;
-        -webkit-backdrop-filter: blur(8px);
-        backdrop-filter: blur(8px);
-      }
-
-      /* Справа: оценка участников сверху, пробные дни снизу */
-      .fsv_trio-side {
-        display: flex;
-        min-width: 0;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 2.5rem;
-      }
-      .fsv_trio-proof { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; padding-top: 0.5rem; }
-      .fsv_trio-caption { max-width: 20rem; margin: 0; color: #5e5a6a; font-size: 1rem; line-height: 1.4; }
-      .fsv .fsv_trio-faces { display: flex; list-style: none; }
-      .fsv .fsv_trio-faces li + li { margin-left: -0.75rem !important; }
-      .fsv_trio-faces img {
-        display: block;
-        width: 3.75rem;
-        height: 3.75rem;
-        border: 0.1875rem solid var(--color-page-background);
-        border-radius: 50%;
-        object-fit: cover;
-        object-position: 50% 20%;
-      }
-      .fsv_trio-link {
-        --link-color: var(--color-text-button);
-        display: inline-flex;
-        padding-bottom: 0.25rem;
-        align-items: center;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--color-text-button);
-        font-size: 1.0625rem;
-        font-weight: 500;
-        line-height: 1.3;
-      }
-      .fsv_trio-link svg { width: 1rem; height: 1rem; }
-
-      .fsv_trio-trial {
-        position: relative;
-        padding: 1.5rem 1.25rem 1.25rem;
-        border-radius: 1.5rem;
-        color: #ffffff;
-      }
-      .fsv_trio-trial > :not(.fsv_trio-glass) { position: relative; z-index: 1; }
-      .fsv_trio-trial-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-      .fsv_trio-trial-title { margin: 0; color: #ffffff; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
-      .fsv_trio-round {
-        --link-color: var(--color-text-button);
-        display: inline-flex;
-        width: 2.5rem;
-        height: 2.5rem;
-        flex: none;
-        align-items: center;
-        justify-content: center;
-        background: #ffffff;
-        border-radius: 50%;
-        transition: transform 0.2s ease;
-      }
-      .fsv_trio-round svg { width: 1.125rem; height: 1.125rem; }
-      @media (hover: hover) and (pointer: fine) {
-        .fsv_trio-round:hover { transform: rotate(45deg); }
-        .fsv_trio-link:hover { opacity: 0.7; }
-      }
-      .fsv_trio-trial-text { margin: 0.5rem 0 1.25rem; color: #efedf3; font-size: 1rem; line-height: 1.4; }
-      .fsv .fsv_trio-offers { display: flex; flex-direction: column; gap: 0.5rem; list-style: none; }
-      .fsv_trio-offer {
-        display: flex;
-        padding: 0.875rem;
-        align-items: flex-start;
-        gap: 0.875rem;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 1rem;
-        color: var(--color-text-button);
-      }
-      .fsv_trio-icon {
-        display: inline-flex;
-        width: 2.75rem;
-        height: 2.75rem;
-        flex: none;
-        align-items: center;
-        justify-content: center;
-        background: #2b2334;
-        border-radius: 0.75rem;
-        color: #ffffff;
-      }
-      .fsv_trio-icon svg { width: 1.375rem; height: 1.375rem; }
-      .fsv_trio-offer-title { margin: 0 0 0.25rem; font-size: 1.125rem; font-weight: 600; line-height: 1.25; }
-      .fsv_trio-offer-text { margin: 0; color: #5e5a6a; font-size: 0.9375rem; line-height: 1.4; }
-
-      /* Ноутбук и планшет: текст во всю ширину, под ним картинка и правая колонка рядом */
-      @media screen and (max-width: 74.9375rem) {
-        .fsv_trio-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.5rem 1.5rem; }
-        .fsv.is-trio .fsv_copy { grid-column: 1 / -1; }
-        .fsv.is-trio .hero_description { max-width: 40rem; }
-      }
-      /* Телефон: всё в одну колонку, картинка после кнопок */
-      @media screen and (max-width: 47.9375rem) {
-        .fsv_trio-grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
-        .fsv_trio-art { min-height: 0; padding: 1rem; }
-        /* Высота сцены от ширины картинки, но не больше 24rem */
-        .fsv_trio-scene { min-height: min(24rem, 112cqi); }
-        .fsv_trio-tags-wrap { margin-top: 1rem; }
-        .fsv .fsv_trio-tags { justify-content: flex-start; }
-        .fsv_trio-tag { padding: 0.4375rem 0.875rem; font-size: 0.9375rem; }
-        .fsv_trio-side { gap: 2rem; }
-      }
-      @media screen and (max-width: 32.5rem) {
-        .fsv.is-trio .hero_heading { font-size: clamp(2.25rem, 10.5vw, 2.75rem); }
-        .fsv_trio-badge { font-size: 0.9375rem; }
-        .fsv_trio-trial { padding: 1.25rem 1rem 1rem; }
-        .fsv_trio-offer { padding: 0.75rem; gap: 0.75rem; }
-      }
-    </style>
-    <style>
       /* ---------- Рилсы Романа в блоке на градиенте (12.11.2026) ----------
          Три вертикальных видео 9:16 с «интерфейсом» поверх: автор, лайки, комментарии, репосты, отправки.
          Логотипов и названия соцсети нет. На телефоне рилсы листаются вбок. */
@@ -3361,6 +3005,256 @@
         .reels_item { scroll-snap-align: start; }
       }
     </style>
+    <style>
+      /* ---------- Первый экран (12.11.2026) ----------
+         Слева заголовок, подзаголовок и кнопки, справа участники и пробные дни,
+         ниже три результата карточками: Личный бренд, Узнаваемость, Доверие.
+         Отступы секции — общие .section_hero. Сброс страницы обнуляет margin и padding
+         у списков с !important, поэтому отступы списков заданы через обёртки. */
+      .club-hero_component {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        grid-template-areas:
+          "copy side"
+          "cards cards";
+        align-items: start;
+        gap: 3.5rem 4rem;
+      }
+
+      /* Текст по левому краю */
+      .club-hero_copy {
+        display: flex;
+        min-width: 0;
+        padding-top: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.75rem;
+        grid-area: copy;
+        text-align: left;
+      }
+      .club-hero_copy .hero_heading-wrapper { align-items: flex-start; }
+      .club-hero_copy .hero_description { max-width: 38rem; font-size: 1.25rem; }
+      .club-hero_copy .hero_actions { justify-content: flex-start; flex-wrap: wrap; }
+      /* Подсветка «которого знают и выбирают» идёт за строками, а не одним блоком со ступенькой */
+      .club-hero_copy .hero_heading-highlight {
+        display: inline;
+        padding: 0 0.08em;
+        background: var(--color-highlight);
+        border-radius: 0.5rem;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+      }
+      .club-hero_copy .hero_heading-highlight::before { display: none; }
+
+      /* Справа: участники сверху, пробные дни снизу */
+      .club-hero_side {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 2rem;
+        grid-area: side;
+      }
+      .club-hero_proof { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .club-hero_caption { max-width: 24rem; margin: 0; color: #5e5a6a; font-size: 1rem; line-height: 1.4; }
+      .page-wrapper .club-hero_faces { display: flex; list-style: none; }
+      .page-wrapper .club-hero_faces li + li { margin-left: -0.75rem !important; }
+      .club-hero_faces img {
+        display: block;
+        width: 3.75rem;
+        height: 3.75rem;
+        border: 0.1875rem solid var(--color-page-background);
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: 50% 20%;
+      }
+      .club-hero_link {
+        --link-color: var(--color-text-button);
+        display: inline-flex;
+        padding-bottom: 0.25rem;
+        align-items: center;
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--color-text-button);
+        font-size: 1.0625rem;
+        font-weight: 500;
+        line-height: 1.3;
+      }
+      .club-hero_link svg { width: 1rem; height: 1rem; }
+
+      /* Карточка пробных дней: тот же градиент с зерном, что у блоков 2, 7 и цены, без полос */
+      .club-hero_trial {
+        position: relative;
+        padding: 1.5rem 1.25rem 1.25rem;
+        overflow: clip;
+        border-radius: 1.5rem;
+        color: #ffffff;
+      }
+      .club-hero_trial > :not(.club-hero_trial-bg) { position: relative; z-index: 1; }
+      .club-hero_trial-bg {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        overflow: clip;
+        background: #000000;
+        border-radius: inherit;
+      }
+      .club-hero_trial-bg img {
+        position: absolute;
+        top: -17%;
+        left: -7.68%;
+        width: 126.3%;
+        height: 134%;
+        max-width: none;
+        object-fit: cover;
+        opacity: 0.88;
+        filter: blur(38.5px);
+        transform: rotate(180deg) scale(1.03);
+      }
+      .club-hero_trial-grain {
+        position: absolute;
+        inset: 0;
+        background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+        background-size: 31.25rem 31.25rem;
+        mix-blend-mode: multiply;
+        opacity: 0.4;
+      }
+      .club-hero_trial-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+      .club-hero_trial-title { margin: 0; color: #ffffff; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+      .club-hero_round {
+        --link-color: var(--color-text-button);
+        display: inline-flex;
+        width: 2.5rem;
+        height: 2.5rem;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        border-radius: 50%;
+        transition: transform 0.2s ease;
+      }
+      .club-hero_round svg { width: 1.125rem; height: 1.125rem; }
+      @media (hover: hover) and (pointer: fine) {
+        .club-hero_round:hover { transform: rotate(45deg); }
+        .club-hero_link:hover { opacity: 0.7; }
+      }
+      .club-hero_trial-text { margin: 0.5rem 0 1.25rem; color: #efedf3; font-size: 1rem; line-height: 1.4; }
+      .page-wrapper .club-hero_offers { display: flex; flex-direction: column; gap: 0.5rem; list-style: none; }
+      .club-hero_offer {
+        display: flex;
+        padding: 0.875rem;
+        align-items: flex-start;
+        gap: 0.875rem;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 1rem;
+        color: var(--color-text-button);
+      }
+      .club-hero_icon {
+        display: inline-flex;
+        width: 2.75rem;
+        height: 2.75rem;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        background: #2b2334;
+        border-radius: 0.75rem;
+        color: #ffffff;
+      }
+      .club-hero_icon svg { width: 1.375rem; height: 1.375rem; }
+      .club-hero_offer-title { margin: 0 0 0.25rem; font-size: 1.125rem; font-weight: 600; line-height: 1.25; }
+      .club-hero_offer-text { margin: 0; color: #5e5a6a; font-size: 0.9375rem; line-height: 1.4; }
+
+      /* Три результата карточками */
+      .club-hero_cards-wrap { grid-area: cards; }
+      .page-wrapper .club-hero_cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        list-style: none;
+      }
+      .club-hero_cards li { display: flex; min-width: 0; }
+      .club-hero_card {
+        display: flex;
+        min-height: 27rem;
+        padding: 1.5rem;
+        flex: 1;
+        flex-direction: column;
+        gap: 1.5rem;
+        background: #ffffff;
+        border-radius: 1.25rem;
+      }
+      /* Макеты: размер следует за шириной карточки */
+      .club-hero_visual {
+        display: flex;
+        min-height: 0;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        container-type: inline-size;
+      }
+      .club-hero_visual .hero_social,
+      .club-hero_visual .hero_blog { font-size: calc(100cqi / 32); }
+      .club-hero_visual .hero_chat { width: 100%; }
+      .club-hero_visual .hero_chat-message { font-size: clamp(0.875rem, 4.2cqi, 1rem); }
+      .club-hero_visual .hero_chat-message.is-light { background: #eeeeef; border-color: transparent; }
+      .club-hero_result { display: flex; flex-direction: column; gap: 0.375rem; }
+      .club-hero_result-title {
+        margin: 0;
+        color: var(--color-text-button);
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+      .club-hero_result-text { margin: 0; color: #5e5a6a; font-size: 1rem; line-height: 1.45; }
+
+      /* Ноутбук: правая колонка чуть шире */
+      @media screen and (max-width: 74.9375rem) {
+        .club-hero_component { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 3rem 2.5rem; }
+      }
+      /* Узкая колонка текста: кнопки тянутся на её ширину, при переносе встают друг под другом ровно */
+      @media screen and (min-width: 62rem) and (max-width: 74.9375rem) {
+        .club-hero_copy .hero_actions { width: 100%; }
+        .club-hero_copy .hero_actions .button { flex: 1 1 auto; }
+      }
+      /* Планшет: всё в одну колонку — текст, карточки (листаются вбок), потом участники и пробные дни рядом */
+      @media screen and (max-width: 61.9375rem) {
+        .club-hero_component {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "copy"
+            "cards"
+            "side";
+          gap: 2.5rem;
+        }
+        .club-hero_copy { padding-top: 0; }
+        .club-hero_side { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); align-items: start; gap: 1.5rem; }
+        .page-wrapper .club-hero_cards {
+          grid-template-columns: none;
+          grid-auto-columns: minmax(18rem, 46%);
+          grid-auto-flow: column;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          scrollbar-width: none;
+        }
+        .club-hero_cards li { scroll-snap-align: start; }
+        .club-hero_card { min-height: 25rem; }
+      }
+      /* Телефон: участники над пробными днями */
+      @media screen and (max-width: 47.9375rem) {
+        .page-wrapper .club-hero_cards { grid-auto-columns: 86%; }
+        .club-hero_side { display: flex; gap: 2rem; }
+      }
+      @media screen and (max-width: 32.5rem) {
+        .club-hero_copy .hero_description { font-size: 1.0625rem; }
+        .club-hero_copy .hero_actions { width: 100%; }
+        .club-hero_copy .hero_actions .button { width: 100%; }
+        .club-hero_result-title { font-size: 1.375rem; }
+        .club-hero_result-text { font-size: 0.9375rem; }
+        .club-hero_card { min-height: 0; padding: 1.25rem 1rem; }
+        .club-hero_card .club-hero_visual { min-height: 14rem; }
+        .club-hero_trial { padding: 1.25rem 1rem 1rem; }
+        .club-hero_offer { padding: 0.75rem; gap: 0.75rem; }
+      }
+    </style>
   </head>
   <body class="academy-page">
     <div class="page-wrapper">
@@ -3409,42 +3303,83 @@
       </header>
 
       <main class="main-wrapper">
-        <section class="section_hero is-story-head" id="about">
+        <!-- Первый экран (выбран 12.11.2026, второй вариант со страницы first-screen-variants.html):
+             слева текст и кнопки, справа участники и пробные дни, ниже три результата карточками.
+             На телефоне порядок другой: текст, карточки, потом участники и пробные дни. -->
+        <section class="section_hero is-club" id="about">
           <div class="padding-global">
             <div class="container-large">
-              <div class="hero_component">
-                <div class="hero_content" data-story-head>
-                  <div class="hero_copy">
-                    <div class="hero_heading-wrapper">
-                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
-                      <h1 class="hero_heading">Станьте психологом, <span class="hero_heading-highlight">которого знают и&nbsp;выбирают</span></h1>
-                    </div>
-                    <p class="hero_description">Клуб для психологов: каждую неделю вы&nbsp;делаете контент для своих соцсетей и&nbsp;говорите о&nbsp;своей работе так, чтобы вас понимали и&nbsp;запоминали. Мы&nbsp;даём ритм, разбор и&nbsp;поддержку, а&nbsp;вы&nbsp;формируете свой стиль.</p>
+              <div class="club-hero_component">
+                <div class="club-hero_copy">
+                  <div class="hero_heading-wrapper">
+                    <div class="hero_eyebrow">Мастерская профессионального контента</div>
+                    <h1 class="hero_heading">Станьте психологом, <span class="hero_heading-highlight">которого знают и&nbsp;выбирают</span></h1>
                   </div>
+                  <p class="hero_description">Клуб для психологов: каждую неделю вы&nbsp;делаете контент для своих соцсетей и&nbsp;говорите о&nbsp;своей работе так, чтобы вас понимали и&nbsp;запоминали. Мы&nbsp;даём ритм, разбор и&nbsp;поддержку, а&nbsp;вы&nbsp;формируете свой стиль.</p>
                   <div class="hero_actions">
                     <a class="button is-primary" href="#price">Вступить в клуб</a>
                     <a class="button is-secondary" href="#trial">Получить пробные дни</a>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <div class="story_component" data-story>
-          <div class="story_sticky">
-            <div class="story_hero">
-              <div class="padding-global">
-                <div class="container-large">
-                <div class="hero_spines is-flat" data-hero-spines>
-                  <article class="hero_spine is-white is-on-light is-active" data-spine>
-                    <img class="hero_spine-background is-violet" src="https://static.tildacdn.com/tild3133-6633-4836-b230-616434363131/bg-1.webp" alt="" aria-hidden="true" />
-                    <div class="hero_grain" aria-hidden="true"></div>
-                    <button class="hero_spine-trigger" type="button" aria-expanded="true" aria-controls="hero-spine-e-1">
-                      <span class="hero_spine-number">01</span>
-                      <span class="hero_spine-title">Узнаваемость</span>
-                    </button>
-                    <div class="hero_spine-panel" id="hero-spine-e-1">
-                      <div class="hero_spine-visual" aria-hidden="true">
+
+                <div class="club-hero_side">
+                  <div class="club-hero_proof">
+                    <p class="club-hero_caption">Андрей, Лера и&nbsp;Саша рассказали, что изменилось за&nbsp;время в&nbsp;клубе</p>
+                    <ul class="club-hero_faces">
+                      <li><img src="./assets/case-andrey-gromov.webp" width="60" height="60" alt="Андрей Громов, участник клуба" decoding="async"></li>
+                      <li><img src="./assets/case-lera-shakhova.webp" width="60" height="60" alt="Лера Шахова, участница клуба" decoding="async"></li>
+                      <li><img src="./assets/case-sasha-svanidze.webp" width="60" height="60" alt="Саша Сванидзе, участница клуба" decoding="async"></li>
+                    </ul>
+                    <a class="club-hero_link" href="#cases">Истории участников <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
+                  </div>
+
+                  <!-- Пробные дни: условия как в билете над вопросами. Фон — тот же градиент, что у остальных блоков -->
+                  <div class="club-hero_trial">
+                    <div class="club-hero_trial-bg" aria-hidden="true">
+                      <img src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" decoding="async">
+                      <div class="club-hero_trial-grain"></div>
+                    </div>
+                    <div class="club-hero_trial-head">
+                      <h2 class="club-hero_trial-title">Пробные дни</h2>
+                      <a class="club-hero_round" href="#trial" aria-label="Подробнее о&nbsp;пробных днях"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
+                    </div>
+                    <p class="club-hero_trial-text">Побудьте в&nbsp;клубе три дня и&nbsp;решите, подходит ли&nbsp;он&nbsp;вам</p>
+                    <ul class="club-hero_offers">
+                      <li><div class="club-hero_offer">
+                        <span class="club-hero_icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span>
+                        <div><p class="club-hero_offer-title">3&nbsp;дня за&nbsp;900&nbsp;₽</p><p class="club-hero_offer-text">Пятница, суббота и&nbsp;воскресенье: всё, что входит в&nbsp;подписку, включая субботний созвон с&nbsp;участниками клуба</p></div>
+                      </div></li>
+                      <li><div class="club-hero_offer">
+                        <span class="club-hero_icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span>
+                        <div><p class="club-hero_offer-title">Скидка 15&nbsp;% на&nbsp;клуб</p><p class="club-hero_offer-text">Если оформить подписку во&nbsp;время пробных дней</p></div>
+                      </div></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="club-hero_cards-wrap">
+                  <ul class="club-hero_cards">
+                  <li><article class="club-hero_card">
+                    <div class="club-hero_visual" aria-hidden="true">
+                        <div class="hero_blog">
+                          <span class="hero_blog-ring is-outer"></span>
+                          <span class="hero_blog-ring is-inner"></span>
+                          <span class="hero_blog-track">
+                            <span class="hero_blog-slot" style="--angle: 0deg"><span class="hero_blog-word">экспертиза</span></span>
+                            <span class="hero_blog-slot" style="--angle: 72deg"><span class="hero_blog-word">свой голос</span></span>
+                            <span class="hero_blog-slot" style="--angle: 144deg"><span class="hero_blog-word">своя аудитория</span></span>
+                            <span class="hero_blog-slot" style="--angle: 216deg"><span class="hero_blog-word">доверие</span></span>
+                            <span class="hero_blog-slot" style="--angle: 288deg"><span class="hero_blog-word">популярность</span></span>
+                          </span>
+                          <span class="hero_blog-core">ваш<br />блог</span>
+                        </div></div>
+                    <div class="club-hero_result">
+                      <h2 class="club-hero_result-title">Личный бренд</h2>
+                      <p class="club-hero_result-text">У&nbsp;вас появляется свой стиль, и&nbsp;клиенты выбирают вас именно за&nbsp;него</p>
+                    </div>
+                  </article></li>
+                  <li><article class="club-hero_card">
+                    <div class="club-hero_visual" aria-hidden="true">
                         <div class="hero_social">
                           <div class="hero_app is-threads">
                             <div class="hero_threads-post">
@@ -3473,22 +3408,13 @@
                             <p class="hero_app-text"><b>anna.morozova.psy</b> Как понять, что пора к&nbsp;психологу</p>
                           </div>
                         </div></div>
-                      <div class="hero_spine-copy">
-                        <h2 class="hero_spine-heading">Узнаваемость</h2>
-                        <p class="hero_spine-text">Вы&nbsp;выделяетесь среди десятков других специалистов, и&nbsp;вас запоминают</p>
-                      </div>
+                    <div class="club-hero_result">
+                      <h2 class="club-hero_result-title">Узнаваемость</h2>
+                      <p class="club-hero_result-text">Вы&nbsp;выделяетесь среди десятков других специалистов, и&nbsp;вас запоминают</p>
                     </div>
-                    <span class="hero_spine-progress" aria-hidden="true"></span>
-                  </article>
-                  <article class="hero_spine is-white is-on-light" data-spine>
-                    <img class="hero_spine-background is-teal" src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" aria-hidden="true" />
-                    <div class="hero_grain" aria-hidden="true"></div>
-                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-e-2">
-                      <span class="hero_spine-number">02</span>
-                      <span class="hero_spine-title">Доверие</span>
-                    </button>
-                    <div class="hero_spine-panel" id="hero-spine-e-2">
-                      <div class="hero_spine-visual" aria-hidden="true">
+                  </article></li>
+                  <li><article class="club-hero_card">
+                    <div class="club-hero_visual" aria-hidden="true">
                         <div class="hero_chat">
                           <div class="hero_chat-message is-light">
                             <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild6336-6538-4463-b930-613239643937/avatar-2.webp" alt="" />
@@ -3499,229 +3425,19 @@
                             <p>Здравствуйте! Можно записаться к&nbsp;вам на&nbsp;консультацию?</p>
                           </div>
                         </div></div>
-                      <div class="hero_spine-copy">
-                        <h2 class="hero_spine-heading">Доверие</h2>
-                        <p class="hero_spine-text">Ещё до&nbsp;первой встречи человек знает ваш подход, и&nbsp;прийти на&nbsp;консультацию уже не&nbsp;страшно</p>
-                      </div>
+                    <div class="club-hero_result">
+                      <h2 class="club-hero_result-title">Доверие</h2>
+                      <p class="club-hero_result-text">Ещё до&nbsp;первой встречи человек знает ваш подход, и&nbsp;прийти на&nbsp;консультацию уже не&nbsp;страшно</p>
                     </div>
-                    <span class="hero_spine-progress" aria-hidden="true"></span>
-                  </article>
-                  <article class="hero_spine is-white is-on-light" data-spine>
-                    <img class="hero_spine-background is-coral" src="https://optim.tildacdn.com/tild3231-6635-4666-a334-643638616635/-/format/webp/bg-3.webp" alt="" aria-hidden="true" />
-                    <div class="hero_grain" aria-hidden="true"></div>
-                    <button class="hero_spine-trigger" type="button" aria-expanded="false" aria-controls="hero-spine-e-3">
-                      <span class="hero_spine-number">03</span>
-                      <span class="hero_spine-title">Личный бренд</span>
-                    </button>
-                    <div class="hero_spine-panel" id="hero-spine-e-3">
-                      <div class="hero_spine-visual" aria-hidden="true">
-                        <div class="hero_blog">
-                          <span class="hero_blog-ring is-outer"></span>
-                          <span class="hero_blog-ring is-inner"></span>
-                          <span class="hero_blog-track">
-                            <span class="hero_blog-slot" style="--angle: 0deg"><span class="hero_blog-word">экспертиза</span></span>
-                            <span class="hero_blog-slot" style="--angle: 72deg"><span class="hero_blog-word">свой голос</span></span>
-                            <span class="hero_blog-slot" style="--angle: 144deg"><span class="hero_blog-word">своя аудитория</span></span>
-                            <span class="hero_blog-slot" style="--angle: 216deg"><span class="hero_blog-word">доверие</span></span>
-                            <span class="hero_blog-slot" style="--angle: 288deg"><span class="hero_blog-word">популярность</span></span>
-                          </span>
-                          <span class="hero_blog-core">ваш<br />блог</span>
-                        </div></div>
-                      <div class="hero_spine-copy">
-                        <h2 class="hero_spine-heading">Личный бренд</h2>
-                        <p class="hero_spine-text">У&nbsp;вас появляется свой стиль, и&nbsp;клиенты выбирают вас именно за&nbsp;него</p>
-                      </div>
-                    </div>
-                    <span class="hero_spine-progress" aria-hidden="true"></span>
-                  </article>
-                  <span class="story_ghost" aria-hidden="true"></span>
-                </div>
-                </div>
-              </div>
-            </div>
-          <!-- Первый экран, вариант 2: «Три результата сразу». Временно, пока выбираем вариант. -->
-          <section class="fsv is-cards" id="variant-b" aria-labelledby="fsv-b-heading">
-            <div class="padding-global">
-              <div class="container-large">
-                <div class="fsv_center">
-                  <div class="fsv_copy">
-                    <div class="hero_heading-wrapper">
-                      <div class="hero_eyebrow">Мастерская профессионального контента</div>
-                      <h2 class="hero_heading" id="fsv-b-heading">Станьте психологом, <span class="hero_heading-highlight">которого знают и&nbsp;выбирают</span></h2>
-                    </div>
-                    <p class="hero_description">Клуб для психологов: каждую неделю вы&nbsp;делаете контент для своих соцсетей и&nbsp;говорите о&nbsp;своей работе так, чтобы вас понимали и&nbsp;запоминали. Мы&nbsp;даём ритм, разбор и&nbsp;поддержку, а&nbsp;вы&nbsp;формируете свой стиль.</p>
-                    <div class="hero_actions">
-                      <a class="button is-primary" href="#price">Вступить в клуб</a>
-                      <a class="button is-secondary" href="#trial">Получить пробные дни</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="fsv_cards-wrap">
-                  <ul class="fsv_cards">
-                    <li><article class="fsv_card">
-                      <div class="fsv_visual" aria-hidden="true">
-                          <div class="hero_social">
-                            <div class="hero_app is-threads">
-                              <div class="hero_threads-post">
-                                <div class="hero_threads-side"><span class="hero_app-avatar">АМ</span><span class="hero_threads-line"></span><img class="hero_threads-reply" src="https://static.tildacdn.com/tild6239-3937-4030-b731-323432323439/avatar-3.webp" alt="" /></div>
-                                <div class="hero_threads-body">
-                                  <div class="hero_app-name">anna.morozova.psy <span class="hero_app-muted">2 ч</span></div>
-                                  <p class="hero_app-text">Почему тревогу нельзя «просто выключить»? Короткая нить о&nbsp;том, что с&nbsp;ней делать</p>
-                                  <div class="hero_app-actions"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="hero_app is-telegram">
-                              <div class="hero_telegram-bar"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span class="hero_app-avatar">АМ</span><span class="hero_app-name">Анна Морозова · психолог<span class="hero_app-muted">канал</span></span></div>
-                              <div class="hero_telegram-chat">
-                                <div class="hero_telegram-bubble">
-                                  <p class="hero_app-text"><b>Перед первой сессией</b><br />Пять вопросов, которые помогут понять, с&nbsp;чем вы&nbsp;идёте к&nbsp;психологу</p>
-                                  <span class="hero_telegram-meta"><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>1,2K · 18:30</span>
-                                </div>
-                              </div>
-                              <div class="hero_telegram-join">Подписаться</div>
-                            </div>
-                            <div class="hero_app is-instagram">
-                              <div class="hero_insta-head"><span class="hero_insta-ring"><span class="hero_app-avatar">АМ</span></span><span class="hero_app-name">anna.morozova.psy</span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
-                              <img class="hero_insta-photo" src="https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp" alt="" />
-                              <div class="hero_insta-actions"><span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></div>
-                              <p class="hero_app-text"><b>anna.morozova.psy</b> Как понять, что пора к&nbsp;психологу</p>
-                            </div>
-                          </div></div>
-                      <div class="fsv_result">
-                        <h3 class="fsv_result-title">Узнаваемость</h3>
-                        <p class="fsv_result-text">Вы&nbsp;выделяетесь среди десятков других специалистов, и&nbsp;вас запоминают</p>
-                      </div>
-                    </article></li>
-                    <li><article class="fsv_card">
-                      <div class="fsv_visual" aria-hidden="true">
-                          <div class="hero_chat">
-                            <div class="hero_chat-message is-light">
-                              <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild6336-6538-4463-b930-613239643937/avatar-2.webp" alt="" />
-                              <p>Сохранила ваш пост про тревогу, перечитываю его уже третий раз</p>
-                            </div>
-                            <div class="hero_chat-message is-dark">
-                              <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild3163-6639-4763-b330-363537646334/avatar-1.webp" alt="" />
-                              <p>Здравствуйте! Можно записаться к&nbsp;вам на&nbsp;консультацию?</p>
-                            </div>
-                          </div></div>
-                      <div class="fsv_result">
-                        <h3 class="fsv_result-title">Доверие</h3>
-                        <p class="fsv_result-text">Ещё до&nbsp;первой встречи человек знает ваш подход, и&nbsp;прийти на&nbsp;консультацию уже не&nbsp;страшно</p>
-                      </div>
-                    </article></li>
-                    <li><article class="fsv_card">
-                      <div class="fsv_visual" aria-hidden="true">
-                          <div class="hero_blog">
-                            <span class="hero_blog-ring is-outer"></span>
-                            <span class="hero_blog-ring is-inner"></span>
-                            <span class="hero_blog-track">
-                              <span class="hero_blog-slot" style="--angle: 0deg"><span class="hero_blog-word">экспертиза</span></span>
-                              <span class="hero_blog-slot" style="--angle: 72deg"><span class="hero_blog-word">свой голос</span></span>
-                              <span class="hero_blog-slot" style="--angle: 144deg"><span class="hero_blog-word">своя аудитория</span></span>
-                              <span class="hero_blog-slot" style="--angle: 216deg"><span class="hero_blog-word">доверие</span></span>
-                              <span class="hero_blog-slot" style="--angle: 288deg"><span class="hero_blog-word">популярность</span></span>
-                            </span>
-                            <span class="hero_blog-core">ваш<br />блог</span>
-                          </div></div>
-                      <div class="fsv_result">
-                        <h3 class="fsv_result-title">Личный бренд</h3>
-                        <p class="fsv_result-text">У&nbsp;вас появляется свой стиль, и&nbsp;клиенты выбирают вас именно за&nbsp;него</p>
-                      </div>
-                    </article></li>
+                  </article></li>
                   </ul>
                 </div>
               </div>
             </div>
-          </section>
-
-          <!-- Первый экран, вариант 3: три колонки по референсу aurevo.framer.website. -->
-          <section class="fsv is-trio" id="variant-c" aria-labelledby="fsv-c-heading">
-            <div class="padding-global">
-              <div class="container-large">
-                <div class="fsv_trio-grid">
-                  <div class="fsv_copy">
-                    <div class="hero_heading-wrapper">
-                      <p class="fsv_trio-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>Онлайн-клуб с&nbsp;обратной связью</p>
-                      <h2 class="hero_heading" id="fsv-c-heading">Станьте психологом, <span class="hero_heading-highlight">которого знают и&nbsp;выбирают</span></h2>
-                    </div>
-                    <p class="hero_description">Клуб для психологов: каждую неделю вы&nbsp;делаете контент для своих соцсетей и&nbsp;говорите о&nbsp;своей работе так, чтобы вас понимали и&nbsp;запоминали. Мы&nbsp;даём ритм, разбор и&nbsp;поддержку, а&nbsp;вы&nbsp;формируете свой стиль.</p>
-                    <div class="hero_actions">
-                      <a class="button is-primary" href="#price">Вступить в клуб</a>
-                      <a class="button is-secondary" href="#trial">Получить пробные дни</a>
-                    </div>
-                  </div>
-
-                  <!-- Картинка: градиент страницы, на нём пост психолога и сообщение от читателя; внизу чипы -->
-                  <div class="fsv_trio-art">
-                    <div class="fsv_trio-glass" aria-hidden="true">
-                      <img src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" loading="lazy" decoding="async">
-                      <div class="fsv_trio-grain"></div>
-                      <div class="fsv_trio-flutes"></div>
-                    </div>
-                    <div class="fsv_trio-scene" aria-hidden="true">
-                      <div class="hero_app is-instagram">
-                              <div class="hero_insta-head"><span class="hero_insta-ring"><span class="hero_app-avatar">АМ</span></span><span class="hero_app-name">anna.morozova.psy</span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
-                              <img class="hero_insta-photo" src="https://optim.tildacdn.com/tild3765-3132-4265-b665-333239313735/-/format/webp/psiholog-sozdanie-ko.webp" alt="" />
-                              <div class="hero_insta-actions"><span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg></span><svg class="hero_app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></div>
-                              <p class="hero_app-text"><b>anna.morozova.psy</b> Как понять, что пора к&nbsp;психологу</p>
-                            </div>
-                      <div class="hero_chat-message is-dark">
-                        <img class="hero_chat-avatar" src="https://static.tildacdn.com/tild3163-6639-4763-b330-363537646334/avatar-1.webp" alt="" />
-                        <p>Здравствуйте! Можно записаться к&nbsp;вам на&nbsp;консультацию?</p>
-                      </div>
-                    </div>
-                    <div class="fsv_trio-tags-wrap">
-                      <ul class="fsv_trio-tags" aria-label="Что даёт регулярный контент">
-                        <li><span class="fsv_trio-tag">Узнаваемость</span></li>
-                        <li><span class="fsv_trio-tag">Доверие</span></li>
-                        <li><span class="fsv_trio-tag">Личный бренд</span></li>
-                        <li><span class="fsv_trio-tag">Экспертиза</span></li>
-                        <li><span class="fsv_trio-tag">Аудитория</span></li>
-                        <li><span class="fsv_trio-tag">Новые клиенты</span></li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="fsv_trio-side">
-                    <div class="fsv_trio-proof">
-                      <p class="fsv_trio-caption">Андрей, Лера и&nbsp;Саша рассказали, что изменилось за&nbsp;время в&nbsp;клубе</p>
-                      <ul class="fsv_trio-faces">
-                        <li><img src="./assets/case-andrey-gromov.webp" width="60" height="60" alt="Андрей Громов, участник клуба" loading="lazy" decoding="async"></li>
-                        <li><img src="./assets/case-lera-shakhova.webp" width="60" height="60" alt="Лера Шахова, участница клуба" loading="lazy" decoding="async"></li>
-                        <li><img src="./assets/case-sasha-svanidze.webp" width="60" height="60" alt="Саша Сванидзе, участница клуба" loading="lazy" decoding="async"></li>
-                      </ul>
-                      <a class="fsv_trio-link" href="#cases">Истории участников <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
-                    </div>
-
-                    <!-- Пробные дни: условия как в билете над вопросами -->
-                    <div class="fsv_trio-trial">
-                      <div class="fsv_trio-glass" aria-hidden="true">
-                      <img src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp" alt="" loading="lazy" decoding="async">
-                      <div class="fsv_trio-grain"></div>
-                      <div class="fsv_trio-flutes"></div>
-                    </div>
-                      <div class="fsv_trio-trial-head">
-                        <h3 class="fsv_trio-trial-title">Пробные дни</h3>
-                        <a class="fsv_trio-round" href="#trial" aria-label="Подробнее о&nbsp;пробных днях"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
-                      </div>
-                      <p class="fsv_trio-trial-text">Побудьте в&nbsp;клубе три дня и&nbsp;решите, подходит ли&nbsp;он&nbsp;вам</p>
-                      <ul class="fsv_trio-offers">
-                        <li><div class="fsv_trio-offer">
-                          <span class="fsv_trio-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span>
-                          <div><p class="fsv_trio-offer-title">3&nbsp;дня за&nbsp;900&nbsp;₽</p><p class="fsv_trio-offer-text">Пятница, суббота и&nbsp;воскресенье: всё, что входит в&nbsp;подписку, включая субботний созвон с&nbsp;участниками клуба</p></div>
-                        </div></li>
-                        <li><div class="fsv_trio-offer">
-                          <span class="fsv_trio-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span>
-                          <div><p class="fsv_trio-offer-title">Скидка 15&nbsp;% на&nbsp;клуб</p><p class="fsv_trio-offer-text">Если оформить подписку во&nbsp;время пробных дней</p></div>
-                        </div></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          </div>
+        </section>
+        <div class="story_component" data-story>
+          <div class="story_sticky">
           <section class="section_chain" aria-labelledby="chain-heading">
             <div class="padding-global">
               <div class="container-large">
