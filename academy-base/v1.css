@@ -3,7 +3,7 @@
 
    Что это. Базовые правила, которые одинаковы на всех новых лендингах:
    шрифт, цвета, поля страницы, отступы секций и карточек, роли текста,
-   кнопка и плашка. Секции целиком (первый экран, форма, цены, FAQ…)
+   кнопка, плашка и табы. Секции целиком (первый экран, форма, цены, FAQ…)
    сюда не входят: их стили по-прежнему лежат в пакете страницы.
 
    Где живёт. Этот файл — исходник. На превью его подключают ссылкой
@@ -74,6 +74,8 @@
   --color-accent-text: #644ab2;
   --color-accent-soft: #dad6ff;
   --color-focus: #7c5cdb;
+  /* Тонкая линия на светлом: обводка табов, разделители (добавлено 12.11.2026) */
+  --color-line: #e8e7ee;
   --color-cta-grid-muted: #32293c;
   --color-cta-grid-medium: #3b2e49;
   --color-cta-grid-bright: #38254e;
@@ -544,4 +546,119 @@ body:has([data-academy="1"]) {
 }
 @media (min-width: 48rem) {
   [data-academy="1"] .meta-pill_component { font-size: 1rem; }
+}
+
+
+/* ---------- 9. Табы ----------
+   Переключатель разделов: одна белая плашка на сером фоне страницы,
+   внутри разделы. Добавлено 12.11.2026, первый раз — в каталоге курсов.
+
+   Разметка:
+     <div class="tabs-bar_component" role="tablist" aria-label="Разделы каталога">
+       <div class="tabs-bar_group" role="presentation">
+         <button class="tabs-bar_tab" type="button" role="tab" aria-selected="true">
+           Все курсы <span class="tabs-bar_count">46</span>
+         </button>
+         …
+       </div>
+       <span class="tabs-bar_divider" aria-hidden="true"></span>   ← по желанию
+       <div class="tabs-bar_group" role="presentation">…</div>
+     </div>
+
+   Выбранный таб — aria-selected="true" (или класс is-active у ссылки).
+   Он тёмный, а не фиолетовый: фиолетовый остаётся на кнопках и ссылках.
+   Число в табе (.tabs-bar_count) по желанию, просто серой цифрой.
+
+   До 768 px плашка во всю ширину, разделы листаются пальцем внутри неё.
+   Чтобы край гас там, где ещё есть разделы, скрипт страницы ставит плашке
+   классы is-more-left / is-more-right (пример в README). Без скрипта
+   всё работает, только без затухания.
+
+   МОЖНО: свои подписи, разделитель, число групп.
+   НЕЛЬЗЯ: красить выбранный таб в фиолетовый, менять радиусы
+   (внутренний на 4 px меньше внешнего, чтобы углы шли параллельно). */
+[data-academy="1"] .tabs-bar_component {
+  --tabs-bar-inset: 0.25rem;
+  --tabs-bar-fade: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  width: 100%;
+  max-width: 100%;
+  padding: var(--tabs-bar-inset);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  scroll-padding-inline: 1.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+[data-academy="1"] .tabs-bar_component::-webkit-scrollbar { display: none; }
+[data-academy="1"] .tabs-bar_group { display: flex; flex: none; gap: 0.125rem; }
+[data-academy="1"] .tabs-bar_divider {
+  flex: none;
+  width: 1px;
+  height: 1.5rem;
+  margin-inline: 0.375rem;
+  background: var(--color-line);
+}
+[data-academy="1"] .tabs-bar_tab {
+  display: inline-flex;
+  flex: none;
+  align-items: baseline;
+  gap: 0.375rem;
+  min-height: 2.75rem;
+  padding: 0.6875rem 1rem;
+  border: 0;
+  border-radius: calc(var(--radius-card) - var(--tabs-bar-inset));
+  background: transparent;
+  color: var(--color-text-primary) !important;
+  font-family: var(--font-family-body);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--transition-site), color var(--transition-site);
+}
+[data-academy="1"] .tabs-bar_count {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--transition-site);
+}
+[data-academy="1"] .tabs-bar_tab[aria-selected="true"],
+[data-academy="1"] .tabs-bar_tab.is-active {
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark) !important;
+}
+[data-academy="1"] .tabs-bar_tab[aria-selected="true"] .tabs-bar_count,
+[data-academy="1"] .tabs-bar_tab.is-active .tabs-bar_count { color: var(--color-text-on-dark-muted); }
+[data-academy="1"] .tabs-bar_tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0; }
+[data-academy="1"] .tabs-bar_component.is-more-right {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--tabs-bar-fade)), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - var(--tabs-bar-fade)), transparent);
+}
+[data-academy="1"] .tabs-bar_component.is-more-left {
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - var(--tabs-bar-fade)), transparent);
+  mask-image: linear-gradient(to left, #000 calc(100% - var(--tabs-bar-fade)), transparent);
+}
+[data-academy="1"] .tabs-bar_component.is-more-left.is-more-right {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--tabs-bar-fade), #000 calc(100% - var(--tabs-bar-fade)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--tabs-bar-fade), #000 calc(100% - var(--tabs-bar-fade)), transparent);
+}
+@media (min-width: 48rem) {
+  [data-academy="1"] .tabs-bar_component { width: fit-content; }
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-academy="1"] .tabs-bar_tab:not([aria-selected="true"]):not(.is-active):hover { background: var(--color-page-background); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-academy="1"] .tabs-bar_tab,
+  [data-academy="1"] .tabs-bar_count { transition: none; }
 }

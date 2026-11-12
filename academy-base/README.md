@@ -60,6 +60,7 @@ T123 своя обёртка, поэтому метка нужна в каждо
 | Сноска, согласие | `body-text_component is-fine-print` | 14 везде | 1.4 |
 | Плашка | `meta-pill_component is-responsive` | 14 → 16 | 1.3 |
 | Кнопка | `button_component is-accent / is-light / is-outline` | 18 → 22 | 1.07 |
+| Таб | `tabs-bar_tab` в `tabs-bar_component` | 16, число 14 | 1.3 |
 
 Ещё в v1:
 
@@ -73,6 +74,61 @@ T123 своя обёртка, поэтому метка нужна в каждо
   правилом `a { color: inherit !important }`.
 
 Решения по кеглям — от 24.10.2026, сверка шкал — `apps/preview/typography-check/`.
+
+### Табы (добавлены 12.11.2026)
+
+Переключатель разделов: белая плашка с тонкой обводкой (`--color-line`), выбранный
+таб тёмный `--color-surface-dark`, число раздела серой цифрой. Первый раз — в каталоге курсов.
+Пример — `test/index.html`, блок 4.
+
+```html
+<div class="tabs-bar_component" role="tablist" aria-label="Разделы каталога" data-js="tabs-bar">
+  <div class="tabs-bar_group" role="presentation">
+    <button class="tabs-bar_tab" type="button" role="tab" aria-selected="true">Все курсы <span class="tabs-bar_count">46</span></button>
+    <button class="tabs-bar_tab" type="button" role="tab" aria-selected="false" tabindex="-1">Методы психотерапии <span class="tabs-bar_count">17</span></button>
+  </div>
+  <span class="tabs-bar_divider" aria-hidden="true"></span>
+  <div class="tabs-bar_group" role="presentation">
+    <button class="tabs-bar_tab" type="button" role="tab" aria-selected="false" tabindex="-1">Мини-курсы <span class="tabs-bar_count">6</span></button>
+  </div>
+</div>
+```
+
+Если табы — ссылки на разные страницы, вместо `button` ставится `<a class="tabs-bar_tab">`,
+у текущей страницы класс `is-active` и `aria-current="page"`, а `role="tab"` не нужен.
+
+До 768 px плашка во всю ширину и листается пальцем. Затухание края и стрелки
+с клавиатуры — скриптом страницы (в v1 только стили):
+
+```js
+document.querySelectorAll('[data-js="tabs-bar"]').forEach(bar => {
+  // Край гаснет с той стороны, где ещё есть разделы
+  const fade = () => {
+    const max = bar.scrollWidth - bar.clientWidth;
+    bar.classList.toggle('is-more-left', bar.scrollLeft > 2);
+    bar.classList.toggle('is-more-right', bar.scrollLeft < max - 2);
+  };
+  bar.addEventListener('scroll', fade, { passive: true });
+  window.addEventListener('resize', fade);
+  fade();
+  // Стрелки влево и вправо, Home и End переключают разделы
+  bar.addEventListener('keydown', e => {
+    const tabs = [...bar.querySelectorAll('[role="tab"]')];
+    const i = tabs.indexOf(document.activeElement);
+    const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+    if (i < 0 || next === undefined) return;
+    e.preventDefault();
+    const tab = tabs[(next + tabs.length) % tabs.length];
+    tab.focus();
+    tab.click();
+  });
+});
+```
+
+Выбранный таб страница отмечает сама: `aria-selected="true"` и `tabindex="0"`,
+у остальных `aria-selected="false"` и `tabindex="-1"`. После выбора полезно
+`tab.scrollIntoView({ block: 'nearest', inline: 'nearest' })`, чтобы на телефоне
+таб доехал в видимую часть ленты.
 
 ## Как устроены версии
 

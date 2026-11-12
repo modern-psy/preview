@@ -148,7 +148,32 @@
   </div>
 </div>
 
-<!-- Блок 4: форма -->
+<!-- Блок 4: табы (добавлены 12.11.2026). Скрипт внизу страницы: затухание края и стрелки -->
+<div class="t-rec">
+  <div class="main-wrapper academy-page test-page" data-academy="1">
+    <section class="section-spacing_component" aria-label="Табы">
+      <div class="padding-global">
+        <div class="container-xlarge">
+          <div class="tabs-bar_component" role="tablist" aria-label="Разделы каталога" data-js="tabs-bar">
+            <div class="tabs-bar_group" role="presentation">
+              <button class="tabs-bar_tab" type="button" role="tab" aria-selected="true">Все курсы <span class="tabs-bar_count">46</span></button>
+              <button class="tabs-bar_tab" type="button" role="tab" aria-selected="false" tabindex="-1">Методы психотерапии <span class="tabs-bar_count">17</span></button>
+              <button class="tabs-bar_tab" type="button" role="tab" aria-selected="false" tabindex="-1">Специализации <span class="tabs-bar_count">21</span></button>
+              <button class="tabs-bar_tab" type="button" role="tab" aria-selected="false" tabindex="-1">Профессии <span class="tabs-bar_count">2</span></button>
+            </div>
+            <span class="tabs-bar_divider" aria-hidden="true"></span>
+            <div class="tabs-bar_group" role="presentation">
+              <button class="tabs-bar_tab" type="button" role="tab" aria-selected="false" tabindex="-1">Вебинары <span class="tabs-bar_count">1</span></button>
+              <button class="tabs-bar_tab" type="button" role="tab" aria-selected="false" tabindex="-1">Мини-курсы <span class="tabs-bar_count">6</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Блок 5: форма -->
 <div class="t-rec">
   <div class="main-wrapper academy-page test-page" data-academy="1">
     <section class="section-spacing_component" id="form" aria-labelledby="form-heading">
@@ -172,7 +197,7 @@
   </div>
 </div>
 
-<!-- Блок 5: «старый лендинг» без метки. Должен остаться без стилей v1 -->
+<!-- Блок 6: «старый лендинг» без метки. Должен остаться без стилей v1 -->
 <div class="t-rec">
   <div class="main-wrapper academy-page old-page" data-test-old>
     <div class="test-old_component">
@@ -181,6 +206,36 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Табы из блока 4: тот же скрипт, что в README. Выбор таба, затухание края, стрелки.
+  document.querySelectorAll('[data-js="tabs-bar"]').forEach(function (bar) {
+    var tabs = Array.prototype.slice.call(bar.querySelectorAll('[role="tab"]'));
+    function fade() {
+      var max = bar.scrollWidth - bar.clientWidth;
+      bar.classList.toggle('is-more-left', bar.scrollLeft > 2);
+      bar.classList.toggle('is-more-right', bar.scrollLeft < max - 2);
+    }
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.setAttribute('aria-selected', t === tab); t.tabIndex = t === tab ? 0 : -1; });
+        tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      });
+    });
+    bar.addEventListener('keydown', function (e) {
+      var i = tabs.indexOf(document.activeElement);
+      var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (i < 0 || next === undefined) return;
+      e.preventDefault();
+      var tab = tabs[(next + tabs.length) % tabs.length];
+      tab.focus();
+      tab.click();
+    });
+    bar.addEventListener('scroll', fade, { passive: true });
+    window.addEventListener('resize', fade);
+    fade();
+  });
+</script>
 
 </body>
 </html>
