@@ -24,8 +24,16 @@ These rules apply only to `projects/content-workshop/`.
 
 ## Tilda package
 
-- `build-tilda-files.mjs` exclusively generates `tilda/head.html`, `body.html`,
-  `footer.html`, `README.md`, and `manifest.json`; never edit them directly.
+- Since 12.11.2026 the page is delivered section by section
+  (`../../rules/engineering/tilda-delivery.md`): `build-tilda-files.mjs`
+  exclusively generates `tilda/head.html` (font + JSON-LD), `styles-N.html`,
+  `NN-body-<section>.html` (one T123 per section), `scripts.html`,
+  `preview.html`, `README.md`, and `manifest.json`; never edit them directly.
+  Every T123 file stays under 65 000 characters.
+- Local images need CDN URLs in `assetUrls` inside the builder; the build stops
+  and lists the files that still have no URL.
+- `hero-variants.html` is only a redirect to `index.html`; edit the canonical
+  sources, not the draft.
 - After source changes run the builder twice, the Tilda test, `node --check` on
   `script.js`, `npm run memory:check`, and `git diff --check`.
 - Generated BODY must have no repository-relative runtime assets.

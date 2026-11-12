@@ -1,20 +1,21 @@
-<!-- Мастерская контента: вставить целиком в последний блок T123 -->
+<!-- Скрипты страницы: последний блок страницы -->
 <script>
 (() => {
-  const page = document.querySelector(".page-wrapper");
+  // В Тильде страница разбита на несколько блоков T123, и у каждого своя .page-wrapper
+  document.querySelectorAll(".page-wrapper").forEach((page) => {
+    if (page.dataset.imageDragDisabled === "true") return;
 
-  if (!page || page.dataset.imageDragDisabled === "true") return;
+    page.dataset.imageDragDisabled = "true";
 
-  page.dataset.imageDragDisabled = "true";
+    page.querySelectorAll("img").forEach((image) => {
+      image.draggable = false;
+    });
 
-  page.querySelectorAll("img").forEach((image) => {
-    image.draggable = false;
-  });
-
-  page.addEventListener("dragstart", (event) => {
-    if (event.target instanceof HTMLImageElement) {
-      event.preventDefault();
-    }
+    page.addEventListener("dragstart", (event) => {
+      if (event.target instanceof HTMLImageElement) {
+        event.preventDefault();
+      }
+    });
   });
 })();
 
@@ -127,11 +128,12 @@
 })();
 
 (() => {
-  const page = document.querySelector(".page-wrapper");
+  // В Тильде страница разбита на несколько блоков T123, и у каждого своя .page-wrapper
+  const pages = [...document.querySelectorAll(".page-wrapper")];
   const documentRoot = document.documentElement;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  if (!page) return;
+  if (!pages.length) return;
 
   if (typeof window.__contentWorkshopAnchorScrollCleanup === "function") {
     window.__contentWorkshopAnchorScrollCleanup();
@@ -240,9 +242,9 @@
     anchorScrollFrame = window.requestAnimationFrame(renderAnchorScroll);
   };
 
-  page.addEventListener("click", handleAnchorClick);
+  pages.forEach((page) => page.addEventListener("click", handleAnchorClick));
   window.__contentWorkshopAnchorScrollCleanup = () => {
-    page.removeEventListener("click", handleAnchorClick);
+    pages.forEach((page) => page.removeEventListener("click", handleAnchorClick));
     cancelAnchorScroll();
   };
 })();
@@ -1086,6 +1088,244 @@
 
   yearElements.forEach((element) => {
     element.textContent = currentYear;
+  });
+})();
+
+// =========================================================================
+// Пересборка клуба, ноябрь 2026. Скрипты перенесены из черновика hero-variants.html
+// 12.11.2026: подсветка шагов блока 2, появление карточек блока 3, рилсы Романа.
+// =========================================================================
+
+// Сцена «первый экран → цепочка» и подсветка шагов цепочки.
+// Прокрутка сглажена: картинка догоняет колесо мыши плавно, без рывков.
+(function () {
+  var list = document.querySelector("[data-chain]");
+  if (!list || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var story = document.querySelector("[data-story]");
+  var steps = [].slice.call(list.querySelectorAll(".chain_step"));
+  var cards = steps.map(function (step) { return step.querySelector(".chain_card"); });
+  var numbers = steps.map(function (step) { return step.querySelector(".chain_number"); });
+  var spines = story && story.querySelector("[data-hero-spines]");
+  var items = spines ? [].slice.call(spines.querySelectorAll("[data-spine]")) : [];
+  var ghost = story && story.querySelector(".story_ghost");
+  var head = document.querySelector("[data-story-head]");
+  var component = story && story.querySelector(".chain_component");
+  // 10.11 Дарья: плавный переход с первого экрана на блок 2 выключен, это два отдельных блока.
+  // Карточки первого экрана листаются по таймеру и клику, в блоке 2 шаги подсвечиваются при прокрутке.
+  // Вернуть сцену: снова поставить здесь window.matchMedia("(min-width: 62rem) and (min-height: 44rem)").
+  var sceneQuery = { matches: false };
+
+  var scene = false, morphing = false, from = null, to = null, run = 0;
+  var smooth = window.scrollY, frame = 0;
+
+  list.classList.add("is-animated");
+
+  function clamp(v) { return Math.min(1, Math.max(0, v)); }
+  function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function rel(el, base) {
+    var r = el.getBoundingClientRect();
+    return { left: r.left - base.left, top: r.top - base.top, width: r.width, height: r.height };
+  }
+  // Место карточки шага без учёта её приподнимания (transform не влияет на offset*)
+  function cardBox(i, base) {
+    var li = steps[i].getBoundingClientRect();
+    return {
+      left: li.left - base.left + (cards[i].offsetLeft - steps[i].offsetLeft),
+      top: li.top - base.top + (cards[i].offsetTop - steps[i].offsetTop),
+      width: cards[i].offsetWidth,
+      height: cards[i].offsetHeight
+    };
+  }
+  function place(el, a, b, t) {
+    el.style.left = lerp(a.left, b.left, t) + "px";
+    el.style.top = lerp(a.top, b.top, t) + "px";
+    el.style.width = lerp(a.width, b.width, t) + "px";
+    el.style.height = lerp(a.height, b.height, t) + "px";
+  }
+
+  function unmorph() {
+    if (!morphing) return;
+    morphing = false;
+    spines.classList.remove("is-morphing");
+    spines.style.removeProperty("--story-cover");
+    spines.style.removeProperty("--story-boxes");
+    items.concat(ghost).forEach(function (el) { el.removeAttribute("style"); });
+  }
+
+  function layout() {
+    unmorph();
+    scene = !!(story && spines) && sceneQuery.matches;
+    if (story) {
+      story.classList.toggle("is-story", scene);
+      if (!scene) story.removeAttribute("style");
+    }
+    if (!scene) return;
+    var vh = window.innerHeight;
+    var rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    run = vh * 2.1;
+    story.style.setProperty("--story-height", vh + run + "px");
+    var sticky = story.querySelector(".story_sticky").getBoundingClientRect();
+    var cardsTop = cardBox(0, sticky).top;
+    story.style.setProperty("--story-cards-top", cardsTop + "px");
+    // Сдвигаем сцену вверх, чтобы карточки стояли под кнопками, как на обычном первом экране
+    var heroBottom = head.getBoundingClientRect().bottom + window.scrollY;
+    story.style.setProperty("--story-shift", Math.max(-heroBottom, 4.375 * rem - cardsTop) + "px");
+    var base = spines.getBoundingClientRect();
+    to = cards.map(function (card, i) { return cardBox(i, base); });
+  }
+
+  function setSteps(h) {
+    var current = h < 0 ? -1 : Math.min(steps.length - 1, Math.floor(h + 0.001));
+    steps.forEach(function (step, i) {
+      step.classList.toggle("is-reached", h >= 0 && h >= i - 0.001);
+      step.classList.toggle("is-current", i === current);
+      if (i < steps.length - 1) {
+        var fill = h < 0 ? 0 : clamp(h - i);
+        step.style.setProperty("--chain-fill", fill.toFixed(3));
+        step.classList.toggle("is-passed", fill >= 0.999);
+      }
+    });
+  }
+
+  // lag — насколько сглаженная прокрутка отстаёт от настоящей, в пикселях
+  function apply(lag) {
+    var vh = window.innerHeight;
+    if (scene) {
+      var s = -story.getBoundingClientRect().top - lag;
+      var m = clamp(s / (0.7 * vh));
+      if (m <= 0) {
+        unmorph();
+      } else {
+        if (!morphing) {
+          var base = spines.getBoundingClientRect();
+          from = items.map(function (el) { return rel(el, base); });
+          morphing = true;
+          spines.classList.add("is-morphing");
+        }
+        var g = ease(clamp(m / 0.75));
+        items.forEach(function (el, i) { place(el, from[i], to[i + 1], g); });
+        place(ghost, { left: from[0].left, top: from[0].top, width: 0, height: from[0].height }, to[0], g);
+        spines.style.setProperty("--story-cover", clamp(m / 0.3).toFixed(3));
+      }
+      var shown = clamp((m - 0.55) / 0.3);
+      story.style.setProperty("--story-cards", shown.toFixed(3));
+      if (morphing) spines.style.setProperty("--story-boxes", shown >= 0.999 ? "0" : "1");
+      story.style.setProperty("--story-track", clamp((m - 0.8) / 0.2).toFixed(3));
+      // Плашка и заголовок блока 2 проявляются, только когда текст первого экрана уходит с их места
+      var gap = component.getBoundingClientRect().top - (head.getBoundingClientRect().bottom + lag);
+      var panel = clamp((gap + 60) / 220);
+      story.style.setProperty("--story-panel", panel.toFixed(3));
+      story.style.setProperty("--story-header", Math.min(panel, clamp((gap + 10) / 160)).toFixed(3));
+      var p = (s - 0.75 * vh) / (1.1 * vh);
+      var h = p < 0 ? -1 : clamp(p) * (steps.length - 1);
+      setSteps(h);
+      story.style.setProperty("--story-note", clamp((h - 2.4) / 0.6).toFixed(3));
+      return;
+    }
+    // Без сцены: подсветка идёт по шагам, когда они проходят линию на 60 % высоты экрана
+    var line = vh * 0.6;
+    var centers = numbers.map(function (n) {
+      var r = n.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 + lag };
+    });
+    var vertical = centers[centers.length - 1].y - centers[0].y > 4;
+    var h;
+    if (vertical) {
+      if (line < centers[0].y) h = -1;
+      else {
+        h = steps.length - 1;
+        for (var i = 0; i < centers.length - 1; i++) {
+          if (line < centers[i + 1].y) { h = i + (line - centers[i].y) / (centers[i + 1].y - centers[i].y); break; }
+        }
+      }
+    } else {
+      var rect = list.getBoundingClientRect();
+      var q = (vh * 0.75 - rect.top - lag) / Math.max(rect.height, vh * 0.6);
+      h = q < 0 ? -1 : clamp(q) * (steps.length - 1);
+    }
+    setSteps(h);
+  }
+
+  function tick() {
+    frame = 0;
+    var y = window.scrollY;
+    smooth += (y - smooth) * 0.12;
+    if (Math.abs(y - smooth) < 0.5) smooth = y;
+    apply(y - smooth);
+    if (smooth !== y) frame = requestAnimationFrame(tick);
+  }
+  function kick() { if (!frame) frame = requestAnimationFrame(tick); }
+
+  window.addEventListener("scroll", kick, { passive: true });
+  window.addEventListener("resize", function () { layout(); smooth = window.scrollY; apply(0); });
+  layout();
+  apply(0);
+})();
+
+// Блок 3: карточки появляются по очереди один раз, когда блок въезжает в экран.
+(function () {
+  var grid = document.querySelector(".pain_grid");
+  if (!grid || !("IntersectionObserver" in window)) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  grid.classList.add("is-animated");
+  var seen = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    grid.classList.add("is-visible");
+    seen.disconnect();
+  }, { threshold: 0.15 });
+  seen.observe(grid);
+})();
+
+// Рилсы Романа: видео играют без звука, пока карточка на экране, и встают на паузу, когда уходят.
+// Кнопка звука включает звук у одного рилса и выключает у остальных.
+(() => {
+  const cards = [...document.querySelectorAll("[data-reel]")];
+  if (!cards.length) return;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const setButton = (button, on) => {
+    if (!button) return;
+    button.setAttribute("aria-pressed", String(on));
+    button.setAttribute("aria-label", on ? "Выключить звук" : "Включить звук");
+  };
+  const observer = "IntersectionObserver" in window
+    ? new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          // Запоминаем, видна ли карточка: видео может догрузиться позже
+          entry.target.dataset.inView = entry.isIntersecting ? "1" : "0";
+          const video = entry.target.querySelector("video");
+          if (!video || !entry.target.classList.contains("has-video")) return;
+          if (entry.isIntersecting && !reduce) video.play().catch(() => {});
+          else if (!entry.isIntersecting) video.pause();
+        });
+      }, { threshold: 0.5 })
+    : null;
+  cards.forEach((card) => {
+    const video = card.querySelector("video");
+    const button = card.querySelector(".reels_sound");
+    if (!video) return;
+    const ready = () => {
+      card.classList.add("has-video");
+      if (card.dataset.inView === "1" && !reduce) video.play().catch(() => {});
+    };
+    if (video.readyState >= 2) ready();
+    video.addEventListener("loadeddata", ready);
+    if (observer) observer.observe(card);
+    if (!button) return;
+    button.addEventListener("click", () => {
+      const turnOn = video.muted;
+      cards.forEach((other) => {
+        const otherVideo = other.querySelector("video");
+        if (otherVideo && otherVideo !== video) {
+          otherVideo.muted = true;
+          setButton(other.querySelector(".reels_sound"), false);
+        }
+      });
+      video.muted = !turnOn;
+      if (turnOn) video.play().catch(() => {});
+      setButton(button, turnOn);
+    });
   });
 })();
 </script>

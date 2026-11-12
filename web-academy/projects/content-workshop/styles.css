@@ -3900,3 +3900,3245 @@ body {
     transition-delay: 0ms !important;
   }
 }
+
+/* =========================================================================
+   Пересборка клуба, ноябрь 2026.
+   Стили перенесены из черновика hero-variants.html 12.11.2026 без изменений.
+   Они идут после основных и перекрывают их, поэтому порядок не менять.
+   ========================================================================= */
+
+/* ЧЕРНОВИК пересборки клуба: первый экран и блок 2. В исходник страницы пока не перенесено. */
+
+/* ---------- Г: корешки ---------- */
+/* Без скрипта три карточки стоят рядом и всё видно сразу. */
+.hero_spines {
+  --spine-closed: 5.5rem;
+  --spine-gap: 1rem;
+  --spine-height: 26.25rem;
+  --spine-interval: 6s;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spine-gap);
+  container-type: inline-size;
+}
+.hero_spine {
+  position: relative;
+  min-width: 0;
+  min-height: var(--spine-height);
+  overflow: clip;
+  background: #000000;
+  border-radius: 1rem;
+  color: #ffffff;
+}
+.hero_spine-background {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  max-width: none;
+  object-fit: cover;
+  filter: blur(38.5px);
+}
+/* Один и тот же набор размытых фонов страницы, но каждый корешок своего цвета. */
+.hero_spine-background.is-violet { object-position: 20% 40%; }
+.hero_spine-background.is-teal { object-position: 70% 30%; transform: rotate(180deg); }
+.hero_spine-background.is-coral { object-position: 76% 80%; }
+.hero_spine-trigger { display: none; }
+.hero_spine-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  min-height: var(--spine-height);
+  padding: 1.25rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.hero_spine-visual {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+.hero_spine-copy {
+  display: flex;
+  max-width: 26rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+}
+.hero_spine-heading {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2143;
+  letter-spacing: -0.02em;
+}
+.hero_spine-text {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1.125rem;
+  line-height: 1.444;
+  letter-spacing: -0.01em;
+}
+.hero_spine-progress { display: none; }
+
+/* Со скриптом: корешки, открытая карточка забирает всё место. */
+.hero_spines.is-enhanced { display: flex; height: var(--spine-height); }
+.hero_spines.is-enhanced .hero_spine {
+  flex: 0 0 var(--spine-closed);
+  min-height: 0;
+  transition: flex-grow 640ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero_spines.is-enhanced .hero_spine.is-active { flex-grow: 1; }
+.hero_spines.is-enhanced .hero_spine-trigger {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: flex;
+  width: 100%;
+  padding: 1.25rem 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: 0;
+  border-radius: 1rem;
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+}
+.hero_spines.is-enhanced .hero_spine.is-active .hero_spine-trigger {
+  visibility: hidden;
+}
+.hero_spine-number {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0.8;
+}
+.hero_spine-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.hero_spines.is-enhanced .hero_spine-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100cqi - 2 * var(--spine-closed) - 2 * var(--spine-gap));
+  min-height: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 200ms ease, visibility 0s linear 200ms;
+}
+.hero_spines.is-enhanced .hero_spine.is-active .hero_spine-panel {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 360ms ease 220ms, visibility 0s;
+}
+.hero_spine-trigger:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -4px;
+}
+
+/* Полоса до следующей карточки: только на компьютере и без «уменьшить движение». */
+.hero_spines.is-auto .hero_spine.is-active .hero_spine-progress {
+  position: absolute;
+  z-index: 2;
+  top: 0.75rem;
+  right: 1.25rem;
+  left: 1.25rem;
+  display: block;
+  height: 2px;
+  overflow: clip;
+  background: rgba(255, 255, 255, 0.24);
+  border-radius: 1px;
+}
+.hero_spines.is-auto .hero_spine.is-active .hero_spine-progress::after {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: hero-spine-progress var(--spine-interval) linear forwards;
+}
+.hero_spines.is-paused .hero_spine-progress::after { animation-play-state: paused; }
+@keyframes hero-spine-progress { to { transform: scaleX(1); } }
+
+/* Широкая карточка: текст слева внизу, картинка справа. */
+@media screen and (min-width: 62rem) {
+  .hero_spines.is-enhanced .hero_spine-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: end;
+    padding: 2rem;
+  }
+  .hero_spines.is-enhanced .hero_spine-visual { grid-column: 2; grid-row: 1; height: 100%; }
+  .hero_spines.is-enhanced .hero_spine-copy { grid-column: 1; grid-row: 1; }
+}
+
+/* Планшет: корешки уже, карточка выше. */
+@media screen and (max-width: 61.9375rem) {
+  .hero_spines { --spine-closed: 4.5rem; --spine-height: 27.5rem; }
+  .hero_spine-heading { font-size: 1.5rem; }
+  .hero_spine-text { font-size: 1rem; }
+  .hero_spine-title { font-size: 1.25rem; }
+}
+
+/* Телефон: та же разметка, корешки становятся строками друг под другом.
+   Здесь наоборот (max-width), потому что композиция другая, а не сжатая. */
+@media screen and (max-width: 47.9375rem) {
+  .hero_spines { grid-template-columns: minmax(0, 1fr); }
+  .hero_spines.is-enhanced { flex-direction: column; height: auto; }
+  .hero_spines.is-enhanced .hero_spine { flex: none; }
+  .hero_spines.is-enhanced .hero_spine-trigger {
+    position: relative;
+    min-height: 4rem;
+    padding: 0 1.25rem;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+  .hero_spines.is-enhanced .hero_spine.is-active .hero_spine-trigger { display: none; }
+  .hero_spine-title { writing-mode: horizontal-tb; transform: none; }
+  .hero_spines.is-enhanced .hero_spine-panel {
+    position: relative;
+    display: none;
+    width: auto;
+    min-height: 0;
+    visibility: visible;
+    opacity: 1;
+    transition: none;
+  }
+  .hero_spines.is-enhanced .hero_spine.is-active .hero_spine-panel { display: flex; }
+  .hero_spine-visual { min-height: 15rem; }
+  .hero_spine { min-height: 0; }
+  .hero_spine-panel { min-height: 0; }
+}
+
+/* ---------- картинки внутри карточек ---------- */
+.hero_feed {
+  display: flex;
+  width: min(100%, 19rem);
+  padding: 1rem;
+  flex-direction: column;
+  gap: 0.875rem;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  transform: rotate(0.66deg);
+}
+.hero_feed-profile { display: flex; align-items: center; gap: 0.75rem; }
+.hero_feed-avatar {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  place-items: center;
+  background: var(--color-highlight);
+  border-radius: 50%;
+  color: var(--color-text-button);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.hero_feed-name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+}
+.hero_feed-meta { color: rgba(255, 255, 255, 0.72); font-size: 0.8125rem; font-weight: 400; }
+.hero_feed-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.25rem; }
+.hero_feed-tile {
+  display: flex;
+  aspect-ratio: 4 / 5;
+  padding: 0.375rem;
+  align-items: flex-end;
+  background: #fcfcfa;
+  border-radius: 0.375rem;
+  color: var(--color-text-button);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.hero_feed-tile.is-lavender { background: var(--color-highlight); }
+.hero_feed-tile.is-warm { background: #fdf2d4; }
+.hero_feed-tile.is-light { background: #eeeeef; }
+.hero_feed-tile.is-dark { background: #18181a; color: #f5f5f5; }
+
+.hero_chat { display: flex; width: min(100%, 24rem); flex-direction: column; gap: 1rem; }
+.hero_chat-message {
+  display: flex;
+  padding: 1rem;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border-radius: 0.875rem;
+  font-size: 1rem;
+  line-height: 1.444;
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+.hero_chat-message p { margin: 0; }
+.hero_chat-message.is-light {
+  margin-right: 1.5rem;
+  background: #fcfcfa;
+  border: 0.5px solid rgba(205, 204, 204, 0.8);
+  color: #5e5a6a;
+  transform: rotate(-0.95deg);
+}
+/* На белой карточке светлое сообщение серое, как входящее в мессенджере, иначе сливается с фоном */
+.hero_spine.is-white .hero_chat-message.is-light {
+  background: #eeeeef;
+  border-color: transparent;
+}
+.hero_chat-message.is-dark {
+  margin-left: 1.5rem;
+  background: #18181a;
+  color: #f5f5f5;
+  transform: rotate(0.66deg);
+}
+.hero_chat-avatar { width: 2.5rem; height: 2.5rem; flex: none; border-radius: 50%; object-fit: cover; }
+
+.hero_orbit { position: relative; width: min(100%, 20rem); aspect-ratio: 1; }
+.hero_orbit-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.hero_orbit-ring.is-large { width: 100%; }
+.hero_orbit-ring.is-medium { width: 70%; }
+.hero_orbit-ring.is-small { width: 40%; }
+.hero_orbit-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  padding: 0.375rem 1rem 0.375rem 0.375rem;
+  align-items: center;
+  gap: 0.625rem;
+  background: #ffffff;
+  border-radius: 3rem;
+  color: var(--color-text-button);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+.hero_orbit-center > span:last-child { display: flex; flex-direction: column; }
+.hero_orbit-role { color: #5e5a6a; font-size: 0.8125rem; font-weight: 400; }
+.hero_orbit-topic {
+  position: absolute;
+  padding: 0.5rem 0.875rem;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 3rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(4px);
+}
+.hero_orbit-topic.is-first { top: 14.6%; left: 14.6%; }
+.hero_orbit-topic.is-second { top: 19.7%; left: 67.5%; }
+.hero_orbit-topic.is-third { top: 97%; left: 67.1%; }
+
+/* Картинки в карточках мельче на планшете и телефоне (после базовых правил, чтобы перекрыть их). */
+@media screen and (max-width: 61.9375rem) {
+  .hero_feed { width: min(100%, 14rem); padding: 0.75rem; gap: 0.625rem; }
+  .hero_chat { width: min(100%, 20rem); }
+  .hero_orbit { width: min(100%, 15rem); }
+}
+@media screen and (max-width: 47.9375rem) {
+  .hero_feed { width: min(100%, 15rem); }
+}
+
+/* ---------- ровные фоны ---------- */
+.hero_spines.is-flat .hero_spine-background,
+.hero_spines.is-flat .hero_grain { display: none; }
+/* Очень мягкое пятно света со стороны картинки вместо яркого градиента. */
+.hero_spines.is-flat .hero_spine::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(55% 70% at 75% 40%, var(--spine-glow), transparent 70%);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 360ms ease;
+}
+/* Пятно света только у открытой карточки, корешки остаются ровными. */
+.hero_spines.is-flat .hero_spine.is-active::before { opacity: 1; }
+.hero_spines.is-flat:not(.is-enhanced) .hero_spine::before { opacity: 1; }
+.hero_spine { --spine-glow: rgba(190, 172, 244, 0.14); }
+.hero_spine.is-on-light { --spine-glow: rgba(255, 255, 255, 0.85); }
+.hero_spine.is-black { background: #000000; }
+.hero_spine.is-ink { background: #18181a; }
+.hero_spine.is-plum { background: var(--color-text-button); }
+.hero_spine.is-paper { background: #fcfcfa; }
+.hero_spine.is-warm { background: #fdf2d4; }
+.hero_spine.is-lilac { background: #f1eef8; }
+.hero_spine.is-white { background: #ffffff; }
+
+/* Светлая карточка: тёмный текст и тёмные линии. */
+.hero_spine.is-on-light { color: var(--color-text-button); }
+.hero_spine.is-on-light .hero_spine-trigger { color: var(--color-text-button) !important; }
+.hero_spine.is-on-light .hero_spine-text { color: #5e5a6a; }
+.hero_spine.is-on-light .hero_spine-trigger:focus-visible { outline-color: var(--color-text-button); }
+.hero_spines.is-auto .hero_spine.is-on-light.is-active .hero_spine-progress { background: rgba(51, 47, 65, 0.16); }
+.hero_spines.is-auto .hero_spine.is-on-light.is-active .hero_spine-progress::after { background: var(--color-text-button); }
+.hero_spine.is-on-light .hero_orbit-ring { border-color: rgba(51, 47, 65, 0.18); }
+.hero_spine.is-on-light .hero_orbit-topic { background: rgba(51, 47, 65, 0.08); color: var(--color-text-button); }
+.hero_spine.is-on-light .hero_orbit-center { border: 1px solid rgba(51, 47, 65, 0.1); }
+.hero_spine.is-on-light .hero_feed { border-color: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero_spines.is-enhanced .hero_spine,
+  .hero_spines.is-enhanced .hero_spine-panel { transition: none; }
+}
+
+
+/* ---------- Узнаваемость: стопка соцсетей ---------- */
+/* Размер стопки считается от ширины ряда карточек: она всегда помещается в свою колонку. */
+.hero_social { position: relative; width: 30em; height: 22em; flex: none; font-size: min(1rem, calc((100cqi - 18.5rem) * 0.0165)); }
+.hero_spines:not(.is-enhanced) .hero_social { font-size: calc((100cqi / 3 - 4rem) / 30); }
+.hero_app {
+  position: absolute;
+  width: 14.5em;
+  overflow: clip;
+  background: #ffffff;
+  border: 1px solid rgba(51, 47, 65, 0.08);
+  border-radius: 1em;
+  box-shadow: 0 0.75em 2em rgba(51, 47, 65, 0.1);
+  color: #1d1d33;
+  text-align: left;
+}
+/* Задние слои слегка размыты и повёрнуты, как стопка экранов. */
+.hero_app.is-threads { top: 0; right: 0; filter: blur(1.5px); opacity: 0.9; transform: rotate(5deg); }
+.hero_app.is-telegram { top: 2.25em; left: 0; filter: blur(1px); opacity: 0.95; transform: rotate(-4deg); }
+.hero_app.is-instagram { z-index: 2; bottom: 0; left: 50%; transform: translateX(-50%) rotate(0.66deg); box-shadow: 0 1em 2.5em rgba(51, 47, 65, 0.18); }
+
+.hero_app-icon { width: 1.25em; height: 1.25em; flex: none; }
+.hero_app-avatar {
+  display: grid;
+  width: 2em;
+  height: 2em;
+  flex: none;
+  place-items: center;
+  background: var(--color-highlight);
+  border-radius: 50%;
+  color: var(--color-text-button);
+  font-size: 0.75em;
+  font-weight: 600;
+}
+.hero_app-name { display: flex; flex-direction: column; font-size: 0.8125em; font-weight: 600; line-height: 1.25; }
+.hero_app-muted { color: #827f8b; font-size: 0.9em; font-weight: 400; }
+.hero_app-text { margin: 0; font-size: 0.8125em; line-height: 1.4; }
+.hero_app-actions { display: flex; gap: 0.875em; color: #332f41; }
+
+.hero_threads-post { display: flex; padding: 0.875em; gap: 0.625em; }
+.hero_threads-side { display: flex; flex-direction: column; align-items: center; gap: 0.375em; }
+.hero_threads-line { width: 2px; flex: 1; min-height: 3em; background: rgba(51, 47, 65, 0.14); border-radius: 1px; }
+.hero_threads-reply { width: 1.25em; height: 1.25em; border-radius: 50%; }
+.hero_threads-body { display: flex; flex-direction: column; gap: 0.5em; }
+.hero_threads-body .hero_app-name { flex-direction: row; gap: 0.375em; }
+
+.hero_telegram-bar { display: flex; padding: 0.625em 0.75em; align-items: center; gap: 0.5em; border-bottom: 1px solid rgba(51, 47, 65, 0.08); }
+.hero_telegram-chat { padding: 0.75em 0.75em 1.25em; background: #e9eef3; }
+.hero_telegram-join { padding: 0.75em; color: #2a9de0; font-size: 0.8125em; font-weight: 600; text-align: center; }
+.hero_telegram-bubble { display: flex; padding: 0.625em 0.75em; flex-direction: column; gap: 0.375em; background: #ffffff; border-radius: 0.875em 0.875em 0.875em 0.25em; }
+.hero_telegram-meta { display: flex; align-items: center; align-self: flex-end; gap: 0.25em; color: #827f8b; font-size: 0.6875em; }
+.hero_telegram-meta .hero_app-icon { width: 1.1em; height: 1.1em; }
+
+.hero_insta-head { display: flex; padding: 0.625em 0.75em; align-items: center; gap: 0.5em; }
+.hero_insta-head .hero_app-name { flex: 1; }
+.hero_insta-ring {
+  display: grid;
+  padding: 0.125em;
+  place-items: center;
+  background: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf);
+  border-radius: 50%;
+}
+.hero_insta-ring .hero_app-avatar { border: 0.125em solid #ffffff; }
+.hero_insta-photo { display: block; width: 100%; aspect-ratio: 5 / 4; object-fit: cover; object-position: 60% 40%; }
+.hero_insta-actions { display: flex; padding: 0.625em 0.75em 0.375em; justify-content: space-between; color: #1d1d33; }
+.hero_insta-actions > span { display: flex; gap: 0.875em; }
+.hero_app.is-instagram .hero_app-text { padding: 0 0.75em 0.875em; }
+
+/* ---------- Личный бренд: слова по орбите вокруг «ваш блог» ---------- */
+/* Размер считается так же, как у стопки соцсетей: от ширины ряда карточек. */
+.hero_blog { position: relative; width: 29.5em; height: 22.5em; flex: none; font-size: min(1rem, calc((100cqi - 18.5rem) * 0.0165)); }
+.hero_spines:not(.is-enhanced) .hero_blog { font-size: calc((100cqi / 3 - 4rem) / 30); }
+.hero_blog-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(51, 47, 65, 0.16);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.hero_blog-ring.is-outer { width: 20em; }
+.hero_blog-ring.is-inner { width: 12em; border-style: dashed; border-color: rgba(51, 47, 65, 0.14); }
+.hero_blog-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 6.75em; /* 8em орбиты: свой кегль у центра крупнее */
+  height: 6.75em;
+  place-items: center;
+  background: #000000;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: max(1.1875em, 0.875rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+/* Орбита медленно вращается, а сами слова остаются ровными:
+   дорожка поворачивается в одну сторону, каждое слово на столько же в обратную. */
+.hero_blog-track { position: absolute; inset: 0; animation: hero-blog-spin 70s linear infinite; }
+.hero_blog-slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--angle)) translateY(-10em) rotate(calc(-1 * var(--angle)));
+}
+.hero_blog-word {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.5em 0.875em;
+  background: #ffffff;
+  border: 1px solid rgba(51, 47, 65, 0.12);
+  border-radius: 3em;
+  box-shadow: 0 0.25em 0.75em rgba(51, 47, 65, 0.06);
+  color: var(--color-text-button);
+  font-size: max(0.9375em, 0.75rem); /* слова читаются: не мельче 12px */
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  translate: -50% -50%;
+  animation: hero-blog-spin 70s linear infinite reverse;
+}
+@keyframes hero-blog-spin { to { rotate: 360deg; } }
+/* Пока карточка свёрнута, орбита стоит. */
+.hero_spines.is-enhanced .hero_spine:not(.is-active) :is(.hero_blog-track, .hero_blog-word) { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .hero_blog-track,
+  .hero_blog-word { animation: none; }
+}
+/* На тёмных карточках (варианты Е и Ж) центр светлый. */
+.hero_spine:not(.is-on-light) .hero_blog-ring { border-color: rgba(255, 255, 255, 0.28); }
+.hero_spine:not(.is-on-light) .hero_blog-core { background: #ffffff; color: #000000; }
+
+/* Картинки целиком мельче на узких экранах. */
+@media screen and (max-width: 61.9375rem) {
+  .hero_spines.is-enhanced .hero_social { font-size: 0.68rem; }
+  .hero_spines.is-enhanced .hero_blog { font-size: 0.68rem; }
+}
+@media screen and (max-width: 47.9375rem) {
+  .hero_spines.is-enhanced :is(.hero_social, .hero_blog),
+  .hero_spines:not(.is-enhanced) :is(.hero_social, .hero_blog) { font-size: min(0.85rem, calc((100cqi - 2.5rem) / 30)); }
+}
+
+
+/* ---------- Блок 2: цепочка результата ---------- */
+.section_chain { padding-bottom: var(--space-between-sections); }
+/* Блок на цветной плашке, как «Дело не в том, что вы чего-то не умеете»:
+   размытая картинка градиента и зерно; ширина и скругление те же. */
+.chain_component {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 3.125rem 2rem 3rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  border-radius: 1rem;
+}
+.chain_backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: clip;
+  background: #000000;
+  border-radius: inherit;
+}
+.chain_backdrop-image {
+  position: absolute;
+  top: -17%;
+  left: -7.68%;
+  width: 126.3%;
+  height: 134%;
+  max-width: none;
+  object-fit: cover;
+  filter: blur(38.5px);
+  transform: rotate(180deg) scale(1.03);
+}
+.chain_grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+  background-position: top left;
+  background-size: 31.25rem 31.25rem;
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+}
+.chain_header,
+.chain_body {
+  position: relative;
+  z-index: 1;
+}
+.chain_header {
+  display: flex;
+  width: 100%;
+  max-width: 61.375rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+/* Надпись над заголовком на цветной плашке — светлая, как в тёмной карточке первого экрана */
+.chain_eyebrow {
+  display: inline-flex;
+  min-height: 1.75rem;
+  padding: 0.5rem 0.875rem;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 3rem;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+.chain_heading {
+  max-width: 44rem;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.chain_body {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Четыре шага в ряд. Линия от номера тянется до номера следующего шага. */
+.chain_list {
+  --chain-gap: 1rem;
+  display: grid;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--chain-gap);
+  list-style: none;
+}
+.chain_step {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.chain_marker {
+  display: flex;
+  align-items: center;
+}
+.chain_step:not(.is-final) .chain_marker { width: calc(100% + var(--chain-gap)); }
+/* Номер как в блоке созвонов, только на тёмной плашке наоборот: белый круг — шаг пройден */
+.chain_number {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  color: #000000;
+  font-size: 1.125rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.chain_link {
+  position: relative;
+  height: 2px;
+  margin-left: 0.5rem;
+  flex: 1;
+  overflow: clip;
+  background: rgba(255, 255, 255, 0.24);
+  border-radius: 1px;
+}
+/* Заполнение линии: долю в --chain-fill ставит скрипт, без скрипта линия полная */
+.chain_link::after {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  content: "";
+  transform: scaleX(var(--chain-fill, 1));
+  transform-origin: left;
+}
+/* Стрелка садится на конец линии */
+.chain_arrow {
+  width: 1rem;
+  height: 1rem;
+  margin: 0 0.5rem 0 -0.625rem;
+  flex: none;
+  color: #ffffff;
+}
+
+/* Карточка шага: картинка сверху, текст снизу. Белая, как карточки первого экрана. */
+.chain_card {
+  --chain-surface: #ffffff;
+  display: flex;
+  min-height: 15rem;
+  padding: 1.25rem;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background: var(--chain-surface);
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+.chain_visual {
+  display: flex;
+  min-height: 3.5rem;
+  align-items: center;
+}
+.chain_copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  container-type: inline-size;
+}
+/* Кегль следует за шириной карточки: длинное «записываются» помещается целиком,
+   на широком экране — до 28px */
+.chain_step-heading {
+  margin: 0;
+  font-size: clamp(1.25rem, 11.5cqi, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2143;
+  letter-spacing: -0.02em;
+}
+.chain_step-text {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.444;
+  letter-spacing: -0.01em;
+}
+
+/* Подсвеченный шаг — чёрная карточка. Без скрипта подсвечен итог, «Больше обращений». */
+.chain_step.is-final .chain_card {
+  --chain-surface: #000000;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+.chain_step.is-final .chain_step-text { color: #f5f5f5; }
+
+/* Картинки в карточках */
+.chain_weeks { display: flex; gap: 0.375rem; }
+.chain_week {
+  position: relative;
+  width: 2.25rem;
+  aspect-ratio: 4 / 5;
+  background: #fcfcfa;
+  border: 1px solid rgba(51, 47, 65, 0.08);
+  border-radius: 0.375rem;
+}
+/* Полоска подписи под постом */
+.chain_week::after {
+  position: absolute;
+  bottom: 0.375rem;
+  left: 0.375rem;
+  width: 45%;
+  height: 0.1875rem;
+  background: rgba(51, 47, 65, 0.28);
+  border-radius: 0.125rem;
+  content: "";
+}
+.chain_week.is-lavender { background: var(--color-highlight); }
+.chain_week.is-warm { background: #fdf2d4; }
+.chain_week.is-light { background: #eeeeef; }
+.chain_week.is-dark { background: #18181a; border-color: rgba(255, 255, 255, 0.16); }
+.chain_week.is-dark::after { background: rgba(255, 255, 255, 0.45); }
+
+.chain_faces { display: flex; }
+.chain_face {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: -0.625rem;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+  background: #eeeeef;
+  border: 0.1875rem solid var(--chain-surface);
+  border-radius: 50%;
+  color: var(--color-text-button);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.chain_face:first-child { margin-left: 0; }
+.chain_face.is-initials { background: #fdf2d4; }
+.chain_face.is-more { background: var(--color-highlight); font-size: 1.125rem; font-weight: 500; }
+
+.chain_bubble {
+  display: inline-flex;
+  max-width: 15rem;
+  padding: 0.625rem 0.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.875rem 0.875rem 0.875rem 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+.chain_bubble.is-reader {
+  background: #eeeeef;
+  color: #5e5a6a;
+  transform: rotate(-0.95deg);
+}
+.chain_bubble.is-request {
+  background: #ffffff;
+  border: 1px solid rgba(51, 47, 65, 0.12);
+  box-shadow: 0 0.5rem 1.5rem rgba(51, 47, 65, 0.12);
+  color: var(--color-text-button);
+  transform: rotate(0.66deg);
+}
+/* Точка «новое сообщение» */
+.chain_dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  background: var(--color-highlight);
+  border-radius: 50%;
+}
+
+/* Сноска: тихая, светлая на плашке, как описание в «Дело не в том…» */
+.chain_note {
+  max-width: 46rem;
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1rem;
+  line-height: 1.45;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Со скриптом: черная подсветка идёт по шагам при прокрутке, номера и линия
+   заполняются следом. Текст читается в любом состоянии. */
+.chain_list.is-animated .chain_number {
+  background: transparent;
+  color: #ffffff;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+.chain_list.is-animated .chain_step.is-reached .chain_number {
+  background: #ffffff;
+  color: #000000;
+}
+.chain_list.is-animated .chain_arrow {
+  opacity: 0.32;
+  transition: opacity 300ms ease;
+}
+.chain_list.is-animated .chain_step.is-passed .chain_arrow { opacity: 1; }
+.chain_list.is-animated .chain_card,
+.chain_list.is-animated .chain_face {
+  transition:
+    background-color 450ms ease,
+    border-color 450ms ease,
+    color 450ms ease,
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.chain_list.is-animated .chain_step-text { transition: color 450ms ease; }
+.chain_list.is-animated .chain_step.is-final .chain_card {
+  --chain-surface: #ffffff;
+  box-shadow: none;
+  color: var(--color-text-button);
+}
+.chain_list.is-animated .chain_step.is-final .chain_step-text { color: inherit; }
+/* Тонкая светлая кромка, чтобы чёрная карточка не терялась на тёмном краю плашки */
+.chain_list.is-animated .chain_step.is-current .chain_card {
+  --chain-surface: #000000;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  transform: translateY(-0.375rem);
+}
+.chain_list.is-animated .chain_step.is-current .chain_step-text { color: #f5f5f5; }
+
+@media screen and (max-width: 74.9375rem) {
+  .chain_step-text { font-size: 1rem; line-height: 1.45; }
+}
+/* Планшет и телефон: цепочка сверху вниз, номер слева, как у созвонов */
+@media screen and (max-width: 61.9375rem) {
+  .chain_component { padding: 3rem 2rem 3.5rem; }
+  .chain_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+  .chain_step-heading { font-size: 1.5rem; }
+  .chain_list { max-width: 40rem; grid-template-columns: minmax(0, 1fr); }
+  .chain_step {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .chain_marker { flex-direction: column; }
+  .chain_step:not(.is-final) .chain_marker { width: auto; height: calc(100% + var(--chain-gap)); }
+  .chain_link {
+    width: 2px;
+    height: auto;
+    margin: 0.5rem 0 0;
+  }
+  .chain_link::after {
+    transform: scaleY(var(--chain-fill, 1));
+    transform-origin: top;
+  }
+  .chain_arrow {
+    margin: -0.625rem 0 0.5rem;
+    transform: rotate(90deg);
+  }
+  .chain_card { min-height: 0; gap: 1.25rem; }
+  .chain_list.is-animated .chain_step.is-current .chain_card { transform: none; }
+}
+@media screen and (max-width: 32.5rem) {
+  .chain_component { padding: 2.5rem 1rem 3rem; gap: 2.5rem; }
+  .chain_eyebrow { font-size: 0.6875rem; line-height: 1.2; }
+  .chain_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+  .chain_step { gap: 0.75rem; }
+  .chain_bubble { max-width: 100%; }
+}
+
+/* ---------- Д: сцена «первый экран → цепочка» ---------- */
+/* Обычный порядок (телефон, планшет, без скрипта): карточки под кнопками, ниже блок 2. */
+.section_hero.is-story-head { padding-bottom: 0; }
+.story_hero {
+  padding-top: 4.375rem;
+  padding-bottom: var(--space-between-sections);
+}
+.story_ghost { display: none; }
+
+/* Сцена: блок прилипает к экрану, пока прокрутка идёт по «дорожке» высотой в два экрана.
+   Размеры (--story-*) считает скрипт, руками их не задавать. */
+.story_component.is-story {
+  position: relative;
+  height: var(--story-height);
+  margin-top: var(--story-shift);
+}
+.story_component.is-story .story_sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  pointer-events: none;
+}
+.story_component.is-story .story_hero {
+  position: absolute;
+  z-index: 1;
+  top: var(--story-cards-top);
+  right: 0;
+  left: 0;
+  padding: 0;
+  pointer-events: auto;
+}
+/* Слои сцены: цветная плашка (0) — карточки первого экрана (1) — текст и карточки блока 2 (2) */
+.story_component.is-story .section_chain {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+}
+.story_component.is-story .chain_header,
+.story_component.is-story .chain_body { z-index: 2; }
+/* Плашка проявляется за карточками, когда текст первого экрана уходит вверх */
+/* Только прозрачность: размытая картинка не перерисовывается на каждом кадре */
+.story_component.is-story .chain_backdrop {
+  opacity: var(--story-panel, 0);
+  will-change: opacity;
+}
+/* Части блока 2 проявляются по ходу прокрутки (доли от 0 до 1 ставит скрипт) */
+.story_component.is-story .chain_header {
+  opacity: var(--story-header, 0);
+  transform: translateY(calc((1 - var(--story-header, 0)) * 1.5rem));
+}
+.story_component.is-story .chain_marker { opacity: var(--story-track, 0); }
+.story_component.is-story .chain_card { opacity: var(--story-cards, 0); }
+.story_component.is-story .chain_note { opacity: var(--story-note, 0); }
+
+/* Перестройка: корешки снимаются с места и едут в ячейки цепочки */
+.hero_spines.is-enhanced.is-morphing {
+  position: relative;
+  display: block;
+  pointer-events: none;
+}
+/* Когда карточки блока 2 проявились целиком, белые карточки под ними прячутся,
+   иначе их край выглядывает из-под приподнятой подсвеченной карточки */
+.hero_spines.is-morphing .hero_spine {
+  position: absolute;
+  opacity: var(--story-boxes, 1);
+  transition: none;
+}
+/* Содержимое первого экрана тает под белым слоем, остаются чистые карточки */
+.hero_spines.is-morphing .hero_spine::after {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  background: #ffffff;
+  content: "";
+  opacity: var(--story-cover, 0);
+}
+.hero_spines.is-morphing .hero_spine-progress::after { animation-play-state: paused; }
+/* Четвёртая карточка, «Регулярный контент», выезжает слева */
+.hero_spines.is-morphing .story_ghost {
+  position: absolute;
+  display: block;
+  background: #ffffff;
+  border-radius: 1rem;
+  opacity: var(--story-boxes, 1);
+}
+
+/* ---------- Блок 3: что мешает показываться ---------- */
+.section_pain { padding-bottom: var(--space-between-sections); }
+/* Серая плашка — та же, что была у блока проблемы */
+.pain_component {
+  display: flex;
+  width: 100%;
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 4rem 2.5rem 3.5rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  background: #dfdfdf;
+  border: 0.5px solid rgba(205, 204, 204, 0.8);
+  border-radius: 1rem;
+}
+.pain_header {
+  display: flex;
+  max-width: 64rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+.pain_heading {
+  margin: 0;
+  color: var(--color-text-button);
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.pain_description {
+  max-width: 52rem;
+  margin: 0;
+  color: var(--color-text-dark);
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.2727;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.pain_body {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+/* Надпись над карточками: строчными, без капслока */
+.pain_eyebrow {
+  display: inline-flex;
+  min-height: 1.75rem;
+  margin: 0;
+  padding: 0.5rem 0.875rem;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 3rem;
+  color: var(--color-text-dark);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+}
+.pain_grid {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  list-style: none;
+}
+/* Пункт списка без полей: сброс страницы снимает padding у всех li,
+   поэтому поля и фон — у карточки внутри */
+.pain_item {
+  display: flex;
+  min-width: 0;
+}
+.pain_card {
+  display: flex;
+  min-width: 0;
+  padding: 1.5rem;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+.pain_card-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2143;
+  letter-spacing: -0.02em;
+}
+/* Реплика психолога — пузырь сообщения, как в карточке «Доверие» */
+.pain_quote {
+  align-self: flex-start;
+  max-width: 30rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: #eeeeef;
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  color: var(--color-text-button);
+  font-size: 1.125rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+.pain_reason {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.pain_label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #5e5a6a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.pain_reason-text {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+/* Ответ клуба прижат к низу, чтобы ответы в ряду стояли на одной линии */
+.pain_answer {
+  display: flex;
+  margin-top: auto;
+  padding: 1rem 1.125rem 1.125rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #000000;
+  border-radius: 0.75rem;
+  color: #ffffff;
+}
+.pain_label.is-answer { color: #f5f5f5; }
+.pain_dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  background: var(--color-highlight);
+  border-radius: 50%;
+}
+.pain_answer-text {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+/* Фраза-мостик к следующему блоку */
+.pain_bridge {
+  max-width: 48rem;
+  margin: 0;
+  color: var(--color-text-button);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Со скриптом карточки появляются по очереди, когда блок въезжает в экран */
+.pain_grid.is-animated .pain_item {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 500ms ease calc(var(--pain-index) * 120ms),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--pain-index) * 120ms);
+}
+.pain_grid.is-animated.is-visible .pain_item {
+  opacity: 1;
+  transform: none;
+}
+
+@media screen and (max-width: 74.9375rem) {
+  .pain_card-title { font-size: 1.5rem; }
+}
+@media screen and (max-width: 61.9375rem) {
+  .pain_component { padding: 3rem 2rem 3rem; gap: 2.5rem; }
+  .pain_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+  .pain_description { font-size: 1.1875rem; }
+  .pain_quote, .pain_answer-text { font-size: 1rem; }
+  .pain_bridge { font-size: 1.375rem; }
+}
+/* Телефон и узкий планшет: карточки друг под другом */
+@media screen and (max-width: 47.9375rem) {
+  .pain_grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media screen and (max-width: 32.5rem) {
+  .pain_component { padding: 2.5rem 1rem 2.5rem; gap: 2rem; }
+  .pain_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+  .pain_description { font-size: 1rem; line-height: 1.45; }
+  .pain_card { padding: 1.25rem 1rem; gap: 1rem; }
+  .pain_bridge { font-size: 1.25rem; }
+}
+
+/* ---------- Блок 4: для кого этот клуб ---------- */
+.section_who { padding-bottom: var(--space-between-sections); }
+.who_component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem;
+}
+.who_heading {
+  margin: 0;
+  color: var(--color-text-button);
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  text-align: center;
+  text-wrap: balance;
+}
+.who_grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+/* Поля и фон у карточки внутри li: сброс страницы снимает padding у li */
+.who_item { display: flex; min-width: 0; }
+.who_card {
+  display: flex;
+  min-height: 20rem;
+  padding: 1.5rem;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+/* Три полоски: с какой точки приходит человек */
+.who_level { display: flex; gap: 0.25rem; }
+.who_level-bar {
+  width: 1.75rem;
+  height: 0.375rem;
+  background: #eeeeef;
+  border-radius: 1rem;
+}
+.who_level-bar.is-on { background: var(--color-text-button); }
+.who_title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2143;
+  letter-spacing: -0.02em;
+}
+.who_gets {
+  display: flex;
+  margin-top: auto;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.who_label {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.who_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.who_list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+/* Галочка нарисована CSS, без файла иконки */
+.who_check {
+  position: relative;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.1875rem;
+  flex: none;
+  background: var(--color-highlight);
+  border-radius: 50%;
+}
+.who_check::after {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.375rem;
+  width: 0.3125rem;
+  height: 0.5rem;
+  border: solid var(--color-text-button);
+  border-width: 0 2px 2px 0;
+  content: "";
+  transform: rotate(45deg);
+}
+.who_actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+@media screen and (max-width: 74.9375rem) {
+  .who_title { font-size: 1.5rem; }
+  .who_list-item { font-size: 1rem; }
+}
+@media screen and (max-width: 61.9375rem) {
+  .who_component { gap: 2.5rem; }
+  .who_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+  .who_grid { grid-template-columns: minmax(0, 1fr); }
+  .who_card { min-height: 0; }
+  /* Кнопки по ширине карточек: две половины, края совпадают с карточками;
+     если места на две мало, встают друг под другом */
+  .who_actions { width: 100%; }
+  .who_actions .button { flex: 1 1 18rem; }
+}
+@media screen and (max-width: 32.5rem) {
+  .who_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+  .who_card { padding: 1.25rem 1rem; gap: 1.25rem; }
+  .who_actions { flex-direction: column; }
+  /* На узком телефоне длинная надпись переносится, а не вылезает за кнопку */
+  .who_actions .button { flex: none; width: 100%; white-space: normal; }
+}
+
+/* ---------- Блок 5: что меняется за время в клубе ---------- */
+.section_growth { padding-bottom: var(--space-between-sections); }
+.growth_component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem;
+}
+.growth_header {
+  display: flex;
+  max-width: 50rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+.growth_heading {
+  margin: 0;
+  color: var(--color-text-button);
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+/* Оговорка про средний срез: заметная, но спокойная */
+.growth_note {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+/* Вариант 1: три шага по времени */
+.results_timeline {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.results_stage { display: flex; min-width: 0; }
+.results_card {
+  display: flex;
+  padding: 1.5rem;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+/* Полгода — итог, тёмная карточка, как итог цепочки в блоке 2 */
+.results_stage.is-final .results_card { background: #000000; color: #ffffff; }
+.results_when {
+  display: flex;
+  margin: 0;
+  align-items: baseline;
+  gap: 0.375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.results_prefix, .results_unit { font-size: 1.5rem; line-height: 1; }
+.results_number { font-size: 4.5rem; line-height: 0.9; letter-spacing: -0.04em; }
+/* Полоса полугода: заполнена на 1, 3 и 6 месяцев из 6 */
+.results_bar {
+  position: relative;
+  height: 0.375rem;
+  overflow: clip;
+  background: #eeeeef;
+  border-radius: 1rem;
+}
+.results_bar::after {
+  position: absolute;
+  inset: 0;
+  background: var(--color-text-button);
+  border-radius: inherit;
+  content: "";
+  transform: scaleX(var(--share));
+  transform-origin: left;
+}
+.results_stage.is-final .results_bar { background: rgba(255, 255, 255, 0.24); }
+.results_stage.is-final .results_bar::after { background: var(--color-highlight); }
+.results_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.results_list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+/* Галочка нарисована CSS */
+.results_check {
+  position: relative;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.1875rem;
+  flex: none;
+  background: var(--color-highlight);
+  border-radius: 50%;
+}
+.results_check::after {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.375rem;
+  width: 0.3125rem;
+  height: 0.5rem;
+  border: solid var(--color-text-button);
+  border-width: 0 2px 2px 0;
+  content: "";
+  transform: rotate(45deg);
+}
+.results_quotes {
+  display: flex;
+  margin-top: auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.results_quotes-label {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.results_quote {
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  background: #eeeeef;
+  border-radius: 0.875rem 0.875rem 0.875rem 0.25rem;
+  color: var(--color-text-button);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+/* Вариант 2: стена результатов без месяцев, с цитатами из анкет */
+.results_wall {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+.results_tile { display: flex; min-width: 0; }
+.results_tile-inner {
+  display: flex;
+  min-height: 8.5rem;
+  padding: 1.25rem;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+.results_tile.is-quote .results_tile-inner {
+  background: #000000;
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  color: #ffffff;
+}
+.results_tile.is-quote .results_quotes-label { color: #c9c6d1; }
+.results_tile-text {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+
+/* ---------- Истории участников ---------- */
+.section_cases { padding-bottom: var(--space-between-sections); }
+/* Тёмная плашка, как у историй студентов на странице КПТ Оксфордская модель */
+.cases_component {
+  display: flex;
+  width: 100%;
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 4rem 2rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  background: #000000;
+  border-radius: 1rem;
+}
+.cases_header {
+  display: flex;
+  max-width: 50rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+.cases_heading {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.cases_description {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.cases_list {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.cases_item { display: flex; min-width: 0; }
+.cases_card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1rem;
+  color: #ffffff;
+}
+/* Место фото: пока плашка с инициалами, фон из цветов ленты первого экрана */
+.cases_photo {
+  position: relative;
+  display: flex;
+  aspect-ratio: 6 / 5;
+  padding: 1rem;
+  align-items: flex-end;
+  overflow: clip;
+  border-radius: 0.875rem;
+}
+.cases_photo.is-lilac { background: linear-gradient(160deg, #beacf4, #f1eef8); }
+.cases_photo.is-warm { background: linear-gradient(160deg, #fdf2d4, #f6dcb4); }
+.cases_photo.is-light { background: linear-gradient(160deg, #eeeeef, #cfcbd8); }
+.cases_initials {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  color: rgba(51, 47, 65, 0.32);
+  font-size: 4.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  transform: translate(-50%, -50%);
+}
+/* Фото участника на всю карточку, лицо в верхней части кадра */
+.cases_image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+/* С чем пришёл: тёмная подпись поверх фото */
+.cases_before {
+  position: relative;
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  background: rgba(0, 0, 0, 0.72);
+  border-radius: 0.625rem;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  backdrop-filter: blur(6px);
+}
+.cases_name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+/* Что изменилось: первая фраза светлая и жирная, дальше приглушённо */
+.cases_after {
+  margin: 0;
+  color: #c9c6d1;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+}
+.cases_after strong { color: #ffffff; font-weight: 600; }
+
+@media screen and (max-width: 74.9375rem) {
+  .results_list-item { font-size: 1rem; }
+  .results_number { font-size: 3.75rem; }
+  .results_tile-text { font-size: 1.125rem; }
+}
+@media screen and (max-width: 61.9375rem) {
+  .growth_component { gap: 2.5rem; }
+  .growth_heading, .cases_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+  /* Планшет: карточки друг под другом на всю ширину, как в блоке 4 */
+  .results_timeline { grid-template-columns: minmax(0, 1fr); }
+  .results_wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cases_component { padding: 3rem 2rem; gap: 2.5rem; }
+}
+/* Телефон: истории листаются вбок внутри плашки, как на странице КПТ */
+@media screen and (max-width: 47.9375rem) {
+  .cases_list {
+    grid-template-columns: none;
+    grid-auto-columns: 82%;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .cases_item { scroll-snap-align: start; }
+}
+@media screen and (max-width: 32.5rem) {
+  .growth_heading, .cases_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+  .growth_note { font-size: 1rem; }
+  .results_card { padding: 1.25rem 1rem; }
+  .results_wall { grid-template-columns: minmax(0, 1fr); }
+  .results_tile-inner { min-height: 0; }
+  .cases_component { padding: 2.5rem 1rem; }
+  .cases_description { font-size: 1rem; }
+}
+
+/* ---------- Блок 5 без месяцев: три направления ---------- */
+
+/* Б. Голоса: цитаты сообщениями, под каждой то, что за ней стоит.
+   07.11 Дарья: аккуратнее, тексты не гигантские, итог белый */
+/* Переписка уже блока и стоит по центру: сообщения ближе к середине (Дарья, 07.11) */
+.voices_thread {
+  display: flex;
+  width: 100%;
+  max-width: 52rem;
+  margin-right: auto;
+  margin-left: auto;
+  flex-direction: column;
+  gap: 2rem;
+}
+.voices_item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.voices_item.is-right { align-items: flex-end; }
+.voices_bubble {
+  max-width: 34rem;
+  margin: 0;
+  padding: 1.125rem 1.375rem 1.25rem;
+  background: #000000;
+  border-radius: 1.25rem 1.25rem 1.25rem 0.375rem;
+  color: #ffffff;
+  font-size: clamp(1.25rem, 1.9vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.voices_item.is-right .voices_bubble { border-radius: 1.25rem 1.25rem 0.375rem 1.25rem; }
+.voices_label {
+  display: block;
+  margin-bottom: 0.375rem;
+  color: #c9c6d1;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+.voices_tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.voices_item.is-right .voices_tags { justify-content: flex-end; }
+.voices_tag {
+  display: inline-flex;
+  padding: 0.375rem 0.75rem 0.375rem 0.375rem;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  border-radius: 3rem;
+  color: var(--color-text-button);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.voices_tick {
+  display: inline-flex;
+  width: 1.375rem;
+  height: 1.375rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-highlight);
+  border-radius: 50%;
+}
+.voices_tick svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: none;
+  stroke: var(--color-text-button);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Итог: к чему это приводит в практике, белая карточка */
+.voices_result {
+  display: flex;
+  width: 100%;
+  padding: 1.5rem 1.75rem 1.75rem;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: #ffffff;
+  border-radius: 1.25rem;
+  color: var(--color-text-button);
+}
+.voices_result-label {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.voices_result-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.voices_result-list li {
+  font-size: clamp(1.125rem, 1.4vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.voices_result-list li + li { border-left: 1px solid rgba(51, 47, 65, 0.12); }
+.voices_result-list li + li > span { display: block; padding-left: 1.5rem; }
+
+@media screen and (max-width: 61.9375rem) {
+  .voices_result { padding: 1.25rem 1.5rem 1.5rem; gap: 1rem; }
+}
+@media screen and (max-width: 47.9375rem) {
+  .voices_result-list { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .voices_result-list li + li { border-left: 0; border-top: 1px solid rgba(51, 47, 65, 0.12); }
+  .voices_result-list li > span, .voices_result-list li + li > span { padding: 0.75rem 0; }
+  .voices_result-list li:first-child > span { padding-top: 0; }
+  .voices_result-list li:last-child > span { padding-bottom: 0; }
+  .voices_item.is-right { align-items: flex-start; }
+  .voices_item.is-right .voices_bubble { border-radius: 1.25rem 1.25rem 1.25rem 0.375rem; }
+  .voices_item.is-right .voices_tags { justify-content: flex-start; }
+}
+@media screen and (max-width: 32.5rem) {
+  .voices_thread { gap: 1.5rem; }
+  .voices_bubble { padding: 1rem 1.125rem 1.125rem; font-size: 1.25rem; }
+  .voices_tag { font-size: 0.9375rem; }
+  .voices_result { padding: 1.125rem 1rem 1.25rem; }
+  .voices_result-list li { font-size: 1.125rem; }
+}
+
+/* ---------- Блок 6: кто стоит за клубом ---------- */
+.section_team { padding-bottom: var(--space-between-sections); }
+/* Серая плашка, как у блока 3 и прежней карточки ведущего */
+.team_component {
+  display: flex;
+  width: 100%;
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 4rem 2.5rem 2.5rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  background: #dfdfdf;
+  border: 0.5px solid rgba(205, 204, 204, 0.8);
+  border-radius: 1rem;
+}
+.team_heading {
+  margin: 0;
+  color: var(--color-text-button);
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  text-align: center;
+  text-wrap: balance;
+}
+.team_cards {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 1rem;
+}
+/* Две белые карточки: фото ведущего слева, фото Академии справа */
+.team_card {
+  display: grid;
+  padding: 1.5rem;
+  align-items: stretch;
+  gap: 2rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+.team_card.is-host { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+/* Видео «до/после» из прежнего блока бота: управляет им скрипт страницы */
+.team_video {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+.team_video .bot_video-compare {
+  flex: 1;
+  background: #000000;
+  border-radius: 0.75rem;
+}
+.team_video .bot_sound-button { right: 1rem; bottom: 1rem; }
+/* Подпись поверх видео, клики проходят сквозь неё к ползунку */
+.team_video-label {
+  position: absolute;
+  z-index: 6;
+  top: 1rem;
+  left: 1rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.64);
+  border-radius: 3rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+}
+.team_person {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.team_avatar {
+  width: 5rem;
+  height: 5rem;
+  flex: none;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.team_person-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.team_card.is-academy { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.team_academy-photo {
+  min-height: 22rem;
+  overflow: clip;
+  background: #eeeeef;
+  border-radius: 0.75rem;
+}
+.team_photo-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.team_copy {
+  display: flex;
+  min-width: 0;
+  padding: 0.5rem 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+.team_identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+/* Подпись роли: плашка, как надписи над заголовками страницы, но строчными */
+.team_badge {
+  display: inline-flex;
+  min-height: 1.75rem;
+  margin: 0 0 0.25rem;
+  padding: 0.5rem 0.875rem;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 3rem;
+  color: var(--color-text-dark);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+}
+.team_title {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.team_meta {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+/* Два абзаца о ведущем: отступ между ними меньше, чем между блоками карточки */
+.team_texts { display: flex; flex-direction: column; gap: 0.75rem; }
+.team_text {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.444;
+  letter-spacing: -0.01em;
+}
+/* Подпись к фильму и кнопка прижаты к низу карточки */
+.team_film {
+  display: flex;
+  margin-top: auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+/* Цифры Академии: три плитки, выпускники — чёрная с портретами */
+.team_stats {
+  display: grid;
+  width: 100%;
+  margin-top: auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.team_stat { display: flex; min-width: 0; }
+.team_stat-inner {
+  display: flex;
+  min-height: 8.5rem;
+  padding: 1rem;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  background: #eeeeef;
+  border-radius: 0.75rem;
+}
+.team_stat.is-dark .team_stat-inner { background: #000000; color: #ffffff; }
+.team_faces { display: flex; margin-bottom: auto; }
+.team_face {
+  width: 2rem;
+  height: 2rem;
+  object-fit: cover;
+  border: 2px solid #000000;
+  border-radius: 50%;
+}
+.team_face + .team_face { margin-left: -0.5rem; }
+.team_stat-number {
+  margin: 0;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.team_stat-label {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+.team_stat.is-dark .team_stat-label { color: #f5f5f5; }
+
+@media screen and (max-width: 74.9375rem) {
+  .team_title { font-size: 2.125rem; }
+  .team_stat-number { font-size: 1.875rem; }
+}
+/* Планшет: в обеих карточках видео или фото сверху, текст под ним */
+@media screen and (max-width: 61.9375rem) {
+  .team_component { padding: 3rem 2rem 2rem; gap: 2.5rem; }
+  .team_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+  .team_card { gap: 1.5rem; }
+  .team_card.is-host { grid-template-columns: minmax(0, 1fr); }
+  .team_card.is-academy { grid-template-columns: minmax(0, 1fr); }
+  .team_academy-photo { order: -1; min-height: 0; aspect-ratio: 16 / 9; }
+  .team_copy { padding: 0; }
+  .team_text { font-size: 1rem; line-height: 1.45; }
+}
+/* Телефон: кнопка фильма на всю ширину */
+@media screen and (max-width: 47.9375rem) {
+  .team_card .button.is-film { width: 100%; }
+}
+/* Узкий телефон: цифры строками, число слева, подпись справа */
+@media screen and (max-width: 32.5rem) {
+  .team_component { padding: 2.5rem 1rem 1rem; gap: 2rem; }
+  .team_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+  .team_card { padding: 1rem; gap: 1.25rem; }
+  .team_title { font-size: 1.625rem; }
+  /* Аватар меньше, чтобы имя помещалось в одну строку рядом с ним */
+  .team_person { align-items: flex-start; gap: 0.75rem; }
+  .team_avatar { width: 3.5rem; height: 3.5rem; }
+  .team_meta { font-size: 0.9375rem; line-height: 1.4; }
+  .team_video-label { top: 0.75rem; left: 0.75rem; font-size: 0.8125rem; }
+  .team_stats { grid-template-columns: minmax(0, 1fr); }
+  .team_stat-inner {
+    min-height: 0;
+    padding: 0.875rem 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem 0.75rem;
+  }
+  .team_stat-number { flex: none; min-width: 4.5rem; font-size: 1.625rem; }
+  .team_stat-label { min-width: 0; flex: 1; font-size: 0.875rem; }
+  /* Портреты выпускников отдельной строкой над числом: в одну строку с ним не помещаются */
+  .team_faces { flex-basis: 100%; margin: 0; }
+  .team_face { width: 1.75rem; height: 1.75rem; }
+}
+
+/* ---------- Блок 7: как проходит неделя в клубе ---------- */
+.section_week { padding-bottom: var(--space-between-sections); }
+/* Градиентная плашка: размытая картинка страницы и зерно, как у блока 2 */
+.week_component {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 3.5rem 2rem 2.5rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem;
+  border-radius: 1rem;
+}
+.week_backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: clip;
+  background: #000000;
+  border-radius: inherit;
+}
+.week_backdrop-image {
+  position: absolute;
+  top: -17%;
+  left: -7.68%;
+  width: 126.3%;
+  height: 134%;
+  max-width: none;
+  object-fit: cover;
+  filter: blur(38.5px);
+  transform: rotate(180deg) scale(1.03);
+}
+.week_grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+  background-position: top left;
+  background-size: 31.25rem 31.25rem;
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+}
+.week_header,
+.week_plan,
+.week_reasons {
+  position: relative;
+  z-index: 1;
+}
+.week_header {
+  display: flex;
+  max-width: 50rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+.week_heading {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.week_description {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.2727;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Полоса недели: семь дней в ряд */
+.week_plan {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.week_days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.week_day { display: flex; min-width: 0; }
+.week_day-card {
+  display: flex;
+  min-width: 0;
+  min-height: 13rem;
+  padding: 1rem;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+.week_day-name {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.week_day-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.week_day-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.week_day-text {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  /* Длинные слова вроде «исследования» переносятся по слогам, короткие нет */
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  hyphenate-limit-chars: 10 4 4;
+}
+.week_nowrap { white-space: nowrap; }
+/* Время и периодичность — плашкой внизу карточки */
+.week_day-time {
+  margin: auto 0 0;
+  padding: 0.375rem 0.625rem;
+  align-self: flex-start;
+  background: #eeeeef;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+/* Суббота: постоянная встреча, выделена цветом */
+.week_day.is-call .week_day-card { background: var(--color-highlight); }
+.week_day.is-call .week_day-name { color: var(--color-text-button); }
+.week_day.is-call .week_day-time { background: #ffffff; }
+/* Воскресенье: выходной, без заливки */
+.week_day.is-off .week_day-card {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+.week_day.is-off .week_day-name,
+.week_day.is-off .week_day-title { color: #ffffff; }
+
+/* Бот: тонкая полоса под всеми днями, он не привязан к дню */
+.week_bot {
+  display: flex;
+  padding: 0.875rem 1.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 1.25rem;
+  background: #000000;
+  border-radius: 1rem;
+  color: #ffffff;
+}
+.week_bot-label {
+  display: inline-flex;
+  margin: 0;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.week_bot-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  background: var(--color-highlight);
+  border-radius: 50%;
+}
+.week_bot-text {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* «Почему это работает»: прежние табы страницы */
+.week_reasons {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+.week_reasons-heading {
+  margin: 0;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+/* Панель тянется до высоты списка, «Когда» прижато к низу */
+.week_reasons .tabs_layout { align-items: stretch; }
+.week_reasons .tabs_panels { display: flex; }
+.week_reasons .tabs_panel { flex: 1; gap: 1.25rem; }
+.week_reasons .tabs_list { gap: 0.75rem; }
+.week_reasons .tabs_trigger { background: rgba(255, 255, 255, 0.14); color: #f5f5f5; }
+.week_reasons .tabs_trigger .tabs_trigger-number { background: rgba(255, 255, 255, 0.18); color: #ffffff; }
+.week_reasons .tabs_trigger:hover:not([aria-selected="true"]) { background: rgba(255, 255, 255, 0.22); }
+.week_reasons .tabs_trigger[aria-selected="true"] { background: #ffffff; color: var(--color-text-button); }
+.week_reasons .tabs_trigger[aria-selected="true"] .tabs_trigger-number { background: #000000; color: #ffffff; }
+/* Цвет текста ссылок страница задаёт через --link-color (с !important), поэтому меняем переменную */
+.week_reasons .button.is-tabs { --link-color: var(--color-text-button); background: #ffffff; border-color: #ffffff; color: var(--color-text-button); }
+.week_reasons .button.is-tabs:hover { background: #f1eef8; border-color: #f1eef8; }
+.week_reasons .tabs_trigger { min-height: 4.25rem; }
+.week_reasons .tabs_panel-heading { font-size: 2rem; line-height: 1.15; }
+.week_panel-text {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 1.375rem;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+.week_panel-when {
+  display: flex;
+  margin-top: auto;
+  padding-top: 1.25rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(51, 47, 65, 0.12);
+}
+.week_panel-when.is-host { flex-direction: row; align-items: center; gap: 1rem; }
+.week_panel-avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex: none;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.week_panel-name {
+  display: block;
+  color: var(--color-text-button);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.week_panel-label {
+  margin: 0;
+  color: #5e5a6a;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+/* Мини-неделя: отмечены дни, когда это происходит */
+.week_mini {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+.week_mini-day {
+  display: flex;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+  background: #eeeeef;
+  border-radius: 0.75rem;
+  color: #5e5a6a;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.week_mini-day.is-on { background: #000000; color: #ffffff; }
+
+/* Ноутбук: колонки дней узкие, шрифт и поля меньше */
+@media screen and (max-width: 74.9375rem) {
+  .week_day-card { padding: 0.75rem; min-height: 12rem; }
+  .week_day-name { font-size: 0.8125rem; }
+  .week_day-title { font-size: 1.0625rem; }
+  /* Колонки узкие: поля плашки и карточек меньше */
+  .week_component { padding-right: 1.25rem; padding-left: 1.25rem; }
+  .week_days { gap: 0.375rem; }
+  .week_day-card { padding: 0.75rem 0.625rem; }
+  .week_day-text { font-size: 0.8125rem; }
+  .week_day-time { font-size: 0.75rem; padding: 0.3125rem 0.5rem; }
+  .week_panel-text { font-size: 1.25rem; }
+  .week_reasons .tabs_panel-heading { font-size: 1.75rem; }
+}
+/* Планшет и телефон: дни списком сверху вниз, день слева, дело справа */
+@media screen and (max-width: 61.9375rem) {
+  .week_component { padding: 3rem 1.5rem 2rem; gap: 2.5rem; }
+  /* Лента табов листается внутри плашки, а не до краёв экрана */
+  .week_reasons .tabs_list { width: 100%; margin-right: 0; margin-left: 0; padding-right: 0; padding-left: 0; }
+  .week_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+  .week_description { font-size: 1.1875rem; }
+  .week_days { grid-template-columns: minmax(0, 1fr); }
+  .week_day-card {
+    display: grid;
+    min-height: 0;
+    padding: 1rem 1.25rem;
+    grid-template-columns: 8rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.375rem 1rem;
+  }
+  .week_day-name { font-size: 0.9375rem; }
+  .week_day-title { font-size: 1.125rem; }
+  .week_day-copy { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 0 0.375rem; }
+  .week_day-text { font-size: 1rem; -webkit-hyphens: manual; hyphens: manual; }
+  .week_day-time { margin: 0; font-size: 0.8125rem; }
+  .week_reasons-heading { font-size: 1.75rem; }
+}
+@media screen and (max-width: 32.5rem) {
+  .week_component { padding: 2.5rem 1rem 1.25rem; gap: 2rem; }
+  .week_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+  .week_description { font-size: 1rem; line-height: 1.45; }
+  .week_day-card { padding: 0.875rem 1rem; grid-template-columns: 6.75rem minmax(0, 1fr); }
+  .week_day-name { align-self: start; padding-top: 0.125rem; }
+  .week_day-time { grid-column: 2; justify-self: start; }
+  .week_day-copy { flex-direction: column; }
+  .week_bot { padding: 0.875rem 1rem; }
+  .week_panel-text { font-size: 1rem; }
+  .week_reasons .tabs_panel-heading { font-size: 1.5rem; }
+  .week_mini-day { height: 2.5rem; font-size: 0.8125rem; }
+}
+
+/* ---------- Блок 8: что входит и цена ---------- */
+/* Цена и пробный период — два отдельных предложения, между ними заметный зазор */
+.section_price { padding-bottom: 2.5rem; }
+/* 11.11 Дарья: весь блок на градиентной плашке, как блоки 2 и 7 */
+.price_component {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 3.5rem 2rem 2rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  border-radius: 1rem;
+}
+.price_backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: clip;
+  background: #000000;
+  border-radius: inherit;
+}
+.price_backdrop-image {
+  position: absolute;
+  top: -17%;
+  left: -7.68%;
+  width: 126.3%;
+  height: 134%;
+  max-width: none;
+  object-fit: cover;
+  filter: blur(38.5px);
+  /* Чуть темнее, чем в блоках 2 и 7: здесь много мелкого белого текста */
+  opacity: 0.88;
+  transform: rotate(180deg) scale(1.03);
+}
+.price_backdrop-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+  background-position: top left;
+  background-size: 31.25rem 31.25rem;
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+}
+.price_heading,
+.price_layout,
+.price_points {
+  position: relative;
+  z-index: 1;
+}
+.price_heading {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2.25rem, 2.857vw, 3rem);
+  font-weight: 700;
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  align-self: stretch;
+  text-align: left;
+  text-wrap: balance;
+}
+/* Цена строкой над составом: сумма слева, кнопка справа; состав во всю ширину плашки */
+.price_layout {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 1rem;
+}
+/* Цена стоит прямо на градиенте плашки, без своей карточки */
+.price_offer {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  color: #ffffff;
+}
+.price_offer-content {
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: 0 0 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem 2.5rem;
+}
+.price_offer-sum {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.price_offer-label {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.price_amount {
+  display: flex;
+  margin: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.625rem;
+}
+.price_value {
+  font-size: clamp(3rem, 4.4vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.price_unit { font-size: 1.25rem; font-weight: 600; }
+.price_week {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1.125rem;
+}
+.price_offer-action {
+  display: flex;
+  width: min(100%, 26rem);
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.price_button { max-width: none; white-space: normal; }
+/* Ссылка на оферту: страница снимает подчёркивание у ссылок, поэтому линия рамкой снизу */
+.price_offer-link {
+  --link-color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+.price_terms {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+/* Состав: три колонки прямо на градиенте, разделитель сверху и между колонками (11.11) */
+.price_includes {
+  display: grid;
+  min-width: 0;
+  padding: 2rem 0 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+.price_group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.price_group + .price_group { padding-left: 1.5rem; border-left: 1px solid rgba(255, 255, 255, 0.22); }
+.price_group-title {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.price_list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.price_item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+.price_check {
+  display: inline-flex;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin-top: 0.0625rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-highlight);
+  border-radius: 50%;
+}
+.price_check svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: none;
+  stroke: var(--color-text-button);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* В блоке цены галочки без фиолетового; в билете пробного периода остаются прежними */
+.price_component .price_check { background: rgba(255, 255, 255, 0.18); }
+.price_component .price_check svg { stroke: #ffffff; }
+.price_item-copy { display: flex; min-width: 0; flex-direction: column; gap: 0.25rem; }
+/* Колонки узкие на ноутбуке: длинные слова вроде «Амбассадорская» переносятся по слогам */
+.price_item-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  hyphenate-limit-chars: 12 5 5;
+}
+.price_item-text {
+  margin: 0;
+  color: #efedf3;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+/* Баллы: под ценой и составом, колонки совпадают с ними */
+.price_points {
+  display: grid;
+  width: 100%;
+  margin-top: -2rem;
+  padding: 2rem 0 0;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+.price_points-copy { display: flex; flex-direction: column; gap: 0.375rem; }
+.price_points-title {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.price_points-text {
+  margin: 0;
+  color: #efedf3;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.price_rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.price_reward {
+  display: inline-flex;
+  padding: 0.625rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* ---------- Пробный период: билет с корешком ---------- */
+.section_trial { padding-top: 0; padding-bottom: var(--space-between-sections); }
+/* Ширина как у плашки цены над ним (75rem) */
+.trial_component {
+  width: 100%;
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  overflow: clip;
+  border-radius: 1.25rem;
+}
+.trial_stub {
+  display: flex;
+  padding: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--color-highlight);
+  color: var(--color-text-button);
+}
+.trial_badge {
+  display: inline-flex;
+  margin: 0;
+  padding: 0.5rem 0.875rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 3rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.trial_heading {
+  margin: 0;
+  font-size: clamp(2rem, 2.6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+/* Линия отрыва: пунктир и два полукруглых выреза цвета страницы */
+.trial_body {
+  position: relative;
+  display: flex;
+  padding: 2rem 2rem 2rem 2.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  background: #ffffff;
+  border-left: 2px dashed rgba(51, 47, 65, 0.24);
+}
+.trial_body::before,
+.trial_body::after {
+  position: absolute;
+  left: -0.875rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: #eeeeef;
+  border-radius: 50%;
+  content: "";
+}
+.trial_body::before { top: -0.75rem; }
+.trial_body::after { bottom: -0.75rem; }
+.trial_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.trial_item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  color: var(--color-text-button);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.trial_button { white-space: normal; }
+/* Форма GetCourse внутри билета: на всю ширину правой части */
+.trial_widget { width: 100%; min-height: 3rem; overflow: clip; border-radius: 1rem; }
+.trial_widget iframe { display: block; width: 100% !important; max-width: 100%; border: 0; }
+
+/* Ноутбук: цена над составом, сумма слева, кнопка справа */
+@media screen and (max-width: 74.9375rem) {
+  .price_offer-action { width: min(100%, 22rem); }
+  .trial_component { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); }
+}
+/* Планшет: группы состава друг под другом */
+@media screen and (max-width: 61.9375rem) {
+  .price_component { padding: 3rem 1.5rem 1.5rem; gap: 2.5rem; }
+  .price_heading { font-size: clamp(2.25rem, 5.2vw, 3rem); }
+  .price_includes { padding: 1.5rem 0 0; grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .price_points { margin-top: -1.5rem; padding: 1.5rem 0 0; grid-template-columns: minmax(0, 1fr); }
+  .price_group + .price_group { margin-top: 1.5rem; padding-top: 1.5rem; padding-left: 0; border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.22); }
+  .price_list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.5rem; }
+  .trial_component { grid-template-columns: minmax(0, 1fr); }
+  /* Билет вертикально: линия отрыва горизонтальная, вырезы слева и справа */
+  .trial_body { padding: 2rem; border-top: 2px dashed rgba(51, 47, 65, 0.24); border-left: 0; }
+  .trial_body::before,
+  .trial_body::after { top: -0.875rem; bottom: auto; }
+  .trial_body::before { left: -0.75rem; }
+  .trial_body::after { left: auto; right: -0.75rem; }
+}
+@media screen and (max-width: 47.9375rem) {
+  .price_offer-content { flex-direction: column; align-items: stretch; }
+  .price_offer-action { width: 100%; }
+  .price_list { grid-template-columns: minmax(0, 1fr); }
+  .trial_button { width: 100%; }
+}
+@media screen and (max-width: 32.5rem) {
+  .price_component { padding: 2.5rem 1rem 1rem; gap: 2rem; }
+  .price_heading { font-size: clamp(1.9375rem, 8.5vw, 2.5rem); line-height: 1.08; }
+  .price_offer-content { padding: 0 0 0.5rem; gap: 2rem; }
+  .price_includes { padding: 1.25rem 0 0; }
+  .price_points { padding: 1.25rem 0 0; }
+  .price_reward { font-size: 0.9375rem; padding: 0.5rem 0.875rem; }
+  .trial_stub { padding: 1.5rem 1.25rem; }
+  .trial_body { padding: 1.5rem 1.25rem; }
+  .trial_item { font-size: 1rem; }
+  /* Форме GetCourse нужна вся ширина билета: на телефоне она выходит на края, без скругления */
+  .trial_widget { width: calc(100% + 2.5rem); margin: 0 -1.25rem; border-radius: 0; }
+}
+
+/* ---------- Блок бота без видео (видео теперь в карточке ведущего) ---------- */
+.section_bot .bot_content {
+  display: grid;
+  grid-template-columns: minmax(0, 591fr) minmax(0, 833fr);
+  align-items: stretch;
+  gap: 1rem;
+}
+.section_bot .bot_media-grid { grid-template-columns: minmax(0, 1fr); }
+/* Телефон с чатом по высоте карточки: уходит за верхний край и не доходит до нижнего на 1.75rem,
+   как в исходном блоке, при любой высоте карточки */
+.section_bot .bot_demo-interface {
+  top: -1.5rem;
+  width: auto;
+  height: calc(100% - 0.25rem);
+}
+.section_bot .bot_feature-grid { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; }
+.section_bot .bot_feature-card {
+  padding: 1.25rem 1.5rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.25rem;
+}
+.section_bot .bot_feature-icon { flex: none; font-size: 2.5rem; }
+.section_bot .bot_feature-copy { gap: 0.375rem; }
+.section_bot .bot_feature-card h3 { font-size: 1.375rem; }
+.section_bot .bot_feature-card p { font-size: 1rem; line-height: 1.4; }
+/* Планшет: картинка сверху, возможности сеткой 2×2, как было */
+@media screen and (max-width: 61.9375rem) {
+  .section_bot .bot_content { grid-template-columns: minmax(0, 1fr); }
+  .section_bot .bot_feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; }
+  .section_bot .bot_feature-card { flex-direction: column; align-items: flex-start; }
+}
+/* Телефон: возможности списком, значок слева */
+@media screen and (max-width: 47.9375rem) {
+  .section_bot .bot_feature-grid { grid-template-columns: minmax(0, 1fr); }
+  .section_bot .bot_feature-card { padding: 1rem; flex-direction: row; gap: 1rem; }
+  .section_bot .bot_feature-icon { font-size: 2rem; }
+  .section_bot .bot_feature-card h3 { font-size: 1.25rem; }
+}
+
+/* ---------- Скриншот созвона на планшете и телефоне: только верхняя часть ---------- */
+@media screen and (max-width: 61.9375rem) {
+  .section_calls .calls_image-wrapper { aspect-ratio: 469 / 600; }
+  .section_calls .calls_image { object-position: top center; }
+}
+
+/* ---------- Рилсы Романа в блоке на градиенте (12.11.2026) ----------
+   Три вертикальных видео 9:16 с «интерфейсом» поверх: автор, лайки, комментарии, репосты, отправки.
+   Логотипов и названия соцсети нет. На телефоне рилсы листаются вбок. */
+.section_cta.is-reels .cta_content { gap: 2.5rem; }
+.reels_list-wrap { width: 100%; }
+.page-wrapper .reels_list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 18rem));
+  justify-content: center;
+  gap: 1.25rem;
+  list-style: none;
+}
+.reels_item { display: flex; min-width: 0; }
+.reels_card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: clip;
+  background: linear-gradient(160deg, #3a3046 0%, #18181a 100%);
+  border-radius: 1rem;
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+.reels_video {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Заглушка, пока нет ссылки на видео: значок «смотреть» по центру */
+.reels_placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  color: #ffffff;
+  transform: translate(-50%, -50%);
+}
+.reels_placeholder svg { width: 1.5rem; height: 1.5rem; margin-left: 0.125rem; }
+.reels_card.has-video .reels_placeholder { display: none; }
+/* Затемнение снизу и справа, чтобы белые цифры читались и на светлых кадрах */
+.reels_shade {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.6)),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 40%);
+  pointer-events: none;
+}
+.reels_author {
+  position: absolute;
+  z-index: 3;
+  right: 4rem;
+  bottom: 1rem;
+  left: 0.875rem;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.reels_avatar {
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  object-fit: cover;
+}
+.page-wrapper .reels_stats {
+  position: absolute;
+  z-index: 3;
+  right: 0.625rem;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+}
+.reels_stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+.reels_stat svg { width: 1.625rem; height: 1.625rem; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
+/* Кнопка звука появляется, только когда видео загрузилось */
+.reels_sound {
+  position: absolute;
+  z-index: 3;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  cursor: pointer;
+}
+.reels_card.has-video .reels_sound { display: inline-flex; }
+.reels_sound svg { width: 1.125rem; height: 1.125rem; }
+.reels_sound .is-on,
+.reels_sound[aria-pressed="true"] .is-off { display: none; }
+.reels_sound[aria-pressed="true"] .is-on { display: block; }
+/* Подписи к цифрам для скринридера, на экране не видны */
+.reels_sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media screen and (max-width: 61.9375rem) {
+  .page-wrapper .reels_list { gap: 0.875rem; }
+  .reels_stats { gap: 0.75rem; }
+}
+/* Телефон: рилсы листаются вбок и доходят до краёв плашки */
+@media screen and (max-width: 47.9375rem) {
+  .reels_list-wrap {
+    width: calc(100% + 2rem);
+    margin: 0 -1rem;
+    padding: 0 1rem;
+    overflow-x: auto;
+    scroll-padding: 0 1rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .reels_list-wrap::-webkit-scrollbar { display: none; }
+  .page-wrapper .reels_list {
+    grid-template-columns: none;
+    grid-auto-columns: min(70%, 15rem);
+    grid-auto-flow: column;
+    justify-content: start;
+  }
+  .reels_item { scroll-snap-align: start; }
+}
+
+/* ---------- Первый экран (12.11.2026) ----------
+   Слева заголовок, подзаголовок и кнопки, справа участники и пробные дни,
+   ниже три результата карточками: Личный бренд, Узнаваемость, Доверие.
+   Отступы секции — общие .section_hero. Сброс страницы обнуляет margin и padding
+   у списков с !important, поэтому отступы списков заданы через обёртки. */
+.club-hero_component {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-areas:
+    "copy side"
+    "cards cards";
+  align-items: start;
+  gap: 3.5rem 4rem;
+}
+
+/* Текст по левому краю */
+.club-hero_copy {
+  display: flex;
+  min-width: 0;
+  padding-top: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.75rem;
+  grid-area: copy;
+  text-align: left;
+}
+.club-hero_copy .hero_heading-wrapper { align-items: flex-start; }
+.club-hero_copy .hero_description { max-width: 38rem; font-size: 1.25rem; }
+.club-hero_copy .hero_actions { justify-content: flex-start; flex-wrap: wrap; }
+/* Подсветка «которого знают и выбирают» идёт за строками, а не одним блоком со ступенькой */
+.club-hero_copy .hero_heading-highlight {
+  display: inline;
+  padding: 0 0.08em;
+  background: var(--color-highlight);
+  border-radius: 0.5rem;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.club-hero_copy .hero_heading-highlight::before { display: none; }
+
+/* Справа: участники сверху, пробные дни снизу */
+.club-hero_side {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2rem;
+  grid-area: side;
+}
+.club-hero_proof { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+.club-hero_caption { max-width: 24rem; margin: 0; color: #5e5a6a; font-size: 1rem; line-height: 1.4; }
+.page-wrapper .club-hero_faces { display: flex; list-style: none; }
+.page-wrapper .club-hero_faces li + li { margin-left: -0.75rem !important; }
+.club-hero_faces img {
+  display: block;
+  width: 3.75rem;
+  height: 3.75rem;
+  border: 0.1875rem solid var(--color-page-background);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+.club-hero_link {
+  --link-color: var(--color-text-button);
+  display: inline-flex;
+  padding-bottom: 0.25rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--color-text-button);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.club-hero_link svg { width: 1rem; height: 1rem; }
+
+/* Карточка пробных дней: тот же градиент с зерном, что у блоков 2, 7 и цены, без полос */
+.club-hero_trial {
+  position: relative;
+  padding: 1.5rem 1.25rem 1.25rem;
+  overflow: clip;
+  border-radius: 1.5rem;
+  color: #ffffff;
+}
+.club-hero_trial > :not(.club-hero_trial-bg) { position: relative; z-index: 1; }
+.club-hero_trial-bg {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: clip;
+  background: #000000;
+  border-radius: inherit;
+}
+.club-hero_trial-bg img {
+  position: absolute;
+  top: -17%;
+  left: -7.68%;
+  width: 126.3%;
+  height: 134%;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.88;
+  filter: blur(38.5px);
+  transform: rotate(180deg) scale(1.03);
+}
+.club-hero_trial-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://static.tildacdn.com/tild3234-6636-4238-b139-353039663135/grain.webp");
+  background-size: 31.25rem 31.25rem;
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+}
+.club-hero_trial-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.club-hero_trial-title { margin: 0; color: #ffffff; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+.club-hero_round {
+  --link-color: var(--color-text-button);
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+.club-hero_round svg { width: 1.125rem; height: 1.125rem; }
+@media (hover: hover) and (pointer: fine) {
+  .club-hero_round:hover { transform: rotate(45deg); }
+  .club-hero_link:hover { opacity: 0.7; }
+}
+.club-hero_trial-text { margin: 0.5rem 0 1.25rem; color: #efedf3; font-size: 1rem; line-height: 1.4; }
+.page-wrapper .club-hero_offers { display: flex; flex-direction: column; gap: 0.5rem; list-style: none; }
+.club-hero_offer {
+  display: flex;
+  padding: 0.875rem;
+  align-items: flex-start;
+  gap: 0.875rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  color: var(--color-text-button);
+}
+.club-hero_icon {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  background: #2b2334;
+  border-radius: 0.75rem;
+  color: #ffffff;
+}
+.club-hero_icon svg { width: 1.375rem; height: 1.375rem; }
+.club-hero_offer-title { margin: 0 0 0.25rem; font-size: 1.125rem; font-weight: 600; line-height: 1.25; }
+.club-hero_offer-text { margin: 0; color: #5e5a6a; font-size: 0.9375rem; line-height: 1.4; }
+
+/* Три результата карточками */
+.club-hero_cards-wrap { grid-area: cards; }
+.page-wrapper .club-hero_cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  list-style: none;
+}
+.club-hero_cards li { display: flex; min-width: 0; }
+.club-hero_card {
+  display: flex;
+  min-height: 27rem;
+  padding: 1.5rem;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #ffffff;
+  border-radius: 1.25rem;
+}
+/* Макеты: размер следует за шириной карточки */
+.club-hero_visual {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  container-type: inline-size;
+}
+.club-hero_visual .hero_social,
+.club-hero_visual .hero_blog { font-size: calc(100cqi / 32); }
+.club-hero_visual .hero_chat { width: 100%; }
+.club-hero_visual .hero_chat-message { font-size: clamp(0.875rem, 4.2cqi, 1rem); }
+.club-hero_visual .hero_chat-message.is-light { background: #eeeeef; border-color: transparent; }
+.club-hero_result { display: flex; flex-direction: column; gap: 0.375rem; }
+.club-hero_result-title {
+  margin: 0;
+  color: var(--color-text-button);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.club-hero_result-text { margin: 0; color: #5e5a6a; font-size: 1rem; line-height: 1.45; }
+
+/* Ноутбук: правая колонка чуть шире */
+@media screen and (max-width: 74.9375rem) {
+  .club-hero_component { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 3rem 2.5rem; }
+}
+/* Узкая колонка текста: кнопки тянутся на её ширину, при переносе встают друг под другом ровно */
+@media screen and (min-width: 62rem) and (max-width: 74.9375rem) {
+  .club-hero_copy .hero_actions { width: 100%; }
+  .club-hero_copy .hero_actions .button { flex: 1 1 auto; }
+}
+/* Планшет: всё в одну колонку — текст, карточки (листаются вбок), потом участники и пробные дни рядом */
+@media screen and (max-width: 61.9375rem) {
+  .club-hero_component {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "copy"
+      "cards"
+      "side";
+    gap: 2.5rem;
+  }
+  .club-hero_copy { padding-top: 0; }
+  .club-hero_side { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); align-items: start; gap: 1.5rem; }
+  .page-wrapper .club-hero_cards {
+    grid-template-columns: none;
+    grid-auto-columns: minmax(18rem, 46%);
+    grid-auto-flow: column;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .club-hero_cards li { scroll-snap-align: start; }
+  .club-hero_card { min-height: 25rem; }
+}
+/* Телефон: участники над пробными днями */
+@media screen and (max-width: 47.9375rem) {
+  .page-wrapper .club-hero_cards { grid-auto-columns: 86%; }
+  .club-hero_side { display: flex; gap: 2rem; }
+}
+@media screen and (max-width: 32.5rem) {
+  .club-hero_copy .hero_description { font-size: 1.0625rem; }
+  .club-hero_copy .hero_actions { width: 100%; }
+  .club-hero_copy .hero_actions .button { width: 100%; }
+  .club-hero_result-title { font-size: 1.375rem; }
+  .club-hero_result-text { font-size: 0.9375rem; }
+  .club-hero_card { min-height: 0; padding: 1.25rem 1rem; }
+  .club-hero_card .club-hero_visual { min-height: 14rem; }
+  .club-hero_trial { padding: 1.25rem 1rem 1rem; }
+  .club-hero_offer { padding: 0.75rem; gap: 0.75rem; }
+}

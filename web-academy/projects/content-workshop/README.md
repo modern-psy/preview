@@ -11,10 +11,13 @@
 ## Файлы
 
 - `index.html`, `styles.css`, `script.js` — канонические исходники страницы.
+  С 12.11.2026 в них перенесена пересборка клуба из черновика
+  `hero-variants.html`; сам черновик теперь только переадресует на `index.html`.
 - `schema.org` — единственный JSON-LD для Tilda HEAD.
-- `assets/content-video-poster.png` — локальный poster сравнения видео.
+- `assets/` — фото участников и poster сравнения видео. Для Тильды у каждого
+  файла должна быть ссылка на CDN в `assetUrls` сборщика.
 - `build-tilda-files.mjs` — генератор пакета переноса.
-- `tilda/` — готовые HEAD, BODY, FOOTER, инструкция и SHA-256 manifest.
+- `tilda/` — HEAD, блоки T123 по секциям, `preview.html`, инструкция и manifest.
 - `tests/tilda-bundle.test.mjs` — регрессия маршрутов и пакета.
 - `data/` — реестр значимых runtime-ассетов.
 
@@ -29,14 +32,14 @@ npm run test:tilda:content-workshop
 
 Затем:
 
-1. добавить `tilda/head.html` в page-specific HEAD;
-2. вставить `tilda/body.html` в один T123;
-3. вставить `tilda/footer.html` в последний T123;
-4. опубликовать страницу и пройти smoke-test из `tilda/README.md`.
+1. добавить `tilda/head.html` в page-specific HEAD (шрифт и JSON-LD);
+2. вставить блоки T123 по порядку из `tilda/README.md`: стили, 14 секций,
+   скрипты;
+3. опубликовать страницу и пройти smoke-test из `tilda/README.md`.
 
-Финальный маршрут CTA зафиксирован тестом: header, hero, центральный CTA и CTA
-результатов ведут к `#price`; кнопки в цене и FAQ открывают
-`#popup:getcourse`.
+Маршрут CTA зафиксирован тестом: шапка, первый экран и блок рилсов ведут к
+`#price`, «Получить пробные дни» — к `#trial` с формой GetCourse, кнопки в цене
+и FAQ открывают `#popup:getcourse`.
 
 Страница не требует React или runtime-сборщика. Motion `12.42.2` загружается как
 закреплённый ESM-модуль, а все runtime-медиа используют Tilda CDN или встроенную
