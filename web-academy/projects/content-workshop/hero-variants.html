@@ -2891,14 +2891,14 @@
       }
       .reels_placeholder svg { width: 1.5rem; height: 1.5rem; margin-left: 0.125rem; }
       .reels_card.has-video .reels_placeholder { display: none; }
+      /* Затемнение снизу и справа, чтобы белые цифры читались и на светлых кадрах */
       .reels_shade {
         position: absolute;
         z-index: 2;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: 45%;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.6)),
+          linear-gradient(270deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 40%);
         pointer-events: none;
       }
       .reels_author {
@@ -2944,10 +2944,10 @@
         font-size: 0.8125rem;
         font-weight: 600;
         line-height: 1;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
         white-space: nowrap;
       }
-      .reels_stat svg { width: 1.625rem; height: 1.625rem; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35)); }
+      .reels_stat svg { width: 1.625rem; height: 1.625rem; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
       /* Кнопка звука появляется, только когда видео загрузилось */
       .reels_sound {
         position: absolute;
@@ -3814,7 +3814,7 @@
         <!-- Рилсы Романа (12.11.2026): что получается, когда контентом занимаются всерьёз.
              Раньше здесь был блок «Регулярность держится на ритме и людях рядом» после блока 3;
              по просьбе Романа он переделан под рилсы и стоит прямо перед «Кто стоит за клубом».
-             Видео: Дарья заливает рилсы на S3, ссылки вставляются в src у video. Пока ссылок нет, видна тёмная заглушка.
+             Видео лежат на S3 (asp-media), ссылки в src у video. Пока видео грузится, видна тёмная заглушка.
              Лайки и комментарии сняты с публичных страниц рилсов 12.11.2026, репосты и отправки прислала Дарья 12.11.2026.
              В [скобках] то, что без входа не видно (у третьего рилса лайки скрыты). -->
         <section class="section_cta is-reels" id="register" data-node-id="611:1217" aria-labelledby="reels-heading">
@@ -3846,8 +3846,8 @@
                     <ul class="reels_list">
                       <li class="reels_item">
                         <div class="reels_card" data-reel>
-                          <!-- Рилс 1: instagram.com/reel/DOsxEMSCENf. Ссылку на файл с S3 вставить в src у video -->
-                          <video class="reels_video" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 1"></video>
+                          <!-- Рилс 1: instagram.com/reel/DOsxEMSCENf. Видео лежит на S3 (asp-media) -->
+                          <video class="reels_video" src="https://s3.twcstorage.ru/asp-media/reel1_22e3ab3cff.mp4" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 1"></video>
                           <span class="reels_placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
                           <span class="reels_shade" aria-hidden="true"></span>
                           <button class="reels_sound" type="button" aria-pressed="false" aria-label="Включить звук"><svg class="is-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg><svg class="is-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></button>
@@ -3862,8 +3862,8 @@
                       </li>
                       <li class="reels_item">
                         <div class="reels_card" data-reel>
-                          <!-- Рилс 2: instagram.com/reel/DOBzZmtjLwd. Ссылку на файл с S3 вставить в src у video -->
-                          <video class="reels_video" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 2"></video>
+                          <!-- Рилс 2: instagram.com/reel/DOBzZmtjLwd. Видео лежит на S3 (asp-media) -->
+                          <video class="reels_video" src="https://s3.twcstorage.ru/asp-media/reel2_859ce334fe.mp4" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 2"></video>
                           <span class="reels_placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
                           <span class="reels_shade" aria-hidden="true"></span>
                           <button class="reels_sound" type="button" aria-pressed="false" aria-label="Включить звук"><svg class="is-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg><svg class="is-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></button>
@@ -3878,8 +3878,8 @@
                       </li>
                       <li class="reels_item">
                         <div class="reels_card" data-reel>
-                          <!-- Рилс 3: instagram.com/reel/DSAnC8YDIZi. Ссылку на файл с S3 вставить в src у video -->
-                          <video class="reels_video" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 3"></video>
+                          <!-- Рилс 3: instagram.com/reel/DSAnC8YDIZi. Видео лежит на S3 (asp-media) -->
+                          <video class="reels_video" src="https://s3.twcstorage.ru/asp-media/reel3_ac529fac3a.mp4" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 3"></video>
                           <span class="reels_placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
                           <span class="reels_shade" aria-hidden="true"></span>
                           <button class="reels_sound" type="button" aria-pressed="false" aria-label="Включить звук"><svg class="is-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg><svg class="is-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></button>
