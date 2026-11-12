@@ -2961,7 +2961,7 @@
     <style>
       /* ---------- Первый экран, вариант 3: три колонки по референсу aurevo.framer.website (12.11.2026) ----------
          Слева текст, в центре градиент с иллюстрацией и чипами, справа оценка участников
-         и карточка пробных дней. Цифры в квадратных скобках — примерные, их нужно подтвердить. */
+         и карточка пробных дней. */
       .fsv_trio-grid {
         display: grid;
         grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 0.85fr);
@@ -3097,19 +3097,7 @@
         gap: 2.5rem;
       }
       .fsv_trio-proof { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; padding-top: 0.5rem; }
-      .fsv_trio-rating {
-        display: flex;
-        margin: 0;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.375rem 0.75rem;
-        color: #5e5a6a;
-        font-size: 1rem;
-        line-height: 1.3;
-      }
-      .fsv_trio-rating b { color: var(--color-text-button); font-weight: 600; }
-      .fsv_trio-stars { display: inline-flex; gap: 0.125rem; color: var(--color-text-button); }
-      .fsv_trio-stars svg { width: 1rem; height: 1rem; }
+      .fsv_trio-caption { max-width: 20rem; margin: 0; color: #5e5a6a; font-size: 1rem; line-height: 1.4; }
       .fsv .fsv_trio-faces { display: flex; list-style: none; }
       .fsv .fsv_trio-faces li + li { margin-left: -0.75rem !important; }
       .fsv_trio-faces img {
@@ -3208,6 +3196,169 @@
         .fsv_trio-badge { font-size: 0.9375rem; }
         .fsv_trio-trial { padding: 1.25rem 1rem 1rem; }
         .fsv_trio-offer { padding: 0.75rem; gap: 0.75rem; }
+      }
+    </style>
+    <style>
+      /* ---------- Рилсы Романа в блоке на градиенте (12.11.2026) ----------
+         Три вертикальных видео 9:16 с «интерфейсом» поверх: автор, лайки, комментарии, репосты, отправки.
+         Логотипов и названия соцсети нет. На телефоне рилсы листаются вбок. */
+      .section_cta.is-reels .cta_content { gap: 2.5rem; }
+      .reels_list-wrap { width: 100%; }
+      .page-wrapper .reels_list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 18rem));
+        justify-content: center;
+        gap: 1.25rem;
+        list-style: none;
+      }
+      .reels_item { display: flex; min-width: 0; }
+      .reels_card {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        overflow: clip;
+        background: linear-gradient(160deg, #3a3046 0%, #18181a 100%);
+        border-radius: 1rem;
+        box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.3);
+        text-align: left;
+      }
+      .reels_video {
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      /* Заглушка, пока нет ссылки на видео: значок «смотреть» по центру */
+      .reels_placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        width: 3.5rem;
+        height: 3.5rem;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 50%;
+        color: #ffffff;
+        transform: translate(-50%, -50%);
+      }
+      .reels_placeholder svg { width: 1.5rem; height: 1.5rem; margin-left: 0.125rem; }
+      .reels_card.has-video .reels_placeholder { display: none; }
+      .reels_shade {
+        position: absolute;
+        z-index: 2;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 45%;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+        pointer-events: none;
+      }
+      .reels_author {
+        position: absolute;
+        z-index: 3;
+        right: 4rem;
+        bottom: 1rem;
+        left: 0.875rem;
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 0.5rem;
+        color: #ffffff;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .reels_avatar {
+        width: 2rem;
+        height: 2rem;
+        flex: none;
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .page-wrapper .reels_stats {
+        position: absolute;
+        z-index: 3;
+        right: 0.625rem;
+        bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        list-style: none;
+      }
+      .reels_stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        color: #ffffff;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        line-height: 1;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+        white-space: nowrap;
+      }
+      .reels_stat svg { width: 1.625rem; height: 1.625rem; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35)); }
+      /* Кнопка звука появляется, только когда видео загрузилось */
+      .reels_sound {
+        position: absolute;
+        z-index: 3;
+        top: 0.75rem;
+        right: 0.75rem;
+        display: none;
+        width: 2.25rem;
+        height: 2.25rem;
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.45);
+        border: 0;
+        border-radius: 50%;
+        color: #ffffff;
+        cursor: pointer;
+      }
+      .reels_card.has-video .reels_sound { display: inline-flex; }
+      .reels_sound svg { width: 1.125rem; height: 1.125rem; }
+      .reels_sound .is-on,
+      .reels_sound[aria-pressed="true"] .is-off { display: none; }
+      .reels_sound[aria-pressed="true"] .is-on { display: block; }
+      /* Подписи к цифрам для скринридера, на экране не видны */
+      .reels_sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      @media screen and (max-width: 61.9375rem) {
+        .page-wrapper .reels_list { gap: 0.875rem; }
+        .reels_stats { gap: 0.75rem; }
+      }
+      /* Телефон: рилсы листаются вбок и доходят до краёв плашки */
+      @media screen and (max-width: 47.9375rem) {
+        .reels_list-wrap {
+          width: calc(100% + 2rem);
+          margin: 0 -1rem;
+          padding: 0 1rem;
+          overflow-x: auto;
+          scroll-padding: 0 1rem;
+          scroll-snap-type: x mandatory;
+          scrollbar-width: none;
+        }
+        .reels_list-wrap::-webkit-scrollbar { display: none; }
+        .page-wrapper .reels_list {
+          grid-template-columns: none;
+          grid-auto-columns: min(70%, 15rem);
+          grid-auto-flow: column;
+          justify-content: start;
+        }
+        .reels_item { scroll-snap-align: start; }
       }
     </style>
   </head>
@@ -3484,7 +3635,7 @@
             </div>
           </section>
 
-          <!-- Первый экран, вариант 3: три колонки по референсу aurevo.framer.website. Цифры в [скобках] примерные, ждут подтверждения. -->
+          <!-- Первый экран, вариант 3: три колонки по референсу aurevo.framer.website. -->
           <section class="fsv is-trio" id="variant-c" aria-labelledby="fsv-c-heading">
             <div class="padding-global">
               <div class="container-large">
@@ -3533,13 +3684,8 @@
                   </div>
 
                   <div class="fsv_trio-side">
-                    <!-- Оценка и число участников: [4,9] и [200+] — примерные, заменить на настоящие -->
                     <div class="fsv_trio-proof">
-                      <p class="fsv_trio-rating">
-                        <span class="fsv_trio-stars" role="img" aria-label="Оценка участников"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
-                        <b>[4,9]</b>
-                        <span>[200+] участников клуба</span>
-                      </p>
+                      <p class="fsv_trio-caption">Андрей, Лера и&nbsp;Саша рассказали, что изменилось за&nbsp;время в&nbsp;клубе</p>
                       <ul class="fsv_trio-faces">
                         <li><img src="./assets/case-andrey-gromov.webp" width="60" height="60" alt="Андрей Громов, участник клуба" loading="lazy" decoding="async"></li>
                         <li><img src="./assets/case-lera-shakhova.webp" width="60" height="60" alt="Лера Шахова, участница клуба" loading="lazy" decoding="async"></li>
@@ -3746,39 +3892,6 @@
           </div>
         </section>
 
-        <section class="section_cta" id="register" data-node-id="611:1217">
-          <div class="padding-global">
-            <div class="container-large">
-              <div class="cta_component">
-                <img
-                  class="cta_background-image"
-                  src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp"
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div class="cta_grain" aria-hidden="true"></div>
-
-                <div class="cta_content">
-                  <div class="cta_copy">
-                    <h2 class="cta_heading">
-                      Регулярность держится на&nbsp;ритме и&nbsp;людях рядом
-                    </h2>
-                    <p class="cta_description">
-                      В&nbsp;одиночку контент быстро уходит «на&nbsp;потом». В&nbsp;клубе есть задание на&nbsp;неделю,
-                      созвоны и&nbsp;поддержка коллег
-                    </p>
-                  </div>
-
-                  <a class="button is-cta" href="#price">
-                    Вступить в клуб
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
         <section class="section_who" aria-labelledby="who-heading">
           <div class="padding-global">
             <div class="container-large">
@@ -3978,6 +4091,98 @@
                       </article>
                     </li>
                 </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Рилсы Романа (12.11.2026): что получается, когда контентом занимаются всерьёз.
+             Раньше здесь был блок «Регулярность держится на ритме и людях рядом» после блока 3;
+             по просьбе Романа он переделан под рилсы и стоит прямо перед «Кто стоит за клубом».
+             Видео: Дарья заливает рилсы на S3, ссылки вставляются в src у video. Пока ссылок нет, видна тёмная заглушка.
+             Лайки и комментарии сняты с публичных страниц рилсов 12.11.2026, репосты и отправки прислала Дарья 12.11.2026.
+             В [скобках] то, что без входа не видно (у третьего рилса лайки скрыты). -->
+        <section class="section_cta is-reels" id="register" data-node-id="611:1217" aria-labelledby="reels-heading">
+          <div class="padding-global">
+            <div class="container-large">
+              <div class="cta_component">
+                <img
+                  class="cta_background-image"
+                  src="https://static.tildacdn.com/tild3661-3331-4266-a362-383766373135/bg-4.webp"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="cta_grain" aria-hidden="true"></div>
+
+                <div class="cta_content">
+                  <div class="cta_copy">
+                    <h2 class="cta_heading" id="reels-heading">
+                      Что получается, когда контентом занимаются всерьёз
+                    </h2>
+                    <p class="cta_description">
+                      Рилсы Романа, ведущего клуба: темы из&nbsp;практики, живая подача и&nbsp;тысячи откликов.
+                      В&nbsp;клубе вы&nbsp;учитесь делать так&nbsp;же: каждую неделю, с&nbsp;разбором и&nbsp;коллегами рядом
+                    </p>
+                  </div>
+
+                  <div class="reels_list-wrap">
+                    <ul class="reels_list">
+                      <li class="reels_item">
+                        <div class="reels_card" data-reel>
+                          <!-- Рилс 1: instagram.com/reel/DOsxEMSCENf. Ссылку на файл с S3 вставить в src у video -->
+                          <video class="reels_video" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 1"></video>
+                          <span class="reels_placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
+                          <span class="reels_shade" aria-hidden="true"></span>
+                          <button class="reels_sound" type="button" aria-pressed="false" aria-label="Включить звук"><svg class="is-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg><svg class="is-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></button>
+                          <div class="reels_author" aria-hidden="true"><img class="reels_avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="32" height="32" alt="" loading="lazy" decoding="async"><span>romind.psy</span></div>
+                          <ul class="reels_stats" aria-label="Реакции на рилс">
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><span class="reels_count">8&nbsp;751</span><span class="reels_sr"> лайков</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="reels_count">202</span><span class="reels_sr"> комментариев</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><span class="reels_count">201</span><span class="reels_sr"> репостов</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span class="reels_count">2&nbsp;939</span><span class="reels_sr"> отправок</span></span></li>
+                          </ul>
+                        </div>
+                      </li>
+                      <li class="reels_item">
+                        <div class="reels_card" data-reel>
+                          <!-- Рилс 2: instagram.com/reel/DOBzZmtjLwd. Ссылку на файл с S3 вставить в src у video -->
+                          <video class="reels_video" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 2"></video>
+                          <span class="reels_placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
+                          <span class="reels_shade" aria-hidden="true"></span>
+                          <button class="reels_sound" type="button" aria-pressed="false" aria-label="Включить звук"><svg class="is-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg><svg class="is-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></button>
+                          <div class="reels_author" aria-hidden="true"><img class="reels_avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="32" height="32" alt="" loading="lazy" decoding="async"><span>romind.psy</span></div>
+                          <ul class="reels_stats" aria-label="Реакции на рилс">
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><span class="reels_count">14&nbsp;тыс.</span><span class="reels_sr"> лайков</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="reels_count">597</span><span class="reels_sr"> комментариев</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><span class="reels_count">348</span><span class="reels_sr"> репостов</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span class="reels_count">5&nbsp;076</span><span class="reels_sr"> отправок</span></span></li>
+                          </ul>
+                        </div>
+                      </li>
+                      <li class="reels_item">
+                        <div class="reels_card" data-reel>
+                          <!-- Рилс 3: instagram.com/reel/DSAnC8YDIZi. Ссылку на файл с S3 вставить в src у video -->
+                          <video class="reels_video" muted loop playsinline preload="metadata" aria-label="Рилс Романа Дубченко, пример 3"></video>
+                          <span class="reels_placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
+                          <span class="reels_shade" aria-hidden="true"></span>
+                          <button class="reels_sound" type="button" aria-pressed="false" aria-label="Включить звук"><svg class="is-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg><svg class="is-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></button>
+                          <div class="reels_author" aria-hidden="true"><img class="reels_avatar" src="https://optim.tildacdn.com/tild6264-3866-4435-a662-373637373364/-/format/webp/roman-dubchenko-avat.webp" width="32" height="32" alt="" loading="lazy" decoding="async"><span>romind.psy</span></div>
+                          <ul class="reels_stats" aria-label="Реакции на рилс">
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><span class="reels_count">[?]</span><span class="reels_sr"> лайков</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="reels_count">[?]</span><span class="reels_sr"> комментариев</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg><span class="reels_count">100</span><span class="reels_sr"> репостов</span></span></li>
+                            <li><span class="reels_stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span class="reels_count">1&nbsp;197</span><span class="reels_sr"> отправок</span></span></li>
+                          </ul>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <a class="button is-cta" href="#price">
+                    Вступить в клуб
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -5230,6 +5435,58 @@
           seen.disconnect();
         }, { threshold: 0.15 });
         seen.observe(grid);
+      })();
+    </script>
+    <script>
+      // Рилсы Романа: видео играют без звука, пока карточка на экране, и встают на паузу, когда уходят.
+      // Кнопка звука включает звук у одного рилса и выключает у остальных.
+      (() => {
+        const cards = [...document.querySelectorAll("[data-reel]")];
+        if (!cards.length) return;
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const setButton = (button, on) => {
+          if (!button) return;
+          button.setAttribute("aria-pressed", String(on));
+          button.setAttribute("aria-label", on ? "Выключить звук" : "Включить звук");
+        };
+        const observer = "IntersectionObserver" in window
+          ? new IntersectionObserver((entries) => {
+              entries.forEach((entry) => {
+                // Запоминаем, видна ли карточка: видео может догрузиться позже
+                entry.target.dataset.inView = entry.isIntersecting ? "1" : "0";
+                const video = entry.target.querySelector("video");
+                if (!video || !entry.target.classList.contains("has-video")) return;
+                if (entry.isIntersecting && !reduce) video.play().catch(() => {});
+                else if (!entry.isIntersecting) video.pause();
+              });
+            }, { threshold: 0.5 })
+          : null;
+        cards.forEach((card) => {
+          const video = card.querySelector("video");
+          const button = card.querySelector(".reels_sound");
+          if (!video) return;
+          const ready = () => {
+            card.classList.add("has-video");
+            if (card.dataset.inView === "1" && !reduce) video.play().catch(() => {});
+          };
+          if (video.readyState >= 2) ready();
+          video.addEventListener("loadeddata", ready);
+          if (observer) observer.observe(card);
+          if (!button) return;
+          button.addEventListener("click", () => {
+            const turnOn = video.muted;
+            cards.forEach((other) => {
+              const otherVideo = other.querySelector("video");
+              if (otherVideo && otherVideo !== video) {
+                otherVideo.muted = true;
+                setButton(other.querySelector(".reels_sound"), false);
+              }
+            });
+            video.muted = !turnOn;
+            if (turnOn) video.play().catch(() => {});
+            setButton(button, turnOn);
+          });
+        });
       })();
     </script>
   </body>
