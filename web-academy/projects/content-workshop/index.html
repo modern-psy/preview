@@ -1487,11 +1487,17 @@
                     <li><div class="trial_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span>Субботний созвон клуба</div></li>
                     <li><div class="trial_item"><span class="price_check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 12.5l3.75 3.75L17.5 8.5"/></svg></span><span>Скидка 15&nbsp;% на&nbsp;участие в&nbsp;клубе, если оформить подписку во&nbsp;время пробных дней</span></div></li>
                   </ul>
-                  <!-- Виджет GetCourse: форма оплаты пробных дней (900 ₽). Виджет рисуется на месте скрипта,
-                       id и адрес не менять. Кнопка «Воспользоваться пробным периодом» больше не нужна: её заменяет форма. -->
-                  <div class="trial_widget">
-                    <script id="8c2fc4cc238c1d29a117beb8a375a45f77e23d9d" src="https://lk.modern-psy.ru/pl/lite/widget/script?id=1682138"></script>
-                  </div>
+                  <!-- Кнопка открывает окно с формой оплаты GetCourse (900 ₽). Скрипт виджета подгружает
+                       script.js при первом открытии окна: id виджета и адрес скрипта лежат там, здесь их нет. -->
+                  <button class="button is-primary trial_button" type="button" data-trial-open aria-haspopup="dialog" aria-controls="content-workshop-trial-dialog">Воспользоваться пробным периодом</button>
+                  <dialog class="trial_dialog" id="content-workshop-trial-dialog" aria-label="Оплата пробных дней" data-trial-dialog>
+                    <div class="trial_dialog-inner">
+                      <button class="trial_dialog-close" type="button" aria-label="Закрыть окно" data-trial-close>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                      </button>
+                      <div class="trial_widget" data-trial-widget></div>
+                    </div>
+                  </dialog>
                 </div>
               </div>
             </div>

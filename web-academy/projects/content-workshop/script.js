@@ -1326,3 +1326,49 @@
     });
   });
 })();
+
+// Пробные дни: кнопка в билете открывает окно с формой оплаты GetCourse.
+// Скрипт виджета подгружается при первом открытии; виджет стартует по своему событию StartWidget<id>.
+(() => {
+  const dialog = document.querySelector("[data-trial-dialog]");
+  const openers = [...document.querySelectorAll("[data-trial-open]")];
+  if (!dialog || !openers.length || dialog.dataset.trialReady === "true") return;
+  dialog.dataset.trialReady = "true";
+
+  const WIDGET_ID = "8c2fc4cc238c1d29a117beb8a375a45f77e23d9d";
+  const WIDGET_SRC = "https://lk.modern-psy.ru/pl/lite/widget/script?id=1682138";
+  const holder = dialog.querySelector("[data-trial-widget]");
+  const root = document.documentElement;
+
+  const loadWidget = () => {
+    if (!holder || holder.dataset.loaded === "true") return;
+    holder.dataset.loaded = "true";
+    const script = document.createElement("script");
+    script.id = WIDGET_ID;
+    script.src = WIDGET_SRC;
+    script.addEventListener("load", () => {
+      document.dispatchEvent(new Event(`StartWidget${WIDGET_ID}`));
+    });
+    holder.appendChild(script);
+  };
+
+  const open = () => {
+    loadWidget();
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+    root.classList.add("is-trial-dialog-open");
+  };
+  const close = () => {
+    if (typeof dialog.close === "function") dialog.close();
+    else dialog.removeAttribute("open");
+    root.classList.remove("is-trial-dialog-open");
+  };
+
+  openers.forEach((button) => button.addEventListener("click", open));
+  dialog.querySelector("[data-trial-close]")?.addEventListener("click", close);
+  // Клик по затемнённому фону вокруг окна закрывает его
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) close();
+  });
+  dialog.addEventListener("close", () => root.classList.remove("is-trial-dialog-open"));
+})();

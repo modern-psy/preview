@@ -265,7 +265,8 @@ ${t123Files.map((file, index) => `   ${index + 1}. \`${file.filename}\``).join("
 
 - Якоря шапки и кнопок ведут к нужным блокам и не прячутся под шапкой.
 - Кнопки в цене и в вопросах открывают попап GetCourse (\`#popup:getcourse\`).
-- В блоке пробных дней видна форма GetCourse (виджет 1682138).
+- Кнопка «Воспользоваться пробным периодом» открывает окно с формой GetCourse
+  (виджет 1682138); окно закрывается крестиком, Esc и кликом по фону.
 - Рилсы играют без звука, кнопка звука работает.
 - Между блоками нет лишних пустых промежутков.
 - Ширины 375, 768, 1024 и 1440 px: без горизонтальной прокрутки, консоль чистая.
@@ -367,9 +368,17 @@ if ((allBody.match(/href="#popup:getcourse"/g) || []).length !== 2) {
   fail("The page must contain exactly two GetCourse popup links.");
 }
 
+// Форма GetCourse открывается окном по кнопке в блоке пробных дней; скрипт виджета подгружает script.js
 const trialPart = bodyFiles.find((file) => file.slug === "trial").content;
-if ((trialPart.match(/src="https:\/\/lk\.modern-psy\.ru\/pl\/lite\/widget\/script\?id=1682138"/g) || []).length !== 1) {
-  fail("The GetCourse trial widget must appear exactly once, inside the trial part.");
+if (!/<button class="button is-primary trial_button" type="button" data-trial-open/.test(trialPart) || !/<dialog class="trial_dialog"[^>]*data-trial-dialog/.test(trialPart)) {
+  fail("The trial part must contain the trial button and the GetCourse dialog.");
+}
+if (/lk\.modern-psy\.ru\/pl\/lite\/widget/.test(allBody)) {
+  fail("The GetCourse widget script must not be in the page parts: script.js loads it on demand.");
+}
+const allScriptsText = scriptFiles.map((file) => file.content).join("\n");
+if ((allScriptsText.match(/https:\/\/lk\.modern-psy\.ru\/pl\/lite\/widget\/script\?id=1682138/g) || []).length !== 1) {
+  fail("The GetCourse widget address must appear exactly once in the page scripts.");
 }
 
 // ---------- запись ----------

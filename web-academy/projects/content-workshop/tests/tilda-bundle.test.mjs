@@ -98,13 +98,16 @@ test("Tilda package is split by sections, scoped, and copy-paste ready", () => {
   assert.match(allBody, /class="button is-pricing[^"]*" href="#popup:getcourse"/);
   assert.match(allBody, /class="button is-faq-primary" href="#popup:getcourse"/);
 
-  // Виджет GetCourse один раз, в блоке пробных дней
+  // Пробные дни: кнопка открывает окно, скрипт виджета GetCourse подгружается из скриптов страницы
   const trial = bodies[bodyFiles.findIndex((name) => name.endsWith("-body-trial.html"))];
+  assert.match(trial, /<button class="button is-primary trial_button" type="button" data-trial-open/);
+  assert.match(trial, /<dialog class="trial_dialog"[^>]*data-trial-dialog/);
+  assert.doesNotMatch(allBody, /lk\.modern-psy\.ru\/pl\/lite\/widget/);
   assert.equal(
-    (trial.match(/src="https:\/\/lk\.modern-psy\.ru\/pl\/lite\/widget\/script\?id=1682138"/g) || []).length,
+    (allScripts.match(/https:\/\/lk\.modern-psy\.ru\/pl\/lite\/widget\/script\?id=1682138/g) || []).length,
     1,
   );
-  assert.equal((allBody.match(/lk\.modern-psy\.ru\/pl\/lite\/widget/g) || []).length, 1);
+  assert.match(allScripts, /StartWidget\$\{WIDGET_ID\}/);
 
   // Скрипты страницы и плавные якоря
   assert.match(allScripts, /__contentWorkshopAnchorScrollCleanup/);
