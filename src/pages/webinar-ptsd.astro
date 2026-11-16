@@ -1,0 +1,108 @@
+---
+// Страница /webinar-ptsd. Перенесена со старой страницы webinar-trauma (scripts/legacy-to-astro.mjs).
+// Тексты блоков — в src/components/webinar-ptsd/, заголовок и описание — в src/data/pages/webinar-ptsd.json.
+import PageLayout from '../layouts/PageLayout.astro';
+import page from '../data/pages/webinar-ptsd.json';
+import '../../academy-base/v1.css';
+import '../styles/webinar-ptsd/page.css';
+import S01 from '../components/webinar-ptsd/01-hero.astro';
+import S02 from '../components/webinar-ptsd/02-pain.astro';
+import S03 from '../components/webinar-ptsd/03-cases.astro';
+import S04 from '../components/webinar-ptsd/04-results.astro';
+import S05 from '../components/webinar-ptsd/05-audience.astro';
+import S06 from '../components/webinar-ptsd/06-program.astro';
+import S07 from '../components/webinar-ptsd/07-speaker.astro';
+import S08 from '../components/webinar-ptsd/08-academy.astro';
+import S09 from '../components/webinar-ptsd/09-ratings.astro';
+import S10 from '../components/webinar-ptsd/10-signup.astro';
+import S11 from '../components/webinar-ptsd/11-faq.astro';
+---
+<PageLayout seo={page.seo} preconnect={page.preconnect}>
+
+  <script slot="head" is:inline src="https://main.bothelp.io/w/widget-button.js" defer></script>
+<!-- Лендинг бесплатного вебинара «Клиент пришёл с последствиями травмы. С чего начать работу?»
+         (острая стрессовая реакция, ПТСР и кПТСР; ведущий Дмитрий Ершов, 17 ноября, 18:00 МСК, 60 минут).
+         Собран 07.11.2026 по образцу /webinar-rodbt: те же общие стили v1, первый экран по эталону В3
+         «Описание в плашке», тот же модуль записи BotHelp + запасная форма. Тексты правим прямо здесь.
+         🟡 Что ещё ждём: виджет BotHelp, имя формы Тильды, адрес страницы, фото первого экрана и блока «Кому подойдёт». -->
+  <main class="tr-page" id="main-content">
+  <div class="wa" lang="ru" data-academy="1">
+    <S01 />
+    <S02 />
+    <S03 />
+    <S04 />
+    <S05 />
+    <S06 />
+    <S07 />
+    <S08 />
+    <S09 />
+    <S10 />
+    <S11 />
+  </div>
+  </main>
+<script is:inline type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "@id": "https://modern-psy.ru/#organization",
+  "name": "Академия современной психологии",
+  "url": "https://modern-psy.ru",
+  "logo": "https://static.tildacdn.com/tild3039-3066-4030-a135-626366333435/logo.png",
+  "telephone": "+7 812 443-51-89",
+  "email": "info@modern-psy.ru",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "RU",
+    "postalCode": "197198",
+    "addressLocality": "Санкт-Петербург",
+    "streetAddress": "пр-т Большой П.С., д. 7/4, литера А, помещ. 2-Н"
+  }
+}
+</script>
+<script is:inline type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationEvent",
+  "@id": "https://modern-psy.ru/webinar-ptsd#event",
+  "name": "Клиент пришёл с последствиями травмы. С чего начать работу?",
+  "description": "Бесплатный вебинар для психологов: как различать острую стрессовую реакцию, ПТСР и кПТСР и с чего начинать работу. Разбор трёх случаев по схеме: что видим, что уточняем, какая первая задача.",
+  "url": "https://modern-psy.ru/webinar-ptsd",
+  "inLanguage": "ru",
+  "startDate": "2026-11-17T18:00:00+03:00",
+  "duration": "PT1H",
+  "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "isAccessibleForFree": true,
+  "location": {
+    "@type": "VirtualLocation",
+    "url": "https://modern-psy.ru/webinar-ptsd"
+  },
+  "organizer": { "@id": "https://modern-psy.ru/#organization" },
+  "performer": [
+    { "@type": "Person", "name": "Дмитрий Ершов", "jobTitle": "Клинический психолог, схема-терапевт" }
+  ],
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "RUB",
+    "availability": "https://schema.org/InStock",
+    "url": "https://modern-psy.ru/webinar-ptsd"
+  }
+}
+</script>
+<script is:inline type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Подойдёт ли вебинар начинающему специалисту?", "acceptedAnswer": { "@type": "Answer", "text": "Да. Вебинар для практикующих психологов, начинающих специалистов, студентов и выпускников программ. Каждый случай разберём по одной схеме: что видим, что уточняем и какая первая задача." } },
+    { "@type": "Question", "name": "Сколько длится вебинар и где он проходит?", "acceptedAnswer": { "@type": "Answer", "text": "60 минут, онлайн. Начало 17 ноября в 18:00 по Москве. Участие бесплатное." } },
+    { "@type": "Question", "name": "Какие случаи разберём?", "acceptedAnswer": { "@type": "Answer", "text": "Три случая: клиент сразу после травматического события (человек, переживший пожар), клиент с ПТСР и клиент с кПТСР. Для каждого обсудим, с чего начать работу: с поддержки и стабилизации, с работы с травматическими воспоминаниями или с регуляции эмоций, образа себя и отношений." } },
+    { "@type": "Question", "name": "Как получить ссылку на эфир?", "acceptedAnswer": { "@type": "Answer", "text": "Зарегистрируйтесь в блоке записи на этой странице: ссылку на эфир пришлём в выбранный мессенджер." } }
+  ]
+}
+</script>
+</PageLayout>
+<script>
+  import '../scripts/webinar-ptsd/page.js';
+</script>

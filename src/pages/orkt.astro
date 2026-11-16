@@ -1,0 +1,66 @@
+---
+// Страница /orkt. Перенесена со старой страницы orkt (scripts/legacy-to-astro.mjs).
+// Тексты блоков — в src/components/orkt/, заголовок и описание — в src/data/pages/orkt.json.
+import PageLayout from '../layouts/PageLayout.astro';
+import page from '../data/pages/orkt.json';
+import PriceBlock from '../components/PriceBlock.astro';
+import PriceLd from '../components/PriceLd.astro';
+import '../../academy-base/v1.css';
+import '../styles/orkt/diploma.css';
+import '../styles/orkt/page.css';
+import '../styles/orkt/academy.css';
+import S01 from '../components/orkt/01-hero.astro';
+import S02 from '../components/orkt/02-results.astro';
+import S03 from '../components/orkt/03-audience.astro';
+import S04 from '../components/orkt/04-practice.astro';
+import S05 from '../components/orkt/05-learning.astro';
+import S06 from '../components/orkt/06-skills.astro';
+import S07 from '../components/orkt/07-situations.astro';
+import S08 from '../components/orkt/08-teachers.astro';
+import S09 from '../components/orkt/09-program.astro';
+import S10 from '../components/orkt/10-free-lectures.astro';
+import S11 from '../components/orkt/11-certificate.astro';
+import S12 from '../components/orkt/12-academy.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Faq from '../components/Faq.astro';
+---
+<PageLayout seo={page.seo} preconnect={page.preconnect}>
+
+<!-- Лендинг повышения квалификации «ОРКТ: ориентированная на решение краткосрочная терапия» (modern-psy.ru/orkt).
+         Пересобран 11.11.2026 на общих стилях v1: тексты, порядок блоков и картинки — с живой страницы (Zero-блоки).
+         Первый экран и блок бесплатных лекций — утверждённые 10–11.11.2026 (apps/tilda/orkt-hero и orkt-free-lectures).
+         Общие блоки (удостоверение, «Почему выбирают нас», цена, форма, вопросы) — как на /couple-requests и /child-psy.
+         Всё, что зависит от даты, часов и цены, приходит из CMS (page.js и блок цены), в разметке — запасной текст.
+         Тексты правим прямо здесь. В page.css только раскладка блоков и цвета, которых нет в v1. -->
+  <main class="main-wrapper academy-page orkt-page" id="main-content" data-academy="1">
+    <S01 />
+    <S02 />
+    <S03 />
+    <S04 />
+    <S05 />
+    <S06 />
+    <S07 />
+    <S08 />
+    <S09 />
+    <S10 />
+    <S11 />
+    <S12 />
+    <!-- 13. Цена: блок из CMS, общий для всех курсов -->
+    <PriceBlock course="orkt" background="#f5f5f5" />
+    <!-- 14. Форма заявки: общий компонент, тексты в src/data/pages/orkt.json, раздел signup -->
+    <section class="orkt-signup_component section-spacing_component" id="signup">
+      <div class="padding-global">
+        <div class="container-xlarge">
+          <LeadForm id="signup-form" form={page.signup.form} lead={page.signup.lead} cmsHeading />
+        </div>
+      </div>
+    </section>
+    <!-- 15. Вопросы и ответы: тексты в src/data/pages/orkt.json, раздел faq -->
+    <Faq faq={page.faq} prefix="orkt-faq" wrapperClass="orkt-narrow" />
+  </main>
+<!-- Микроразметка курса: потоки и цены из CMS -->
+<PriceLd course="orkt" />
+</PageLayout>
+<script>
+  import '../scripts/orkt/page.js';
+</script>

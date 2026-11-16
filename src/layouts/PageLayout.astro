@@ -1,0 +1,52 @@
+---
+// Каркас любой страницы превью: <head> с заголовком, описанием, Open Graph и запретом индексации.
+// Страница передаёт сюда данные из своего файла в src/data/pages/<адрес>.json (раздел seo).
+//
+// Можно менять: порядок и состав мета-тегов, если поменяются правила docs/seo.md.
+// Нельзя убирать: noindex. Превью и зеркало никогда не должны попадать в поиск.
+interface Props {
+  seo: {
+    title: string;
+    description: string;
+    canonical: string; // адрес на боевом сайте, например https://modern-psy.ru/orkt
+    ogImage?: string;
+    ogTitle?: string;
+    ogDescription?: string;
+  };
+  preconnect?: string[];
+  fontPreload?: boolean;
+}
+const { seo, preconnect = [], fontPreload = true } = Astro.props;
+import site from '../data/site.json';
+// Шрифт берём тот же файл, что подключает v1.css: Astro даёт ему адрес с отпечатком, и предзагрузка совпадает
+import fontUrl from '../../academy-base/fonts/wix-madefor-text-academy.woff2?url';
+// Куда уходят заявки из форм: один режим на весь сайт (src/data/site.json → lead)
+const leadConfig = JSON.stringify(site.lead);
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 🔴 Превью закрыто от поиска. Не убирать. -->
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <link rel="canonical" href={seo.canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={seo.ogTitle ?? seo.title} />
+    <meta property="og:description" content={seo.ogDescription ?? seo.description} />
+    <meta property="og:url" content={seo.canonical} />
+    {seo.ogImage && <meta property="og:image" content={seo.ogImage} />}
+    <link rel="icon" href="data:," />
+    {preconnect.map((href) => <link rel="preconnect" href={href} crossorigin />)}
+    {fontPreload && (
+      <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
+    )}
+    <script is:inline define:vars={{ leadConfig }}>window.ACADEMY_LEAD_CONFIG = JSON.parse(leadConfig);</script>
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

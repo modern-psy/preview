@@ -1,0 +1,54 @@
+---
+// «Ответы на популярные вопросы»: раскрывающийся список и микроразметка FAQPage из одних данных.
+// Вопросы и ответы пишутся один раз — в файле страницы src/data/pages/<адрес>.json, раздел faq.
+// Раньше их приходилось держать в двух местах (разметка и FAQPage внизу страницы), и они расходились.
+//
+// Пример: <Faq faq={page.faq} prefix="orkt-faq" />
+//   faq.heading — заголовок секции (можно с &nbsp;);
+//   faq.items   — [{ question, answer }], ответ — HTML (ссылки, &nbsp;);
+//   prefix      — начало имён классов. Пока у каждой страницы свои стили вопросов (orkt-faq_item …),
+//                 общий вид для всех страниц — следующий шаг.
+// Открытие по одному вопросу за раз делает скрипт страницы (атрибуты data-faq и data-faq-item).
+interface Props {
+  faq: { heading: string; items: { question: string; answer: string }[] };
+  prefix?: string;
+  wrapperClass?: string; // класс обёртки ширины колонки, у ОРКТ — orkt-narrow
+  id?: string;
+}
+const { faq, prefix = 'faq', id = 'faq', wrapperClass = '' } = Astro.props;
+const plain = (s: string) =>
+  s.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&laquo;/g, '«').replace(/&raquo;/g, '»')
+   .replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.items.map((item) => ({
+    '@type': 'Question',
+    name: plain(item.question),
+    acceptedAnswer: { '@type': 'Answer', text: plain(item.answer) },
+  })),
+};
+---
+<section class={`${prefix}_component section-spacing_component`} id={id} aria-labelledby={`${id}-heading`}>
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class={`${wrapperClass} section-layout_component is-responsive`.trim()}>
+        <div class="section-header_component is-left is-responsive">
+          <h2 class="section-title_component is-left is-responsive" id={`${id}-heading`} set:html={faq.heading} />
+        </div>
+        <div class={`${prefix}_list`} data-faq>
+          {faq.items.map((item) => (
+            <details class={`${prefix}_item`} data-faq-item>
+              <summary class={`${prefix}_question`}>
+                <h3 class="content-heading_component is-compact" set:html={item.question} />
+                <span class={`${prefix}_icon`} aria-hidden="true"></span>
+              </summary>
+              <div class={`${prefix}_answer`} set:html={item.answer} />
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script type="application/ld+json" is:inline set:html={JSON.stringify(ld, null, 2)} />

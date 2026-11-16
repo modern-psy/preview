@@ -1,0 +1,13 @@
+---
+// Блок цены из CMS. Один на все страницы.
+// Что показывать (набор, лист ожидания, тарифы, курс месяца) скрипт блока решает сам по данным CMS.
+//
+// Пример: <PriceBlock course="orkt" background="#f5f5f5" />
+//   course     — slug курса в CMS (обязательно);
+//   includes   — пункты «Что входит», если их нет в настройках генератора (PAGES в src/lib/price-auto/tilda-block.js);
+//   остальное  — как в генераторе /pricing: system, terms, layout, background, anchor, top, bottom.
+import { priceBlock } from '../lib/price.mjs';
+const { course, ...options } = Astro.props;
+const code = await priceBlock(course, options);
+---
+<Fragment set:html={code} />

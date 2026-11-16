@@ -1,0 +1,43 @@
+---
+// Форма заявки Академии. Одна на весь сайт по коду, но у каждой формы на странице свои настройки.
+// Разметку рисует общий компонент web-academy/shared/academy (тот же, что в пакетах для Тильды),
+// а здесь к форме добавляются поля контракта заявки (docs/lead-contract.md).
+//
+// Пример:
+//   <LeadForm id="signup-form"
+//     form={{ mode: 'course', nativeMarker: 'ORKT', heading: 'Занятия начнутся 1 марта', … }}
+//     lead={{ intent: 'course', course: 'orkt', placement: 'signup' }}
+//     cmsHeading />
+//
+//   form  — тексты формы, как в request-form-sync.mjs лендингов (mode, nativeMarker, heading, description,
+//           submitLabel, source). nativeMarker — имя нативной формы Тильды, пока прод на Тильде;
+//   lead  — что это за заявка: intent (course | waitlist | free-lectures | webinar | access | booking | question),
+//           course (slug в CMS), stream (дата потока), tariff, placement (hero | price | signup | popup | footer);
+//   cmsHeading — заголовок формы обновляет скрипт страницы из CMS («Занятия начнутся …»).
+import { renderRequestForm } from '../../web-academy/shared/academy/request-form-render.mjs';
+import '../../web-academy/shared/academy/request-form.css';
+
+interface Props {
+  id: string;
+  form: Record<string, unknown>;
+  lead: { intent: string; course?: string; stream?: string; tariff?: string; placement?: string; form?: string };
+  cmsHeading?: boolean;
+}
+const { id, form, lead, cmsHeading = false } = Astro.props;
+const attr = (s: string) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+const leadAttrs = [
+  `data-lead-form="${attr(lead.form || (form.nativeMarker as string) || id)}"`,
+  `data-lead-intent="${attr(lead.intent)}"`,
+  lead.course && `data-lead-course="${attr(lead.course)}"`,
+  lead.stream && `data-lead-stream="${attr(lead.stream)}"`,
+  lead.tariff && `data-lead-tariff="${attr(lead.tariff)}"`,
+  lead.placement && `data-lead-placement="${attr(lead.placement)}"`,
+].filter(Boolean).join(' ');
+let markup = renderRequestForm(form, { id }).replace(/<form\b/, `<form ${leadAttrs}`);
+if (cmsHeading) markup = markup.replace(`id="${id}-heading"`, `id="${id}-heading" data-cms="enrollment-start"`);
+---
+<Fragment set:html={markup} />
+<script>
+  import '../scripts/lead/transport.js';
+  import '../../web-academy/shared/academy/request-form.js';
+</script>

@@ -1,0 +1,502 @@
+/* =====================================================================
+   БЛОК ЦЕНЫ ИЗ CMS · стили
+   Всё внутри блока — один в один из утверждённой витрины
+   /pricing-scenarios (apps/preview/pricing-scenarios/page.css и токены
+   Web Academy, решения Дарьи 12.10.2026): цвета, заголовок, размеры,
+   поля карточек, переключатель, купон. Правила начинаются
+   с .price-auto_component, чтобы не задеть остальные блоки Тильды.
+
+   От страницы Тильды взяты только две вещи:
+   • ширина как у соседних блоков страниц курсов modern-psy.ru —
+     поля 40 px, на экранах до 991 px — 16 px, контейнер 1280 px;
+     на страницах Web Academy — data-layout="academy" (см. ниже);
+   • фон секции — цвет страницы (#eff2f9), чтобы не было полосы;
+     другой фон — style="--pa-section-background: …".
+   Отступ сверху как у секций страницы (120 px, на телефоне 64 px),
+   снизу 0. Если соседи дают свои отступы, их меняют у секции:
+   style="--pa-space-top: 0; --pa-space-bottom: 4rem".
+
+   Что можно менять: --pa-section-background и отступы секции.
+   Что нельзя: остальное — это утверждённый вид блока цены.
+   ===================================================================== */
+.price-auto_component {
+  /* Страница Тильды */
+  --pa-section-background: #eff2f9;
+
+  /* Токены Web Academy, как в витрине */
+  --color-page-background: #f5f5f5;   /* серые зоны внутри белых карточек: ярлык курса, плашка повышения */
+  --color-surface-primary: #ffffff;
+  --color-text-primary: #332f41;
+  --color-text-secondary: #747476;
+  --color-text-on-dark: #ffffff;
+  --color-accent-primary: #7c5cdb;
+  --color-accent-soft: #dad6ff;
+  --color-focus: #7c5cdb;
+  --color-surface-dark: #2b2334;
+  --color-text-on-dark-muted: #e6e5eb;
+  --radius-card: 0.75rem;
+
+  /* Витрина блока цены (page.css) */
+  --motion-duration: 150ms;
+  --motion-easing: ease-in-out;
+  --transition-site: var(--motion-duration) var(--motion-easing);
+  --fade-duration: 220ms;
+  --color-accent-text: #644ab2;
+  --line: #e8e6ee;
+  --line-strong: #cfd1db;
+  --text-quiet: #5e5a6a;
+  --dark-text: var(--color-text-on-dark-muted);
+  --dark-muted: #bdb7b7;
+  --dark-line: rgb(255 255 255 / 14%);
+  --dark-chip: rgb(255 255 255 / 14%);
+  --check: #0a6b4e;
+  --check-on-dark: #7fcfb4;
+  --promo-surface: #ffe110;
+  --promo-text: #3d3a2a;
+  --promo-bg-strong: color-mix(in srgb, var(--promo-surface) 80%, #ffffff);
+  --promo-bg-soft: color-mix(in srgb, var(--promo-surface) 35%, #ffffff);
+
+  display: block;
+  /* relative — чтобы скрытый текст для экранных чтецов держался внутри секции, а не всего блока Тильды */
+  position: relative;
+  padding: var(--pa-space-top, 4rem) 0 var(--pa-space-bottom, 0);
+  background-color: var(--pa-section-background);
+  color: var(--color-text-primary);
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+  font-variant-numeric: lining-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+@media (min-width: 48rem) {
+  .price-auto_component { --radius-card: 1rem; padding-top: var(--pa-space-top, 7.5rem); }
+}
+.price-auto_component[hidden] { display: none; }
+.price-auto_component *,
+.price-auto_component *::before,
+.price-auto_component *::after { box-sizing: border-box; }
+.price-auto_component ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+/* Сброс полей через :where — нулевой вес, правила ниже его перекрывают. */
+.price-auto_component :where(p, h2, h3, ul, dl, dd, fieldset, legend) { margin: 0; }
+.price-auto_component :where(h2, h3) { font: inherit; }
+
+/* Текст только для экранных чтецов. margin: -1px — чтобы строка не выходила за край блока:
+   на страницах, где Тильде задан overflow у блоков (скрипт «наложения при скролле» на /adult-adhd-therapy),
+   лишний пиксель делал блок прокручиваемым — страница «липла» и внизу открывалась щель. */
+.price-auto_sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Ширина как у соседних блоков страницы. */
+.price-auto_padding { padding-inline: 1rem; }
+.price-auto_container { width: 100%; max-width: 80rem; margin-inline: auto; }
+@media (min-width: 62rem) { .price-auto_padding { padding-inline: 2.5rem; } }
+/* data-layout="academy" — страницы на Web Academy (как «Психолог-консультант»): контейнер 95rem,
+   поля 16 → 24 → 80 px, на десктопе блок в колонке 10 из 12, как в витрине. */
+.price-auto_component[data-layout="academy"] .price-auto_padding { padding-inline: 1rem; }
+.price-auto_component[data-layout="academy"] .price-auto_container { max-width: 95rem; }
+@media (min-width: 48rem) { .price-auto_component[data-layout="academy"] .price-auto_padding { padding-inline: 1.5rem; } }
+@media (min-width: 64.0625rem) { .price-auto_component[data-layout="academy"] .price-block_component { width: calc((100% - 11rem) / 12 * 10 + 9rem); margin-inline: auto; } }
+@media (min-width: 75rem) { .price-auto_component[data-layout="academy"] .price-auto_padding { padding-inline: 5rem; } }
+/* Переход по якорю (#pricing): заголовок не прилипает к верху экрана. На страницах Web Academy — как у секций
+   лендинга (50 px, с 768 px — 100 px, под шапку), на остальных — 32 px по общим правилам. */
+.price-auto_component[id] { scroll-margin-top: 2rem; }
+/* data-layout="wa-narrow" — лендинги со своей сеткой Web Academy (как «Психиатрия для психологов»):
+   поля 16 px, с 768 px от 24 до 80 px, блок в колонке 64rem по центру; отступы секции сверху и снизу
+   как у соседних секций лендинга: 56 → 80 → 104 px. */
+.price-auto_component[data-layout="wa-narrow"] { --pa-space-top: 3.5rem; --pa-space-bottom: 3.5rem; }
+.price-auto_component[data-layout="wa-narrow"] .price-auto_padding { padding-inline: 1rem; }
+.price-auto_component[data-layout="wa-narrow"] .price-auto_container { max-width: 64rem; }
+@media (min-width: 48rem) {
+  .price-auto_component[data-layout="wa-narrow"] { --pa-space-top: 5rem; --pa-space-bottom: 5rem; }
+  .price-auto_component[data-layout="wa-narrow"] .price-auto_padding { padding-inline: clamp(1.5rem, 4.76vw, 5rem); }
+}
+@media (min-width: 64.0625rem) { .price-auto_component[data-layout="wa-narrow"] { --pa-space-top: 6.5rem; --pa-space-bottom: 6.5rem; } }
+.price-auto_component[data-layout="academy"][id] { scroll-margin-top: 50px; }
+@media (min-width: 48rem) { .price-auto_component[data-layout="academy"][id] { scroll-margin-top: 100px; } }
+/* @space-page — отступ снизу «как у секций Web Academy» (--section-space из web-academy/shared/academy/section-spacing.css):
+   60 → 80 → 100 → 150 px. Нужен, когда секция ниже начинается без своего верхнего отступа (как форма на «Нарративной практике»).
+   Ставится атрибутом data-space-bottom="page"; у остальных блоков этот кусок в код для Тильды не идёт. */
+.price-auto_component[data-space-bottom="page"] { --pa-space-bottom: 3.75rem; }
+@media (min-width: 32.5625rem) { .price-auto_component[data-space-bottom="page"] { --pa-space-bottom: 5rem; } }
+@media (min-width: 48rem) { .price-auto_component[data-space-bottom="page"] { --pa-space-bottom: 6.25rem; } }
+@media (min-width: 64.0625rem) { .price-auto_component[data-space-bottom="page"] { --pa-space-bottom: 9.375rem; } }
+/* @end-space-page */
+
+/* =====================================================================
+   Каркас: заголовок и переключатели по центру, над карточками;
+   «Гибкие условия оплаты» внизу.
+   ===================================================================== */
+.price-auto_component .price-block_component { display: flex; min-width: 0; flex-direction: column; gap: 1.5rem; color: var(--color-text-primary); container: price-block / inline-size; }
+.price-auto_component .price-block_head { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; text-align: center; }
+.price-auto_component .price-block_title { display: flex; min-width: 0; max-width: 48rem; flex-direction: column; align-items: center; gap: 0.75rem; }
+/* Заголовок — section-title Web Academy, адаптивный: 32 → 36 → 44 → 52 px, обычное начертание. */
+.price-auto_component .price-block_heading { width: 100%; min-width: 0; color: inherit; font-size: 2rem; font-weight: 400; line-height: 1; letter-spacing: -0.06em; text-wrap: balance; overflow-wrap: anywhere; }
+@media (min-width: 32.5625rem) { .price-auto_component .price-block_heading { font-size: 2.25rem; } }
+@media (min-width: 48rem) { .price-auto_component .price-block_heading { font-size: 2.75rem; } }
+@media (min-width: 64.0625rem) { .price-auto_component .price-block_heading { font-size: 3.25rem; } }
+.price-auto_component .price-block_lead { color: var(--text-quiet); font-size: 1rem; line-height: 1.4; text-wrap: balance; }
+.price-auto_component .price-block_controls { display: flex; min-width: 0; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 0.75rem 1rem; }
+
+/* Переключатель дат: прямоугольный, выбранный — тёмный #2b2334. Внутри настоящие радиокнопки. */
+.price-auto_component .price-switch { display: flex; min-width: 0; flex-direction: column; padding: 0; border: 0; }
+.price-auto_component .price-switch_legend { float: left; width: 100%; margin-bottom: 0.5rem; padding: 0; color: var(--text-quiet); font-size: 0.875rem; line-height: 1.2; text-align: center; }
+.price-auto_component .price-switch_legend + * { clear: both; }
+.price-auto_component .segmented_component { display: grid; min-width: 17rem; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; gap: 0.125rem; padding: 0.25rem; border-radius: 0.75rem; background: #e8e6ee; }
+.price-auto_component .segmented_item { position: relative; display: flex; min-width: 0; }
+.price-auto_component .segmented_input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.price-auto_component .segmented_label {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 444;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  transition: background-color var(--transition-site), color var(--transition-site);
+}
+.price-auto_component .segmented_input:checked + .segmented_label { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.price-auto_component .segmented_input:focus-visible + .segmented_label { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .price-auto_component .segmented_input:not(:checked):hover + .segmented_label { background: var(--color-surface-primary); }
+}
+@media (max-width: 47.9375rem) {
+  /* На телефоне переключатель на всю ширину под заголовком. */
+  .price-auto_component .price-block_controls { align-self: stretch; flex-direction: column; align-items: stretch; }
+  .price-auto_component .segmented_component { min-width: 0; }
+}
+@media (max-width: 32.5rem) {
+  .price-auto_component .segmented_label { padding-inline: 0.375rem; font-size: 0.875rem; letter-spacing: -0.02em; }
+}
+
+/* ---------- Цена: число крупно, «₽» и «/мес» мелко и серым ---------- */
+.price-auto_component .price-tag { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.375rem; margin: 0; color: var(--color-text-primary); }
+.price-auto_component .price-tag_number { font-size: clamp(2.25rem, 1.95rem + 1vw, 2.75rem); font-weight: 500; line-height: 1; letter-spacing: -0.045em; white-space: nowrap; }
+.price-auto_component .price-tag_unit { color: var(--color-text-secondary); font-size: 1.5rem; font-weight: 444; line-height: 1; letter-spacing: -0.02em; }
+.price-auto_component .price-wide_money .price-tag_unit { font-size: 1.75rem; }
+/* Зачёркнутая цена до акции — справа от числа. */
+.price-auto_component .price-tag_was { display: inline-flex; align-self: center; flex-direction: column; gap: 0.125rem; margin-left: 0.5rem; color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.2; }
+.price-auto_component .price-old { text-decoration: line-through; text-decoration-thickness: 1px; }
+.price-auto_component .price-icon { display: block; flex: none; }
+/* Переключили дату или пришли свежие цены — мягко проявляется только то, что изменилось. */
+.price-auto_component .is-fading { animation: price-auto-fade var(--fade-duration) var(--motion-easing) both; }
+@keyframes price-auto-fade { from { opacity: 0; transform: translateY(0.25rem); } }
+
+/* Строка под ценой: серым, выгода акцентом. */
+.price-auto_component .price-caption { display: flex; flex-direction: column; gap: 0.125rem; margin-top: 0.75rem; color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-auto_component .price-caption_benefit { color: var(--color-accent-text); font-weight: 600; }
+
+/* Когда подорожает. */
+.price-auto_component .price-rise { display: flex; align-items: center; gap: 0.75rem; margin: 0; color: var(--color-text-primary); }
+.price-auto_component .price-rise_icon { box-sizing: content-box; width: 1.125rem; height: 1.125rem; flex: none; padding: 0.5rem; border-radius: 50%; background: var(--color-page-background); color: var(--color-text-primary); }
+.price-auto_component .price-wide_foot .price-rise_icon { background: var(--color-surface-primary); }
+.price-auto_component .price-rise_text { display: flex; min-width: 0; flex-direction: column; gap: 0.0625rem; }
+.price-auto_component .price-rise_title { font-size: 0.9375rem; font-weight: 500; line-height: 1.3; }
+.price-auto_component .price-rise_note { color: var(--color-text-secondary); font-size: 0.8125rem; line-height: 1.3; }
+
+/* Что входит: галочка — входит, крестик серым — не входит. Значки рисуются маской цветом текста. */
+.price-auto_component .price-check { display: flex; flex-direction: column; gap: 0.75rem; padding: 0; list-style: none; color: var(--color-text-primary); font-size: 0.9375rem; line-height: 1.4; }
+.price-auto_component .price-check_item { display: grid; grid-template-columns: 1.125rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
+.price-auto_component .price-check_item .price-icon { width: 1.125rem; height: 1.125rem; margin-top: 0.125rem; color: var(--check); }
+.price-auto_component .price-check_note { display: block; margin-top: 0.125rem; color: var(--color-text-secondary); font-size: 0.8125rem; line-height: 1.35; }
+.price-auto_component .is-featured .price-check_note { color: var(--dark-muted); }
+.price-auto_component .price-check_item.is-off { color: var(--color-text-secondary); }
+.price-auto_component .price-check_item.is-off .price-icon { color: var(--line-strong); }
+.price-auto_component .price-icon.is-check,
+.price-auto_component .price-icon.is-cross { background-color: currentColor; -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+.price-auto_component .price-icon.is-check { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6 9 17l-5-5' fill='none' stroke='%23000' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.price-auto_component .price-icon.is-cross { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7 7 17' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+
+/* =====================================================================
+   «Гибкие условия оплаты» — один блок под карточками во всех сценариях.
+   Три колонки с вертикальными линиями, на телефоне друг под другом.
+   ===================================================================== */
+.price-auto_component .price-terms_component { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1rem; color: var(--color-text-primary); }
+.price-auto_component .price-terms_heading { font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem); font-weight: 444; line-height: 1.1; letter-spacing: -0.03em; text-align: center; }
+.price-auto_component .price-terms_list { display: grid; grid-template-columns: minmax(0, 1fr); }
+.price-auto_component .price-terms_row { display: flex; min-width: 0; flex-direction: column; gap: 0.875rem; padding-block: 1.25rem; container-type: inline-size; }
+.price-auto_component .price-terms_row:first-child { padding-top: 0; }
+.price-auto_component .price-terms_row:last-child { padding-bottom: 0; }
+.price-auto_component .price-terms_row + .price-terms_row { border-top: 1px solid var(--line-strong); }
+.price-auto_component .price-terms_title { font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-auto_component .price-terms_body { min-width: 0; }
+.price-auto_component .price-terms_text { max-width: 34rem; color: var(--text-quiet); font-size: 1rem; line-height: 1.45; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .price-auto_component .price-terms_list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .price-auto_component .price-terms_row { padding: 0 1.5rem; }
+  .price-auto_component .price-terms_row:first-child { padding-left: 0; }
+  .price-auto_component .price-terms_row:last-child { padding-right: 0; }
+  .price-auto_component .price-terms_row + .price-terms_row { border-top: 0; border-left: 1px solid var(--line-strong); }
+}
+@media (min-width: 64.0625rem) {
+  .price-auto_component .price-terms_component { gap: 2rem; padding-top: 1.5rem; }
+  .price-auto_component .price-terms_row { padding-inline: 2rem; }
+  .price-auto_component .price-terms_row:first-child { padding-left: 0; }
+  .price-auto_component .price-terms_row:last-child { padding-right: 0; }
+}
+
+/* Персональные скидки: процент жирным на белой плашке, подписи на одной вертикали. */
+.price-auto_component .price-discounts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.625rem 0.875rem; padding: 0; list-style: none; }
+.price-auto_component .price-discounts_item { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; }
+.price-auto_component .price-discounts_value { display: inline-flex; align-items: baseline; justify-content: center; gap: 0.25rem; padding: 0.3125rem 0.625rem; border-radius: 0.5rem; background: var(--color-surface-primary); color: var(--color-text-primary); font-size: 1rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; white-space: nowrap; }
+.price-auto_component .price-discounts_prefix { font-weight: 500; }
+.price-auto_component .price-discounts_label { color: var(--text-quiet); font-size: 0.9375rem; line-height: 1.4; text-wrap: pretty; }
+.price-auto_component .price-discounts_note { display: block; margin-top: 0.125rem; color: var(--color-text-secondary); font-size: 0.8125rem; line-height: 1.35; }
+/* В узкой колонке (планшет) подпись встаёт под процент. */
+@container (max-width: 15rem) {
+  .price-auto_component .price-discounts { grid-template-columns: minmax(0, 1fr); row-gap: 0.875rem; }
+  .price-auto_component .price-discounts_item { display: flex; flex-direction: column; align-items: flex-start; gap: 0.375rem; }
+}
+
+/* =====================================================================
+   Вертикальные карточки: тарифы, оплата сразу и в рассрочку, лист
+   ожидания. Рекомендуемая — тёмная и выше соседей.
+   ===================================================================== */
+.price-auto_component .price-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.price-auto_component .price-card_component {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  --card-pad-x: 1.5rem;
+  padding: 1.5rem var(--card-pad-x);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+/* Ярлык — фиолетовая плашка на верхней кромке, вне потока: названия во всех карточках на одной высоте. */
+.price-auto_component .price-card_badge { position: absolute; top: 0; left: var(--card-pad-x); z-index: 1; padding: 0.4375rem 0.75rem; border-radius: 6rem; background: var(--color-accent-primary); color: var(--color-text-on-dark); font-size: 0.8125rem; font-weight: 500; line-height: 1.15; white-space: nowrap; transform: translateY(-50%); }
+.price-auto_component .price-card_head { display: flex; flex-direction: column; gap: 0.375rem; }
+.price-auto_component .price-card_name { font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem); font-weight: 500; line-height: 1.15; letter-spacing: -0.025em; text-wrap: balance; }
+.price-auto_component .price-cards.is-count-3 .price-card_name { font-size: clamp(1.5rem, 1.35rem + 0.3vw, 1.625rem); }
+.price-auto_component .price-card_component:has(> .price-card_badge) { padding-top: 2.25rem; }
+.price-auto_component .price-card_sub { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-auto_component .price-card_money { margin-top: 1.75rem; }
+.price-auto_component .price-card_list { flex: 1; }
+.price-auto_component .price-card_list:not(:empty) { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.price-auto_component .price-card_foot { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+
+/* Тёмная рекомендуемая карточка. */
+.price-auto_component .price-card_component.is-featured { background: var(--color-surface-dark); color: var(--dark-text); }
+.price-auto_component .is-featured .price-card_name,
+.price-auto_component .is-featured .price-tag { color: var(--color-text-on-dark); }
+.price-auto_component .is-featured .price-card_sub,
+.price-auto_component .is-featured .price-tag_unit,
+.price-auto_component .is-featured .price-tag_was,
+.price-auto_component .is-featured .price-caption,
+.price-auto_component .is-featured .price-rise_note { color: var(--dark-muted); }
+.price-auto_component .is-featured .price-caption_benefit { color: var(--color-accent-soft); }
+.price-auto_component .is-featured .price-card_list:not(:empty),
+.price-auto_component .is-featured .price-card_foot { border-top-color: var(--dark-line); }
+.price-auto_component .is-featured .price-check { color: var(--dark-text); }
+.price-auto_component .is-featured .price-check_item .price-icon { color: var(--check-on-dark); }
+/* Пункт, которого нет в тарифе, на тёмной карточке: серый #747476 на #2b2334 давал около 3:1 (замечание Дарьи 07.11.2026, /adult-adhd-therapy) — берём светлый серый тёмной карточки, около 8:1. */
+.price-auto_component .is-featured .price-check_item.is-off { color: var(--dark-muted); }
+.price-auto_component .is-featured .price-rise { color: var(--color-text-on-dark); }
+.price-auto_component .is-featured .price-rise_icon { background: var(--dark-chip); color: var(--color-text-on-dark); }
+
+/* На телефоне тарифы идут от дешёвого к дорогому, как цена «от» в баннере и каталоге
+   (решение Дарьи 01.11.2026). Первой поднимается только бронь в листе ожидания. */
+.price-auto_component[data-scenario="waitlist"] .price-card_component.is-featured { order: -1; }
+/* max-width, потому что правила только для колонки карточек на телефоне. Пакет модулей
+   уходит вниз, под сами модули (на широком экране он посередине). Плашка «Рекомендуем»
+   и купон акции торчат над карточкой и без отступа наехали бы на соседку сверху. */
+@media (max-width: 47.99rem) {
+  .price-auto_component[data-scenario="tariffs"] .price-card_component.is-featured { order: 1; }
+  .price-auto_component:not([data-scenario="waitlist"]) .price-card_component:not(:first-child):has(> .price-card_badge, > .price-sticker_component) { margin-top: 0.75rem; }
+}
+@media (min-width: 48rem) {
+  .price-auto_component .price-cards.is-count-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .price-auto_component .price-cards.is-count-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Зоны карточек — общие строки сетки: название, цена, состав и повышение на одной высоте. */
+  .price-auto_component .price-cards { grid-template-rows: auto auto 1fr auto; gap: 0 1rem; }
+  .price-auto_component .price-card_component { --card-pad-x: 1.75rem; display: grid; grid-row: span 4; grid-template-rows: subgrid; padding: 1.75rem var(--card-pad-x); }
+  .price-auto_component .price-card_component.is-featured { order: 0; }
+  /* Соседи тёмной карточки короче на 1rem сверху и снизу — она выступает над ними. */
+  .price-auto_component .price-cards:has(.is-featured) > .price-card_component:not(.is-featured) { margin-block: 1rem; }
+  .price-auto_component .price-card_component.is-featured { padding-block: 2.75rem; }
+}
+/* Три карточки в ряд — только когда блок шире 65rem. Уже — тёмная карточка на всю ширину
+   сверху (слева название, цена и повышение, справа состав), две обычные под ней. */
+@media (min-width: 48rem) {
+  .price-auto_component .price-cards.is-count-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto auto auto 1fr auto; row-gap: 0; }
+  .price-auto_component .price-cards.is-count-3 > .price-card_component.is-featured { margin-bottom: 1.75rem; }
+  .price-auto_component .price-cards.is-count-3 > .price-card_component.is-featured {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    grid-template-areas: "head list" "money list" "foot list";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: 2rem;
+    order: -1;
+  }
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_head { grid-area: head; }
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_money { grid-area: money; }
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_list { grid-area: list; }
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_foot { grid-area: foot; }
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_list:not(:empty) { margin-top: 0; padding: 0 0 0 2rem; border-top: 0; border-left: 1px solid var(--dark-line); }
+  .price-auto_component .price-cards.is-count-3 > .price-card_component:not(.is-featured) { margin-block: 0; }
+}
+@container price-block (min-width: 65rem) {
+  .price-auto_component .price-cards.is-count-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto 1fr auto; }
+  .price-auto_component .price-cards.is-count-3 > .price-card_component.is-featured {
+    grid-column: auto;
+    grid-row: span 4;
+    grid-template-areas: none;
+    grid-template-columns: none;
+    grid-template-rows: subgrid;
+    margin-bottom: 0;
+    order: 0;
+  }
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_head,
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_money,
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_list,
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_foot { grid-area: auto; }
+  .price-auto_component .price-cards.is-count-3 > .is-featured > .price-card_list:not(:empty) { margin-top: 1.5rem; padding: 1.5rem 0 0; border-top: 1px solid var(--dark-line); border-left: 0; }
+  .price-auto_component .price-cards.is-count-3 > .price-card_component:not(.is-featured) { margin-block: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .price-auto_component .price-card_component { --card-pad-x: 2rem; padding-block: 2rem; }
+  .price-auto_component .price-card_component.is-featured { padding-block: 3rem; }
+  .price-auto_component .price-cards.is-count-3 .price-card_component { --card-pad-x: 1.75rem; }
+}
+
+/* =====================================================================
+   Горизонтальная карточка «Одной цифры». С составом курса: слева курс
+   и цена, справа «Что входит». Без состава (is-plain): слева курс,
+   справа цена. Повышение — серая плашка прямо под ценой.
+   ===================================================================== */
+.price-auto_component .price-wide_component {
+  display: grid;
+  grid-template-areas: "main" "side";
+  grid-template-columns: minmax(0, 1fr);
+  position: relative;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-primary);
+}
+.price-auto_component .price-wide_main { display: flex; min-width: 0; flex-direction: column; grid-area: main; padding: 1.5rem; }
+.price-auto_component .price-wide_chip { align-self: flex-start; padding: 0.4375rem 0.75rem; border-radius: 6rem; background: var(--color-page-background); color: var(--color-text-primary); font-size: 0.8125rem; font-weight: 500; line-height: 1; }
+.price-auto_component .price-wide_title { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 1.25rem; }
+.price-auto_component .price-wide_name { font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-auto_component .price-wide_sub { color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-auto_component .price-wide_money { margin-top: auto; padding-top: 2rem; }
+.price-auto_component .price-wide_money .price-tag_number { font-size: clamp(2.5rem, 2rem + 1.6vw, 3.25rem); }
+.price-auto_component .price-wide_side { display: flex; min-width: 0; flex-direction: column; gap: 1rem; grid-area: side; padding: 1.5rem; border-top: 1px solid var(--line); }
+.price-auto_component .price-wide_side-title { font-size: 1.0625rem; font-weight: 500; line-height: 1.25; }
+.price-auto_component .price-wide_foot { margin-top: 1.5rem; padding: 0.875rem 1rem; border-radius: 0.75rem; background: var(--color-page-background); }
+.price-auto_component .price-wide_component.is-plain .price-wide_money { margin-top: 0; padding-top: 0; }
+@media (min-width: 48rem) {
+  .price-auto_component .price-wide_component { grid-template-areas: "main side"; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .price-auto_component .price-wide_main,
+  .price-auto_component .price-wide_side { padding: 2rem; }
+  .price-auto_component .price-wide_side { border-top: 0; border-left: 1px solid var(--line); }
+  .price-auto_component .price-wide_foot { margin-top: 1.75rem; padding: 1rem 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .price-auto_component .price-wide_component { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .price-auto_component .price-wide_main,
+  .price-auto_component .price-wide_side { padding: 2.25rem 2.5rem; }
+}
+
+/* =====================================================================
+   Допуслуга (супервизии и т. п.) — из витрины /pricing-scenarios, сценарий 6:
+   белая карточка в две колонки, слева что это и цена, справа что входит.
+   Серой полосы «Добавить к заявке» с переключателем нет: в блоке цены кнопок нет.
+   Цена мельче, чем у курса: это дополнение, а не главная покупка.
+   ===================================================================== */
+/* @addons — метка для сборки: у страниц без допуслуг этот кусок в код для Тильды не идёт. */
+.price-auto_component .price-tag.is-small .price-tag_number { font-size: 1.75rem; }
+.price-auto_component .price-tag.is-small .price-tag_unit { font-size: 1.125rem; }
+.price-auto_component .price-addon_component { display: grid; grid-template-areas: "main" "side"; grid-template-columns: minmax(0, 1fr); border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.price-auto_component .price-addon_main { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; grid-area: main; padding: 1.5rem; }
+.price-auto_component .price-addon_name { margin-top: 1.25rem; font-size: 1.25rem; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; }
+.price-auto_component .price-addon_when { margin-top: 0.375rem; font-size: 0.9375rem; font-weight: 500; line-height: 1.4; }
+.price-auto_component .price-addon_text { margin-top: 0.5rem; color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.4; }
+.price-auto_component .price-addon_money { margin-top: 1.5rem; }
+.price-auto_component .price-addon_money .price-caption { margin-top: 0.5rem; }
+.price-auto_component .price-addon_side { grid-area: side; padding: 1.5rem; border-top: 1px solid var(--line); }
+@media (min-width: 48rem) {
+  .price-auto_component .price-addon_component { grid-template-areas: "main side"; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .price-auto_component .price-addon_component.is-plain { grid-template-areas: "main"; grid-template-columns: minmax(0, 1fr); }
+  .price-auto_component .price-addon_main { padding: 2rem; }
+  .price-auto_component .price-addon_side { margin-block: 2rem; padding: 0 2rem; border-top: 0; border-left: 1px solid var(--line); }
+}
+@media (min-width: 64.0625rem) {
+  .price-auto_component .price-addon_main { padding: 2.25rem 2.5rem; }
+  .price-auto_component .price-addon_side { padding-inline: 2.5rem; }
+}
+/* @end-addons */
+
+/* =====================================================================
+   Купон «Курс месяца»: две части, слева скидка на жёлтом поярче, справа
+   срок на бледно-жёлтом, вырезы на линии отрыва. Наклеен на карточку
+   с ценой с наклоном. Теней нет.
+   ===================================================================== */
+.price-auto_component .price-sticker_component {
+  position: absolute;
+  z-index: 2;
+  top: -0.875rem;
+  right: 1.25rem;
+  transform: rotate(-5deg);
+  pointer-events: none;
+}
+.price-auto_component .price-sticker_coupon {
+  --cut: 3.5rem;
+  display: inline-flex;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  color: var(--promo-text);
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  -webkit-mask:
+    radial-gradient(circle at var(--cut) 0, transparent 0.25rem, black 0.2813rem),
+    radial-gradient(circle at var(--cut) 100%, transparent 0.25rem, black 0.2813rem);
+  -webkit-mask-composite: source-in;
+          mask:
+    radial-gradient(circle at var(--cut) 0, transparent 0.25rem, black 0.2813rem),
+    radial-gradient(circle at var(--cut) 100%, transparent 0.25rem, black 0.2813rem);
+          mask-composite: intersect;
+}
+.price-auto_component .price-sticker_value { width: var(--cut); padding: 0.4375rem 0; background: var(--promo-bg-strong); font-weight: 600; text-align: center; }
+.price-auto_component .price-sticker_until { padding: 0.4375rem 0.75rem; background: var(--promo-bg-soft); }
+/* Стикер наклеен на правый верхний угол карточки и чуть заходит за край. */
+.price-auto_component .price-card_component > .price-sticker_component { top: -0.75rem; right: -0.625rem; transform: rotate(5deg); }
+.price-auto_component .price-wide_component > .price-sticker_component { top: -0.875rem; right: -0.5rem; transform: rotate(4deg); }
+/* Чип «Курс месяца» без скидки (секция с data-promo="chip"): жёлтая пилюля на верхней кромке справа,
+   ровно, как ярлык «Рекомендуем» слева. Без наклона и вырезов: это не купон, скидки нет. */
+.price-auto_component .price-sticker_component.is-chip { top: 0; right: var(--card-pad-x, 1.5rem); transform: translateY(-50%); }
+.price-auto_component .price-sticker_chip { display: block; padding: 0.4375rem 0.75rem; border-radius: 6rem; background: var(--promo-bg-strong); color: var(--promo-text); font-size: 0.8125rem; font-weight: 500; line-height: 1.15; white-space: nowrap; }
+.price-auto_component .price-card_component:has(> .price-sticker_component.is-chip) { padding-top: 2.25rem; }
+/* Над карточкой со стикером больше воздуха, чтобы он не прилипал к переключателям. */
+.price-auto_component .price-block_component:has(.price-sticker_component) { row-gap: 2.25rem; }
+.price-auto_component .price-cards:has(.price-sticker_component, .price-card_badge) { padding-top: 0.25rem; }
+/* Три карточки в ряд: рядом с ярлыком встаёт компактный стикер. */
+.price-auto_component .price-cards.is-count-3 .price-sticker_coupon { --cut: 3rem; font-size: 0.8125rem; }
+.price-auto_component .price-cards.is-count-3 .price-sticker_value,
+.price-auto_component .price-cards.is-count-3 .price-sticker_until { padding-block: 0.375rem; }
+@media (max-width: 64rem) {
+  .price-auto_component .price-sticker_coupon { --cut: 3rem; font-size: 0.8125rem; }
+  .price-auto_component .price-sticker_value,
+  .price-auto_component .price-sticker_until { padding-block: 0.375rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .price-auto_component { --transition-site: 0ms linear; }
+  .price-auto_component .is-fading { animation: none; }
+}

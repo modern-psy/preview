@@ -1062,6 +1062,21 @@
       hideHelp();
       setBusy(true);
 
+      // Свой способ отправки (сайт на Astro: превью, зеркало, будущий прод). Его задаёт
+      // src/scripts/lead/transport.js. На Тильде его нет, и заявка идёт в нативную форму, как раньше.
+      const transport = window.AcademyLeadTransport;
+      if (transport && typeof transport.send === "function") {
+        try {
+          const result = await transport.send(form, payload, { device, ymClientId: readCookie("_ym_uid") });
+          if (disposed) return;
+          if (result && result.ok) showSuccess();
+          else showDeliveryError((result && result.message) || TEXT.unavailable);
+        } catch (error) {
+          showDeliveryError(TEXT.sendFailed);
+        }
+        return;
+      }
+
       const nativeForm = hideTildaFormRecord(formName);
       if (!(nativeForm instanceof HTMLFormElement)) {
         showDeliveryError(TEXT.unavailable);

@@ -1,0 +1,9 @@
+---
+// Микроразметка курса (schema.org Course) с потоками и ценами из CMS.
+// Блок цены на странице сам переписывает в ней цены при каждой загрузке свежих данных.
+// Пример: <PriceLd course="orkt" />
+import { priceLd } from '../lib/price.mjs';
+const { course, ...options } = Astro.props;
+const code = await priceLd(course, options);
+---
+<Fragment set:html={code} />
