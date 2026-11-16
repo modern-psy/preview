@@ -6811,26 +6811,37 @@ html.is-trial-dialog-open { overflow: hidden; }
   height: 100%;
   object-fit: cover;
 }
-/* Значок «смотреть» по центру, пока видео не пошло. Лежит поверх обложки видео, чтобы было понятно, что рилс можно запустить */
-.reels_placeholder {
+/* Кнопка «смотреть» закрывает всю карточку: нажать можно куда угодно.
+   Пока её не нажали, видео не грузится, видна только обложка */
+.reels_play {
   position: absolute;
-  z-index: 3;
-  top: 50%;
-  left: 50%;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: 1rem;
+  color: #ffffff;
+  cursor: pointer;
+}
+.reels_play:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.reels_play-icon {
   display: flex;
   width: 3.5rem;
   height: 3.5rem;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.45);
   border-radius: 50%;
-  color: #ffffff;
-  transform: translate(-50%, -50%);
 }
-.reels_placeholder svg { width: 1.5rem; height: 1.5rem; margin-left: 0.125rem; }
-.reels_card.has-video .reels_placeholder { display: none; }
-/* Пока видео не пошло, карточку можно нажать, чтобы запустить его (нужно Safari в режиме энергосбережения) */
-.reels_card:not(.has-video) { cursor: pointer; }
+.reels_play-icon svg { width: 1.5rem; height: 1.5rem; margin-left: 0.125rem; }
+/* После нажатия обложка с цифрами уходит, остаются видео и обычные кнопки плеера */
+.reels_card.is-started :is(.reels_play, .reels_shade, .reels_author, .reels_stats) { display: none; }
 /* Затемнение снизу и справа, чтобы белые цифры читались и на светлых кадрах */
 .reels_shade {
   position: absolute;
@@ -6888,29 +6899,6 @@ html.is-trial-dialog-open { overflow: hidden; }
   white-space: nowrap;
 }
 .reels_stat svg { width: 1.625rem; height: 1.625rem; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
-/* Кнопка звука появляется, только когда видео загрузилось */
-.reels_sound {
-  position: absolute;
-  z-index: 3;
-  top: 0.75rem;
-  right: 0.75rem;
-  display: none;
-  width: 2.25rem;
-  height: 2.25rem;
-  padding: 0;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.45);
-  border: 0;
-  border-radius: 50%;
-  color: #ffffff;
-  cursor: pointer;
-}
-.reels_card.has-video .reels_sound { display: inline-flex; }
-.reels_sound svg { width: 1.125rem; height: 1.125rem; }
-.reels_sound .is-on,
-.reels_sound[aria-pressed="true"] .is-off { display: none; }
-.reels_sound[aria-pressed="true"] .is-on { display: block; }
 /* Подписи к цифрам для скринридера, на экране не видны */
 .reels_sr {
   position: absolute;

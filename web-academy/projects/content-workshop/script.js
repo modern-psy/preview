@@ -1276,60 +1276,36 @@
   seen.observe(grid);
 })();
 
-// Рилсы Романа: видео играют без звука, пока карточка на экране, и встают на паузу, когда уходят.
-// Кнопка звука включает звук у одного рилса и выключает у остальных.
-// Важно для Safari: он не грузит первый кадр сам (preload="metadata" там = только длительность),
-// поэтому запуск не ждёт загрузки — play() сам начинает грузить видео.
-// Заглушка с треугольником прячется, как только появился кадр или видео пошло.
+// Рилсы Романа: обычный видеоплеер. Видео стоят на паузе и ничего не грузят,
+// пока человек не нажмёт на карточку. Тогда видео грузится и играет со звуком
+// и обычными кнопками браузера (пауза, громкость, на весь экран).
+// Одновременно играет только один рилс. Когда рилс досмотрен, снова видна обложка.
 (() => {
   const cards = [...document.querySelectorAll("[data-reel]")];
   if (!cards.length) return;
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const setButton = (button, on) => {
-    if (!button) return;
-    button.setAttribute("aria-pressed", String(on));
-    button.setAttribute("aria-label", on ? "Выключить звук" : "Включить звук");
-  };
-  const observer = "IntersectionObserver" in window
-    ? new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const video = entry.target.querySelector("video");
-          if (!video) return;
-          if (entry.isIntersecting && !reduce) video.play().catch(() => {});
-          else if (!entry.isIntersecting) video.pause();
-        });
-      }, { threshold: 0.5 })
-    : null;
+  const videos = cards.map((card) => card.querySelector("video")).filter(Boolean);
   cards.forEach((card) => {
     const video = card.querySelector("video");
-    const button = card.querySelector(".reels_sound");
-    if (!video || card.dataset.reelReady === "true") return;
+    const play = card.querySelector(".reels_play");
+    if (!video || !play || card.dataset.reelReady === "true") return;
     card.dataset.reelReady = "true";
-    const ready = () => card.classList.add("has-video");
-    if (video.readyState >= 2) ready();
-    video.addEventListener("loadeddata", ready);
-    video.addEventListener("playing", ready);
-    // Если браузер не дал запустить сам (режим энергосбережения на iPhone, «меньше движения»),
-    // видео запускается нажатием на карточку — заглушка как раз выглядит как кнопка «играть».
-    card.addEventListener("click", (event) => {
-      if (event.target.closest(".reels_sound")) return;
-      if (video.paused) video.play().catch(() => {});
+    play.addEventListener("click", () => {
+      card.classList.add("is-started");
+      video.controls = true;
+      video.muted = false;
+      // Кнопка исчезла — переводим фокус на плеер, чтобы с клавиатуры можно было продолжить
+      video.focus({ preventScroll: true });
+      // Если браузер всё же не дал запустить, остаются обычные кнопки плеера
+      video.play().catch(() => {});
     });
-    if (observer) observer.observe(card);
-    else if (!reduce) video.play().catch(() => {});
-    if (!button) return;
-    button.addEventListener("click", () => {
-      const turnOn = video.muted;
-      cards.forEach((other) => {
-        const otherVideo = other.querySelector("video");
-        if (otherVideo && otherVideo !== video) {
-          otherVideo.muted = true;
-          setButton(other.querySelector(".reels_sound"), false);
-        }
-      });
-      video.muted = !turnOn;
-      if (turnOn) video.play().catch(() => {});
-      setButton(button, turnOn);
+    video.addEventListener("play", () => {
+      videos.forEach((other) => { if (other !== video) other.pause(); });
+    });
+    video.addEventListener("ended", () => {
+      card.classList.remove("is-started");
+      video.controls = false;
+      video.currentTime = 0;
+      play.focus({ preventScroll: true });
     });
   });
 })();

@@ -61,10 +61,10 @@ const runs = [];
 for (const e of engines) {
   runs.push({ engine: e, name: `${e} 1440`, ctx: { viewport: { width: 1440, height: 900 } } });
   if (e === "firefox") continue; // Firefox не умеет эмулировать телефон
-  runs.push({ engine: e, name: `${e} iPhone 375`, ctx: { ...pw.devices["iPhone 13 mini"], viewport: { width: 375, height: 812 } } });
+  runs.push({ engine: e, name: `${e} iPhone 375`, ctx: { ...pw.devices["iPhone 13 Mini"], viewport: { width: 375, height: 812 } } });
 }
 if (engines.includes("webkit")) {
-  runs.push({ engine: "webkit", name: "webkit iPhone 375, меньше движения", ctx: { ...pw.devices["iPhone 13 mini"], viewport: { width: 375, height: 812 }, reducedMotion: "reduce" } });
+  runs.push({ engine: "webkit", name: "webkit iPhone 375, меньше движения", ctx: { ...pw.devices["iPhone 13 Mini"], viewport: { width: 375, height: 812 }, reducedMotion: "reduce" } });
 }
 
 await mkdir(outDir, { recursive: true });
