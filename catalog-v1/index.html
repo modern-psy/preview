@@ -11,7 +11,9 @@
     <!-- Шрифт, цвета и роли текста из общих стилей лендингов v1 (apps/preview/academy-base). На сайте они уже в custom.css Тильды. -->
     <link rel="preload" href="/academy-base/fonts/wix-madefor-text-academy.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/academy-base/v1.css">
+    <link rel="stylesheet" href="./course-month.css">
     <link rel="stylesheet" href="./page.css">
+    <script src="./course-month-render.js" defer></script>
     <script src="./page.js" defer></script>
   </head>
   <body>
@@ -950,6 +952,18 @@ else init();
           <h1 class="content-heading_component is-prominent">Каталог курсов</h1>
         </div>
 
+        <!-- Курсы месяца: тот же баннер, что сейчас над каталогом на сайте (apps/tilda/course-month).
+             Стоит первым и уезжает вверх вместе со страницей. Курсы, проценты, даты и цены —
+             из тех же данных каталога (акция «Курс месяца» в CMS). Нет акции — баннера нет. -->
+        <section class="course-month_component catalog-month" data-course-month data-sheet-inert aria-labelledby="course-month-heading">
+          <div class="course-month_shell">
+            <div class="course-month_header">
+              <h2 class="course-month_heading" id="course-month-heading" data-course-month-heading>Курсы со скидкой</h2>
+            </div>
+            <ul class="scroll-row course-month_grid" aria-label="Курсы со скидкой. Прокручивайте список по горизонтали" tabindex="0" data-course-month-list></ul>
+          </div>
+        </section>
+
         <div class="catalog-shop_layout">
           <!-- Фильтры. От 1025 px колонка слева, до 1024 px шторка по кнопке «Фильтры».
                Разметка одна, группы рисует скрипт из списка GROUPS. -->
@@ -968,6 +982,9 @@ else init();
           </aside>
 
           <div class="catalog-shop_results" data-sheet-inert>
+            <!-- Поиск, полоса фильтров и карточки в одной обёртке: липкая полоса
+                 на телефоне держится только до конца карточек и не заезжает на форму -->
+            <div class="catalog-results_main">
             <div class="catalog-results_head">
               <div class="catalog-search_component" role="search">
                 <svg class="catalog-search_icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="5.75" stroke="currentColor" stroke-width="1.6"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -995,6 +1012,73 @@ else init();
             </div>
             <div class="catalog-active_list" id="active" hidden></div>
             <ul class="catalog-grid_list" id="grid"></ul>
+            </div>
+
+            <!-- Нужна помощь в выборе курса: та же форма, что на главной (apps/preview/glavnaya, раздел 10).
+                 Стоит в колонке карточек, сразу под ними, и шириной как эта колонка.
+                 Вопрос «С чего хотите начать?» и короткая форма без почты. Выбранный ответ уходит менеджеру в поле form_source.
+                 Заявка уходит в скрытую форму Тильды на этой же странице, её имя — в data-tilda-form-name.
+                 🔴 Форма Тильды «catalog» ещё не заведена: на modern-psy.ru без неё заявка не уйдёт, на превью так и должно быть -->
+            <section class="section_catalog-pick" aria-labelledby="catalog-pick-title" data-catalog-pick>
+                  <div class="pick-card_component">
+                    <div class="pick-card_intro">
+                      <h2 class="pick-card_title section-title_component is-responsive" id="catalog-pick-title">Нужна помощь в&nbsp;выборе курса?</h2>
+                      <p class="pick-card_lead">Оставьте заявку, и&nbsp;менеджер поможет подобрать программу под ваш опыт</p>
+                      <p class="pick-card_label" id="catalog-pick-question">С&nbsp;чего хотите начать?</p>
+                      <ul class="pick-chip_list" role="list" aria-labelledby="catalog-pick-question">
+                        <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="zero">Стать психологом с&nbsp;нуля</button></li>
+                        <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="method">Освоить метод терапии</button></li>
+                        <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="skill">Повысить квалификацию</button></li>
+                        <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="unsure">Пока не&nbsp;знаю</button></li>
+                      </ul>
+                      <div class="pick-card_reply" aria-live="polite">
+                        <p data-pick-reply="none">Выберите вариант, и&nbsp;менеджер подготовится к&nbsp;разговору заранее</p>
+                        <p data-pick-reply="zero" hidden>Расскажем о профессии психолога-консультанта и гранте 30 000 ₽ на обучение</p>
+                        <p data-pick-reply="method" hidden>Подберём курс по&nbsp;подходу: у&nbsp;нас <span data-catalog-count="Методы психотерапии">17 курсов</span> по&nbsp;методам, например КПТ, ACT и&nbsp;схема-терапия</p>
+                        <p data-pick-reply="skill" hidden>Покажем <span data-catalog-count="Специализации">21 курс</span> по&nbsp;специализациям: травма, РПП, сексология и&nbsp;другие</p>
+                        <p data-pick-reply="unsure" hidden>Зададим пару вопросов и&nbsp;предложим варианты под ваш опыт</p>
+                      </div>
+                    </div>
+                    <div class="pick-card_form">
+                      <form class="pick-form_component" data-pick-form data-tilda-form-name="catalog" aria-labelledby="catalog-pick-title" novalidate>
+                        <div class="pick-form_fields">
+                          <div class="pick-field_component">
+                            <input class="pick-field_input" id="catalog-pick-name" type="text" name="name" autocomplete="name" placeholder=" " aria-describedby="catalog-pick-name-hint" required>
+                            <label class="pick-field_label" for="catalog-pick-name">Как к&nbsp;вам обращаться</label>
+                          </div>
+                          <p class="pick-field_hint" id="catalog-pick-name-hint" data-pick-hint="name" hidden>Напишите, как к&nbsp;вам обращаться</p>
+                          <div class="pick-field_component">
+                            <input class="pick-field_input" id="catalog-pick-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" placeholder=" " aria-describedby="catalog-pick-phone-hint" required>
+                            <label class="pick-field_label" for="catalog-pick-phone">Телефон</label>
+                          </div>
+                          <p class="pick-field_hint" id="catalog-pick-phone-hint" data-pick-hint="phone" hidden>Проверьте номер: в&nbsp;нём от&nbsp;10&nbsp;цифр, например +7&nbsp;900&nbsp;123-45-67</p>
+                        </div>
+                        <fieldset class="pick-messenger_component">
+                          <legend class="pick-messenger_legend">Где вам удобнее общаться?</legend>
+                          <div class="pick-messenger_options">
+                            <input class="pick-messenger_input" type="radio" name="messenger" value="telegram" id="catalog-pick-telegram" checked>
+                            <label class="pick-messenger_option" for="catalog-pick-telegram"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.5 4.1a1.3 1.3 0 0 1 1.7 1.4l-1.9 11.4c-.2 1.1-1.4 1.7-2.4 1.2-.8-.5-2.1-1.2-3.2-1.9-.6-.4-2.3-1.6-2.1-2.4.2-.7 3.1-3.4 4.8-5.1.6-.6.3-1-.4-.4-1.9 1.4-5 3.6-6 4.3-.9.5-1.4.6-1.9.5-1-.2-2-.4-2.7-.8-1.1-.4-1-1.9 0-2.3l14.1-6Z"/></svg><span lang="en">Telegram</span></label>
+                            <input class="pick-messenger_input" type="radio" name="messenger" value="max" id="catalog-pick-max">
+                            <label class="pick-messenger_option" for="catalog-pick-max"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M10.2 19.9c-2 0-2.9-.3-4.4-1.4-1 1.3-4.2 2.3-4.3.6 0-1.3-.3-2.4-.6-3.6C.5 14 0 12.4 0 10 0 4.4 4.7.1 10.2.1c5.5 0 9.8 4.5 9.8 10 0 2.6-1 5.1-2.8 6.9a9.9 9.9 0 0 1-7 2.9Zm.1-14.9C7.6 4.9 5.5 6.7 5.1 9.6c-.4 2.4.3 5.4.9 5.5.3.1 1-.5 1.4-.9.7.5 1.5.8 2.4.9a5 5 0 0 0 5.3-4.7 5 5 0 0 0-4.8-5.4Z"/></svg><span lang="en">MAX</span></label>
+                          </div>
+                          <!-- Telegram первым и выбран сразу: им пользуются чаще. Для Telegram спрашиваем имя пользователя, для MAX хватает телефона -->
+                          <div class="pick-field_component pick-messenger_nick" data-pick-nick>
+                            <input class="pick-field_input" id="catalog-pick-nick" type="text" name="telegram" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder=" " aria-describedby="catalog-pick-nick-hint" required>
+                            <label class="pick-field_label" for="catalog-pick-nick">Имя пользователя с&nbsp;@</label>
+                          </div>
+                          <p class="pick-field_hint" id="catalog-pick-nick-hint" data-pick-hint="telegram" hidden>Имя пользователя в&nbsp;Telegram: латиница, цифры и&nbsp;_, от&nbsp;3&nbsp;символов, например @ivanova</p>
+                        </fieldset>
+                        <button class="pick-form_submit" type="submit" disabled data-pick-submit>Подобрать программу</button>
+                        <p class="pick-form_status" role="status" aria-live="polite" data-pick-status></p>
+                        <p class="pick-form_legal">Нажимая на&nbsp;кнопку «Подобрать программу», я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener">согласие</a> на&nbsp;обработку моих персональных данных в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener">политикой обработки персональных данных</a></p>
+                      </form>
+                      <div class="pick-form_success" tabindex="-1" data-pick-success hidden>
+                        <p class="pick-form_success-title content-heading_component is-card">Заявка отправлена</p>
+                        <p class="body-text_component is-fine-print">Спасибо! Свяжемся с&nbsp;вами в&nbsp;рабочее время там, где вам удобно.</p>
+                      </div>
+                    </div>
+                  </div>
+            </section>
           </div>
         </div>
       </div>

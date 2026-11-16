@@ -868,10 +868,19 @@ function hoursWord(n) {
   return 'часов';
 }
 
+/* Текст плашки акции: «−10 % до 30 ноября». Процент и дата — из акции «Курс месяца» в CMS.
+   Нет даты — только процент, нет процента — название акции. */
+function promoText(card) {
+  const p = card.promo || {};
+  if (!p.discountPercent) return esc(p.label || 'Курс месяца');
+  const until = p.until ? NBSP + 'до' + NBSP + day(p.until) : '';
+  return '\u2212' + p.discountPercent + NBSP + '%' + until;
+}
+
 /* Картинка и факты: картинка-предмет, плашки, название, факты, цена */
 function factsCardHtml(card, st) {
   const doc = (card.subtitle || '').split(' · ')[1];
-  const promo = card.promo ? `<span class="catalog-card_promo">${PROMO_ICON}${esc(card.promo.label || 'Курс месяца')}</span>` : '';
+  const promo = card.promo ? `<span class="catalog-card_promo">${promoText(card)}</span>` : '';
   const chips = [
     doc ? `<span class="meta-pill_component">${esc(doc.charAt(0).toUpperCase() + doc.slice(1))}</span>` : '',
     `<span class="catalog-card_status${card.mode === 'waitlist' ? ' is-waitlist' : ''}">${esc(card.status)}</span>`
@@ -1230,8 +1239,239 @@ document.getElementById('apply-filters').addEventListener('click', () => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('is-open')) { setSheet(false); openBtn.focus(); } });
 WIDE.addEventListener('change', () => { if (WIDE.matches && panel.classList.contains('is-open')) setSheet(false); });
 
+/* ---------- Фильтры на десктопе: затухание у края, где есть ещё фильтры ---------- */
+function fadeFilters() {
+  const more = panel.scrollHeight - panel.clientHeight - panel.scrollTop;
+  panel.classList.toggle('is-more-top', WIDE.matches && panel.scrollTop > 2);
+  panel.classList.toggle('is-more-bottom', WIDE.matches && more > 2);
+}
+panel.addEventListener('scroll', fadeFilters, { passive: true });
+window.addEventListener('resize', fadeFilters);
+if ('ResizeObserver' in window) new ResizeObserver(fadeFilters).observe(panel);
+body.addEventListener('toggle', fadeFilters, true);
+
 readURL();
 document.getElementById('q').value = FILTER.q;
 
-function render() { renderShop(); }
+/* ---------- Курсы месяца: баннер с сайта ----------
+   Отбор, заголовок «Выгоднее в …» и карточки — функции баннера (course-month-render.js),
+   данные — тот же снимок каталога. Нет курсов в акции — баннер скрыт. */
+function renderMonth() {
+  const box = document.querySelector('[data-course-month]');
+  if (!box || !window.AspCourseMonth) return;
+  const list = window.AspCourseMonth.select(CARDS);
+  box.hidden = !list.length;
+  if (!list.length) return;
+  box.querySelector('[data-course-month-heading]').textContent = window.AspCourseMonth.heading(list);
+  box.querySelector('[data-course-month-list]').innerHTML = window.AspCourseMonth.render(list);
+}
+
+function render() { renderMonth(); renderShop(); }
 render();
+
+/* ---------- Нужна помощь в выборе курса: форма как на главной ----------
+   Код перенесён с главной (apps/preview/glavnaya/page.js, initPick) без изменений логики. */
+(function (root) {
+  // «Поможем подобрать программу»: вопрос с вариантами и короткая форма.
+  // Заявка уходит в скрытую форму Тильды на странице (имя — data-tilda-form-name), как запасная форма
+  // на вебинарах: поля Name, Phone, messenger, messenger_contact, form_source, ym_client_id и utm-метки.
+  // Полей, которых нет в форме Тильды, скрипт добавляет сам скрытыми.
+  var PICK_IS_PRODUCTION = /(^|\.)modern-psy\.ru$/.test(root.location ? root.location.hostname : '');
+  var PICK_SOURCE = 'каталог: подбор программы';
+
+  function pickSetValue(input, value) {
+    var setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    if (setter && setter.set) setter.set.call(input, value); else input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  function pickTildaForm(name) {
+    var forms = Array.prototype.slice.call(document.querySelectorAll('form.t-form'));
+    var found = forms.filter(function (f) {
+      var n = f.querySelector('input[name="tildaspec-formname"]');
+      return n && n.value === name;
+    })[0];
+    return found || (forms.length === 1 ? forms[0] : null);
+  }
+  function pickTildaField(form, name, value) {
+    var input = form.querySelector('input[name="' + name + '"]');
+    if (!input) {
+      input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      form.appendChild(input);
+    }
+    pickSetValue(input, value);
+  }
+  // Ответ Тильды приходит событием: ждём его, но не дольше 10 секунд
+  function pickWaitTilda(form) {
+    return new Promise(function (resolve) {
+      var done = false;
+      function finish(result) {
+        if (done) return;
+        done = true;
+        document.removeEventListener('tildaform:aftersuccess', ok);
+        document.removeEventListener('tildaform:aftererror', fail);
+        if (root.jQuery) root.jQuery(document).off('.catalogpick');
+        resolve(result);
+      }
+      function ok() { finish('success'); }
+      function fail() { finish('error'); }
+      document.addEventListener('tildaform:aftersuccess', ok);
+      document.addEventListener('tildaform:aftererror', fail);
+      if (root.jQuery) {
+        root.jQuery(document).on('tildaform:aftersuccess.catalogpick', ok);
+        root.jQuery(document).on('tildaform:aftererror.catalogpick', fail);
+      }
+      setTimeout(function () { finish('timeout'); }, 10000);
+    });
+  }
+  function pickSend(formName, values) {
+    var form = pickTildaForm(formName);
+    if (!form) {
+      if (PICK_IS_PRODUCTION) {
+        console.error('[каталог, подбор программы] Формы Тильды «' + formName + '» на странице нет, заявка не отправлена.');
+        return Promise.resolve('error');
+      }
+      console.info('[каталог, подбор программы] Это превью: формы Тильды нет, заявка не отправлена.', values);
+      return Promise.resolve('success');
+    }
+    var record = form.closest('.t-rec');
+    if (record) record.setAttribute('aria-hidden', 'true');
+    var utm = new URLSearchParams(root.location.search);
+    Object.keys(values).forEach(function (k) {
+      if (k === 'Phone' && root.t_form_phonemask__setValue) {
+        var group = form.querySelector('.t-input-group_ph');
+        if (group) { try { root.t_form_phonemask__setValue(group, values[k], undefined, { noFocus: true }); } catch (e) {} }
+      }
+      pickTildaField(form, k, values[k]);
+    });
+    pickTildaField(form, 'ym_client_id', (document.cookie.match(/(?:^|;\s*)_ym_uid=([^;]+)/) || [])[1] || '');
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { pickTildaField(form, k, utm.get(k) || ''); });
+    // Обязательные поля Тильды, которых нет на странице, иначе её проверка не пустит заявку
+    Array.prototype.forEach.call(form.querySelectorAll('[required], [data-tilda-req]'), function (f) {
+      if (!String(f.value || '').trim()) { f.removeAttribute('required'); f.removeAttribute('data-tilda-req'); f.removeAttribute('data-tilda-rule'); }
+    });
+    var answer = pickWaitTilda(form);
+    var submit = form.querySelector('button[type="submit"]:not(:disabled), input[type="submit"]:not(:disabled)');
+    if (submit) form.requestSubmit(submit); else form.requestSubmit();
+    return answer;
+  }
+
+  // Нативную форму Тильды прячем с глаз сразу при загрузке: видна только наша форма.
+  // Не display:none — скриптам Тильды нужно измерять поля. Форма может появиться чуть позже нашего скрипта,
+  // поэтому ищем её несколько раз в течение 5 секунд. Запасное правило в page.css прячет её и без скрипта.
+  function pickHideTilda(name) {
+    var tries = 0;
+    (function look() {
+      var native = name && pickTildaForm(name);
+      var record = native && native.closest('.t-rec');
+      if (record) {
+        record.setAttribute('aria-hidden', 'true');
+        record.setAttribute('data-catalog-native-form-record', '');
+        return;
+      }
+      if (++tries < 10) setTimeout(look, 500);
+    })();
+  }
+
+  function initPick(section) {
+    var form = section.querySelector('[data-pick-form]');
+    if (!form) return;
+    var chosen = '';
+    pickHideTilda(form.getAttribute('data-tilda-form-name') || '');
+
+    // Вариант ответа: подсвечиваем кнопку и показываем ответ на неё
+    Array.prototype.forEach.call(section.querySelectorAll('[data-pick-option]'), function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.getAttribute('data-pick-option');
+        chosen = btn.textContent.replace(/\s+/g, ' ').trim();
+        Array.prototype.forEach.call(section.querySelectorAll('[data-pick-option]'), function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+        Array.prototype.forEach.call(section.querySelectorAll('[data-pick-reply]'), function (r) { r.hidden = r.getAttribute('data-pick-reply') !== key; });
+      });
+    });
+
+    var name = form.querySelector('[name="name"]');
+    var phone = form.querySelector('[name="phone"]');
+    var nickBox = form.querySelector('[data-pick-nick]');
+    var nick = form.querySelector('[name="telegram"]');
+    var submit = form.querySelector('[data-pick-submit]');
+    var status = form.querySelector('[data-pick-status]');
+    var messenger = function () { var r = form.querySelector('[name="messenger"]:checked'); return r ? r.value : 'telegram'; };
+    var nickValue = function () { var v = nick.value.trim().replace(/^@?/, '@'); return /^@[A-Za-z0-9_]{3,32}$/.test(v) ? v : ''; };
+    function valid() {
+      var digits = phone.value.replace(/\D/g, '').length;
+      return name.value.trim().length > 1 && digits >= 10 && digits <= 15 && (messenger() !== 'telegram' || !!nickValue());
+    }
+    function check() { submit.disabled = !valid(); }
+    // Подсказка под полем: появляется, когда человек ввёл что-то и ушёл из поля, а значение не подходит.
+    // Пока поле не трогали, ошибку не показываем
+    function fieldOk(el) {
+      if (el === name) return name.value.trim().length > 1;
+      if (el === phone) { var d = phone.value.replace(/\D/g, '').length; return d >= 10 && d <= 15; }
+      if (el === nick) return !!nickValue();
+      return true;
+    }
+    function showHint(el) {
+      var hint = form.querySelector('[data-pick-hint="' + el.name + '"]');
+      if (!hint) return;
+      var bad = !!el.getAttribute('data-touched') && !el.disabled && !fieldOk(el);
+      hint.hidden = !bad;
+      el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    }
+    form.addEventListener('focusout', function (e) {
+      var el = e.target;
+      if (!el.classList || !el.classList.contains('pick-field_input') || !el.value.trim()) return;
+      el.setAttribute('data-touched', '1');
+      showHint(el);
+    });
+    form.addEventListener('input', function (e) {
+      if (e.target.getAttribute && e.target.getAttribute('data-touched')) showHint(e.target);
+      check();
+    });
+    form.addEventListener('change', function (e) {
+      if (e.target.name === 'messenger') {
+        var tg = e.target.value === 'telegram';
+        nickBox.hidden = !tg;
+        nick.disabled = !tg;
+        showHint(nick);
+        if (tg) nick.focus();
+      }
+      check();
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!valid() || submit.getAttribute('aria-busy') === 'true') return;
+      var tg = messenger() === 'telegram';
+      submit.setAttribute('aria-busy', 'true');
+      submit.disabled = true;
+      status.textContent = '';
+      pickSend(form.getAttribute('data-tilda-form-name') || '', {
+        Name: name.value.trim(),
+        Phone: phone.value.trim(),
+        messenger: tg ? 'Telegram' : 'MAX',
+        messenger_contact: tg ? nickValue() : phone.value.trim(),
+        form_source: PICK_SOURCE + ' · ' + (chosen || 'без ответа на вопрос')
+      }).then(function (result) {
+        submit.removeAttribute('aria-busy');
+        if (result === 'error') {
+          status.innerHTML = 'Не\u00a0получилось отправить заявку. Попробуйте ещё раз или напишите нам в\u00a0<a href="https://t.me/welcometoasp_bot" target="_blank" rel="noopener">Telegram</a>';
+          check();
+          return;
+        }
+        // success или timeout: Тильда приняла форму, но не ответила вовремя — заявку обычно всё равно получаем
+        var done = section.querySelector('[data-pick-success]');
+        form.hidden = true;
+        done.hidden = false;
+        done.focus();
+      });
+    });
+    check();
+  }
+
+  /* Числа курсов в ответах на вопрос берём из тех же данных каталога */
+  document.querySelectorAll('[data-catalog-count]').forEach(function (el) {
+    el.textContent = courses(CARDS.filter(function (c) { return c.section === el.getAttribute('data-catalog-count'); }).length);
+  });
+  document.querySelectorAll('[data-catalog-pick]').forEach(initPick);
+})(window);
