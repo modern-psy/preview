@@ -13,8 +13,8 @@
 /* ---------- 0. Переменные ---------- */
 .home-page {
   --home-bg: #f5f5f5;            /* фон страницы */
-  --home-white: #ffffff;
-  --home-error-on-dark: #ffb4b4;  /* ошибка в форме на тёмном фоне */         /* белый: текст, обводки и кнопки на тёмных блоках */
+  --home-white: #ffffff;          /* белый: текст, обводки и кнопки на тёмных блоках */
+  --home-error-on-dark: #ffb4b4;  /* ошибка в форме на тёмном фоне */
   --home-surface: var(--home-white); /* карточки */
   --home-line: #e8e7ee;          /* тонкие границы */
   --home-line-hover: #cfd1db;    /* граница карточки при наведении */
@@ -202,8 +202,13 @@ body:has(.home-page) {
 .door-ticker_row:nth-child(1) .door-ticker_track { --door-ticker-time: 64s; --door-ticker-shift: -8s; }
 .door-ticker_row:nth-child(2) .door-ticker_track { --door-ticker-time: 76s; --door-ticker-shift: -30s; }
 .door-ticker_row:nth-child(3) .door-ticker_track { --door-ticker-time: 70s; --door-ticker-shift: -17s; }
-.door-ticker_component:hover .door-ticker_track,
-.door-ticker_component:focus-within .door-ticker_track { animation-play-state: paused; }
+/* Пауза: при фокусе с клавиатуры, при наведении мышью (только на компьютере: на телефоне наведение залипает
+   после нажатия) и когда строка ушла за экран (класс ставит скрипт, правила Safari: анимация вне экрана тратит батарею) */
+.door-ticker_component:focus-within .door-ticker_track,
+.door-ticker_component.is-offscreen .door-ticker_track { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) {
+  .door-ticker_component:hover .door-ticker_track { animation-play-state: paused; }
+}
 @keyframes door-ticker-move {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -910,6 +915,7 @@ body:has(.home-page) {
 .teacher-card_bio { margin-top: 0.5rem; color: var(--home-muted); }
 
 /* ---------- 7. Как устроено обучение: бенто с живыми мини-интерфейсами ----------
+   16.11.2026: по просьбе Дарьи весь текст в разделах 7–8 не меньше 16 px (было 12–15 px), включая мини-интерфейсы.
    Плитки белые; внутри серая «сцена» с маленьким интерфейсом. Большая плитка — практика.
    Анимации крутятся, только когда у секции есть класс is-run (секция на экране) */
 .section_home-learning { padding-top: var(--home-section); }
@@ -955,7 +961,7 @@ body:has(.home-page) {
   border-radius: 0.5rem;
   background: transparent;
   color: var(--home-text);
-  font: 444 0.9375rem/1.2 var(--home-font);
+  font: 444 1rem/1.2 var(--home-font);
   cursor: pointer;
   transition: background-color var(--home-motion);
 }
@@ -973,13 +979,24 @@ body:has(.home-page) {
 .practice-stage_link { stroke: #cfcbd6; stroke-width: 2; stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; }
 .is-run .practice-stage_link { animation: learning-flow 1.6s linear infinite; }
 @keyframes learning-flow { to { stroke-dashoffset: -20; } }
+/* Участник схемы. Обёртка размером со сцену сдвигается на --x/--y (проценты от её размера = от размера сцены):
+   двигаем только transform, без left/top, иначе Safari пересчитывает раскладку на каждом кадре.
+   Сам кружок с подписью стоит в левом верхнем углу обёртки и центрируется на точке. */
 .practice-person_component {
   position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translate(var(--x, 50%), var(--y, 50%));
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.practice-person_body {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: grid;
   justify-items: center;
   gap: 0.375rem;
   transform: translate(-50%, -50%);
-  transition: left 700ms cubic-bezier(0.16, 1, 0.3, 1), top 700ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .practice-person_face {
   display: grid;
@@ -995,7 +1012,7 @@ body:has(.home-page) {
   padding: 0.25rem 0.625rem;
   border-radius: 999px;
   background-color: var(--home-surface);
-  font: 444 0.8125rem/1.2 var(--home-font);
+  font: 444 1rem/1.2 var(--home-font);
   white-space: nowrap;
   transition: background-color var(--home-motion), color var(--home-motion);
 }
@@ -1011,12 +1028,12 @@ body:has(.home-page) {
   border-radius: 999px;
   background-color: var(--home-accent);
   color: var(--home-white);
-  font: 444 0.8125rem/1.2 var(--home-font);
+  font: 444 1rem/1.2 var(--home-font);
   opacity: 0;
   transition: opacity var(--home-motion);
 }
 .practice-stage_teacher.is-on { opacity: 1; }
-.practice-stage_round { position: absolute; right: 0.75rem; bottom: 0.625rem; color: var(--home-muted); font-size: 0.8125rem; }
+.practice-stage_round { position: absolute; right: 0.75rem; bottom: 0.625rem; color: var(--home-muted); font-size: 1rem; }
 .practice_info { display: flex; flex-direction: column; gap: 0.75rem; }
 .practice_text { color: var(--home-muted); }
 .practice-legend_list { display: grid; gap: 0.5rem; margin-top: 0.25rem; padding-top: 0.75rem; border-top: 1px solid var(--home-line); color: var(--home-muted); }
@@ -1030,7 +1047,7 @@ body:has(.home-page) {
   border-radius: 0.75rem;
   background-color: var(--home-soft);
   color: var(--home-soft-text);
-  font: 500 0.9375rem/1.2 var(--home-font);
+  font: 500 1rem/1.2 var(--home-font);
   cursor: pointer;
   transition: background-color var(--home-motion);
 }
@@ -1045,17 +1062,20 @@ body:has(.home-page) {
   padding: 0.375rem 0.625rem;
   border-radius: 0.625rem;
   background-color: var(--home-surface);
-  font-size: 0.8125rem;
+  font-size: 1rem;
   line-height: 1.25;
 }
+/* Название урока в одну строку: в 16 px на телефоне рядом с «через неделю» иначе переносится */
+.learning-lesson_item > span:nth-child(2) { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .learning-lesson_icon { display: grid; place-items: center; width: 1.625rem; height: 1.625rem; border-radius: 50%; background-color: var(--home-soft); color: var(--home-accent); }
 .learning-lesson_icon svg { width: 0.8125rem; height: 0.8125rem; }
 .learning-lesson_item.is-locked { opacity: 0.55; }
-.learning-lesson_note { color: var(--home-muted); font-size: 0.75rem; white-space: nowrap; }
+.learning-lesson_note { color: var(--home-muted); font-size: 1rem; white-space: nowrap; }
 .learning-lesson_bar { width: 3.5rem; height: 0.25rem; border-radius: 999px; background-color: #e8e7ee; overflow: hidden; }
-.learning-lesson_bar i { display: block; width: 0; height: 100%; background-color: var(--home-accent); }
+/* Полоска просмотра растёт через scaleX, а не width: так браузер не пересчитывает раскладку */
+.learning-lesson_bar i { display: block; width: 100%; height: 100%; background-color: var(--home-accent); transform: scaleX(0); transform-origin: left center; }
 .is-run .learning-lesson_item.is-playing .learning-lesson_bar i { animation: learning-fill 5.5s linear infinite; }
-@keyframes learning-fill { to { width: 100%; } }
+@keyframes learning-fill { to { transform: scaleX(1); } }
 
 /* Вебинары */
 .learning-cams_grid { position: absolute; inset: 0.75rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.375rem; }
@@ -1064,31 +1084,32 @@ body:has(.home-page) {
 .learning-cam_item.is-teacher { background-color: var(--home-dark); }
 .learning-cam_item.is-teacher::before { background-color: #4a4152; }
 .learning-cam_wave { position: absolute; left: 0.375rem; bottom: 0.375rem; display: flex; align-items: end; gap: 2px; height: 0.75rem; }
-.learning-cam_wave i { width: 3px; height: 30%; border-radius: 2px; background-color: var(--home-white); }
+/* Звуковая волна: высота меняется через scaleY от нижнего края, а не через height */
+.learning-cam_wave i { width: 3px; height: 100%; border-radius: 2px; background-color: var(--home-white); transform: scaleY(0.3); transform-origin: center bottom; }
 .is-run .learning-cam_wave i { animation: learning-wave 900ms ease-in-out infinite alternate; }
 .learning-cam_wave i:nth-child(2) { animation-delay: -300ms; }
 .learning-cam_wave i:nth-child(3) { animation-delay: -600ms; }
-@keyframes learning-wave { to { height: 100%; } }
-.learning-cam_live { position: absolute; right: 1.125rem; top: 1.125rem; display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.125rem 0.5rem; border-radius: 999px; background-color: var(--home-surface); font-size: 0.75rem; }
+@keyframes learning-wave { to { transform: scaleY(1); } }
+.learning-cam_live { position: absolute; right: 1.125rem; top: 1.125rem; display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.125rem 0.5rem; border-radius: 999px; background-color: var(--home-surface); font-size: 1rem; }
 .learning-cam_live::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 50%; background-color: var(--home-accent); }
 .is-run .learning-cam_live::before { animation: learning-blink 1.4s ease-in-out infinite; }
 @keyframes learning-blink { 50% { opacity: 0.25; } }
 
 /* Домашние задания */
 .learning-tasks_list { position: absolute; inset: 0.75rem; display: grid; gap: 0.375rem; align-content: center; }
-.learning-task_item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4375rem 0.625rem; border-radius: 0.625rem; background-color: var(--home-surface); font-size: 0.8125rem; line-height: 1.25; }
+.learning-task_item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4375rem 0.625rem; border-radius: 0.625rem; background-color: var(--home-surface); font-size: 1rem; line-height: 1.25; }
 .learning-task_check { flex: 0 0 auto; width: 1.125rem; height: 1.125rem; }
 .learning-task_check rect { fill: none; stroke: #cfcbd6; stroke-width: 1.5; }
 .learning-task_check path { fill: none; stroke: var(--home-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 14; stroke-dashoffset: 14; transition: stroke-dashoffset 400ms ease; }
 .learning-task_item.is-done .learning-task_check path { stroke-dashoffset: 0; }
-.learning-task_stamp { justify-self: start; padding: 0.25rem 0.625rem; border-radius: 999px; background-color: var(--home-dark); color: var(--home-white); font-size: 0.75rem; opacity: 0; transform: translateY(0.25rem); transition: opacity 300ms ease, transform 300ms ease; }
+.learning-task_stamp { justify-self: start; padding: 0.25rem 0.625rem; border-radius: 999px; background-color: var(--home-dark); color: var(--home-white); font-size: 1rem; opacity: 0; transform: translateY(0.25rem); transition: opacity 300ms ease, transform 300ms ease; }
 .learning-task_stamp.is-on { opacity: 1; transform: none; }
 
 /* Супервизии */
 .learning-case_card { position: absolute; inset: 0.75rem 3rem 0.75rem 0.75rem; display: grid; align-content: start; gap: 0.5rem; padding: 0.75rem; border-radius: 0.625rem; background-color: var(--home-surface); }
-.learning-case_card b { font-size: 0.8125rem; font-weight: 500; }
+.learning-case_card b { font-size: 1rem; font-weight: 500; }
 .learning-case_card i { display: block; height: 0.5rem; border-radius: 999px; background-color: #e8e7ee; }
-.learning-case_note { position: absolute; right: 0.75rem; bottom: 0.75rem; max-width: 72%; padding: 0.5rem 0.75rem; border-radius: 0.75rem 0.75rem 0.25rem 0.75rem; background-color: var(--home-dark); color: var(--home-white); font-size: 0.8125rem; line-height: 1.3; opacity: 0; transform: translateY(0.5rem); transition: opacity 400ms ease, transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+.learning-case_note { position: absolute; right: 0.75rem; bottom: 0.75rem; max-width: 72%; padding: 0.5rem 0.75rem; border-radius: 0.75rem 0.75rem 0.25rem 0.75rem; background-color: var(--home-dark); color: var(--home-white); font-size: 1rem; line-height: 1.3; opacity: 0; transform: translateY(0.5rem); transition: opacity 400ms ease, transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
 .learning-case_note.is-on { opacity: 1; transform: none; }
 
 /* Документ */
@@ -1151,12 +1172,12 @@ body:has(.home-page) {
   border-radius: 999px;
   background-color: var(--home-surface);
   color: var(--home-text);
-  font: 500 0.9375rem/1.2 var(--home-font);
+  font: 500 1rem/1.2 var(--home-font);
   cursor: pointer;
 }
 .conf-video_play-icon { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background-color: var(--home-dark); color: var(--home-white); }
 .conf-video_play-icon svg { width: 0.75rem; height: 0.75rem; margin-left: 2px; }
-.conf-video_caption { position: absolute; z-index: 2; right: var(--home-card-pad-lg); bottom: calc(var(--home-card-pad-lg) + 0.875rem); max-width: 45%; color: var(--home-white); font-size: 0.875rem; line-height: 1.3; text-align: right; }
+.conf-video_caption { position: absolute; z-index: 2; right: var(--home-card-pad-lg); bottom: calc(var(--home-card-pad-lg) + 0.875rem); max-width: 45%; color: var(--home-white); font-size: 1rem; line-height: 1.3; text-align: right; }
 @media (max-width: 32.5rem) { .conf-video_caption { display: none; } }
 
 .conf-info_text { margin-top: 0.375rem; color: var(--home-muted); }
@@ -1180,8 +1201,8 @@ body:has(.home-page) {
 }
 .conf-list_year { color: var(--home-muted); font-size: 1rem; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .conf-list_text { display: grid; gap: 0.125rem; min-width: 0; }
-.conf-list_name { font-size: 0.9375rem; font-weight: 500; line-height: 1.25; transition: color var(--home-motion); }
-.conf-list_caption { color: var(--home-muted); font-size: 0.8125rem; line-height: 1.3; }
+.conf-list_name { font-size: 1.125rem; font-weight: 500; line-height: 1.25; transition: color var(--home-motion); }
+.conf-list_caption { color: var(--home-muted); font-size: 1rem; line-height: 1.3; }
 .conf-list_play { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background-color: var(--home-bg); color: var(--home-muted); transition: background-color var(--home-motion), color var(--home-motion); }
 .conf-list_play svg { width: 0.625rem; height: 0.625rem; margin-left: 1px; }
 .conf-list_tab.is-active .conf-list_name { color: var(--home-accent); }
@@ -1208,6 +1229,13 @@ body:has(.home-page) {
 }
 .beyond-card_title { margin-top: 1rem; }
 .beyond-card_text { margin-top: 0.375rem; color: var(--home-muted); }
+/* Подписи is-caption в разделах 7–8 на телефоне 16 px, а не 15 (по просьбе Дарьи); на десктопе как в типографике, 18 px */
+.section_home-learning .body-text_component.is-caption,
+.section_home-beyond .body-text_component.is-caption { font-size: 1rem; }
+@media (min-width: 64.0625rem) {
+  .section_home-learning .body-text_component.is-caption,
+  .section_home-beyond .body-text_component.is-caption { font-size: 1.125rem; }
+}
 .beyond-card_link {
   margin-top: auto;
   padding-top: 1rem;
@@ -1220,9 +1248,9 @@ body:has(.home-page) {
 
 /* Практикум: мини-расписание */
 .practicum-ui_component { display: grid; gap: 0.375rem; padding: 0.75rem; border-radius: 0.875rem; background-color: var(--home-bg); }
-.practicum-ui_row { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr) auto; align-items: center; gap: 0.625rem; padding: 0.375rem 0.375rem 0.375rem 0.5rem; border-radius: 0.625rem; background-color: var(--home-surface); font-size: 0.8125rem; }
+.practicum-ui_row { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr) auto; align-items: center; gap: 0.625rem; padding: 0.375rem 0.375rem 0.375rem 0.5rem; border-radius: 0.625rem; background-color: var(--home-surface); font-size: 1rem; }
 .practicum-ui_day { display: grid; place-items: center; height: 2rem; border-radius: 0.5rem; background-color: var(--home-soft); color: var(--home-soft-text); font-weight: 500; }
-.practicum-ui_btn { padding: 0.25rem 0.625rem; border-radius: 0.5rem; background-color: var(--home-dark); color: var(--home-white); font-size: 0.75rem; }
+.practicum-ui_btn { padding: 0.25rem 0.625rem; border-radius: 0.5rem; background-color: var(--home-dark); color: var(--home-white); font-size: 1rem; }
 .practicum-ui_row:nth-child(2) .practicum-ui_btn { background-color: var(--home-soft); color: var(--home-soft-text); }
 
 /* Выпускники: тёмная карточка, чат и лица */
@@ -1231,10 +1259,10 @@ body:has(.home-page) {
 .is-alumni .beyond-card_link { color: var(--home-white); }
 .is-alumni :focus-visible { outline-color: var(--home-white); }
 .alumni-ui_component { display: grid; gap: 0.375rem; padding: 0.75rem; border-radius: 0.875rem; background-color: color-mix(in srgb, var(--home-white) 6%, transparent); }
-.alumni-ui_msg { justify-self: start; max-width: 85%; padding: 0.4375rem 0.75rem; border-radius: 0.875rem 0.875rem 0.875rem 0.25rem; background-color: color-mix(in srgb, var(--home-white) 12%, transparent); font-size: 0.8125rem; line-height: 1.3; }
+.alumni-ui_msg { justify-self: start; max-width: 85%; padding: 0.4375rem 0.75rem; border-radius: 0.875rem 0.875rem 0.875rem 0.25rem; background-color: color-mix(in srgb, var(--home-white) 12%, transparent); font-size: 1rem; line-height: 1.3; }
 .alumni-ui_msg.is-reply { justify-self: end; border-radius: 0.875rem 0.875rem 0.25rem 0.875rem; background-color: var(--home-accent); }
 .alumni-ui_faces { display: flex; margin-top: 0.25rem; }
-.alumni-ui_faces i { display: grid; place-items: center; width: 1.875rem; height: 1.875rem; margin-right: -0.375rem; border: 2px solid var(--home-dark); border-radius: 50%; background-color: #4a4152; font-size: 0.75rem; font-style: normal; font-weight: 500; }
+.alumni-ui_faces i { display: grid; place-items: center; width: 1.875rem; height: 1.875rem; margin-right: -0.375rem; border: 2px solid var(--home-dark); border-radius: 50%; background-color: #4a4152; font-size: 1rem; font-style: normal; font-weight: 500; }
 .alumni-ui_faces i:last-child { background-color: var(--home-soft); color: var(--home-soft-text); }
 
 /* RO DBT: лиловая карточка, фоном узор «Выход из круга» (геометрию рисует build.mjs), текст на белой плашке.
@@ -1252,7 +1280,7 @@ body:has(.home-page) {
 .is-rodbt .beyond-card_title { margin-top: 0; }
 .is-rodbt .beyond-card_text { color: var(--home-soft-text); }
 .is-rodbt .beyond-card_link { padding-top: 0.75rem; }
-.beyond-card_badge { align-self: flex-start; padding: 0.375rem 0.75rem; border-radius: 999px; background-color: var(--home-surface); color: var(--home-soft-text); font: 500 0.8125rem/1.25 var(--home-font); }
+.beyond-card_badge { align-self: flex-start; padding: 0.375rem 0.75rem; border-radius: 999px; background-color: var(--home-surface); color: var(--home-soft-text); font: 500 1rem/1.25 var(--home-font); }
 
 /* ---------- 9. Нам доверяют ---------- */
 .section_home-trust { padding-top: var(--home-section); padding-bottom: var(--home-section); overflow-x: clip; }
@@ -1340,6 +1368,11 @@ body:has(.home-page) {
 @media (prefers-reduced-motion: no-preference) {
   .trust-marquee_list { animation: trust-marquee 70s linear infinite; }
   .trust-marquee_row.is-reverse .trust-marquee_list { animation-direction: reverse; }
+  /* за экраном ленты стоят (класс ставит скрипт) */
+  .trust-marquee_component.is-offscreen .trust-marquee_list { animation-play-state: paused; }
+}
+/* наведение мышью останавливает ленту; на телефоне не включаем, иначе пауза залипает после касания */
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
   .trust-marquee_row:hover .trust-marquee_list { animation-play-state: paused; }
 }
 /* Сдвиг ровно на половину ленты (список + копия): вторая половина встаёт на место первой, шов не виден */
@@ -1351,7 +1384,8 @@ body:has(.home-page) {
 .section_home-pick { padding-bottom: var(--home-section); }
 .pick-card_component { display: grid; gap: 2rem; padding: 1.25rem; border-radius: var(--home-radius-lg); background-color: var(--home-dark); color: var(--home-white); }
 @media (min-width: 48rem) { .pick-card_component { padding: 1.5rem; } }
-@media (min-width: 64.0625rem) { .pick-card_component { grid-template-columns: minmax(0, 1fr) minmax(0, 27rem); gap: 3rem; padding: 2rem; } }
+/* На десктопе карточка шириной как формы заявки на лендингах (центральные 10 из 12 колонок, 63rem) и по центру */
+@media (min-width: 64.0625rem) { .pick-card_component { max-width: 63rem; margin-inline: auto; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem); gap: 2.5rem; padding: 2rem; } }
 .pick-card_component :focus-visible { outline-color: var(--home-white); }
 .pick-card_intro { display: flex; flex-direction: column; min-width: 0; }
 .pick-card_title { color: var(--home-white); }
@@ -1373,8 +1407,9 @@ body:has(.home-page) {
 .pick-field_component { position: relative; }
 .pick-field_input { display: block; width: 100%; height: 3.75rem; padding: 1.375rem 1rem 0.375rem; border: 1px solid color-mix(in srgb, var(--home-white) 28%, transparent); border-radius: 0.75rem; background: transparent; color: var(--home-white); font: inherit; font-size: 1rem; transition: border-color var(--home-motion); }
 .pick-field_input:focus { border-color: var(--home-white); outline: none; }
-.pick-field_label { position: absolute; top: 50%; left: 1rem; max-width: calc(100% - 2rem); overflow: hidden; color: color-mix(in srgb, var(--home-white) 62%, transparent); font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; transform: translateY(-50%); transform-origin: left center; pointer-events: none; transition: transform var(--home-motion), top var(--home-motion); }
-.pick-field_input:focus + .pick-field_label, .pick-field_input:not(:placeholder-shown) + .pick-field_label { top: 0.625rem; transform: translateY(-15%) scale(0.78); }
+.pick-field_label { position: absolute; top: 50%; left: 1rem; max-width: calc(100% - 2rem); overflow: hidden; color: color-mix(in srgb, var(--home-white) 62%, transparent); font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; transform: translateY(-50%); transform-origin: left center; pointer-events: none; transition: transform var(--home-motion); }
+/* Подпись уезжает вверх только через transform (без top): -1.25rem = от середины поля 3.75rem до прежних 0.625rem */
+.pick-field_input:focus + .pick-field_label, .pick-field_input:not(:placeholder-shown) + .pick-field_label { transform: translateY(calc(-15% - 1.25rem)) scale(0.78); }
 .pick-messenger_component { margin: 0; padding: 0; border: 0; }
 .pick-messenger_legend { margin-bottom: 0.625rem; padding: 0; color: var(--home-on-dark-muted); font-size: 0.9375rem; }
 .pick-messenger_options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
@@ -1394,6 +1429,11 @@ body:has(.home-page) {
 /* Подсказка под полем, когда значение не подходит */
 .pick-field_hint { margin-top: -0.125rem; color: var(--home-error-on-dark); font-size: 0.8125rem; line-height: 1.35; }
 .pick-field_hint[hidden] { display: none; }
+/* Нативная форма Тильды «mainpage»: заявку в неё кладёт скрипт, на странице её не видно.
+   Прячем без display:none (скриптам Тильды нужно измерять поля). Метку ставит скрипт (pickHideTilda),
+   правило с :has прячет форму, даже если скрипт ещё не отработал. */
+[data-home-native-form-record],
+.t-rec:has(input[name="tildaspec-formname"][value="mainpage"]) { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; border: 0 !important; clip: rect(0 0 0 0); clip-path: inset(50%); pointer-events: none !important; white-space: nowrap !important; }
 .pick-messenger_component .pick-field_hint { margin-top: 0.375rem; }
 .pick-field_input[aria-invalid="true"] { border-color: var(--home-error-on-dark); }
 .pick-form_legal { color: color-mix(in srgb, var(--home-white) 62%, transparent); font-size: 0.75rem; line-height: 1.4; }
@@ -1433,4 +1473,70 @@ body:has(.home-page) {
 
 @media (prefers-reduced-motion: reduce) {
   .home-page * { transition: none !important; }
+}
+
+/* ---------- 11. Частые вопросы ---------- */
+/* В конце страницы, после формы подбора. Аккордеон — компонент FAQ из web-academy
+   (shared/academy/components.css, правила accordion_* и faq_*), перенесён один в один.
+   От главной: переменные ниже, ширина как у формы подбора (63rem по центру) и три группы с подзаголовками.
+   Править можно: отступы групп и ширину колонки подзаголовка. Не править: правила accordion_* и faq_*. */
+.section_home-faq {
+  padding-bottom: var(--home-section);
+  --color-surface-primary: var(--home-surface);
+  --color-focus: var(--home-focus);
+  --radius-card: var(--home-radius);
+  --transition-site: 180ms ease;
+  --text-body-size: clamp(1.125rem, 2.016vw, 1.25rem);
+}
+.faq-home_component { display: grid; min-width: 0; }
+@media (min-width: 64.0625rem) { .faq-home_component { max-width: 63rem; margin-inline: auto; } }
+.faq-home_groups { display: grid; gap: 2rem; min-width: 0; }
+.faq-home_group { display: grid; gap: 1rem; min-width: 0; }
+/* На десктопе подзаголовок группы слева, вопросы справа */
+@media (min-width: 64.0625rem) { .faq-home_group { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); align-items: start; gap: 2rem; } }
+.faq-home_group-title { margin: 0; color: var(--home-text); }
+@media (min-width: 64.0625rem) { .faq-home_group-title { padding-top: 1.5rem; } }
+.faq-home_support-link { color: var(--home-accent); font-weight: 500; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (hover: hover) and (pointer: fine) { .faq-home_support-link:hover { color: var(--home-accent-hover); } }
+.section_home-faq .faq_question-heading { margin: 0; }
+
+/* — компонент web-academy: accordion_* — */
+.accordion_component { display: grid; width: 100%; min-width: 0; gap: var(--accordion-item-gap, 1rem); }
+.accordion_item { min-width: 0; }
+.accordion_summary { list-style: none; cursor: pointer; }
+.accordion_summary::-webkit-details-marker { display: none; }
+.accordion_summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -4px; border-radius: var(--radius-card); }
+.accordion_panel { min-width: 0; overflow: hidden; overflow: clip; }
+.accordion_icon { position: relative; display: block; width: 2.0625rem; height: 2.0625rem; flex: none; color: var(--color-text-primary); transform: rotate(0deg); transition: transform var(--motion-duration, 260ms) var(--motion-easing, cubic-bezier(0.22, 1, 0.36, 1)); }
+.accordion_icon::before,
+.accordion_icon::after { position: absolute; top: 50%; left: 50%; border-radius: 999px; background: currentColor; content: ""; transform: translate(-50%, -50%); }
+.accordion_icon::before { width: 1.25rem; height: 1.5px; }
+.accordion_icon::after { width: 1.5px; height: 1.25rem; }
+.accordion_item[open] .accordion_icon { transform: rotate(-45deg); }
+
+/* — компонент web-academy: faq_* — */
+.faq_list { --accordion-item-gap: 0; width: 100%; overflow: hidden; overflow: clip; border: 0.3px solid var(--faq-divider-color, #acacac); border-radius: var(--radius-card); background: var(--color-surface-primary); }
+.faq_item { background: var(--color-surface-primary); }
+.faq_item:not(:last-child) { border-bottom: 0.3px solid var(--faq-divider-color, #acacac); }
+.faq_question { display: grid; width: 100%; min-height: 4.5rem; padding: 1.25rem; grid-template-columns: minmax(0, 1fr) 2.0625rem; align-items: center; gap: 0.75rem; color: var(--color-text-secondary-large); font-size: clamp(1.125rem, 2.419vw, 1.5rem); font-weight: 500; line-height: 1.1; text-align: left; transition: color var(--transition-site); }
+.faq_question-heading { color: inherit; font: inherit; }
+.faq_question .accordion_icon { color: inherit; }
+.faq_item[open] .faq_question { color: var(--color-text-primary); }
+.faq_answer-inner { display: grid; gap: 0.5rem; padding: 0 1.25rem 1.25rem; }
+.faq_answer p { max-width: 66.625rem; margin: 0; color: var(--color-text-secondary-large); font-size: var(--text-body-size); font-weight: 400; line-height: 1.2; letter-spacing: -0.01em; text-wrap: pretty; }
+.faq_answer a { text-decoration: underline; text-underline-position: from-font; transition: color var(--transition-site); }
+.faq_answer a:hover { color: var(--color-accent-primary); }
+.faq_answer a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0.1875rem; }
+@media (hover: hover) and (pointer: fine) { .faq_item:not([open]):hover .faq_question { color: var(--color-text-primary); } }
+@media (min-width: 48rem) {
+  .faq_question { min-height: 4.625rem; padding: 1.5rem; gap: 1rem; }
+  .faq_answer-inner { padding-right: 1.5rem; padding-bottom: 1.5rem; padding-left: 1.5rem; }
+}
+/* Высоту ответа не анимируем (правила Safari): ответ просто проявляется — только opacity и transform */
+@media (prefers-reduced-motion: no-preference) {
+  .faq_item[open] .faq_answer-inner { animation: faq-home-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+@keyframes faq-home-in { from { opacity: 0; transform: translateY(-0.25rem); } }
+@media (prefers-reduced-motion: reduce) {
+  .accordion_icon, .faq_question, .faq_answer a { transition-duration: 0.01ms; }
 }

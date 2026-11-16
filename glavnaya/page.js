@@ -91,11 +91,25 @@
     return '<span class="flagship-card_promo">−' + esc(card.promo.discountPercent) + NBSP + '%' + until + '</span>';
   }
 
-  function coverHtml(card, cls, eager) {
+  // Уменьшенная копия картинки с S3. CMS при загрузке сама делает копии: thumbnail_ (до 156 px), small_ (до 500 px),
+  // medium_ (до 750 px). Берём копию под размер места на странице ×2 для ретины, исходник 800 px грузить незачем.
+  // Не S3, svg или копия не указана — возвращаем исходный адрес.
+  function s3Size(url, size) {
+    var m = /^(https:\/\/s3\.twcstorage\.ru\/asp-media\/)([^\/?#]+\.(?:jpe?g|png|webp))$/i.exec(url || '');
+    return m && size ? m[1] + size + '_' + m[2] : url;
+  }
+  // Если уменьшенной копии вдруг нет, браузер подставит исходник
+  function fallbackAttr(src, url) {
+    return src === url ? '' : ' onerror="this.onerror=null;this.src=\'' + esc(url) + '\'"';
+  }
+
+  // size — какую копию с S3 взять: 'thumbnail' для миниатюр до 78 px; без size — исходник
+  function coverHtml(card, cls, eager, size) {
     var url = card.cover && card.cover.url;
     if (!url) return '<span class="' + cls + '_cover" aria-hidden="true"></span>';
-    return '<img class="' + cls + '_image" src="' + esc(url) + '" alt="" width="800" height="800"'
-      + (eager ? '' : ' loading="lazy"') + ' decoding="async">';
+    var src = s3Size(url, size);
+    return '<img class="' + cls + '_image" src="' + esc(src) + '" alt="" width="800" height="800"'
+      + (eager ? '' : ' loading="lazy"') + ' decoding="async"' + fallbackAttr(src, url) + '>';
   }
 
   // ---------- Популярные направления: флагманы из CMS, по дате старта ----------
@@ -137,7 +151,7 @@
     var kind = /диплом/i.test(card.subtitle || '') ? 'Диплом' : 'Удостоверение';
     return '<li class="last-chance_item">'
       + '<a class="last-chance_card" href="' + esc(card.url) + '">'
-      + '<span class="last-chance_thumb">' + coverHtml(card, 'last-chance', false) + '</span>'
+      + '<span class="last-chance_thumb">' + coverHtml(card, 'last-chance', false, 'thumbnail') + '</span>'
       + '<span class="last-chance_body">'
       + '<span class="last-chance_status">' + (card.startDate ? 'Идёт с' + NBSP + day(card.startDate) : 'Поток идёт') + '</span>'
       + '<h3 class="last-chance_title body-text_component is-callout">' + typo(esc(card.title)) + '</h3>'
@@ -244,7 +258,7 @@
       if (m.grant) meta.push('грант ' + rub(m.grant) + ' на' + NBSP + 'полный курс');
       return '<li class="free-mini_item">'
         + '<a class="free-mini_link" href="' + esc(String(c.url || '').split('?')[0]) + '">'
-        + '<span class="free-mini_thumb">' + coverHtml(c, 'free-mini', false) + '</span>'
+        + '<span class="free-mini_thumb">' + coverHtml(c, 'free-mini', false, 'thumbnail') + '</span>'
         + '<span class="free-mini_body">'
         + '<span class="free-mini_title body-text_component is-callout">' + typo(esc(c.title)) + '</span>'
         + (meta.length ? '<span class="free-mini_meta body-text_component is-fine-print">' + meta.join(', ') + '</span>' : '')
@@ -510,7 +524,7 @@
       people = PRACTICE[mode].roles.map(function (r, i) {
         var el = document.createElement('div');
         el.className = 'practice-person_component';
-        el.innerHTML = '<span class="practice-person_face">' + 'АБВГД'.charAt(i) + '</span><span class="practice-person_role"></span>';
+        el.innerHTML = '<span class="practice-person_body"><span class="practice-person_face">' + 'АБВГД'.charAt(i) + '</span><span class="practice-person_role"></span></span>';
         stage.appendChild(el);
         return el;
       });
@@ -527,8 +541,9 @@
       var m = PRACTICE[mode], n = m.roles.length, rot = mode === 'group' ? 0 : round % n;
       people.forEach(function (el, i) {
         var slot = (i + rot) % n, role = m.roles[slot];
-        el.style.left = m.pos[slot][0] + '%';
-        el.style.top = m.pos[slot][1] + '%';
+        // место в процентах от сцены; двигается через transform (см. .practice-person_component в page.css)
+        el.style.setProperty('--x', m.pos[slot][0] + '%');
+        el.style.setProperty('--y', m.pos[slot][1] + '%');
         el.className = 'practice-person_component' + (role === 'терапевт' ? ' is-therapist' : role === 'наблюдатель' ? ' is-observer' : '');
         el.querySelector('.practice-person_role').textContent = role;
       });
@@ -682,11 +697,16 @@
           media.src = box.getAttribute('data-trust-video');
           media.controls = true;
           media.playsInline = true;
-          media.autoplay = true;
+          // обложка остаётся видна, пока не пришёл первый кадр (Safari до запуска ничего не рисует)
+          var cover = box.querySelector('.trust-video_poster');
+          if (cover) media.poster = cover.currentSrc || cover.src;
           media.setAttribute('aria-label', box.getAttribute('data-trust-title'));
         }
         box.appendChild(media);
         play.remove();
+        // Видео со звуком Safari запускает, только если play() вызван прямо в обработчике нажатия.
+        // Атрибут autoplay тут не годится: он срабатывает позже, и Safari его блокирует.
+        if (media.play) { var started = media.play(); if (started && started.catch) started.catch(function () {}); }
         media.focus();
         return;
       }
@@ -791,10 +811,28 @@
     return answer;
   }
 
+  // Нативную форму Тильды прячем с глаз сразу при загрузке: видна только наша форма.
+  // Не display:none — скриптам Тильды нужно измерять поля. Форма может появиться чуть позже нашего скрипта,
+  // поэтому ищем её несколько раз в течение 5 секунд. Запасное правило в page.css прячет её и без скрипта.
+  function pickHideTilda(name) {
+    var tries = 0;
+    (function look() {
+      var native = name && pickTildaForm(name);
+      var record = native && native.closest('.t-rec');
+      if (record) {
+        record.setAttribute('aria-hidden', 'true');
+        record.setAttribute('data-home-native-form-record', '');
+        return;
+      }
+      if (++tries < 10) setTimeout(look, 500);
+    })();
+  }
+
   function initPick(section) {
     var form = section.querySelector('[data-pick-form]');
     if (!form) return;
     var chosen = '';
+    pickHideTilda(form.getAttribute('data-tilda-form-name') || '');
 
     // Вариант ответа: подсвечиваем кнопку и показываем ответ на неё
     Array.prototype.forEach.call(section.querySelectorAll('[data-pick-option]'), function (btn) {
@@ -884,6 +922,29 @@
     check();
   }
 
+  // Частые вопросы: открыт один ответ за раз во всём блоке (как data-accordion-single в web-academy).
+  // Сами вопросы — нативные <details>: работают и без скрипта, с клавиатуры и в читалках экрана.
+  function initFaq(section) {
+    section.addEventListener('toggle', function (e) {
+      var item = e.target;
+      if (!item.open || !item.classList || !item.classList.contains('faq_item')) return;
+      Array.prototype.forEach.call(section.querySelectorAll('details.faq_item[open]'), function (other) {
+        if (other !== item) other.open = false;
+      });
+    }, true); // toggle не всплывает, ловим на погружении
+  }
+
+  // Бегущие строки (курсы в первом экране, логотипы партнёров) крутятся, только пока видны на экране:
+  // правила Safari — бесконечная анимация за экраном тратит кадры и батарею. Класс is-offscreen ставит паузу в page.css.
+  function pauseOffscreen(page) {
+    var els = page.querySelectorAll('.door-ticker_component, .trust-marquee_component');
+    if (!els.length || !('IntersectionObserver' in root)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { e.target.classList.toggle('is-offscreen', !e.isIntersecting); });
+    });
+    Array.prototype.forEach.call(els, function (el) { io.observe(el); });
+  }
+
   function init(page) {
     if (page.__homeDone) return; // Тильда может запустить скрипт повторно
     page.__homeDone = true;
@@ -895,6 +956,8 @@
     Array.prototype.forEach.call(page.querySelectorAll('[data-home-beyond]'), initBeyond);
     Array.prototype.forEach.call(page.querySelectorAll('[data-home-trust]'), initTrust);
     Array.prototype.forEach.call(page.querySelectorAll('[data-home-pick]'), initPick);
+    Array.prototype.forEach.call(page.querySelectorAll('[data-home-faq]'), initFaq);
+    pauseOffscreen(page);
 
     var base = page.getAttribute('data-api');
     if (!base || !root.fetch) return;

@@ -1,0 +1,959 @@
+<!-- ОБЩИЕ СТИЛИ, часть 1. Первый T123 страницы, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;444;500;600&display=swap">
+<link rel="preconnect" href="https://s3.twcstorage.ru">
+<style>
+/* Сгенерировано glavnaya/build.mjs из Web Academy (body-text.css и section-heading.css). Здесь не править. */
+/* Shared body typography; compositions own only layout and spacing. */
+.body-text_component {
+  margin: 0;
+  color: var(--body-text-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: min(var(--body-text-max, 1.25rem), 0.9375rem);
+  font-weight: 444;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.body-text_component.is-regular { font-weight: 400; }
+.body-text_component.is-statement { letter-spacing: normal; }
+.body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1rem)); }
+.body-text_component.is-reading { line-height: 1.4; letter-spacing: normal; }
+.body-text_component.is-showcase { font-size: 1rem; font-weight: 400; line-height: 1.1; }
+.body-text_component.is-detailed { line-height: 1.4; letter-spacing: normal; }
+.body-text_lead { color: var(--color-text-primary); }
+@media (min-width: 32.5625rem) {
+  .body-text_component.is-showcase { font-size: 1.125rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.125rem)); }
+}
+@media (min-width: 48rem) {
+  .body-text_component.is-showcase { font-size: 1.25rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.125rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.25rem)); }
+}
+@media (min-width: 64.0625rem) {
+  .body-text_component.is-showcase { font-size: 1.5rem; }
+  .body-text_component { font-size: min(var(--body-text-max, 1.25rem), 1.25rem); }
+  .body-text_component.is-summary { font-size: var(--body-summary-size, min(var(--body-summary-max, 1.375rem), 1.375rem)); }
+}
+
+/* Small supporting copy for prices and compact factual captions. */
+.body-text_component.is-caption { font-size: 0.9375rem; }
+@media (min-width: 32.5625rem) { .body-text_component.is-caption { font-size: 1rem; } }
+@media (min-width: 64.0625rem) { .body-text_component.is-caption { font-size: 1.125rem; } }
+
+/* Shared emphasis, callout and fine-print roles; no section owns a second scale. */
+.body-text_component.is-emphasis { font-weight: 600; }
+.body-text_component.is-callout { font-weight: 500; line-height: 1.3; }
+.body-text_component.is-fine-print { font-size: 0.875rem; font-weight: 400; line-height: 1.4; }
+
+/* Компактные фактические подписи и рассрочка в списках — 16px на всех экранах. */
+.body-text_component.is-compact { font-size: 1rem; }
+
+.section-title_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--section-title-size, clamp(2.25rem, 3.1vw, 3.25rem));
+  font-weight: var(--section-title-weight, 400);
+  line-height: var(--section-title-line-height, 1.1);
+  letter-spacing: var(--section-title-tracking, -0.06em);
+  text-align: inherit;
+  text-wrap: var(--section-title-wrap, balance);
+}
+
+.section-title_component.is-left {
+  text-align: left;
+}
+
+.section-title_component.is-center {
+  text-align: center;
+}
+
+.section-title_component.is-right {
+  text-align: right;
+}
+
+/* The same responsive title scale can be used without changing section gaps. */
+.section-title_component.is-responsive { --section-title-size: 2rem; --section-title-line-height: 1; overflow-wrap: anywhere; }
+@media (min-width: 32.5625rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.25rem; }
+}
+@media (min-width: 48rem) {
+  .section-title_component.is-responsive { --section-title-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .section-title_component.is-responsive { --section-title-size: 3.25rem; }
+}
+
+.section-title_accent {
+  display: inline;
+  color: var(--color-accent-text, var(--color-accent-primary));
+}
+
+.section-subtitle_component {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--section-subtitle-color, var(--color-text-secondary-large));
+  font-family: var(--font-family-body);
+  font-size: var(--section-heading-description-size);
+  font-weight: 400;
+  line-height: var(--section-subtitle-line-height, 1.2);
+  letter-spacing: var(--section-subtitle-tracking, -0.01em);
+  text-wrap: pretty;
+}
+
+.content-heading_component {
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-family-body);
+  font-size: var(--content-heading-size, clamp(1.25rem, 2.419vw, 1.5rem));
+  font-weight: 500;
+  line-height: var(--content-heading-line-height, 1.1);
+  letter-spacing: 0;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+
+.content-heading_component.is-prominent {
+  font-size: var(--content-prominent-size, clamp(1.75rem, 2.4vw, 2.25rem));
+  font-weight: 444;
+  letter-spacing: -0.03em;
+}
+
+/* One portrait heading size for the standard card families. */
+@media (max-width: 32.5rem) {
+  .card_component.is-icon-statement,
+  .card_component.is-stage { --content-heading-size: 1.25rem; }
+  .card_component.benefits_card { --hero-card-title-size: 1.25rem; }
+}
+
+/* Shared card/question heading role; independent of its surrounding surface. */
+.content-heading_component.is-card { --content-heading-size: 1.25rem; }
+.content-heading_component.is-profile { --content-heading-size: 1.375rem; font-weight: 400; }
+@media (min-width: 32.5625rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.375rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .content-heading_component.is-card { --content-heading-size: 1.5rem; }
+  .content-heading_component.is-profile { --content-heading-size: 1.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .content-heading_component.is-profile { --content-heading-size: 2rem; }
+}
+
+/* Компактные заголовки плотных списков: 18px на телефоне, 20px от 521px.
+   Добавлено для расписания по запросу Дарьи; обычные карточки не меняются. */
+.content-heading_component.is-compact { --content-heading-size: 1.125rem; }
+@media (min-width: 32.5625rem) {
+  .content-heading_component.is-compact { --content-heading-size: 1.25rem; }
+}
+/* ============================================================
+   Главная modern-psy.ru · стили страницы
+   Дизайн-система web-academy: серая основа, белые карточки, один
+   фиолетовый акцент, шрифт Wix Madefor Text. Значения вшиты здесь
+   (файл должен работать сам по себе и переноситься в Тильду одним куском).
+   Ширина контента 1440 и поля — как у шапки сайта и каталога.
+   Брейкпоинты: до 520 · 521–767 · 768–1024 · от 1025.
+
+   Где можно править: цвета и размеры — в разделе 0 (переменные).
+   Остальные правила лучше не трогать без проверки на телефоне.
+   ============================================================ */
+
+/* ---------- 0. Переменные ---------- */
+.home-page {
+  --home-bg: #f5f5f5;            /* фон страницы */
+  --home-white: #ffffff;          /* белый: текст, обводки и кнопки на тёмных блоках */
+  --home-error-on-dark: #ffb4b4;  /* ошибка в форме на тёмном фоне */
+  --home-surface: var(--home-white); /* карточки */
+  --home-line: #e8e7ee;          /* тонкие границы */
+  --home-line-hover: #cfd1db;    /* граница карточки при наведении */
+  --home-text: #1d1d33;          /* основной текст, как в шапке */
+  --home-muted: #585873;         /* второстепенный текст (контраст 6:1) */
+  --home-accent: #644ab2;        /* фиолетовый Академии: кнопки, акцент заголовка */
+  --home-accent-hover: #4c3888;
+  --home-soft: #ebe8fb;          /* мягкая сиреневая подложка: чипы, иконки */
+  --home-soft-hover: #ddd6f7;
+  --home-soft-text: #4c3888;
+  --home-dark: #2b2334;          /* фон тёмных и акцентных блоков (web-academy), по умолчанию для всех тёмных плашек */
+  --home-on-dark-muted: #e6e5eb;   /* второстепенный текст на тёмном (web-academy) */
+  --home-focus: #977ee2;
+  --home-warn-bg: #fff8e6;       /* «Последний шанс» — тон warning из каталога */
+  --home-warn-text: #8a5a00;
+  --home-promo-bg: #ffe110;      /* плашка скидки — как в каталоге */
+  --home-promo-text: #3d3a2a;
+
+  --home-font: "Wix Madefor Text", Arial, sans-serif;
+  /* Переменные, которые читают текстовые роли Web Academy из type.css.
+     Цвет текста роли берут у родителя (currentColor), цвет задаёт страница.
+     Не inherit: в переменной это слово значит «взять переменную у родителя», а не цвет. */
+  --font-family-body: var(--home-font);
+  --body-text-color: currentColor;
+  --color-text-primary: var(--home-text);
+  --color-text-secondary-large: var(--home-muted);
+  --color-accent-primary: var(--home-accent);
+  --section-heading-description-size: clamp(1rem, 2.149vw, 1.375rem);
+  --section-subtitle-color: var(--home-muted);
+  --home-pad: clamp(1rem, 4.7619vw, 5rem);       /* поля страницы */
+  --home-section: 3.5rem;                         /* отступ между секциями */
+  --home-radius: 1rem;
+  --home-radius-lg: 1.25rem;
+  --home-gap: 0.75rem;                            /* промежуток между карточками */
+  --home-card-pad: 1rem;                          /* отступ до края карточки: от 16 px, как в web-academy */
+  --home-card-pad-lg: 1rem;                       /* крупные плашки: двери хиро, тёмные блоки — до 24 px на десктопе */
+  --home-motion: 150ms ease-in-out;
+
+  /* Размеры текста. Основные тексты и заголовки — роли Web Academy из type.css
+     (section-title, content-heading, body-text) — классы стоят прямо в разметке.
+     Здесь только то, чего в ролях нет: главный заголовок и мелкие метки на плашках. */
+  --home-size-hero: clamp(2.5rem, 1.8398rem + 2.8169vw, 4.375rem);      /* 40 → 70, главный заголовок — докрутим отдельно */
+  --home-size-small: 0.875rem;                                          /* дата на плашке-табе */
+  --home-size-tiny: 0.8125rem;                                          /* бейдж скидки, как бейдж на странице цен */
+
+  background-color: var(--home-bg);
+  color: var(--home-text);
+  font-family: var(--home-font);
+  font-variant-numeric: lining-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: calc(var(--home-section) * 1.5);
+}
+
+@media (min-width: 48rem) {
+  .home-page { --home-section: 4.5rem; --home-gap: 1rem; --home-card-pad-lg: 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .home-page { --home-section: 6rem; --home-card-pad-lg: 1.5rem; }
+}
+
+body:has(.home-page) {
+  margin: 0;
+  background-color: #f5f5f5;
+}
+
+.home-page *,
+.home-page *::before,
+.home-page *::after { box-sizing: border-box; }
+
+.home-page ::selection { background-color: #d0c4f2; color: #1d1535; }
+
+.home-page :focus-visible {
+  outline: 2px solid var(--home-focus);
+  outline-offset: 3px;
+}
+
+/* Сброс браузерных отступов. :where() не добавляет веса, поэтому классы компонентов ниже его перекрывают */
+.home-page :where(h1, h2, h3, p, ul) { margin: 0; }
+.home-page :where(ul) { padding: 0; list-style: none; }
+.home-page :where(img) { display: block; max-width: 100%; }
+.home-page :where(a) { color: inherit; text-decoration: none; }
+
+.padding-global { padding-inline: var(--home-pad); }
+.container-home { max-width: 90rem; margin-inline: auto; }
+
+/* ---------- 1. Первый экран ---------- */
+.home-hero_component { padding-top: clamp(2.5rem, 1.6rem + 3.8vw, 5.5rem); }
+
+.home-hero_title {
+  font-size: var(--home-size-hero);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.home-hero_title-accent { display: block; color: var(--home-accent); }
+
+/* Факты — тихой строкой, без карточек */
+.home-facts_list {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  color: var(--home-muted);
+}
+.home-facts_value { color: var(--home-text); font-weight: 500; }
+
+@media (min-width: 48rem) {
+  .home-hero_title { text-align: center; }
+  .home-facts_list {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    margin-top: 2.25rem;
+    text-align: left;
+  }
+  .home-facts_item { padding-inline: 1.5rem; }
+  .home-facts_item + .home-facts_item { border-left: 1px solid var(--home-line-hover); }
+  .home-facts_item:last-child { max-width: 23rem; }
+}
+
+/* Две двери */
+.home-doors_component {
+  display: grid;
+  gap: var(--home-gap);
+  /* когда двери стоят друг под другом, голова на иллюстрации выходит за верх карточки —
+     промежуток больше, чтобы она не упиралась в карточку выше */
+  row-gap: 2.5rem;
+  margin-top: 2rem;
+}
+@media (min-width: 48rem) { .home-doors_component { margin-top: 3rem; } }
+@media (min-width: 64.0625rem) {
+  .home-doors_component { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+}
+
+.home-door_component {
+  border-radius: var(--home-radius-lg);
+  padding: var(--home-card-pad-lg);
+  min-width: 0;
+}
+
+/* Размеры текстов — роли Web Academy (классы в разметке), здесь только отступы и цвет */
+.home-door_title { text-wrap: balance; }
+/* Подводка двери — основной текст Web Academy (15 → 20 px): между фактами под заголовком (подпись, до 18)
+   и заголовком двери (до 36). Отступ от заголовка больше, чтобы подводка не липла к нему */
+.home-door_text {
+  margin-top: 1.25rem;
+  max-width: 34rem;
+}
+
+/* Дверь для практиков: белая, без картинки */
+.home-door_component.is-practice {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--home-surface);
+}
+.is-practice .home-door_content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+/* Кнопка сразу под текстом, той же ширины, что кнопки соседней двери; бегущие ряды прижаты к низу карточки */
+.is-practice .home-door_content .home-button_component { margin-top: 1.75rem; width: min(100%, 24rem); }
+.is-practice .door-ticker_component { margin-top: auto; padding-top: 2rem; margin-bottom: 0; }
+.is-practice .home-door_text { color: var(--home-muted); }
+
+/* Бегущие ряды курсов в двери для практиков.
+   Три ряда светло-серых плашек едут справа налево с разной скоростью и сдвигом, по краям
+   карточки мягко растворяются (маска), а не обрезаются. Наведение или фокус — ряды стоят.
+   Каждый ряд — два одинаковых набора: сдвиг на половину ленты зацикливается без шва.
+   Если в системе включено «уменьшить движение» — ряды стоят, их можно листать пальцем. */
+.door-ticker_component {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.25rem calc(var(--home-card-pad-lg) * -1) 1.5rem;
+  /* растворение по краям: 12 % ширины, но не меньше 2,5rem и не больше 7rem */
+  --door-ticker-fade: clamp(2.5rem, 12%, 7rem);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--door-ticker-fade), #000 calc(100% - var(--door-ticker-fade)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--door-ticker-fade), #000 calc(100% - var(--door-ticker-fade)), transparent);
+}
+.door-ticker_row { overflow: hidden; }
+.door-ticker_track {
+  display: flex;
+  width: max-content;
+  animation: door-ticker-move var(--door-ticker-time, 60s) linear infinite;
+  animation-delay: var(--door-ticker-shift, 0s);
+}
+.door-ticker_row:nth-child(1) .door-ticker_track { --door-ticker-time: 64s; --door-ticker-shift: -8s; }
+.door-ticker_row:nth-child(2) .door-ticker_track { --door-ticker-time: 76s; --door-ticker-shift: -30s; }
+.door-ticker_row:nth-child(3) .door-ticker_track { --door-ticker-time: 70s; --door-ticker-shift: -17s; }
+/* Пауза: при фокусе с клавиатуры, при наведении мышью (только на компьютере: на телефоне наведение залипает
+   после нажатия) и когда строка ушла за экран (класс ставит скрипт, правила Safari: анимация вне экрана тратит батарею) */
+.door-ticker_component:focus-within .door-ticker_track,
+.door-ticker_component.is-offscreen .door-ticker_track { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) {
+  .door-ticker_component:hover .door-ticker_track { animation-play-state: paused; }
+}
+@keyframes door-ticker-move {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+/* отступ справа у каждой плашки (а не gap), чтобы половина ленты была ровно одним набором */
+.door-ticker_item { flex: 0 0 auto; padding-right: 0.5rem; }
+.door-ticker_link {
+  display: flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  background-color: var(--home-bg);
+  color: var(--home-text);
+  font-size: 0.9375rem;     /* как плашки-метки Web Academy (meta-pill) */
+  font-weight: 444;
+  line-height: 1.3;
+  white-space: nowrap;
+  transition: background-color var(--home-motion), color var(--home-motion);
+}
+@media (prefers-reduced-motion: reduce) {
+  .door-ticker_track { animation: none; }
+  .door-ticker_row { overflow-x: auto; scrollbar-width: none; }
+  .door-ticker_row::-webkit-scrollbar { display: none; }
+}
+
+/* Дверь «с нуля»: тёмная (#2b2334), с крупным человеком.
+   Человек — вырезанный портрет до талии с прозрачным фоном.
+   Голова выходит за верхний край карточки на --home-door-pop, низ обрезан нижним краем.
+   До 520 — человек сверху во всю ширину, низ растворяется в фоне, текст под ним.
+   С 521 — человек справа во всю высоту, текст и кнопки в левой колонке.
+   Ширина колонки текста = 100% минус ширина человека (--home-person-w), чтобы текст на него не наезжал. */
+.home-door_component.is-start {
+  --home-door-pop: 1.5rem;
+  --home-person-ratio: 0.7292;  /* ширина / высота портрета img/door-start-person.webp (875 × 1200) */
+  position: relative;
+  isolation: isolate;          /* картинка уходит под текст, но остаётся над фоном карточки */
+  background-color: var(--home-dark);
+  color: var(--home-white);
+}
+/* Фон за человеком: стена с мягкими тенями листьев (https://s3.twcstorage.ru/asp-media/glavnaya_door_wall_f44baf5d74.webp).
+   Базовый цвет картинки совпадает с цветом карточки, поэтому край не виден; маска
+   дополнительно гасит пятна света к тексту. На телефоне — сверху, за фото, с 521 — справа */
+.home-door_component.is-start::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: 0 0 auto 0;
+  height: 16rem;
+  border-radius: inherit;
+  background: url("https://s3.twcstorage.ru/asp-media/glavnaya_door_wall_f44baf5d74.webp") right top / cover no-repeat;
+  -webkit-mask-image: linear-gradient(#000 55%, transparent);
+  mask-image: linear-gradient(#000 55%, transparent);
+  pointer-events: none;
+}
+.is-start .home-door_text { color: var(--home-on-dark-muted); }
+.is-start :focus-visible { outline-color: var(--home-white); }
+
+.home-door_media { position: relative; pointer-events: none; }
+/* Рамка фигуры с портретом: держит пропорции картинки */
+.home-door_figure {
+  position: absolute;
+  aspect-ratio: var(--home-person-ratio);
+}
+.home-door_image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Телефон: человек сверху, во всю ширину карточки */
+.is-start .home-door_media {
+  height: 13rem;
+  margin: calc((var(--home-card-pad-lg) + var(--home-door-pop)) * -1) calc(var(--home-card-pad-lg) * -1) 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 72%, transparent);
+  mask-image: linear-gradient(#000 72%, transparent);
+}
+.is-start .home-door_figure { top: 0; right: 6%; height: 125%; }
+
+/* С 521: человек справа, стоит на нижнем крае карточки (обрезан по талии ровно краем).
+   Если текст короче роста человека, голова выходит за верх, но не больше чем на --home-door-pop.
+   Ширина человека --home-person-w считается от ширины самой карточки (cqw — % ширины карточки),
+   поэтому на узком ноутбуке и на широком экране пропорции одинаковые, без лишних брейкпоинтов.
+   Колонка текста = ширина карточки минус человек. */
+@media (min-width: 32.5625rem) {
+  .home-door_component.is-start {
+    --home-person-w: clamp(12rem, 43cqw, 20rem);
+    --home-person-shift: calc(var(--home-person-w) * 0.08);   /* насколько фигура заходит за правый край */
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    /* обрезка по карточке со скруглением снизу; сверху запас, чтобы голова была видна.
+       overflow-x: clip — чтобы фигура, заходящая за правый край, не давала прокрутку вбок */
+    clip-path: inset(calc(var(--home-door-pop) * -1 - 1rem) 0 0 0 round 0 0 var(--home-radius-lg) var(--home-radius-lg));
+    overflow-x: clip;
+  }
+  .is-start .home-door_content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(100cqw + var(--home-card-pad-lg) + var(--home-person-shift) - var(--home-person-w) - 0.75rem);
+    min-height: calc(var(--home-person-w) / var(--home-person-ratio) - var(--home-door-pop) - var(--home-card-pad-lg) * 2);
+  }
+  .is-start .home-door_media {
+    position: absolute;
+    z-index: -1;
+    bottom: 0;
+    right: calc(var(--home-person-shift) * -1);
+    width: var(--home-person-w);
+    aspect-ratio: var(--home-person-ratio);
+    height: auto;
+    margin: 0;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .is-start .home-door_figure { inset: 0; height: auto; aspect-ratio: auto; }
+  /* стена с листьями — на всю высоту правой части карточки, к тексту растворяется */
+  .home-door_component.is-start::before {
+    inset: 0 0 0 auto;
+    width: calc(var(--home-person-w) * 1.9);
+    height: auto;
+    background-position: right center;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 45%);
+    mask-image: linear-gradient(to right, transparent, #000 45%);
+  }
+}
+
+/* Цена — как малая цена на странице цен (pricing-scenarios: price-tag is-small).
+   В двери «с нуля» цена с кнопками прижаты к низу карточки (margin-top: auto), от текста — не меньше 1,5rem */
+.home-door_price {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.home-door_price-terms {
+  display: block;
+  margin-top: 0.375rem;
+  color: var(--home-on-dark-muted);
+}
+/* Грант в тексте двери «с нуля»: сумма на фиолетовой плашке прямо в строке */
+.home-door_grant {
+  display: inline-block;
+  padding: 0 0.375rem;
+  border-radius: 0.375rem;
+  background-color: var(--home-accent);
+  color: var(--home-white);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
+/* Две кнопки двери «с нуля» */
+.home-door_actions {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+.home-door_actions .home-button_component { margin-top: 0; }
+/* Если на узком десктопе надпись переносится, обе кнопки остаются одной высоты */
+.home-door_actions { grid-auto-rows: 1fr; }
+
+/* Кнопка: одна на всю страницу, размеры — из кнопки Web Academy (shared/academy/button.css):
+   высота 50 → 64 px, текст 16 → 19 px, растут с шириной экрана */
+.home-button_component {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(3.125rem + clamp(0rem, 2.91560102vw - 1.09335038rem, 0.7125rem) + clamp(0rem, 0.31059507vw - 0.19237482rem, 0.13375rem));
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--home-radius);
+  background-color: var(--home-accent);
+  color: var(--home-white);
+  font-size: calc(1rem + clamp(0rem, 1.02301790vw - 0.38363171rem, 0.25rem) + clamp(0rem, 0.29027576vw - 0.17978955rem, 0.125rem));
+  font-weight: 500;
+  line-height: 1.07;
+  text-align: center;
+  transition: background-color var(--home-motion);
+}
+.home-button_component.is-light { background-color: var(--home-white); color: var(--home-dark); }
+/* Второстепенная кнопка на тёмном: светлее фона на 12 % белого. Сплошным цветом, а не прозрачностью:
+   под ней проходит лента фона, и прозрачная кнопка стала бы разноцветной */
+.home-button_component.is-ghost { background-color: #443d4c; color: var(--home-white); }
+@media (max-width: 47.9375rem) {
+  .home-button_component { width: 100%; }
+}
+
+/* Особенности обучения */
+/* На телефоне до 520 — одна колонка: в половине экрана «установленного» не помещается */
+.home-features_list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+@media (min-width: 32.5625rem) {
+  .home-features_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+}
+.home-features_item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.home-features_icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+  color: var(--home-accent);
+}
+.home-features_icon svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.75; }
+@media (min-width: 64.0625rem) {
+  .home-features_list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 2rem; }
+  .home-features_item { padding-inline: 1.5rem; }
+  .home-features_item:first-child { padding-left: 0.5rem; }
+  .home-features_item + .home-features_item { border-left: 1px solid var(--home-line); }
+}
+
+/* ---------- Заголовки секций ---------- */
+/* Заголовок секции — роль section-title Web Academy, подпись — section-subtitle */
+.home-section_title.is-inverse { color: var(--home-white); }
+.home-section_text { margin-top: 0.75rem; }
+.home-section_text.is-inverse { color: var(--home-on-dark-muted); }
+.home-section_head { margin-bottom: 1.25rem; }
+
+/* ---------- 2. Популярные направления ---------- */
+.section_home-flagships {
+  padding-top: var(--home-section);
+  overflow-x: clip; /* лента выходит за поля до края экрана, но страница вбок не листается */
+}
+
+/* Заголовок и стрелки в одну строку */
+.home-section_head.is-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 48rem) { .home-section_head.is-row { margin-bottom: 1.75rem; } }
+
+/* Стрелки карусели: незаметные — серый круг, тёмно-серая иконка. На телефоне листают пальцем */
+.slider-controls_component { display: none; gap: 0.5rem; flex: 0 0 auto; }
+@media (min-width: 48rem) { .slider-controls_component { display: flex; } }
+.slider-controls_button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: #e8e7ee;
+  color: #2b2b36;
+  cursor: pointer;
+  transition: background-color var(--home-motion), opacity var(--home-motion);
+}
+.slider-controls_button svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.75; }
+.slider-controls_button:disabled { opacity: 0.4; cursor: default; }
+
+/* Лента: карточки прилипают к началу при прокрутке.
+   Отступ ленты = поле страницы + запас по краям на широких экранах, чтобы лента доходила до края окна */
+.flagships_list {
+  --home-bleed: calc(var(--home-pad) + max(0px, (100vw - 2 * var(--home-pad) - 90rem) / 2));
+  display: flex;
+  gap: var(--home-gap);
+  margin-inline: calc(var(--home-bleed) * -1);
+  padding-inline: var(--home-bleed);
+  scroll-padding-inline: var(--home-bleed);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.flagships_list::-webkit-scrollbar { display: none; }
+.flagships_item {
+  display: flex;
+  flex: 0 0 84%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+@media (min-width: 32.5625rem) { .flagships_item { flex-basis: 58%; } }
+@media (min-width: 48rem) { .flagships_item { flex-basis: calc((100% - var(--home-gap)) / 2.2); } }
+/* На десктопе ровно три карточки в ширине контента, четвёртая выглядывает за полем */
+@media (min-width: 64.0625rem) { .flagships_item { flex-basis: calc((100% - 2 * var(--home-gap)) / 3); } }
+@media (prefers-reduced-motion: no-preference) { .flagships_list { scroll-behavior: smooth; } }
+
+.flagship-card_component {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--home-radius);
+  background-color: var(--home-surface);
+}
+.flagship-card_media {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background-color: var(--home-soft);
+}
+/* Картинка лежит поверх рамки 16:7 и не растягивает её своей высотой */
+.flagship-card_image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; }
+.flagship-card_promo {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background-color: var(--home-promo-bg);
+  color: var(--home-promo-text);
+  font-size: var(--home-size-tiny);
+  font-weight: 500;
+}
+.flagship-card_body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: var(--home-card-pad);
+}
+.flagship-card_type { color: var(--home-muted); }
+.flagship-card_title {
+  transition: color var(--home-motion);
+  overflow-wrap: break-word;
+}
+.flagship-card_meta { color: var(--home-muted); }
+.flagship-card_meta i,
+.last-chance_kind i { margin-inline: 0.375rem; font-style: normal; }
+.flagship-card_price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.125rem 0.5rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+.flagship-card_price-old { color: var(--home-muted); }
+/* цена — как на странице цен: Medium, плотный трекинг */
+.flagship-card_price-main { font-size: clamp(1.25rem, 1.206rem + 0.1878vw, 1.375rem); font-weight: 500; letter-spacing: -0.03em; }
+.flagship-card_price-terms { flex-basis: 100%; color: var(--home-muted); }
+
+/* ---------- 3. Последний шанс ---------- */
+.section_home-last-chance { padding-top: calc(var(--home-section) * 0.75); }
+.section_home-last-chance[hidden] { display: none; }
+
+/* Колонки по числу курсов: три курса занимают всю строку, а не три четверти */
+.last-chance_list {
+  display: grid;
+  gap: var(--home-gap);
+}
+@media (min-width: 48rem) { .last-chance_list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); } }
+.last-chance_item { display: flex; min-width: 0; container-type: inline-size; }
+
+/* Узкая карточка: картинка и ярлык сверху в одну строку, название под ними на всю ширину.
+   Так длинные слова вроде «Когнитивно-поведенческая» не вылезают за край */
+.last-chance_card {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  grid-template-rows: auto auto auto 1fr;
+  grid-template-areas: "thumb status" "title title" "kind kind" "price price";
+  column-gap: 0.875rem;
+  width: 100%;
+  padding: var(--home-card-pad);
+  border-radius: var(--home-radius);
+  background-color: var(--home-surface);
+}
+.last-chance_body { display: contents; }
+.last-chance_thumb {
+  grid-area: thumb;
+  width: 4rem;
+  height: 4rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+}
+.last-chance_image { width: 100%; height: 100%; object-fit: cover; object-position: 78% 14%; }
+.last-chance_status {
+  grid-area: status;
+  align-self: center;
+  justify-self: start;
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+  background-color: var(--home-warn-bg);
+  color: var(--home-warn-text);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.last-chance_title {
+  grid-area: title;
+  margin-top: 0.75rem;
+  transition: color var(--home-motion);
+  overflow-wrap: break-word;
+}
+.last-chance_kind { grid-area: kind; margin-top: 0.375rem; color: var(--home-muted); }
+.last-chance_price { grid-area: price; align-self: end; display: flex; flex-direction: column; padding-top: 0.75rem; }
+/* Широкая карточка (телефон, десктоп с тремя курсами): картинка слева, текст справа, как раньше */
+@container (min-width: 21rem) {
+  .last-chance_card {
+    grid-template-columns: 5rem minmax(0, 1fr);
+    grid-template-areas: "thumb status" "thumb title" "thumb kind" "thumb price";
+  }
+  .last-chance_thumb { width: 5rem; height: 5rem; }
+  .last-chance_status { align-self: start; }
+  .last-chance_title { margin-top: 0.5rem; }
+}
+.last-chance_price-old { color: var(--home-muted); }
+.last-chance_price-main { font-size: 1.125rem; font-weight: 500; letter-spacing: -0.03em; }
+.last-chance_price-terms { color: var(--home-muted); }
+
+/* ---------- 4. Все направления (тёмный блок) ---------- */
+.section_home-directions { padding-top: var(--home-section); }
+.directions_component {
+  padding: var(--home-card-pad-lg);
+  border-radius: 1.5rem;
+  background-color: var(--home-dark);
+  color: var(--home-white);
+}
+@media (min-width: 64.0625rem) { .directions_component { padding: 2rem; } }
+.directions_component .home-section_head { margin-bottom: 1.5rem; }
+.directions_component :focus-visible { outline-color: var(--home-white); }
+
+.directions_list {
+  display: grid;
+  gap: var(--home-gap);
+}
+@media (min-width: 32.5625rem) { .directions_list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64.0625rem) { .directions_list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.directions_tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 100%;
+  min-height: 6.5rem;
+  padding: var(--home-card-pad);
+  border: 1px solid color-mix(in srgb, var(--home-white) 12%, transparent);
+  border-radius: var(--home-radius);
+  background-color: color-mix(in srgb, var(--home-white) 8%, transparent);
+  transition: background-color var(--home-motion), border-color var(--home-motion);
+}
+/* Слово с дефисом не рвём на конце строки («мини- / курсы») */
+.home-nowrap { white-space: nowrap; }
+/* Название не заходит под стрелку */
+.directions_name { padding-right: 3rem; }
+/* Кнопка со стрелкой: показывает, что плитка ведёт на страницу раздела */
+.directions_arrow {
+  position: absolute;
+  top: var(--home-card-pad);
+  right: var(--home-card-pad);
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--home-white) 12%, transparent);
+  color: var(--home-white);
+  transition: background-color var(--home-motion), color var(--home-motion), transform var(--home-motion);
+}
+.directions_arrow svg { width: 1.125rem; height: 1.125rem; }
+.directions_count { color: var(--home-on-dark-muted); }
+.directions_caption { margin-top: auto; padding-top: 0.5rem; color: var(--home-on-dark-muted); }
+
+/* ---------- 5. Учиться бесплатно ---------- */
+.section_home-free { padding-top: var(--home-section); }
+.section_home-free > .padding-global > .container-home > .home-section_title { margin-bottom: 1.25rem; }
+@media (min-width: 48rem) { .section_home-free > .padding-global > .container-home > .home-section_title { margin-bottom: 1.75rem; } }
+
+.free_layout { display: grid; gap: var(--home-gap); }
+@media (min-width: 64.0625rem) {
+  .free_layout { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; }
+}
+.free-events_component[hidden] { display: none; }
+
+/* Левая колонка: белая плашка с большой карточкой и строками-табами */
+.free-events_component {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+
+/* Большая карточка выбранного мероприятия: картинка и текст на мягкой сиреневой подложке */
+.free-event_component {
+  display: grid;
+  overflow: hidden;
+  border-radius: var(--home-radius);
+  background-color: var(--home-soft);
+}
+@media (min-width: 48rem) {
+  .free-event_component { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr); min-height: 17rem; }
+}
+.free-event_media { position: relative; aspect-ratio: 16 / 9; background-color: #dcd6f5; }
+@media (min-width: 48rem) { .free-event_media { aspect-ratio: auto; } }
+.free-event_image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 18%; }
+.free-event_content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: var(--home-card-pad);
+}
+@media (min-width: 48rem) { .free-event_content { justify-content: center; padding: var(--home-card-pad-lg); } }
+.free-event_meta { color: var(--home-muted); }
+.free-event_title {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.free-event_button { margin-top: 0.5rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .free-event_content, .free-event_image { animation: free-event-in 220ms ease-out; }
+}
+@keyframes free-event-in { from { opacity: 0.35; } to { opacity: 1; } }
+
+/* Строки ближайших мероприятий — табы */
+.free-tabs_list { display: grid; }
+.free-tabs_tab {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background-color: transparent;
+  color: var(--home-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--home-motion);
+}
+/* Тонкая линия между строками; у выбранной строки и под ней линии нет — её заменяет подложка */
+.free-tabs_item + .free-tabs_item .free-tabs_tab { box-shadow: inset 0 1px 0 var(--home-line); }
+.free-tabs_item:has(.is-active) .free-tabs_tab,
+.free-tabs_item:has(.is-active) + .free-tabs_item .free-tabs_tab { box-shadow: none; }
+.free-tabs_tab.is-active { background-color: var(--home-bg); }
+.free-tabs_date {
+  flex: 0 0 auto;
+  min-width: 6.5rem;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--home-soft);
+  color: var(--home-soft-text);
+  font-size: var(--home-size-small);
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+.free-tabs_tab.is-active .free-tabs_date { background-color: var(--home-accent); color: var(--home-white); }
+.free-tabs_title { min-width: 0; }
+
+/* Правая колонка: мини-курсы */
+.free-mini_component {
+  padding: var(--home-card-pad-lg);
+  border-radius: var(--home-radius-lg);
+  background-color: var(--home-surface);
+}
+.free-mini_heading {
+  margin: 0 0 0.75rem;
+  text-wrap: balance;
+}
+.free-mini_list { display: grid; }
+.free-mini_item + .free-mini_item .free-mini_link { border-top: 1px solid var(--home-line); }
+.free-mini_link { display: flex; align-items: center; gap: 1rem; padding-block: 0.75rem; }
+.free-mini_thumb {
+  flex: 0 0 auto;
+  width: 4rem;
+  height: 4rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--home-soft);
+}
+.free-mini_image { width: 100%; height: 100%; object-fit: cover; object-position: 80% 14%; }
+.free-mini_body { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.free-mini_title { transition: color var(--home-motion); }
+.free-mini_meta { color: var(--home-muted); }
+</style>

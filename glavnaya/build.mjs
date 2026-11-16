@@ -19,7 +19,10 @@ import vm from 'node:vm';
 const here = dirname(fileURLToPath(import.meta.url));
 const API = 'https://modern-psy-asp-prod-8ceb.twc1.net';
 const SNAPSHOT = join(here, 'data', 'catalog-snapshot.json');
-const HEADER = join(here, '..', '..', 'tilda', 'header', 'tilda', 'header.html');
+// Шапка сайта собирается в apps/tilda/header блоками T123: стили, разметка, скрипт (плюс временная промо-полоса,
+// её в превью главной не берём). Для превью склеиваем первые три блока.
+const HEADER_DIR = join(here, '..', '..', 'tilda', 'header', 'tilda');
+const HEADER_PARTS = ['01-css.html', '02-html.html', '03-js.html'];
 const HEADER_COPY = join(here, 'data', 'header.html'); // копия на случай, если apps/tilda рядом нет
 const ICONS = join(here, '..', 'icons', 'lucide');
 // Мероприятия и мини-курсы ведутся вручную в данных каталога (apps/tilda/catalog/data/catalog-extra.json).
@@ -104,8 +107,8 @@ async function loadCatalog() {
 }
 
 async function loadHeader() {
-  if (existsSync(HEADER)) {
-    const html = await readFile(HEADER, 'utf8');
+  if (HEADER_PARTS.every((f) => existsSync(join(HEADER_DIR, f)))) {
+    const html = (await Promise.all(HEADER_PARTS.map((f) => readFile(join(HEADER_DIR, f), 'utf8')))).join('\n');
     await mkdir(dirname(HEADER_COPY), { recursive: true });
     await writeFile(HEADER_COPY, html);
     return html;
@@ -189,6 +192,43 @@ function rodbtPattern() {
     + `<g class="rodbt-card_tone"><g class="rodbt-card_rings">${rings}</g>`
     + dots.map(([cx, cy]) => `<circle cx="${F(cx)}" cy="${F(cy)}" r="5"/>`).join('')
     + `</g><circle cx="${F(accent[0])}" cy="${F(accent[1])}" r="8"/></svg>`;
+}
+
+// ---------- Частые вопросы ----------
+// data/faq.json: группы → вопросы. Ответ — HTML (абзацы и ссылки), {{FREE_URL}} и {{FREE_GRANT}} подставляются из каталога.
+// Разметка — компонент FAQ из web-academy (faq_* + accordion_*), поверх него три группы с подзаголовками.
+// Для поиска — FAQPage: тот же текст ответа без тегов.
+function faqModel(data, H, vars) {
+  const fill = (s) => String(s).replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => {
+    if (!(k in vars)) throw new Error(`faq.json: неизвестное место ${m}`);
+    return vars[k];
+  });
+  // Типограф только по тексту, не внутри тегов: адреса ссылок не трогаем
+  const typoHtml = (html) => html.split(/(<[^>]+>)/).map((part) => (part.startsWith('<') ? part : H.typo(part))).join('');
+  const plain = (html) => html.replace(/<\/p>\s*<p>/g, ' ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  const questions = [];
+  const html = data.groups.map((g, gi) => {
+    const items = g.items.map((it) => {
+      const answer = typoHtml(fill(it.a));
+      questions.push({ q: it.q, a: plain(answer) });
+      return '<details class="faq_item accordion_item">'
+        + '<summary class="faq_question accordion_summary">'
+        + `<h4 class="faq_question-heading">${H.typo(H.esc(it.q))}</h4>`
+        + '<span class="accordion_icon" aria-hidden="true"></span></summary>'
+        + `<div class="faq_answer accordion_panel"><div class="faq_answer-inner accordion_panel-inner">${answer}</div></div>`
+        + '</details>';
+    }).join('');
+    return '<div class="faq-home_group">'
+      + `<h3 class="faq-home_group-title content-heading_component is-card" id="home-faq-group-${gi + 1}">${H.typo(H.esc(g.title))}</h3>`
+      + `<div class="faq_list accordion_component" aria-labelledby="home-faq-group-${gi + 1}">${items}</div>`
+      + '</div>';
+  }).join('');
+  const jsonld = ',\n    ' + JSON.stringify({
+    '@type': 'FAQPage',
+    '@id': 'https://modern-psy.ru/#faq',
+    mainEntity: questions.map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } })),
+  }, null, 2).replace(/\n/g, '\n    ');
+  return { html, jsonld };
 }
 
 // Блок «Нам доверяют» (секция 9): оценки площадок, лента отзывов и бегущие ленты партнёров.
@@ -343,6 +383,12 @@ async function main() {
   const freeGrant = freeInfo.grant || 0;
   const rubTight = (sum) => new Intl.NumberFormat('ru-RU').format(sum).replace(/\s/g, '\u202f') + NBSP + '₽';
 
+  // Частые вопросы: data/faq.json → три группы аккордеона и FAQPage для поиска (docs/seo.md)
+  const faq = faqModel(JSON.parse(await readFile(join(here, 'data', 'faq.json'), 'utf8')), H, {
+    FREE_URL: bySlug[FREE_START_SLUG]?.url?.split('?')[0] || 'https://modern-psy.ru/put-v-professiyu',
+    FREE_GRANT: freeGrant ? rubTight(freeGrant) : '30\u202f000' + NBSP + '₽',
+  });
+
   const values = {
     API,
     HEADER: await loadHeader(),
@@ -381,6 +427,8 @@ async function main() {
     TRUST_REVIEWS: trust.reviews,
     TRUST_DIALOGS: trust.dialogs,
     TRUST_PARTNERS: trust.partners,
+    FAQ_GROUPS: faq.html,
+    FAQ_JSONLD: faq.jsonld,
     // JSON внутри <script>: «</» экранируем, чтобы строка не закрыла тег раньше времени
     HOME_EXTRA: JSON.stringify(homeExtra).replace(/<\//g, '<\\/'),
   };

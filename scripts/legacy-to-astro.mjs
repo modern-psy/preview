@@ -15,6 +15,7 @@
 //   node scripts/legacy-to-astro.mjs <папка старой страницы> <адрес на сайте>
 //   node scripts/legacy-to-astro.mjs ../preview/orkt orkt
 //   node scripts/legacy-to-astro.mjs webinar-trauma webinar-ptsd
+//   node scripts/legacy-to-astro.mjs glavnaya index        (главная: адрес /, блоки под именем home)
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -25,6 +26,26 @@ if (!srcDir || !route) {
 }
 const ROOT = process.cwd();
 const html = fs.readFileSync(path.join(srcDir, 'index.html'), 'utf8');
+// Главная: адрес «index» → страница src/pages/index.astro, блоки и данные — под именем home
+const pageName = route === 'index' ? 'index' : route;
+const slug = route === 'index' ? 'home' : route;
+// Если исходник — папка превью в корне репозитория, она сама попадает в сборку (scripts/copy-legacy.mjs).
+// Тогда относительные ссылки на её файлы (img/x.webp, page.js) ведём в неё: /glavnaya/img/x.webp.
+const inRepo = path.resolve(srcDir, '..') === path.resolve(ROOT);
+const assetBase = inRepo ? `/${path.basename(path.resolve(srcDir))}/` : null;
+const RELATIVE = /^(?!\/|#|[a-z][a-z0-9+.-]*:|\{)(?:\.\/)?(.+)$/i;
+const absolutize = (value) => {
+  if (!assetBase) return value;
+  const m = value.match(RELATIVE);
+  return m ? assetBase + m[1] : value;
+};
+const absolutizeMarkup = (code) => !assetBase ? code : code
+  .replace(/\b(src|href|poster|data-src|data-original|data-bg)="([^"]*)"/g, (all, a, v) => `${a}="${absolutize(v)}"`)
+  .replace(/\bsrcset="([^"]*)"/g, (all, v) => `srcset="${v.split(',').map((part) => {
+    const [u, ...rest] = part.trim().split(/\s+/);
+    return [absolutize(u), ...rest].join(' ');
+  }).join(', ')}"`)
+  .replace(/url\((['"]?)([^'")]+)\1\)/g, (all, q, v) => `url(${q}${absolutize(v)}${q})`);
 
 // ---------- head ----------
 const head = html.slice(0, html.indexOf('</head>'));
@@ -115,7 +136,7 @@ const slugOf = (chunk, n) => {
   return `${String(n).padStart(2, '0')}-${base}`.slice(0, 40).replace(/-+$/, '');
 };
 
-const compDir = path.join(ROOT, 'src/components', route);
+const compDir = path.join(ROOT, 'src/components', slug);
 fs.rmSync(compDir, { recursive: true, force: true });
 fs.mkdirSync(compDir, { recursive: true });
 const imports = [];
@@ -136,16 +157,16 @@ for (const chunk of topLevel(body)) {
   const comp = 'S' + String(n).padStart(2, '0');
   fs.writeFileSync(
     path.join(compDir, `${name}.astro`),
-    `---\n// ${route}: блок ${n}. Перенесён со старой страницы как есть (scripts/legacy-to-astro.mjs).\n---\n${toAstro(chunk.replace(/^\s*\n/, '')).trimEnd()}\n`,
+    `---\n// ${slug}: блок ${n}. Перенесён со старой страницы как есть (scripts/legacy-to-astro.mjs).\n---\n${toAstro(absolutizeMarkup(chunk.replace(/^\s*\n/, ''))).trimEnd()}\n`,
   );
-  imports.push(`import ${comp} from '../components/${route}/${name}.astro';`);
+  imports.push(`import ${comp} from '../components/${slug}/${name}.astro';`);
   uses.push(`    <${comp} />`);
 }
 
 // ---------- стили, скрипты, файлы ----------
-const styleDir = path.join(ROOT, 'src/styles', route);
-const scriptDir = path.join(ROOT, 'src/scripts', route);
-const publicDir = path.join(ROOT, 'public', route);
+const styleDir = path.join(ROOT, 'src/styles', slug);
+const scriptDir = path.join(ROOT, 'src/scripts', slug);
+const publicDir = path.join(ROOT, 'public', slug);
 for (const d of [styleDir, scriptDir, publicDir]) fs.rmSync(d, { recursive: true, force: true });
 const cssImports = [];
 for (const href of stylesheets) {
@@ -153,8 +174,9 @@ for (const href of stylesheets) {
   if (href.startsWith('/')) { cssImports.push(`import '../..${href}';`); continue; }
   const file = path.basename(href);
   fs.mkdirSync(styleDir, { recursive: true });
-  fs.copyFileSync(path.join(srcDir, href), path.join(styleDir, file));
-  cssImports.push(`import '../styles/${route}/${file}';`);
+  const css = fs.readFileSync(path.join(srcDir, href), 'utf8');
+  fs.writeFileSync(path.join(styleDir, file), absolutizeMarkup(css));
+  cssImports.push(`import '../styles/${slug}/${file}';`);
 }
 const jsImports = [];
 for (const src of scripts) {
@@ -162,11 +184,11 @@ for (const src of scripts) {
   const file = path.basename(src);
   fs.mkdirSync(scriptDir, { recursive: true });
   fs.copyFileSync(path.join(srcDir, src), path.join(scriptDir, file));
-  jsImports.push(`  import '../scripts/${route}/${file}';`);
+  jsImports.push(`  import '../scripts/${slug}/${file}';`);
 }
 const SKIP = new Set(['index.html', 'README.md', 'TZ.md', 'STATE.md', 'AGENTS.md', 'tilda']);
 const used = new Set([...stylesheets, ...scripts].map((s) => path.basename(s)));
-for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
+for (const entry of (assetBase ? [] : fs.readdirSync(srcDir, { withFileTypes: true }))) {
   if (SKIP.has(entry.name) || used.has(entry.name) || /\.(mjs|py)$/.test(entry.name)) continue;
   if (entry.isFile() && /\.(css|js)$/.test(entry.name)) continue;
   fs.mkdirSync(publicDir, { recursive: true });
@@ -175,7 +197,7 @@ for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
 
 // ---------- данные и страница ----------
 fs.mkdirSync(path.join(ROOT, 'src/data/pages'), { recursive: true });
-const dataFile = path.join(ROOT, 'src/data/pages', `${route}.json`);
+const dataFile = path.join(ROOT, 'src/data/pages', `${slug}.json`);
 const data = fs.existsSync(dataFile) ? JSON.parse(fs.readFileSync(dataFile, 'utf8')) : {};
 data.seo = seo;
 data.preconnect = preconnect;
@@ -183,23 +205,23 @@ fs.writeFileSync(dataFile, JSON.stringify(data, null, 2) + '\n');
 
 const mainAttrs = mainOpen[0].slice(5, -1).trim();
 const page = `---
-// Страница /${route}. Перенесена со старой страницы ${path.basename(srcDir)} (scripts/legacy-to-astro.mjs).
-// Тексты блоков — в src/components/${route}/, заголовок и описание — в src/data/pages/${route}.json.
+// Страница /${route === 'index' ? '' : route}. Перенесена со старой страницы ${path.basename(srcDir)} (scripts/legacy-to-astro.mjs).
+// Тексты блоков — в src/components/${slug}/, заголовок и описание — в src/data/pages/${slug}.json.
 import PageLayout from '../layouts/PageLayout.astro';
-import page from '../data/pages/${route}.json';
+import page from '../data/pages/${slug}.json';
 ${cssImports.join('\n')}
 ${imports.join('\n')}
 ---
 <PageLayout seo={page.seo} preconnect={page.preconnect}>
 ${externalHead.map((h) => `  <link slot="head" rel="stylesheet" href="${h}" />`).join('\n')}
 ${externalScripts.join('\n')}
-${toAstro(beforeMain).trim()}
+${toAstro(absolutizeMarkup(beforeMain)).trim()}
   <main ${mainAttrs}>
 ${wrapOpen ? '  ' + toAstro(wrapOpen).trim() + '\n' : ''}${uses.join('\n')}
 ${wrapClose ? '  ' + wrapClose + '\n' : ''}  </main>
-${toAstro(afterMain).trim()}
+${toAstro(absolutizeMarkup(afterMain)).trim()}
 </PageLayout>
 ${jsImports.length ? `<script>\n${jsImports.join('\n')}\n</script>` : ''}
 `;
-fs.writeFileSync(path.join(ROOT, 'src/pages', `${route}.astro`), page);
+fs.writeFileSync(path.join(ROOT, 'src/pages', `${pageName}.astro`), page);
 console.log(`/${route}: ${n} блоков, ${cssImports.length} файлов стилей, ${jsImports.length} скриптов`);

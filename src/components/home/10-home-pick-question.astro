@@ -1,0 +1,70 @@
+---
+// home: блок 10. Перенесён со старой страницы как есть (scripts/legacy-to-astro.mjs).
+---
+  <!-- 10. Поможем подобрать программу: вопрос «С чего хотите начать?» и короткая форма без почты.
+       Выбранный ответ уходит менеджеру вместе с заявкой (поле form_source), чтобы он подготовился к разговору.
+       Цифры в ответах (курсы по методам и специализациям) приходят из каталога и обновляются сами.
+       Заявка уходит в скрытую форму Тильды на этой же странице, её имя — в data-tilda-form-name. Имя: mainpage (нативная форма 1040 на странице 54988849). -->
+  <section class="section_home-pick" aria-labelledby="home-pick-title" data-home-pick>
+    <div class="padding-global">
+      <div class="container-home">
+        <div class="pick-card_component">
+          <div class="pick-card_intro">
+            <h2 class="pick-card_title section-title_component is-responsive" id="home-pick-title">Поможем подобрать программу</h2>
+            <p class="pick-card_label" id="home-pick-question">С&nbsp;чего хотите начать?</p>
+            <ul class="pick-chip_list" role="list" aria-labelledby="home-pick-question">
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="zero">Стать психологом с&nbsp;нуля</button></li>
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="method">Освоить метод терапии</button></li>
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="skill">Повысить квалификацию</button></li>
+              <li><button class="pick-chip_button" type="button" aria-pressed="false" data-pick-option="unsure">Пока не&nbsp;знаю</button></li>
+            </ul>
+            <div class="pick-card_reply" aria-live="polite">
+              <p data-pick-reply="none">Выберите вариант, и&nbsp;менеджер подготовится к&nbsp;разговору заранее</p>
+              <p data-pick-reply="zero" hidden>Расскажем о профессии психолога-консультанта и гранте 30 000 ₽ на обучение</p>
+              <p data-pick-reply="method" hidden>Подберём курс по&nbsp;подходу: у&nbsp;нас <span data-home-count="methods">17 курсов</span> по&nbsp;методам, например КПТ, ACT и&nbsp;схема-терапия</p>
+              <p data-pick-reply="skill" hidden>Покажем <span data-home-count="specializations">21 курс</span> по&nbsp;специализациям: травма, РПП, сексология и&nbsp;другие</p>
+              <p data-pick-reply="unsure" hidden>Зададим пару вопросов и&nbsp;предложим варианты под ваш опыт</p>
+            </div>
+          </div>
+          <div class="pick-card_form">
+            <form class="pick-form_component" data-pick-form data-tilda-form-name="mainpage" aria-labelledby="home-pick-title" novalidate>
+              <div class="pick-form_fields">
+                <div class="pick-field_component">
+                  <input class="pick-field_input" id="home-pick-name" type="text" name="name" autocomplete="name" placeholder=" " aria-describedby="home-pick-name-hint" required>
+                  <label class="pick-field_label" for="home-pick-name">Как к&nbsp;вам обращаться</label>
+                </div>
+                <p class="pick-field_hint" id="home-pick-name-hint" data-pick-hint="name" hidden>Напишите, как к&nbsp;вам обращаться</p>
+                <div class="pick-field_component">
+                  <input class="pick-field_input" id="home-pick-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" placeholder=" " aria-describedby="home-pick-phone-hint" required>
+                  <label class="pick-field_label" for="home-pick-phone">Телефон</label>
+                </div>
+                <p class="pick-field_hint" id="home-pick-phone-hint" data-pick-hint="phone" hidden>Проверьте номер: в&nbsp;нём от&nbsp;10&nbsp;цифр, например +7&nbsp;900&nbsp;123-45-67</p>
+              </div>
+              <fieldset class="pick-messenger_component">
+                <legend class="pick-messenger_legend">Где вам удобнее общаться?</legend>
+                <div class="pick-messenger_options">
+                  <input class="pick-messenger_input" type="radio" name="messenger" value="telegram" id="home-pick-telegram" checked>
+                  <label class="pick-messenger_option" for="home-pick-telegram"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.5 4.1a1.3 1.3 0 0 1 1.7 1.4l-1.9 11.4c-.2 1.1-1.4 1.7-2.4 1.2-.8-.5-2.1-1.2-3.2-1.9-.6-.4-2.3-1.6-2.1-2.4.2-.7 3.1-3.4 4.8-5.1.6-.6.3-1-.4-.4-1.9 1.4-5 3.6-6 4.3-.9.5-1.4.6-1.9.5-1-.2-2-.4-2.7-.8-1.1-.4-1-1.9 0-2.3l14.1-6Z"/></svg><span lang="en">Telegram</span></label>
+                  <input class="pick-messenger_input" type="radio" name="messenger" value="max" id="home-pick-max">
+                  <label class="pick-messenger_option" for="home-pick-max"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M10.2 19.9c-2 0-2.9-.3-4.4-1.4-1 1.3-4.2 2.3-4.3.6 0-1.3-.3-2.4-.6-3.6C.5 14 0 12.4 0 10 0 4.4 4.7.1 10.2.1c5.5 0 9.8 4.5 9.8 10 0 2.6-1 5.1-2.8 6.9a9.9 9.9 0 0 1-7 2.9Zm.1-14.9C7.6 4.9 5.5 6.7 5.1 9.6c-.4 2.4.3 5.4.9 5.5.3.1 1-.5 1.4-.9.7.5 1.5.8 2.4.9a5 5 0 0 0 5.3-4.7 5 5 0 0 0-4.8-5.4Z"/></svg><span lang="en">MAX</span></label>
+                </div>
+                <!-- Telegram первым и выбран сразу: им пользуются чаще. Для Telegram спрашиваем имя пользователя, для MAX хватает телефона -->
+                <div class="pick-field_component pick-messenger_nick" data-pick-nick>
+                  <input class="pick-field_input" id="home-pick-nick" type="text" name="telegram" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder=" " aria-describedby="home-pick-nick-hint" required>
+                  <label class="pick-field_label" for="home-pick-nick">Имя пользователя с&nbsp;@</label>
+                </div>
+                <p class="pick-field_hint" id="home-pick-nick-hint" data-pick-hint="telegram" hidden>Имя пользователя в&nbsp;Telegram: латиница, цифры и&nbsp;_, от&nbsp;3&nbsp;символов, например @ivanova</p>
+              </fieldset>
+              <button class="pick-form_submit" type="submit" disabled data-pick-submit>Подобрать программу</button>
+              <p class="pick-form_status" role="status" aria-live="polite" data-pick-status></p>
+              <p class="pick-form_legal">Нажимая на&nbsp;кнопку «Подобрать программу», я&nbsp;даю <a href="https://modern-psy.ru/agreement" target="_blank" rel="noopener">согласие</a> на&nbsp;обработку моих персональных данных в&nbsp;соответствии с&nbsp;<a href="https://modern-psy.ru/privacy" target="_blank" rel="noopener">политикой обработки персональных данных</a></p>
+            </form>
+            <div class="pick-form_success" tabindex="-1" data-pick-success hidden>
+              <p class="pick-form_success-title content-heading_component is-card">Заявка отправлена</p>
+              <p class="body-text_component is-fine-print">Спасибо! Свяжемся с&nbsp;вами в&nbsp;рабочее время там, где вам удобно.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

@@ -84,6 +84,8 @@ if (fs.existsSync(EXPORT)) {
     if (name.startsWith('.') || name === 'README.md') continue;
     if (name === '_tilda') { copy(path.join('tilda-export', name), name); continue; }
     if (name === mirror.home) {
+      // Своя главная на Astro (src/pages/index.astro) главнее копии из экспорта
+      if (astroPages.has('index')) { report.skipped.push('экспорт главной (есть своя главная)'); continue; }
       fs.copyFileSync(path.join(EXPORT, name, 'index.html'), path.join(DIST, 'index.html'));
       report.export++;
       continue;
