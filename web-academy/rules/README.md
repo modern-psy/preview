@@ -22,6 +22,10 @@
 - [`engineering/tilda-form-bridges.md`](engineering/tilda-form-bridges.md) —
   контракт скрытой нативной формы, зеркалирование значений, CAPTCHA,
   `tildaform:aftersuccess` и end-to-end подтверждение заявки в CRM.
+- [`engineering/safari.md`](engineering/safari.md) — Safari как главный
+  браузер аудитории: видео и интерактив, производительность анимаций, прочие
+  отличия; обязательная проверка `scripts/check-browsers.mjs` после пуша
+  в превью и после публикации в Тильде.
 - [`product/semantic-accessibility.md`](product/semantic-accessibility.md) —
   semantic HTML, landmarks, headings, keyboard/focus, формы, ARIA, media и ручная
   проверка доступности.

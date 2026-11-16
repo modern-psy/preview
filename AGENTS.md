@@ -27,6 +27,11 @@ and may not exist in an older local checkout.
 
 ## Куда пушить вёрстку
 
+Рабочий адрес превью — **https://modern-psy-preview-5a99.twc1.net**.
+Домен `preview.modern-psy.ru` не существует: не использовать его в ссылках.
+Ссылки на страницы строятся от рабочего адреса, например:
+https://modern-psy-preview-5a99.twc1.net/timetable-variants/a-status.html.
+
 Вёрстка лендингов пушится **только** в репозиторий
 [modern-psy/preview](https://github.com/modern-psy/preview), ветка `main`.
 Папка `apps/preview/` — это и есть его рабочая копия (свой `.git`, `origin`
@@ -37,6 +42,20 @@ and may not exist in an older local checkout.
 - Никуда больше вёрстку не пушить: ни в `asp-deploy`, ни в `ASP-Prod`,
   ни в личные репозитории.
 - Видео (`*.mp4`) в репозиторий не кладём — они в `.gitignore`.
+
+## Проверка после выкладки и Safari
+
+Правила — `web-academy/rules/engineering/safari.md`. Коротко:
+
+- Большая часть аудитории — iPhone, iPad и MacBook; на iPhone все браузеры
+  работают на движке Safari. Если Safari ведёт себя иначе, правим под Safari.
+- После пуша дождаться пересборки превью и проверить страницу на
+  `https://modern-psy-preview-5a99.twc1.net/<путь>`. После публикации
+  в Тильде — проверить ещё раз на `https://modern-psy.ru/<адрес>`.
+  Обе проверки из `web-academy/`:
+  `node scripts/check-browsers.mjs <адрес>`.
+- Страницы с анимацией и видео — ещё глазами в Safari на Mac и на iPhone.
+- В отчёте писать, где проверено, а где нет.
 
 ## Delivery boundary
 

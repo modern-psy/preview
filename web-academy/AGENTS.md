@@ -40,6 +40,9 @@ Canonical routes:
 - Tilda section packaging, identifier isolation, spacing, popups, and release
   gates: `rules/engineering/tilda-delivery.md`. SVG, masks, transparent
   placeholders, and fragment limits: `rules/engineering/tilda-svg-and-masks.md`.
+- Safari behaviour, video, animation performance, and the mandatory browser
+  check after every preview push and Tilda publication:
+  `rules/engineering/safari.md` and `scripts/check-browsers.mjs`.
 - Ready FAQ, animations and states: `shared/academy/faq.md`.
   Reuse the existing `faq_*` + accordion implementation in shared Academy.
 - Complete Hero, Academy showcase and CTA blocks: `shared/academy/hero.md`,
@@ -112,6 +115,13 @@ Canonical routes:
   reduced motion, and keep essential content visible if JavaScript fails.
 - Simplify or remove non-essential scroll, pointer, continuous, and
   compositor-heavy motion on touch/mobile layouts.
+- Safari is the primary target: most of the audience uses iPhone, iPad and Mac,
+  and every iOS browser runs on WebKit. Before any motion, video, carousel, form
+  or scripted interaction, read `rules/engineering/safari.md` and follow it:
+  posters and no waiting on load events for video, tap fallback for blocked
+  autoplay, no live SVG filters / animated blur / backdrop-filter / layout
+  properties in motion, scoped `will-change`, offscreen animations paused.
+  When Safari and other browsers disagree, fix for Safari.
 
 ## Verification and change discipline
 
@@ -125,6 +135,14 @@ Canonical routes:
   metadata, and the Tilda copy/paste path. When responsive rules change, also
   verify both sides of every affected boundary (for example 520/521 and
   767/768px).
+- Local checks are not enough. After every push to the preview, wait for the
+  rebuild and run `node scripts/check-browsers.mjs <preview URL>` (WebKit,
+  Chromium, Firefox; desktop, iPhone, reduced motion). After every Tilda
+  publication run it again on the `modern-psy.ru` URL. No red items; every
+  yellow item is fixed or justified in the report. Pages with motion or video
+  are also checked by hand in Safari on Mac (Web Inspector timelines) and on an
+  iPhone, including Low Power Mode. The report states where it was checked
+  and what was not checked (`rules/engineering/safari.md`, section 1).
 - Preserve unrelated user changes. Do not commit secrets or private customer
   data. Do not edit generated Tilda fragments directly when a project builder
   owns them.

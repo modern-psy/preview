@@ -12,6 +12,10 @@
   idempotent initialization, and complete cleanup.
 - CSS classes are styling API; JavaScript uses `data-js` or the Custom Element
   API. Do not couple behavior or analytics to presentation classes.
+- Every component must work and stay smooth in Safari (WebKit on iPhone, iPad
+  and Mac is the main audience): follow `../web-academy/rules/engineering/safari.md`
+  and run `node scripts/check-browsers.mjs <demo URL>` from `../web-academy/`
+  after the demo is pushed to the preview.
 - Keep demo and source portable. A delivered landing must contain the required
   implementation and must not import repository-local files at runtime.
 - Keep the implementation catalog empty until the first component satisfies the
