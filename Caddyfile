@@ -1,0 +1,46 @@
+# ============================================================
+# Сервер превью (и будущего сайта на Astro): отдаёт готовую сборку из /srv.
+# 🔴 Служебный файл. Меняется только вместе с Dockerfile.
+#
+# Что делает:
+#   • отдаёт файл, если он есть; папку — через её index.html (/orkt → /orkt/);
+#   • если файла нет — страница /404.html с кодом 404 (а не главная с кодом 200);
+#   • настоящие переадресации 301 из src/data/redirects.json (файл redirects.caddy
+#     собирается при сборке образа скриптом scripts/caddy-redirects.mjs);
+#   • заголовок X-Robots-Tag: noindex на всём — превью не должно попасть в поиск.
+#     🔴 На боевом сайте эту строку убрать, иначе сайт пропадёт из поиска.
+#   • /_health — проверка состояния для Timeweb.
+# ============================================================
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:8080 {
+	root * /srv
+	encode zstd gzip
+
+	header X-Robots-Tag "noindex, nofollow"
+
+	# Файлы сборки Astro с отпечатком в имени не меняются — браузер может хранить их год
+	header /_astro/* Cache-Control "public, max-age=31536000, immutable"
+
+	respond /_health 200
+
+	import /etc/caddy/redirects.caddy
+
+	file_server
+
+	# Нет такого файла — показываем нашу страницу 404 с правильным кодом
+	handle_errors {
+		@notfound expression {err.status_code} == 404
+		handle @notfound {
+			rewrite * /404.html
+			file_server {
+				status 404
+			}
+		}
+		respond "{err.status_code} {err.status_text}"
+	}
+}
