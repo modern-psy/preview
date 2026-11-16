@@ -1253,17 +1253,65 @@ body.addEventListener('toggle', fadeFilters, true);
 readURL();
 document.getElementById('q').value = FILTER.q;
 
-/* ---------- Курсы месяца: баннер с сайта ----------
-   Отбор, заголовок «Выгоднее в …» и карточки — функции баннера (course-month-render.js),
-   данные — тот же снимок каталога. Нет курсов в акции — баннер скрыт. */
+/* ---------- Курсы месяца: один курс крупно (вариант D2, 16.11.2026) ----------
+   В баннер попадают курсы с акцией «Курс месяца» в CMS, у которых открыт набор и есть цена со скидкой.
+   Цена, дата старта и срок акции — от потока в акции (card.promo). Главный курс — с самой большой
+   экономией в рублях, остальные — плитками в порядке старта. Нет курсов в акции — баннера нет. */
+const MONTH_COVERS = {
+  /* Обложки под баннер: файл img/month/<курс>-hero или -tile и куда смотреть в узкой полосе на телефоне */
+  psyeducation: '50% 72%',
+  'couples-therapy': '50% 64%',
+  'narrative-therapy': '50% 59%'
+};
+const MONTH_ARROW = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function monthCover(slug, role) {
+  if (slug in MONTH_COVERS) return { src: `/catalog-v1/img/month/${slug}-${role}.webp`, pos: MONTH_COVERS[slug] };
+  return { src: RASTER.obj[slug] || '', pos: '50% 60%' }; // своей обложки нет — обложка каталога
+}
+
+function monthCards() {
+  return CARDS.filter(c => c.promo && c.mode === 'open' && c.promo.price && c.promo.price.discounted != null)
+    .map(c => {
+      const p = c.promo.price;
+      return { card: c, p, save: p.full - p.discounted, start: c.promo.startDate || c.startDate, until: c.promo.until };
+    })
+    .filter(m => m.save > 0);
+}
+
+function monthCardHtml(m, hero) {
+  const c = m.card, p = m.p;
+  const from = p.from ? 'от' + NBSP : '';
+  const until = m.until ? 'до' + NBSP + day(m.until) : 'в этом месяце';
+  const cover = monthCover(c.slug, hero ? 'hero' : 'tile');
+  const terms = p.onePayment ? 'При единовременной оплате'
+    : p.monthly ? `В${NBSP}рассрочку от${NBSP}${rub(p.monthly)} в${NBSP}месяц` : '';
+  const offer = hero
+    ? `На <b>${rub(m.save)}</b> дешевле, если оплатить ${until}`
+    : `Экономия <b>${rub(m.save)}</b> ${until}`;
+  return `<li class="catalog-month_item${hero ? ' is-hero' : ''}"><a class="catalog-month_card${hero ? ' is-hero' : ''}" href="${esc(c.url)}" target="_blank" rel="noopener">
+    <span class="catalog-month_media">${cover.src ? `<img src="${cover.src}" alt="" loading="lazy" style="--pos: ${cover.pos}">` : ''}<span class="catalog-month_save">−${rub(m.save)}</span></span>
+    <span class="catalog-month_body">
+      <span class="catalog-month_titlegroup">${m.start ? `<span class="catalog-month_start">Старт ${day(m.start)}</span>` : ''}<span class="catalog-month_name">${esc(c.title)}</span></span>
+      <span class="catalog-month_offer">${offer}</span>
+      <span class="catalog-month_pricegroup"><span class="catalog-month_price"><strong>${from}${rub(p.discounted)}</strong><s>${from}${rub(p.full)}</s></span>${terms ? `<span class="catalog-month_terms">${terms}</span>` : ''}</span>
+      ${hero ? `<span class="catalog-month_cta">Смотреть программу${MONTH_ARROW}</span>` : `<span class="catalog-month_arrow" aria-hidden="true">${MONTH_ARROW}</span>`}
+    </span>
+  </a></li>`;
+}
+
 function renderMonth() {
-  const box = document.querySelector('[data-course-month]');
-  if (!box || !window.AspCourseMonth) return;
-  const list = window.AspCourseMonth.select(CARDS);
+  const box = document.querySelector('[data-catalog-month]');
+  if (!box) return;
+  const list = monthCards();
   box.hidden = !list.length;
   if (!list.length) return;
-  box.querySelector('[data-course-month-heading]').textContent = window.AspCourseMonth.heading(list);
-  box.querySelector('[data-course-month-list]').innerHTML = window.AspCourseMonth.render(list);
+  const hero = list.reduce((a, b) => (b.save > a.save ? b : a));
+  const rest = list.filter(m => m !== hero).sort((a, b) => String(a.start || '9').localeCompare(String(b.start || '9')));
+  const ul = box.querySelector('[data-catalog-month-list]');
+  ul.classList.toggle('is-single', !rest.length);
+  ul.classList.toggle('is-pair', rest.length === 1);
+  ul.innerHTML = monthCardHtml(hero, true) + rest.map(m => monthCardHtml(m, false)).join('');
 }
 
 function render() { renderMonth(); renderShop(); }
