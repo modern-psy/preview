@@ -1278,6 +1278,9 @@
 
 // Рилсы Романа: видео играют без звука, пока карточка на экране, и встают на паузу, когда уходят.
 // Кнопка звука включает звук у одного рилса и выключает у остальных.
+// Важно для Safari: он не грузит первый кадр сам (preload="metadata" там = только длительность),
+// поэтому запуск не ждёт загрузки — play() сам начинает грузить видео.
+// Заглушка с треугольником прячется, как только появился кадр или видео пошло.
 (() => {
   const cards = [...document.querySelectorAll("[data-reel]")];
   if (!cards.length) return;
@@ -1290,10 +1293,8 @@
   const observer = "IntersectionObserver" in window
     ? new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          // Запоминаем, видна ли карточка: видео может догрузиться позже
-          entry.target.dataset.inView = entry.isIntersecting ? "1" : "0";
           const video = entry.target.querySelector("video");
-          if (!video || !entry.target.classList.contains("has-video")) return;
+          if (!video) return;
           if (entry.isIntersecting && !reduce) video.play().catch(() => {});
           else if (!entry.isIntersecting) video.pause();
         });
@@ -1302,14 +1303,20 @@
   cards.forEach((card) => {
     const video = card.querySelector("video");
     const button = card.querySelector(".reels_sound");
-    if (!video) return;
-    const ready = () => {
-      card.classList.add("has-video");
-      if (card.dataset.inView === "1" && !reduce) video.play().catch(() => {});
-    };
+    if (!video || card.dataset.reelReady === "true") return;
+    card.dataset.reelReady = "true";
+    const ready = () => card.classList.add("has-video");
     if (video.readyState >= 2) ready();
     video.addEventListener("loadeddata", ready);
+    video.addEventListener("playing", ready);
+    // Если браузер не дал запустить сам (режим энергосбережения на iPhone, «меньше движения»),
+    // видео запускается нажатием на карточку — заглушка как раз выглядит как кнопка «играть».
+    card.addEventListener("click", (event) => {
+      if (event.target.closest(".reels_sound")) return;
+      if (video.paused) video.play().catch(() => {});
+    });
     if (observer) observer.observe(card);
+    else if (!reduce) video.play().catch(() => {});
     if (!button) return;
     button.addEventListener("click", () => {
       const turnOn = video.muted;

@@ -24,6 +24,10 @@ const assetUrls = {
   "./assets/case-lera-shakhova.webp": "https://s3.twcstorage.ru/asp-media/case_lera_shakhova_9c5647f140.webp",
   "./assets/case-sasha-svanidze.webp": "https://s3.twcstorage.ru/asp-media/case_sasha_svanidze_474c825c79.webp",
   "./assets/content-video-poster.png": "https://s3.twcstorage.ru/asp-media/content_video_poster_e69708281b.png",
+  // Обложки рилсов (первый кадр): видны сразу, даже если браузер не грузит видео сам
+  "./assets/reel-1-poster.webp": "https://static.tildacdn.com/tila3734-3536-4436-a464-373061363631/reel-1-poster.webp",
+  "./assets/reel-2-poster.webp": "https://static.tildacdn.com/tila3262-3965-4333-a532-653937376661/reel-2-poster.webp",
+  "./assets/reel-3-poster.webp": "https://static.tildacdn.com/tila3461-3835-4138-a462-623636656533/reel-3-poster.webp",
 };
 
 // Части страницы по порядку: как найти начало, короткое имя файла, название для комментария.

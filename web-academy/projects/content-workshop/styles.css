@@ -6811,9 +6811,10 @@ html.is-trial-dialog-open { overflow: hidden; }
   height: 100%;
   object-fit: cover;
 }
-/* Заглушка, пока нет ссылки на видео: значок «смотреть» по центру */
+/* Значок «смотреть» по центру, пока видео не пошло. Лежит поверх обложки видео, чтобы было понятно, что рилс можно запустить */
 .reels_placeholder {
   position: absolute;
+  z-index: 3;
   top: 50%;
   left: 50%;
   display: flex;
@@ -6828,6 +6829,8 @@ html.is-trial-dialog-open { overflow: hidden; }
 }
 .reels_placeholder svg { width: 1.5rem; height: 1.5rem; margin-left: 0.125rem; }
 .reels_card.has-video .reels_placeholder { display: none; }
+/* Пока видео не пошло, карточку можно нажать, чтобы запустить его (нужно Safari в режиме энергосбережения) */
+.reels_card:not(.has-video) { cursor: pointer; }
 /* Затемнение снизу и справа, чтобы белые цифры читались и на светлых кадрах */
 .reels_shade {
   position: absolute;
