@@ -1221,7 +1221,7 @@ function setSheet(open) {
   else { panel.removeAttribute('role'); panel.removeAttribute('aria-modal'); panel.removeAttribute('aria-labelledby'); panel.setAttribute('aria-label', 'Фильтры'); }
   openBtn.setAttribute('aria-expanded', open);
   document.documentElement.classList.toggle('is-sheet-open', open);
-  document.querySelectorAll('[data-sheet-inert], .site-header').forEach(el => (el.inert = open));
+  document.querySelectorAll('[data-sheet-inert], .site-header, .site-footer_component').forEach(el => (el.inert = open));
   /* Фокус после того, как шторка стала видимой: скрытый элемент фокус не принимает */
   if (open) { void panel.offsetHeight; document.getElementById('close-filters').focus(); }
 }

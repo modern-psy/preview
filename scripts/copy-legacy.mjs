@@ -151,6 +151,31 @@ for (const [alias, info] of Object.entries(pagesInfo)) {
   fs.writeFileSync(file, html);
 }
 
+// 5б. Наши папки не на боевых адресах (черновики вроде catalog-v1) просят шапку и подвал сами:
+//     <meta name="site-chrome" content="header footer"> в <head>. Своей копии шапки в папке держать не нужно.
+const chromeAsked = [];
+const askChrome = (file) => {
+  if (!fs.existsSync(file)) return;
+  let html = fs.readFileSync(file, 'utf8');
+  const m = html.match(/<meta\s+name="site-chrome"\s+content="([^"]*)"/i);
+  if (!m || html.includes('data-site-header')) return;
+  const want = m[1].split(/\s+/);
+  if (!html.includes('/academy-base/v1.css')) html = html.replace(/<\/head>/i, `${v1Link}\n</head>`);
+  if (want.includes('header')) html = html.replace(/<body\b[^>]*>/i, (tag) => `${tag}\n${headerHtml}\n`);
+  if (want.includes('footer') && !html.includes('site-footer_component')) {
+    html = html.replace(/<\/body>(?![\s\S]*<\/body>)/i, `${footerHtml}\n</body>`);
+  }
+  fs.writeFileSync(file, html);
+  chromeAsked.push(path.relative(DIST, path.dirname(file)) || '/');
+};
+for (const e of fs.readdirSync(DIST, { withFileTypes: true })) {
+  if (!e.isDirectory() || e.name.startsWith('_')) continue;
+  askChrome(path.join(DIST, e.name, 'index.html'));
+  if (e.name === 'drafts') for (const d of fs.readdirSync(path.join(DIST, 'drafts'), { withFileTypes: true })) {
+    if (d.isDirectory()) askChrome(path.join(DIST, 'drafts', d.name, 'index.html'));
+  }
+}
+
 // 6. Ссылки на боевой сайт внутри страниц → внутренние: на зеркале клики должны оставаться на зеркале.
 //    Меняем только ссылки <a href>, canonical и og:url остаются боевыми.
 let relinked = 0;
@@ -171,3 +196,4 @@ if (report.exportOver.length) console.log(`  экспорт поверх отс�
 if (report.skipped.length) console.log(`  пропущено: ${report.skipped.join(', ')}`);
 console.log(`  ссылки на modern-psy.ru стали внутренними в ${relinked} файлах`);
 console.log(`  шапка и подвал заменены на страницах из экспорта: ${chrome.swapped}, шапка и подвал добавлены нашим папкам: ${chrome.injected}`);
+if (chromeAsked.length) console.log(`  шапка и подвал по метке site-chrome: ${chromeAsked.join(', ')}`);
