@@ -25,11 +25,17 @@ RUN npm run build && node scripts/caddy-redirects.mjs > /opt/app/redirects.caddy
 FROM caddy:2 AS caddy
 
 FROM debian:bookworm-slim
+# curl и wget нужны платформе: Timeweb проверяет состояние контейнера командой изнутри.
+# Без них проверка зависает в «starting» и контейнер останавливают, хотя сервер работает
+# (так было 16.11.2026 на bookworm-slim и раньше на Alpine).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl wget ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /opt/app/redirects.caddy /etc/caddy/redirects.caddy
 COPY --from=build /opt/app/dist /srv
 
-# Порт, который слушает сервер. В панели Timeweb указать его же.
+# Порт, который слушает сервер. Timeweb находит его сам по этой строке, в панели указывать не нужно.
 EXPOSE 8080
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
