@@ -1,0 +1,257 @@
+/* КОПИЯ apps/tilda/course-month/src/course-month.css (баннер «Курсы месяца», опубликован на сайте 31.10.2026).
+   Править там, сюда копировать без изменений. */
+/* ============================================================
+   БАННЕР СКИДОК МЕСЯЦА · modern-psy.ru/courses
+   Стили принадлежат только этому блоку. Курсы, даты, проценты и цены
+   приходят из CMS (акция «Курс месяца»), руками в карточках не правятся.
+   Вид — вариант A, модель 2 (Дарья, 31.10.2026): лёгкие карточки без
+   кнопок, дата окончания в заголовке, процент жёлтой плашкой в карточке.
+   Поля — как у каталога под баннером (web-academy): clamp(1rem, 4.7619vw, 5rem).
+   Ширина содержимого до 1520px, как у новой шапки сайта (Дарья, 31.10.2026);
+   каталог под баннером пока 1440px, его переводят на 1520 следом.
+   ============================================================ */
+[data-course-month] {
+  --white: #fff;
+  --page: #f5f5f5;          /* фон страницы каталога */
+  --ink: #1d1d33;           /* текст, как в каталоге под баннером */
+  --muted: #585873;         /* дата, зачёркнутая цена, подпись про оплату */
+  --hover: #f1f1f5;         /* кружок стрелки */
+  --dark: #2b2334;          /* кружок стрелки при наведении, тёмные блоки сайта */
+  --focus: #977ee2;
+  --panel: #efedf8;         /* подложка баннера: violet-50, в дизайн-системе --bg-accent-soft */
+  /* Жёлтый купона из блока цены: #ffe110, смешанный с белым 80/20 */
+  --promo-bg: #ffe740;
+  --promo-text: #3d3a2a;
+
+  --space-xxsmall: 0.25rem;
+  --space-xsmall: 0.5rem;
+  --space-small: 1rem;
+  --space-medium: 2rem;
+  --space-xlarge: 4rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.25rem;
+
+  color: var(--ink);
+  font-family: "Wix Madefor Text", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+  background: var(--page);
+}
+
+[data-course-month],
+[data-course-month] *,
+[data-course-month] *::before,
+[data-course-month] *::after { box-sizing: border-box; }
+
+[data-course-month] .padding-global {
+  --padding-global: clamp(1rem, 4.7619vw, 5rem); /* поля страницы web-academy */
+  padding-inline: var(--padding-global);
+}
+[data-course-month] .container-large { width: 100%; max-width: 95rem; margin-inline: auto; } /* 1520px */
+[data-course-month] .padding-section-small { padding-block: var(--space-medium); }
+
+/* Подложка: сиреневая панель вокруг заголовка и карточек (Дарья, 31.10.2026).
+   Поля внутри растут от 16px на телефоне до 32px на десктопе. */
+[data-course-month] .course-month_shell {
+  --panel-pad: clamp(1rem, 2.22vw, 2rem);
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--panel-pad);
+  border-radius: var(--radius-3xl);
+  background: var(--panel);
+}
+
+[data-course-month] .course-month_header { margin-bottom: var(--space-small); }
+
+/* Заголовок 22 → 28px, начертание 600, как названия в каталоге */
+[data-course-month] .course-month_heading {
+  max-width: 40rem;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.375rem, calc(0.94vw + 1.155rem), 1.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Ряд карточек. На телефоне и планшете лента листается вбок до краёв подложки.
+   Строки общие для всего ряда (subgrid): дата, название,
+   пустое место, подпись про оплату, цена. Цена — последняя строка, поэтому
+   во всех карточках она прижата к низу и стоит на одной линии, даже если
+   подпись «при единовременной оплате» есть только в одной. */
+[data-course-month] .course-month_grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(17rem, calc(100vw - 6rem));
+  grid-template-rows: auto auto minmax(0.875rem, 1fr) auto auto;
+  column-gap: 0.75rem;
+  width: calc(100% + 2 * var(--panel-pad));
+  max-width: none;
+  margin: 0 calc(-1 * var(--panel-pad));
+  padding: 0 var(--panel-pad);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: var(--panel-pad);
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+[data-course-month] .course-month_grid::-webkit-scrollbar { display: none; }
+
+[data-course-month] .course-month_grid:focus-visible {
+  outline: .125rem solid var(--focus);
+  outline-offset: var(--space-xxsmall);
+}
+
+[data-course-month] .course-month_item {
+  display: grid;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+/* Карточка целиком ссылка: без обводки, тени и кнопки */
+[data-course-month] .course-month_card {
+  display: grid;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  min-width: 0;
+  padding: var(--space-small);
+  border-radius: var(--radius-2xl);
+  background: var(--white);
+  color: var(--ink) !important;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+[data-course-month] .course-month_card:focus-visible {
+  outline: .125rem solid var(--focus);
+  outline-offset: var(--space-xxsmall);
+}
+
+[data-course-month] .course-month_top {
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xsmall);
+  min-height: 1.5rem;
+}
+
+[data-course-month] .course-month_start {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+/* Процент скидки: левая половина купона из блока цены */
+[data-course-month] .course-month_percent {
+  flex: none;
+  padding: 0.3125rem 0.5rem;
+  border-radius: 0.375rem;
+  background: var(--promo-bg);
+  color: var(--promo-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+[data-course-month] .course-month_title {
+  grid-row: 2;
+  margin: 0.375rem 0 0;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+[data-course-month] .course-month_price {
+  grid-row: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.625rem;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+[data-course-month] .course-month_new-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+[data-course-month] .course-month_old-price {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  text-decoration-thickness: 1px;
+  white-space: nowrap;
+}
+
+/* Стрелка показывает, что карточка — ссылка */
+[data-course-month] .course-month_arrow {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--hover);
+  color: var(--ink);
+  transition: background-color .15s ease, color .15s ease;
+}
+
+[data-course-month] .course-month_arrow svg { display: block; width: 1rem; height: 1rem; }
+
+[data-course-month] .course-month_terms {
+  grid-row: 4;
+  margin-bottom: 0.125rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+[data-course-month] .course-month_card:active .course-month_arrow {
+  background: var(--dark);
+  color: var(--white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-course-month] .course-month_card:hover .course-month_arrow {
+    background: var(--dark);
+    color: var(--white);
+  }
+}
+
+/* Планшет и шире: поля карточки побольше, карточки растягиваются на всю
+   ширину подложки; если не помещаются по 16rem, лента листается */
+@media (min-width: 48.0625rem) {
+  [data-course-month] .course-month_grid { grid-auto-columns: minmax(16rem, 1fr); }
+  [data-course-month] .course-month_card { padding: 1.25rem; }
+}
+
+/* Десктоп: карточки делят ширину поровну и не вылезают за поля.
+   Если курсов больше, чем помещается, ряд прокручивается внутри контейнера. */
+@media (min-width: 64.0625rem) {
+  [data-course-month] .course-month_grid {
+    grid-auto-columns: minmax(16rem, 1fr);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    scroll-padding-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-course-month] .course-month_arrow { transition: none; }
+}
