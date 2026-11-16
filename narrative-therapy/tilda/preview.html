@@ -2052,6 +2052,16 @@ body:has(.academy-page) {
   font-weight: 400;
 }
 .hero_note-icon { display: block; width: 1.375rem; height: 1.375rem; flex: none; }
+/* Дополнительное условие под датой. Текст меняется в данных курса. */
+.hero_supporting-note {
+  width: 100%;
+  color: var(--color-text-on-dark);
+  font-size: var(--hero-meta-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  opacity: 0.9;
+}
 .hero_component.is-dual-action .stat-card_component {
   position: static;
   flex-direction: column;
@@ -2258,6 +2268,9 @@ body:has(.academy-page) {
 .body-text_component.is-callout { font-weight: 500; line-height: 1.3; }
 .body-text_component.is-fine-print { font-size: 0.875rem; font-weight: 400; line-height: 1.4; }
 
+/* Компактные фактические подписи и рассрочка в списках — 16px на всех экранах. */
+.body-text_component.is-compact { font-size: 1rem; }
+
 /* === web-academy/shared/academy/button.css === */
 /* Opt-in action button. Geometry extracted from the approved dual-action Hero.
    Page specificity intentionally supersedes legacy composition sizing. */
@@ -2341,8 +2354,11 @@ body:has(.academy-page) {
 }
 @media (prefers-reduced-motion: reduce) {
   .toggle-icon_component { transition: none; }
-}
-
+}</style>
+</div></div></div></div>
+<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
+<!-- ОБЩИЕ СТИЛИ 2/3. Один раз на странице, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<style>
 /* === web-academy/shared/academy/faq-responsive.css === */
 /* Opt-in adaptation of the existing FAQ + accordion, preserving its runtime. */
 .faq_component.is-responsive { --faq-padding: 1rem; --faq-answer-paragraph-gap: 0.25rem; }
@@ -2367,11 +2383,8 @@ body:has(.academy-page) {
 }
 @media (min-width: 48rem) {
   .faq_component.is-responsive { --faq-padding: 1.5rem; }
-}</style>
-</div></div></div></div>
-<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- ОБЩИЕ СТИЛИ 2/3. Один раз на странице, до всех секций. Отступы T123 сверху и снизу: 0. -->
-<style>
+}
+
 /* === web-academy/shared/academy/lead-form.css === */
 /* Complete Academy lead form UI with optional native Tilda bridge; see lead-form.md. */
 .lead-form_component {
@@ -3514,6 +3527,13 @@ body > .iti--detached-country-selector .iti__no-results {
 }
 @media (min-width: 64.0625rem) {
   .content-heading_component.is-profile { --content-heading-size: 2rem; }
+}
+
+/* Компактные заголовки плотных списков: 18px на телефоне, 20px от 521px.
+   Добавлено для расписания по запросу Дарьи; обычные карточки не меняются. */
+.content-heading_component.is-compact { --content-heading-size: 1.125rem; }
+@media (min-width: 32.5625rem) {
+  .content-heading_component.is-compact { --content-heading-size: 1.25rem; }
 }
 
 .content-header_component {
@@ -5426,7 +5446,17 @@ const initialize = () => {
 
   customElements.define('academy-pricing', AcademyPricing);
 })();
-
+};
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, {once: true});
+else initialize();
+})();
+</script>
+</div></div></div></div>
+<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
+<!-- ОБЩИЕ СКРИПТЫ 2/2. Последние T123, после всех секций и нативной формы Tilda, по порядку. -->
+<script>
+(() => {
+const initialize = () => {
 /* === web-academy/shared/academy/lead-form.js === */
 // Academy lead form: opt-in UI and Tilda bridge. Integration: lead-form.md.
 (() => {
@@ -5439,6 +5469,9 @@ const initialize = () => {
 
   const INTL_TEL_INPUT_UTILS_URL =
     "https://cdn.jsdelivr.net/npm/intl-tel-input@29.1.2/dist/js/utils.js";
+  // Longest wait for the utils module before phone validation falls back to the
+  // plausibility check; exact validation takes over once the module arrives.
+  const INTL_TEL_INPUT_UTILS_WAIT_MS = 1500;
   const ASCII_EMAIL_PATTERN =
     /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
   const TELEGRAM_USERNAME_PATTERN = /^@[A-Za-z0-9_]{3,32}$/;
@@ -5591,13 +5624,23 @@ const initialize = () => {
           },
         },
       });
-      ready = instance.promise
-        .then(() => {
-          utilsReady = true;
-        })
-        .catch(() => {
-          utilsReady = false;
-        });
+      // The library defers the utils download until the window "load" event. On
+      // pages with heavy third-party widgets (modern-psy.ru: the Jivo chat arrives
+      // after ~6 s) that kept phone validation and the submit button pending.
+      // Start the download now; a repeated call is a no-op inside the library.
+      window.intlTelInput.attachUtils?.(() => import(INTL_TEL_INPUT_UTILS_URL))?.catch(() => {});
+      ready = Promise.race([
+        instance.promise
+          .then(() => {
+            utilsReady = true;
+          })
+          .catch(() => {
+            utilsReady = false;
+          }),
+        new Promise((resolve) => {
+          window.setTimeout(resolve, INTL_TEL_INPUT_UTILS_WAIT_MS);
+        }),
+      ]);
     }
 
     return {
@@ -5685,10 +5728,12 @@ const initialize = () => {
       ...group.querySelectorAll('input[type="radio"][name="messenger-type"]'),
     ];
     const telegramRadio = radios.find((radio) => radio.value === "telegram");
+    // MAX slot differs between Tilda blocks: `max`, `max_messenger` (newer contact
+    // block) or a reused `whatsapp`. Never fall back to the Telegram radio.
     const maxRadio =
-      radios.find((radio) => radio.value === "max") ||
+      radios.find((radio) => radio.value === "max" || radio.value === "max_messenger") ||
       radios.find((radio) => radio.value === "whatsapp") ||
-      radios[0];
+      radios.find((radio) => radio.value !== "telegram");
 
     if (maxRadio && !maxRadio.dataset.academyOriginalValue) {
       maxRadio.dataset.academyOriginalValue = maxRadio.value;
@@ -5701,8 +5746,11 @@ const initialize = () => {
     const selectedRadio = messenger === "telegram" ? telegramRadio : maxRadio;
 
     if (!(selectedRadio instanceof HTMLInputElement)) {
-      return;
+      return "";
     }
+
+    // Native type before the whatsapp → max rename: it names the matching value field.
+    const selectedType = selectedRadio.value;
 
     selectedRadio.checked = true;
     selectedRadio.dispatchEvent(new Event("input", { bubbles: true }));
@@ -5711,6 +5759,8 @@ const initialize = () => {
     if (messenger === "max" && selectedRadio.value === "whatsapp") {
       selectedRadio.value = "max";
     }
+
+    return selectedType;
   };
 
   const syncTildaForm = async (nativeForm, formData) => {
@@ -5727,8 +5777,13 @@ const initialize = () => {
       ".t-input-group_contact_method",
     );
 
+    // E-mail is optional per landing: a form rendered without the field sends
+    // email: null and then the native form may omit the e-mail input too.
+    const needsEmail = formData.email !== null;
+
     if (
       !(nameInput instanceof HTMLInputElement) ||
+      (needsEmail && !(emailInput instanceof HTMLInputElement)) ||
       !(phoneGroup instanceof HTMLElement) ||
       !(messengerGroup instanceof HTMLElement)
     ) {
@@ -5736,9 +5791,9 @@ const initialize = () => {
     }
 
     setNativeInputValue(nameInput, formData.name);
-    if (emailInput instanceof HTMLInputElement) setNativeInputValue(emailInput, formData.email);
+    if (needsEmail) setNativeInputValue(emailInput, formData.email);
     fillTildaPhoneGroup(phoneGroup, formData.phone, "Phone");
-    selectTildaMessenger(messengerGroup, formData.messenger);
+    const selectedType = selectTildaMessenger(messengerGroup, formData.messenger);
 
     await new Promise((resolve) => window.requestAnimationFrame(resolve));
 
@@ -5747,10 +5802,37 @@ const initialize = () => {
         'input[name="messenger-id"], input[name="tildaspec-phone-part[]"], input[name="tildaspec-phone-part[]-iso"]',
       )
       .forEach((input) => {
+        // Hidden hybrid groups are already reset and disabled by Tilda; an input
+        // event there would make its hybrid handler re-enable an empty text field.
+        if (input.closest(".t-contact-method__hybrid.t-contact-method__hidden")) {
+          return;
+        }
+
         setNativeInputValue(input, "");
       });
 
-    if (formData.messenger === "telegram") {
+    // Newer hybrid contact block: every messenger has its own text field marked
+    // with data-contact-method (Telegram «Имя пользователя или телефон», MAX
+    // «Ссылка или телефон»). Fill exactly the field of the selected type.
+    const typedContactInput = [
+      ...messengerGroup.querySelectorAll(
+        'input[name="messenger-id"][data-contact-method]',
+      ),
+    ].find((input) => input.dataset.contactMethod === selectedType);
+
+    if (typedContactInput instanceof HTMLInputElement) {
+      const valueGroup = typedContactInput.closest(".t-phonemask-input-group");
+      const isPhoneContact = /^[+0-9]/.test(formData.messengerContact);
+
+      if (isPhoneContact && valueGroup?.querySelector("input.t-input-phonemask")) {
+        // Hybrid field: Tilda drops the text and switches to its phone mask as soon
+        // as the text starts with + or a digit, so switch first, then fill the mask.
+        setNativeInputValue(typedContactInput, "+");
+        fillTildaPhoneGroup(valueGroup, formData.messengerContact, "messenger-id");
+      } else {
+        setNativeInputValue(typedContactInput, formData.messengerContact);
+      }
+    } else if (formData.messenger === "telegram") {
       const telegramInput = messengerGroup.querySelector(
         'input[name="messenger-id"]:not([type="hidden"]):not(:disabled)',
       );
@@ -6116,7 +6198,7 @@ const initialize = () => {
       const phoneController = phoneControllers.get(mainPhoneInput);
       const maxContactController = phoneControllers.get(maxContactInput);
       const formData = {
-        email: form.elements.email?.value.trim() || "",
+        email: form.elements.email ? form.elements.email.value.trim() : null,
         messenger: selectedMessenger,
         messengerContact:
           selectedMessenger === "telegram"
@@ -6211,17 +6293,7 @@ const initialize = () => {
     formControllers.forEach((controller) => controller.cleanup());
   };
 })();
-};
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, {once: true});
-else initialize();
-})();
-</script>
-</div></div></div></div>
-<div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
-<!-- ОБЩИЕ СКРИПТЫ 2/2. Последние T123, после всех секций и нативной формы Tilda, по порядку. -->
-<script>
-(() => {
-const initialize = () => {
+
 /* === narrative-therapy/page.js === */
 /* Проектный скрипт лендинга «Основы нарративной практики».
    1. Схемы ситуаций (блок «Где можно применять»): анимация идёт, только пока схема видна на экране,

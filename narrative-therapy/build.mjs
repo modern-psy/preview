@@ -308,6 +308,8 @@ async function buildCss() {
    при сборке три места скрипта делаются терпимыми к его отсутствию: значение почты пустое, поле почты в нативной
    форме Тильды необязательно. Если общий скрипт изменится и замена не найдётся, сборка остановится. */
 function withoutEmail(source) {
+  // Новая версия общего скрипта сама умеет форму без почты (email: null) — тогда заплатки не нужны.
+  if (source.includes('const needsEmail')) return source;
   const patches = [
     ['      !(emailInput instanceof HTMLInputElement) ||\n', ''],
     ['    setNativeInputValue(emailInput, formData.email);', '    if (emailInput instanceof HTMLInputElement) setNativeInputValue(emailInput, formData.email);'],

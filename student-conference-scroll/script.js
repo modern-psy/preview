@@ -5,7 +5,9 @@
    ========================================================================= */
 (() => {
   const page = document.querySelector(".sc-page");
-  if (!page) return;
+  // Сценарий скролла нужен только самому лендингу. На страницах без первого экрана
+  // (например, «Оплата прошла») работает лишь запись через бота — она ниже, отдельным блоком
+  if (!page || !document.querySelector("[data-sc-hero]")) return;
 
   if (typeof window.__scCleanup === "function") window.__scCleanup();
   const disposers = [];
@@ -1963,7 +1965,11 @@
   let formNameWarned = false;
 
   const findTildaForm = (formName) => {
-    const forms = [...document.querySelectorAll("form.t-form")];
+    // 🔴 Форму корзины (блок «Корзина», data-formcart="y") не берём никогда: у неё своя оплата
+    // и вебхуки (на этой странице — выдача доступа в Skillspace). Если взять её как «единственную
+    // форму на странице», нажатие на кнопку бота отправило бы заказ
+    const forms = [...document.querySelectorAll("form.t-form")]
+      .filter((form) => form.getAttribute("data-formcart") !== "y" && !form.closest(".t706"));
 
     const byName = forms.find(
       (form) => form.querySelector('input[name="tildaspec-formname"]')?.value === formName
@@ -2023,6 +2029,11 @@
     if (group && typeof window.t_form_phonemask__setValue === "function") {
       try {
         window.t_form_phonemask__setValue(group, phone, undefined, { noFocus: true });
+        // Маска сама кладёт номер в скрытое поле Phone в своём формате: +7 (900) 123-45-67.
+        // Его не перезаписываем — Тильда проверяет длину поля под этот формат и иначе
+        // молча не отправляет форму («Слишком короткое значение»)
+        const masked = nativeForm.querySelector(`input[name="${FIELDS.phone}"]`);
+        if (masked && masked.value) return;
       } catch (error) {
         console.warn("[запись] Тильда не приняла номер в поле с маской.", error);
       }
@@ -2373,6 +2384,91 @@
 
   const TELEGRAM_PATTERN = /^@[A-Za-z0-9_]{4,32}$/;
 
+  /* Маска телефона прямо при вводе.
+     Россия и Казахстан (+7): +7 (905) 703-42-42 — 8 или 9 в начале сами становятся +7.
+     Другие страны: «+», код страны и до 15 цифр подряд.
+     Буквы и лишние знаки в поле не попадают, Backspace перескакивает скобки и дефисы. */
+  const formatPhone = (raw) => {
+    const value = String(raw || "");
+    const plus = value.trim().startsWith("+");
+    let digits = value.replace(/\D/g, "");
+    if (!digits) return plus ? "+" : "";
+    if (!plus && digits[0] === "8") digits = `7${digits.slice(1)}`;
+    else if (!plus && digits[0] === "9") digits = `7${digits}`;
+    if (digits[0] !== "7") return `+${digits.slice(0, 15)}`;
+    const d = digits.slice(1, 11);
+    let out = "+7";
+    if (d.length) out += ` (${d.slice(0, 3)}`;
+    if (d.length >= 3) out += ")";
+    if (d.length > 3) out += ` ${d.slice(3, 6)}`;
+    if (d.length > 6) out += `-${d.slice(6, 8)}`;
+    if (d.length > 8) out += `-${d.slice(8, 10)}`;
+    return out;
+  };
+
+  // Курсор после форматирования: столько же цифр слева, сколько было до него
+  const caretAfterDigits = (text, count) => {
+    if (count <= 0) return text.startsWith("+") ? 1 : 0;
+    let seen = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      if (/\d/.test(text[i])) seen += 1;
+      if (seen === count) return i + 1;
+    }
+    return text.length;
+  };
+
+  const attachPhoneMask = (input) => {
+    if (!(input instanceof HTMLInputElement) || input.dataset.phoneMask) return;
+    input.dataset.phoneMask = "on";
+    const apply = (caretDigits) => {
+      const atEnd = caretDigits === null;
+      const formatted = formatPhone(input.value);
+      if (formatted === input.value) return;
+      input.value = formatted;
+      const pos = atEnd ? formatted.length : caretAfterDigits(formatted, caretDigits);
+      try { input.setSelectionRange(pos, pos); } catch (error) { /* поле не в фокусе */ }
+    };
+    input.addEventListener("input", () => {
+      const caret = input.selectionStart ?? input.value.length;
+      const atEnd = caret >= input.value.length;
+      apply(atEnd ? null : input.value.slice(0, caret).replace(/\D/g, "").length);
+    });
+    // Backspace сразу за скобкой, пробелом или дефисом удаляет цифру перед ними
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Backspace" || input.selectionStart !== input.selectionEnd) return;
+      const caret = input.selectionStart ?? 0;
+      const before = input.value.slice(0, caret);
+      if (!before || /\d$/.test(before)) return;
+      const lastDigit = before.search(/\d(?=\D*$)/);
+      if (lastDigit < 0) return;
+      event.preventDefault();
+      const digitsLeft = before.slice(0, lastDigit).replace(/\D/g, "").length;
+      input.value = input.value.slice(0, lastDigit) + input.value.slice(lastDigit + 1);
+      apply(digitsLeft);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    input.addEventListener("blur", () => apply(null));
+  };
+
+  /* Почта: только латиница, цифры и . _ % + - @, без пробелов и с одной «@».
+     Лишнее не печатается, а под полем сразу объясняем почему */
+  const attachEmailFilter = (input, onReject) => {
+    if (!(input instanceof HTMLInputElement)) return;
+    input.addEventListener("input", () => {
+      const before = input.value;
+      let clean = before.replace(/[^A-Za-z0-9._%+\-@]/g, "");
+      const at = clean.indexOf("@");
+      if (at >= 0) clean = clean.slice(0, at + 1) + clean.slice(at + 1).replace(/@/g, "");
+      if (clean === before) return;
+      input.value = clean;
+      if (onReject) {
+        onReject(/[^\x00-\x7F]/.test(before)
+          ? "Почту пишем латиницей: переключите раскладку"
+          : "В почте не бывает пробелов и второй «@»");
+      }
+    });
+  };
+
   // 🟢 Тексты ошибок под полями
   const ERRORS = {
     name: "Напишите, как к вам обращаться",
@@ -2401,6 +2497,8 @@
     const submitLabel = submit?.querySelector("[data-signup-submit-label]");
     const submitText = submitLabel?.textContent || "";
     let busy = false;
+
+    attachPhoneMask(phoneInput);
 
     const selectedMessenger = () =>
       messengerInputs.find((input) => input.checked)?.value || "max";
@@ -2534,6 +2632,272 @@
 
 
   /* --------------------------------------------------------------------------
+     З. ОПЛАТА БИЛЕТА С ЗАПИСЯМИ ЧЕРЕЗ КОРЗИНУ ТИЛЬДЫ
+     --------------------------------------------------------------------------
+     На странице Тильды стоит штатный блок «Корзина»: к его форме подключены оплата
+     (Т-Банк, «Долями») и вебхуки — выдача доступа в Skillspace и AmoCRM.
+     Своя форма на лендинге ничего не отправляет сама. По кнопке скрипт:
+       1) кладёт билет в корзину — «нажимает» скрытую ссылку #order:Название=Цена;
+       2) прячет окно корзины (оно остаётся «открытым»: при закрытии Тильда очищает
+          корзину — у неё стоит настройка «не хранить корзину»);
+       3) заполняет форму корзины именем, почтой, телефоном и способом оплаты;
+       4) отправляет её — дальше Тильда сама переводит на страницу оплаты.
+     Если через 8 секунд мы всё ещё на странице (Тильда не приняла данные), окно
+     корзины показывается как есть: человек увидит подсказку Тильды и закончит покупку там.
+     На превью корзины нет — форма только проверяет поля.
+     -------------------------------------------------------------------------- */
+
+  // Сколько ждём перехода на оплату, прежде чем показать окно корзины
+  const TICKET_REDIRECT_WAIT_MS = 8000;
+  // Метка «человек ушёл на оплату билета» — по ней страница после оплаты может понять,
+  // что пришёл покупатель конференции (см. apps/tilda/README.md)
+  const TICKET_STORAGE_KEY = "asp-studconf-ticket";
+  const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+  const TICKET_ERRORS = {
+    name: "Напишите, как к вам обращаться",
+    email: "Проверьте почту: на неё придёт доступ к записям",
+    phone: "Проверьте номер телефона",
+    consent: "Без согласия мы не сможем оформить билет",
+    noCart: "Не получилось перейти к оплате. Обновите страницу или напишите нам.",
+    stuck: "Проверьте данные в окне оплаты и нажмите кнопку там.",
+  };
+
+  const findCartForm = () =>
+    document.querySelector('form.t-form[data-formcart="y"]') || document.querySelector(".t706 form");
+
+  // Способы оплаты на лендинге — по корзине: лишние прячем, недостающие добавляем
+  const syncPayOptions = (form, cartForm) => {
+    const fieldset = form.querySelector("[data-ticket-pay]");
+    if (!fieldset || !cartForm) return;
+    const cartRadios = [...cartForm.querySelectorAll('input[name="paymentsystem"]')];
+    if (cartRadios.length === 0) {
+      // Одна платёжная система — выбирать нечего
+      fieldset.hidden = true;
+      return;
+    }
+    const ours = new Map([...fieldset.querySelectorAll('input[name="paymentsystem"]')].map((input) => [input.value, input]));
+    cartRadios.forEach((radio) => {
+      if (ours.has(radio.value)) return;
+      const label = document.createElement("label");
+      label.className = "sc-choice";
+      const text = radio.closest("label")?.textContent.trim() || radio.value;
+      label.innerHTML = `<input type="radio" name="paymentsystem" value=""><span></span>`;
+      label.querySelector("input").value = radio.value;
+      label.querySelector("span").textContent = text;
+      fieldset.appendChild(label);
+    });
+    const available = new Set(cartRadios.map((radio) => radio.value));
+    fieldset.querySelectorAll('input[name="paymentsystem"]').forEach((input) => {
+      input.closest("label").hidden = !available.has(input.value);
+      if (!available.has(input.value)) input.checked = false;
+    });
+    if (!fieldset.querySelector('input[name="paymentsystem"]:checked')) {
+      const first = [...fieldset.querySelectorAll('input[name="paymentsystem"]')].find((input) => !input.closest("label").hidden);
+      if (first) first.checked = true;
+    }
+  };
+
+  const setupTicket = (block) => {
+    const form = block.querySelector("[data-ticket-form]");
+    const orderLink = block.querySelector("[data-ticket-order-link]");
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const source = block.dataset.signupSource || "";
+    const status = form.querySelector("[data-ticket-status]");
+    const submit = form.querySelector("[data-ticket-submit]");
+    const submitLabel = submit?.querySelector("[data-ticket-submit-label]");
+    const submitText = submitLabel?.textContent || "";
+    const inputs = {
+      name: form.elements.namedItem("name"),
+      email: form.elements.namedItem("email"),
+      phone: form.elements.namedItem("phone"),
+      consent: form.elements.namedItem("consent"),
+    };
+    let busy = false;
+
+    const setStatus = (message = "", state = "idle") => {
+      if (!status) return;
+      status.textContent = message;
+      status.dataset.state = state;
+    };
+
+    const setError = (input, message = "") => {
+      const field = input.closest("[data-ticket-field]");
+      const error = field?.querySelector("[data-ticket-error]");
+      input.setAttribute("aria-invalid", String(Boolean(message)));
+      if (field) field.dataset.state = message ? "invalid" : "idle";
+      if (error) error.textContent = message;
+    };
+
+    const checks = {
+      name: () => (inputs.name.value.trim().length >= 2 ? "" : TICKET_ERRORS.name),
+      email: () => (EMAIL_PATTERN.test(inputs.email.value.trim()) ? "" : TICKET_ERRORS.email),
+      phone: () => (isPhoneValid(normalizePhone(inputs.phone.value)) ? "" : TICKET_ERRORS.phone),
+      consent: () => (inputs.consent.checked ? "" : TICKET_ERRORS.consent),
+    };
+    const validate = (key) => {
+      const message = checks[key]();
+      setError(inputs[key], message);
+      return !message;
+    };
+
+    Object.entries(inputs).forEach(([key, input]) => {
+      input.addEventListener(input.type === "checkbox" ? "change" : "input", () => {
+        if (input.getAttribute("aria-invalid") === "true") validate(key);
+        setStatus();
+      });
+      if (input.type !== "checkbox") {
+        input.addEventListener("blur", () => { if (input.value.trim()) validate(key); });
+      }
+    });
+
+    attachPhoneMask(inputs.phone);
+    attachEmailFilter(inputs.email, (message) => setError(inputs.email, message));
+
+    // Метка «ушёл на оплату» живёт до страницы после оплаты. Если человек снова на лендинге,
+    // значит, оплату он не закончил: метку убираем, чтобы она не сработала на другой покупке
+    try { window.localStorage.removeItem(TICKET_STORAGE_KEY); } catch (error) { /* приватный режим */ }
+
+    // Корзина Тильды появляется на странице чуть позже — сверяем способы оплаты, когда она есть
+    const syncWhenReady = () => {
+      const cartForm = findCartForm();
+      if (cartForm) { syncPayOptions(form, cartForm); return true; }
+      return false;
+    };
+    if (!syncWhenReady()) {
+      const observer = new MutationObserver(() => { if (syncWhenReady()) observer.disconnect(); });
+      observer.observe(document.body, { childList: true, subtree: true });
+      window.setTimeout(() => observer.disconnect(), 15000);
+    }
+
+    const setBusy = (value) => {
+      busy = value;
+      if (submit instanceof HTMLButtonElement) {
+        submit.disabled = value;
+        submit.setAttribute("aria-busy", String(value));
+      }
+      if (submitLabel) submitLabel.textContent = value ? "Переходим к оплате…" : submitText;
+    };
+
+    const showCart = () => {
+      document.documentElement.classList.remove("sc-cart-silent");
+      if (typeof window.tcart__openCart === "function") window.tcart__openCart();
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (busy) return;
+
+      const results = Object.keys(checks).map((key) => [key, validate(key)]);
+      const firstInvalid = results.find(([, ok]) => !ok);
+      if (firstInvalid) {
+        inputs[firstInvalid[0]].focus();
+        return;
+      }
+
+      const values = {
+        name: inputs.name.value.trim(),
+        email: inputs.email.value.trim(),
+        phone: normalizePhone(inputs.phone.value),
+        payment: form.querySelector('input[name="paymentsystem"]:checked')?.value || "",
+      };
+
+      const cartForm = findCartForm();
+      if (!(cartForm instanceof HTMLFormElement) || !(orderLink instanceof HTMLElement) || !window.tcart) {
+        if (!IS_PRODUCTION) {
+          console.info("[билет] Корзины Тильды на странице нет. Это превью — на Тильде здесь откроется оплата.", values);
+          setStatus("Это превью: на сайте отсюда откроется страница оплаты.", "loading");
+          return;
+        }
+        console.error("[билет] На странице нет блока «Корзина» — оплатить билет нельзя.");
+        setStatus(TICKET_ERRORS.noCart, "error");
+        return;
+      }
+
+      setBusy(true);
+      setStatus();
+      // Окно корзины не показываем: класс прячет его, пока идёт переход на оплату
+      document.documentElement.classList.add("sc-cart-silent");
+
+      try {
+        // В корзине — только этот билет и только один
+        const productName = (orderLink.getAttribute("href") || "").replace(/^#order:/, "").split("=")[0];
+        const products = window.tcart.products || [];
+        const already = products.find((product) => product.name === productName);
+        if (!already) orderLink.click();
+        else already.quantity = 1;
+        if (typeof window.tcart__unlockScroll === "function") window.tcart__unlockScroll();
+        document.body.classList.remove("t706__body_cartwinshowed");
+
+        // Тильда дорисовывает корзину не сразу — даём ей кадр
+        await new Promise((resolve) => window.setTimeout(resolve, 300));
+
+        setTildaField(cartForm, "Name", values.name);
+        setTildaField(cartForm, "Email", values.email);
+        setTildaPhone(cartForm, values.phone);
+        const payRadio = [...cartForm.querySelectorAll('input[name="paymentsystem"]')].find((radio) => radio.value === values.payment);
+        if (payRadio) {
+          payRadio.checked = true;
+          payRadio.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        // Служебное для отдела продаж: откуда заявка, ClientID Метрики, UTM-метки
+        const formName = block.dataset.tildaFormName || "";
+        const utm = collectUtm(formName);
+        setTildaField(cartForm, FIELDS.source, `${source} — билет с записями`);
+        setTildaField(cartForm, FIELDS.clientId, await readClientId(block));
+        UTM_FIELDS.forEach((name) => { if (utm[name]) setTildaField(cartForm, name, utm[name]); });
+
+        try {
+          window.localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify({ at: Date.now() }));
+        } catch (error) {
+          // Приватный режим — страница после оплаты просто не узнает покупателя
+        }
+
+        // Ответ Тильды ловим заранее: при ошибке сразу показываем окно корзины с её подсказкой
+        const answer = waitForTilda(cartForm, TICKET_REDIRECT_WAIT_MS);
+        const cartSubmit = cartForm.querySelector(".t-form__submit button, button[type='submit']");
+        if (cartSubmit instanceof HTMLButtonElement) cartSubmit.click();
+        else cartForm.requestSubmit();
+
+        const result = await answer;
+        // success — Тильда уже переводит на оплату, ничего не трогаем
+        if (result === "success") return;
+        console.warn(`[билет] Тильда не перевела на оплату (${result === "error" ? "ошибка в форме корзины" : "нет ответа"}) — показываем окно корзины.`);
+      } catch (error) {
+        console.error("[билет] Не получилось подготовить оплату.", error);
+      }
+
+      setBusy(false);
+      showCart();
+      setStatus(TICKET_ERRORS.stuck, "error");
+    });
+  };
+
+  // Переключатель «Бесплатно / С записями» в карточке регистрации
+  const setupTicketSwitch = (block) => {
+    const switcher = block.querySelector("[data-ticket-switch]");
+    if (!switcher) return;
+    const panels = [...block.querySelectorAll("[data-ticket-panel]")];
+    const render = () => {
+      const value = switcher.querySelector('input[name="ticket"]:checked')?.value || "free";
+      panels.forEach((panel) => { panel.hidden = panel.dataset.ticketPanel !== value; });
+      block.dataset.ticket = value;
+    };
+    switcher.addEventListener("change", render);
+    // Ссылки вида #registration-paid на странице сразу открывают оплату билета
+    document.querySelectorAll('[data-ticket-pick]').forEach((link) => {
+      link.addEventListener("click", () => {
+        const radio = switcher.querySelector(`input[name="ticket"][value="${link.dataset.ticketPick}"]`);
+        if (radio) { radio.checked = true; render(); }
+      });
+    });
+    render();
+  };
+
+
+  /* --------------------------------------------------------------------------
      Ж. ЗАПУСК
      -------------------------------------------------------------------------- */
 
@@ -2594,5 +2958,11 @@
       });
       observer.observe(document.body, { childList: true, subtree: true });
     }
+  });
+
+  // Оплата билета с записями — независимо от того, поднялся ли BotHelp
+  blocks.forEach((block) => {
+    setupTicketSwitch(block);
+    setupTicket(block);
   });
 })();

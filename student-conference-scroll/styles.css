@@ -1896,6 +1896,38 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 @media (prefers-reduced-motion: reduce) { .sc-signup_skeleton span { animation: none; } }
 .sc-signup_widget[data-bh-state="loading"] .sc-signup_bh { display: none; }
 
+/* Скрытая форма Тильды для заявок (её помечает script.js): убираем с глаз, но не через
+   display:none — скриптам Тильды нужно измерять поля и ставить в них фокус */
+[data-signup-native-form-record] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+/* Вкладки «Бесплатно / С записями» в карточке регистрации */
+.sc-signup_switch { margin-top: 0.25rem; }
+.sc-signup_panel { display: grid; gap: 1rem; }
+.sc-signup_panel[hidden] { display: none; }
+.sc-choice[hidden] { display: none; }
+.sc-form_messenger[hidden] { display: none; }
+
+/* Способ оплаты в форме билета не показываем: всегда картой через Т-Банк (вариант «Картой»
+   отмечен в разметке). Чтобы вернуть выбор «Картой / Долями», удалите это правило */
+.sc-ticket [data-ticket-pay] { display: none; }
+
+/* Оплата билета: окно корзины Тильды не показываем, пока идёт переход на оплату,
+   а значок корзины на этой странице не нужен совсем (script.js, раздел «Оплата билета») */
+.sc-cart-silent .t706__cartwin { display: none !important; }
+.t706__carticon { display: none !important; }
+
 /* Запасная форма: поля как у старой формы, ошибка — красная рамка */
 .sc-signup_fallback { display: grid; gap: 1rem; }
 .sc-signup_fallback[hidden] { display: none; }
@@ -1915,6 +1947,21 @@ body { margin: 0; background: var(--page, #f5f5f5); }
 .sc-signup_status:empty { display: none; }
 .sc-signup_status[data-state="error"] { color: var(--error); }
 .sc-signup_status[data-state="loading"] { color: var(--text-2); }
+
+/* ---------- Страница после оплаты (oplata.html) ----------
+   Тот же фиолетовый блок регистрации на весь экран: слева что дальше, в центре кнопки бота,
+   справа бейдж со штампом «выдан» */
+.sc-paid_section { min-height: 100svh; }
+.sc-paid_logo { display: inline-flex; margin-bottom: 2rem; color: var(--white); }
+.sc-paid_logo .sc-logo { display: block; width: auto; height: 1.75rem; fill: currentColor; }
+.sc-paid_lead { margin-top: 1rem; font: 600 clamp(1.25rem, 5.4vw, 1.625rem)/1.2 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
+.sc-paid_steps { display: grid; gap: 0.75rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.sc-paid_steps li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 1.0625rem; line-height: 1.4; }
+.sc-paid_num { display: grid; flex: none; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--white); color: var(--violet-deep); font: 700 0.9375rem/1 var(--font-display); }
+.sc-paid_back { color: var(--white); text-decoration: underline; text-underline-offset: 0.2em; }
+@media (hover: hover) and (pointer: fine) {
+  .sc-paid_back:hover { color: var(--lavender); }
+}
 
 /* Список стран открывается поверх страницы (вне .sc-page), поэтому шрифт и скругление заданы здесь явно */
 body > .iti--detached-country-selector { z-index: 1000; font-family: "Wix Madefor Text", Arial, sans-serif; }

@@ -16,6 +16,7 @@
 // Запуск из корня превью:
 //   node scripts/import-tilda-export.mjs <папка распакованного экспорта> <адрес> [<адрес> …]
 //   node scripts/import-tilda-export.mjs ~/Downloads/modernpsyacademy rpp womens-care
+//   CASE_DIR=<папка со снимком страниц> node scripts/import-tilda-export.mjs …   (если сайт уже поменялся)
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -62,17 +63,58 @@ document.addEventListener('submit', function (event) {
 }, true);
 </script>`;
 
+// Экспорт Тильды переводит имена картинок в нижний регистр (vector.svg), а в CDN они лежат
+// с исходным регистром (Vector.svg) — по нижнему регистру CDN отвечает 404. Поэтому берём
+// живую страницу modern-psy.ru и сверяем имена по ней.
+// Дополнительно можно передать папку со снимком страниц сайта (CASE_DIR=…): если живая страница
+// уже поменялась после экспорта, имена берутся из снимка.
+const globalCases = new Map();
+if (process.env.CASE_DIR) {
+  for (const f of fs.readdirSync(process.env.CASE_DIR)) {
+    if (!f.endsWith('.html')) continue;
+    const html = fs.readFileSync(path.join(process.env.CASE_DIR, f), 'utf8');
+    for (const m of html.matchAll(/https:\/\/static\.tildacdn\.com\/(til[a-z][0-9a-f-]{32})\/([^"'\s)<>?]+)/g)) {
+      globalCases.set(`${m[1]}/${m[2].toLowerCase()}`, `${m[1]}/${m[2]}`);
+    }
+  }
+}
+
+async function caseMap(alias) {
+  const url = `https://modern-psy.ru/${/^page\d+$/.test(alias) ? alias + '.html' : alias === 'mainpage' ? '' : alias}`;
+  const map = new Map(globalCases);
+  try {
+    const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 mirror-import' }, signal: AbortSignal.timeout(30000) });
+    const html = await res.text();
+    for (const m of html.matchAll(/https:\/\/static\.tildacdn\.com\/(til[a-z][0-9a-f-]{32})\/([^"'\s)<>?]+)/g)) {
+      map.set(`${m[1]}/${m[2].toLowerCase()}`, `${m[1]}/${m[2]}`);
+    }
+  } catch (error) {
+    console.warn(`⚠️  /${alias}: не открылась живая страница (${error.message}), имена картинок оставляю как в экспорте`);
+  }
+  return map;
+}
+
 let missing = 0;
 for (const alias of aliases) {
-  const file = pageFor.get(alias);
+  // Страница без своего адреса в Тильде открывается как /page123456.html — файл называется так же
+  const file = pageFor.get(alias) || (/^page\d+$/.test(alias) && fs.existsSync(path.join(exportDir, `${alias}.html`)) ? `${alias}.html` : null);
   if (!file) { console.error(`/${alias}: такого адреса нет в экспорте`); process.exitCode = 1; continue; }
   let html = fs.readFileSync(path.join(exportDir, file), 'utf8');
+  const cases = await caseMap(alias);
+  await new Promise((r) => setTimeout(r, 300));
 
   // Картинки → CDN Тильды
   html = html.replace(/(["'(])images\/([^"')\s]+)/g, (all, q, f) => {
-    const url = cdn(f);
+    let url = cdn(f);
     if (!url) { missing++; return all; }
+    const key = url.slice('https://static.tildacdn.com/'.length);
+    if (cases.has(key.toLowerCase())) url = 'https://static.tildacdn.com/' + cases.get(key.toLowerCase());
     return q + url;
+  });
+  // Прямые ссылки на CDN в коде страницы — тоже по живой странице
+  html = html.replace(/https:\/\/static\.tildacdn\.com\/(til[a-z][0-9a-f-]{32})\/([^"'\s)<>?]+)/g, (all, id, name) => {
+    const fixed = cases.get(`${id}/${name.toLowerCase()}`);
+    return fixed ? `https://static.tildacdn.com/${fixed}` : all;
   });
   // Стили и скрипты Тильды → общая папка /_tilda/
   html = html.replace(/(["'])(css|js)\/([^"']+)/g, (all, q, kind, f) => {

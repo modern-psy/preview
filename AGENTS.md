@@ -27,10 +27,16 @@ and may not exist in an older local checkout.
 
 ## Куда пушить вёрстку
 
-Рабочий адрес превью — **https://modern-psy-preview-5a99.twc1.net**.
+Рабочий адрес превью — **https://modern-psy-preview-3ca2.twc1.net** (с 16.11.2026).
+Старый адрес `modern-psy-preview-5a99.twc1.net` выключается, ссылки на него не давать.
 Домен `preview.modern-psy.ru` не существует: не использовать его в ссылках.
 Ссылки на страницы строятся от рабочего адреса, например:
-https://modern-psy-preview-5a99.twc1.net/timetable-variants/a-status.html.
+https://modern-psy-preview-3ca2.twc1.net/timetable-variants/a-status.html.
+
+Превью теперь ещё и зеркало сайта: на боевых адресах (`/kpt`, `/act`, `/courses` …)
+стоит наша версия страницы или временная копия из экспорта Тильды, список черновиков —
+на `/drafts`. Сайт собирается Astro по `Dockerfile`; как устроено и что где лежит — `ASTRO.md`,
+карта адресов — `src/data/mirror.json`.
 
 Вёрстка лендингов пушится **только** в репозиторий
 [modern-psy/preview](https://github.com/modern-psy/preview), ветка `main`.
@@ -50,7 +56,7 @@ https://modern-psy-preview-5a99.twc1.net/timetable-variants/a-status.html.
 - Большая часть аудитории — iPhone, iPad и MacBook; на iPhone все браузеры
   работают на движке Safari. Если Safari ведёт себя иначе, правим под Safari.
 - После пуша дождаться пересборки превью и проверить страницу на
-  `https://modern-psy-preview-5a99.twc1.net/<путь>`. После публикации
+  `https://modern-psy-preview-3ca2.twc1.net/<путь>`. После публикации
   в Тильде — проверить ещё раз на `https://modern-psy.ru/<адрес>`.
   Обе проверки из `web-academy/`:
   `node scripts/check-browsers.mjs <адрес>`.

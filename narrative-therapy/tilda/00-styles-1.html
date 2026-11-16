@@ -2049,6 +2049,16 @@ body:has(.academy-page) {
   font-weight: 400;
 }
 .hero_note-icon { display: block; width: 1.375rem; height: 1.375rem; flex: none; }
+/* Дополнительное условие под датой. Текст меняется в данных курса. */
+.hero_supporting-note {
+  width: 100%;
+  color: var(--color-text-on-dark);
+  font-size: var(--hero-meta-size);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  opacity: 0.9;
+}
 .hero_component.is-dual-action .stat-card_component {
   position: static;
   flex-direction: column;
@@ -2255,6 +2265,9 @@ body:has(.academy-page) {
 .body-text_component.is-callout { font-weight: 500; line-height: 1.3; }
 .body-text_component.is-fine-print { font-size: 0.875rem; font-weight: 400; line-height: 1.4; }
 
+/* Компактные фактические подписи и рассрочка в списках — 16px на всех экранах. */
+.body-text_component.is-compact { font-size: 1rem; }
+
 /* === web-academy/shared/academy/button.css === */
 /* Opt-in action button. Geometry extracted from the approved dual-action Hero.
    Page specificity intentionally supersedes legacy composition sizing. */
@@ -2338,30 +2351,4 @@ body:has(.academy-page) {
 }
 @media (prefers-reduced-motion: reduce) {
   .toggle-icon_component { transition: none; }
-}
-
-/* === web-academy/shared/academy/faq-responsive.css === */
-/* Opt-in adaptation of the existing FAQ + accordion, preserving its runtime. */
-.faq_component.is-responsive { --faq-padding: 1rem; --faq-answer-paragraph-gap: 0.25rem; }
-.faq_component.is-responsive .faq_question {
-  min-height: 2.75rem;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 2rem;
-  padding: var(--faq-padding) var(--faq-padding) 1rem;
-}
-.faq_component.is-responsive .faq_answer-inner {
-  gap: var(--faq-answer-paragraph-gap);
-  padding: 0 var(--faq-padding) var(--faq-padding);
-}
-.faq_component.is-responsive .faq_answer p { max-width: none; color: inherit; font: inherit; letter-spacing: inherit; }
-.faq_support-action { display: inline; min-height: 2.75rem; padding: 0; border: 0; background: none; color: var(--color-accent-primary); font: inherit; font-weight: 500; cursor: pointer; }
-.faq_support-action:hover,
-.faq_support-action:focus-visible { color: var(--color-accent-text); text-decoration: underline; text-underline-offset: 0.15em; }
-.faq_support-action:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
-@media (min-width: 32.5625rem) {
-  .faq_component.is-responsive { --faq-padding: 1.25rem; --faq-answer-paragraph-gap: 0.5rem; }
-}
-@media (min-width: 48rem) {
-  .faq_component.is-responsive { --faq-padding: 1.5rem; }
 }</style>

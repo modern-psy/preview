@@ -42,7 +42,7 @@ const pw = await loadPlaywright();
 
 // ---------- 2. Что проверяем в каждом прогоне ----------
 const host = new URL(url).hostname;
-const ownHosts = [host, "static.tildacdn.com", "optim.tildacdn.com", "s3.twcstorage.ru", "modern-psy.ru", "modern-psy-preview-5a99.twc1.net"];
+const ownHosts = [host, "static.tildacdn.com", "optim.tildacdn.com", "s3.twcstorage.ru", "modern-psy.ru", "modern-psy-preview-3ca2.twc1.net", "modern-psy-preview-5a99.twc1.net"];
 const isOwn = (u) => { try { return ownHosts.includes(new URL(u).hostname); } catch { return false; } };
 // Firefox пишет ошибки чужих скриптов как ошибки страницы: берём адрес файла из текста
 const fileOf = (text) => text.match(/file: "([^"]+)"/)?.[1] || text.match(/https?:\/\/[^\s"')]+/)?.[0] || "";

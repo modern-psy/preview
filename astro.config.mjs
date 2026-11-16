@@ -12,7 +12,7 @@ import { defineConfig } from 'astro/config';
 import redirects from './src/data/redirects.json' with { type: 'json' };
 
 export default defineConfig({
-  site: 'https://modern-psy-preview-5a99.twc1.net',
+  site: 'https://modern-psy-preview-3ca2.twc1.net',
   output: 'static',
   // /orkt и /orkt/ открывают одну страницу, файл ложится в dist/orkt/index.html
   trailingSlash: 'ignore',

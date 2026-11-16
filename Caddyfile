@@ -30,6 +30,10 @@
 
 	import /etc/caddy/redirects.caddy
 
+	# Страницы Тильды без своего адреса открываются как /page123456.html — у нас они лежат в /page123456/
+	@tildapage path_regexp tildapage ^/(page[0-9]+)\.html$
+	rewrite @tildapage /{re.tildapage.1}/index.html
+
 	file_server
 
 	# Нет такого файла — показываем нашу страницу 404 с правильным кодом

@@ -1,0 +1,416 @@
+<!-- ОБЩИЕ СТИЛИ. Первый T123 страницы, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<link rel="preconnect" href="https://static.tildacdn.com" crossorigin>
+<link rel="preconnect" href="https://s3.twcstorage.ru" crossorigin>
+<style>
+/* Лендинг «Психотерапия нейроотличных клиентов: РАС и СДВГ» · курс повышения квалификации.
+   Пересобран 26.10.2026 со старой страницы на Zero-блоках в мире Web Academy, по образцу «Психиатрии для психологов»:
+   фон #f5f5f5, белые карточки, тёмные плашки #2b2334, фиолетовый #7c5cdb только акцентом.
+   Стоит на общих стилях лендингов v1 (apps/preview/academy-base): шрифт Wix Madefor, H1, кнопки и роли текста
+   берутся оттуда, метка data-academy="1" стоит на обёртке .nd-page.
+   Ширина страницы — контейнер «stage», все переломы через @container: 521 px — большой телефон,
+   768 px — планшет, 1025 px — компьютер.
+   Кегли здесь НЕ задавать числами: тексты берут размеры из переменных --title, --sub, --body, --h3,
+   --caption, --fine, значения которых совпадают с ролями v1 (таблица в academy-base/README.md).
+   Цвета менять только в переменных ниже. */
+
+.nd-page {
+  container: stage / inline-size;
+  --wa-page: #f5f5f5;
+  --wa-surface: #ffffff;
+  --wa-ink: #332f41;
+  --wa-ink-2: #625f6a;
+  --wa-ink-3: #6e6c75;
+  --wa-line: #e2e1e7;
+  --wa-grey: #e6e5eb;
+  --wa-grey-2: #d9d8df;
+  --wa-chip: #efeef2;
+  --wa-accent: #7c5cdb;
+  --wa-accent-hover: #6a4bc9;
+  --wa-accent-soft: #dad6ff;
+  --wa-dark: #2b2334;
+  --wa-dark-2: #362d41;
+  --wa-on-dark: #ffffff;
+  --wa-on-dark-2: #e6e5eb;
+  --wa-on-dark-3: #b9b4c4;
+  --wa-dark-line: rgb(255 255 255 / 14%);
+  /* шрифт из v1 (Wix Madefor Text, свой файл) */
+  --font: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+}
+
+body { margin: 0; background: #f5f5f5; }
+.nd-page *, .nd-page *::before, .nd-page *::after { box-sizing: border-box; }
+.nd-page ::selection { background: #dad6ff; color: #2b2334; }
+
+/* Блок цены из CMS (генератор /pricing) по умолчанию набран «Wix Madefor Text» с Google Fonts.
+   Ссылку на Google Fonts price-sync.mjs из блока убирает, а здесь блок переключается на тот же шрифт из v1. */
+.nd-page .price-auto_component { font-family: var(--font); }
+
+/* ============ общие правила блоков ============ */
+.wa {
+  --pad: 1rem; --sec-y: 3.5rem; --gap: 0.75rem; --head-gap: 2rem;
+  /* роли текста v1: --sub описание под заголовком, --body текст, --h3 заголовок карточки,
+     --caption подпись, --fine сноска (14 px везде), --big имя и крупная подводка */
+  --title: 2rem; --title-lh: 1.1; --sub: 1.125rem; --body: 1rem; --h3: 1.375rem; --big: 1.375rem; --caption: 0.9375rem; --fine: 0.875rem;
+  --card-pad: 1rem; --r: 0.75rem;
+  /* цвета текста ролей v1 в общих блоках (форма): темнее серого v1, контраст выше 4,5:1 */
+  --body-text-color: var(--wa-ink-2); --section-subtitle-color: var(--wa-ink-3);
+  font-family: var(--font); color: var(--wa-ink); background: var(--wa-page);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+@container stage (min-width: 32.5625rem) {
+  .wa { --title: 2.25rem; --title-lh: 1; --head-gap: 2.25rem; --big: 1.5rem; --caption: 1rem; }
+}
+@container stage (min-width: 48rem) {
+  .wa { --pad: clamp(1.5rem, 4.76cqi, 5rem); --sec-y: 5rem; --gap: 1rem; --head-gap: 2.625rem;
+        --title: 2.75rem; --sub: 1.25rem; --body: 1.125rem; --h3: 1.5rem; --big: 1.75rem; --card-pad: 1.5rem; --r: 1rem; }
+}
+@container stage (min-width: 64.0625rem) {
+  .wa { --sec-y: 6.5rem; --head-gap: 3.5rem; --title: 3.25rem; --sub: 1.375rem; --body: 1.25rem; --h3: 1.5rem; --big: 2rem; --card-pad: 2rem; --caption: 1.125rem; }
+}
+.wa :where(h2, h3, p, ul, ol, li, figure) { margin: 0; padding: 0; }
+.wa :where(ul, ol) { list-style: none; }
+.wa-sec { padding: var(--sec-y) var(--pad); }
+.wa-in { max-width: 95rem; margin-inline: auto; }
+/* заголовок секции как в v1: 500, межстрочный 1.1 на телефоне и 1.0 от 521 px */
+.wa-title { font-size: var(--title); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; text-wrap: balance; color: var(--wa-ink); }
+.wa-body { font-size: var(--body); line-height: 1.35; letter-spacing: -0.01em; color: var(--wa-ink-2); text-wrap: pretty; }
+.wa-h3 { font-size: var(--h3); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; color: var(--wa-ink); text-wrap: balance; }
+.wa .ic { width: 1.25rem; height: 1.25rem; flex: none; display: block; }
+.wa a:focus-visible, .wa button:focus-visible, .wa summary:focus-visible { outline: 2px solid var(--wa-accent); outline-offset: 3px; }
+/* ссылки в тексте всегда подчёркнуты; цвет с !important против «a { color: inherit !important }» в custom.css сайта */
+.wa p a { color: inherit !important; text-decoration: underline; text-underline-offset: 0.15em; }
+
+/* кнопки: размер, насыщенность и цвета из v1 (button_component), здесь только ширина */
+.wa-btn { width: 100%; }
+@container stage (min-width: 32.5625rem) { .wa-btn { width: auto; } }
+
+/* заголовок секции: по центру или слева */
+.sec-head { text-align: center; margin-bottom: var(--head-gap); display: grid; gap: 1rem; justify-items: center; }
+.sec-head .wa-title { max-width: 22ch; }
+.sec-head.is-left { text-align: left; justify-items: start; }
+.sec-head.is-left .wa-title { max-width: 24ch; }
+.narrow { max-width: 64rem; margin-inline: auto; }
+
+/* ---------- 1 · Первый экран ----------
+   Эталон В3 «Описание в плашке», светлая версия (act-hero-variants/library, пример — вебинар «Сексология для психологов»):
+   по просьбе Дарьи 26.10.2026 поле белое, а плашка с пользой курса и плитки серые (#f5f5f5, фон страницы из кита
+   Web Academy, --color-page-background): иконки в белых кружках, между ними пунктир, строки через тонкую линию;
+   старт строкой с маленькой иконкой над кнопкой (плиток нет: на узких экранах дата переносилась), кнопка с подписью,
+   справа фото в рамке.
+   Телефон до 520 px: фото полосой сверху, просто обрезано, без растворения; под заголовком сразу старт и кнопка,
+   плашка после них (низ кнопки не ниже 560 px).
+   Планшет 521–1024 px: как в эталоне, фото под плашкой, старт и кнопка лежат на нём, фото снизу растворяется в поле.
+   Компьютер: две колонки. Обёртка .hr-text до 1024 px «прозрачная» (display: contents), чтобы части встали в сетку карточки. */
+.wa-sec.is-hero { padding-block: 0.75rem 2rem; }
+.hr {
+  --hr-bg: #fff; --hr-raise: var(--color-page-background, var(--wa-page)); --hr-dash: #c9c3d6;
+  display: grid; grid-template-areas: "photo" "head" "cta" "panel"; gap: 1rem;
+  padding: 1rem; border-radius: 1.5rem; background: var(--hr-bg);
+}
+.hr-text { display: contents; }
+/* H1: размер, насыщенность и межстрочный из v1 (класс hero_heading), здесь только цвет и подзаголовок */
+.hr-title { grid-area: head; color: var(--wa-ink); padding: 0.25rem 0.25rem 0; }
+.hr-sub { display: block; margin-top: 0.5em; font-family: var(--font); font-weight: 400; font-size: var(--sub); line-height: 1.2; letter-spacing: -0.01em; color: var(--wa-ink-2); text-wrap: balance; }
+/* плашка с пользой курса */
+.hr-panel { grid-area: panel; display: grid; gap: 0.5rem; padding: 1rem 1rem 0.25rem; border-radius: 1rem; background: var(--hr-raise); }
+.hr-lead { font-size: var(--body); line-height: 1.4; color: var(--wa-ink-2); text-wrap: pretty; }
+.hr-rows { position: relative; display: grid; }
+.hr-rows::before { content: ""; position: absolute; left: calc(1.125rem - 0.75px); top: 1.75rem; bottom: 1.75rem; border-left: 1.5px dashed var(--hr-dash); }
+.hr-rows li { position: relative; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0.75rem; align-items: center; padding: 0.75rem 0; font-size: var(--body); line-height: 1.35; color: var(--wa-ink); }
+.hr-rows li + li::before { content: ""; position: absolute; left: 3rem; right: 0; top: 0; border-top: 1px solid var(--wa-grey-2); }
+.hr-ri { position: relative; z-index: 1; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: #fff; color: var(--wa-ink); }
+/* старт строкой с иконкой и кнопка */
+.hr-cta { grid-area: cta; display: grid; gap: 0.75rem; align-content: end; }
+.hr-start { display: flex; align-items: center; gap: 0.5rem; font-size: var(--body); font-weight: 500; line-height: 1.3; color: var(--wa-ink); }
+.hr-start .ic { width: 1.125rem; height: 1.125rem; color: var(--wa-ink-2); }
+.hr-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.375rem; }
+.hr-actions .hb { width: 100%; padding-inline: 1.75rem; }
+.hr-note { font-size: min(var(--caption), 1rem); line-height: 1.4; color: var(--wa-ink-2); max-width: 34ch; }
+.hr-note b { display: block; font-weight: 500; color: var(--wa-ink); }
+/* фото: высоту задаёт сетка (height: 0 + min-height: 100%), а не размер снимка */
+.hr-photo { grid-area: photo; display: block; width: 100%; height: 8.5rem; object-fit: cover; object-position: 58% 30%; border-radius: 1rem; }
+@container stage (min-width: 32.5625rem) {
+  .hr { grid-template-areas: "head" "panel" "photo"; gap: 1.25rem; padding: 1.5rem; border-radius: 1.75rem; }
+  .hr-title { padding: 0.5rem 0.25rem 0; }
+  .hr-panel { padding: 1.25rem 1.5rem 0.375rem; border-radius: 1.25rem; }
+  /* низ фото (7,5rem, где лежат старт и кнопка) полностью растворён в белом поле, выше — плавный переход */
+  .hr-photo { height: 0; min-height: 100%; border-radius: 1.25rem; object-position: 60% 28%;
+    -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 13rem), transparent calc(100% - 7.5rem)); mask-image: linear-gradient(180deg, #000 calc(100% - 13rem), transparent calc(100% - 7.5rem)); }
+  /* старт и кнопка в одной клетке с фото, на его растворённой части */
+  .hr-cta { grid-area: photo; z-index: 1; padding: 17rem 1.25rem 1.25rem; gap: 1rem; }
+  .hr-actions .hb { width: auto; }
+}
+@container stage (min-width: 48rem) {
+  .wa-sec.is-hero { padding-block: 1.25rem 3rem; }
+  .hr { padding: 2.25rem; gap: 1.5rem; }
+  .hr-cta { padding: 19rem 1.5rem 1.5rem; }
+}
+@container stage (min-width: 64.0625rem) {
+  .wa-sec.is-hero { padding-block: 1.5rem 3.5rem; }
+  .hr { grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr); grid-template-areas: "text photo"; gap: clamp(2.5rem, 3.9cqi, 3.5rem); padding: clamp(2.25rem, 3.3cqi, 3rem); }
+  .hr-text { grid-area: text; display: grid; align-content: start; gap: 1.5rem; }
+  /* в левой колонке части идут друг за другом: имена клеток телефона и планшета здесь не нужны */
+  .hr-text > * { grid-area: auto; }
+  .hr-title { padding: 0; }
+  .hr-cta { z-index: auto; padding: 0; gap: 1.5rem; }
+  .hr-photo { min-height: 100%; object-position: 58% 40%; -webkit-mask-image: none; mask-image: none; }
+}
+
+/* ---------- 2 · Понимание человека важнее, чем протокол: три карточки с фото ---------- */
+.uc-grid { display: grid; gap: var(--gap); }
+.uc-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 0.75rem; align-content: start; }
+/* на телефоне фото в 1,5 раза ниже исходной пропорции 396 × 276 (просьба Дарьи 26.10.2026), от 768 px — исходная */
+.uc-img { display: block; width: 100%; height: auto; aspect-ratio: 594 / 276; object-fit: cover; border-radius: 0.5rem; background: var(--wa-grey); }
+.uc-card .uc-img { margin-bottom: 0.25rem; }
+/* планшет: фото слева от текста */
+@container stage (min-width: 48rem) {
+  .uc-card { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 1.5rem; }
+  .uc-card .uc-img { grid-row: 1 / 3; margin-bottom: 0; aspect-ratio: 396 / 276; }
+}
+@container stage (min-width: 64.0625rem) {
+  .uc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .uc-card { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; padding: 1.25rem 1.25rem 2rem; }
+  .uc-card .uc-img { grid-row: auto; margin-bottom: 0.75rem; }
+  .uc-card > :not(.uc-img) { padding-inline: 0.75rem; }
+}
+
+/* ---------- 3 · Что делает курс особенным ----------
+   Пять карточек. От 768 px две колонки: «Интерактивный формат» тёмной карточкой справа на высоту двух соседних. */
+.sp-grid { display: grid; gap: var(--gap); }
+.sp-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 0.75rem; align-content: start; }
+.sp-card.is-format { background: var(--wa-dark); }
+.sp-card.is-format .wa-h3 { color: #fff; }
+.sp-card.is-format .wa-body { color: var(--wa-on-dark-2); }
+.sp-list { display: grid; gap: 0.875rem; margin-top: 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--wa-dark-line); }
+.sp-list li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.875rem; align-items: center; }
+.sp-ic { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: rgb(255 255 255 / 10%); color: #fff; }
+.sp-list span:last-child { display: grid; gap: 0.125rem; font-size: var(--caption); line-height: 1.3; color: var(--wa-on-dark-3); }
+.sp-list b { font-size: var(--body); font-weight: 500; color: #fff; }
+@container stage (min-width: 48rem) {
+  .sp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sp-card.is-a { grid-area: 1 / 1; }
+  .sp-card.is-format { grid-area: 1 / 2 / 3 / 3; }
+  .sp-card.is-c { grid-area: 2 / 1; }
+  .sp-card.is-d { grid-area: 3 / 1; }
+  .sp-card.is-e { grid-area: 3 / 2; }
+}
+@container stage (min-width: 64.0625rem) {
+  .sp-grid { column-gap: 1.25rem; }
+  .sp-card { padding: 2rem 2.25rem; }
+}
+
+/* ---------- 4 · Кому подходит: строки с линией сверху, без карточек ---------- */
+.au-grid { display: grid; }
+.au-item { display: grid; gap: 0.625rem; align-content: start; padding-block: 1.25rem; border-top: 1px solid var(--wa-grey-2); }
+.au-item:first-child { padding-top: 0; border-top: 0; }
+@container stage (min-width: 48rem) {
+  .au-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2.5rem; }
+  .au-item { padding-block: 1.5rem; }
+  .au-item:nth-child(2) { padding-top: 0; border-top: 0; }
+}
+@container stage (min-width: 64.0625rem) {
+  .au-grid { column-gap: 4rem; }
+  .au-item { padding-block: 2rem; }
+}
+
+/* ---------- 5 · Много практики: три пункта с иконкой, без карточек ---------- */
+.pt-row { display: grid; gap: 1.75rem; }
+.pt-item { display: grid; grid-template-columns: 3rem minmax(0, 1fr); column-gap: 1rem; row-gap: 0.375rem; align-content: start; }
+.pt-item > :not(.pt-ic) { grid-column: 2; }
+.pt-ic { grid-row: span 2; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--wa-line); color: var(--wa-ink); }
+@container stage (min-width: 64.0625rem) {
+  .pt-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; }
+  .pt-item { grid-template-columns: minmax(0, 1fr); row-gap: 0.625rem; }
+  .pt-item > :not(.pt-ic) { grid-column: 1; }
+  .pt-ic { grid-row: auto; margin-bottom: 0.75rem; }
+}
+
+/* ---------- 6 · Как вы будете учиться: шаги и переписка с куратором ---------- */
+.lw { background: #fff; border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; }
+.lw-text { display: grid; gap: var(--head-gap); align-content: start; }
+/* шаги: точка и тонкая линия между ними */
+.lw-steps { display: grid; gap: 1.25rem; }
+.lw-steps li { position: relative; display: grid; gap: 0.25rem; padding-left: 1.75rem; }
+.lw-steps li::before { content: ""; position: absolute; left: 0; top: 0.45em; width: 0.625rem; height: 0.625rem; border-radius: 50%; background: var(--wa-dark); }
+.lw-steps li:not(:last-child)::after { content: ""; position: absolute; left: calc(0.3125rem - 0.5px); top: calc(0.45em + 1rem); bottom: -1rem; width: 1px; background: var(--wa-grey-2); }
+.lw-step { font-size: var(--sub); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; color: var(--wa-ink); }
+/* переписка: окно мессенджера, текстом, а не картинкой */
+.lw-chat { margin: 0; border-radius: var(--r); overflow: hidden; background: var(--wa-chip); align-self: start; }
+.lw-chat-head { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; background: var(--wa-dark); color: #fff; font-size: var(--body); font-weight: 500; }
+.lw-chat-ava { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: rgb(255 255 255 / 14%); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.02em; }
+.lw-chat-body { display: grid; gap: 0.75rem; padding: 1.25rem 1rem 1.5rem; }
+.lw-msg { max-width: 85%; padding: 0.875rem 1rem; border-radius: 1rem; background: #fff; font-size: var(--body); line-height: 1.35; color: var(--wa-ink); text-wrap: pretty; }
+.lw-msg.is-student { justify-self: end; border-bottom-right-radius: 0.25rem; }
+.lw-msg.is-curator { justify-self: start; border-bottom-left-radius: 0.25rem; background: var(--wa-dark-2); color: #fff; }
+@container stage (min-width: 48rem) {
+  .lw { padding: 2.5rem; }
+  .lw-chat { width: min(100%, 32rem); }
+  .lw-chat-body { padding: 1.75rem 1.5rem 2rem; }
+}
+@container stage (min-width: 64.0625rem) {
+  .lw { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); column-gap: 4rem; align-items: center; padding: 3.5rem 4rem; }
+  .lw-chat { width: 100%; }
+}
+
+/* ---------- 7 · Чему вы научитесь: шесть карточек с иконкой ---------- */
+.sg-grid { display: grid; gap: var(--gap); }
+.sg-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 1rem; align-items: center; }
+.sg-ic { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--wa-chip); color: var(--wa-ink); }
+.sg-text { font-size: var(--sub); font-weight: 500; line-height: 1.25; letter-spacing: -0.02em; color: var(--wa-ink); text-wrap: pretty; }
+@container stage (min-width: 48rem) {
+  .sg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container stage (min-width: 64.0625rem) {
+  .sg-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sg-card { grid-template-columns: minmax(0, 1fr); align-items: start; align-content: start; gap: 1.5rem; padding: 1.75rem 2rem 2rem; }
+  .sg-ic { width: 3rem; height: 3rem; }
+}
+
+/* ---------- 8 · Преподаватели: три карточки ---------- */
+.tg-grid { display: grid; gap: var(--gap); }
+.tg-card { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 1rem; align-content: start; }
+.tg-id { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 1rem; align-items: center; }
+/* фото в круге; .is-zoom — у квадратного фото со скруглёнными углами (Овечкина) углы уходят за край круга */
+.tg-photo { display: block; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--wa-grey); }
+.tg-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tg-photo.is-zoom img { transform: scale(1.12); }
+.tg-name-wrap { display: grid; gap: 0.375rem; }
+.tg-name { font-size: var(--h3); font-weight: 500; line-height: 1.12; letter-spacing: -0.03em; color: var(--wa-ink); text-wrap: balance; }
+.tg-role { font-size: var(--caption); line-height: 1.3; color: var(--wa-ink-3); }
+@container stage (min-width: 48rem) {
+  .tg-card { grid-template-columns: 9rem minmax(0, 1fr); column-gap: 2rem; padding: 1.5rem; }
+  .tg-id { display: contents; }
+  .tg-photo { grid-row: 1 / 3; }
+  .tg-name-wrap { align-self: end; }
+}
+@container stage (min-width: 64.0625rem) {
+  .tg-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tg-card { grid-template-columns: minmax(0, 1fr); padding: 2rem; gap: 1.25rem; }
+  .tg-id { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1.25rem; }
+  .tg-photo { grid-row: auto; }
+  .tg-name-wrap { align-self: center; }
+}
+
+/* ---------- 9 · Программа: два модуля и экзамен ----------
+   На компьютере две колонки, как «Программа курса» на «Психиатрии»: слева заголовок и время занятий,
+   они закреплены при прокрутке (sticky), справа модули и экзамен. До 1024 px всё одной колонкой. */
+.pg { display: grid; gap: var(--head-gap); }
+.pg-head { display: grid; gap: 1.25rem; align-content: start; }
+.facts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.fact { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.45rem 0.9rem 0.45rem 0.7rem; border-radius: 1.25rem; background: #fff; font-size: var(--caption); line-height: 1.25; color: var(--wa-ink); }
+.fact .ic { color: var(--wa-ink-2); }
+.fact b { font-weight: 600; white-space: nowrap; }
+.pg-mod + .pg-mod { margin-top: var(--head-gap); }
+.pg-mod-head { display: grid; gap: 0.5rem; margin-bottom: 1.25rem; }
+.pg-mod-n { font-size: var(--caption); font-weight: 500; line-height: 1.2; color: var(--wa-ink-3); }
+.pg-mod-title { font-size: var(--big); font-weight: 500; line-height: 1.1; letter-spacing: -0.04em; color: var(--wa-ink); text-wrap: balance; }
+.pg-list { display: grid; gap: 0.5rem; }
+.pg-l { background: #fff; border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 0.75rem; }
+.pg-meta { font-size: var(--caption); line-height: 1.3; color: var(--wa-ink-3); }
+.pg-meta b { font-weight: 500; color: var(--wa-ink); }
+.pg-lec { font-size: var(--sub); font-weight: 500; line-height: 1.25; letter-spacing: -0.02em; color: var(--wa-ink); text-wrap: pretty; }
+.pg-pr { padding: 0.875rem 1rem; border-radius: 0.625rem; background: var(--wa-page); display: grid; gap: 0.25rem; }
+.pg-pr-l { font-size: var(--fine); font-weight: 500; color: var(--wa-ink-3); }
+.pg-pr p:last-child { font-size: var(--body); line-height: 1.35; color: var(--wa-ink); text-wrap: pretty; }
+/* промежуточный тест: пунктирная рамка, без фона */
+.pg-test { padding: 1rem var(--card-pad); border-radius: var(--r); border: 1.5px dashed var(--wa-grey-2); font-size: var(--body); font-weight: 500; color: var(--wa-ink-2); }
+.pg-exam { margin-top: var(--head-gap); background: var(--wa-dark); border-radius: var(--r); padding: var(--card-pad); display: grid; gap: 1rem; }
+.pg-exam .pg-mod-n { font-size: var(--big); font-weight: 500; letter-spacing: -0.04em; line-height: 1.1; color: #fff; }
+.pg-exam-list { display: grid; gap: 0.625rem; }
+.pg-exam-list li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--wa-on-dark-2); }
+.pg-exam-list .ic { margin-top: calc((1.35em - 1.25rem) / 2); color: #fff; }
+@container stage (min-width: 48rem) {
+  .pg-l { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); column-gap: 1.75rem; }
+  .pg-meta { grid-column: 1 / -1; }
+  .pg-pr { align-self: start; }
+  .pg-exam { padding: 2rem 2.5rem; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center; }
+}
+@container stage (min-width: 64.0625rem) {
+  .pg { grid-template-columns: minmax(0, 4.5fr) minmax(0, 7fr); gap: 4rem; align-items: start; }
+  /* закрепляется под шапкой сайта: на modern-psy.ru она фиксированная, 81 px на компьютере, плюс 1,5rem воздуха */
+  .pg-head { position: sticky; top: 6.5rem; }
+  .pg-head .facts { flex-direction: column; align-items: flex-start; }
+  .pg-l { padding: 1.5rem 1.75rem; }
+  .pg-test { padding: 1.25rem 1.75rem; }
+  .pg-exam { padding: 2rem 1.75rem; grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- 10 · Бесплатные лекции: тёмная плашка ---------- */
+.fr { background: var(--wa-dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: #fff; }
+.fr-text { display: grid; gap: 1.5rem; align-content: start; }
+.fr .wa-title { color: #fff; max-width: 22ch; }
+.fr-copy { display: grid; gap: 0.5rem; }
+.fr .wa-h3 { color: #fff; }
+.fr .wa-body { color: var(--wa-on-dark-2); max-width: 40ch; }
+.fr-checks { display: grid; gap: 0.5rem; }
+.fr-checks li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--wa-on-dark-2); }
+.fr-checks .ic { margin-top: calc((1.35em - 1.25rem) / 2); color: #fff; }
+.fr-foot { display: flex; }
+/* «Вы получите»: белая карточка, play — единственное фиолетовое пятно блока */
+.fr-card { background: #fff; border-radius: var(--r); padding: 1.25rem; color: var(--wa-ink); display: grid; gap: 1rem; align-content: start; }
+.fr-card-title { font-size: var(--caption); color: var(--wa-ink-3); }
+.fr-lessons { display: grid; }
+.fr-lessons li { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 1rem; align-items: start; padding-block: 1rem; border-top: 1px solid var(--wa-line); }
+.fr-lessons li:first-child { border-top: 0; padding-top: 0; }
+.fr-play { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--wa-accent-soft); color: var(--wa-accent); }
+.fr-play .ic { width: 1rem; height: 1rem; margin-left: 0.125rem; }
+.fr-lesson { font-size: var(--sub); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
+.fr-lesson-sub { margin-top: 0.375rem; font-size: var(--body); line-height: 1.35; color: var(--wa-ink-2); text-wrap: pretty; }
+.fr-note { padding: 0.875rem 1rem; border-radius: 0.625rem; background: var(--wa-page); font-size: var(--caption); line-height: 1.35; color: var(--wa-ink-2); }
+@container stage (min-width: 48rem) {
+  .fr { padding: 2.5rem; }
+  .fr-card { padding: 1.75rem; }
+}
+@container stage (min-width: 64.0625rem) {
+  .fr { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 4rem; align-items: center; padding: 3.5rem 4rem; }
+  .fr-card { padding: 2rem 2.25rem; }
+}
+
+/* ---------- 11 · Удостоверение ---------- */
+.dc { background: #fff; border-radius: var(--r); overflow: hidden; display: grid; }
+.dc-text { padding: var(--card-pad); display: grid; gap: 1.25rem; align-content: start; }
+.dc-title { font-size: min(var(--title), 2.75rem); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; text-wrap: balance; }
+.dc-license { font-size: var(--fine); line-height: 1.4; color: var(--wa-ink-3); }
+.dc-license span { white-space: nowrap; }
+.dc-license a { color: inherit !important; text-decoration: underline; text-underline-offset: 0.15em; white-space: nowrap; }
+.dc-img { min-height: 13rem; background: #f3f4f6 url("https://s3.twcstorage.ru/asp-media/udost_1_floating_1600_cbdd66df33.webp") 50% 50% / cover no-repeat; }
+@container stage (min-width: 48rem) {
+  .dc-text { padding: 2rem; }
+  .dc-img { min-height: 18rem; }
+}
+@container stage (min-width: 64.0625rem) {
+  .dc { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .dc-text { padding: 2.75rem 3rem; gap: 1.5rem; }
+  .dc-img { min-height: 100%; }
+}
+
+/* ---------- 12 · «Почему выбирают нас» и «98 % студентов» ----------
+   Общие компоненты Web Academy один в один, как на «Психиатрии для психологов»: стили в academy.css (обёртка .nd-acad). */
+
+/* ---------- 14 · FAQ ----------
+   Обычные <details>: работают и без скрипта. Скрипт (page.js, раздел FAQ) только закрывает
+   предыдущий вопрос, когда открывают следующий. Тексты правим в index.html и в FAQPage внизу страницы. */
+.fq { display: grid; gap: 0.5rem; }
+.fq-item { background: #fff; border-radius: var(--r); }
+.fq-q { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem var(--card-pad); cursor: pointer; list-style: none; border-radius: var(--r); }
+.fq-q::-webkit-details-marker { display: none; }
+.fq-title { font-size: var(--h3); font-weight: 500; line-height: 1.2; letter-spacing: -0.015em; color: var(--wa-ink); text-wrap: pretty; }
+.fq-icon { position: relative; flex: none; width: 2rem; height: 2rem; border-radius: 50%; background: var(--wa-chip); transition: background-color 0.15s ease; }
+.fq-icon::before, .fq-icon::after { content: ""; position: absolute; left: 50%; top: 50%; width: 0.75rem; height: 1.5px; border-radius: 1px; background: var(--wa-ink); transform: translate(-50%, -50%); transition: transform 0.2s ease; }
+.fq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.fq-item[open] .fq-icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) { .fq-q:hover .fq-icon { background: var(--wa-grey); } }
+.fq-a { padding: 0 var(--card-pad) 1.25rem; }
+.fq-a p { max-width: 62ch; font-size: var(--body); line-height: 1.45; color: var(--wa-ink-2); text-wrap: pretty; }
+@container stage (min-width: 48rem) {
+  .fq-q { padding: 1.25rem var(--card-pad); }
+}
+@container stage (min-width: 64.0625rem) {
+  .fq-a { padding-bottom: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-icon, .fq-icon::before, .fq-icon::after { transition: none; }
+}
+</style>

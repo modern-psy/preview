@@ -1841,6 +1841,10 @@
       самый дорогой тёмный с ярлыком «Рекомендуем». Выбора тарифа нет.
       Если у блока задан состав тарифов, у каждого общий список пунктов:
       что входит — галочка, чего нет — серым с крестиком.
+      • Модули и пакет (у пакета в настройках блока kind: 'bundle',
+        как IFS и EMDR): пакет — тёмная карточка посередине, на рамке
+        «Выгода N ₽» к модулям по отдельности; у каждой карточки свой
+        состав, без общего списка с крестиками.
    3. Одна цена — всё остальное. Одна карточка: курс слева, цена справа.
       Если у блока задан состав курса («Что входит»), карточка как
       в витрине: слева курс и цена, справа пункты с галочками.
@@ -1855,6 +1859,9 @@
      без неё купона и скидки нет;
    • ближайшее повышение — серая плашка под ценой «С 20 октября: …»
      и «подорожает на N ₽». Нет повышения — плашки нет;
+   • допуслуги (супервизии и т. п.; в CMS их нет, цены в настройках
+     блока) — карточкой «Можно добавить» под ценой. В листе ожидания
+     их нет: курс сейчас не продаётся;
    • внизу «Гибкие условия оплаты» (выключить: data-terms="off").
    Нет ни открытых потоков, ни листа ожидания — блок прячется целиком.
 
@@ -1884,6 +1891,7 @@
     lastChance: 'поток уже идёт, ещё можно присоединиться',
     anytime: 'старт в любое время',
     includes: 'Что входит',
+    addon: 'Можно добавить',
   };
   // Что даёт бронь — со слов Дарьи 12.10.2026, формулировки уточнить у отдела продаж.
   var BOOKING_BENEFITS = [
@@ -2077,12 +2085,13 @@
   var ICON_RISE = '<svg class="price-rise_icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   // Цена: число крупно, «₽» и «/мес» мелко. При акции рядом зачёркнутая цена до неё.
+  // small — цена допуслуги, мельче цены курса; её не озвучиваем при смене потока.
   function priceTag(value, o) {
     o = o || {};
     var isNumber = typeof value === 'number';
     var unit = isNumber ? '<span class="price-tag_unit">₽' + (o.month ? JOIN + '/' + JOIN + 'мес' : '') + '</span>' : '';
     var was = o.was != null ? '<span class="price-tag_was"><s class="price-old"><span class="price-auto_sr">вместо </span>' + rub(o.was) + '</s></span>' : '';
-    return '<p class="price-tag" data-price-auto-total><span class="price-tag_number">' + (isNumber ? digits(value) : t(value)) + '</span>' + unit + was + '</p>';
+    return '<p class="price-tag' + (o.small ? ' is-small"' : '" data-price-auto-total') + '><span class="price-tag_number">' + (isNumber ? digits(value) : t(value)) + '</span>' + unit + was + '</p>';
   }
   function priceMain(p) {
     if (p.free) return priceTag('Бесплатно');
@@ -2135,11 +2144,13 @@
     });
     return best ? tariffs[best] : {};
   }
-  // Общий список пунктов по всем тарифам, от младшего к старшему: так видно, что теряешь, если экономишь.
+  // Общий список пунктов по всем тарифам: у младшего тарифа видно, что теряешь, если экономишь.
+  // Порядок пунктов — как у самого полного тарифа, иначе пропущенное у младшего («Модуль 4») встало бы в конец.
   function featureRows(items, tariffs) {
     var infos = items.map(function (item) { return tariffInfo(item.name, tariffs); });
     var rows = [];
-    infos.forEach(function (info) { (info.includes || []).forEach(function (text) { if (rows.indexOf(text) === -1) rows.push(text); }); });
+    infos.slice().sort(function (a, b) { return (b.includes || []).length - (a.includes || []).length; })
+      .forEach(function (info) { (info.includes || []).forEach(function (text) { if (rows.indexOf(text) === -1) rows.push(text); }); });
     return items.map(function (item, i) {
       var own = infos[i].includes || [];
       return { description: item.description || infos[i].description || null, list: rows.map(function (text) { return { text: text, has: own.indexOf(text) !== -1 }; }) };
@@ -2188,6 +2199,74 @@
   }
   function cardGrid(list) { return '<ul class="price-cards is-count-' + Math.min(list.length, 3) + '" role="list">' + list.join('') + '</ul>'; }
 
+  // Метки @bundle и @addons не трогать: по ним код для Тильды выбрасывает пакет и допуслуги
+  // у страниц, где их нет (место в T123 дорогое, см. dropJs в tilda-block.js).
+  // @bundle
+  // Модули и пакет, как в витрине (сценарий 6, решение Дарьи 12.10.2026): пакет посередине и выше соседей,
+  // на рамке «Выгода N ₽» — от суммы цен модулей, по которым их можно купить сейчас (в «Курсе месяца»
+  // модули тоже со скидкой, иначе выгода вышла бы больше настоящей). Состав у каждой карточки свой;
+  // у пакета вместо своего списка можно назвать модули (parts) — тогда в нём пункты всех модулей.
+  function bundleCards(stream, infos, at, tariffs) {
+    var items = stream.items;
+    var bundle = items[at];
+    var modules = items.filter(function (item, i) { return i !== at; });
+    var gain = modules.reduce(function (sum, item) { return sum + item.price.sale; }, 0) - bundle.price.sale;
+    var order = modules.length === 2 ? [modules[0], bundle, modules[1]] : modules.concat(bundle);
+    return order.map(function (item) {
+      var info = infos[items.indexOf(item)];
+      var featured = item === bundle;
+      var p = item.price;
+      var list = info.includes || [].concat.apply([], (info.parts || []).map(function (name) { return tariffInfo(name, tariffs).includes || []; }));
+      return card({
+        featured: featured, tag: featured ? (gain > 0 ? 'Выгода ' + rub(gain) : TEXT.recommended) : '', sticker: featured ? sticker(stream) : '',
+        title: item.name, sub: item.description || info.description || null, price: priceMain(p), caption: caption(p), list: list, foot: rise(p),
+      });
+    });
+  }
+  // @end-bundle
+
+  // @addons
+  // Даты встреч одной строкой: «8, 22, 29 апреля и 13 мая 2027» (год — если не текущий).
+  function daysLine(list) {
+    var groups = [];
+    (list || []).map(partsOf).filter(Boolean).forEach(function (p) {
+      var last = groups[groups.length - 1];
+      if (last && last.y === p.y && last.m === p.m) last.days.push(p.d);
+      else groups.push({ y: p.y, m: p.m, days: [p.d] });
+    });
+    if (!groups.length) return '';
+    var parts = groups.map(function (g) { return g.days.join(', ') + ' ' + MONTHS[g.m - 1]; });
+    if (groups.length === 1 && groups[0].days.length > 1) {
+      var d = groups[0].days;
+      parts = [d.slice(0, -1).join(', ') + ' и ' + d[d.length - 1] + ' ' + MONTHS[groups[0].m - 1]];
+    }
+    var text = parts.length > 1 ? parts.slice(0, -1).join(', ') + ' и ' + parts[parts.length - 1] : parts[0];
+    var year = groups[groups.length - 1].y;
+    return year !== moscow(Date.now()).y ? text + ' ' + year : text;
+  }
+
+  // Допуслуга, как в витрине (сценарий 6): слева что это и цена, справа что входит.
+  // Переключателя «Добавить к заявке» нет: кнопок в блоке цены нет, о допуслуге говорят менеджеру.
+  // Настройки: { name, dates — дни встреч «ГГГГ-ММ-ДД», time — «с 17:00 до 18:30», description,
+  // price — с курсом, priceNote, separate — отдельно от курса, separateNote, includes }.
+  function addonCards(list) {
+    return (list || []).map(function (a) {
+      var main = a.price != null ? a.price : a.separate;
+      var lines = [];
+      if (a.priceNote) lines.push(a.priceNote);
+      if (a.price != null && a.separate != null) lines.push((a.separateNote || 'отдельно') + ' ' + rub(a.separate));
+      var side = a.includes && a.includes.length ? '<div class="price-addon_side">' + checklist(a.includes) + '</div>' : '';
+      var when = [daysLine(a.dates), a.time && a.time.replace(/ /g, NBSP)].filter(Boolean).join(', '); // время не разрываем
+      return '<div class="price-addon_component' + (side ? '' : ' is-plain') + '"><div class="price-addon_main"><span class="price-wide_chip">' + t(TEXT.addon) + '</span>'
+        + '<h3 class="price-addon_name">' + t(a.name) + '</h3>' + (when ? '<p class="price-addon_when">' + t(when) + '</p>' : '')
+        + (a.description ? '<p class="price-addon_text">' + t(a.description) + '</p>' : '')
+        + '<div class="price-addon_money">' + priceTag(main, { small: true })
+        + (lines.length ? '<p class="price-caption">' + lines.map(function (l) { return '<span class="price-caption_line">' + t(l) + '</span>'; }).join('') + '</p>' : '')
+        + '</div></div>' + side + '</div>';
+    }).join('');
+  }
+  // @end-addons
+
   // Горизонтальная карточка «Одной цифры», как в витрине. С составом: слева курс и цена,
   // справа «Что входит» с галочками. Без состава (is-plain): слева курс, справа цена.
   // Плашка повышения всегда прямо под ценой: она относится только к цене.
@@ -2231,28 +2310,32 @@
     var controls = streamSwitch(m, stream, uid);
     var first = stream.items[0].price;
     var showTerms = opts.terms && !first.free;
+    var addons = addonCards(opts.addons);
     var body;
     if (stream.items.length > 1) {
+      var infos = stream.items.map(function (item) { return tariffInfo(item.name, opts.tariffs); });
+      var bundleAt = -1;
+      infos.forEach(function (info, i) { if (bundleAt === -1 && info.kind === 'bundle') bundleAt = i; });
       var top = stream.items.length - 1; // самый дорогой — последний
       var rows = featureRows(stream.items, opts.tariffs);
-      body = cardGrid(stream.items.map(function (item, i) {
+      body = cardGrid(bundleAt !== -1 ? bundleCards(stream, infos, bundleAt, opts.tariffs) : stream.items.map(function (item, i) {
         var p = item.price;
         return card({
           featured: i === top, tag: i === top ? TEXT.recommended : '', sticker: i === top ? sticker(stream) : '',
           title: item.name, sub: rows[i].description, price: priceMain(p), caption: caption(p), list: rows[i].list, foot: rise(p),
         });
       }));
-      return frame({ heading: TEXT.heading, lead: lead(m, stream), controls: controls, body: body, terms: showTerms, uid: uid });
+      return frame({ heading: TEXT.heading, lead: lead(m, stream), controls: controls, body: body + addons, terms: showTerms, uid: uid });
     }
     if (scenario === 'compare') {
       body = cardGrid([
         card({ featured: true, tag: first.benefit > 0 ? 'Выгода ' + rub(first.benefit) : '', sticker: sticker(stream), title: 'Оплата сразу', sub: 'Один платёж', price: priceTag(first.sale, { was: first.was }), foot: rise(first) }),
         card({ title: 'В рассрочку', sub: 'Официальная цена, ' + first.months + ' ' + plural(first.months, 'ежемесячный платёж', 'ежемесячных платежа', 'ежемесячных платежей'), price: priceTag(first.perMonth, { month: true }) }),
       ]);
-      return frame({ heading: TEXT.heading, lead: lead(m, stream), controls: controls, body: body, terms: showTerms, uid: uid });
+      return frame({ heading: TEXT.heading, lead: lead(m, stream), controls: controls, body: body + addons, terms: showTerms, uid: uid });
     }
     // Карточка сама называет курс и дату старта, поэтому подзаголовка над ней нет.
-    return frame({ heading: TEXT.heading, controls: controls, body: wideCard(m, stream, first, opts.includes), terms: showTerms, uid: uid });
+    return frame({ heading: TEXT.heading, controls: controls, body: wideCard(m, stream, first, opts.includes) + addons, terms: showTerms, uid: uid });
   }
 
   /* ---------- 8. Микроразметка курса (schema.org) ---------- */
@@ -2349,6 +2432,7 @@
       terms: root.getAttribute('data-terms') !== 'off',
       includes: Array.isArray(extra.includes) ? extra.includes : [],
       tariffs: extra.tariffs && typeof extra.tariffs === 'object' ? extra.tariffs : {},
+      addons: Array.isArray(extra.addons) ? extra.addons : [],
       uid: 'price-auto-' + (slug.replace(/[^a-z0-9-]/gi, '') || 'course') + '-' + counter,
     };
     var state = { stream: null };
