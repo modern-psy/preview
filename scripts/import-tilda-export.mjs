@@ -39,9 +39,18 @@ if (fs.readFileSync(path.join(exportDir, 'htaccess'), 'utf8').match(/DirectoryIn
 
 const cdn = (file) => {
   // tild3765-…-333239313735__-__resize__504x__name.webp → оригинал tild3765-…/name.webp
-  const m = file.match(/^(til[a-z][0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})__(.+)$/);
+  const m = file.match(/^((?:til[a-z]|vide)[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})__(.+)$/);
   if (!m) return null;
-  const name = m[2].includes('__-__') || m[2].startsWith('-__') ? m[2].split('__').pop() : m[2];
+  // Копии, которые Тильда пережимает на лету (__-__resize__500x__-__format__webp__photo.png.webp),
+  // в CDN по такому имени не лежат — ведём на оригинал: photo.png
+  const parts = m[2].split('__');
+  let name = m[2];
+  if (parts[0] === '-' || m[2].includes('__-__')) {
+    name = parts[parts.length - 1];
+    const fi = parts.indexOf('format');
+    if (fi !== -1 && parts[fi + 1] === 'webp' && /\.[a-z0-9]+\.webp$/i.test(name)) name = name.slice(0, -5);
+  }
+  if (nameById.has(m[1])) name = nameById.get(m[1]);
   return `https://static.tildacdn.com/${m[1]}/${name}`;
 };
 
@@ -69,11 +78,24 @@ document.addEventListener('submit', function (event) {
 // Дополнительно можно передать папку со снимком страниц сайта (CASE_DIR=…): если живая страница
 // уже поменялась после экспорта, имена берутся из снимка.
 const globalCases = new Map();
+// Номер картинки → настоящее имя файла в CDN. Номер уникален, а имя в экспорте может быть испорчено:
+// нижний регистр, а «__» внутри имени совпадает с разделителем пережатых копий.
+const nameById = new Map();
+const learnNames = (html) => {
+  for (const m of html.matchAll(/https:\/\/static\.tildacdn\.com\/((?:til[a-z]|vide)[0-9a-f-]{32})\/([^"'\s)<>?]+)/g)) nameById.set(m[1], m[2]);
+  for (const m of html.matchAll(/https:\/\/optim\.tildacdn\.com\/((?:til[a-z]|vide)[0-9a-f-]{32})\/(?:-\/[^"'\s)<>?]*?\/)?([^\/"'\s)<>?]+)(?=["'\s)<>?])/g)) {
+    if (nameById.has(m[1])) continue;
+    let name = m[2];
+    if (/\/format\/webp\//.test(m[0]) && /\.[a-z0-9]+\.webp$/i.test(name)) name = name.slice(0, -5);
+    nameById.set(m[1], name);
+  }
+};
 if (process.env.CASE_DIR) {
   for (const f of fs.readdirSync(process.env.CASE_DIR)) {
     if (!f.endsWith('.html')) continue;
     const html = fs.readFileSync(path.join(process.env.CASE_DIR, f), 'utf8');
-    for (const m of html.matchAll(/https:\/\/static\.tildacdn\.com\/(til[a-z][0-9a-f-]{32})\/([^"'\s)<>?]+)/g)) {
+    learnNames(html);
+    for (const m of html.matchAll(/https:\/\/static\.tildacdn\.com\/((?:til[a-z]|vide)[0-9a-f-]{32})\/([^"'\s)<>?]+)/g)) {
       globalCases.set(`${m[1]}/${m[2].toLowerCase()}`, `${m[1]}/${m[2]}`);
     }
   }
@@ -85,7 +107,8 @@ async function caseMap(alias) {
   try {
     const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 mirror-import' }, signal: AbortSignal.timeout(30000) });
     const html = await res.text();
-    for (const m of html.matchAll(/https:\/\/static\.tildacdn\.com\/(til[a-z][0-9a-f-]{32})\/([^"'\s)<>?]+)/g)) {
+    learnNames(html);
+    for (const m of html.matchAll(/https:\/\/static\.tildacdn\.com\/((?:til[a-z]|vide)[0-9a-f-]{32})\/([^"'\s)<>?]+)/g)) {
       map.set(`${m[1]}/${m[2].toLowerCase()}`, `${m[1]}/${m[2]}`);
     }
   } catch (error) {
@@ -112,7 +135,7 @@ for (const alias of aliases) {
     return q + url;
   });
   // Прямые ссылки на CDN в коде страницы — тоже по живой странице
-  html = html.replace(/https:\/\/static\.tildacdn\.com\/(til[a-z][0-9a-f-]{32})\/([^"'\s)<>?]+)/g, (all, id, name) => {
+  html = html.replace(/https:\/\/static\.tildacdn\.com\/((?:til[a-z]|vide)[0-9a-f-]{32})\/([^"'\s)<>?]+)/g, (all, id, name) => {
     const fixed = cases.get(`${id}/${name.toLowerCase()}`);
     return fixed ? `https://static.tildacdn.com/${fixed}` : all;
   });
