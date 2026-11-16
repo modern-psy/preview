@@ -39,7 +39,10 @@ const absolutize = (value) => {
   const m = value.match(RELATIVE);
   return m ? assetBase + m[1] : value;
 };
-const absolutizeMarkup = (code) => !assetBase ? code : code
+// Пути меняем только в разметке и стилях: внутри <script> они бывают кусками строк ('src="' + url + '"')
+const absolutizeMarkup = (code) => !assetBase ? code : code.split(/(<script\b[\s\S]*?<\/script>)/i)
+  .map((part, i) => (i % 2 ? part : absolutizeOutside(part))).join('');
+const absolutizeOutside = (code) => code
   .replace(/\b(src|href|poster|data-src|data-original|data-bg)="([^"]*)"/g, (all, a, v) => `${a}="${absolutize(v)}"`)
   .replace(/\bsrcset="([^"]*)"/g, (all, v) => `srcset="${v.split(',').map((part) => {
     const [u, ...rest] = part.trim().split(/\s+/);
@@ -77,6 +80,9 @@ const inner = html.slice(mainStart, mainEnd);
 const bodyOpen = html.match(/<body\b[^>]*>/);
 const beforeMain = html.slice(bodyOpen.index + bodyOpen[0].length, mainOpen.index);
 const afterMain = html.slice(mainEnd + '</main>'.length, html.lastIndexOf('</body>'));
+// Копию шапки сайта внутри страницы (главная собирает её из apps/tilda/header) не переносим:
+// на сайте Astro шапку и подвал ставит общий шаблон страницы (SiteHeader, SiteFooter).
+const embeddedHeader = /ШАПКА САЙТА/.test(beforeMain);
 
 // Простой разбор: делим содержимое <main> на элементы верхнего уровня.
 // Комментарии и пробелы перед элементом прилипают к нему.
@@ -215,7 +221,7 @@ ${imports.join('\n')}
 <PageLayout seo={page.seo} preconnect={page.preconnect}>
 ${externalHead.map((h) => `  <link slot="head" rel="stylesheet" href="${h}" />`).join('\n')}
 ${externalScripts.join('\n')}
-${toAstro(absolutizeMarkup(beforeMain)).trim()}
+${embeddedHeader ? '<!-- Шапка сайта — общий компонент SiteHeader в шаблоне страницы -->' : toAstro(absolutizeMarkup(beforeMain)).trim()}
   <main ${mainAttrs}>
 ${wrapOpen ? '  ' + toAstro(wrapOpen).trim() + '\n' : ''}${uses.join('\n')}
 ${wrapClose ? '  ' + wrapClose + '\n' : ''}  </main>

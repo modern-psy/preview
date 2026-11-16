@@ -15,8 +15,16 @@ interface Props {
   };
   preconnect?: string[];
   fontPreload?: boolean;
+  // Шапка и подвал сайта. Выключать только там, где их нет и на Тильде (у части вебинаров своя шапка)
+  header?: boolean;
+  footer?: boolean;
 }
-const { seo, preconnect = [], fontPreload = true } = Astro.props;
+const { seo, preconnect = [], fontPreload = true, header = true, footer = true } = Astro.props;
+// Общие стили v1: шрифт Академии и роли текста. Нужны шапке и подвалу на любой странице
+// (на Тильде они лежат в custom.css сайта). Правила v1 действуют только внутри [data-academy="1"].
+import '../../academy-base/v1.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import site from '../data/site.json';
 // Шрифт берём тот же файл, что подключает v1.css: Astro даёт ему адрес с отпечатком, и предзагрузка совпадает
 import fontUrl from '../../academy-base/fonts/wix-madefor-text-academy.woff2?url';
@@ -47,6 +55,8 @@ const leadConfig = JSON.stringify(site.lead);
     <slot name="head" />
   </head>
   <body>
+    {header && <SiteHeader />}
     <slot />
+    {footer && <SiteFooter />}
   </body>
 </html>

@@ -1,0 +1,9 @@
+---
+// Шапка сайта — те же блоки, что стоят на Тильде (apps/tilda/header в asp-deploy), но в превью с поиском.
+// Файлы src/site/header/*.html руками не править: их кладёт scripts/sync-site-chrome.mjs.
+// Блоки идут строго по порядку имён: 00 — слова для поиска в превью, 01 — стили, 02 — разметка,
+// 03 — скрипты, 04–05 — окно акции (пока акция включена в nav.json).
+const blocks = import.meta.glob('../site/header/*.html', { query: '?raw', import: 'default', eager: true });
+const html = Object.keys(blocks).sort().map((k) => blocks[k]).join('\n');
+---
+<Fragment set:html={html} />

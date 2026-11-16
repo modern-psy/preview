@@ -6,6 +6,7 @@
 // Если CMS не ответила за 15 секунд, берём сохранённый снимок src/data/price-snapshots/<курс>.json,
 // чтобы сборка не падала. Обновить снимки: node scripts/price-snapshots.mjs
 import fs from 'node:fs';
+import path from 'node:path';
 import vm from 'node:vm';
 import css from './price-auto/price-auto.css?raw';
 import js from './price-auto/price-auto.js?raw';
@@ -26,15 +27,23 @@ const cache = new Map();
 export async function loadCourse(slug) {
   if (cache.has(slug)) return cache.get(slug);
   const promise = (async () => {
-    try {
-      const res = await fetch(`${generator().API}/api/public/course/${slug}`, {
-        headers: { Accept: 'application/json' },
-        signal: AbortSignal.timeout(15000),
-      });
-      if (!res.ok) throw new Error(`CMS ответила ${res.status}`);
-      return { course: await res.json(), source: 'cms' };
-    } catch (error) {
-      const file = new URL(`../data/price-snapshots/${slug}.json`, import.meta.url);
+    let error;
+    // Две попытки: CMS иногда не отвечает с первого раза
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(`${generator().API}/api/public/course/${slug}`, {
+          headers: { Accept: 'application/json' },
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!res.ok) throw new Error(`CMS ответила ${res.status}`);
+        return { course: await res.json(), source: 'cms' };
+      } catch (e) {
+        error = e;
+      }
+    }
+    {
+      // Путь от корня проекта: при сборке этот модуль лежит уже в другой папке
+      const file = path.join(process.cwd(), 'src/data/price-snapshots', `${slug}.json`);
       if (!fs.existsSync(file)) throw new Error(`курс ${slug}: CMS не ответила (${error.message}), снимка нет`);
       console.warn(`⚠️  курс ${slug}: CMS не ответила (${error.message}), беру снимок`);
       return { course: JSON.parse(fs.readFileSync(file, 'utf8')), source: 'snapshot' };

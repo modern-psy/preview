@@ -99,7 +99,59 @@ if (fs.existsSync(EXPORT)) {
   }
 }
 
-// 5. Ссылки на боевой сайт внутри страниц → внутренние: на зеркале клики должны оставаться на зеркале.
+// 5. Шапка и подвал сайта (src/site, кладёт scripts/sync-site-chrome.mjs).
+//    • Страницы из экспорта Тильды: их шапку меняем на нашу (в превью — с поиском), подвал там уже новый.
+//    • Наши папки превью на боевых адресах: своих шапки и подвала у них нет (на Тильде их добавляет
+//      сайт), ставим по образцу живой страницы — флаги header и footer в src/data/tilda-pages.json.
+//    • Страницы Astro шапку и подвал уже получили из шаблона страницы.
+const siteDir = path.join(ROOT, 'src/site');
+const headerHtml = fs.readdirSync(path.join(siteDir, 'header')).filter((f) => f.endsWith('.html')).sort()
+  .map((f) => fs.readFileSync(path.join(siteDir, 'header', f), 'utf8')).join('\n');
+const footerHtml = fs.readFileSync(path.join(siteDir, 'footer/footer.html'), 'utf8');
+const v1Link = '<link rel="stylesheet" href="/academy-base/v1.css">';
+// Блок Тильды <header id="t-header"> или <footer id="t-footer"> целиком: внутри бывают свои
+// <header>/<footer>, поэтому считаем вложенность
+const tildaRange = (html, tag, id) => {
+  const start = html.indexOf(`<${tag} id="${id}"`);
+  if (start === -1) return null;
+  const re = new RegExp(`<${tag}\\b|<\\/${tag}>`, 'g');
+  re.lastIndex = start;
+  let depth = 0, m;
+  while ((m = re.exec(html))) {
+    depth += m[0] === `</${tag}>` ? -1 : 1;
+    if (depth === 0) return [start, re.lastIndex];
+  }
+  return null;
+};
+const chrome = { swapped: 0, injected: 0 };
+const pagesInfo = Object.fromEntries(read('src/data/tilda-pages.json').filter((p) => p.live).map((p) => [p.alias, p]));
+for (const [alias, info] of Object.entries(pagesInfo)) {
+  if (astroPages.has(alias) || (alias === mirror.home && astroPages.has('index'))) continue;
+  const file = alias === mirror.home ? path.join(DIST, 'index.html') : path.join(DIST, alias, 'index.html');
+  if (!fs.existsSync(file)) continue;
+  let html = fs.readFileSync(file, 'utf8');
+  const head = tildaRange(html, 'header', 't-header');
+  const foot = tildaRange(html, 'footer', 't-footer');
+  if (head || foot) {
+    // Страница из экспорта: шапку и подвал Тильды меняем на наши (подвал — с конца, чтобы не сбить позиции)
+    if (foot) html = html.slice(0, foot[0]) + `<footer id="t-footer" class="t-records">\n${footerHtml}\n</footer>` + html.slice(foot[1]);
+    const h = tildaRange(html, 'header', 't-header');
+    if (h) html = html.slice(0, h[0]) + `<header id="t-header" class="t-records">\n${headerHtml}\n</header>` + html.slice(h[1]);
+    chrome.swapped++;
+  } else if (html.includes('data-site-header')) {
+    continue; // наша шапка уже стоит
+  } else if (info.header || info.footer) {
+    if (!html.includes('/academy-base/v1.css')) html = html.replace(/<\/head>/i, `${v1Link}\n</head>`);
+    if (info.header) html = html.replace(/<body\b[^>]*>/i, (tag) => `${tag}\n${headerHtml}\n`);
+    if (info.footer && !html.includes('site-footer_component') && !html.includes('id="t-footer"')) {
+      html = html.replace(/<\/body>(?![\s\S]*<\/body>)/i, `${footerHtml}\n</body>`);
+    }
+    chrome.injected++;
+  } else continue;
+  fs.writeFileSync(file, html);
+}
+
+// 6. Ссылки на боевой сайт внутри страниц → внутренние: на зеркале клики должны оставаться на зеркале.
 //    Меняем только ссылки <a href>, canonical и og:url остаются боевыми.
 let relinked = 0;
 const walk = (dir) => {
@@ -118,3 +170,4 @@ console.log(`copy-legacy: папок превью ${report.legacy}, под бо�
 if (report.exportOver.length) console.log(`  экспорт поверх отстающих наших версий: ${report.exportOver.join(', ')}`);
 if (report.skipped.length) console.log(`  пропущено: ${report.skipped.join(', ')}`);
 console.log(`  ссылки на modern-psy.ru стали внутренними в ${relinked} файлах`);
+console.log(`  шапка и подвал заменены на страницах из экспорта: ${chrome.swapped}, шапка и подвал добавлены нашим папкам: ${chrome.injected}`);
