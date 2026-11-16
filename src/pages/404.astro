@@ -1,0 +1,57 @@
+---
+// Страница «Не найдено». Astro кладёт её в dist/404.html, хостинг показывает её на любой несуществующий адрес.
+// Тексты можно менять. Ссылки ведут только внутрь превью: на зеркале клики не должны уходить на боевой сайт.
+import PageLayout from '../layouts/PageLayout.astro';
+import '../../academy-base/v1.css';
+
+const seo = {
+  title: 'Страница не найдена',
+  description: 'Такой страницы нет. Возможно, адрес изменился или в ссылке опечатка.',
+  canonical: 'https://modern-psy.ru/',
+};
+---
+<PageLayout seo={seo}>
+  <main class="main-wrapper academy-page not-found_page" id="main-content" data-academy="1">
+    <section class="section-spacing_component not-found_component" aria-labelledby="not-found-heading">
+      <div class="padding-global">
+        <div class="container-xlarge">
+          <div class="section-layout_component is-responsive not-found_layout">
+            <div class="section-header_component is-left is-responsive">
+              <p class="body-text_component is-caption is-emphasis not-found_code" aria-hidden="true">404</p>
+              <h1 class="section-title_component is-left is-responsive" id="not-found-heading">Такой страницы нет</h1>
+              <p class="section-subtitle_component">
+                Возможно, адрес изменился или в&nbsp;ссылке опечатка. Начните с&nbsp;главной.
+              </p>
+            </div>
+            <div class="not-found_actions">
+              <a class="button_component is-accent" href="/">На&nbsp;главную</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</PageLayout>
+
+<style>
+  /* Страница короткая, поэтому секция занимает экран целиком и текст стоит по центру по высоте */
+  .not-found_component {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    background: var(--color-page-background);
+  }
+  .not-found_component > .padding-global { width: 100%; }
+  .not-found_layout { max-width: 40rem; }
+  .not-found_code {
+    margin: 0 0 1rem;
+    color: var(--color-text-secondary);
+  }
+  .not-found_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>
+
