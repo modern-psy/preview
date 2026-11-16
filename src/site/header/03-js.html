@@ -421,13 +421,20 @@ var wasFolded = root.classList.contains('is-folded');
 root.classList.add('is-measuring');
 root.classList.remove('is-folded');
 var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-var folded = DESKTOP.matches && linksRow.getBoundingClientRect().left - toggle.getBoundingClientRect().right < FOLD_GAP * rem;
+var leftEdge = toggle.getBoundingClientRect().right;
+var search = root.querySelector('[data-search-open]');
+if (search && !search.hidden && search.offsetWidth) leftEdge = Math.max(leftEdge, search.getBoundingClientRect().right);
+var folded = DESKTOP.matches && linksRow.getBoundingClientRect().left - leftEdge < FOLD_GAP * rem;
 if (folded) root.classList.add('is-folded');
 void root.offsetWidth;
 root.classList.remove('is-measuring');
 if (wasFolded && !folded) fold.querySelector('[data-submenu-toggle]').setAttribute('aria-expanded', 'false');
 }
-if (window.ResizeObserver) new ResizeObserver(fitLinks).observe(root.querySelector('.site-header_inner'));
+if (window.ResizeObserver) {
+new ResizeObserver(fitLinks).observe(root.querySelector('.site-header_inner'));
+var searchTrigger = root.querySelector('[data-search-open]');
+if (searchTrigger) new ResizeObserver(fitLinks).observe(searchTrigger);
+}
 else window.addEventListener('resize', fitLinks);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitLinks);
 fitLinks();
