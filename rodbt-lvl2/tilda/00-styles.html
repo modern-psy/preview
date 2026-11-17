@@ -1,0 +1,606 @@
+<!-- ОБЩИЕ СТИЛИ. Первый T123 страницы, до всех секций. Отступы T123 сверху и снизу: 0. -->
+<style>
+/* ==========================================================================
+   Страница «Второй уровень РО ДБТ» · modern-psy.ru/rodbt-lvl2
+   Пересобрана 17.11.2026 на общих стилях v1 (раньше страница была на блоках Zero).
+   Образец — /ro-dbt-path (apps/preview/ro-dbt-path/page.css): те же цвета, кнопки, карточки и плашки.
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета, каркас
+   main-wrapper → padding-global → container-xlarge (1520 px, поля от 16 px), отступы секций
+   section-spacing_component, H1 hero_heading, роли текста body-text_component и кнопка button_component.
+   Здесь только раскладка блоков и цвета, которых нет в v1.
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста, переопределять --hero-heading-size
+   и поля кнопки. Размер текста меняется только сменой класса роли в index.html (таблица в academy-base/README.md).
+
+   Все правила начинаются с .rodbt-lvl2-page, чтобы не задеть соседние блоки Тильды (там же стоит блок цены).
+   Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px. Других не добавлять.
+   ========================================================================== */
+
+
+/* ---------- 0. Цвета и общие настройки ----------
+   Цвета из v1 (--color-*). Свои — только здесь, в правилах ниже hex-кодов нет. Значения — как на /ro-dbt-path. */
+.rodbt-lvl2-page {
+  --lvl2-muted: #625f6a;                /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1 */
+  --lvl2-line: #d9d8df;                 /* тонкие линии между пунктами, маркеры списков */
+  --lvl2-line-soft: #e8e7ee;            /* светлая линия; --color-line v1 в custom.css Тильды нет (17.11.2026) */
+  --lvl2-on-dark-muted: #b9b4c4;        /* текст карточек на тёмной плашке: на #2b2334 7,4:1 */
+  --lvl2-dark-card: rgb(181 163 234 / 12%); /* карточка на тёмной плашке: violet-300 кита на 12 % */
+  --lvl2-dark-line: rgb(255 255 255 / 16%); /* тонкие линии на тёмной плашке */
+  /* Оттенки фиолетового и статусы — из UI-кита АСП 1.0 (design-system/tokens.css), значения один в один. */
+  --lvl2-violet-50: #efedf8;            /* сиреневые плашки: первый экран, части программы, темы */
+  --lvl2-violet-100: #e0dbee;           /* карточка Томаса Линча, номер этапа 0 */
+  --lvl2-violet-200: #d0c4f2;           /* номер этапа 1, текст на тёмно-фиолетовом */
+  --lvl2-violet-300: #b5a3ea;           /* надписи и номера на тёмной плашке: на #2b2334 6,7:1 */
+  --lvl2-violet-500: #7c5cdb;           /* вывод «Без дифференциации…», черты пунктов */
+  --lvl2-violet-600: #644ab2;           /* заголовок первого экрана, карточка Модуля 2: белый на нём 6,6:1 */
+  --lvl2-violet-700: #4c3888;           /* надписи над заголовками и текст тем: на белом 10:1, на #efedf8 8,6:1 */
+  --lvl2-violet-800: #35275f;           /* номер этапа 3, тёмная карточка «Поддерживающие встречи» */
+  --lvl2-open: #0a6b4e;                 /* статус «Доступен»: success-text кита, на #e9f7f1 6:1 */
+  --lvl2-open-bg: #e9f7f1;              /* фон плашки статуса «Доступен»: success-bg кита */
+  --lvl2-info: #12798f;                 /* текущая ступень в первом экране: info кита, белый на нём 5:1 */
+  --lvl2-info-bg: #e8f8fb;              /* заметка «Сейчас в продаже…»: info-bg кита */
+  --lvl2-info-border: #5cc6d9;          /* её рамка: info-border кита */
+  --lvl2-info-text: #0e6d80;            /* её текст и иконка: info-text кита, на #e8f8fb 5,6:1 */
+}
+
+/* Отступ закреплённого при прокрутке заголовка «Дорожной карты» от верха окна: под шапкой сайта на Тильде (около 78 px). */
+.rodbt-lvl2-page { --lvl2-sticky-top: 6.5rem; }
+
+/* Серый текст v1 (#7b7b7c) на #f5f5f5 даёт 3,9:1: для текста мельче 24 px мало. Берём темнее, как на /ro-dbt-path. */
+.rodbt-lvl2-page { --body-text-color: var(--lvl2-muted); --section-subtitle-color: var(--lvl2-muted); }
+
+.rodbt-lvl2-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Боковые поля страницы: до 767 px ровно 16 px, как на /ro-dbt-path. От 768 px — формула v1. */
+.main-wrapper.rodbt-lvl2-page { --page-padding: 1rem; }
+@media (min-width: 48rem) {
+  .main-wrapper.rodbt-lvl2-page { --page-padding: clamp(1rem, 4.7619vw, 5rem); }
+}
+
+/* Списки без браузерных точек и отступов */
+.rodbt-lvl2-page :is(.lvl2-hero_facts, .lvl2-stack, .lvl2-faq_list, .lvl2-roadmap_list, .lvl2-tags, .lvl2-part_grid, .lvl2-position_grid, .lvl2-included_grid, .lvl2-partner_list) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Жирное начало фразы (пункты партнёрства) — цветом основного текста */
+.rodbt-lvl2-page strong { color: var(--color-text-primary); }
+
+/* Текст только для скринридера (номер этапа: на экране он нарисован в кружке) */
+.rodbt-lvl2-page .lvl2-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Надпись над заголовком («Метод Томаса Линча», «Дорожная карта», …) — подпись is-caption тёмно-фиолетовым */
+.rodbt-lvl2-page .lvl2-eyebrow { --body-text-color: var(--lvl2-violet-700); }
+
+/* Подзаголовок секции не шире 46rem (около 80 знаков в строке) */
+.rodbt-lvl2-page .section-header_component.is-left .section-subtitle_component { max-width: 46rem; }
+
+/* Иконка Lucide 20 px: цвет берёт от родителя */
+.rodbt-lvl2-page .lvl2-icon { flex: none; display: block; width: 1.25rem; height: 1.25rem; }
+
+/* Ссылка-стрелка («radicallyopen.net →»): подчёркнута, цвета текста */
+.rodbt-lvl2-page .lvl2-link {
+  justify-self: start;
+  color: var(--color-text-primary) !important; /* custom.css сайта красит все ссылки, поэтому !important */
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.rodbt-lvl2-page .lvl2-link_arrow { display: inline-block; margin-left: 0.375em; color: var(--lvl2-violet-600); text-decoration: none; }
+@media (hover: hover) and (pointer: fine) {
+  .rodbt-lvl2-page .lvl2-link:hover { text-decoration-color: var(--lvl2-line); }
+}
+
+/* Кнопки — button_component из v1 без изменений высоты, кегля, полей и состояний (как на /ro-dbt-path).
+   Вторая кнопка первого экрана — is-light, но белая на белой карточке не видна, поэтому фон серый.
+   Селектор ровно из трёх классов, слабее правила наведения v1 ([data-academy] + три класса): иначе серый фон
+   перебивает наведение (на /ro-dbt-path так и было до 17.11.2026). При наведении фон v1 #e6e5eb. */
+.rodbt-lvl2-page .button_component.lvl2-hero_secondary { background: var(--color-page-background); }
+
+/* Статус плашкой с точкой: зелёная (success кита) — доступно сейчас, серая — откроется позже */
+.rodbt-lvl2-page .lvl2-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6rem;
+  background: var(--color-page-background);
+}
+.rodbt-lvl2-page .lvl2-status::before {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--lvl2-muted);
+}
+.rodbt-lvl2-page .lvl2-status.is-open { --body-text-color: var(--lvl2-open); background: var(--lvl2-open-bg); }
+.rodbt-lvl2-page .lvl2-status.is-open::before { background: var(--lvl2-open); }
+
+/* Темы — плашки v1 на сиреневом, текст тёмно-фиолетовый */
+.rodbt-lvl2-page .lvl2-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.rodbt-lvl2-page .lvl2-tags .meta-pill_component { background: var(--lvl2-violet-50); color: var(--lvl2-violet-700); }
+
+/* Карточка пункта с иконкой («Что входит»): сверху плашка иконки слева от заголовка, снизу текст.
+   is-tinted — сиреневая, плашка иконки белая; is-dark — тёмно-фиолетовая, текст светлый. Как на /ro-dbt-path. */
+.rodbt-lvl2-page .lvl2-feature_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.rodbt-lvl2-page .lvl2-feature_card .body-text_component { max-width: 40rem; }
+.rodbt-lvl2-page .lvl2-feature_card.is-tinted { background: var(--lvl2-violet-50); --body-text-color: var(--color-text-primary); }
+.rodbt-lvl2-page .lvl2-feature_card.is-tinted .lvl2-icon_tile { background: var(--color-surface-primary); }
+.rodbt-lvl2-page .lvl2-feature_card.is-dark { background: var(--lvl2-violet-800); --body-text-color: var(--lvl2-violet-100); }
+.rodbt-lvl2-page .lvl2-feature_card.is-dark .content-heading_component { color: var(--color-text-on-dark); }
+.rodbt-lvl2-page .lvl2-feature_card.is-dark .lvl2-icon_tile { background: rgb(255 255 255 / 12%); color: var(--lvl2-violet-200); }
+.rodbt-lvl2-page .lvl2-feature_head { display: flex; align-items: center; gap: 0.875rem; }
+.rodbt-lvl2-page .lvl2-feature_head .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+/* плашка иконки: квадрат 40 px со скруглением, иконка 20 px по центру, violet-700 (на violet-50 8,1:1) */
+.rodbt-lvl2-page .lvl2-icon_tile {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  background: var(--lvl2-violet-50);
+  color: var(--lvl2-violet-700);
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-feature_card { gap: 2.5rem; padding: 1.5rem; min-height: 14rem; }
+}
+
+/* Тёмная плашка #2B2334 внутри контейнера («Наша позиция»), как на /ro-dbt-path */
+.rodbt-lvl2-page .lvl2-dark_plate {
+  padding: 2rem var(--card-padding) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+  --body-text-color: var(--lvl2-on-dark-muted);
+}
+.rodbt-lvl2-page .lvl2-dark_plate :is(.section-title_component, .content-heading_component, strong) { color: var(--color-text-on-dark); }
+.rodbt-lvl2-page .lvl2-dark_plate .lvl2-eyebrow { --body-text-color: var(--lvl2-violet-300); }
+.rodbt-lvl2-page .lvl2-dark_card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--lvl2-dark-card);
+}
+@media (min-width: 32.5625rem) {
+  .rodbt-lvl2-page .lvl2-dark_plate { padding: 2.5rem 1.5rem 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-lvl2-page .lvl2-dark_plate { padding: 3rem 2.5rem 2.5rem; }
+  .rodbt-lvl2-page .lvl2-dark_card { gap: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-dark_plate { padding: var(--section-inset-space) clamp(2rem, 23.75vw - 17rem, 4.375rem) clamp(2rem, 23.75vw - 17rem, 4.375rem); }
+  .rodbt-lvl2-page .lvl2-dark_card { gap: 1.25rem; padding: 1.5rem; }
+}
+
+
+/* ---------- 1. Первый экран ----------
+   Белая карточка: слева надпись, H1, подпись Level 2, подводка, кнопки и два факта; справа сиреневая плашка
+   с лесенкой ступеней. Телефон и планшет: всё столбиком, кнопки сразу после подводки. От 1025 px две колонки. */
+.rodbt-lvl2-page .lvl2-hero_component { padding-top: 0.75rem; }
+.rodbt-lvl2-page .lvl2-hero_card {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--color-surface-primary);
+}
+.rodbt-lvl2-page .lvl2-hero_text { display: flex; flex-direction: column; gap: 1.25rem; padding: 0.25rem 0.25rem 0; }
+.rodbt-lvl2-page .lvl2-hero_header { display: grid; gap: 0.5rem; }
+.rodbt-lvl2-page .lvl2-hero_header .body-text_component.is-summary { --body-text-color: var(--color-text-primary); max-width: 40rem; }
+/* «Обучение для терапевтов РО ДБТ» — фиолетовым, «Уровень 2» основным цветом, как на старой странице */
+.rodbt-lvl2-page .lvl2-hero_accent { color: var(--lvl2-violet-600); }
+/* подпись Level 2 RO DBT Practitioner — тёмно-фиолетовым */
+.rodbt-lvl2-page .lvl2-hero_level { --body-text-color: var(--lvl2-violet-700); }
+
+/* кнопки растянуты по колонке, не шире 38.3125rem (как на /ro-dbt-path и /child-psy):
+   рядом, когда каждой хватает 17rem, иначе друг под другом */
+.rodbt-lvl2-page .lvl2-hero_buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.5rem 1rem;
+  width: 100%;
+  max-width: 38.3125rem;
+}
+/* два факта: строки с иконкой через тонкую линию */
+.rodbt-lvl2-page .lvl2-hero_facts { display: grid; }
+.rodbt-lvl2-page .lvl2-hero_fact {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--lvl2-line-soft);
+  color: var(--color-text-primary);
+}
+.rodbt-lvl2-page .lvl2-hero_fact:last-child { padding-bottom: 0; }
+.rodbt-lvl2-page .lvl2-hero_fact .lvl2-icon { margin-top: 0.1em; color: var(--lvl2-violet-600); }
+
+/* Плашка с лесенкой: сиреневая, ступени белыми строками сверху вниз от 3 к 0.
+   Текущая ступень (Уровень 2) — бирюзовая, с белым текстом, чуть шире соседних и слегка повёрнута,
+   как на картинке старой страницы. Ступени выше и ниже повёрнуты на доли градуса в разные стороны. */
+.rodbt-lvl2-page .lvl2-hero_panel {
+  display: grid;
+  align-content: center;
+  padding: 1.25rem 1rem;
+  border-radius: 1rem;
+  background: var(--lvl2-violet-50);
+}
+.rodbt-lvl2-page .lvl2-stack { display: grid; gap: 0.5rem; }
+.rodbt-lvl2-page .lvl2-stack_item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.875rem;
+  background: var(--color-surface-primary);
+}
+.rodbt-lvl2-page .lvl2-stack_item:nth-child(1) { margin-inline: 0.75rem; }
+.rodbt-lvl2-page .lvl2-stack_item:nth-child(3) { margin-inline: 0.5rem; transform: rotate(-0.6deg); }
+.rodbt-lvl2-page .lvl2-stack_item:nth-child(4) { margin-inline: 0.5rem; transform: rotate(0.5deg); }
+.rodbt-lvl2-page .lvl2-stack_text { display: grid; gap: 0.125rem; }
+.rodbt-lvl2-page .lvl2-stack_title { --body-text-color: var(--color-text-primary); }
+/* номер ступени в квадрате: 3 серый, 1 и 0 сиреневые */
+.rodbt-lvl2-page .lvl2-stack_number {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  background: var(--lvl2-violet-100);
+  color: var(--lvl2-violet-800);
+  font-variant-numeric: tabular-nums;
+}
+.rodbt-lvl2-page .lvl2-stack_item:nth-child(1) .lvl2-stack_number { background: var(--color-page-background); color: var(--lvl2-muted); }
+.rodbt-lvl2-page .lvl2-stack_item.is-current {
+  margin-inline: -0.25rem;
+  padding-block: 1rem;
+  background: var(--lvl2-info);
+  transform: rotate(1deg);
+  box-shadow: 0 0.75rem 1.5rem rgb(18 121 143 / 22%);
+  --body-text-color: var(--color-text-on-dark);
+}
+.rodbt-lvl2-page .lvl2-stack_item.is-current .lvl2-stack_title { --body-text-color: var(--color-text-on-dark); }
+/* квадрат номера темнее карточки, а не светлее: белая цифра на светлой подложке давала 3,6:1 */
+.rodbt-lvl2-page .lvl2-stack_item.is-current .lvl2-stack_number { background: rgb(0 0 0 / 20%); color: var(--color-text-on-dark); }
+
+@media (min-width: 32.5625rem) {
+  .rodbt-lvl2-page .lvl2-hero_card { padding: 1.5rem; border-radius: 1.75rem; }
+  .rodbt-lvl2-page .lvl2-hero_text { padding: 0.5rem 0.25rem 0; gap: 1.5rem; }
+  .rodbt-lvl2-page .lvl2-hero_panel { padding: 2rem 1.5rem; border-radius: 1.25rem; }
+  .rodbt-lvl2-page .lvl2-stack_item:nth-child(1) { margin-inline: 1.5rem; }
+  .rodbt-lvl2-page .lvl2-stack_item:is(:nth-child(3), :nth-child(4)) { margin-inline: 1rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-lvl2-page .lvl2-hero_component { padding-top: 1.25rem; }
+  .rodbt-lvl2-page .lvl2-hero_card { padding: 2.25rem; gap: 2rem; }
+  .rodbt-lvl2-page .lvl2-hero_header { gap: 0.75rem; }
+  .rodbt-lvl2-page .lvl2-hero_panel { padding: 2.5rem 3rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-hero_component { padding-top: 1.5rem; }
+  .rodbt-lvl2-page .lvl2-hero_card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: clamp(2.5rem, 3.9vw, 3.5rem);
+    padding: clamp(2.25rem, 3.3vw, 3rem);
+  }
+  /* текст прижат к низу карточки, как на /ro-dbt-path */
+  .rodbt-lvl2-page .lvl2-hero_text { padding: 0; gap: 2rem; justify-content: flex-end; }
+  .rodbt-lvl2-page .lvl2-hero_facts { max-width: 34rem; }
+  .rodbt-lvl2-page .lvl2-hero_panel { padding: 3rem clamp(1.5rem, 3vw, 3rem); }
+}
+
+
+/* ---------- 2. Дорожная карта ----------
+   Как на /ro-dbt-path: от 1025 px заголовок слева и закреплён при прокрутке (is-split v1), этапы справа.
+   Карточка этапа: номер в кружке, этап и статус; название и подзаголовок; у Модуля 2 абзацы и темы.
+   Модуль 2 (этот курс) — фиолетовая карточка (violet-600, белый текст 6,6:1), как выделение на старой странице. */
+.rodbt-lvl2-page .lvl2-roadmap_layout { --section-layout-columns: minmax(0, 0.75fr) minmax(0, 1fr); }
+.rodbt-lvl2-page .lvl2-roadmap_list { display: grid; gap: var(--card-grid-gap); }
+.rodbt-lvl2-page .lvl2-roadmap_stage {
+  display: grid;
+  gap: 1.25rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.rodbt-lvl2-page .lvl2-roadmap_meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.875rem; }
+/* номер этапа в кружке: от этапа к этапу оттенок фиолетового темнеет */
+.rodbt-lvl2-page .lvl2-roadmap_number {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--lvl2-violet-100);
+  color: var(--lvl2-violet-800);
+  font-variant-numeric: tabular-nums;
+}
+.rodbt-lvl2-page .lvl2-roadmap_stage:nth-child(2) .lvl2-roadmap_number { background: var(--lvl2-violet-200); }
+.rodbt-lvl2-page .lvl2-roadmap_stage:nth-child(4) .lvl2-roadmap_number { background: var(--lvl2-violet-800); color: var(--color-text-on-dark); }
+.rodbt-lvl2-page .lvl2-roadmap_label { --body-text-color: var(--color-text-primary); }
+.rodbt-lvl2-page .lvl2-roadmap_title { display: grid; gap: 0.5rem; }
+.rodbt-lvl2-page .lvl2-roadmap_title .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.rodbt-lvl2-page .lvl2-roadmap_text { display: grid; gap: 0.75rem; }
+.rodbt-lvl2-page .lvl2-roadmap_stage .body-text_component { max-width: 44rem; }
+
+/* текущий этап: фиолетовая карточка, текст белый и светло-сиреневый, номер белым кружком */
+.rodbt-lvl2-page .lvl2-roadmap_stage.is-current { background: var(--lvl2-violet-600); --body-text-color: var(--lvl2-violet-50); }
+.rodbt-lvl2-page .lvl2-roadmap_stage.is-current :is(.content-heading_component, .lvl2-roadmap_label, .is-callout) { color: var(--color-text-on-dark); --body-text-color: var(--color-text-on-dark); }
+.rodbt-lvl2-page .lvl2-roadmap_stage.is-current .lvl2-roadmap_number { background: var(--color-surface-primary); color: var(--lvl2-violet-700); }
+.rodbt-lvl2-page .lvl2-roadmap_stage.is-current .lvl2-tags .meta-pill_component { background: rgb(255 255 255 / 16%); color: var(--color-text-on-dark); }
+@media (min-width: 48rem) {
+  .rodbt-lvl2-page .lvl2-roadmap_stage { padding: 1.5rem; gap: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-roadmap_stage { padding: 2rem; }
+  .rodbt-lvl2-page .lvl2-roadmap_layout .section-header_component { position: sticky; top: var(--lvl2-sticky-top); }
+}
+
+
+/* ---------- 3. Программа курса ----------
+   Сверху заголовок и бирюзовая заметка (до 1025 px заметка под заголовком, от 1025 px справа от него).
+   Ниже четыре части: сиреневая плашка с заголовком «Часть N», внутри три белые карточки «Блок N».
+   Карточки: до 767 px столбиком; 768–1024 px столбиком, но в карточке название слева, описание справа;
+   от 1025 px по три в ряд. */
+.rodbt-lvl2-page .lvl2-program_head { display: grid; gap: 1.5rem; align-items: end; }
+.rodbt-lvl2-page .lvl2-program_note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border: 1px solid var(--lvl2-info-border);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--lvl2-info-bg);
+  color: var(--lvl2-info-text);
+  --body-text-color: var(--lvl2-info-text);
+}
+.rodbt-lvl2-page .lvl2-program_note .lvl2-icon { margin-top: 0.15em; }
+.rodbt-lvl2-page .lvl2-program_parts { display: grid; gap: var(--card-grid-gap); }
+
+.rodbt-lvl2-page .lvl2-part {
+  display: grid;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: calc(var(--radius-card, 1rem) + 0.25rem);
+  background: var(--lvl2-violet-50);
+}
+.rodbt-lvl2-page .lvl2-part_head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.875rem; }
+.rodbt-lvl2-page .lvl2-part_head .content-heading_component { color: var(--color-text-primary); }
+.rodbt-lvl2-page .lvl2-part_grid { display: grid; gap: 0.5rem; }
+
+.rodbt-lvl2-page .lvl2-block_card {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.rodbt-lvl2-page .lvl2-block_top { display: grid; align-content: start; gap: 0.75rem; }
+.rodbt-lvl2-page .lvl2-block_meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.rodbt-lvl2-page .lvl2-block_number { --body-text-color: var(--lvl2-violet-700); }
+.rodbt-lvl2-page .lvl2-block_card .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+
+@media (min-width: 48rem) {
+  .rodbt-lvl2-page .lvl2-part { padding: 1.5rem; gap: 1.25rem; }
+  .rodbt-lvl2-page .lvl2-block_card { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr); column-gap: 2rem; padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-program_head { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); column-gap: 3rem; }
+  .rodbt-lvl2-page .lvl2-part { padding: 1.5rem; }
+  .rodbt-lvl2-page .lvl2-part_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--card-grid-gap); }
+  .rodbt-lvl2-page .lvl2-block_card { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+}
+
+
+/* ---------- 4. Почему по литературе учиться недостаточно ----------
+   Как на /ro-dbt-path: четыре причины карточками (номер 01–04 справа сверху), под ними вывод на фиолетовом.
+   Столбиком, от 768 px по две. */
+.rodbt-lvl2-page .lvl2-position_body { display: grid; gap: var(--card-grid-gap); }
+.rodbt-lvl2-page .lvl2-position_grid { display: grid; gap: var(--card-grid-gap); }
+.rodbt-lvl2-page .lvl2-position_grid .lvl2-dark_card { position: relative; }
+.rodbt-lvl2-page .lvl2-position_grid .content-heading_component { padding-right: 3rem; text-wrap: balance; }
+.rodbt-lvl2-page .lvl2-position_number {
+  position: absolute;
+  top: var(--card-padding);
+  right: var(--card-padding);
+  color: var(--lvl2-violet-300);
+  font-variant-numeric: tabular-nums;
+}
+.rodbt-lvl2-page .lvl2-position_summary {
+  display: grid;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--lvl2-violet-500);
+  --body-text-color: var(--color-text-on-dark);
+}
+.rodbt-lvl2-page .lvl2-position_summary .body-text_component { max-width: 56rem; }
+@media (min-width: 48rem) {
+  .rodbt-lvl2-page .lvl2-position_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-position_number { top: 1.5rem; right: 1.5rem; }
+  .rodbt-lvl2-page .lvl2-position_summary { gap: 1rem; padding: 1.5rem; }
+}
+
+
+/* ---------- 5. Что входит в обучение в АСП ----------
+   Четыре карточки lvl2-feature_card. Телефон: столбиком. От 768 px по две.
+   От 1025 px 12 колонок: 7 + 5, затем 5 + 7 (строки сдвинуты, как кирпичная кладка). */
+.rodbt-lvl2-page .lvl2-included_grid { display: grid; gap: var(--card-grid-gap); }
+@media (min-width: 48rem) {
+  .rodbt-lvl2-page .lvl2-included_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-included_grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .rodbt-lvl2-page .lvl2-included_grid > .lvl2-feature_card { grid-column: span 5; }
+  .rodbt-lvl2-page .lvl2-included_grid > .lvl2-feature_card:is(:first-child, :last-child) { grid-column: span 7; }
+}
+
+
+/* ---------- 6. Radically Open Ltd — Институт Линча ----------
+   Как на /ro-dbt-path: белая плашка, слева заголовок и четыре пункта через тонкие линии,
+   справа сиреневая карточка Томаса Линча с вырезанным портретом на нижнем краю.
+   До 520 px фото под текстом, от 521 px справа от текста. От 1025 px карточка — правая колонка плашки. */
+.rodbt-lvl2-page .lvl2-partner_plate {
+  display: grid;
+  gap: 2rem;
+  padding: 2rem var(--card-padding) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.rodbt-lvl2-page .lvl2-partner_text { display: grid; align-content: start; gap: 1.5rem; }
+.rodbt-lvl2-page .lvl2-partner_list { display: grid; }
+.rodbt-lvl2-page .lvl2-partner_list li { position: relative; padding: 1rem 0 1rem 1.25rem; border-top: 1px solid var(--lvl2-line); }
+/* фиолетовая черта у каждого пункта на высоте первой строки */
+.rodbt-lvl2-page .lvl2-partner_list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(1rem + 0.6em);
+  width: 0.625rem;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--lvl2-violet-500);
+}
+.rodbt-lvl2-page .lvl2-partner_list li:last-child { padding-bottom: 0; }
+.rodbt-lvl2-page .lvl2-partner_card {
+  display: grid;
+  overflow: hidden;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--lvl2-violet-100);
+}
+.rodbt-lvl2-page .lvl2-partner_card-text { display: grid; align-content: start; gap: 0.75rem; padding: var(--card-padding); }
+.rodbt-lvl2-page .lvl2-partner_name { display: grid; gap: 0.25rem; }
+.rodbt-lvl2-page .lvl2-partner_name .content-heading_component { color: var(--color-text-primary); }
+.rodbt-lvl2-page .lvl2-partner_photo {
+  display: block;
+  justify-self: center;
+  width: 100%;
+  max-width: 13rem;
+  height: auto;
+  aspect-ratio: 688 / 922;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+@media (min-width: 32.5625rem) {
+  .rodbt-lvl2-page .lvl2-partner_plate { padding: 2.5rem 1.5rem 1.5rem; }
+  .rodbt-lvl2-page .lvl2-partner_card { grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr); align-items: end; }
+  .rodbt-lvl2-page .lvl2-partner_card-text { align-self: stretch; padding-right: 0; }
+  .rodbt-lvl2-page .lvl2-partner_photo { max-width: none; margin-top: 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .rodbt-lvl2-page .lvl2-partner_plate { padding: 3rem 2.5rem 2.5rem; }
+  .rodbt-lvl2-page .lvl2-partner_card-text { padding: 1.5rem 0 1.5rem 1.5rem; gap: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-partner_plate {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(2.5rem, 4vw, 4.5rem);
+    align-items: start;
+    padding: var(--section-inset-space) clamp(2rem, 23.75vw - 17rem, 4.375rem) clamp(2rem, 23.75vw - 17rem, 4.375rem);
+  }
+  .rodbt-lvl2-page .lvl2-partner_card { grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr); }
+}
+
+/* Тёмный вариант плашки (как на старой странице, просьба Дарьи 17.11.2026): фон #2B2334, заголовки белые,
+   текст светло-серый (7,4:1), линии полупрозрачные, черты пунктов violet-300; карточка Линча тёмно-фиолетовая
+   (violet-800), текст на ней violet-100 (9,7:1). */
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark {
+  background: var(--color-surface-dark);
+  --section-subtitle-color: var(--color-text-on-dark-muted);
+  --body-text-color: var(--lvl2-on-dark-muted);
+}
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark :is(.section-title_component, .content-heading_component, strong) { color: var(--color-text-on-dark); }
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark .lvl2-eyebrow { --body-text-color: var(--lvl2-violet-300); }
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark .lvl2-partner_list li { border-top-color: var(--lvl2-dark-line); }
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark .lvl2-partner_list li::before { background: var(--lvl2-violet-300); }
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark .lvl2-partner_card { background: var(--lvl2-violet-800); --body-text-color: var(--lvl2-violet-100); }
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark .lvl2-partner_name .content-heading_component { color: var(--color-text-on-dark); }
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark .lvl2-link { color: var(--color-text-on-dark) !important; text-decoration-color: var(--lvl2-violet-300); }
+.rodbt-lvl2-page .lvl2-partner_plate.is-dark .lvl2-link_arrow { color: var(--lvl2-violet-300); }
+
+
+/* ---------- 7–8. Цена и форма ----------
+   Блок цены — готовый блок Тильды со своими стилями (.pa-r), здесь его не трогаем.
+   Форма — request-form.css (копия общего компонента, кладёт sync-blocks.mjs). */
+
+
+/* ---------- 9. Вопросы и ответы ----------
+   Как на /ro-dbt-path: колонка 64rem по центру, белые карточки, вопрос content-heading is-compact, плюс-крестик справа. */
+.rodbt-lvl2-page .lvl2-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+.rodbt-lvl2-page .lvl2-faq_list { display: grid; gap: 0.5rem; }
+.rodbt-lvl2-page .lvl2-faq_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.rodbt-lvl2-page .lvl2-faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.rodbt-lvl2-page .lvl2-faq_question::-webkit-details-marker { display: none; }
+.rodbt-lvl2-page .lvl2-faq_question .content-heading_component { color: var(--color-text-primary); text-wrap: pretty; }
+.rodbt-lvl2-page .lvl2-faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--lvl2-violet-50);
+  transition: background-color 150ms ease;
+}
+.rodbt-lvl2-page .lvl2-faq_icon::before,
+.rodbt-lvl2-page .lvl2-faq_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--lvl2-violet-700);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.rodbt-lvl2-page .lvl2-faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.rodbt-lvl2-page .lvl2-faq_item[open] .lvl2-faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .rodbt-lvl2-page .lvl2-faq_question:hover .lvl2-faq_icon { background: var(--lvl2-violet-100); }
+}
+.rodbt-lvl2-page .lvl2-faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.rodbt-lvl2-page .lvl2-faq_answer .body-text_component { max-width: 62ch; }
+.rodbt-lvl2-page .lvl2-faq_answer a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (min-width: 64.0625rem) {
+  .rodbt-lvl2-page .lvl2-faq_question { padding: 1.25rem 1.5rem; }
+  .rodbt-lvl2-page .lvl2-faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rodbt-lvl2-page :is(.lvl2-faq_icon, .lvl2-faq_icon::before, .lvl2-faq_icon::after) { transition: none; }
+}
+</style>
