@@ -100,7 +100,7 @@ const exportIds = ids(blocks.filter(b => b.startsWith('<!-- СЕКЦИЯ')).join
 if (sourceIds !== [...exportIds].sort().join()) throw new Error('Набор id в блоках не совпадает с index.html');
 if (new Set(exportIds).size !== exportIds.length) throw new Error('Повторяющиеся id в блоках');
 for (const link of all.matchAll(/href="#([a-z][a-z0-9-]*)"/g)) if (!exportIds.includes(link[1]) && !POPUPS.includes(link[1])) throw new Error(`Якорь без цели: #${link[1]}`);
-for (const url of ['https://modern-psy.ru/rodbt-record', 'https://modern-psy.ru/rodbt-lvl2']) if (!all.includes(`href="${url}"`)) throw new Error(`Нет ссылки ${url}`);
+for (const url of ['https://modern-psy.ru/rodbt-live', 'https://modern-psy.ru/rodbt-lvl2']) if (!all.includes(`href="${url}"`)) throw new Error(`Нет ссылки ${url}`);
 
 // preview.html: блоки в обёртках, как их рисует Тильда, плюс правило ссылок из custom.css сайта.
 const preview = `<!doctype html>\n<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Обучение RO DBT в России: проверка блоков T123</title>\n<link rel="stylesheet" href="../../academy-base/v1.css"><!-- на сайте v1 лежит в custom.css Тильды -->
