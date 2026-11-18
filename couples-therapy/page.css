@@ -1,0 +1,588 @@
+/* ==========================================================================
+   Лендинг «Терапия пар» · повышение квалификации · modern-psy.ru/couples-therapy
+   Пересобран 17.11.2026 на общих стилях v1 (раньше страница была на Zero-блоках Тильды). Образец — /orkt.
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета, каркас
+   main-wrapper → padding-global → container-xlarge (1520 px, поля от 16 px), отступы секций
+   section-spacing_component, роли текста body-text_component и кнопка button_component.
+   Здесь только раскладка блоков и цвета, которых нет в v1. Устроено как на /orkt и /couple-requests.
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста секций 2–5 и 7–12: размер текста
+   меняется только сменой класса роли в index.html (таблица в academy-base/README.md).
+   Исключение — первый экран (раздел 1) и блок бесплатных лекций (раздел 6): это утверждённые
+   10–11.11.2026 блоки /orkt со своими кеглями, их стили перенесены один в один.
+
+   Правила секций начинаются с .couples-page, у первого экрана и лекций — свои префиксы .couples-hero и .couples-free.
+   Ступени ширины секций как в v1: до 520 · от 521 · от 768 · от 1025 px. У первого экрана и лекций переломы
+   по ширине их карточки (@container), как в утверждённых блоках.
+   ========================================================================== */
+
+/* ---------- 0. Цвета и общие настройки ----------
+   Цвета из v1 (--color-*). Свои — только здесь, в правилах секций ниже hex-кодов нет. Значения — как на /orkt и /couple-requests. */
+.couples-page {
+  --couples-muted: #625f6a;              /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1 */
+  --couples-line: #d9d8df;               /* тонкие линии между пунктами, маркеры списков */
+  --couples-on-dark-muted: #b9b4c4;      /* текст карточек на тёмной плашке: на #2b2334 7,4:1, на карточке около 6:1 */
+  --couples-dark-card: rgb(255 255 255 / 8%); /* карточка на тёмной плашке, как на /couple-requests */
+}
+
+/* Отступ закреплённого при прокрутке заголовка «Программы» от верха окна: под шапкой сайта на Тильде
+   (около 78 px) с зазором, как на /couple-requests (6.5rem = 104 px). */
+.couples-page { --couples-sticky-top: 6.5rem; }
+
+/* Серый текст v1 (#7b7b7c) даёт на белом 4,2:1, на #f5f5f5 — 3,9:1: для текста мельче 24 px мало.
+   На этой странице берём темнее, как на /couple-requests. */
+.couples-page { --body-text-color: var(--couples-muted); --section-subtitle-color: var(--couples-muted); }
+
+.couples-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Боковые поля страницы: до 767 px ровно 16 px, как на /couple-requests (решение Дарьи 05.11.2026).
+   От 768 px — формула v1. Меняем только токен --page-padding, которым пользуется padding-global. */
+.main-wrapper.couples-page { --page-padding: 1rem; }
+@media (min-width: 48rem) {
+  .main-wrapper.couples-page { --page-padding: clamp(1rem, 4.7619vw, 5rem); }
+}
+
+/* Списки в карточках без браузерных точек и отступов */
+.couples-page :is(.couples-prepare_grid, .couples-skills_list, .couples-teachers_grid, .couples-program_list, .couples-program_topics) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Подзаголовок секции не шире 46rem (около 80 знаков в строке) */
+.couples-page .section-header_component.is-left .section-subtitle_component { max-width: 46rem; }
+
+/* Колонка шириной 64rem по центру: вопросы и ответы (блок цены задаёт ту же ширину сам, layout wa-narrow) */
+.couples-page .couples-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+
+
+/* ---------- 1. Первый экран ----------
+   Утверждённый блок /orkt (apps/tilda/orkt-hero, эталон К4 «Курс с бесплатной частью»), стили один в один.
+   Здесь он в ТЁМНОМ тоне (#2B2334, без data-tone="light"): тёмный вариант утверждён в том же эталоне.
+   Отличия от /orkt: название короткое, поэтому заголовок крупнее (как в эталоне, до 66 px), и под ним
+   строка подхода «Интегративный подход на основе…» (.couples-hero_kicker). */
+/* Первый экран. Цвета менять только в переменных ниже.
+   Раскладка перестраивается по ширине самой карточки (@container):
+   до 1000 px — ноутбук и планшет, до 760 px — узкий планшет, до 520 px — телефон.
+   Это те же переломы, что у эталона К4 в библиотеке. */
+.couples-hero {
+  --fld-bg: #2b2334;        /* тёмная карточка */
+  --fld-raise: #383041;     /* плашка описания */
+  --fld-text: #e6e5eb;      /* текст на тёмном */
+  --fld-head: #ffffff;      /* заголовок на карточке */
+  --fld-focus: #ffffff;     /* обводка кнопок при переходе с клавиатуры */
+  --promo: #644ab2;         /* фиолетовая плашка с лекциями на фото */
+  --promo-hover: #5a42a2;
+  --promo-text: #e6e5eb;
+  --ink: #1d1535;           /* заголовки фактов на фоне страницы */
+  --text: #4f4d63;          /* пояснения фактов */
+  --line: #e3e0ec;          /* обводка кружков с иконками */
+  /* «Терапия пар» короткое, поэтому кегль как в эталоне К4: от 40 до 66 px по ширине карточки */
+  --title: clamp(2.5rem, 5.6cqi, 4.125rem);
+  font-family: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.couples-hero *, .couples-hero *::before, .couples-hero *::after { box-sizing: border-box; }
+.couples-hero :where(h1, p, ul, li) { margin: 0; padding: 0; }
+.couples-hero :where(ul) { list-style: none; }
+.couples-hero_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+
+/* Ширина — от общего контейнера v1 (padding-global → container-xlarge), отступы — section-spacing_component.
+   Здесь только контейнер для @container и зазор между карточкой и фактами. */
+.couples-hero_container { container: couples-hero / inline-size; display: grid; gap: 1.125rem; }
+
+/* Карточка: две колонки. Текстовая шире фото, чтобы обе кнопки
+   помещались в один ряд */
+.couples-hero_card { border-radius: 1.75rem; background: var(--fld-bg); color: var(--fld-head); padding: 1.5rem; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 2rem; }
+.couples-hero_text { display: grid; align-content: space-between; gap: 2rem; padding: 1.25rem 0 0.5rem 1.25rem; }
+.couples-hero_copy { display: grid; gap: 1.5rem; max-width: 40rem; }
+.couples-hero_title { font-size: var(--title); font-weight: 500; line-height: 1; letter-spacing: -0.035em; color: var(--fld-head); text-wrap: balance; overflow-wrap: break-word; }
+/* Строка подхода под заголовком: светлее заголовка, крупнее описания */
+.couples-hero_head { display: grid; gap: 0.875rem; }
+.couples-hero_kicker { font-size: clamp(1.125rem, 1.9cqi, 1.5rem); font-weight: 400; line-height: 1.25; letter-spacing: -0.01em; color: var(--fld-text); text-wrap: balance; }
+/* Описание курса в плашке, как на /child-training-practice */
+.couples-hero_lead { background: var(--fld-raise); border-radius: 1.25rem; padding: 1.25rem 1.5rem; font-size: 1.0625rem; line-height: 1.4; color: var(--fld-text); text-wrap: pretty; }
+.couples-hero_bottom { display: grid; gap: 0.875rem; max-width: 36rem; }
+/* Две кнопки: размер и цвета из общих стилей v1 (белая is-light и
+   полупрозрачная is-outline). Если в ряд не помещаются, встают друг
+   под другом, и каждая растягивается на всю ширину. */
+.couples-hero_buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.couples-hero_button { flex: 1 1 auto; }
+.couples-hero_button:focus-visible { outline: 2px solid var(--fld-focus); outline-offset: 3px; }
+.couples-hero_start { font-size: 1rem; line-height: 1.4; color: var(--fld-text); }
+
+/* Фото справа. Высоту задаёт карточка, фото её заполняет. */
+.couples-hero_media { position: relative; min-height: 28rem; border-radius: 1.25rem; overflow: hidden; }
+.couples-hero_photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+/* Плашка «2 лекции курса бесплатно» лежит на фото внизу слева.
+   Цвет ссылки задан с !important: custom.css сайта красит ссылки по-своему */
+.couples-hero .couples-hero_promo { position: absolute; left: 0.75rem; bottom: 0.75rem; max-width: min(23rem, calc(100% - 1.5rem)); background: var(--promo); color: #fff !important; text-decoration: none !important; border-radius: 1rem; padding: 0.875rem 1.25rem 0.875rem 0.875rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: center; gap: 0.875rem; box-shadow: 0 0.75rem 2rem rgba(20, 12, 40, 0.28); transition: background-color 0.15s ease; }
+@media (hover: hover) and (pointer: fine) { .couples-hero .couples-hero_promo:hover { background: var(--promo-hover); } }
+.couples-hero_promo:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
+.couples-hero_play { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: #fff; color: var(--promo); display: grid; place-items: center; }
+.couples-hero_play .couples-hero_icon { margin-left: 0.125rem; }
+.couples-hero_promo-text { display: grid; gap: 0.25rem; font-size: 0.875rem; line-height: 1.35; color: var(--promo-text); }
+.couples-hero_promo-text b { font-weight: 500; font-size: 1.1875rem; line-height: 1.15; letter-spacing: -0.015em; color: #fff; }
+
+/* Факты под карточкой: четыре в ряд. Иконка и текст выровнены по верхнему краю (правка Дарьи 18.11.2026):
+   при сужении тексты переносятся на разное число строк, и выравнивание по центру выглядело вразнобой. */
+.couples-hero_facts { padding: 0.25rem 0.5rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.125rem 1.75rem; align-items: start; }
+.couples-hero_facts li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: start; font-size: 0.875rem; line-height: 1.35; color: var(--text); }
+.couples-hero_fi { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); display: grid; place-items: center; }
+.couples-hero_fact { display: block; margin-bottom: 0.125rem; font-size: 1rem; font-weight: 500; line-height: 1.3; color: var(--ink); }
+
+/* БЕЛЫЙ ВАРИАНТ. Включается атрибутом data-tone="light" на самой первой
+   обёртке блока: <div class="couples-hero" data-tone="light" …>. Без атрибута
+   карточка тёмная. Меняются только цвета карточки и кнопок, раскладка та же.
+   Белая карточка, как у первого экрана /act; фиолетовая плашка остаётся. */
+.couples-hero[data-tone="light"] {
+  --fld-bg: #ffffff;
+  --fld-raise: #f6f4fc;     /* плашка описания */
+  --fld-text: #4f4d63;
+  --fld-head: #1d1535;
+  --fld-focus: #644ab2;
+}
+.couples-hero[data-tone="light"] .couples-hero_lead { box-shadow: inset 0 0 0 1px rgba(43, 35, 52, 0.07); }
+/* Кнопки на белом. Общие стили сайта задают цвет текста с !important,
+   поэтому и здесь !important, а селектор длиннее, чтобы перебить их. */
+.couples-hero[data-tone="light"] .couples-hero_button.is-light { background: #644ab2; color: #fff !important; }
+.couples-hero[data-tone="light"] .couples-hero_button.is-light:hover { background: #4c3888; }
+.couples-hero[data-tone="light"] .couples-hero_button.is-outline { background: rgba(43, 35, 52, 0.08); border-color: transparent; color: #1d1535 !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.couples-hero[data-tone="light"] .couples-hero_button.is-outline:hover { background: rgba(43, 35, 52, 0.13); }
+
+/* Ноутбук и планшет: те же две колонки, поля карточки меньше, текст
+   ещё шире — чтобы на ноутбуке 1024 px кнопки тоже стояли в ряд */
+@container couples-hero (max-width: 1000px) {
+  .couples-hero_card { padding: 1.25rem; gap: 1.5rem; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
+  .couples-hero_text { padding: 0.75rem 0 0.25rem 0.75rem; }
+  .couples-hero_lead { font-size: 1rem; padding: 1rem 1.25rem; }
+  .couples-hero_media { min-height: 22rem; }
+  .couples-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Узкий планшет: всё в столбик. Заголовок, описание, кнопки со стартом, потом фото с плашкой
+   (правка Дарьи 18.11.2026: «кнопки под абзац перед картинкой»; у эталона К4 было фото сразу под заголовком).
+   Обёртки текста «прозрачные» (display: contents), поэтому порядок задаётся order, а разметка остаётся одна. */
+@container couples-hero (max-width: 760px) {
+  .couples-hero_card { grid-template-columns: 1fr; padding: 1.5rem; gap: 1.25rem; }
+  .couples-hero_text, .couples-hero_copy { display: contents; }
+  /* Заголовок и строка подхода — по левому краю, как на телефоне и компьютере (правка Дарьи 18.11.2026;
+     в эталоне К4 здесь был центр). Строка старта под кнопками остаётся по центру. */
+  .couples-hero_head { order: 1; text-align: left; padding: 0.75rem 1.5rem 0.25rem; }
+  .couples-hero_lead { order: 2; }
+  .couples-hero_bottom { order: 3; max-width: none; }
+  .couples-hero_start { text-align: center; }
+  .couples-hero_media { order: 4; min-height: 0; aspect-ratio: 16 / 10; }
+}
+
+/* Телефон: тот же порядок, что на узком планшете (заголовок, описание, кнопки и старт, фото), текст по левому краю.
+   Фото ниже квадрата, 4 : 3 (правка Дарьи 18.11.2026: на телефоне картинка была слишком высокой). Факты в столбик. */
+@container couples-hero (max-width: 520px) {
+  .couples-hero_card { padding: 1rem; gap: 1rem; border-radius: 1.5rem; }
+  .couples-hero_head { text-align: left; padding: 0.5rem 0.25rem 0; gap: 0.625rem; }
+  .couples-hero_start { text-align: left; padding-inline: 0.25rem; }
+  .couples-hero_media { aspect-ratio: 4 / 3; }
+  .couples-hero .couples-hero_promo { left: 0.5rem; bottom: 0.5rem; max-width: calc(100% - 1rem); padding: 0.75rem 1rem 0.75rem 0.75rem; gap: 0.75rem; grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .couples-hero_play { width: 2.5rem; height: 2.5rem; }
+  .couples-hero_promo-text b { font-size: 1.0625rem; }
+  .couples-hero_promo-text { font-size: 0.8125rem; }
+  .couples-hero_facts { grid-template-columns: 1fr; gap: 0.75rem; padding: 0.25rem; }
+}
+
+/* ---------- 2. Этот курс подготовит психологов к работе с парами ----------
+   Две белые карточки со старой страницы: «научные подходы» и «теория привязанности». Во второй внизу
+   серая врезка с иконкой: что это даёт в работе. Столбиком, от 1025 px рядом.
+   Факты старой страницы (начало, длительность, формат, документ) теперь строкой под первым экраном. */
+.couples-page .couples-prepare_grid { display: grid; gap: var(--card-grid-gap); }
+.couples-page .couples-prepare_card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couples-page .couples-prepare_card .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.couples-page .couples-prepare_card .body-text_component { max-width: 40rem; }
+.couples-page .couples-prepare_note {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.875rem;
+  align-items: center;
+  margin-top: auto;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+.couples-page .couples-prepare_note .body-text_component { --body-text-color: var(--color-text-primary); }
+/* Три подхода курса в первой карточке: серая плашка внизу, пункты через тонкие линии */
+.couples-page .couples-prepare_methods {
+  display: grid;
+  margin: auto 0 0;
+  padding: 0.25rem 1rem;
+  list-style: none;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+.couples-page .couples-prepare_method {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.875rem;
+  align-items: center;
+  padding-block: 0.625rem;
+  color: var(--color-text-primary);
+}
+.couples-page .couples-prepare_method + .couples-prepare_method { border-top: 1px solid var(--couples-line); }
+/* Кружок с иконкой, как у фактов первого экрана: белый, иконка цвета текста (иконки Lucide, 20 px) */
+.couples-page .couples-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+}
+.couples-page .couples-icon svg { display: block; width: 1.25rem; height: 1.25rem; }
+@media (min-width: 48rem) {
+  .couples-page .couples-prepare_card { gap: 1rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couples-page .couples-prepare_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .couples-page .couples-prepare_card { gap: 1.25rem; padding: 1.5rem; }
+  .couples-page .couples-prepare_note { padding: 1rem 1.25rem; }
+}
+
+
+/* ---------- 3. Чему вы научитесь на курсе ----------
+   Тёмная плашка #2B2334 внутри контейнера, как «Навыки» на /orkt. Внутри фото пары со старой страницы
+   и три пункта с номерами на полупрозрачных карточках.
+   Телефон и планшет: фото (широкий кадр), под ним заголовок и пункты. От 1025 px фото слева во всю высоту,
+   справа заголовок и пункты. */
+.couples-page .couples-skills_plate {
+  display: grid;
+  gap: 1.5rem;
+  padding: 2rem var(--card-padding) var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --body-text-color: var(--couples-on-dark-muted);
+}
+.couples-page .couples-skills_plate .section-title_component { color: var(--color-text-on-dark); }
+.couples-page .couples-skills_content { display: grid; gap: 1.5rem; align-content: center; }
+.couples-page .couples-skills_image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: 50% 30%;
+  border-radius: 0.75rem;
+}
+.couples-page .couples-skills_list { display: grid; gap: var(--card-grid-gap); }
+.couples-page .couples-skills_item {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.375rem 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--couples-dark-card);
+}
+/* Номер пункта в кружке: белым по полупрозрачному, как чипсы на тёмном */
+.couples-page .couples-skills_number {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--couples-dark-card);
+  color: var(--color-text-on-dark);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.couples-page .couples-skills_item .content-heading_component { align-self: center; color: var(--color-text-on-dark); text-wrap: balance; }
+/* До 767 px номер стоит только рядом с заголовком, а пояснение идёт во всю ширину карточки */
+@media (max-width: 47.9375rem) {
+  .couples-page .couples-skills_number { grid-row: auto; }
+  .couples-page .couples-skills_item .body-text_component { grid-column: 1 / -1; }
+}
+@media (min-width: 32.5625rem) {
+  .couples-page .couples-skills_plate { padding: 2.5rem 1.5rem 1.5rem; }
+}
+@media (min-width: 48rem) {
+  .couples-page .couples-skills_plate { gap: 2rem; padding: 3rem 2.5rem 2.5rem; }
+  .couples-page .couples-skills_item { gap: 0.5rem 1.25rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couples-page .couples-skills_plate {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 4vw, 4rem);
+    padding: clamp(2rem, 23.75vw - 17rem, 4.375rem);
+  }
+  .couples-page .couples-skills_image { grid-row: 1; height: 100%; min-height: 32rem; aspect-ratio: auto; }
+  .couples-page .couples-skills_item { padding: 1.5rem; }
+}
+
+
+/* ---------- 4. Авторы и преподаватели курса ----------
+   Две белые карточки: крупное фото сверху, под ним имя и регалии. Просьба Дарьи 18.11.2026: «фотографии
+   у обоих спикеров крупными». Фото на всю ширину карточки, обрезается по рамке (лицо в верхней трети кадра).
+   Рамка: на телефоне 4 : 3 (правка Дарьи 18.11.2026: в 4 : 5 фото занимали почти весь экран), на планшете,
+   где карточки рядом, 4 : 5, от 1025 px квадрат — иначе карточка выходит выше экрана.
+   Столбиком, от 768 px две карточки рядом. Поля 16 px, на компьютере 24 px.
+   Весь блок не шире 64rem и по центру (класс couples-narrow в разметке, как у блока цены) — правка Дарьи 18.11.2026.
+   Можно править: object-position у фото, если на новом снимке лицо окажется выше или ниже. */
+.couples-page .couples-teachers_grid { display: grid; gap: var(--card-grid-gap); }
+.couples-page .couples-teachers_card {
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couples-page .couples-teachers_photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: 50% 20%;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+.couples-page .couples-teachers_text { display: grid; gap: 0.75rem; }
+.couples-page .couples-teachers_text .content-heading_component { color: var(--color-text-primary); }
+@media (min-width: 48rem) {
+  .couples-page .couples-teachers_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .couples-page .couples-teachers_photo { aspect-ratio: 4 / 5; object-position: 50% 25%; }
+  /* Заголовок «Авторы и преподаватели курса» на планшете и компьютере по центру, на телефоне — слева,
+     как у остальных секций (правка Дарьи 18.11.2026). */
+  .couples-page .couples-teachers_component .section-header_component { align-items: center; text-align: center; }
+  .couples-page .couples-teachers_component .section-title_component { text-align: center; }
+}
+@media (min-width: 64.0625rem) {
+  .couples-page .couples-teachers_card { gap: 1.5rem; padding: 1.5rem; }
+  .couples-page .couples-teachers_photo { aspect-ratio: 1; }
+}
+
+
+/* ---------- 5. Программа обучения ----------
+   Как «Программа обучения» на /orkt и /couple-requests: слева заголовок и время занятий (от 1025 px закреплены),
+   справа пять модулей белыми карточками: номер серым, название, темы списком с точками. */
+.couples-page .couples-program_layout { --section-layout-columns: minmax(0, 0.7fr) minmax(0, 1fr); }
+.couples-page .couples-program_list { display: grid; gap: var(--card-grid-gap); }
+.couples-page .couples-program_module {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.couples-page .couples-program_head { display: grid; gap: 0.25rem; }
+.couples-page .couples-program_number { --body-text-color: var(--couples-muted); }
+.couples-page .couples-program_module .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.couples-page .couples-program_topics { display: grid; gap: 0.5rem; }
+.couples-page .couples-program_topics li { position: relative; padding-left: 1rem; }
+/* Маркер темы — маленькая серая точка на высоте первой строки */
+.couples-page .couples-program_topics li::before {
+  content: "";
+  position: absolute;
+  left: 0.125rem;
+  top: 0.6em;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--couples-line);
+}
+@media (min-width: 48rem) {
+  .couples-page .couples-program_module { gap: 1rem; padding: 1.25rem 1.5rem 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .couples-page .couples-program_layout .section-header_component { position: sticky; top: var(--couples-sticky-top); }
+}
+
+
+/* ---------- 6. Бесплатные лекции ----------
+   Утверждённый блок /orkt (apps/tilda/orkt-free-lectures), стили один в один.
+   Убраны ширина и отступы под Zero-сетку старой страницы: их теперь задают контейнер и section-spacing v1.
+   Переменные кеглей висят на плашке .couples-free_component (значения те же, что на /orkt). */
+/* Блок «Бесплатные лекции».
+   Цвета менять только в переменных ниже. Кегли растут в трёх точках:
+   521 px — большой телефон, 768 px — планшет, 1025 px — компьютер.
+   Эти переломы считаются от ширины самого блока (@container), а не окна. */
+.couples-free {
+  container: couples-free / inline-size;
+  --dark: #2b2334;          /* тёмная плашка */
+  --ink: #332f41;           /* основной текст на белом */
+  --ink-2: #625f6a;         /* второстепенный текст на белом */
+  --ink-3: #6e6c75;         /* подпись «Вы получите» */
+  --line: #e2e1e7;          /* линия между лекциями */
+  --note: #f5f5f5;          /* плашка «Лекции читают…» */
+  --accent: #7c5cdb;        /* значок play: единственное фиолетовое пятно */
+  --accent-soft: #dad6ff;
+  --on-dark-2: #e6e5eb;     /* текст на тёмном */
+  --title: 2rem; --title-lh: 1.1; --h3: 1.375rem; --body: 1rem; --sub: 1.125rem; --caption: 0.9375rem;
+  --card-pad: 1rem; --r: 0.75rem;
+  font-family: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.couples-free *, .couples-free *::before, .couples-free *::after { box-sizing: border-box; }
+.couples-free :where(h2, h3, p, ul, li) { margin: 0; padding: 0; }
+.couples-free :where(ul) { list-style: none; }
+
+@container couples-free (min-width: 32.5625rem) {
+  .couples-free_component { --title: 2.25rem; --title-lh: 1; --caption: 1rem; }
+}
+@container couples-free (min-width: 48rem) {
+  .couples-free_component { --title: 2.75rem; --h3: 1.5rem; --body: 1.125rem; --sub: 1.25rem; --card-pad: 1.5rem; --r: 1rem; }
+}
+@container couples-free (min-width: 64.0625rem) {
+  .couples-free_component { --title: 3.25rem; --body: 1.25rem; --sub: 1.375rem; --caption: 1.125rem; --card-pad: 2rem; }
+}
+
+/* Тёмная плашка: на телефоне всё в столбик, на компьютере две колонки */
+.couples-free_component { background: var(--dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: #fff; }
+.couples-free_text { display: grid; gap: 1.5rem; align-content: start; }
+.couples-free_title { font-size: var(--title); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; text-wrap: balance; color: #fff; max-width: 22ch; }
+.couples-free_copy { display: grid; gap: 0.5rem; }
+.couples-free_subtitle { font-size: var(--h3); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; color: #fff; }
+.couples-free_body { font-size: var(--body); line-height: 1.35; letter-spacing: -0.01em; color: var(--on-dark-2); max-width: 40ch; text-wrap: pretty; }
+.couples-free_checks { display: grid; gap: 0.5rem; }
+.couples-free_checks li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--on-dark-2); }
+.couples-free_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+.couples-free_checks .couples-free_icon { margin-top: calc((1.35em - 1.25rem) / 2); color: #fff; }
+/* Кнопка: размер и цвета из общих стилей v1, здесь только ширина */
+.couples-free_foot { display: flex; }
+.couples-free_button { width: 100%; }
+.couples-free_button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* Белая карточка «Вы получите» */
+.couples-free_card { background: #fff; border-radius: var(--r); padding: 1.25rem; color: var(--ink); display: grid; gap: 1rem; align-content: start; }
+.couples-free_card-title { font-size: var(--caption); color: var(--ink-3); }
+.couples-free_lessons { display: grid; }
+.couples-free_lessons li { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 1rem; align-items: start; padding-block: 1rem; border-top: 1px solid var(--line); }
+.couples-free_lessons li:first-child { border-top: 0; padding-top: 0; }
+.couples-free_play { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.couples-free_play .couples-free_icon { width: 1rem; height: 1rem; margin-left: 0.125rem; }
+.couples-free_lesson { font-size: var(--sub); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: anywhere; }
+.couples-free_lesson-text { margin-top: 0.375rem; font-size: var(--body); line-height: 1.35; color: var(--ink-2); text-wrap: pretty; }
+.couples-free_note { padding: 0.875rem 1rem; border-radius: 0.625rem; background: var(--note); font-size: var(--caption); line-height: 1.35; color: var(--ink-2); }
+
+/* С 521 px кнопка не во всю ширину, но и не уже 320 px: шире своей
+   надписи (просьба Дарьи 10.11.2026). Селектор длиннее обычного, чтобы
+   перебить min-width: 0 из общих стилей кнопки в custom.css. */
+@container couples-free (min-width: 32.5625rem) {
+  .couples-free .couples-free_button.button_component { width: auto; min-width: 20rem; }
+}
+@container couples-free (min-width: 48rem) {
+  .couples-free_component { padding: 2.5rem; }
+  .couples-free_card { padding: 1.75rem; }
+}
+@container couples-free (min-width: 64.0625rem) {
+  .couples-free_component { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 4rem; align-items: center; padding: 3.5rem 4rem; }
+  .couples-free_card { padding: 2rem 2.25rem; }
+}
+
+/* ---------- 7–12. Общие блоки: удостоверение, «Почему выбирают нас», «98 % студентов», цена, форма, вопросы ----------
+   Удостоверение — diploma.css (копия общего блока, не править), «Почему выбирают нас» и «98 %» — academy.css (копия),
+   форма — request-form.css (копия общего компонента, кладёт request-form-sync.mjs), цена — стили внутри блока генератора.
+   Здесь только шрифт и отступы блока цены и вопросы-ответы на ролях v1 — как на /orkt и /couple-requests. */
+
+/* Блок цены приходит со своим шрифтом: Google Fonts price-sync.mjs убирает, а здесь блок переключается на шрифт v1 */
+.couples-page .price-auto_component { font-family: var(--font-family-body); }
+/* Отступы блока цены — как у секций v1: сверху 0, снизу --section-space.
+   [data-layout] в селекторе — чтобы перебить стили блока, которые идут ниже по странице. */
+.couples-page .price-auto_component[data-layout] { --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
+
+/* Вопросы и ответы: белые карточки, вопрос — content-heading is-compact, ответ — body-text, плюс-крестик справа. */
+.couples-page .couples-faq_list { display: grid; gap: 0.5rem; }
+.couples-page .couples-faq_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.couples-page .couples-faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.couples-page .couples-faq_question::-webkit-details-marker { display: none; }
+.couples-page .couples-faq_question .content-heading_component { color: var(--color-text-primary); text-wrap: pretty; }
+.couples-page .couples-faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color 150ms ease;
+}
+.couples-page .couples-faq_icon::before,
+.couples-page .couples-faq_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.couples-page .couples-faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.couples-page .couples-faq_item[open] .couples-faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .couples-page .couples-faq_question:hover .couples-faq_icon { background: var(--couples-line); }
+}
+.couples-page .couples-faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.couples-page .couples-faq_answer .body-text_component { max-width: 62ch; }
+.couples-page .couples-faq_answer a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (min-width: 64.0625rem) {
+  .couples-page .couples-faq_question { padding: 1.25rem 1.5rem; }
+  .couples-page .couples-faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .couples-page :is(.couples-faq_icon, .couples-faq_icon::before, .couples-faq_icon::after) { transition: none; }
+}
+
+
+
+/* ---------- 13. Отступы от края карточек и плашек: 16 px на всех ширинах ----------
+   Правка Дарьи 18.11.2026: «проверь на всех блоках, чтобы отступ от краёв был 16 пикселей» — на тёмных плашках
+   и в первом экране он был 24–70 px. Здесь одним списком переопределены отступы блоков этой страницы
+   (первый экран, «Этот курс подготовит», «Чему вы научитесь», преподаватели, программа, бесплатные лекции):
+   всё равно var(--card-padding) из общих стилей v1 = 16 px. Внутренние серые и сиреневые плашки — тоже 16 px.
+   Общие компоненты («Почему выбирают нас», «98 %», цена, форма) — тоже 16 px (вторая правка Дарьи 18.11.2026:
+   «Да, тоже 16 px»). Их файлы — копии утверждённых блоков и не правятся, поэтому отступы переопределены здесь,
+   только на этой странице: через их собственные переменные (--showcase-padding, --ratings-padding,
+   --ratings-card-padding, --request-form-padding) и поля колонок блока цены. Селекторы длиннее, чем в самих
+   компонентах, чтобы победить их при любом порядке подключения файлов (в Тильде порядок свой).
+   Можно править: если на компьютере понадобится больше воздуха, менять только здесь. */
+.couples-page .couples-hero_card,
+.couples-page .couples-prepare_card,
+.couples-page .couples-skills_plate,
+.couples-page .couples-skills_item,
+.couples-page .couples-teachers_card,
+.couples-page .couples-program_module,
+.couples-page .couples-free_component,
+.couples-page .couples-free_card { padding: var(--card-padding); }
+.couples-page .couples-hero_text,
+.couples-page .couples-hero_head { padding: 0; }
+.couples-page .couples-hero_start { padding-inline: 0; }
+.couples-page .couples-hero_lead,
+.couples-page .couples-prepare_note,
+.couples-page .couples-free_note { padding: var(--card-padding); }
+.couples-page .couples-acad .academy-showcase_component.is-responsive { --showcase-padding: 1rem; }
+.couples-page .couples-acad .ratings_component.ratings_component { --ratings-padding: 1rem; --ratings-card-padding: 1rem; }
+.couples-page .couples-acad .ratings_component .ratings_card.is-wide { padding: 1rem; }
+.couples-page .request-form_component.request-form_component { --request-form-padding: 1rem; }
+.couples-page .pa-r .price-wide_component .price-wide_main,
+.couples-page .pa-r .price-wide_component .price-wide_side { padding: 1rem; }
