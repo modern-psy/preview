@@ -327,7 +327,8 @@
 @media (min-width: 64.0625rem) {
   .couples-page .couples-skills_plate {
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
-    gap: clamp(2.5rem, 4vw, 4rem);
+    /* Зазор между фото и текстом: 32–40 px (правка Дарьи 18.11.2026, было 40–64 px) */
+    gap: clamp(2rem, 2.5vw, 2.5rem);
     padding: clamp(2rem, 23.75vw - 17rem, 4.375rem);
   }
   .couples-page .couples-skills_image { grid-row: 1; height: 100%; min-height: 32rem; aspect-ratio: auto; }
@@ -564,37 +565,26 @@
 
 
 
-/* ---------- 13. Отступы от края карточек и плашек: 16 px на всех ширинах ----------
-   Правка Дарьи 18.11.2026: «проверь на всех блоках, чтобы отступ от краёв был 16 пикселей» — на тёмных плашках
-   и в первом экране он был 24–70 px. Здесь одним списком переопределены отступы блоков этой страницы
-   (первый экран, «Этот курс подготовит», «Чему вы научитесь», преподаватели, программа, бесплатные лекции):
-   всё равно var(--card-padding) из общих стилей v1 = 16 px. Внутренние серые и сиреневые плашки — тоже 16 px.
-   Общие компоненты («Почему выбирают нас», «98 %», цена, форма) — тоже 16 px (вторая правка Дарьи 18.11.2026:
-   «Да, тоже 16 px»). Их файлы — копии утверждённых блоков и не правятся, поэтому отступы переопределены здесь,
-   только на этой странице: через их собственные переменные (--showcase-padding, --ratings-padding,
-   --ratings-card-padding, --request-form-padding) и поля колонок блока цены. Селекторы длиннее, чем в самих
+/* ---------- 13. Отступы от края карточек и плашек: 16 px ----------
+   Правки Дарьи 18.11.2026. Сначала: «отступ от краёв 16 пикселей на всех блоках». Потом часть откатили:
+   первый экран, бесплатные лекции, цена и форма — снова с отступами утверждённых блоков (здесь их не трогаем);
+   «Чему вы научитесь» — 16 px только на телефоне (до 767 px), с планшета поля как были.
+   16 px на всех ширинах остались у блоков «Этот курс подготовит», преподавателей, программы
+   и у общих компонентов «Почему выбирают нас» и «98 %». Их файлы — копии утверждённых блоков и не правятся,
+   поэтому отступы переопределены здесь через их собственные переменные; селекторы длиннее, чем в самих
    компонентах, чтобы победить их при любом порядке подключения файлов (в Тильде порядок свой).
-   Можно править: если на компьютере понадобится больше воздуха, менять только здесь. */
-.couples-page .couples-hero_card,
+   Можно править: отступы этих блоков меняются только здесь. */
 .couples-page .couples-prepare_card,
-.couples-page .couples-skills_plate,
-.couples-page .couples-skills_item,
 .couples-page .couples-teachers_card,
-.couples-page .couples-program_module,
-.couples-page .couples-free_component,
-.couples-page .couples-free_card { padding: var(--card-padding); }
-.couples-page .couples-hero_text,
-.couples-page .couples-hero_head { padding: 0; }
-.couples-page .couples-hero_start { padding-inline: 0; }
-.couples-page .couples-hero_lead,
-.couples-page .couples-prepare_note,
-.couples-page .couples-free_note { padding: var(--card-padding); }
+.couples-page .couples-program_module { padding: var(--card-padding); }
+.couples-page .couples-prepare_note { padding: var(--card-padding); }
+@media (max-width: 47.9375rem) {
+  .couples-page .couples-skills_plate,
+  .couples-page .couples-skills_item { padding: var(--card-padding); }
+}
 .couples-page .couples-acad .academy-showcase_component.is-responsive { --showcase-padding: 1rem; }
 .couples-page .couples-acad .ratings_component.ratings_component { --ratings-padding: 1rem; --ratings-card-padding: 1rem; }
 .couples-page .couples-acad .ratings_component .ratings_card.is-wide { padding: 1rem; }
-.couples-page .request-form_component.request-form_component { --request-form-padding: 1rem; }
-.couples-page .pa-r .price-wide_component .price-wide_main,
-.couples-page .pa-r .price-wide_component .price-wide_side { padding: 1rem; }
 </style>
 </div></div></div></div>
 <div class="t-rec"><div class="t123"><div class="t-container_100"><div class="t-width t-width_100">
