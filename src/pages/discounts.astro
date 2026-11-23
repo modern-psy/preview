@@ -1,0 +1,38 @@
+---
+// Страница /discounts. Перенесена со старой страницы discounts (scripts/legacy-to-astro.mjs).
+// Тексты блоков — в src/components/discounts/, заголовок и описание — в src/data/pages/discounts.json.
+import PageLayout from '../layouts/PageLayout.astro';
+import page from '../data/pages/discounts.json';
+import '../../academy-base/v1.css';
+import '../styles/discounts/page.css';
+import '../styles/discounts/gift.css';
+import S01 from '../components/discounts/01-discounts-hero.astro';
+import S02 from '../components/discounts/02-discount-picker.astro';
+import S03 from '../components/discounts/03-gift-certificate.astro';
+---
+<PageLayout seo={page.seo} preconnect={page.preconnect}>
+
+
+<!-- Шапка и подвал сайта — общие компоненты SiteHeader и SiteFooter в шаблоне страницы.
+     Блоки: 1 баннер с курсами месяца, 2 «Какие скидки ваши?», 3 подарочный сертификат. -->
+  <main class="main-wrapper discounts-page" id="main-content" data-academy="1">
+    <S01 />
+    <S02 />
+    <S03 />
+  </main>
+<!-- Разметка для поисковиков: хлебные крошки. Курсы месяца сюда не пишем: цены меняются каждый месяц. -->
+    <script is:inline type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Главная", "item": "https://modern-psy.ru/" },
+        { "@type": "ListItem", "position": 2, "name": "Акции", "item": "https://modern-psy.ru/discounts" }
+      ]
+    }
+    </script>
+</PageLayout>
+<script>
+  import '../scripts/discounts/page.js';
+  import '../scripts/discounts/gift.js';
+</script>

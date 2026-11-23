@@ -1,0 +1,137 @@
+---
+// discounts: блок 3. Подарочный сертификат (вариант «Открытка с суммой», выбран Дарьей 23.11.2026).
+//
+// Два способа на выбор: «На сумму» (суммы из src/data/pages/discounts.json → gift.amounts и своя сумма)
+// и «На курс» (курсы с открытым набором и ценой из каталога CMS). Сертификат справа сразу показывает выбор.
+// Кнопка «Подарить сертификат» открывает заявку менеджеру; в заявку уходит, что выбрали
+// (источник «Подарочный сертификат: 20 000 ₽» или «… на курс «…»»).
+//
+// Курсы берём из CMS при сборке; если CMS не ответила — из снимка src/data/discounts/gift-courses.json.
+// В браузере скрипт перезапрашивает каталог и обновляет курсы и цены (src/scripts/discounts/gift.js).
+// Тексты, суммы, условия и форма — в src/data/pages/discounts.json, раздел gift.
+import fs from 'node:fs';
+import path from 'node:path';
+import page from '../../data/pages/discounts.json';
+import LeadForm from '../LeadForm.astro';
+
+const API = 'https://modern-psy-asp-prod-8ceb.twc1.net';
+const gift = page.gift;
+const NBSP = ' ';
+const rub = (n: number) => new Intl.NumberFormat('ru-RU').format(n).replace(/\s/g, NBSP) + NBSP + '₽';
+
+async function loadCards() {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(`${API}/api/public/catalog`, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+      if (!res.ok) throw new Error(`CMS ответила ${res.status}`);
+      return (await res.json()).cards;
+    } catch (e) {
+      if (attempt === 1) console.warn(`⚠️  /discounts, сертификат: каталог CMS не ответил (${(e as Error).message}), беру снимок`);
+    }
+  }
+  const file = path.join(process.cwd(), 'src/data/discounts/gift-courses.json');
+  return JSON.parse(fs.readFileSync(file, 'utf8')).cards;
+}
+
+// Курс годится для сертификата, если набор открыт и есть цена (бесплатные мини-курсы не берём).
+// Цена — та, что сейчас на сайте: со скидкой, если она есть.
+type Card = { slug: string; title: string; section?: string; mode?: string; price?: { free?: boolean; from?: boolean; full?: number; discounted?: number } };
+const cards: Card[] = await loadCards();
+const courses = cards
+  .filter((c) => c.mode === 'open' && c.price && !c.price.free && (c.price.discounted ?? c.price.full))
+  .map((c) => {
+    const value = (c.price!.discounted ?? c.price!.full) as number;
+    return { slug: c.slug, title: c.title.replace(/\s+/g, ' ').trim(), section: c.section || 'Другие курсы', value, price: (c.price!.from ? 'от' + NBSP : '') + rub(value) };
+  });
+const sections = [...new Set(courses.map((c) => c.section))];
+const first = gift.amounts[0];
+---
+<!-- ========== 3. Подарочный сертификат ==========
+     Атрибуты data-gift-* НЕ ТРОГАТЬ: по ним скрипт находит переключатель, суммы, список курсов и сертификат. -->
+<section class="gift_component section-spacing_component" id="gift" aria-labelledby="gift-heading" data-gift data-api={API}>
+  <div class="padding-global">
+    <div class="container-xlarge">
+      <div class="gift_panel">
+        <div class="gift_text">
+          <h2 class="gift_title" id="gift-heading">Подарите обучение к&nbsp;Новому году</h2>
+          <p class="gift_lead">Сертификат на&nbsp;сумму или на&nbsp;конкретный курс Академии Современной Психологии. Коллеге, другу или&nbsp;себе.</p>
+
+          <fieldset class="gift_switch">
+            <legend class="gift_legend">Какой сертификат</legend>
+            <div class="gift_switch-row">
+              <label class="gift_option"><input type="radio" name="gift-kind" id="gift-kind-amount" value="amount" checked data-gift-kind><span>На&nbsp;сумму</span></label>
+              <label class="gift_option"><input type="radio" name="gift-kind" id="gift-kind-course" value="course" data-gift-kind><span>На&nbsp;курс</span></label>
+            </div>
+          </fieldset>
+
+          <!-- На сумму: готовые суммы и своя -->
+          <fieldset class="gift_choice" data-gift-pane="amount">
+            <legend class="gift_legend">Сумма сертификата</legend>
+            <div class="gift_amounts">
+              {gift.amounts.map((a, i) => (
+                <label class="gift_chip"><input type="radio" name="gift-amount" id={`gift-amount-${a}`} value={a} checked={i === 0} data-gift-amount><span set:html={rub(a)} /></label>
+              ))}
+              <label class="gift_chip"><input type="radio" name="gift-amount" id="gift-amount-own" value="own" data-gift-amount><span>Своя сумма</span></label>
+            </div>
+            <div class="gift_own" data-gift-own hidden>
+              <label class="gift_legend" for="gift-own-value">Ваша сумма, ₽</label>
+              <input class="gift_input" type="text" inputmode="numeric" id="gift-own-value" autocomplete="off" placeholder="Например, 15 000" data-gift-own-input>
+            </div>
+          </fieldset>
+
+          <!-- На курс: курсы с открытым набором из CMS -->
+          <div class="gift_choice" data-gift-pane="course" hidden>
+            <label class="gift_legend" for="gift-course">Курс</label>
+            <div class="gift_select-wrap">
+              <select class="gift_select" id="gift-course" data-gift-course>
+                {sections.map((s) => (
+                  <optgroup label={s}>
+                    {courses.filter((c) => c.section === s).map((c) => (
+                      <option value={c.slug} data-price={c.price}>{c.title}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </div>
+            <p class="gift_note">Сумма равна цене курса на&nbsp;сайте сейчас, менеджер её подтвердит.</p>
+          </div>
+
+          <div class="gift_actions">
+            <a class="button_component is-accent gift_button" href="#gift-request" aria-controls="gift-request" aria-expanded="false" data-gift-open>Подарить сертификат</a>
+            <ul class="gift_terms" role="list">
+              {gift.terms.map((t) => <li class="gift_term">{t}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Сам сертификат: лавандовая карта, лента крест-накрест и бант. Читается скринридером одной фразой. -->
+        <div class="gift_art">
+          <div class="gift-card_component" role="img" aria-label={`Подарочный сертификат на ${rub(first).replace(/ /g, ' ')}`} data-gift-card>
+            <svg class="gift-card_bow" viewBox="0 0 120 84" aria-hidden="true">
+              <path d="M60 38C44 8 10 6 12 28c2 20 30 20 48 10Z" fill="#7c5cdb"/>
+              <path d="M60 38C76 8 110 6 108 28c-2 20-30 20-48 10Z" fill="#7c5cdb"/>
+              <path d="M60 38C48 22 28 20 28 28c0 8 18 12 32 10Z" fill="#644ab2"/>
+              <path d="M60 38C72 22 92 20 92 28c0 8-18 12-32 10Z" fill="#644ab2"/>
+              <path d="M55 42 38 80l10-3 7 7 9-40Z" fill="#644ab2"/>
+              <path d="M65 42 82 80l-10-3-7 7-9-40Z" fill="#7c5cdb"/>
+              <rect x="51" y="29" width="18" height="18" rx="6" fill="#644ab2"/>
+            </svg>
+            <div class="gift-card_body" aria-hidden="true">
+              <span class="gift-card_kind">Подарочный сертификат</span>
+              <div class="gift-card_bottom">
+                <span class="gift-card_amount" data-gift-card-amount set:html={rub(first)} />
+                <span class="gift-card_for" data-gift-card-for>на&nbsp;обучение в&nbsp;Академии Современной Психологии</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Заявка менеджеру. Без скрипта видна сразу, со скриптом открывается кнопкой «Подарить сертификат». -->
+      <div class="gift_request" id="gift-request" data-gift-request>
+        <p class="gift_summary" data-gift-summary aria-live="polite"></p>
+        <LeadForm id="gift-form" form={gift.form} lead={gift.lead} headingLevel={3} />
+      </div>
+    </div>
+  </div>
+</section>

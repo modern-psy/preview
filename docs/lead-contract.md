@@ -53,6 +53,7 @@
 | `access` | доступ к мини-курсу на почту |
 | `webinar` | запись на вебинар (запасная форма, если BotHelp не загрузился) |
 | `question` | вопрос без записи |
+| `gift-certificate` | подарочный сертификат (/discounts): в `tariff` `amount-20000`, `amount-own` или `course`, в `course` slug курса, в `source` что выбрали словами |
 
 ## 3. Пример тела запроса
 

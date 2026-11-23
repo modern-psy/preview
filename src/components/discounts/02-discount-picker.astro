@@ -1,0 +1,98 @@
+---
+// discounts: блок 2. Перенесён со старой страницы как есть (scripts/legacy-to-astro.mjs).
+---
+      <!-- ========== 2. Какие скидки ваши? ==========
+           Табы по ситуации человека. Без скрипта видны все четыре панели подряд,
+           со скриптом — одна, выбранная. Тексты скидок сверены с блоком цены
+           (apps/preview/pricing/src/price-auto.js, «Персональные скидки») 31.10.2026.
+           Суммируются ли скидки, не пишем (решение Дарьи 12.10.2026).
+           В блоке цены трёх скидок нет: −10 % выпускникам «Психолога-консультанта» и индивидуальная
+           от трёх курсов взяты со старой страницы modern-psy.ru/discounts (31.10.2026). -->
+      <section class="discount-picker_component section-spacing_component is-after-inset" aria-labelledby="picker-heading">
+        <div class="padding-global">
+          <div class="container-xlarge">
+            <div class="section-layout_component is-responsive">
+              <div class="section-header_component is-responsive is-left">
+                <h2 class="section-title_component is-responsive" id="picker-heading">Какие скидки ваши?</h2>
+                <p class="section-subtitle_component">Выберите, что про вас, и&nbsp;мы покажем скидку и&nbsp;как её получить.</p>
+              </div>
+
+              <div class="discount-picker_body" data-picker>
+                <div class="discount-picker_tabs" role="tablist" aria-label="Ваша ситуация" hidden data-picker-tabs>
+                  <button class="discount-picker_tab" type="button" role="tab" id="tab-new" aria-controls="panel-new" aria-selected="true">Впервые в&nbsp;Академии</button>
+                  <button class="discount-picker_tab" type="button" role="tab" id="tab-student" aria-controls="panel-student" aria-selected="false" tabindex="-1">Уже учусь на&nbsp;курсе</button>
+                  <button class="discount-picker_tab" type="button" role="tab" id="tab-alumni" aria-controls="panel-alumni" aria-selected="false" tabindex="-1">Уже есть пройденный курс</button>
+                  <button class="discount-picker_tab" type="button" role="tab" id="tab-bundle" aria-controls="panel-bundle" aria-selected="false" tabindex="-1">Беру 3&nbsp;и&nbsp;более курсов</button>
+                </div>
+
+                <!-- Панель 1. Новые студенты -->
+                <div class="discount-picker_panel" role="tabpanel" id="panel-new" aria-labelledby="tab-new" tabindex="0">
+                  <div class="discount-offer_main">
+                    <p class="discount-offer_value">−10&nbsp;%</p>
+                    <div class="discount-offer_text">
+                      <h3 class="discount-offer_title">Новым студентам</h3>
+                      <p class="discount-offer_desc">Скидка на&nbsp;первое обучение в&nbsp;Академии, на&nbsp;любой курс.</p>
+                    </div>
+                    <a class="button_component is-accent discount-offer_button" href="https://modern-psy.ru/courses">Выбрать курс</a>
+                  </div>
+                  <div class="discount-offer_main is-extra">
+                    <p class="discount-offer_value">−20&nbsp;%</p>
+                    <div class="discount-offer_text">
+                      <h3 class="discount-offer_title">Вам и&nbsp;коллеге, который вас пригласил</h3>
+                      <p class="discount-offer_desc">Если он учится у&nbsp;нас. Скидку получаете оба.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Панель 2. Тот, кто уже учится, приводит коллегу -->
+                <div class="discount-picker_panel" role="tabpanel" id="panel-student" aria-labelledby="tab-student" tabindex="0">
+                  <div class="discount-offer_main">
+                    <p class="discount-offer_value">−20&nbsp;%</p>
+                    <div class="discount-offer_text">
+                      <h3 class="discount-offer_title">Вам и&nbsp;коллеге, которого вы&nbsp;пригласили</h3>
+                      <p class="discount-offer_desc">Если он ещё не&nbsp;учился у&nbsp;нас. Скидку получаете оба.</p>
+                    </div>
+                    <a class="button_component is-accent discount-offer_button" href="https://modern-psy.ru/referal">Пригласить коллегу</a>
+                  </div>
+                </div>
+
+                <!-- Панель 3. Выпускники: отзыв и скидка выпускникам «Психолога-консультанта» -->
+                <div class="discount-picker_panel" role="tabpanel" id="panel-alumni" aria-labelledby="tab-alumni" tabindex="0">
+                  <div class="discount-offer_main">
+                    <p class="discount-offer_value"><span class="discount-offer_prefix">до</span>−20&nbsp;%</p>
+                    <div class="discount-offer_text">
+                      <h3 class="discount-offer_title">Нашим выпускникам за&nbsp;отзыв</h3>
+                      <p class="discount-offer_desc">Оставьте текстовый или видеоотзыв в&nbsp;соцсетях и&nbsp;получите скидку до&nbsp;−20&nbsp;% на&nbsp;следующее обучение.</p>
+                    </div>
+                    <!-- ⚠️ Куда ведёт «Отправить отзыв» на старой странице, не видно (кнопка в Zero-блоке).
+                         Пока звонок в отдел продаж, надпись говорит, что делает кнопка. Уточнить ссылку у Дарьи. -->
+                    <a class="button_component is-accent discount-offer_button" href="tel:+78122504398">Позвонить в&nbsp;отдел продаж</a>
+                  </div>
+                  <div class="discount-offer_main is-extra">
+                    <p class="discount-offer_value">−10&nbsp;%</p>
+                    <div class="discount-offer_text">
+                      <h3 class="discount-offer_title">Выпускникам «Психолога-консультанта»</h3>
+                      <p class="discount-offer_desc">На&nbsp;любой продукт Академии. Мы&nbsp;поддерживаем начинающих специалистов в&nbsp;дальнейшем развитии.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Панель 4. Несколько курсов сразу -->
+                <div class="discount-picker_panel" role="tabpanel" id="panel-bundle" aria-labelledby="tab-bundle" tabindex="0">
+                  <div class="discount-offer_main">
+                    <p class="discount-offer_value is-word">Своя скидка</p>
+                    <div class="discount-offer_text">
+                      <h3 class="discount-offer_title">При покупке трёх курсов и&nbsp;больше</h3>
+                      <p class="discount-offer_desc">Свяжитесь с&nbsp;куратором: он рассчитает индивидуальную скидку на&nbsp;ваш набор курсов.</p>
+                    </div>
+                    <!-- ⚠️ Контакт куратора не известен: пока звонок в отдел продаж. Уточнить ссылку у Дарьи. -->
+                    <a class="button_component is-accent discount-offer_button" href="tel:+78122504398">Позвонить в&nbsp;отдел продаж</a>
+                  </div>
+                </div>
+
+                <p class="discount-picker_note">Подробности о&nbsp;скидках расскажет отдел продаж: <a class="discount-picker_phone" href="tel:+78122504398">+7&nbsp;812&nbsp;250‑43‑98</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>

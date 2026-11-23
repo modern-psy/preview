@@ -1,0 +1,109 @@
+---
+// discounts: блок 1. Перенесён со старой страницы как есть (scripts/legacy-to-astro.mjs).
+---
+      <!-- ========== 1. Тёмный баннер: курсы месяца ==========
+           Курсы приходят из CMS (тот же ответ /api/public/catalog, что у баннера над каталогом).
+           В разметке лежит снимок на 31.10.2026: его видно, пока идёт запрос и если API не ответил,
+           но только до даты в data-month-snapshot-until. Позже снимок прячется: старые цены не должны выглядеть текущими.
+           Если в CMS сейчас нет курсов в акции, блок курсов скрывается, остаётся заголовок и кнопка.
+           Атрибуты data-month-* НЕ ТРОГАТЬ: по ним скрипт находит места для подстановки. -->
+      <section class="discounts-hero_component" aria-labelledby="discounts-heading">
+        <div class="padding-global">
+          <div class="container-xlarge">
+            <div class="discounts-hero_panel">
+
+              <!-- Подарочные карты: украшение, скринридер их не читает.
+                   Цифры на картах — настоящие скидки Академии, порядок можно менять.
+                   Фиолетовая карта одна (правило: фиолетовый по минимуму). -->
+              <div class="gift-wall_component" aria-hidden="true">
+                <!-- Карт с запасом: сколько из них показать и какого размера, скрипт решает
+                     по размеру области (page.js, раздел 3). Фиолетовой скрипт делает карту в центре. -->
+                <div class="gift-wall_grid" data-gift-wall>
+                  <div class="gift-card_component"><span class="gift-card_value">−20&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value"><small>до</small> −20&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component is-accent"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value">−20&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value"><small>до</small> −20&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value">−20&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value"><small>до</small> −20&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value">−20&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value">−20&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value"><small>до</small> −20&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value">−20&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value"><small>до</small> −20&nbsp;%</span></div>
+                  <div class="gift-card_component"><span class="gift-card_value">−10&nbsp;%</span></div>
+                  <div class="gift-card_component is-soft"><span class="gift-card_value">−20&nbsp;%</span></div>
+                </div>
+              </div>
+
+              <div class="discounts-hero_content">
+                <div class="discounts-hero_header">
+                  <h1 class="hero_heading" id="discounts-heading">Акции на&nbsp;обучение в&nbsp;Академии</h1>
+                  <p class="discounts-hero_lead">Курсы со&nbsp;скидкой в&nbsp;этом месяце и&nbsp;постоянные скидки для новых студентов, выпускников и&nbsp;тех, кто приходит учиться вместе с&nbsp;коллегами.</p>
+                </div>
+
+                <div class="month-offer_component" data-month data-api="https://modern-psy-asp-prod-8ceb.twc1.net" data-month-snapshot-until="2026-10-31">
+                  <div class="month-offer_head">
+                    <!-- Заголовок и срок подставляет скрипт по дате окончания акции в CMS -->
+                    <h2 class="month-offer_heading" data-month-heading>Выгоднее в&nbsp;октябре</h2>
+                    <p class="month-offer_until" data-month-until>Скидки действуют до&nbsp;31&nbsp;октября</p>
+                  </div>
+                  <ul class="month-offer_list" role="list" data-month-list>
+                    <li class="month-offer_item">
+                      <a class="month-offer_link" href="https://modern-psy.ru/cbt-oxford">
+                        <span class="month-offer_main">
+                          <span class="month-offer_title">КПТ: Когнитивно-поведенческая терапия. Оксфордская модель</span>
+                          <span class="month-offer_meta"><span>Старт <time datetime="2026-11-06">6&nbsp;ноября</time></span></span>
+                        </span>
+                        <span class="month-offer_price">
+                          <span class="month-offer_terms">при единовременной оплате</span>
+                          <span class="month-offer_pill">−10&nbsp;%</span>
+                          <strong class="month-offer_new">153&nbsp;000&nbsp;₽</strong>
+                          <s class="month-offer_old">170&nbsp;000&nbsp;₽</s>
+                        </span>
+                      </a>
+                    </li>
+                    <li class="month-offer_item">
+                      <a class="month-offer_link" href="https://modern-psy.ru/sexology">
+                        <span class="month-offer_main">
+                          <span class="month-offer_title">Сексология</span>
+                          <span class="month-offer_meta"><span>Старт <time datetime="2026-11-17">17&nbsp;ноября</time></span></span>
+                        </span>
+                        <span class="month-offer_price">
+                          <span class="month-offer_pill">−10&nbsp;%</span>
+                          <strong class="month-offer_new">108&nbsp;000&nbsp;₽</strong>
+                          <s class="month-offer_old">120&nbsp;000&nbsp;₽</s>
+                        </span>
+                      </a>
+                    </li>
+                    <li class="month-offer_item">
+                      <a class="month-offer_link" href="https://modern-psy.ru/trauma-therapy">
+                        <span class="month-offer_main">
+                          <span class="month-offer_title">Терапия травмы: ПТСР и&nbsp;кПТСР</span>
+                          <span class="month-offer_meta"><span>Старт <time datetime="2026-11-24">24&nbsp;ноября</time></span></span>
+                        </span>
+                        <span class="month-offer_price">
+                          <span class="month-offer_pill">−10&nbsp;%</span>
+                          <strong class="month-offer_new">67&nbsp;500&nbsp;₽</strong>
+                          <s class="month-offer_old">75&nbsp;000&nbsp;₽</s>
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="discounts-hero_actions">
+                  <a class="button_component is-light" href="https://modern-psy.ru/courses">Выбрать курс</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>

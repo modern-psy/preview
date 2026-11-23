@@ -11,9 +11,10 @@
 //
 //   form  — тексты формы, как в request-form-sync.mjs лендингов (mode, nativeMarker, heading, description,
 //           submitLabel, source). nativeMarker — имя нативной формы Тильды, пока прод на Тильде;
-//   lead  — что это за заявка: intent (course | waitlist | free-lectures | webinar | access | booking | question),
+//   lead  — что это за заявка: intent (course | waitlist | free-lectures | webinar | access | booking | question | gift-certificate),
 //           course (slug в CMS), stream (дата потока), tariff, placement (hero | price | signup | popup | footer);
-//   cmsHeading — заголовок формы обновляет скрипт страницы из CMS («Занятия начнутся …»).
+//   cmsHeading — заголовок формы обновляет скрипт страницы из CMS («Занятия начнутся …»);
+//   headingLevel — уровень заголовка формы (по умолчанию h2; h3, если форма внутри секции со своим h2).
 import { renderRequestForm } from '../../web-academy/shared/academy/request-form-render.mjs';
 import '../../web-academy/shared/academy/request-form.css';
 
@@ -22,8 +23,9 @@ interface Props {
   form: Record<string, unknown>;
   lead: { intent: string; course?: string; stream?: string; tariff?: string; placement?: string; form?: string };
   cmsHeading?: boolean;
+  headingLevel?: number;
 }
-const { id, form, lead, cmsHeading = false } = Astro.props;
+const { id, form, lead, cmsHeading = false, headingLevel = 2 } = Astro.props;
 const attr = (s: string) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 const leadAttrs = [
   `data-lead-form="${attr(lead.form || (form.nativeMarker as string) || id)}"`,
@@ -33,7 +35,7 @@ const leadAttrs = [
   lead.tariff && `data-lead-tariff="${attr(lead.tariff)}"`,
   lead.placement && `data-lead-placement="${attr(lead.placement)}"`,
 ].filter(Boolean).join(' ');
-let markup = renderRequestForm(form, { id }).replace(/<form\b/, `<form ${leadAttrs}`);
+let markup = renderRequestForm(form, { id, headingLevel }).replace(/<form\b/, `<form ${leadAttrs}`);
 if (cmsHeading) markup = markup.replace(`id="${id}-heading"`, `id="${id}-heading" data-cms="enrollment-start"`);
 ---
 <Fragment set:html={markup} />
