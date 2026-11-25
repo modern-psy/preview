@@ -1,0 +1,992 @@
+/* ==========================================================================
+   Лендинг «Спортивная психология» · профессиональная переподготовка · modern-psy.ru/sportivnaya-psihologiya
+   Пересобран 23.11.2026 на общих стилях v1 по «Стандарту структуры лендинга АСП» (раньше страница была
+   на Zero-блоках и T123 Тильды). Образец вёрстки — /couples-therapy (он сам по образцу /orkt).
+
+   Основа — общие стили лендингов v1 (/academy-base/v1.css): шрифт, цвета, каркас
+   main-wrapper → padding-global → container-xlarge (1520 px, поля от 16 px), отступы секций
+   section-spacing_component, роли текста body-text_component и кнопка button_component.
+   Здесь только раскладка блоков и цвета, которых нет в v1.
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста секций: размер текста
+   меняется только сменой класса роли в index.html (таблица в academy-base/README.md).
+   Исключения — первый экран (раздел 1) и блок бесплатного мини-курса (раздел 8): это утверждённые
+   блоки /orkt и /couples-therapy со своими кеглями, их стили перенесены один в один; и строка доверия
+   (раздел 2), строка фактов первого экрана: у них свой короткий кегль (не мельче 16 px).
+
+   Правила секций начинаются с .sport-page, у первого экрана — свой префикс .sport-hero.
+   Ступени ширины секций как в v1: до 520 · от 521 · от 768 · от 1025 px. У первого экрана и мини-курса переломы
+   по ширине их карточки (@container), как в утверждённых блоках.
+   Порядок разделов — как секции на странице.
+   ========================================================================== */
+
+/* ---------- 0. Цвета и общие настройки ----------
+   Цвета из v1 (--color-*). Свои — только здесь, в правилах секций ниже hex-кодов нет. Значения — как на /couples-therapy. */
+.sport-page {
+  --sport-muted: #625f6a;              /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1 */
+  --sport-line: #d9d8df;               /* тонкие линии между пунктами, маркеры списков */
+  --sport-on-dark-muted: #b9b4c4;      /* текст карточек на тёмной плашке: на #2b2334 7,4:1, на карточке около 6:1 */
+  --sport-dark-card: rgb(255 255 255 / 8%); /* карточка на тёмной плашке, как на /couple-requests */
+  --sport-line-soft: #e8e7ee;            /* линии между строками на белом. Как --color-line в v1, но своя:
+                                          в custom.css Тильды --color-line нет */
+  --sport-dark-line: rgb(255 255 255 / 16%); /* линии и обводки на тёмной плашке */
+  --sport-after: #0a6b4e;                /* «Стало» в таблице: зелёный успеха из блока цены, на белом 6,6:1 */
+  --sport-after-soft: #e8f5ef;           /* фон метки «Стало» */
+  --sport-star: #f5b400;                 /* звёзды оценок (иконка, не текст) */
+}
+
+/* Отступ закреплённого при прокрутке заголовка «Программы» от верха окна: под шапкой сайта на Тильде
+   (около 78 px) с зазором, как на /couple-requests (6.5rem = 104 px). */
+.sport-page { --sport-sticky-top: 6.5rem; }
+
+/* Серый текст v1 (#7b7b7c) даёт на белом 4,2:1, на #f5f5f5 — 3,9:1: для текста мельче 24 px мало.
+   На этой странице берём темнее, как на /couple-requests. */
+.sport-page { --body-text-color: var(--sport-muted); --section-subtitle-color: var(--sport-muted); }
+
+.sport-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Боковые поля страницы — как у эталонного блока «Почему выбирают нас» (academy.css, решение Дарьи 25.11.2026):
+   до 767 px 16 px, 768–1024 px 24 px, от 1025 px формула v1 (не меньше 24 px). Так края всех блоков совпадают. */
+.main-wrapper.sport-page { --page-padding: 1rem; }
+@media (min-width: 48rem) {
+  .main-wrapper.sport-page { --page-padding: 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  .main-wrapper.sport-page { --page-padding: clamp(1.5rem, 4.7619vw, 5rem); }
+}
+
+/* Кегли карточек — по эталону «Почему выбирают нас» (25.11.2026):
+   заголовок карточки (content-heading is-prominent) 24 · 28 · 32 · 36 px,
+   текст карточки (body-text is-showcase и --sport-showcase-size) 16 · 18 · 20 · 24 px.
+   Поля внутри карточек и плашек — --card-padding (16 px), как у карточек эталона. */
+.main-wrapper.sport-page { --content-prominent-size: 1.5rem; --sport-showcase-size: 1rem; }
+@media (min-width: 32.5625rem) { .main-wrapper.sport-page { --content-prominent-size: 1.75rem; --sport-showcase-size: 1.125rem; } }
+@media (min-width: 48rem) { .main-wrapper.sport-page { --content-prominent-size: 2rem; --sport-showcase-size: 1.25rem; } }
+@media (min-width: 64.0625rem) { .main-wrapper.sport-page { --content-prominent-size: 2.25rem; --sport-showcase-size: 1.5rem; } }
+/* У эталона тексты короткие и межстрочный 1,1; у нас абзацы длиннее, поэтому 1,3 */
+.sport-page .body-text_component.is-showcase { line-height: 1.3; }
+.sport-page .sport-practice_card .content-heading_component { --content-heading-size: var(--sport-showcase-size); }
+
+/* Списки в карточках без браузерных точек и отступов */
+.sport-page :is(.sport-trust_list, .sport-niche_list, .sport-audience_scores, .sport-teachers_grid, .sport-program_list, .sport-program_topics, .sport-program_facts) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Подзаголовок секции не шире 46rem (около 80 знаков в строке) */
+.sport-page .section-header_component.is-left .section-subtitle_component { max-width: 46rem; }
+
+/* Колонка шириной 64rem по центру: вопросы и ответы (блок цены задаёт ту же ширину сам, layout wa-narrow) */
+.sport-page .sport-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+
+
+/* ---------- 1. Первый экран ----------
+   Утверждённый блок /orkt (apps/tilda/orkt-hero, эталон К4 «Курс с бесплатной частью»), стили один в один.
+   Здесь он в ТЁМНОМ тоне (#2B2334, без data-tone="light"): тёмный вариант утверждён в том же эталоне.
+   Отличия от /orkt: название короткое, поэтому заголовок крупнее (как в эталоне, до 66 px), и под ним
+   строка подхода «Интегративный подход на основе…» (.sport-hero_kicker). */
+/* Первый экран. Цвета менять только в переменных ниже.
+   Раскладка перестраивается по ширине самой карточки (@container):
+   до 1000 px — ноутбук и планшет, до 760 px — узкий планшет, до 520 px — телефон.
+   Это те же переломы, что у эталона К4 в библиотеке. */
+.sport-hero {
+  --fld-bg: #2b2334;        /* тёмная карточка */
+  --fld-raise: #383041;     /* плашка описания */
+  --fld-text: #e6e5eb;      /* текст на тёмном */
+  --fld-head: #ffffff;      /* заголовок на карточке */
+  --fld-focus: #ffffff;     /* обводка кнопок при переходе с клавиатуры */
+  --promo: #644ab2;         /* фиолетовая плашка с лекциями на фото */
+  --promo-hover: #5a42a2;
+  --promo-text: #e6e5eb;
+  --ink: #1d1535;           /* заголовки фактов на фоне страницы */
+  --text: #4f4d63;          /* пояснения фактов */
+  --line: #e3e0ec;          /* обводка кружков с иконками */
+  /* «Спортивная психология» короткое, поэтому кегль как в эталоне К4: от 40 до 66 px по ширине карточки */
+  --title: clamp(2.5rem, 5.6cqi, 4.125rem);
+  font-family: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.sport-hero *, .sport-hero *::before, .sport-hero *::after { box-sizing: border-box; }
+/* Отступ первого экрана от шапки сайта: 12 / 20 / 24 px, как у первых экранов /child-psy, /rodbt-lvl2, /couple-requests.
+   Правка Дарьи 18.11.2026: на опубликованной странице карточка прилипала к шапке. */
+.sport-page .sport-hero_component { padding-top: 0.75rem; }
+@media (min-width: 48rem) { .sport-page .sport-hero_component { padding-top: 1.25rem; } }
+@media (min-width: 64.0625rem) { .sport-page .sport-hero_component { padding-top: 1.5rem; } }
+
+.sport-hero :where(h1, p, ul, li) { margin: 0; padding: 0; }
+.sport-hero :where(ul) { list-style: none; }
+.sport-hero_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+
+/* Ширина — от общего контейнера v1 (padding-global → container-xlarge), отступы — section-spacing_component.
+   Здесь только контейнер для @container и зазор между карточкой и фактами. */
+.sport-hero_container { container: sport-hero / inline-size; display: grid; gap: 1.125rem; }
+
+/* Карточка: две колонки. Текстовая шире фото, чтобы обе кнопки
+   помещались в один ряд */
+/* Поля карточки как у тёмных секций лендинга: 24 · 32 · 40 px (правка Дарьи 25.11.2026); текст и фото на одном отступе от края */
+.sport-hero_card { border-radius: 1.75rem; background: var(--fld-bg); color: var(--fld-head); padding: 2.5rem; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 2.5rem; }
+/* Поля левой части и зазор от абзаца до кнопок увеличены (правка Дарьи 25.11.2026) */
+.sport-hero_text { display: grid; align-content: space-between; gap: 3.5rem; padding: 0; }
+.sport-hero_copy { display: grid; gap: 1.5rem; max-width: 40rem; }
+.sport-hero_title { font-size: var(--title); font-weight: 500; line-height: 1; letter-spacing: -0.035em; color: var(--fld-head); text-wrap: balance; overflow-wrap: break-word; }
+/* Шапка карточки: метка-чип и заголовок */
+.sport-hero_head { display: grid; gap: 1.25rem; }
+/* Метка над заголовком: плашка-чип, светлая, тон в тон карточке (не жёлтая: жёлтые только для акций) */
+.sport-hero_kicker { justify-self: start; padding: 0.4375rem 0.75rem; border-radius: 0.625rem; background: var(--fld-raise); box-shadow: inset 0 0 0 1px rgba(43, 35, 52, 0.07); font-size: 1rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; color: var(--fld-text); }
+/* Описание курса обычным абзацем, без плашки (правка Дарьи 25.11.2026) */
+.sport-hero_lead { max-width: 36rem; font-size: 1.125rem; line-height: 1.4; color: var(--fld-text); text-wrap: pretty; }
+.sport-hero_bottom { display: grid; gap: 0.875rem; max-width: 36rem; }
+/* Описание внизу карточки, над строкой старта: отступ до старта больше, чем между стартом и кнопками */
+.sport-hero_bottom .sport-hero_lead { margin-bottom: 1rem; }
+/* Две кнопки: размер и цвета из общих стилей v1 (белая is-light и
+   полупрозрачная is-outline). Если в ряд не помещаются, встают друг
+   под другом, и каждая растягивается на всю ширину. */
+.sport-hero_buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.sport-hero_button { flex: 1 1 auto; }
+.sport-hero_button:focus-visible { outline: 2px solid var(--fld-focus); outline-offset: 3px; }
+.sport-hero_start { font-size: 1rem; line-height: 1.4; color: var(--fld-text); }
+
+/* Фото справа. Высоту задаёт карточка, фото её заполняет. */
+.sport-hero_media { position: relative; min-height: 37rem; border-radius: 1.25rem; overflow: hidden; }
+/* Кадр: люди справа от центра, нижний левый угол пустой — под плашку мини-курса */
+.sport-hero_photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 70% 45%; }
+/* Плашка «2 лекции курса бесплатно» лежит на фото внизу слева.
+   Цвет ссылки задан с !important: custom.css сайта красит ссылки по-своему */
+.sport-hero .sport-hero_promo { position: absolute; left: 0.75rem; bottom: 0.75rem; max-width: min(23rem, calc(100% - 1.5rem)); background: var(--promo); color: #fff !important; text-decoration: none !important; border-radius: 1rem; padding: 0.875rem 1.25rem 0.875rem 0.875rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: center; gap: 0.875rem; box-shadow: 0 0.75rem 2rem rgba(20, 12, 40, 0.28); transition: background-color 0.15s ease; }
+@media (hover: hover) and (pointer: fine) { .sport-hero .sport-hero_promo:hover { background: var(--promo-hover); } }
+.sport-hero_promo:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
+.sport-hero_play { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: #fff; color: var(--promo); display: grid; place-items: center; }
+.sport-hero_play .sport-hero_icon { margin-left: 0.125rem; }
+.sport-hero_promo-text { display: grid; gap: 0.25rem; font-size: 0.875rem; line-height: 1.35; color: var(--promo-text); }
+.sport-hero_promo-text b { font-weight: 500; font-size: 1.1875rem; line-height: 1.15; letter-spacing: -0.015em; color: #fff; }
+
+/* Факты под карточкой: четыре в ряд. Иконка и текст выровнены по верхнему краю (правка Дарьи 18.11.2026):
+   при сужении тексты переносятся на разное число строк, и выравнивание по центру выглядело вразнобой. */
+.sport-hero_facts { padding: 0.25rem 0.5rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.125rem 1.75rem; align-items: start; }
+.sport-hero_facts li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: start; font-size: 0.875rem; line-height: 1.35; color: var(--text); }
+.sport-hero_fi { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); display: grid; place-items: center; }
+.sport-hero_fact { display: block; margin-bottom: 0.125rem; font-size: 1rem; font-weight: 500; line-height: 1.3; color: var(--ink); }
+
+/* БЕЛЫЙ ВАРИАНТ. Включается атрибутом data-tone="light" на самой первой
+   обёртке блока: <div class="sport-hero" data-tone="light" …>. Без атрибута
+   карточка тёмная. Меняются только цвета карточки и кнопок, раскладка та же.
+   Белая карточка, как у первого экрана /act; фиолетовая плашка остаётся. */
+.sport-hero[data-tone="light"] {
+  --fld-bg: #ffffff;
+  --fld-raise: #f6f4fc;     /* плашка описания */
+  --fld-text: #4f4d63;
+  --fld-head: #1d1535;
+  --fld-focus: #644ab2;
+}
+/* Кнопки на белом. Общие стили сайта задают цвет текста с !important,
+   поэтому и здесь !important, а селектор длиннее, чтобы перебить их. */
+.sport-hero[data-tone="light"] .sport-hero_button.is-light { background: #644ab2; color: #fff !important; }
+.sport-hero[data-tone="light"] .sport-hero_button.is-light:hover { background: #4c3888; }
+.sport-hero[data-tone="light"] .sport-hero_button.is-outline { background: rgba(43, 35, 52, 0.08); border-color: transparent; color: #1d1535 !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.sport-hero[data-tone="light"] .sport-hero_button.is-outline:hover { background: rgba(43, 35, 52, 0.13); }
+
+/* Ноутбук и планшет: те же две колонки, поля карточки меньше, текст
+   ещё шире — чтобы на ноутбуке 1024 px кнопки тоже стояли в ряд */
+@container sport-hero (max-width: 1000px) {
+  .sport-hero_card { padding: 2rem; gap: 2rem; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
+  .sport-hero_text { gap: 2.5rem; padding: 0; }
+  .sport-hero_lead { font-size: 1.0625rem; }
+  .sport-hero_media { min-height: 28rem; }
+  .sport-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Узкий планшет: всё в столбик. Заголовок, описание, кнопки со стартом, потом фото с плашкой
+   (правка Дарьи 18.11.2026: «кнопки под абзац перед картинкой»; у эталона К4 было фото сразу под заголовком).
+   Обёртки текста «прозрачные» (display: contents), поэтому порядок задаётся order, а разметка остаётся одна.
+   С 25.11.2026 описание лежит в нижней группе вместе со стартом и кнопками. */
+@container sport-hero (max-width: 760px) {
+  .sport-hero_card { grid-template-columns: 1fr; padding: 2rem; gap: 1.25rem; }
+  .sport-hero_text, .sport-hero_copy { display: contents; }
+  /* Заголовок и строка подхода — по левому краю, как на телефоне и компьютере (правка Дарьи 18.11.2026;
+     в эталоне К4 здесь был центр). Строка старта над кнопками, по левому краю. */
+  .sport-hero_head { order: 1; text-align: left; padding: 0; }
+  .sport-hero_lead { max-width: none; padding-inline: 0; }
+  .sport-hero_bottom { order: 2; max-width: none; margin-top: 1rem; }
+  /* Кнопки друг под другом на всю ширину (правка Дарьи 25.11.2026) */
+  .sport-hero_buttons { flex-direction: column; }
+  .sport-hero_button { width: 100%; }
+  .sport-hero_bottom .sport-hero_lead { margin-bottom: 1.25rem; }
+  .sport-hero_start { padding-inline: 0; }
+  .sport-hero_media { order: 4; min-height: 0; aspect-ratio: 16 / 10; }
+}
+
+/* Телефон: тот же порядок, что на узком планшете (заголовок, описание, старт и кнопки, фото), текст по левому краю.
+   Фото ниже квадрата, 4 : 3 (правка Дарьи 18.11.2026: на телефоне картинка была слишком высокой). Факты в столбик. */
+@container sport-hero (max-width: 520px) {
+  .sport-hero_card { padding: 1.5rem; gap: 1rem; border-radius: 1.5rem; }
+  .sport-hero_head { text-align: left; padding: 0; gap: 0.875rem; }
+  .sport-hero_lead { padding-inline: 0; font-size: 1rem; }
+  .sport-hero_start { padding-inline: 0; }
+  .sport-hero_media { aspect-ratio: 4 / 3; }
+  /* На телефоне кадр низкий: показываем нижнюю часть снимка, чтобы люди были выше плашки мини-курса */
+  .sport-hero_photo { object-position: 72% 64%; }
+  .sport-hero .sport-hero_promo { left: 0.5rem; bottom: 0.5rem; max-width: calc(100% - 1rem); padding: 0.75rem 1rem 0.75rem 0.75rem; gap: 0.75rem; grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .sport-hero_play { width: 2.5rem; height: 2.5rem; }
+  .sport-hero_promo-text b { font-size: 1.0625rem; }
+  .sport-hero_promo-text { font-size: 0.8125rem; }
+  .sport-hero_facts { grid-template-columns: 1fr; gap: 0.75rem; padding: 0.25rem; }
+}
+
+/* ---------- 2. Строка доверия (бегущая) ----------
+   Подход как у бегущих рядов на главной (glavnaya/page.css, .door-ticker_*): лента из одинаковых наборов
+   сдвигается на половину своей ширины и зацикливается без шва; к краям контейнера мягко растворяется.
+   Белые плашки на сером фоне страницы, текст от 16 px обычного начертания, разделение — промежутком.
+   Анимируется только transform. Пауза: наведение мышью (только компьютер), фокус, лента за экраном
+   (класс is-offscreen ставит page.js, правила Safari). «Уменьшить движение» — лента стоит, листается пальцем.
+   Строка стоит близко к первому экрану: у первого экрана снизу короткий отступ. */
+.sport-page .sport-hero_component { padding-bottom: 1rem; }
+@media (min-width: 48rem) { .sport-page .sport-hero_component { padding-bottom: 1.5rem; } }
+.sport-page .sport-trust_marquee {
+  /* растворение по краям: 12 % ширины, но не меньше 2,5rem и не больше 7rem */
+  --sport-trust-fade: clamp(2.5rem, 12%, 7rem);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--sport-trust-fade), #000 calc(100% - var(--sport-trust-fade)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--sport-trust-fade), #000 calc(100% - var(--sport-trust-fade)), transparent);
+}
+.sport-page .sport-trust_track {
+  display: flex;
+  width: max-content;
+  animation: sport-trust-move 70s linear infinite;
+}
+.sport-page .sport-trust_list { display: flex; margin: 0; padding: 0; list-style: none; }
+/* Промежуток — отступ справа у каждой плашки (а не gap), чтобы половина ленты была ровно двумя наборами */
+.sport-page .sport-trust_item { flex: 0 0 auto; padding-right: 0.5rem; }
+.sport-page .sport-trust_pill {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-trust_item { padding-right: 0.75rem; }
+  .sport-page .sport-trust_pill { min-height: 3rem; padding-inline: 1.25rem; font-size: 1.125rem; }
+}
+.sport-page .sport-trust_marquee:focus-within .sport-trust_track,
+.sport-page .sport-trust_marquee.is-offscreen .sport-trust_track { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) {
+  .sport-page .sport-trust_marquee:hover .sport-trust_track { animation-play-state: paused; }
+}
+@keyframes sport-trust-move {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sport-page .sport-trust_track { animation: none; }
+  .sport-page .sport-trust_marquee { overflow-x: auto; scrollbar-width: none; }
+  .sport-page .sport-trust_marquee::-webkit-scrollbar { display: none; }
+}
+
+
+/* ---------- 3. Рынок растёт: светлое фото, заголовок сверху, четыре тезиса снизу ----------
+   По референсу Дарьи 25.11.2026 (practicum.yandex.ru/qa-engineer, «Реальный опыт в Мастерской»).
+   До 1024 px: белая плашка, заголовок, фото отдельной картинкой, ниже тезисы столбиком (на планшете по два).
+   От 1025 px: фото на всю плашку, сверху и снизу высветлено белой растяжкой (неподвижной, без фильтров),
+   заголовок по центру сверху, тезисы снизу в два ряда по два (в четыре колонки абзацы выходили по 10–12 строк). Кегли — по эталону «Почему выбирают нас». */
+.sport-page .sport-niche_card {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+  padding: var(--card-padding);
+  overflow: hidden;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+  isolation: isolate;
+}
+.sport-page .sport-niche_title { order: 1; color: var(--color-text-primary); text-wrap: balance; }
+.sport-page .sport-niche_photo { order: 2; display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.75rem; }
+.sport-page .sport-niche_list { order: 3; display: grid; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+.sport-page .sport-niche_item { display: grid; gap: 0.5rem; align-content: start; }
+.sport-page .sport-niche_number { font-size: 1rem; font-weight: 500; line-height: 1; color: var(--color-accent-text); font-variant-numeric: tabular-nums lining-nums; }
+.sport-page .sport-niche_item .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.sport-page .sport-niche_item .body-text_component { --body-text-color: var(--color-text-secondary); text-wrap: pretty; }
+/* Кегли тезисов — как в карточках варианта «по бокам» (решение Дарьи 25.11.2026): заголовок 20 · 20 · 20 · 24 px,
+   абзац 16 · 16 · 18 · 18 px. Это на ступень меньше эталона «Почему выбирают нас»: тексты тезисов длинные. */
+.sport-page .sport-niche_item .content-heading_component { font-size: max(1.25rem, var(--sport-showcase-size)); line-height: 1.15; }
+.sport-page .sport-niche_item .body-text_component { font-size: 1rem; }
+@media (min-width: 48rem) {
+  .sport-page .sport-niche_item .body-text_component { font-size: 1.125rem; }
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-niche_photo { aspect-ratio: 16 / 9; }
+  .sport-page .sport-niche_list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; }
+}
+@media (min-width: 64.0625rem) {
+  /* Фото — верхние 48rem плашки, заголовок на светлом потолке; пол плавно уходит в белый, на нём тезисы */
+  .sport-page .sport-niche_card { --niche-photo-h: 48rem; gap: 0; padding: 3rem 2.5rem 2.5rem; }
+  .sport-page .sport-niche_title { justify-self: center; max-width: 52rem; text-align: center; }
+  .sport-page .sport-niche_photo { position: absolute; left: 0; top: 0; z-index: -2; width: 100%; height: var(--niche-photo-h); aspect-ratio: auto; object-position: 50% 40%; border-radius: 0; }
+  .sport-page .sport-niche_card::before,
+  .sport-page .sport-niche_card::after { content: ""; position: absolute; left: 0; right: 0; z-index: -1; pointer-events: none; }
+  .sport-page .sport-niche_card::before { top: 0; height: 12rem; background: linear-gradient(to bottom, rgb(255 255 255 / 85%), rgb(255 255 255 / 0%)); }
+  .sport-page .sport-niche_card::after { top: calc(var(--niche-photo-h) - 10rem); height: 10rem; background: linear-gradient(to bottom, rgb(255 255 255 / 0%), #fff); }
+  .sport-page .sport-niche_list { margin-top: 32rem; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem 4rem; }
+  .sport-page .sport-niche_item .body-text_component { max-width: 36rem; }
+}
+
+
+/* ---------- Средняя ширина: «Что изменится» и преподаватели ----------
+   Уже основных блоков (во всю ширину контейнера) и шире цены и формы (63rem): 72rem, по центру (решение Дарьи 25.11.2026).
+   На телефоне и планшете ничего не меняется: блоки и так уже 72rem. */
+.sport-page :is(.sport-result_layout, .sport-staff_plate) { width: 100%; max-width: 72rem; margin-inline: auto; }
+
+
+/* ---------- 4. Кому подходит курс ----------
+   Четыре белые карточки с иконкой (с 25.11.2026 вместо сгенерированных фото): иконка в сером круге,
+   заголовок и абзац. На телефоне столбиком, от 768 px по две, от 1025 px все четыре в ряд.
+   Кегли как у тезисов «Рынок растёт»: заголовок 20 · 20 · 20 · 24 px, абзац 16 · 16 · 18 · 18 px.
+   Под карточками строка оценок: подпись слева, две плашки с оценками справа (на телефоне под подписью). */
+/* Заголовок и строка оценок по центру (правка Дарьи 25.11.2026) */
+.sport-page #audience .section-header_component { justify-items: center; align-items: center; text-align: center; }
+.sport-page #audience .section-title_component { text-align: center; }
+.sport-page #audience .sport-audience_ratings { justify-content: center; text-align: center; }
+.sport-page #audience .sport-audience_scores { justify-content: center; }
+.sport-page .sport-audience_grid { display: grid; gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.sport-page .sport-audience_card {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.sport-page .sport-audience_icon { display: grid; place-items: center; width: 3rem; height: 3rem; margin-bottom: 0.5rem; border-radius: 50%; background: var(--color-page-background); color: var(--color-text-primary); }
+.sport-page .sport-audience_icon svg { display: block; width: 1.5rem; height: 1.5rem; }
+.sport-page .sport-audience_card .content-heading_component { font-size: max(1.25rem, var(--sport-showcase-size)); line-height: 1.15; color: var(--color-text-primary); text-wrap: balance; }
+.sport-page .sport-audience_card .body-text_component { font-size: 1rem; text-wrap: pretty; }
+@media (min-width: 48rem) {
+  .sport-page .sport-audience_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sport-page .sport-audience_card .body-text_component { font-size: 1.125rem; }
+}
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-audience_grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.sport-page .sport-audience_ratings { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+.sport-page .sport-audience_scores { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.sport-page .sport-audience_score {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.625rem;
+  background: var(--color-surface-primary);
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+.sport-page .sport-audience_score b { font-weight: 600; }
+.sport-page .sport-icon_star { display: block; flex: none; width: 1.125rem; height: 1.125rem; color: var(--sport-star); }
+/* От 1025 px: подпись строкой над оценками и на ступень меньше (18 px), плашки оценок в 1,6 раза крупнее (правка Дарьи 25.11.2026) */
+@media (min-width: 64.0625rem) {
+  .sport-page #audience .sport-audience_ratings { flex-direction: column; gap: 1rem; }
+  .sport-page #audience .sport-audience_ratings > .body-text_component { font-size: 1.125rem; }
+  .sport-page #audience .sport-audience_scores { gap: 0.75rem; }
+  .sport-page #audience .sport-audience_score { gap: 0.75rem; padding: 0.875rem 1.5rem; border-radius: 1rem; font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.02em; }
+  .sport-page #audience .sport-icon_star { width: 1.75rem; height: 1.75rem; }
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-audience_score { font-size: 1.125rem; }
+}
+
+
+/* ---------- 5. Что даст обучение: было → стало ----------
+   Одна разметка, два вида.
+   От 768 px — таблица на белом листе: шапка «Было / Стало», строки через линии, слева «было» серым,
+   в середине стрелка, справа «стало» основным цветом.
+   До 767 px — каждая строка отдельная белая карточка: подпись «Было», текст, линия, подпись «Стало», текст (без стрелки).
+   Шапка таблицы на телефоне скрыта, вместо неё метки в каждой карточке (для скринридера они скрыты,
+   у него остаётся шапка таблицы). «Стало» отмечено зелёным успеха — единственный цвет блока. */
+.sport-page .sport-result_table { display: grid; gap: var(--card-grid-gap); }
+.sport-page .sport-result_head { display: none; }
+.sport-page .sport-result_row {
+  display: grid;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.sport-page .sport-result_cell { display: grid; gap: 0.5rem; justify-items: start; }
+.sport-page .sport-result_cell.is-after .body-text_component { --body-text-color: var(--color-text-primary); }
+.sport-page :is(.sport-result_tag, .sport-result_label) {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.5rem;
+  background: var(--color-page-background);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--sport-muted);
+}
+.sport-page .sport-result_cell.is-after .sport-result_tag,
+.sport-page .sport-result_label.is-after { background: var(--sport-after-soft); color: var(--sport-after); }
+.sport-page .sport-result_arrow {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+}
+.sport-page .sport-result_arrow svg { display: block; width: 1rem; height: 1rem; transform: rotate(90deg); }
+/* Телефон (до 767 px): без стрелки и плашек — акцент на тексте (правка Дарьи 25.11.2026).
+   «Было» и «Стало» — маленькие подписи без заливки («Стало» зелёным текстом), половины разделены тонкой линией;
+   текст «было» серый, текст «стало» тёмный и чуть плотнее. */
+@media (max-width: 47.9375rem) {
+  .sport-page .sport-result_row { gap: 0; }
+  .sport-page .sport-result_arrow { display: none; }
+  .sport-page .sport-result_tag { padding: 0; border-radius: 0; background: none; font-size: 1rem; font-weight: 500; color: var(--sport-muted); }
+  .sport-page .sport-result_cell.is-after .sport-result_tag { background: none; color: var(--sport-after); }
+  .sport-page .sport-result_cell { gap: 0.375rem; }
+  .sport-page .sport-result_cell:not(.is-after) { padding-bottom: 0.875rem; }
+  .sport-page .sport-result_cell:not(.is-after) .body-text_component { --body-text-color: var(--color-text-secondary); }
+  .sport-page .sport-result_cell.is-after { padding-top: 0.875rem; border-top: 1px solid var(--sport-line-soft); }
+  .sport-page .sport-result_cell.is-after .body-text_component { font-weight: 500; }
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-result_table {
+    gap: 0;
+    padding: 0 1.5rem;
+    border-radius: var(--radius-card, 1rem);
+    background: var(--color-surface-primary);
+  }
+  .sport-page .sport-result_head,
+  .sport-page .sport-result_row { display: grid; grid-template-columns: minmax(0, 1fr) 2.5rem minmax(0, 1fr); gap: 1.5rem; align-items: center; }
+  .sport-page .sport-result_head { padding-block: 1.25rem 1rem; }
+  .sport-page .sport-result_label.is-after { grid-column: 3; justify-self: start; }
+  .sport-page .sport-result_label:not(.is-after) { justify-self: start; }
+  .sport-page .sport-result_row { padding: 1.25rem 0; border-radius: 0; background: none; border-top: 1px solid var(--sport-line-soft); }
+  .sport-page .sport-result_tag { display: none; }
+  .sport-page .sport-result_arrow { width: 2.5rem; height: 2.5rem; }
+  .sport-page .sport-result_arrow svg { transform: none; }
+}
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-result_table { padding: 0.5rem 2rem; }
+  .sport-page .sport-result_head,
+  .sport-page .sport-result_row { gap: 2.5rem; }
+  .sport-page .sport-result_row { padding-block: 1.5rem; }
+}
+
+
+/* ---------- 6. Как устроено обучение ----------
+   Тёмная плашка #2B2334, внутри бенто из шести карточек с SVG-анимациями (референс Дарьи 25.11.2026).
+   Раскладка: телефон — столбиком; планшет — по две, карточка практикума на всю ширину;
+   от 1025 px два ряда по три, в верхнем средняя карточка шире (сетка из 30 колонок: 9 / 12 / 9 и 10 / 10 / 10).
+   Анимации облегчены под Safari: только transform, opacity и stroke-dashoffset на маленьких SVG,
+   без фильтров и размытия. Класс is-offscreen (page.js) ставит всё на паузу, когда блок не на экране;
+   при «уменьшить движение» анимаций нет, кольцо сразу показывает 80 %.
+   Фиолетовый — только сигнал в анимациях и одна плашка-акцент, как и раньше по минимуму. */
+.sport-page .sport-practice_plate {
+  display: grid;
+  gap: 2rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+  --body-text-color: var(--sport-on-dark-muted);
+  --section-subtitle-color: var(--sport-on-dark-muted);
+}
+.sport-page .sport-practice_plate .section-title_component { color: var(--color-text-on-dark); }
+/* Поля плашки как у блока мини-курса (24 · 32 · 40 px), заголовок и подзаголовок по центру (правка Дарьи 25.11.2026) */
+.sport-page .sport-practice_plate { padding: 1.5rem; }
+.sport-page .sport-practice_plate > .section-header_component { justify-items: center; align-items: center; text-align: center; margin-inline: auto; }
+.sport-page .sport-practice_plate > .section-header_component :is(.section-title_component, .section-subtitle_component) { text-align: center; margin-inline: auto; }
+.sport-page .sport-practice_plate .section-subtitle_component { max-width: 40rem; }
+@media (min-width: 48rem) { .sport-page .sport-practice_plate { padding: 2rem; } }
+@media (min-width: 64.0625rem) { .sport-page .sport-practice_plate { padding: 2.5rem; } }
+.sport-page .sport-practice_bento { display: grid; gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.sport-page .sport-practice_card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 16rem;
+  padding: var(--card-padding);
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--sport-dark-card);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 6%);
+}
+.sport-page .sport-practice_card .content-heading_component { color: var(--color-text-on-dark); text-align: center; text-wrap: balance; max-width: 30rem; margin-inline: auto; }
+/* Картинка карточки занимает всё оставшееся место и центрируется */
+.sport-page .sport-practice_visual { position: relative; flex: 1 1 auto; display: grid; place-items: center; min-height: 10rem; color: #fff; }
+.sport-page .sport-practice_svg { display: block; width: 100%; max-width: 22rem; height: auto; overflow: visible; }
+.sport-page .is-workshop .sport-practice_svg { max-width: 28rem; }
+.sport-page .is-lecture .sport-practice_svg { max-width: 24rem; }
+.sport-page .sport-practice_svg.is-ring { max-width: 10rem; }
+.sport-page .sport-practice_svg text { font-family: var(--font-family-body); }
+/* Окно документа уходит за нижний край карточки, как в референсе */
+.sport-page .sport-practice_visual.is-bottom { place-items: end center; margin-bottom: calc(-1 * var(--card-padding)); }
+/* Лента форматов: на всю ширину карточки, без полей, высота фиксирована, лишнее обрезается */
+.sport-page .sport-practice_visual.is-belt { margin-inline: calc(-1 * var(--card-padding)); margin-bottom: calc(-1 * var(--card-padding)); min-height: 11rem; }
+.sport-page .sport-practice_visual.is-belt .sport-practice_svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+/* Список форматов для скринридера: на экране его заменяет лента */
+.sport-page .sport-practice_sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Анимации. transform-box: fill-box — чтобы масштаб шёл от центра самой фигуры, а не от угла SVG */
+.sport-page .sport-practice_pulse { transform-box: fill-box; transform-origin: center; animation: sport-practice-pulse 2.4s ease-out infinite; }
+@keyframes sport-practice-pulse { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.6); } }
+.sport-page .sport-practice_signal path { stroke-dasharray: 18 100; stroke-dashoffset: 18; animation: sport-practice-signal 2.8s linear infinite; }
+.sport-page .sport-practice_signal path:nth-child(2) { animation-delay: 0.35s; }
+.sport-page .sport-practice_signal path:nth-child(3) { animation-delay: 0.7s; }
+@keyframes sport-practice-signal { 0% { stroke-dashoffset: 18; opacity: 1; } 70% { stroke-dashoffset: -100; opacity: 1; } 100% { stroke-dashoffset: -100; opacity: 0; } }
+.sport-page .sport-practice_spark { transform-box: fill-box; transform-origin: center; animation: sport-practice-spark 3s ease-in-out infinite; }
+.sport-page .sport-practice_spark.is-late { animation-delay: 1.5s; }
+@keyframes sport-practice-spark { 0%, 100% { opacity: 0.25; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1); } }
+.sport-page .sport-practice_lines rect { transform-box: fill-box; transform-origin: left center; animation: sport-practice-line 6s ease-in-out infinite; }
+.sport-page .sport-practice_lines rect:nth-child(2) { animation-delay: 0.4s; }
+.sport-page .sport-practice_lines rect:nth-child(3) { animation-delay: 0.8s; }
+.sport-page .sport-practice_lines rect:nth-child(4) { animation-delay: 1.2s; }
+@keyframes sport-practice-line { 0% { transform: scaleX(0); } 20%, 85% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
+.sport-page .sport-practice_stamp { transform-box: fill-box; transform-origin: center; animation: sport-practice-stamp 6s ease-in-out infinite; }
+@keyframes sport-practice-stamp { 0%, 30% { opacity: 0; transform: scale(0.6); } 40%, 85% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.9); } }
+/* Кольцо 80 %: заполняется один раз, когда карточка попадает на экран (page.js ставит is-visible) */
+.sport-page .sport-practice_progress { stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 1.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.sport-page [data-practice].is-visible .sport-practice_progress { stroke-dashoffset: 20; }
+/* Пауза, пока блок за экраном */
+.sport-page [data-practice].is-offscreen :is(.sport-practice_pulse, .sport-practice_signal path, .sport-practice_spark, .sport-practice_lines rect, .sport-practice_stamp) { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .sport-page :is(.sport-practice_pulse, .sport-practice_signal path, .sport-practice_spark, .sport-practice_lines rect, .sport-practice_stamp) { animation: none; }
+  .sport-page .sport-practice_signal { display: none; }
+  .sport-page .sport-practice_progress { transition: none; stroke-dashoffset: 20; }
+}
+
+@media (min-width: 32.5625rem) {
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-practice_plate { gap: 2.5rem; }
+  .sport-page .sport-practice_bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sport-page .sport-practice_card.is-workshop { grid-column: span 2; }
+}
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-practice_bento { grid-template-columns: repeat(30, minmax(0, 1fr)); }
+  .sport-page .sport-practice_card { grid-column: span 10; min-height: 20rem; }
+  .sport-page .sport-practice_card:is(.is-lecture, .is-feedback) { grid-column: span 9; }
+  .sport-page .sport-practice_card.is-workshop { grid-column: span 12; }
+}
+
+
+/* Телефон (до 767 px): иллюстрации мельче, чтобы не отвлекали от текста (правка Дарьи 25.11.2026) */
+@media (max-width: 47.9375rem) {
+  .sport-page .sport-practice_card { min-height: 0; gap: 0.75rem; }
+  .sport-page .sport-practice_visual { min-height: 0; }
+  .sport-page .sport-practice_svg { max-width: 12rem; }
+  .sport-page .is-workshop .sport-practice_svg { max-width: 15rem; }
+  .sport-page .is-lecture .sport-practice_svg { max-width: 12rem; }
+  .sport-page .sport-practice_svg.is-ring { max-width: 6.5rem; }
+  .sport-page .sport-practice_visual.is-belt { min-height: 7.5rem; }
+  .sport-page .sport-practice_visual.is-bottom .sport-practice_svg { max-width: 14rem; }
+}
+
+/* ---------- 7. Программа ----------
+   Как «Программа обучения» на /couples-therapy: слева заголовок, описание и строка фактов (от 1025 px закреплены
+   при прокрутке), справа девять модулей белыми карточками. Модуль — аккордеон <details>: номер, название,
+   результат модуля одной строкой; по нажатию открываются темы списком с точками. Плюс справа превращается
+   в крестик. Без JavaScript всё работает (родной details). */
+.sport-page .sport-program_layout { --section-layout-columns: minmax(0, 0.7fr) minmax(0, 1fr); }
+/* Строка фактов под описанием: серые плашки в ряд, переносятся */
+.sport-page .sport-program_facts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.sport-page .sport-program_facts li {
+  --body-text-color: var(--color-text-primary);
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.625rem;
+  background: var(--color-surface-primary);
+}
+.sport-page .sport-program_list { display: grid; gap: 0.5rem; }
+.sport-page .sport-program_module { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.sport-page .sport-program_summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 2rem;
+  gap: 0.75rem 1rem;
+  align-items: start;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.sport-page .sport-program_summary::-webkit-details-marker { display: none; }
+/* Номер модуля: серым, той же ступенью, что название */
+.sport-page .sport-program_number {
+  min-width: 2.25rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--sport-muted);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.sport-page .sport-program_head { display: grid; gap: 0.5rem; }
+.sport-page .sport-program_module .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+.sport-page .sport-program_icon {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color 150ms ease;
+}
+.sport-page .sport-program_icon::before,
+.sport-page .sport-program_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.sport-page .sport-program_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.sport-page .sport-program_module[open] .sport-program_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .sport-page .sport-program_summary:hover .sport-program_icon { background: var(--sport-line); }
+}
+.sport-page .sport-program_topics { display: grid; gap: 0.5rem; padding: 0 var(--card-padding) 1.25rem; }
+.sport-page .sport-program_topics li { position: relative; padding-left: 1rem; }
+/* Маркер темы — маленькая серая точка на высоте первой строки */
+.sport-page .sport-program_topics li::before {
+  content: "";
+  position: absolute;
+  left: 0.125rem;
+  top: 0.6em;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--sport-line);
+}
+/* На телефоне номер стоит над названием, а не слева, чтобы название не сжималось */
+@media (max-width: 32.5rem) {
+  .sport-page .sport-program_summary { grid-template-columns: minmax(0, 1fr) 2rem; }
+  .sport-page .sport-program_number { grid-column: 1 / -1; font-size: 1.125rem; }
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-program_number { font-size: 1.5rem; }
+  .sport-page .sport-program_topics { padding-left: calc(var(--card-padding) + 3.25rem); }
+}
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-program_summary { padding: 1.25rem 1.5rem; }
+  .sport-page .sport-program_topics { padding: 0 1.5rem 1.5rem calc(1.5rem + 3.25rem); }
+  .sport-page .sport-program_layout .sport-program_intro { position: sticky; top: var(--sport-sticky-top); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sport-page :is(.sport-program_icon, .sport-program_icon::before, .sport-program_icon::after) { transition: none; }
+}
+
+
+/* ---------- 8. Бесплатный мини-курс ----------
+   Лейаут по референсу Дарьи 25.11.2026 (portfolio block с 21st.dev): одна плашка, две колонки.
+   С 25.11.2026 плашка тёмная #2B2334, поля больше (24 px на телефоне, 32 на планшете, 40 на компьютере).
+   Слева заголовок с грантом-наклейкой (с бликом), абзац и три карточки фактов (белый 8 %).
+   Справа карточка формы, как карточка профиля: значок подарка, заголовок, поля, кнопка.
+   Форма — общий компонент request-form (request-form.css не править): её тёмная тема родная,
+   здесь фон карточки как у карточек фактов (токен --request-form-surface). До 1024 px всё в столбик. */
+.sport-page .sport-free_component {
+  display: grid;
+  gap: 2rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+.sport-page .sport-free_info { display: grid; align-content: start; gap: 1.25rem; }
+/* Грант в заголовке — подарком: жёлтая подложка с бантиком-коробкой, чуть наклонена, как наклейка.
+   Квадратные углы 6 px, тёмный текст (правило жёлтых плашек сайта). На переносе строки подложка
+   повторяется у каждой части (box-decoration-break). Цвет и наклон можно править здесь. */
+.sport-page .sport-free_gift {
+  display: inline-block;
+  padding: 0 0.18em 0.04em 0.14em;
+  border-radius: 0.375rem;
+  background: #ffe110;
+  color: #332f41;
+  white-space: nowrap;
+  transform: rotate(-1.5deg);
+  box-shadow: 0.08em 0.1em 0 rgb(0 0 0 / 35%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* Блик по наклейке: светлая полоса проходит слева направо примерно за секунду, раз в 5 секунд.
+   Двигается только transform (правила Safari); за экраном пауза (класс is-offscreen из page.js),
+   при «уменьшить движение» блика нет. */
+.sport-page .sport-free_gift { position: relative; overflow: hidden; vertical-align: baseline; }
+.sport-page .sport-free_gift::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  background: linear-gradient(105deg, rgb(255 255 255 / 0%) 0%, rgb(255 255 255 / 75%) 50%, rgb(255 255 255 / 0%) 100%);
+  transform: translateX(-120%);
+  animation: sport-free-shine 5s ease-in-out 1s infinite;
+  pointer-events: none;
+}
+@keyframes sport-free-shine {
+  0% { transform: translateX(-120%); }
+  20%, 100% { transform: translateX(240%); }
+}
+.sport-page .sport-free_section.is-offscreen .sport-free_gift::after { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .sport-page .sport-free_gift::after { display: none; }
+}
+.sport-page .sport-free_title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+  color: var(--color-text-on-dark);
+}
+.sport-page .sport-free_text { margin: 0; max-width: 40rem; font-size: 1rem; line-height: 1.4; color: var(--sport-on-dark-muted); text-wrap: pretty; }
+/* Три карточки фактов: подпись приглушённая, текст белый */
+.sport-page .sport-free_facts { display: grid; gap: 0.75rem; margin: 0.5rem 0 0; padding: 0; list-style: none; }
+.sport-page .sport-free_fact { display: grid; gap: 0.375rem; padding: var(--card-padding); border-radius: 0.875rem; background: var(--sport-dark-card); }
+.sport-page .sport-free_fact-label { margin: 0; font-size: 1rem; font-weight: 500; line-height: 1.3; color: var(--sport-on-dark-muted); }
+.sport-page .sport-free_fact-text { margin: 0; font-size: var(--sport-showcase-size); line-height: 1.4; color: var(--color-text-on-dark); text-wrap: pretty; }
+
+/* Темы мини-курса внутри карточки «Что внутри»: номер в полупрозрачном кружке, тонкая линия между темами */
+.sport-page .sport-free_topics { display: grid; margin: 0.25rem 0 0; padding: 0; list-style: none; counter-reset: sport-free-topic; }
+.sport-page .sport-free_topics li {
+  position: relative;
+  min-height: 2rem;
+  padding: 0.75rem 0 0.75rem 2.75rem;
+  border-top: 1px solid var(--sport-dark-line);
+  counter-increment: sport-free-topic;
+}
+.sport-page .sport-free_topics li:first-child { border-top: 0; padding-top: 0.25rem; }
+.sport-page .sport-free_topics li::before {
+  content: counter(sport-free-topic);
+  position: absolute;
+  left: 0;
+  top: 0.625rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 12%);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-on-dark);
+}
+.sport-page .sport-free_topics li:first-child::before { top: 0.125rem; }
+.sport-page .sport-free_topic { margin: 0; padding-top: 0.25rem; font-size: var(--sport-showcase-size); font-weight: 500; line-height: 1.25; letter-spacing: -0.02em; color: var(--color-text-on-dark); text-wrap: balance; }
+.sport-page .sport-free_topic-text { margin: 0.25rem 0 0; font-size: 1rem; line-height: 1.35; color: var(--sport-on-dark-muted); text-wrap: pretty; }
+
+/* Карточка формы: родная тёмная тема компонента, фон как у остальных карточек в тёмных секциях
+   (белый 8 %, --sport-dark-card), иначе карточка выбивается по насыщенности (правка Дарьи 25.11.2026).
+   Компонент красит текст кнопки цветом фона карточки, а он полупрозрачный, поэтому цвет текста кнопки задан отдельно. */
+.sport-page .sport-free_form .request-form_component {
+  --request-form-surface: var(--sport-dark-card);
+  max-width: none;
+  height: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto;
+  align-content: start;
+  border-radius: 1.25rem;
+}
+.sport-page .sport-free_form :is(.request-form_intro, .request-form_body, .request-form_note) { grid-column: 1; grid-row: auto; }
+.sport-page .sport-free_form .request-form_submit,
+.sport-page .sport-free_form .request-form_submit:hover { color: var(--color-surface-dark) !important; }
+/* Шапка карточки: значок подарка (как значки в «Практике»: полупрозрачный круг, тонкая обводка, белая линия), заголовок, подпись. До 1024 px всё по левому краю, значок маленький,
+   чтобы не съедал высоту (правка Дарьи 25.11.2026); от 1025 px по центру, как у карточки профиля. */
+.sport-page .sport-free_form .request-form_intro::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 16%);
+  background: rgb(255 255 255 / 10%) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='8' width='18' height='4' rx='1'/%3E%3Cpath d='M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5'/%3E%3C/svg%3E") center / 1.375rem no-repeat;
+}
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-free_form .request-form_intro { justify-items: center; align-items: center; text-align: center; }
+  .sport-page .sport-free_form .request-form_intro::before { width: 3rem; height: 3rem; margin-inline: auto; background-size: 1.5rem; }
+  .sport-page .sport-free_form .request-form_intro .section-title_component { text-align: center; }
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-free_component { padding: 2rem; }
+  .sport-page .sport-free_title { font-size: 2.75rem; }
+}
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-free_component { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; padding: 2.5rem; }
+  .sport-page .sport-free_title { font-size: 3.25rem; }
+  .sport-page .sport-free_text { font-size: 1.25rem; }
+}
+
+
+/* ---------- 9. Преподаватели: вкладки на светлой плашке ----------
+   По образцу блока «Практика», но светлый (решение Дарьи 25.11.2026): белая плашка, вкладки и панель серые #f5f5f5.
+   Выбранная вкладка тёмная, как в общих «Табах» v1; фиолетовый только в должности и точке на орбите. Сверху четыре вкладки (на телефоне две колонки), под ними панель выбранного:
+   фото в «орбите» и текст. Без скрипта панели идут подряд, скрипт прячет невыбранные (hidden).
+   Анимация орбиты — SVG (animateMotion), на паузе за экраном и при «уменьшить движение» (page.js). */
+.sport-page .sport-staff_plate {
+  display: grid;
+  gap: 2rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  --body-text-color: var(--color-text-secondary);
+}
+.sport-page .sport-staff_plate .section-title_component { color: var(--color-text-primary); }
+.sport-page .sport-staff_layout { display: grid; gap: var(--card-grid-gap); }
+.sport-page .sport-staff_tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--card-grid-gap); }
+.sport-page .sport-staff_tab {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.625rem;
+  align-items: center;
+  margin: 0;
+  padding: 0.625rem;
+  border: 0;
+  border-radius: 0.875rem;
+  background: var(--color-page-background);
+  box-shadow: inset 0 0 0 1px transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+/* Выбранная вкладка — как выбранный таб в общих «Табах» v1 (tabs-bar): тёмная, текст белый.
+   По правилам кита выбранный таб не красим в фиолетовый. */
+.sport-page .sport-staff_tab[aria-selected="true"] { background: var(--color-surface-dark); color: var(--color-text-on-dark); }
+.sport-page .sport-staff_tab[aria-selected="true"] .sport-staff_tab-band { color: var(--color-text-on-dark-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .sport-page .sport-staff_tab:not([aria-selected="true"]):hover { background: var(--color-line); }
+}
+.sport-page .sport-staff_tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.sport-page .sport-staff_thumb { display: block; width: 2.5rem; height: 2.5rem; border-radius: 50%; object-fit: cover; }
+.sport-page .sport-staff_tab-text { display: grid; gap: 0.125rem; min-width: 0; }
+.sport-page .sport-staff_tab-name { font-size: 1rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
+.sport-page .sport-staff_tab-band { display: none; font-size: 1rem; line-height: 1.3; color: var(--color-text-secondary); }
+/* До 520 px в вкладке фото над именем: в две колонки имя рядом с фото не помещается */
+@media (max-width: 32.5rem) {
+  .sport-page .sport-staff_tab { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 0.75rem 0.5rem; }
+}
+/* Панель выбранного преподавателя */
+.sport-page .sport-staff_panel {
+  display: grid;
+  gap: 1.5rem;
+  padding: var(--card-padding);
+  border-radius: 1rem;
+  background: var(--color-page-background);
+}
+.sport-page .sport-staff_panel[hidden] { display: none; }
+.sport-page .sport-staff_visual { position: relative; display: grid; place-items: center; min-height: 13rem; color: var(--color-text-primary); }
+.sport-page .sport-staff_orbit { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sport-page .sport-staff_photo { position: relative; width: 10rem; height: 10rem; border-radius: 50%; object-fit: cover; }
+.sport-page .sport-staff_info { display: grid; gap: 0.5rem; align-content: center; }
+.sport-page .sport-staff_band { margin: 0; font-size: 1rem; font-weight: 500; color: var(--color-accent-text); }
+.sport-page .sport-staff_name { margin: 0; font-size: var(--content-prominent-size); font-weight: 500; line-height: 1.1; letter-spacing: -0.04em; color: var(--color-text-primary); }
+.sport-page .sport-staff_role { margin: 0 0 0.5rem; font-size: 1rem; line-height: 1.35; color: var(--color-text-primary); }
+.sport-page .sport-staff_bio { display: grid; gap: 0.625rem; max-width: 40rem; }
+/* Поля плашки как у тёмных секций: 24 · 32 · 40 px; биография на ступень меньше текста карточек
+   (обычный body-text 16 · 18 · 20 px вместо is-showcase) — правки Дарьи 25.11.2026 */
+.sport-page [data-staff].is-offscreen .sport-practice_spark { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .sport-page .sport-staff_tab { transition: none; } }
+@media (min-width: 32.5625rem) {
+}
+@media (min-width: 48rem) {
+  .sport-page .sport-staff_plate { gap: 2.5rem; padding: 2rem; }
+  .sport-page .sport-staff_panel { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: 2rem; }
+  .sport-page .sport-staff_visual { min-height: 16rem; }
+  .sport-page .sport-staff_photo { width: 11rem; height: 11rem; }
+}
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-staff_tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sport-page .sport-staff_tab { grid-template-columns: 3.5rem minmax(0, 1fr); }
+  .sport-page .sport-staff_plate { padding: 2.5rem; }
+  .sport-page .sport-staff_thumb { width: 3.5rem; height: 3.5rem; }
+  .sport-page .sport-staff_tab-band { display: block; }
+  .sport-page .sport-staff_panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 3rem; min-height: 22rem; }
+  .sport-page .sport-staff_photo { width: 13rem; height: 13rem; }
+}
+
+
+/* ---------- 10–14. Общие блоки: «Почему выбирают нас», диплом, цена, форма, вопросы ----------
+   Диплом — diploma.css (копия общего блока, не править), «Почему выбирают нас» — academy.css (копия),
+   форма — request-form.css (копия общего компонента, кладёт request-form-sync.mjs), цена — стили внутри блока генератора.
+   Здесь только шрифт и отступы блока цены и вопросы-ответы на ролях v1 — как на /couples-therapy. */
+
+/* Блок цены приходит со своим шрифтом: Google Fonts price-sync.mjs убирает, а здесь блок переключается на шрифт v1 */
+.sport-page .price-auto_component { font-family: var(--font-family-body); }
+/* Отступы блока цены — как у секций v1: сверху 0, снизу --section-space.
+   [data-layout] в селекторе — чтобы перебить стили блока, которые идут ниже по странице. */
+.sport-page .price-auto_component[data-layout] { --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
+
+/* Вопросы и ответы: белые карточки, вопрос — content-heading is-compact, ответ — body-text, плюс-крестик справа. */
+.sport-page .sport-faq_list { display: grid; gap: 0.5rem; }
+.sport-page .sport-faq_item { border-radius: var(--radius-card, 1rem); background: var(--color-surface-primary); }
+.sport-page .sport-faq_question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  list-style: none;
+  cursor: pointer;
+}
+.sport-page .sport-faq_question::-webkit-details-marker { display: none; }
+.sport-page .sport-faq_question .content-heading_component { color: var(--color-text-primary); text-wrap: pretty; }
+.sport-page .sport-faq_icon {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  transition: background-color 150ms ease;
+}
+.sport-page .sport-faq_icon::before,
+.sport-page .sport-faq_icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.09375rem;
+  border-radius: 1px;
+  background: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.sport-page .sport-faq_icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.sport-page .sport-faq_item[open] .sport-faq_icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+@media (hover: hover) and (pointer: fine) {
+  .sport-page .sport-faq_question:hover .sport-faq_icon { background: var(--sport-line); }
+}
+.sport-page .sport-faq_answer { padding: 0 var(--card-padding) 1.25rem; }
+.sport-page .sport-faq_answer .body-text_component { max-width: 62ch; }
+.sport-page .sport-faq_answer a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (min-width: 64.0625rem) {
+  .sport-page .sport-faq_question { padding: 1.25rem 1.5rem; }
+  .sport-page .sport-faq_answer { padding: 0 1.5rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sport-page :is(.sport-faq_icon, .sport-faq_icon::before, .sport-faq_icon::after) { transition: none; }
+}
+
+
+
+/* ---------- 15. Отступы от края карточек и плашек: 16 px ----------
+   Как на /couples-therapy (правки Дарьи 18.11.2026): у карточек страницы и у общего компонента
+   «Почему выбирают нас» поля 16 px. Файл academy.css — копия утверждённого блока и не правится,
+   поэтому отступ переопределён здесь через его собственную переменную. */
+.sport-page .sport-acad .academy-showcase_component.is-responsive { --showcase-padding: 1rem; }
