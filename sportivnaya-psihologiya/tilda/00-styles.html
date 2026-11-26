@@ -588,13 +588,20 @@
 @media (min-width: 48rem) {
   .sport-page .sport-practice_plate { gap: 2.5rem; }
   .sport-page .sport-practice_bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .sport-page .sport-practice_card.is-workshop { grid-column: span 2; }
+  /* Планшет: «Лекции» и «Обратная связь» парой сверху, широкие «Практикумы» под ними во всю ширину,
+     дальше «Проект» и «Форматы» парой.
+     Раньше практикумы шли вторыми по порядку в HTML и выталкивали обратную связь вниз:
+     рядом с лекциями оставалась пустая клетка (правка 26.11.2026). */
+  .sport-page .sport-practice_card.is-workshop { grid-column: 1 / -1; grid-row: 2; }
+  /* Карточек шесть, последняя («Занятия живые…») осталась бы одна в ряду: растягиваем её во всю ширину. */
+  .sport-page .sport-practice_card.is-attendance { grid-column: 1 / -1; }
 }
 @media (min-width: 64.0625rem) {
   .sport-page .sport-practice_bento { grid-template-columns: repeat(30, minmax(0, 1fr)); }
   .sport-page .sport-practice_card { grid-column: span 10; min-height: 20rem; }
   .sport-page .sport-practice_card:is(.is-lecture, .is-feedback) { grid-column: span 9; }
-  .sport-page .sport-practice_card.is-workshop { grid-column: span 12; }
+  .sport-page .sport-practice_card.is-workshop { grid-column: span 12; grid-row: auto; }
+  .sport-page .sport-practice_card.is-attendance { grid-column: span 10; }
 }
 
 
