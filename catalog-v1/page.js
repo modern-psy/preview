@@ -803,7 +803,11 @@ function tryHtml(card, st) {
 
 /* Пробные сгенерированные обложки: { стиль: { slug: картинка } } и описание стилей */
 /* Обложки «деревянный предмет»: файлы в img/, по одному на курс */
-const RASTER = {"obj": {"abuse-therapy": "/catalog-v1/img/abuse-therapy.webp","act": "/catalog-v1/img/act.webp","addiction-therapy": "/catalog-v1/img/addiction-therapy.webp","adhd-adult": "/catalog-v1/img/adhd-adult.webp","adult-adhd-therapy": "/catalog-v1/img/adult-adhd-therapy.webp","bar": "/catalog-v1/img/bar.webp","battle-trauma-ptsd": "/catalog-v1/img/battle-trauma-ptsd.webp","business-consulting": "/catalog-v1/img/business-consulting.webp","cbt-oxford": "/catalog-v1/img/cbt-oxford.webp","cft": "/catalog-v1/img/cft.webp","child-psy": "/catalog-v1/img/child-psy.webp","child-training-practice": "/catalog-v1/img/child-training-practice.webp","client-centered-therapy": "/catalog-v1/img/client-centered-therapy.webp","clinical_psychology": "/catalog-v1/img/clinical_psychology.webp","couple-requests": "/catalog-v1/img/couple-requests.webp","couples-therapy": "/catalog-v1/img/couples-therapy.webp","course-marketing-data": "/catalog-v1/img/course-marketing-data.webp","course-rl": "/catalog-v1/img/course-rl.webp","fap": "/catalog-v1/img/fap.webp","ifs": "/catalog-v1/img/ifs.webp","kpt": "/catalog-v1/img/kpt.webp","narrative-therapy": "/catalog-v1/img/narrative-therapy.webp","navyki-konsultirovaniya-dlya-psihologov": "/catalog-v1/img/navyki-konsultirovaniya-dlya-psihologov.webp","neurodivergence": "/catalog-v1/img/neurodivergence.webp","obuchenie-emdr-dpdg-terapii": "/catalog-v1/img/obuchenie-emdr-dpdg-terapii.webp","oct": "/catalog-v1/img/oct.webp","orkt": "/catalog-v1/img/orkt.webp","psychiatry-for-psy": "/catalog-v1/img/psychiatry-for-psy.webp","psyeducation": "/catalog-v1/img/psyeducation.webp","rft": "/catalog-v1/img/rft.webp","ro-dbt-2": "/catalog-v1/img/ro-dbt-2.webp","rodbt-live": "/catalog-v1/img/rodbt-live.webp","rodbt-record": "/catalog-v1/img/rodbt-record.webp","rpp": "/catalog-v1/img/rpp.webp","s-risk": "/catalog-v1/img/s-risk.webp","schema-terapiya-neklinicheskie-zaprosy": "/catalog-v1/img/schema-terapiya-neklinicheskie-zaprosy.webp","schema-therapy": "/catalog-v1/img/schema-therapy.webp","sexology": "/catalog-v1/img/sexology.webp","sportivnaya-psihologiya": "/catalog-v1/img/sportivnaya-psihologiya.webp","womens-care": "/catalog-v1/img/womens-care.webp"}};
+/* Обложки курсов: 3D-предмет «ясень, стекло и сталь» в цвете семейства курса (23.11.2026).
+   Картинка квадратная, предмет по центру и занимает треть стороны: при обрезке в любой формат режутся только поля.
+   COVER_BG — цвет полей картинки: им добирается фон, когда картинка вписывается целиком (полоса на телефоне). */
+const RASTER = {"obj": {"abuse-therapy":"/catalog-v1/img/3d/abuse-therapy.webp","act":"/catalog-v1/img/3d/act.webp","addiction-therapy":"/catalog-v1/img/3d/addiction-therapy.webp","adhd-adult":"/catalog-v1/img/3d/adhd-adult.webp","adult-adhd-therapy":"/catalog-v1/img/3d/adult-adhd-therapy.webp","bar":"/catalog-v1/img/3d/bar.webp","battle-trauma-ptsd":"/catalog-v1/img/3d/battle-trauma-ptsd.webp","business-consulting":"/catalog-v1/img/3d/business-consulting.webp","cbt-oxford":"/catalog-v1/img/3d/cbt-oxford.webp","cft":"/catalog-v1/img/3d/cft.webp","child-psy":"/catalog-v1/img/3d/child-psy.webp","child-training-practice":"/catalog-v1/img/3d/child-training-practice.webp","client-centered-therapy":"/catalog-v1/img/3d/client-centered-therapy.webp","clinical_psychology":"/catalog-v1/img/3d/clinical_psychology.webp","couple-requests":"/catalog-v1/img/3d/couple-requests.webp","couples-therapy":"/catalog-v1/img/3d/couples-therapy.webp","course-marketing-data":"/catalog-v1/img/3d/course-marketing-data.webp","course-rl":"/catalog-v1/img/3d/course-rl.webp","fap":"/catalog-v1/img/3d/fap.webp","ifs":"/catalog-v1/img/3d/ifs.webp","kpt":"/catalog-v1/img/3d/kpt.webp","narrative-therapy":"/catalog-v1/img/3d/narrative-therapy.webp","navyki-konsultirovaniya-dlya-psihologov":"/catalog-v1/img/3d/navyki-konsultirovaniya-dlya-psihologov.webp","neurodivergence":"/catalog-v1/img/3d/neurodivergence.webp","obuchenie-emdr-dpdg-terapii":"/catalog-v1/img/3d/obuchenie-emdr-dpdg-terapii.webp","oct":"/catalog-v1/img/3d/oct.webp","orkt":"/catalog-v1/img/3d/orkt.webp","psychiatry-for-psy":"/catalog-v1/img/3d/psychiatry-for-psy.webp","psyeducation":"/catalog-v1/img/3d/psyeducation.webp","rft":"/catalog-v1/img/3d/rft.webp","ro-dbt-2":"/catalog-v1/img/3d/ro-dbt-2.webp","rodbt-live":"/catalog-v1/img/3d/rodbt-live.webp","rodbt-record":"/catalog-v1/img/3d/rodbt-record.webp","rpp":"/catalog-v1/img/3d/rpp.webp","s-risk":"/catalog-v1/img/3d/s-risk.webp","schema-terapiya-neklinicheskie-zaprosy":"/catalog-v1/img/3d/schema-terapiya-neklinicheskie-zaprosy.webp","schema-therapy":"/catalog-v1/img/3d/schema-therapy.webp","sexology":"/catalog-v1/img/3d/sexology.webp","sportivnaya-psihologiya":"/catalog-v1/img/3d/sportivnaya-psihologiya.webp","womens-care":"/catalog-v1/img/3d/womens-care.webp"}};
+const COVER_BG = {"abuse-therapy":"#e0e0e5","act":"#e3e5ea","addiction-therapy":"#e6e8ed","adhd-adult":"#e1e3e8","adult-adhd-therapy":"#dee0e4","bar":"#dfe2ec","battle-trauma-ptsd":"#e6e7ea","business-consulting":"#e6e9ef","cbt-oxford":"#dee2eb","cft":"#e5e6ea","child-psy":"#e0e1e6","child-training-practice":"#e0e3e9","client-centered-therapy":"#e0e1e6","clinical_psychology":"#e4e5ed","couple-requests":"#e3e4e9","couples-therapy":"#e0e2e7","course-marketing-data":"#e0e2e8","course-rl":"#e8eaf1","fap":"#e1e5eb","ifs":"#e4e6ec","kpt":"#e0e4ea","narrative-therapy":"#e1e2e7","navyki-konsultirovaniya-dlya-psihologov":"#dfe1ed","neurodivergence":"#e1e4e9","obuchenie-emdr-dpdg-terapii":"#e4e9ee","oct":"#e1e3e7","orkt":"#e1e5eb","psychiatry-for-psy":"#e4e6ee","psyeducation":"#e2e2e6","rft":"#e1e2e6","ro-dbt-2":"#e6e9ee","rodbt-live":"#e6e8ed","rodbt-record":"#dee1e6","rpp":"#e6e7ec","s-risk":"#e8e9ed","schema-terapiya-neklinicheskie-zaprosy":"#e1e4ea","schema-therapy":"#e4e5ea","sexology":"#e6e9ef","sportivnaya-psihologiya":"#e8eaee","womens-care":"#e9e9ee"};
 
 /* Какая обложка у курса.
    Мини-курс — всегда модель метода из кода (решение 10.11).
@@ -818,7 +822,7 @@ function coverHtml(slug, st, view = 'cover') {
   if (M[slug].mini) return glyphSvg(slug, { variant: 'model', tone: st.tone, view });
   if (st.variant === 'gen') {
     const src = (RASTER[st.style] || {})[slug];
-    if (src && view === 'cover') return `<img src="${src}" alt="" width="1000" height="438" loading="lazy">`;
+    if (src && view === 'cover') return `<img src="${src}" alt="" width="1000" height="1000" loading="lazy">`;
     return glyphSvg(slug, { variant: 'weave', tone: 'tint', view });
   }
   return glyphSvg(slug, { variant: st.variant, tone: st.tone, view });
@@ -1266,18 +1270,12 @@ document.getElementById('q').value = FILTER.q;
    В баннер попадают курсы с акцией «Курс месяца» в CMS, у которых открыт набор и есть цена со скидкой.
    Цена, дата старта и срок акции — от потока в акции (card.promo). Главный курс — с самой большой
    экономией в рублях, остальные — плитками в порядке старта. Нет курсов в акции — баннера нет. */
-const MONTH_COVERS = {
-  /* Обложки под баннер: файл img/month/<курс>-hero или -tile и куда смотреть в узкой полосе на телефоне */
-  psyeducation: '50% 72%',
-  'couples-therapy': '50% 64%',
-  'narrative-therapy': '50% 59%'
-};
 const MONTH_ARROW = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-function monthCover(slug, role) {
-  if (slug in MONTH_COVERS) return { src: `/catalog-v1/img/month/${slug}-${role}.webp`, pos: MONTH_COVERS[slug] };
+function monthCover(slug) {
   const c = BY_SLUG[slug];
-  return { src: RASTER.obj[slug] || (c && c.cover && c.cover.url) || '', pos: '50% 60%' }; // своей обложки нет — обложка каталога или из CMS
+  // своей 3D-обложки нет — обложка из CMS
+  return { src: RASTER.obj[slug] || (c && c.cover && c.cover.url) || '', bg: COVER_BG[slug] || '' };
 }
 
 function monthCards() {
@@ -1293,14 +1291,14 @@ function monthCardHtml(m, hero) {
   const c = m.card, p = m.p;
   const from = p.from ? 'от' + NBSP : '';
   const until = m.until ? 'до' + NBSP + day(m.until) : 'в этом месяце';
-  const cover = monthCover(c.slug, hero ? 'hero' : 'tile');
+  const cover = monthCover(c.slug);
   const terms = p.onePayment ? 'При единовременной оплате'
     : p.monthly ? `В${NBSP}рассрочку от${NBSP}${rub(p.monthly)} в${NBSP}месяц` : '';
   const offer = hero
     ? `На <b>${rub(m.save)}</b> дешевле, если оплатить ${until}`
     : `Экономия <b>${rub(m.save)}</b> ${until}`;
   return `<li class="catalog-month_item${hero ? ' is-hero' : ''}"><a class="catalog-month_card${hero ? ' is-hero' : ''}" href="${esc(c.url)}" target="_blank" rel="noopener">
-    <span class="catalog-month_media">${cover.src ? `<img src="${cover.src}" alt="" loading="lazy" style="--pos: ${cover.pos}">` : ''}<span class="catalog-month_save">−${rub(m.save)}</span></span>
+    <span class="catalog-month_media"${cover.bg ? ` style="background: ${cover.bg}"` : ''}>${cover.src ? `<img src="${cover.src}" alt="" loading="lazy">` : ''}<span class="catalog-month_save">−${rub(m.save)}</span></span>
     <span class="catalog-month_body">
       <span class="catalog-month_titlegroup">${m.start ? `<span class="catalog-month_start">Старт ${day(m.start)}</span>` : ''}<span class="catalog-month_name">${esc(c.title)}</span></span>
       <span class="catalog-month_offer">${offer}</span>

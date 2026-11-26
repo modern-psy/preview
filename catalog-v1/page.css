@@ -78,7 +78,11 @@
 .catalog-month_card.is-hero { background: var(--color-surface-dark); color: var(--color-text-on-dark) !important; }
 .catalog-month_card:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .catalog-month_media { position: relative; aspect-ratio: 16 / 5; background: var(--color-page-background); }
-.catalog-month_media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 60%); }
+/* Обложка квадратная, предмет по центру и занимает треть стороны. В узкой полосе на телефоне
+   картинка в 2,4 раза выше полосы: предмет почти во всю её высоту, режутся только поля.
+   По бокам фон того же цвета, что поля картинки (задаётся скриптом). Число 240% можно править. */
+.catalog-month_media { overflow: hidden; }
+.catalog-month_media img { position: absolute; left: 50%; top: 50%; display: block; width: auto; max-width: none; height: 240%; transform: translate(-50%, -50%); }
 /* Экономия на картинке: квадратная жёлтая плашка */
 .catalog-month_save {
   position: absolute; top: 0.625rem; left: 0.625rem; padding: 0.3125rem 0.5rem; border-radius: 0.375rem;
@@ -115,7 +119,7 @@
   .catalog-month_list.is-single { grid-template-columns: minmax(0, 1fr); }
   .catalog-month_item.is-hero { grid-row: span 2; }
   .catalog-month_list.is-pair .catalog-month_item.is-hero { grid-row: auto; }
-  .catalog-month_media img { object-position: 50% 50%; }
+  .catalog-month_media img { inset: 0; width: 100%; height: 100%; transform: none; object-fit: cover; object-position: 50% 50%; }
   .catalog-month_card.is-hero { grid-template-rows: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .catalog-month_card.is-hero .catalog-month_media { aspect-ratio: auto; min-height: 100%; }
   /* Два блока: сверху старт, название и выгода, снизу цена и кнопка (не по центру) */
