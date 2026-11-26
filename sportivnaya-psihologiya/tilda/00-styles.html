@@ -97,7 +97,9 @@
   --fld-bg: #2b2334;        /* тёмная карточка */
   --fld-raise: #383041;     /* плашка описания */
   --fld-text: #e6e5eb;      /* текст на тёмном */
-  --fld-start: #dad6ff;     /* дата старта на тёмном: светло-фиолетовая, тёмно-фиолетовая тут не читается */
+  --fld-start: #ffffff;     /* дата старта на тёмном */
+  --fld-chip-bg: #383041;   /* чип над заголовком на тёмном */
+  --fld-chip-text: #e6e5eb;
   --fld-head: #ffffff;      /* заголовок на карточке */
   --fld-focus: #ffffff;     /* обводка кнопок при переходе с клавиатуры */
   --promo: #644ab2;         /* фиолетовая плашка с лекциями на фото */
@@ -139,7 +141,10 @@
 /* Шапка карточки: метка-чип и заголовок */
 .sport-hero_head { display: grid; gap: 1.25rem; }
 /* Метка над заголовком: плашка-чип, светлая, тон в тон карточке (не жёлтая: жёлтые только для акций) */
-.sport-hero_kicker { justify-self: start; padding: 0.4375rem 0.75rem; border-radius: 0.625rem; background: var(--fld-raise); box-shadow: inset 0 0 0 1px rgba(43, 35, 52, 0.07); font-size: 1rem; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; color: var(--fld-text); }
+/* Чип над заголовком — как чипы v1 (price-wide_chip на /orkt): пилюля без обводки, серый фон страницы, основной цвет текста.
+   Кегль 16 px вместо 13 px у v1: на лендингах текст не мельче 16 px. Радиус = половина высоты (17 px):
+   в одну строку это пилюля, а если на 340 px текст перенёсся, получается скруглённая плашка, не овал. Правка 26.11.2026. */
+.sport-hero_kicker { justify-self: start; padding: 0.4375rem 0.75rem; border-radius: 1.0625rem; background: var(--fld-chip-bg); font-size: 1rem; font-weight: 500; line-height: 1.25; color: var(--fld-chip-text); }
 /* Описание курса обычным абзацем, без плашки (правка Дарьи 25.11.2026) */
 .sport-hero_lead { max-width: 36rem; font-size: 1.125rem; line-height: 1.4; color: var(--fld-text); text-wrap: pretty; }
 .sport-hero_bottom { display: grid; gap: 0.875rem; max-width: 36rem; }
@@ -152,7 +157,7 @@
 .sport-hero_button { flex: 1 1 auto; }
 .sport-hero_button:focus-visible { outline: 2px solid var(--fld-focus); outline-offset: 3px; }
 .sport-hero_start { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 1rem; line-height: 1.4; color: var(--fld-start); }
-/* Дата старта: Semibold и основной фиолетовый, иконка календаря перед ней (26.11.2026, просьба Дарьи).
+/* Дата старта: Semibold и основной цвет текста, иконка календаря перед ней (26.11.2026, просьба Дарьи).
    Иконка берёт цвет от текста, размер 20 px. */
 .sport-hero_start-icon { flex: none; width: 1.25rem; height: 1.25rem; }
 
@@ -185,7 +190,9 @@
   --fld-bg: #ffffff;
   --fld-raise: #f6f4fc;     /* плашка описания */
   --fld-text: #4f4d63;
-  --fld-start: #644ab2;     /* дата старта на белом: основной фиолетовый, как у кнопки «Оставить заявку» */
+  --fld-chip-bg: #f5f5f5;   /* чип над заголовком на белом: фон страницы v1 */
+  --fld-chip-text: #332f41; /* основной цвет текста v1 */
+  --fld-start: #332f41;     /* дата старта на белом: основной цвет текста v1 (--color-text-primary), почти чёрный */
   --fld-head: #1d1535;
   --fld-focus: #644ab2;
 }
@@ -229,6 +236,9 @@
 /* Телефон: тот же порядок, что на узком планшете (заголовок, описание, старт и кнопки, фото), текст по левому краю.
    Фото ниже квадрата, 4 : 3 (правка Дарьи 18.11.2026: на телефоне картинка была слишком высокой). Факты в столбик. */
 @container sport-hero (max-width: 520px) {
+  /* Чип на телефоне: поля 8 px (как у чипов оценок v1) и трекинг −0.01em, чтобы
+     «Профессиональная переподготовка» встала в одну строку на 375 px. */
+  .sport-hero_kicker { padding-inline: 0.5rem; letter-spacing: -0.01em; }
   .sport-hero_card { padding: 1.5rem; gap: 1rem; border-radius: 1.5rem; }
   .sport-hero_head { text-align: left; padding: 0; gap: 0.875rem; }
   .sport-hero_lead { padding-inline: 0; font-size: 1rem; }
