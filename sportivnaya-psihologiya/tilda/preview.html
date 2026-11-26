@@ -90,31 +90,23 @@
 
 
 /* ---------- 1. Первый экран ----------
-   Утверждённый блок /orkt (apps/tilda/orkt-hero, эталон К4 «Курс с бесплатной частью»), стили один в один.
-   Здесь он в ТЁМНОМ тоне (#2B2334, без data-tone="light"): тёмный вариант утверждён в том же эталоне.
-   Отличия от /orkt: название короткое, поэтому заголовок крупнее (как в эталоне, до 66 px), и под ним
-   строка подхода «Интегративный подход на основе…» (.sport-hero_kicker). */
-/* Первый экран. Цвета менять только в переменных ниже.
-   Раскладка перестраивается по ширине самой карточки (@container):
-   до 1000 px — ноутбук и планшет, до 760 px — узкий планшет, до 520 px — телефон.
-   Это те же переломы, что у эталона К4 в библиотеке. */
+   С 26.11.2026 по образцу первого экрана /psychiatry-for-psy: тёмное поле, текст слева, анимация из точек справа,
+   факты строкой под карточкой. Старт, часы и месяцы — тремя крупными цифрами над кнопками (выбор Дарьи «крупно»).
+   Цвета менять только в переменных ниже. Переломы — системные: 521, 768 и 1025 px. */
 .sport-hero {
   --fld-bg: #2b2334;        /* тёмная карточка */
-  --fld-raise: #383041;     /* плашка описания */
-  --fld-text: #e6e5eb;      /* текст на тёмном */
-  --fld-start: #ffffff;     /* дата старта на тёмном */
-  --fld-chip-bg: #383041;   /* чип над заголовком на тёмном */
-  --fld-chip-text: #e6e5eb;
-  --fld-head: #ffffff;      /* заголовок на карточке */
+  --fld-text: #e6e5eb;      /* описание на тёмном */
+  --fld-head: #ffffff;      /* заголовок и цифры */
+  --fld-line: rgb(255 255 255 / 18%); /* линии между цифрами */
+  --fld-chip-bg: rgb(255 255 255 / 14%); /* чип над заголовком: полупрозрачный с размытием */
   --fld-focus: #ffffff;     /* обводка кнопок при переходе с клавиатуры */
-  --promo: #644ab2;         /* фиолетовая плашка с лекциями на фото */
+  --dot: 230, 229, 235;     /* точки анимации (r, g, b) */
+  --dot-accent: #a993f0;    /* фиолетовый бегун, как акцент анимации на /psychiatry-for-psy */
+  --promo: #644ab2;         /* фиолетовая плашка мини-курса */
   --promo-hover: #5a42a2;
   --promo-text: #e6e5eb;
-  --ink: #1d1535;           /* заголовки фактов на фоне страницы */
-  --text: #4f4d63;          /* пояснения фактов */
-  --line: #e3e0ec;          /* обводка кружков с иконками */
-  /* «Спортивная психология» короткое, поэтому кегль как в эталоне К4: от 40 до 66 px по ширине карточки */
-  --title: clamp(2.5rem, 5.6cqi, 4.125rem);
+  --ink: #332f41;           /* текст фактов на фоне страницы */
+  --line: #e2e1e7;          /* обводка кружков с иконками */
   font-family: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -131,132 +123,100 @@
 .sport-hero :where(ul) { list-style: none; }
 .sport-hero_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
 
-/* Ширина — от общего контейнера v1 (padding-global → container-xlarge), отступы — section-spacing_component.
-   Здесь только контейнер для @container и зазор между карточкой и фактами. */
-.sport-hero_container { container: sport-hero / inline-size; display: grid; gap: 1.125rem; }
+/* Карточка. На телефоне и планшете анимация полосой сверху, текст под ней;
+   на компьютере текст слева, анимация на всё поле за ним (справа от текста) */
+.sport-hero_card { position: relative; display: grid; overflow: hidden; border-radius: 1.5rem; background: var(--fld-bg); color: var(--fld-head); }
+.sport-hero_art { position: relative; order: -1; height: 10rem; }
+.sport-hero_art canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.sport-hero_text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1rem; padding: 0.25rem 1.25rem 1.5rem; }
+.sport-hero_head { display: grid; gap: 0.875rem; }
+/* Чип формата над заголовком: на тёмном полупрозрачный с размытием (правило эталонов первого экрана).
+   Радиус = половина высоты: в одну строку пилюля, при переносе на 340 px — скруглённая плашка */
+.sport-hero_kicker { justify-self: start; padding: 0.4375rem 0.75rem; border-radius: 1.0625rem; background: var(--fld-chip-bg); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); font-size: 1rem; font-weight: 500; line-height: 1.25; color: var(--fld-head); }
+/* Заголовок по промо-шкале (text-size-hero): от 40 px на 375 до 70 px на 1440, Medium, трекинг −0.04em.
+   Ширина 6.5em — «Спортивная психология» всегда в две строки, как «Психиатрия для психологов» */
+.sport-hero_title { max-width: 6.5em; font-size: clamp(2.5rem, 1.84rem + 2.82vw, 4.375rem); font-weight: 500; line-height: 0.95; letter-spacing: -0.04em; color: var(--fld-head); overflow-wrap: break-word; }
+.sport-hero_lead { max-width: 46ch; font-size: 1rem; line-height: 1.4; color: var(--fld-text); text-wrap: pretty; }
 
-/* Карточка: две колонки. Текстовая шире фото, чтобы обе кнопки
-   помещались в один ряд */
-/* Поля карточки как у тёмных секций лендинга: 24 · 32 · 40 px (правка Дарьи 25.11.2026); текст и фото на одном отступе от края */
-.sport-hero_card { border-radius: 1.75rem; background: var(--fld-bg); color: var(--fld-head); padding: 2.5rem; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 2.5rem; }
-/* Поля левой части и зазор от абзаца до кнопок увеличены (правка Дарьи 25.11.2026) */
-.sport-hero_text { display: grid; align-content: space-between; gap: 3.5rem; padding: 0; }
-.sport-hero_copy { display: grid; gap: 1.5rem; max-width: 40rem; }
-.sport-hero_title { font-size: var(--title); font-weight: 500; line-height: 1; letter-spacing: -0.035em; color: var(--fld-head); text-wrap: balance; overflow-wrap: break-word; }
-/* Шапка карточки: метка-чип и заголовок */
-.sport-hero_head { display: grid; gap: 1.25rem; }
-/* Метка над заголовком: плашка-чип, светлая, тон в тон карточке (не жёлтая: жёлтые только для акций) */
-/* Чип над заголовком — как чипы v1 (price-wide_chip на /orkt): пилюля без обводки, серый фон страницы, основной цвет текста.
-   Кегль 16 px вместо 13 px у v1: на лендингах текст не мельче 16 px. Радиус = половина высоты (17 px):
-   в одну строку это пилюля, а если на 340 px текст перенёсся, получается скруглённая плашка, не овал. Правка 26.11.2026. */
-.sport-hero_kicker { justify-self: start; padding: 0.4375rem 0.75rem; border-radius: 1.0625rem; background: var(--fld-chip-bg); font-size: 1rem; font-weight: 500; line-height: 1.25; color: var(--fld-chip-text); }
-/* Описание курса обычным абзацем, без плашки (правка Дарьи 25.11.2026) */
-.sport-hero_lead { max-width: 36rem; font-size: 1.125rem; line-height: 1.4; color: var(--fld-text); text-wrap: pretty; }
-.sport-hero_bottom { display: grid; gap: 0.875rem; max-width: 36rem; }
-/* Описание внизу карточки, над строкой старта: отступ до старта больше, чем между стартом и кнопками */
-.sport-hero_bottom .sport-hero_lead { margin-bottom: 1rem; }
-/* Две кнопки: размер и цвета из общих стилей v1 (белая is-light и
-   полупрозрачная is-outline). Если в ряд не помещаются, встают друг
-   под другом, и каждая растягивается на всю ширину. */
-.sport-hero_buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.sport-hero_button { flex: 1 1 auto; }
+/* Три крупные цифры: старт, академические часы, месяцы. Между ними тонкие линии */
+.sport-hero_keys { align-self: flex-start; display: grid; grid-template-columns: repeat(3, auto); justify-content: start; }
+.sport-hero_keys li { display: grid; align-content: start; gap: 0.25rem; padding: 0 0.875rem; border-left: 1px solid var(--fld-line); }
+.sport-hero_keys li:first-child { padding-left: 0; border-left: 0; }
+.sport-hero_keys b { font-size: 1.625rem; font-weight: 500; line-height: 1; letter-spacing: -0.025em; color: var(--fld-head); white-space: nowrap; }
+.sport-hero_keys span { font-size: 1rem; line-height: 1.25; color: var(--fld-text); }
+
+/* Две кнопки: размер и цвета из общих стилей v1 (белая is-light и полупрозрачная is-outline).
+   Если в ряд не помещаются, встают друг под другом и растягиваются на всю ширину */
+.sport-hero_buttons { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+.sport-hero_button { flex: 1 1 13.75rem; }
 .sport-hero_button:focus-visible { outline: 2px solid var(--fld-focus); outline-offset: 3px; }
-.sport-hero_start { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 1rem; line-height: 1.4; color: var(--fld-start); }
-/* Дата старта: Semibold и основной цвет текста, иконка календаря перед ней (26.11.2026, просьба Дарьи).
-   Иконка берёт цвет от текста, размер 20 px. */
-.sport-hero_start-icon { flex: none; width: 1.25rem; height: 1.25rem; }
 
-/* Фото справа. Высоту задаёт карточка, фото её заполняет. */
-.sport-hero_media { position: relative; min-height: 37rem; border-radius: 1.25rem; overflow: hidden; }
-/* Кадр: люди справа от центра, нижний левый угол пустой — под плашку мини-курса */
-.sport-hero_photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 70% 45%; }
-/* Плашка «2 лекции курса бесплатно» лежит на фото внизу слева.
+/* Плашка мини-курса — единственное фиолетовое пятно экрана.
    Цвет ссылки задан с !important: custom.css сайта красит ссылки по-своему */
-.sport-hero .sport-hero_promo { position: absolute; left: 0.75rem; bottom: 0.75rem; max-width: min(23rem, calc(100% - 1.5rem)); background: var(--promo); color: #fff !important; text-decoration: none !important; border-radius: 1rem; padding: 0.875rem 1.25rem 0.875rem 0.875rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: center; gap: 0.875rem; box-shadow: 0 0.75rem 2rem rgba(20, 12, 40, 0.28); transition: background-color 0.15s ease; }
+.sport-hero .sport-hero_promo { align-self: flex-start; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: center; gap: 0.75rem; padding: 0.625rem 1.125rem 0.625rem 0.625rem; border-radius: 1rem; background: var(--promo); color: #fff !important; text-decoration: none !important; transition: background-color 0.15s ease; }
 @media (hover: hover) and (pointer: fine) { .sport-hero .sport-hero_promo:hover { background: var(--promo-hover); } }
-.sport-hero_promo:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
+.sport-hero_promo:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .sport-hero_play { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: #fff; color: var(--promo); display: grid; place-items: center; }
-.sport-hero_play .sport-hero_icon { margin-left: 0.125rem; }
-.sport-hero_promo-text { display: grid; gap: 0.25rem; font-size: 0.875rem; line-height: 1.35; color: var(--promo-text); }
-.sport-hero_promo-text b { font-weight: 500; font-size: 1.1875rem; line-height: 1.15; letter-spacing: -0.015em; color: #fff; }
+.sport-hero_play .sport-hero_icon { width: 1.125rem; height: 1.125rem; margin-left: 0.125rem; }
+.sport-hero_promo-text { display: grid; gap: 0.125rem; font-size: 1rem; line-height: 1.25; color: var(--promo-text); }
+.sport-hero_promo-text b { font-size: 1.125rem; font-weight: 500; color: #fff; }
 
-/* Факты под карточкой: четыре в ряд. Иконка и текст выровнены по верхнему краю (правка Дарьи 18.11.2026):
-   при сужении тексты переносятся на разное число строк, и выравнивание по центру выглядело вразнобой. */
-.sport-hero_facts { padding: 0.25rem 0.5rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.125rem 1.75rem; align-items: start; }
-.sport-hero_facts li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: start; font-size: 0.875rem; line-height: 1.35; color: var(--text); }
-.sport-hero_fi { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); display: grid; place-items: center; }
-.sport-hero_fact { display: block; margin-bottom: 0.125rem; font-size: 1rem; font-weight: 500; line-height: 1.3; color: var(--ink); }
+/* Телефон: заголовок, сразу кнопки, под ними цифры, описание после них
+   (бюджет первого экрана: низ главной кнопки не ниже 560 px). Разметка одна, порядок задаёт order */
+.sport-hero_head { order: 1; }
+.sport-hero_buttons { order: 2; }
+.sport-hero_keys { order: 3; }
+.sport-hero_lead { order: 4; }
+.sport-hero_promo { order: 5; }
 
-/* БЕЛЫЙ ВАРИАНТ. Включается атрибутом data-tone="light" на самой первой
-   обёртке блока: <div class="sport-hero" data-tone="light" …>. Без атрибута
-   карточка тёмная. Меняются только цвета карточки и кнопок, раскладка та же.
-   Белая карточка, как у первого экрана /act; фиолетовая плашка остаётся. */
-.sport-hero[data-tone="light"] {
-  --fld-bg: #ffffff;
-  --fld-raise: #f6f4fc;     /* плашка описания */
-  --fld-text: #4f4d63;
-  --fld-chip-bg: #f5f5f5;   /* чип над заголовком на белом: фон страницы v1 */
-  --fld-chip-text: #332f41; /* основной цвет текста v1 */
-  --fld-start: #332f41;     /* дата старта на белом: основной цвет текста v1 (--color-text-primary), почти чёрный */
-  --fld-head: #1d1535;
-  --fld-focus: #644ab2;
+/* Факты под карточкой: на телефоне столбиком, от 521 px по два, на компьютере в ряд */
+.sport-hero_facts { margin-top: 1rem; padding: 0 0.25rem; display: grid; gap: 0.75rem; }
+.sport-hero_facts li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: center; font-size: 1rem; line-height: 1.3; color: var(--ink); }
+.sport-hero_fi { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); }
+
+/* Узкий телефон (до 368 px): цифры в две строки, чтобы не вылезали за карточку */
+@media (max-width: 23rem) {
+  .sport-hero_keys { grid-template-columns: repeat(2, auto); row-gap: 0.875rem; }
+  .sport-hero_keys li:nth-child(3) { padding-left: 0; border-left: 0; }
 }
-/* Кнопки на белом. Общие стили сайта задают цвет текста с !important,
-   поэтому и здесь !important, а селектор длиннее, чтобы перебить их. */
-.sport-hero[data-tone="light"] .sport-hero_button.is-light { background: #644ab2; color: #fff !important; }
-.sport-hero[data-tone="light"] .sport-hero_button.is-light:hover { background: #4c3888; }
-.sport-hero[data-tone="light"] .sport-hero_button.is-outline { background: rgba(43, 35, 52, 0.08); border-color: transparent; color: #1d1535 !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
-.sport-hero[data-tone="light"] .sport-hero_button.is-outline:hover { background: rgba(43, 35, 52, 0.13); }
-
-/* Ноутбук и планшет: те же две колонки, поля карточки меньше, текст
-   ещё шире — чтобы на ноутбуке 1024 px кнопки тоже стояли в ряд */
-@container sport-hero (max-width: 1000px) {
-  .sport-hero_card { padding: 2rem; gap: 2rem; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
-  .sport-hero_text { gap: 2.5rem; padding: 0; }
-  .sport-hero_lead { font-size: 1.0625rem; }
-  .sport-hero_media { min-height: 28rem; }
-  .sport-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-/* Узкий планшет: всё в столбик. Заголовок, описание, кнопки со стартом, потом фото с плашкой
-   (правка Дарьи 18.11.2026: «кнопки под абзац перед картинкой»; у эталона К4 было фото сразу под заголовком).
-   Обёртки текста «прозрачные» (display: contents), поэтому порядок задаётся order, а разметка остаётся одна.
-   С 25.11.2026 описание лежит в нижней группе вместе со стартом и кнопками. */
-@container sport-hero (max-width: 760px) {
-  .sport-hero_card { grid-template-columns: 1fr; padding: 2rem; gap: 1.25rem; }
-  .sport-hero_text, .sport-hero_copy { display: contents; }
-  /* Заголовок и строка подхода — по левому краю, как на телефоне и компьютере (правка Дарьи 18.11.2026;
-     в эталоне К4 здесь был центр). Строка старта над кнопками, по левому краю. */
-  .sport-hero_head { order: 1; text-align: left; padding: 0; }
-  .sport-hero_lead { max-width: none; padding-inline: 0; }
-  .sport-hero_bottom { order: 2; max-width: none; margin-top: 1rem; }
-  /* Кнопки друг под другом на всю ширину (правка Дарьи 25.11.2026) */
-  .sport-hero_buttons { flex-direction: column; }
-  .sport-hero_button { width: 100%; }
-  .sport-hero_bottom .sport-hero_lead { margin-bottom: 1.25rem; }
-  .sport-hero_start { padding-inline: 0; }
-  .sport-hero_media { order: 4; min-height: 0; aspect-ratio: 16 / 10; }
-}
-
-/* Телефон: тот же порядок, что на узком планшете (заголовок, описание, старт и кнопки, фото), текст по левому краю.
-   Фото ниже квадрата, 4 : 3 (правка Дарьи 18.11.2026: на телефоне картинка была слишком высокой). Факты в столбик. */
-@container sport-hero (max-width: 520px) {
-  /* Чип на телефоне: поля 8 px (как у чипов оценок v1) и трекинг −0.01em, чтобы
-     «Профессиональная переподготовка» встала в одну строку на 375 px. */
+/* Чип на телефоне: поля 8 px и трекинг −0.01em, чтобы встал в одну строку на 375 px */
+@media (max-width: 32.5rem) {
   .sport-hero_kicker { padding-inline: 0.5rem; letter-spacing: -0.01em; }
-  .sport-hero_card { padding: 1.5rem; gap: 1rem; border-radius: 1.5rem; }
-  .sport-hero_head { text-align: left; padding: 0; gap: 0.875rem; }
-  .sport-hero_lead { padding-inline: 0; font-size: 1rem; }
-  .sport-hero_start { padding-inline: 0; }
-  .sport-hero_media { aspect-ratio: 4 / 3; }
-  /* На телефоне кадр низкий: показываем нижнюю часть снимка, чтобы люди были выше плашки мини-курса */
-  .sport-hero_photo { object-position: 72% 64%; }
-  .sport-hero .sport-hero_promo { left: 0.5rem; bottom: 0.5rem; max-width: calc(100% - 1rem); padding: 0.75rem 1rem 0.75rem 0.75rem; gap: 0.75rem; grid-template-columns: 2.5rem minmax(0, 1fr); }
-  .sport-hero_play { width: 2.5rem; height: 2.5rem; }
-  .sport-hero_promo-text b { font-size: 1.0625rem; }
-  .sport-hero_promo-text { font-size: 0.8125rem; }
-  .sport-hero_facts { grid-template-columns: 1fr; gap: 0.75rem; padding: 0.25rem; }
 }
+
+/* Большой телефон и узкий планшет: описание под заголовком, затем цифры и кнопки */
+@media (min-width: 32.5625rem) {
+  .sport-hero_art { height: 18rem; }
+  .sport-hero_text { gap: 1.25rem; padding: 0.25rem 2rem 2rem; }
+  .sport-hero_lead { order: 2; }
+  .sport-hero_keys { order: 3; }
+  .sport-hero_buttons { order: 4; }
+  .sport-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.75rem; }
+}
+/* Планшет */
+@media (min-width: 48rem) {
+  .sport-hero_card { border-radius: 1.75rem; }
+  .sport-hero_art { height: 22rem; }
+  .sport-hero_text { gap: 1.375rem; padding: 0.5rem 2.5rem 2.25rem; }
+  .sport-hero_lead { font-size: 1.125rem; }
+  .sport-hero_keys b { font-size: 2.25rem; }
+  .sport-hero_keys li { padding: 0 1.75rem; }
+  .sport-hero_keys li:first-child { padding-left: 0; }
+  .sport-hero_facts { margin-top: 1.25rem; padding: 0 0.5rem; }
+}
+/* Компьютер: текст слева, анимация на всё поле карточки за ним; плашка мини-курса в правом нижнем углу */
+@media (min-width: 64.0625rem) {
+  .sport-hero_text, .sport-hero_art { grid-area: 1 / 1; }
+  .sport-hero_art { position: absolute; inset: 0; height: auto; pointer-events: none; }
+  .sport-hero_text { position: static; min-height: 40rem; max-width: 42rem; padding: 3rem 0 2.75rem 3rem; }
+  .sport-hero_text > * { position: relative; z-index: 1; order: 0; }
+  .sport-hero_lead { margin-top: auto; font-size: 1.25rem; }
+  .sport-hero_keys b { font-size: 2.5rem; }
+  .sport-hero_buttons { max-width: 34rem; }
+  .sport-hero .sport-hero_text > .sport-hero_promo { position: absolute; right: 2rem; bottom: 2rem; z-index: 2; }
+  .sport-hero_facts { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem 2rem; margin-top: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { .sport-hero .sport-hero_promo { transition: none; } }
 
 /* ---------- 2. Строка доверия (бегущая) ----------
    Подход как у бегущих рядов на главной (glavnaya/page.css, .door-ticker_*): лента из одинаковых наборов
@@ -265,8 +225,9 @@
    Анимируется только transform. Пауза: наведение мышью (только компьютер), фокус, лента за экраном
    (класс is-offscreen ставит page.js, правила Safari). «Уменьшить движение» — лента стоит, листается пальцем.
    Строка стоит близко к первому экрану: у первого экрана снизу короткий отступ. */
-.sport-page .sport-hero_component { padding-bottom: 1rem; }
-@media (min-width: 48rem) { .sport-page .sport-hero_component { padding-bottom: 1.5rem; } }
+/* +30 px от фактов первого экрана до бегущей строки (правка Дарьи 26.11.2026): 48 / 56 px */
+.sport-page .sport-hero_component { padding-bottom: 3rem; }
+@media (min-width: 48rem) { .sport-page .sport-hero_component { padding-bottom: 3.5rem; } }
 .sport-page .sport-trust_marquee {
   /* растворение по краям: 12 % ширины, но не меньше 2,5rem и не больше 7rem */
   --sport-trust-fade: clamp(2.5rem, 12%, 7rem);
@@ -1029,63 +990,40 @@
 <section class="sport-hero_component section-spacing_component" id="hero" aria-labelledby="sport-hero-title">
         <div class="padding-global">
           <div class="container-xlarge">
-            <div class="sport-hero" data-tone="light">
-              <div class="sport-hero_container">
-
-                <!-- Карточка: слева текст и кнопки, справа фото -->
-                <div class="sport-hero_card">
-                  <div class="sport-hero_text">
-                    <div class="sport-hero_copy">
-                      <div class="sport-hero_head">
-                        <!-- Метка формата над заголовком (правка Дарьи 25.11.2026: «chips») -->
-                        <p class="sport-hero_kicker">Профессиональная переподготовка</p>
-                        <h1 id="sport-hero-title" class="sport-hero_title">Спортивная психология</h1>
-                      </div>
-                    </div>
-                    <!-- Низ карточки: описание, старт и кнопки. Между заголовком и этим блоком пустое место
-                         (правка Дарьи 25.11.2026 по референсу: заголовок сверху, всё остальное прижато вниз) -->
-                    <div class="sport-hero_bottom">
-                      <p class="sport-hero_lead">Научитесь работать со&nbsp;спортсменами и&nbsp;любителями: от&nbsp;предстартовой тревоги до&nbsp;травм, выгорания и&nbsp;РПП. Получите диплом и&nbsp;специализацию, на&nbsp;которую есть спрос у&nbsp;клубов, сборных и&nbsp;частных клиентов.</p>
-                      <p class="sport-hero_start"><svg class="sport-hero_start-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg><span data-cms="start">Старт 11&nbsp;мая</span></p>
-                      <div class="sport-hero_buttons">
-                        <a class="button_component is-light sport-hero_button" href="#signup" data-hero-primary>Оставить заявку</a>
-                        <a class="button_component is-outline sport-hero_button" href="#program">Посмотреть программу</a>
-                      </div>
-                    </div>
+            <div class="sport-hero">
+              <div class="sport-hero_card">
+                <div class="sport-hero_text">
+                  <div class="sport-hero_head">
+                    <p class="sport-hero_kicker">Профессиональная переподготовка</p>
+                    <h1 id="sport-hero-title" class="sport-hero_title">Спортивная психология</h1>
                   </div>
-
-                  <!-- Фото сгенерировано в Higgsfield (Nano Banana 2.1) 25.11.2026: люди справа, нижний левый угол пустой, на нём плашка
-                       про бесплатный мини-курс. Лежит на S3 (загружено через CMS 25.11.2026). -->
-                  <div class="sport-hero_media">
-                    <img class="sport-hero_photo" src="https://s3.twcstorage.ru/asp-media/hero_sport_9978832dd6.webp" alt="Спортивный психолог разговаривает со спортсменом в светлом спортивном центре" width="1400" height="1738" fetchpriority="high">
-                    <a class="sport-hero_promo" href="#free-course">
-                      <span class="sport-hero_play" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg></span>
-                      <span class="sport-hero_promo-text"><b>Бесплатный мини-курс</b>Грант 10&nbsp;000&nbsp;₽ на&nbsp;полный курс</span>
-                    </a>
+                  <p class="sport-hero_lead">Научитесь работать со&nbsp;спортсменами и&nbsp;любителями: от&nbsp;предстартовой тревоги до&nbsp;травм, выгорания и&nbsp;РПП. Получите диплом и&nbsp;специализацию, на&nbsp;которую есть спрос у&nbsp;клубов, сборных и&nbsp;частных клиентов.</p>
+                  <!-- Старт и длительность крупными цифрами (правка Дарьи 26.11.2026: «крупно») -->
+                  <ul class="sport-hero_keys" aria-label="Старт и длительность">
+                    <li><b data-cms="start-date">11&nbsp;мая</b><span>старт обучения</span></li>
+                    <li><b data-cms="hours-num">252</b><span data-cms="hours-word">академических часа</span></li>
+                    <li><b>5,5</b><span>месяца обучения</span></li>
+                  </ul>
+                  <div class="sport-hero_buttons">
+                    <a class="button_component is-light sport-hero_button" href="#signup" data-hero-primary>Оставить заявку</a>
+                    <a class="button_component is-outline sport-hero_button" href="#program">Посмотреть программу</a>
                   </div>
+                  <a class="sport-hero_promo" href="#free-course">
+                    <span class="sport-hero_play" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L7.5 3.64A1 1 0 0 0 6 4.5Z"/></svg></span>
+                    <span class="sport-hero_promo-text"><b>Бесплатный мини-курс</b>Грант 10&nbsp;000&nbsp;₽ на&nbsp;полный курс</span>
+                  </a>
                 </div>
-
-                <!-- Факты под карточкой. Цены здесь нет: она только в блоке стоимости. Часы — из каталога CMS. -->
-                <ul class="sport-hero_facts">
-                  <li>
-                    <span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-                    <span><b class="sport-hero_fact" data-cms="hours">252 академических часа</b>Длительность обучения</span>
-                  </li>
-                  <li>
-                    <span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span>
-                    <span><b class="sport-hero_fact">9 модулей</b>5,5 месяца обучения</span>
-                  </li>
-                  <li>
-                    <span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span>
-                    <span><b class="sport-hero_fact">Онлайн</b>Практикумы по&nbsp;вторникам и&nbsp;пятницам</span>
-                  </li>
-                  <li>
-                    <span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
-                    <span><b class="sport-hero_fact">Диплом о&nbsp;профессиональной переподготовке</b>Выдаём документ установленного образца</span>
-                  </li>
-                </ul>
-
+                <!-- Анимация «Беговые дорожки». Холст рисует page.js; при «уменьшить движение» — один неподвижный кадр -->
+                <div class="sport-hero_art" data-hero-track aria-hidden="true"><canvas></canvas></div>
               </div>
+
+              <!-- Факты под карточкой. Цены здесь нет: она только в блоке стоимости -->
+              <ul class="sport-hero_facts">
+                <li><span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><span>Диплом о&nbsp;профессиональной переподготовке</span></li>
+                <li><span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span><span>Живые практикумы по&nbsp;вторникам и&nbsp;пятницам</span></li>
+                <li><span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Практика занимает 70&nbsp;% обучения</span></li>
+                <li><span class="sport-hero_fi" aria-hidden="true"><svg class="sport-hero_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span><span>Итоговый индивидуальный проект</span></li>
+              </ul>
             </div>
           </div>
         </div>
@@ -3454,9 +3392,10 @@ const init = () => {
        со статусом «Лист ожидания» — это лист ожидания;
      • курс (/api/public/course/sportivnaya-psihologiya) — расписание потока («По вторникам и пятницам 18:00–20:30»).
      Куда ставить, задают метки data-cms в разметке:
-       start — первый факт в строке под первым экраном: «Старт 11 мая»;
+       start-date — крупная цифра старта в первом экране: «11 мая»;
        enrollment-start — заголовок формы: «Занятия начнутся 11 мая»;
-       hours — «252 академических часа» (факт первого экрана и строка программы);
+       hours-num и hours-word — крупная цифра часов в первом экране и подпись под ней: «252», «академических часа»;
+       hours — «252 академических часа» (строка программы);
        schedule-sentence — «Практики по вторникам и пятницам с 18:00 до 20:30 по Москве» (строка программы).
      Дату ставим, только если у потока в CMS она есть. Лист ожидания без даты НЕ меняет текст страницы:
      старт 11 мая объявлен Дарьей 23.11.2026, а поток в CMS ещё не заведён. Когда в CMS появится поток с датой,
@@ -3478,11 +3417,10 @@ const init = () => {
     /* «1 марта» с неразрывным пробелом между числом и месяцем */
     return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(date).replace(' ', ' ');
   };
-  const hoursText = hours => {
+  const hoursWord = hours => {
     const last = hours % 10, lastTwo = hours % 100;
-    const word = last === 1 && lastTwo !== 11 ? 'академический час'
+    return last === 1 && lastTwo !== 11 ? 'академический час'
       : last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14) ? 'академических часа' : 'академических часов';
-    return hours + ' ' + word;
   };
 
   const catalog = getJson('/api/public/catalog')
@@ -3496,13 +3434,17 @@ const init = () => {
   /* Режим набора и часы — из карточки каталога */
   catalog
     .then(card => {
-      if (Number.isInteger(card.hours) && card.hours > 0) put('hours', hoursText(card.hours));
+      if (Number.isInteger(card.hours) && card.hours > 0) {
+        put('hours', card.hours + ' ' + hoursWord(card.hours));
+        put('hours-num', String(card.hours));
+        put('hours-word', hoursWord(card.hours));
+      }
       else console.warn('[sportivnaya-psihologiya] в каталоге нет часов курса, остался текст страницы');
       /* Прошедшая дата (старый поток) не показывается: остаётся «11 мая» из разметки */
       const upcoming = card.startDate && new Date(card.startDate + 'T23:59:59Z') >= new Date();
       const start = upcoming ? dayMonth(card.startDate) : '';
       if (start) {
-        put('start', 'Старт ' + start);
+        put('start-date', start);
         put('enrollment-start', 'Занятия начнутся ' + start);
       }
     })
@@ -3660,6 +3602,121 @@ const init = () => {
     entries.forEach(entry => entry.target.classList.toggle('is-offscreen', !entry.isIntersecting));
   });
   marquees.forEach(node => io.observe(node));
+})();
+
+/* ---------- Первый экран: анимация «Беговые дорожки» ----------
+   Стадион из точек в лёгкой перспективе, семь дорожек. По каждой бежит огонёк со следом, у белых темп чуть плавает,
+   светло-фиолетовый идёт ровно и обходит остальных. Поперёк дорожек — пунктир линии старта.
+   На компьютере стадион стоит справа от текста (отступ считается по правому краю заголовка, описания, цифр и кнопок),
+   под текстом точки почти прозрачные. На планшете и телефоне — полосой над заголовком.
+   Цвета берутся из переменных --dot и --dot-accent блока .sport-hero.
+   Рисует только пока карточка на экране и вкладка открыта; при «уменьшить движение» — один неподвижный кадр.
+   Анимируется только холст (без фильтров и размытия), правила Safari соблюдены. */
+(() => {
+  const art = document.querySelector('[data-hero-track]');
+  if (!art) return;
+  const hero = art.closest('.sport-hero'), card = art.closest('.sport-hero_card'), cv = art.querySelector('canvas');
+  const c = cv && cv.getContext ? cv.getContext('2d') : null;
+  if (!c) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ss = (a, b, x) => { const k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
+  const rgba = (tri, a) => 'rgba(' + tri + ',' + Math.max(0, Math.min(1, a)).toFixed(3) + ')';
+  const dot = (x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, 6.283); c.fill(); };
+
+  let W = 0, H = 0, wide = false, textR = 0, time = 0, colDot = '230, 229, 235', colEnd = '#a993f0';
+  let lanes = [], finish = [], cx = 0, cy = 0, sy = 0.6, L = 0, r0 = 0, lane = 0;
+  const rot = -0.16;
+  const per = r => 2 * L + 2 * Math.PI * r;
+  /* точка на стадионе по длине пути s (центр стадиона в 0,0) */
+  const at = (r, s) => {
+    const P = per(r); s = ((s % P) + P) % P;
+    if (s < L) return [-L / 2 + s, r];
+    s -= L; if (s < Math.PI * r) { const a = Math.PI / 2 - s / r; return [L / 2 + r * Math.cos(a), r * Math.sin(a)]; }
+    s -= Math.PI * r; if (s < L) return [L / 2 - s, -r];
+    s -= L; const a = -Math.PI / 2 - s / r; return [-L / 2 + r * Math.cos(a), r * Math.sin(a)];
+  };
+  const proj = (X, Y) => {
+    const x = X * Math.cos(rot) - Y * Math.sin(rot), y = X * Math.sin(rot) + Y * Math.cos(rot);
+    return [cx + x, cy + y * sy, y];
+  };
+  /* на компьютере под текстом точки почти прозрачные */
+  const mask = x => wide ? 0.05 + 0.95 * ss(textR - 30, textR + 90, x) : 1;
+
+  const setup = () => {
+    const free = W - textR - 48;
+    const size = wide ? Math.min(free * 0.9, H * 1.2, W * 0.5) : Math.min(W * 1.02, H * 2.5);
+    cx = wide ? textR + 24 + free / 2 : W * 0.5; cy = wide ? H * 0.5 : H * 0.55;
+    L = size * 0.4; r0 = size * 0.15; lane = size * 0.04; sy = wide ? 0.62 : 0.55;
+    const gap = wide ? 13 : 11;
+    const speeds = [0.2, 0.23, 0.26, 0.21, 0.24, 0.19, 0.22];
+    lanes = [];
+    for (let k = 0; k < 7; k++) {
+      const r = r0 + k * lane, P = per(r), n = Math.round(P / gap), pts = [];
+      for (let i = 0; i < n; i++) pts.push({ s: i * P / n, ph: Math.random() * 6.283 });
+      lanes.push({ r, P, pts, v: speeds[k], off: (k * 0.137 + Math.random() * 0.1) % 1, violet: k === 2 });
+    }
+    finish = [];
+    for (let r = r0 - lane * 0.5; r <= r0 + lane * 6.5; r += 5) finish.push(r);
+  };
+
+  const draw = () => {
+    c.clearRect(0, 0, W, H);
+    for (const r of finish) { const [x, y] = proj(0, r); c.fillStyle = rgba(colDot, 0.55 * mask(x)); dot(x, y, 1.3); }
+    const heads = [];
+    for (const ln of lanes) {
+      const lap = reduce ? (ln.violet ? 0.3 : ln.off) : (ln.off + time * ln.v * 0.2 + (ln.violet ? 0 : 0.025 * Math.sin(time * 0.7 + ln.off * 6)));
+      const hs = (lap % 1) * ln.P, trail = ln.P * 0.36;
+      for (const p of ln.pts) {
+        const [X, Y] = at(ln.r, p.s), [x, y, depth] = proj(X, Y);
+        const far = 0.62 + 0.38 * ss(-ln.r, ln.r, depth);
+        let back = hs - p.s; if (back < 0) back += ln.P;
+        const v = back < trail ? Math.pow(1 - back / trail, 1.6) : 0;
+        const m = mask(x), tw = reduce ? 1 : 0.85 + 0.15 * Math.sin(time * 1.2 + p.ph);
+        if (ln.violet && v > 0.02) { c.globalAlpha = Math.max(v, 0.35) * m; c.fillStyle = colEnd; dot(x, y, (1.9 + 2.4 * v) * far); c.globalAlpha = 1; }
+        else { c.fillStyle = rgba(colDot, (0.42 * tw + 0.58 * v) * far * m); dot(x, y, (1.85 + 1.9 * v) * far); }
+      }
+      const [X, Y] = at(ln.r, hs), [x, y] = proj(X, Y);
+      heads.push({ x, y, violet: ln.violet, m: mask(x) });
+    }
+    /* головы бегунов поверх дорожек, с мягким ореолом */
+    for (const h of heads) {
+      c.fillStyle = h.violet ? colEnd : '#ffffff';
+      c.globalAlpha = (h.violet ? 0.28 : 0.16) * h.m; dot(h.x, h.y, h.violet ? 13 : 10);
+      c.globalAlpha = h.m; dot(h.x, h.y, h.violet ? 6.5 : 5);
+    }
+    c.globalAlpha = 1;
+  };
+
+  const resize = () => {
+    const r = cv.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    wide = getComputedStyle(art).position === 'absolute';
+    const parts = [...card.querySelectorAll('.sport-hero_kicker, .sport-hero_title, .sport-hero_lead, .sport-hero_keys, .sport-hero_buttons')];
+    textR = Math.max(0, ...parts.map(el => el.getBoundingClientRect().right)) - r.left;
+    const cs = getComputedStyle(hero);
+    colDot = cs.getPropertyValue('--dot').trim() || colDot;
+    colEnd = cs.getPropertyValue('--dot-accent').trim() || colEnd;
+    setup(); draw();
+  };
+
+  let raf = 0, running = false, visible = false, last = 0;
+  const frame = now => {
+    if (!running) return;
+    time += Math.min(0.05, (now - last) / 1000 || 0); last = now;
+    draw(); raf = requestAnimationFrame(frame);
+  };
+  const start = () => { if (reduce || running || !visible || document.hidden) return; running = true; last = performance.now(); raf = requestAnimationFrame(frame); };
+  const stop = () => { running = false; cancelAnimationFrame(raf); };
+
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(cv); else window.addEventListener('resize', resize);
+  if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; visible ? start() : stop(); }, { threshold: 0.05 }).observe(card);
+  else { visible = true; start(); }
+  document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+  resize();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
 })();
 };
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once: true});

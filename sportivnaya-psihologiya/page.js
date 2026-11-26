@@ -9,9 +9,10 @@
        со статусом «Лист ожидания» — это лист ожидания;
      • курс (/api/public/course/sportivnaya-psihologiya) — расписание потока («По вторникам и пятницам 18:00–20:30»).
      Куда ставить, задают метки data-cms в разметке:
-       start — первый факт в строке под первым экраном: «Старт 11 мая»;
+       start-date — крупная цифра старта в первом экране: «11 мая»;
        enrollment-start — заголовок формы: «Занятия начнутся 11 мая»;
-       hours — «252 академических часа» (факт первого экрана и строка программы);
+       hours-num и hours-word — крупная цифра часов в первом экране и подпись под ней: «252», «академических часа»;
+       hours — «252 академических часа» (строка программы);
        schedule-sentence — «Практики по вторникам и пятницам с 18:00 до 20:30 по Москве» (строка программы).
      Дату ставим, только если у потока в CMS она есть. Лист ожидания без даты НЕ меняет текст страницы:
      старт 11 мая объявлен Дарьей 23.11.2026, а поток в CMS ещё не заведён. Когда в CMS появится поток с датой,
@@ -33,11 +34,10 @@
     /* «1 марта» с неразрывным пробелом между числом и месяцем */
     return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(date).replace(' ', ' ');
   };
-  const hoursText = hours => {
+  const hoursWord = hours => {
     const last = hours % 10, lastTwo = hours % 100;
-    const word = last === 1 && lastTwo !== 11 ? 'академический час'
+    return last === 1 && lastTwo !== 11 ? 'академический час'
       : last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14) ? 'академических часа' : 'академических часов';
-    return hours + ' ' + word;
   };
 
   const catalog = getJson('/api/public/catalog')
@@ -51,13 +51,17 @@
   /* Режим набора и часы — из карточки каталога */
   catalog
     .then(card => {
-      if (Number.isInteger(card.hours) && card.hours > 0) put('hours', hoursText(card.hours));
+      if (Number.isInteger(card.hours) && card.hours > 0) {
+        put('hours', card.hours + ' ' + hoursWord(card.hours));
+        put('hours-num', String(card.hours));
+        put('hours-word', hoursWord(card.hours));
+      }
       else console.warn('[sportivnaya-psihologiya] в каталоге нет часов курса, остался текст страницы');
       /* Прошедшая дата (старый поток) не показывается: остаётся «11 мая» из разметки */
       const upcoming = card.startDate && new Date(card.startDate + 'T23:59:59Z') >= new Date();
       const start = upcoming ? dayMonth(card.startDate) : '';
       if (start) {
-        put('start', 'Старт ' + start);
+        put('start-date', start);
         put('enrollment-start', 'Занятия начнутся ' + start);
       }
     })
@@ -215,4 +219,119 @@
     entries.forEach(entry => entry.target.classList.toggle('is-offscreen', !entry.isIntersecting));
   });
   marquees.forEach(node => io.observe(node));
+})();
+
+/* ---------- Первый экран: анимация «Беговые дорожки» ----------
+   Стадион из точек в лёгкой перспективе, семь дорожек. По каждой бежит огонёк со следом, у белых темп чуть плавает,
+   светло-фиолетовый идёт ровно и обходит остальных. Поперёк дорожек — пунктир линии старта.
+   На компьютере стадион стоит справа от текста (отступ считается по правому краю заголовка, описания, цифр и кнопок),
+   под текстом точки почти прозрачные. На планшете и телефоне — полосой над заголовком.
+   Цвета берутся из переменных --dot и --dot-accent блока .sport-hero.
+   Рисует только пока карточка на экране и вкладка открыта; при «уменьшить движение» — один неподвижный кадр.
+   Анимируется только холст (без фильтров и размытия), правила Safari соблюдены. */
+(() => {
+  const art = document.querySelector('[data-hero-track]');
+  if (!art) return;
+  const hero = art.closest('.sport-hero'), card = art.closest('.sport-hero_card'), cv = art.querySelector('canvas');
+  const c = cv && cv.getContext ? cv.getContext('2d') : null;
+  if (!c) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ss = (a, b, x) => { const k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
+  const rgba = (tri, a) => 'rgba(' + tri + ',' + Math.max(0, Math.min(1, a)).toFixed(3) + ')';
+  const dot = (x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, 6.283); c.fill(); };
+
+  let W = 0, H = 0, wide = false, textR = 0, time = 0, colDot = '230, 229, 235', colEnd = '#a993f0';
+  let lanes = [], finish = [], cx = 0, cy = 0, sy = 0.6, L = 0, r0 = 0, lane = 0;
+  const rot = -0.16;
+  const per = r => 2 * L + 2 * Math.PI * r;
+  /* точка на стадионе по длине пути s (центр стадиона в 0,0) */
+  const at = (r, s) => {
+    const P = per(r); s = ((s % P) + P) % P;
+    if (s < L) return [-L / 2 + s, r];
+    s -= L; if (s < Math.PI * r) { const a = Math.PI / 2 - s / r; return [L / 2 + r * Math.cos(a), r * Math.sin(a)]; }
+    s -= Math.PI * r; if (s < L) return [L / 2 - s, -r];
+    s -= L; const a = -Math.PI / 2 - s / r; return [-L / 2 + r * Math.cos(a), r * Math.sin(a)];
+  };
+  const proj = (X, Y) => {
+    const x = X * Math.cos(rot) - Y * Math.sin(rot), y = X * Math.sin(rot) + Y * Math.cos(rot);
+    return [cx + x, cy + y * sy, y];
+  };
+  /* на компьютере под текстом точки почти прозрачные */
+  const mask = x => wide ? 0.05 + 0.95 * ss(textR - 30, textR + 90, x) : 1;
+
+  const setup = () => {
+    const free = W - textR - 48;
+    const size = wide ? Math.min(free * 0.9, H * 1.2, W * 0.5) : Math.min(W * 1.02, H * 2.5);
+    cx = wide ? textR + 24 + free / 2 : W * 0.5; cy = wide ? H * 0.5 : H * 0.55;
+    L = size * 0.4; r0 = size * 0.15; lane = size * 0.04; sy = wide ? 0.62 : 0.55;
+    const gap = wide ? 13 : 11;
+    const speeds = [0.2, 0.23, 0.26, 0.21, 0.24, 0.19, 0.22];
+    lanes = [];
+    for (let k = 0; k < 7; k++) {
+      const r = r0 + k * lane, P = per(r), n = Math.round(P / gap), pts = [];
+      for (let i = 0; i < n; i++) pts.push({ s: i * P / n, ph: Math.random() * 6.283 });
+      lanes.push({ r, P, pts, v: speeds[k], off: (k * 0.137 + Math.random() * 0.1) % 1, violet: k === 2 });
+    }
+    finish = [];
+    for (let r = r0 - lane * 0.5; r <= r0 + lane * 6.5; r += 5) finish.push(r);
+  };
+
+  const draw = () => {
+    c.clearRect(0, 0, W, H);
+    for (const r of finish) { const [x, y] = proj(0, r); c.fillStyle = rgba(colDot, 0.55 * mask(x)); dot(x, y, 1.3); }
+    const heads = [];
+    for (const ln of lanes) {
+      const lap = reduce ? (ln.violet ? 0.3 : ln.off) : (ln.off + time * ln.v * 0.2 + (ln.violet ? 0 : 0.025 * Math.sin(time * 0.7 + ln.off * 6)));
+      const hs = (lap % 1) * ln.P, trail = ln.P * 0.36;
+      for (const p of ln.pts) {
+        const [X, Y] = at(ln.r, p.s), [x, y, depth] = proj(X, Y);
+        const far = 0.62 + 0.38 * ss(-ln.r, ln.r, depth);
+        let back = hs - p.s; if (back < 0) back += ln.P;
+        const v = back < trail ? Math.pow(1 - back / trail, 1.6) : 0;
+        const m = mask(x), tw = reduce ? 1 : 0.85 + 0.15 * Math.sin(time * 1.2 + p.ph);
+        if (ln.violet && v > 0.02) { c.globalAlpha = Math.max(v, 0.35) * m; c.fillStyle = colEnd; dot(x, y, (1.9 + 2.4 * v) * far); c.globalAlpha = 1; }
+        else { c.fillStyle = rgba(colDot, (0.42 * tw + 0.58 * v) * far * m); dot(x, y, (1.85 + 1.9 * v) * far); }
+      }
+      const [X, Y] = at(ln.r, hs), [x, y] = proj(X, Y);
+      heads.push({ x, y, violet: ln.violet, m: mask(x) });
+    }
+    /* головы бегунов поверх дорожек, с мягким ореолом */
+    for (const h of heads) {
+      c.fillStyle = h.violet ? colEnd : '#ffffff';
+      c.globalAlpha = (h.violet ? 0.28 : 0.16) * h.m; dot(h.x, h.y, h.violet ? 13 : 10);
+      c.globalAlpha = h.m; dot(h.x, h.y, h.violet ? 6.5 : 5);
+    }
+    c.globalAlpha = 1;
+  };
+
+  const resize = () => {
+    const r = cv.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    wide = getComputedStyle(art).position === 'absolute';
+    const parts = [...card.querySelectorAll('.sport-hero_kicker, .sport-hero_title, .sport-hero_lead, .sport-hero_keys, .sport-hero_buttons')];
+    textR = Math.max(0, ...parts.map(el => el.getBoundingClientRect().right)) - r.left;
+    const cs = getComputedStyle(hero);
+    colDot = cs.getPropertyValue('--dot').trim() || colDot;
+    colEnd = cs.getPropertyValue('--dot-accent').trim() || colEnd;
+    setup(); draw();
+  };
+
+  let raf = 0, running = false, visible = false, last = 0;
+  const frame = now => {
+    if (!running) return;
+    time += Math.min(0.05, (now - last) / 1000 || 0); last = now;
+    draw(); raf = requestAnimationFrame(frame);
+  };
+  const start = () => { if (reduce || running || !visible || document.hidden) return; running = true; last = performance.now(); raf = requestAnimationFrame(frame); };
+  const stop = () => { running = false; cancelAnimationFrame(raf); };
+
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(cv); else window.addEventListener('resize', resize);
+  if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; visible ? start() : stop(); }, { threshold: 0.05 }).observe(card);
+  else { visible = true; start(); }
+  document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+  resize();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
 })();
