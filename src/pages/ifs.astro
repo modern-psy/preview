@@ -1,0 +1,50 @@
+---
+// Страница /ifs — «IFS: Терапия внутренних семейных систем», повышение квалификации.
+// Перенесена на Astro 27.11.2026: блоки, собранные кодом в Тильде, сняты с сайта (scripts/tilda-to-source.mjs →
+// tilda-source/ifs), блоки на Zero пересобраны на общих стилях v1. Что откуда — в src/styles/ifs/page.css, раздел 0.
+// Тексты блоков — в src/components/ifs/, заголовок, описание, форма и вопросы — в src/data/pages/ifs.json.
+import PageLayout from '../layouts/PageLayout.astro';
+import page from '../data/pages/ifs.json';
+import PriceLd from '../components/PriceLd.astro';
+import '../../web-academy/shared/academy/diploma.css';
+import '../styles/ifs/page.css';
+import S01 from '../components/ifs/01-tilda-shim.astro';
+import S02 from '../components/ifs/02-hero.astro';
+import S03 from '../components/ifs/03-how-it-works.astro';
+import S04 from '../components/ifs/04-practice.astro';
+import S05 from '../components/ifs/05-learning.astro';
+import S06 from '../components/ifs/06-skills.astro';
+import S07 from '../components/ifs/07-teacher.astro';
+import S08 from '../components/ifs/08-program.astro';
+import S09 from '../components/ifs/09-supervision.astro';
+import S10 from '../components/ifs/10-free-lectures.astro';
+import S11 from '../components/ifs/11-certificate.astro';
+import S12 from '../components/ifs/12-why-us.astro';
+import S13 from '../components/ifs/13-price.astro';
+import S14 from '../components/ifs/14-signup.astro';
+import S15 from '../components/ifs/15-faq.astro';
+---
+<PageLayout seo={page.seo} preconnect={page.preconnect}>
+  <!-- Порядок блоков — как на живой странице modern-psy.ru/ifs. -->
+  <main class="main-wrapper ifs-main" id="main-content">
+    <S01 />
+    <S02 />
+    <S03 />
+    <S04 />
+    <S05 />
+    <S06 />
+    <S07 />
+    <S08 />
+    <S09 />
+    <S10 />
+    <S11 />
+    <S12 />
+    <S13 />
+    <S14 />
+    <S15 />
+  </main>
+  <PriceLd course={page.price.course} />
+</PageLayout>
+<script>
+  import '../scripts/ifs/page.js';
+</script>

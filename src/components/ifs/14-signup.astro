@@ -1,0 +1,20 @@
+---
+// ifs: блок 14. Форма заявки — общий компонент LeadForm вместо нативной формы Тильды «IFS» (rec1083598576).
+// Настройки формы — в src/data/pages/ifs.json, раздел forms.signup.
+import LeadForm from '../LeadForm.astro';
+import page from '../../data/pages/ifs.json';
+const f = page.forms.signup;
+---
+<!-- ========== 14. Форма заявки ==========
+     Общий компонент Академии (web-academy/shared/academy/request-form.md), режим «курс».
+     Заголовок «Старт потока …» скрипт страницы берёт из CMS, в листе ожидания — «Запишитесь в лист ожидания».
+     Пока прод на Тильде, заявка уходит через нативную форму Тильды «IFS»; на превью формы заглушены. -->
+<div class="ifsv-page" data-academy="1">
+  <section class="ifsv-signup_component section-spacing_component" id="signup">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <LeadForm id={f.id} form={f.form} options={f.options} lead={f.lead} cmsHeading={f.cmsHeading} />
+      </div>
+    </div>
+  </section>
+</div>

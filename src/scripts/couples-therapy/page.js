@@ -76,7 +76,7 @@
       const first = schedule.split(/\.\s/)[0].replace(/\.$/, '');
       const weekly = Array.isArray(stream.lessonDays) && stream.lessonDays.length === 1 ? 'раз в неделю ' : '';
       const sentence = first
-        .replace(/(\d{1,2}:\d{2})\s*[–—-]\s*(\d{1,2}:\d{2})/, 'с $1 до $2')
+        .replace(/(\d{1,2}:\d{2})\s*[–—-]\s*(\d{1,2}:\d{2})/, 'с\u00a0$1 до\u00a0$2')
         .replace(/^(\S+)\s/, '$1 ');
       put('schedule-sentence', 'Занятия проходят ' + weekly + sentence.charAt(0).toLowerCase() + sentence.slice(1));
     })

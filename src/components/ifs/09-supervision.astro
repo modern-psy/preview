@@ -1,0 +1,398 @@
+---
+// ifs: блок 4. Перенесён со старой страницы (scripts/legacy-to-astro.mjs).
+---
+<!-- блок T123 rec5256671101 -->
+<div class="t123-block" data-rec="5256671101">
+<!-- T123 --> <div class="t123"> <div class="t-container_100 "> <div class="t-width t-width_100 "> <!-- nominify begin --> <!-- ============================================================
+     БЛОК «ПАКЕТ ИЗ ЧЕТЫРЁХ СУПЕРВИЗИЙ»
+     Страница: modern-psy.ru/ifs
+
+     Один блок T123: шрифт, стили и разметка. Скрипта нет.
+     Вставлять вместо Zero-блока «Пакет из четырёх супервизий»
+     (rec1083516416), старый блок скрыть. Пустые Zero-блоки сверху
+     и снизу (отступы) оставить как есть: у этого блока своих
+     отступов сверху и снизу нет.
+
+     Задача блока — показать, что супервизии выгоднее брать вместе
+     с курсом: два варианта рядом, вариант с курсом тёмный, с ярлыком
+     «Выгода 1 500 ₽», как у выгодного варианта в блоке цены ниже.
+     Сиреневая плашка и белые карточки — как у старого блока страницы.
+
+     Ширина блока повторяет соседние Zero-блоки страницы:
+     от 1280px — 1280px по центру, от 800px — поля по 2% экрана,
+     на телефоне — поля около 4,4% экрана (16px на ширине 360).
+
+     Что можно менять: тексты, даты встреч, цены.
+     Цены в CMS не заведены и стоят здесь вручную. Поменяли цену
+     с курсом или отдельно — пересчитайте выгоду в ярлыке
+     (отдельно минус с курсом) и поменяйте цену в блоке цены
+     (apps/preview/pricing/src/tilda-block.js, PAGES.ifs.addons).
+     Что нельзя: классы — по ним работают стили.
+     ============================================================ --> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;444;500;700&display=swap"> <style is:inline>
+/* Все правила начинаются с .ifs-supervision_component, чтобы не задеть
+   остальные блоки Тильды. */
+.ifs-supervision_component {
+  /* Цвета страницы /ifs и блока цены (web-academy) */
+  --color-page-background: #eff2f9;  /* фон страницы /ifs */
+  --color-panel: #d7d6ef;            /* сиреневая плашка, как у старого блока */
+  --color-surface-primary: #ffffff;  /* белая карточка */
+  --color-surface-dark: #2b2334;     /* тёмная карточка, как выгодный вариант в блоке цены */
+  --color-text-primary: #332f41;
+  --color-text-secondary: #686474;   /* серый на белом, контраст 5,6:1 */
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #c9c4d4; /* серый на тёмном, контраст 9:1 */
+  --color-accent-primary: #7c5cdb;   /* фиолетовый Академии: ярлык, галочки */
+  --color-accent-soft: #dad6ff;      /* светло-сиреневый на тёмном */
+  --color-line: #e8e6ee;
+  --page-heading-color: #1d1d33;     /* заголовки страницы /ifs */
+  --font-family-body: "Wix Madefor Text", Arial, sans-serif;
+
+  /* Размеры. Ниже — для телефона, для экранов шире — в конце файла. */
+  --section-title-size: clamp(1.75rem, 3.4375vw, 2.75rem); /* 28 → 44, как заголовки страницы */
+  --lead-size: 1rem;              /* описание 16 · 18 · 20 */
+  --card-title-size: 1.375rem;    /* «Вас ждут», названия вариантов 22 · 24 · 26 */
+  --text-size: 0.9375rem;         /* пункты и подписи 15 · 16 · 18 */
+  --price-size: 2.25rem;          /* цена 36 · 40 · 44 */
+  --panel-padding: 1rem;          /* поля плашки 16 · 32 · 56 */
+  --card-padding: 1rem;           /* поля карточки 16 · 24 · 28 */
+  --radius-panel: 1rem;
+  --radius-card: 0.75rem;
+  --space-head: 1.5rem;           /* шапка плашки → карточки */
+  --gap: 1rem;                    /* между карточками */
+
+  display: block;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-feature-settings: "lnum" 1, "pnum" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ifs-supervision_component *,
+.ifs-supervision_component *::before,
+.ifs-supervision_component *::after {
+  box-sizing: border-box;
+}
+
+.ifs-supervision_component :where(h2, h3, p, ul, li) {
+  margin: 0;
+  padding: 0;
+}
+
+.ifs-supervision_component ::selection {
+  background-color: var(--color-accent-soft);
+  color: var(--color-text-primary);
+}
+
+/* ---------- Ширина: как у соседних Zero-блоков ---------- */
+.ifs-supervision_component .ifs-supervision_container {
+  width: 91.111%;
+  margin: 0 auto;
+}
+
+/* ---------- Сиреневая плашка ---------- */
+.ifs-supervision_component .ifs-supervision_panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-head);
+  padding: var(--panel-padding);
+  border-radius: var(--radius-panel);
+  background-color: var(--color-panel);
+}
+
+.ifs-supervision_component .ifs-supervision_head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 55rem;
+}
+
+/* Жирный, как заголовки страницы (Gilroy Bold → Wix Madefor 700) */
+.ifs-supervision_component .ifs-supervision_title {
+  color: var(--page-heading-color);
+  font-family: var(--font-family-body);
+  font-size: var(--section-title-size);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.ifs-supervision_component .ifs-supervision_lead {
+  color: var(--color-text-primary);
+  font-size: var(--lead-size);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+/* Даты встреч — белые плашки, время отдельной строкой перед ними */
+.ifs-supervision_component .ifs-supervision_when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  list-style: none;
+}
+
+.ifs-supervision_component .ifs-supervision_when-label {
+  flex-basis: 100%;
+  color: var(--page-heading-color);
+  font-size: var(--text-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.ifs-supervision_component .ifs-supervision_date {
+  padding: 0.375rem 0.75rem;
+  border-radius: 6rem;
+  background-color: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  font-size: var(--text-size);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.ifs-supervision_component .ifs-supervision_date::before {
+  content: none; /* Тильда иногда рисует маркеры у списков */
+}
+
+/* ---------- Карточки: что входит и два варианта ---------- */
+/* Телефон: всё в столбик. */
+.ifs-supervision_component .ifs-supervision_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--gap);
+}
+
+.ifs-supervision_component .ifs-supervision_card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface-primary);
+}
+
+.ifs-supervision_component .ifs-supervision_card-title {
+  color: var(--page-heading-color);
+  font-family: var(--font-family-body);
+  font-size: var(--card-title-size);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* Что входит */
+.ifs-supervision_component .ifs-supervision_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  list-style: none;
+}
+
+.ifs-supervision_component .ifs-supervision_item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: var(--text-size);
+  line-height: 1.4;
+}
+
+.ifs-supervision_component .ifs-supervision_item::before {
+  content: none;
+}
+
+.ifs-supervision_component .ifs-supervision_check {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.0625rem;
+  color: var(--color-accent-primary);
+}
+
+/* Варианты покупки: названия сверху, цены внизу на одной линии */
+.ifs-supervision_component .ifs-supervision_options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem var(--gap); /* сверху место под ярлык тёмной карточки */
+  margin-top: 0.75rem;
+  list-style: none;
+}
+
+.ifs-supervision_component .ifs-supervision_option::before {
+  content: none;
+}
+
+.ifs-supervision_component .ifs-supervision_option-sub {
+  margin-top: 0.375rem;
+  color: var(--color-text-secondary);
+  font-size: var(--text-size);
+  line-height: 1.4;
+}
+
+/* Если места мало, зачёркнутая цена переносится не вниз, а вверх (wrap-reverse):
+   цифры в обеих карточках остаются на одной линии. */
+.ifs-supervision_component .ifs-supervision_price {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  align-items: baseline;
+  gap: 0.375rem;
+  margin-top: auto;
+  padding-top: 1.75rem;
+  color: var(--color-text-primary);
+}
+
+.ifs-supervision_component .ifs-supervision_price-number {
+  font-size: var(--price-size);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+
+.ifs-supervision_component .ifs-supervision_price-unit {
+  color: var(--color-text-secondary);
+  font-size: 1.5rem;
+  font-weight: 444;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Цена отдельно от курса — зачёркнутой рядом с ценой с курсом, как цена до акции в блоке цены */
+.ifs-supervision_component .ifs-supervision_price-was {
+  align-self: center;
+  margin-left: 0.25rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-size);
+  line-height: 1.2;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  white-space: nowrap;
+}
+
+/* Текст только для скринридера */
+.ifs-supervision_component .ifs-supervision_sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Выгодный вариант — тёмный, как в блоке цены */
+.ifs-supervision_component .ifs-supervision_option.is-best {
+  padding-top: calc(var(--card-padding) + 1rem);
+  background-color: var(--color-surface-dark);
+  color: var(--color-text-on-dark);
+}
+
+.ifs-supervision_component .is-best .ifs-supervision_card-title,
+.ifs-supervision_component .is-best .ifs-supervision_price {
+  color: var(--color-text-on-dark);
+}
+
+.ifs-supervision_component .is-best .ifs-supervision_option-sub,
+.ifs-supervision_component .is-best .ifs-supervision_price-unit {
+  color: var(--color-text-on-dark-muted);
+}
+
+/* Ярлык «Выгода» — фиолетовая плашка на верхней кромке */
+.ifs-supervision_component .ifs-supervision_badge {
+  position: absolute;
+  top: 0;
+  left: var(--card-padding);
+  padding: 0.4375rem 0.75rem;
+  border-radius: 6rem;
+  background-color: var(--color-accent-primary);
+  color: var(--color-text-on-dark);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.15;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.ifs-supervision_component .ifs-supervision_seats {
+  margin-top: 0.75rem;
+  color: var(--color-accent-soft);
+  font-size: var(--text-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ---------- От 521px: варианты рядом ---------- */
+@media (min-width: 32.5625rem) {
+  .ifs-supervision_component .ifs-supervision_options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- От 768px ---------- */
+@media (min-width: 48rem) {
+  .ifs-supervision_component {
+    --lead-size: 1.125rem;
+    --card-title-size: 1.5rem;
+    --text-size: 1rem;
+    --price-size: 2.5rem;
+    --panel-padding: 2rem;
+    --card-padding: 1.5rem;
+    --radius-panel: 1.25rem;
+    --radius-card: 1rem;
+    --space-head: 2rem;
+  }
+
+  .ifs-supervision_component .ifs-supervision_when-label {
+    flex-basis: auto;
+    margin-right: 0.25rem;
+  }
+}
+
+/* ---------- От 800px: поля как у среднего экрана Zero-блоков ---------- */
+@media (min-width: 800px) {
+  .ifs-supervision_component .ifs-supervision_container {
+    width: 96.125%;
+    margin-left: 2%;
+  }
+}
+
+/* ---------- От 1025px: что входит слева, варианты справа ---------- */
+@media (min-width: 64.0625rem) {
+  .ifs-supervision_component {
+    --lead-size: 1.25rem;
+    --card-title-size: 1.625rem;
+    --text-size: 1.0625rem;
+    --price-size: 2.75rem;
+    --panel-padding: 3.5rem;
+    --card-padding: 1.75rem;
+    --space-head: 2.5rem;
+  }
+
+  .ifs-supervision_component .ifs-supervision_grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: stretch;
+  }
+
+  /* Варианты — во всю высоту карточки «Вас ждут» */
+  .ifs-supervision_component .ifs-supervision_options {
+    margin-top: 0;
+  }
+}
+
+/* ---------- От 1280px: ширина 1280px по центру ---------- */
+@media (min-width: 1280px) {
+  .ifs-supervision_component .ifs-supervision_container {
+    width: 80rem;
+    margin-left: auto;
+  }
+}
+</style> <section class="ifs-supervision_component" id="supervizii" aria-labelledby="ifs-supervision-heading"> <div class="ifs-supervision_container"> <div class="ifs-supervision_panel"> <div class="ifs-supervision_head"> <h2 class="ifs-supervision_title" id="ifs-supervision-heading">Пакет из&nbsp;четырёх супервизий</h2> <p class="ifs-supervision_lead">Фокус на&nbsp;работе с&nbsp;системой терапевта, клиентских случаях и&nbsp;вопросах, которые возникают в&nbsp;практике по&nbsp;мере применения IFS.</p> <!-- Даты встреч: можно менять, по одной в каждом <li> --> <ul class="ifs-supervision_when" role="list" aria-label="Даты встреч"> <li class="ifs-supervision_when-label">По&nbsp;четвергам с&nbsp;17:00 до&nbsp;18:30</li> <li class="ifs-supervision_date">8&nbsp;апреля</li> <li class="ifs-supervision_date">22&nbsp;апреля</li> <li class="ifs-supervision_date">29&nbsp;апреля</li> <li class="ifs-supervision_date">13&nbsp;мая</li> </ul> </div> <div class="ifs-supervision_grid"> <div class="ifs-supervision_card"> <h3 class="ifs-supervision_card-title">Вас ждут</h3> <ul class="ifs-supervision_list" role="list"> <li class="ifs-supervision_item"><svg class="ifs-supervision_check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Медитации и&nbsp;упражнения в&nbsp;группе</span></li> <li class="ifs-supervision_item"><svg class="ifs-supervision_check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Работа с&nbsp;реальным кейсом или возможность вынести свой случай</span></li> <li class="ifs-supervision_item"><svg class="ifs-supervision_check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ответы на&nbsp;вопросы по&nbsp;клинической практике в&nbsp;IFS или мини-консультации</span></li> </ul> </div> <!-- Варианты покупки. Цены и выгода — вручную, см. комментарий в начале блока. --> <ul class="ifs-supervision_options" role="list" aria-label="Стоимость пакета супервизий"> <li class="ifs-supervision_card ifs-supervision_option is-best"> <span class="ifs-supervision_badge">Выгода 1&nbsp;500&nbsp;₽</span> <h3 class="ifs-supervision_card-title">Вместе с&nbsp;курсом</h3> <p class="ifs-supervision_option-sub">При покупке базового или продвинутого модуля IFS</p> <p class="ifs-supervision_seats">Осталось 15&nbsp;мест</p> <p class="ifs-supervision_price"><span class="ifs-supervision_price-number">10&nbsp;500</span><span class="ifs-supervision_price-unit">₽</span><s class="ifs-supervision_price-was"><span class="ifs-supervision_sr">вместо </span>12&nbsp;000&nbsp;₽</s></p> </li> <li class="ifs-supervision_card ifs-supervision_option"> <h3 class="ifs-supervision_card-title">Отдельно от&nbsp;курса или&nbsp;после старта обучения</h3> <p class="ifs-supervision_option-sub">Без покупки модулей</p> <p class="ifs-supervision_price"><span class="ifs-supervision_price-number">12&nbsp;000</span><span class="ifs-supervision_price-unit">₽</span></p> </li> </ul> </div> </div> </div> </section> <!-- nominify end --> </div> </div> </div>
+</div>
