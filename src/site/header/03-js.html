@@ -1,7 +1,6 @@
 <!-- ============================================================
-     ШАПКА САЙТА · блок 3 из 5 на странице-шапке: скрипты. Стоит после разметки: сразу ищет её на странице.
-     Порядок блоков: 1 — стили, 2 — разметка, 3 — скрипты,
-     4 — окно акции, затем нативная форма Тильды «black-friday», 5 — скрипт окна.
+     ШАПКА САЙТА · блок 3 из 3 на странице-шапке: скрипты. Стоит после разметки: сразу ищет её на странице.
+     Порядок блоков: 1 — стили, 2 — разметка, 3 — скрипты.
      Руками не править: ссылки, кнопки и карточки «Выбор Академии» меняются
      в apps/tilda/header/src/nav.json, затем
        node apps/tilda/header/build.mjs
@@ -921,48 +920,6 @@ document.querySelectorAll('[data-site-header]').forEach(initSearch);
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
-})();</script>
-<script>
-(function () {
-'use strict';
-function pad(n) { return (n < 10 ? '0' : '') + n; }
-function initPromo(el) {
-var html = document.documentElement;
-var box = function (unit) { return el.querySelector('[data-promo-' + unit + ']'); };
-var days = box('d'), hours = box('h'), minutes = box('m'), seconds = box('s');
-var dayUnit = el.querySelector('[data-unit="d"]');
-function measure() {
-html.style.setProperty('--site-promo-h', el.hidden ? '0px' : el.offsetHeight + 'px');
-}
-function tick() {
-var start = Date.parse(el.getAttribute('data-start'));
-var end = Date.parse(el.getAttribute('data-end'));
-var now = Date.now();
-var over = !(now < end);
-if (el.hidden !== over) { el.hidden = over; measure(); }
-if (over) return;
-el.setAttribute('data-state', now < start ? 'before' : 'during');
-if (now >= start && seconds) {
-var s = Math.floor((end - now) / 1000);
-var d = Math.floor(s / 86400);
-days.textContent = d;
-hours.textContent = pad(Math.floor(s % 86400 / 3600));
-minutes.textContent = pad(Math.floor(s % 3600 / 60));
-seconds.textContent = pad(s % 60);
-if (dayUnit && dayUnit.hidden !== (d === 0)) { dayUnit.hidden = d === 0; measure(); }
-}
-}
-tick();
-measure();
-window.setInterval(tick, 1000);
-if (window.ResizeObserver) new ResizeObserver(measure).observe(el);
-else window.addEventListener('resize', measure);
-}
-document.querySelectorAll('[data-site-promo]').forEach(function (el) {
-if (el.__sitePromoDone) return;
-el.__sitePromoDone = true;
-initPromo(el);
-});
 })();</script>
 <script>
 (function () {
