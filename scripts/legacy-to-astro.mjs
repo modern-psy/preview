@@ -18,6 +18,7 @@
 //   node scripts/legacy-to-astro.mjs glavnaya index        (главная: адрес /, блоки под именем home)
 import fs from 'node:fs';
 import path from 'node:path';
+import { replaceBlocks } from './lib/page-blocks.mjs';
 
 const [srcDir, route] = process.argv.slice(2);
 if (!srcDir || !route) {
@@ -76,10 +77,16 @@ const mainOpen = html.match(/<main\b[^>]*>/);
 if (!mainOpen) throw new Error('в странице нет <main>');
 const mainStart = mainOpen.index + mainOpen[0].length;
 const mainEnd = html.lastIndexOf('</main>');
-const inner = html.slice(mainStart, mainEnd);
+const inner = html.slice(mainStart, mainEnd); // исходник; ниже работаем с blocksInner.html
+// Общие блоки (цена, микроразметка курса, формы заявки) → компоненты Astro с настройками в данных страницы
+const blockData = {};
+const blocksInner = replaceBlocks(html.slice(mainStart, mainEnd), srcDir, blockData);
 const bodyOpen = html.match(/<body\b[^>]*>/);
 const beforeMain = html.slice(bodyOpen.index + bodyOpen[0].length, mainOpen.index);
-const afterMain = html.slice(mainEnd + '</main>'.length, html.lastIndexOf('</body>'));
+const afterMainRaw = html.slice(mainEnd + '</main>'.length, html.lastIndexOf('</body>'));
+const blocksAfter = replaceBlocks(afterMainRaw, srcDir, blockData);
+const afterMain = blocksAfter.html;
+const usedComponents = new Set([...blocksInner.used, ...blocksAfter.used]);
 // Копию шапки сайта внутри страницы (главная собирает её из apps/tilda/header) не переносим:
 // на сайте Astro шапку и подвал ставит общий шаблон страницы (SiteHeader, SiteFooter).
 const embeddedHeader = /ШАПКА САЙТА/.test(beforeMain);
@@ -150,8 +157,8 @@ const uses = [];
 let n = 0;
 // Если секции лежат внутри одной обёртки (<main><div class="wa"> … </div></main>),
 // обёртку оставляем на странице, а делим её содержимое.
-let wrapOpen = '', wrapClose = '', body = inner;
-const parts = topLevel(inner).filter((c) => c.trim());
+let wrapOpen = '', wrapClose = '', body = blocksInner.html;
+const parts = topLevel(blocksInner.html).filter((c) => c.trim());
 if (parts.length === 1) {
   const w = parts[0].match(/^(\s*(?:<!--[\s\S]*?-->\s*)*)(<(div)\b[^>]*>)([\s\S]*)(<\/div>)\s*$/);
   if (w && /<section\b/.test(w[4])) { wrapOpen = w[1] + w[2]; wrapClose = w[5]; body = w[4]; }
@@ -161,9 +168,13 @@ for (const chunk of topLevel(body)) {
   n++;
   const name = slugOf(chunk, n);
   const comp = 'S' + String(n).padStart(2, '0');
+  const compImports = ['PriceBlock', 'PriceLd', 'LeadForm'].filter((c) => chunk.includes(`<${c} `));
+  const front = compImports.length
+    ? `${compImports.map((c) => `import ${c} from '../${c}.astro';`).join('\n')}\nimport page from '../../data/pages/${slug}.json';\n`
+    : '';
   fs.writeFileSync(
     path.join(compDir, `${name}.astro`),
-    `---\n// ${slug}: блок ${n}. Перенесён со старой страницы как есть (scripts/legacy-to-astro.mjs).\n---\n${toAstro(absolutizeMarkup(chunk.replace(/^\s*\n/, ''))).trimEnd()}\n`,
+    `---\n// ${slug}: блок ${n}. Перенесён со старой страницы (scripts/legacy-to-astro.mjs).${compImports.length ? ' Цена и формы — общие компоненты, настройки в src/data/pages/' + slug + '.json.' : ''}\n${front}---\n${toAstro(absolutizeMarkup(chunk.replace(/^\s*\n/, ''))).trimEnd()}\n`,
   );
   imports.push(`import ${comp} from '../components/${slug}/${name}.astro';`);
   uses.push(`    <${comp} />`);
@@ -177,6 +188,7 @@ for (const d of [styleDir, scriptDir, publicDir]) fs.rmSync(d, { recursive: true
 const cssImports = [];
 for (const href of stylesheets) {
   if (/^https?:/.test(href)) continue;
+  if (usedComponents.has('LeadForm') && path.basename(href) === 'request-form.css') continue;
   if (href.startsWith('/')) { cssImports.push(`import '../..${href}';`); continue; }
   const file = path.basename(href);
   fs.mkdirSync(styleDir, { recursive: true });
@@ -187,6 +199,7 @@ for (const href of stylesheets) {
 const jsImports = [];
 for (const src of scripts) {
   if (/^https?:/.test(src) || src.startsWith('/')) continue;
+  if (usedComponents.has('LeadForm') && path.basename(src) === 'request-form.js') continue;
   const file = path.basename(src);
   fs.mkdirSync(scriptDir, { recursive: true });
   fs.copyFileSync(path.join(srcDir, src), path.join(scriptDir, file));
@@ -207,6 +220,7 @@ const dataFile = path.join(ROOT, 'src/data/pages', `${slug}.json`);
 const data = fs.existsSync(dataFile) ? JSON.parse(fs.readFileSync(dataFile, 'utf8')) : {};
 data.seo = seo;
 data.preconnect = preconnect;
+Object.assign(data, blockData);
 fs.writeFileSync(dataFile, JSON.stringify(data, null, 2) + '\n');
 
 const mainAttrs = mainOpen[0].slice(5, -1).trim();
@@ -215,6 +229,7 @@ const page = `---
 // Тексты блоков — в src/components/${slug}/, заголовок и описание — в src/data/pages/${slug}.json.
 import PageLayout from '../layouts/PageLayout.astro';
 import page from '../data/pages/${slug}.json';
+${['PriceBlock', 'PriceLd', 'LeadForm'].filter((c) => afterMain.includes(`<${c} `)).map((c) => `import ${c} from '../components/${c}.astro';`).join('\n')}
 ${cssImports.join('\n')}
 ${imports.join('\n')}
 ---

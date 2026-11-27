@@ -32,7 +32,7 @@ const tildaLive = new Set(read('src/data/tilda-pages.json').filter((p) => p.live
 
 // Служебное, в сайт не попадает
 const PROJECT = new Set([
-  'src', 'scripts', 'public', 'dist', 'docs', 'node_modules', 'tilda-export', '.astro', '.git', '.github',
+  'src', 'scripts', 'public', 'dist', 'docs', 'tilda-source', 'node_modules', 'tilda-export', '.astro', '.git', '.github',
   '.gitignore', '.impeccable', 'package.json', 'package-lock.json', 'astro.config.mjs', 'tsconfig.json',
   'AGENTS.md', 'README.md', 'PRODUCT.md', 'DESIGN.md', 'ASTRO.md', 'Dockerfile', 'Caddyfile', 'redirects.caddy',
   'index.html', // список черновиков, его кладём на /drafts/ ниже

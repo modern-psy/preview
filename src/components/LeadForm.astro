@@ -23,9 +23,10 @@ interface Props {
   form: Record<string, unknown>;
   lead: { intent: string; course?: string; stream?: string; tariff?: string; placement?: string; form?: string };
   cmsHeading?: boolean;
+  options?: Record<string, unknown>; // ещё параметры отрисовки формы (их пишет scripts/legacy-to-astro.mjs)
   headingLevel?: number;
 }
-const { id, form, lead, cmsHeading = false, headingLevel = 2 } = Astro.props;
+const { id, form, lead, cmsHeading = false, headingLevel = 2, options = {} } = Astro.props;
 const attr = (s: string) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 const leadAttrs = [
   `data-lead-form="${attr(lead.form || (form.nativeMarker as string) || id)}"`,
@@ -35,7 +36,7 @@ const leadAttrs = [
   lead.tariff && `data-lead-tariff="${attr(lead.tariff)}"`,
   lead.placement && `data-lead-placement="${attr(lead.placement)}"`,
 ].filter(Boolean).join(' ');
-let markup = renderRequestForm(form, { id, headingLevel }).replace(/<form\b/, `<form ${leadAttrs}`);
+let markup = renderRequestForm(form, { id, headingLevel, ...options }).replace(/<form\b/, `<form ${leadAttrs}`);
 if (cmsHeading) markup = markup.replace(`id="${id}-heading"`, `id="${id}-heading" data-cms="enrollment-start"`);
 ---
 <Fragment set:html={markup} />

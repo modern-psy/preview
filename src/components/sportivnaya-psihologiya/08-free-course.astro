@@ -1,0 +1,45 @@
+---
+// sportivnaya-psihologiya: блок 8. Перенесён со старой страницы (scripts/legacy-to-astro.mjs). Цена и формы — общие компоненты, настройки в src/data/pages/sportivnaya-psihologiya.json.
+import LeadForm from '../LeadForm.astro';
+import page from '../../data/pages/sportivnaya-psihologiya.json';
+---
+      <!-- ========== 8. Бесплатный мини-курс ==========
+           Вариант B из витрины free-course-variants.html (выбор Дарьи 25.11.2026), с 25.11 в лейауте по референсу Дарьи
+           (portfolio block с 21st.dev): одна белая плашка; слева заголовок с грантом (жёлтая наклейка с бликом раз в 5 с), абзац и три карточки
+           «Что внутри / Что вы получите / Как начать»; справа светлая карточка формы, как карточка профиля. Форма: общий компонент request-form в режиме access
+           (имя, почта, телефон), отправляет заявку через нативную форму Тильды «sport-minicourse» (попап rec4408884401).
+           Разметку формы собирает request-form-sync.mjs между метками request-form-free, руками не править.
+           Можно править: тексты карточки слева. Сумму гранта менять в заголовке (жёлтая подложка с подарком). -->
+      <section class="sport-free_section section-spacing_component" id="free-course" aria-labelledby="free-course-heading">
+        <div class="padding-global">
+          <div class="container-xlarge">
+            <div class="sport-free_component">
+              <div class="sport-free_info">
+                <h2 class="sport-free_title" id="free-course-heading">Получите <span class="sport-free_gift">грант 10&nbsp;000&nbsp;₽</span> за&nbsp;просмотр бесплатного мини&#8209;курса</h2>
+                <p class="sport-free_text">Попробуйте профессию до&nbsp;покупки курса.</p>
+                <ul class="sport-free_facts">
+                  <li class="sport-free_fact">
+                    <p class="sport-free_fact-label">Что внутри</p>
+                    <ol class="sport-free_topics">
+                      <li><p class="sport-free_topic">Чем на&nbsp;самом деле занимается спортивный психолог</p></li>
+                      <li><p class="sport-free_topic">Особенности спортивной среды</p></li>
+                      <li><p class="sport-free_topic">Реальные кейсы</p><p class="sport-free_topic-text">Предстартовая паника, страх возвращения после травм, выгорание</p></li>
+                    </ol>
+                  </li>
+                  <li class="sport-free_fact">
+                    <p class="sport-free_fact-label">Что вы получите</p>
+                    <p class="sport-free_fact-text">Электронный сертификат и&nbsp;грант 10&nbsp;000&nbsp;₽ на&nbsp;полный курс за&nbsp;прохождение.</p>
+                  </li>
+                  <li class="sport-free_fact">
+                    <p class="sport-free_fact-label">Как начать</p>
+                    <p class="sport-free_fact-text">Оставьте заявку в&nbsp;форме, и&nbsp;письмо с&nbsp;уроками придёт на&nbsp;почту.</p>
+                  </li>
+                </ul>
+              </div>
+              <div class="sport-free_form">
+      <LeadForm id={page.forms.freeCourse.id} form={page.forms.freeCourse.form} options={page.forms.freeCourse.options} lead={page.forms.freeCourse.lead} cmsHeading={page.forms.freeCourse.cmsHeading} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>

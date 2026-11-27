@@ -1,0 +1,122 @@
+---
+// Страница /sportivnaya-psihologiya. Перенесена со старой страницы sportivnaya-psihologiya (scripts/legacy-to-astro.mjs).
+// Тексты блоков — в src/components/sportivnaya-psihologiya/, заголовок и описание — в src/data/pages/sportivnaya-psihologiya.json.
+import PageLayout from '../layouts/PageLayout.astro';
+import page from '../data/pages/sportivnaya-psihologiya.json';
+import PriceLd from '../components/PriceLd.astro';
+import '../../academy-base/v1.css';
+import '../styles/sportivnaya-psihologiya/diploma.css';
+import '../styles/sportivnaya-psihologiya/page.css';
+import '../styles/sportivnaya-psihologiya/academy.css';
+import S01 from '../components/sportivnaya-psihologiya/01-hero.astro';
+import S02 from '../components/sportivnaya-psihologiya/02-trust.astro';
+import S03 from '../components/sportivnaya-psihologiya/03-niche.astro';
+import S04 from '../components/sportivnaya-psihologiya/04-audience.astro';
+import S05 from '../components/sportivnaya-psihologiya/05-result.astro';
+import S06 from '../components/sportivnaya-psihologiya/06-practice.astro';
+import S07 from '../components/sportivnaya-psihologiya/07-program.astro';
+import S08 from '../components/sportivnaya-psihologiya/08-free-course.astro';
+import S09 from '../components/sportivnaya-psihologiya/09-teachers.astro';
+import S10 from '../components/sportivnaya-psihologiya/10-academy.astro';
+import S11 from '../components/sportivnaya-psihologiya/11-diploma.astro';
+import S12 from '../components/sportivnaya-psihologiya/12-block-12.astro';
+import S13 from '../components/sportivnaya-psihologiya/13-signup.astro';
+import S14 from '../components/sportivnaya-psihologiya/14-faq.astro';
+---
+<PageLayout seo={page.seo} preconnect={page.preconnect}>
+
+
+<!-- Лендинг профессиональной переподготовки «Спортивная психология» (modern-psy.ru/sportivnaya-psihologiya).
+         Пересобран 23.11.2026 на общих стилях v1 по «Стандарту структуры лендинга АСП» и брифу Дарьи
+         (порядок: первый экран → строка доверия → ниша → кому подходит → было/стало → как устроено обучение →
+         программа → бесплатный мини-курс → преподаватели → об Академии → диплом → цена → форма → вопросы).
+         Образец вёрстки — /couples-therapy. Тексты: из брифа Дарьи и со старой страницы.
+         Всё, что зависит от даты, часов и цены, приходит из CMS (page.js и блок цены), в разметке — запасной текст.
+         Места, где текст написан при вёрстке и его нужно сверить, помечены 🟢.
+         Тексты правим прямо здесь. В page.css только раскладка блоков и цвета, которых нет в v1. -->
+  <main class="main-wrapper academy-page sport-page" id="main-content" data-academy="1">
+    <S01 />
+    <S02 />
+    <S03 />
+    <S04 />
+    <S05 />
+    <S06 />
+    <S07 />
+    <S08 />
+    <S09 />
+    <S10 />
+    <S11 />
+    <S12 />
+    <S13 />
+    <S14 />
+  </main>
+<PriceLd course={page.price.course} instructors={page.price.instructors} />
+<!-- Микроразметка вопросов и ответов: тексты совпадают с секцией faq. -->
+<script is:inline type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Можно приобрести курс в рассрочку?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Да, рассрочка до 24 месяцев от банков-партнёров. Платёж делится на равные части, платить нужно со второго месяца обучения."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Это живые лекции или всё в записи?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Лекции в записи: новые открываются на платформе каждую неделю, смотреть их можно в удобное время. Практикумы проходят вживую в Zoom по вторникам и пятницам с 18:00 до 20:30 по Москве, с включёнными камерой и микрофоном. На них можно задать вопросы преподавателю."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Кому я смогу задать вопросы о процессе обучения?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "За каждым курсом закреплён куратор: с любым вопросом об обучении пишите ему."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Вы заключаете договор со студентами?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Мы работаем по договору оферты. Если нужно, составим договор лично с вами. Юридическая сила у обоих договоров одинаковая."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "У вас есть лицензия на обучение?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Да, у нас лицензия на образовательную деятельность: Л035–01271–78/00176689, распоряжение от 31.03.2022 № 631-р"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Я смогу вернуть деньги за курс, если мне не понравится?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Можно вернуть деньги за непройденный материал. Но тогда вы не получите диплом о профессиональной переподготовке."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Можно перевестись на другой курс, если я передумаю?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Перевестись можно только в начале обучения и если вы подходите под требования для зачисления на другую программу. Стоимость обучения тогда пересчитаем."
+      }
+    }
+  ]
+}
+</script>
+</PageLayout>
+<script>
+  import '../scripts/sportivnaya-psihologiya/page.js';
+</script>

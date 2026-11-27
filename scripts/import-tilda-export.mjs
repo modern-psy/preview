@@ -17,10 +17,15 @@
 //   node scripts/import-tilda-export.mjs <папка распакованного экспорта> <адрес> [<адрес> …]
 //   node scripts/import-tilda-export.mjs ~/Downloads/modernpsyacademy rpp womens-care
 //   CASE_DIR=<папка со снимком страниц> node scripts/import-tilda-export.mjs …   (если сайт уже поменялся)
+//   node scripts/import-tilda-export.mjs --live rpp webinar-adhd                  (прямо с живого сайта)
 import fs from 'node:fs';
 import path from 'node:path';
 
 const [exportDir, ...aliases] = process.argv.slice(2);
+// --live вместо папки экспорта: страница берётся прямо с modern-psy.ru (картинки, стили и скрипты
+// там уже на CDN Тильды). Так зеркало догоняет сайт без нового архива; для полной резервной копии,
+// которая не зависит от CDN, всё равно нужен свежий экспорт.
+const LIVE = exportDir === '--live';
 if (!exportDir || !aliases.length) {
   console.error('Нужно: node scripts/import-tilda-export.mjs <папка экспорта> <адрес> …');
   process.exit(1);
@@ -30,10 +35,10 @@ const OUT = path.join(ROOT, 'tilda-export');
 const SHARED = path.join(OUT, '_tilda');
 
 // Адрес → файл страницы, из htaccess экспорта
-const htaccess = fs.readFileSync(path.join(exportDir, 'htaccess'), 'utf8');
+const htaccess = LIVE ? '' : fs.readFileSync(path.join(exportDir, 'htaccess'), 'utf8');
 const pageFor = new Map();
 for (const m of htaccess.matchAll(/^RewriteRule \^(.+?)\$ (page\d+\.html) \[NC\]/gm)) pageFor.set(m[1], m[2]);
-if (fs.readFileSync(path.join(exportDir, 'htaccess'), 'utf8').match(/DirectoryIndex (page\d+\.html)/)) {
+if (htaccess.match(/DirectoryIndex (page\d+\.html)/)) {
   pageFor.set('', htaccess.match(/DirectoryIndex (page\d+\.html)/)[1]);
 }
 
@@ -120,11 +125,20 @@ async function caseMap(alias) {
 let missing = 0;
 for (const alias of aliases) {
   // Страница без своего адреса в Тильде открывается как /page123456.html — файл называется так же
-  const file = pageFor.get(alias) || (/^page\d+$/.test(alias) && fs.existsSync(path.join(exportDir, `${alias}.html`)) ? `${alias}.html` : null);
-  if (!file) { console.error(`/${alias}: такого адреса нет в экспорте`); process.exitCode = 1; continue; }
-  let html = fs.readFileSync(path.join(exportDir, file), 'utf8');
-  const cases = await caseMap(alias);
-  await new Promise((r) => setTimeout(r, 300));
+  let html, file;
+  if (LIVE) {
+    file = `https://modern-psy.ru/${/^page\d+$/.test(alias) ? alias + '.html' : alias === 'mainpage' ? '' : alias}`;
+    const res = await fetch(file, { headers: { 'User-Agent': 'Mozilla/5.0 mirror-import' }, signal: AbortSignal.timeout(30000) });
+    if (!res.ok) { console.error(`/${alias}: сайт ответил ${res.status}`); process.exitCode = 1; continue; }
+    html = await res.text();
+    await new Promise((r) => setTimeout(r, 300));
+  } else {
+    file = pageFor.get(alias) || (/^page\d+$/.test(alias) && fs.existsSync(path.join(exportDir, `${alias}.html`)) ? `${alias}.html` : null);
+    if (!file) { console.error(`/${alias}: такого адреса нет в экспорте`); process.exitCode = 1; continue; }
+    html = fs.readFileSync(path.join(exportDir, file), 'utf8');
+  }
+  const cases = LIVE ? new Map() : await caseMap(alias);
+  if (!LIVE) await new Promise((r) => setTimeout(r, 300));
 
   // Картинки → CDN Тильды
   html = html.replace(/(["'(])images\/([^"')\s]+)/g, (all, q, f) => {
@@ -158,7 +172,7 @@ for (const alias of aliases) {
     .replace(/<noscript>(?:(?!<\/noscript>)[\s\S])*?(mc\.yandex\.ru|top-fwz1\.mail\.ru|vk\.com\/rtrg)(?:(?!<\/noscript>)[\s\S])*?<\/noscript>/gi, '');
   // noindex и заглушка форм
   html = html.replace(/<meta name="robots"[^>]*>/gi, '');
-  html = html.replace(/<head>/i, '<head>\n<meta name="robots" content="noindex,nofollow" />\n<!-- Временная страница из экспорта Тильды (scripts/import-tilda-export.mjs). Переверстать на v1 и удалить. -->');
+  html = html.replace(/<head>/i, `<head>\n<meta name="robots" content="noindex,nofollow" />\n<!-- Временная страница ${LIVE ? 'с живого сайта' : 'из экспорта Тильды'} (scripts/import-tilda-export.mjs). Переверстать и удалить. -->`);
   html = html.replace(/<\/body>/i, `${STUB}\n</body>`);
 
   const dir = path.join(OUT, alias || 'index');

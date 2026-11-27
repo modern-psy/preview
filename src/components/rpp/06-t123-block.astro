@@ -1,0 +1,38 @@
+---
+// rpp: блок 6. Перенесён со старой страницы (scripts/legacy-to-astro.mjs).
+---
+<!-- блок T123 rec6274217801 -->
+<div class="t123-block" data-rec="6274217801">
+<!-- T123 --> <div class="t123"> <div class="t-container_100 "> <div class="t-width t-width_100 "> <!-- nominify begin --> <!-- Секция 01: Первый экран --> <div class="academy-page eating-disorders-page" data-eating-disorders-part data-academy-anchor-scroll> <section class="section_hero" aria-labelledby="eating-disorders-hero-heading"> <div class="padding-global"> <div class="container-xlarge"> <div class="hero_component is-dual-action"> <div class="hero_visual"> <div class="hero_media"> <img class="hero_image is-subject-right" src="https://optim.tildacdn.com/tila3936-3463-4862-b963-363266643731/-/format/webp/img-rpp-hero.webp" width="1680" height="937" alt="" aria-hidden="true" draggable="false" fetchpriority="high"> <ul class="meta-pill_list" aria-label="Формат и вид обучения"> <li class="meta-pill_component is-responsive"> <img class="meta-pill_icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==" data-rpp-media="m-d27119a80133" width="20" height="20" alt="" draggable="false"><span>Профессиональная переподготовка</span> </li> <li class="meta-pill_component is-accent is-responsive"> <img class="meta-pill_icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==" data-rpp-media="m-b79c0c7ab5d1" width="20" height="20" alt="" draggable="false"><span>Онлайн</span> </li> </ul> <div class="hero_content"> <div class="hero_copy"> <div class="hero_title"> <h1 class="hero_heading" id="eating-disorders-hero-heading">Консультирование расстройств пищевого поведения (РПП)</h1> <p class="hero_subtitle">Комплексный подход</p> </div> <p class="hero_description">Полный цикл работы с РПП: от диагностики, терапевтического альянса и мотивации до концептуализации случая, выбора интервенций и завершения терапии. Изучите CBT-E и ACT, медицинское сопровождение, восстановительное питание, эмоциональную регуляцию и стрессоустойчивость.</p> </div> <div class="hero_actions"> <div class="hero_buttons"> <a class="button button_component is-light" href="#form" data-action="enroll" data-tilda-popup-link>Записаться на обучение</a><a class="button button_component is-outline" href="#eating-disorders-program" data-action="program">Смотреть программу</a> </div> </div> </div> </div> <div class="stat-card_component"> <data class="stat-card_value" value="250">250</data> <p class="stat-card_label">академических часов,<br>6&nbsp;месяцев практики с&nbsp;экспертами по&nbsp;работе с&nbsp;РПП</p> </div> </div> <ul class="card-grid_component benefits_component is-three-equal" aria-label="О курсе"> <li class="card_component benefits_card is-schedule is-icon-top"> <div class="card_content"> <h2 class="card_heading" data-cms="start-heading">Старт потока — <span data-cms="start">22 апреля 2027</span> года</h2> </div> <span class="card_icon benefits_icon" aria-hidden="true"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==" data-rpp-media="m-461e97358e77" width="20" height="20" alt="" draggable="false" loading="lazy"></span> </li> <li class="card_component benefits_card is-icon-top"> <div class="card_content"> <h2 class="card_heading">Диплом установленного<br>образца</h2> </div> <span class="card_icon benefits_icon" aria-hidden="true"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==" data-rpp-media="m-8f30cfaf87a1" width="20" height="20" alt="" draggable="false" loading="lazy"></span> </li> <li class="card_component benefits_card is-icon-top"> <div class="card_content"> <h2 class="card_heading">Живые практические занятия и супервизии</h2> </div> <span class="card_icon benefits_icon" aria-hidden="true"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==" data-rpp-media="m-430c59f1438d" width="20" height="20" alt="" draggable="false" loading="lazy"></span> </li> </ul> </div> </div> </div> </section> </div> <script is:inline>
+/* Привязка к CMS (27.11.2026). Дизайн блока не менялся: скрипт только подставляет дату старта
+   в карточку «Старт потока — … года». Дата — из каталога Public API, карточка курса rpp, поле startDate
+   потока, на который идёт набор. Нет набора — «Запись в лист ожидания». API не ответил за 8 секунд —
+   остаётся дата, вписанная в разметку выше. */
+(function () {
+  var API = 'https://modern-psy-asp-prod-8ceb.twc1.net', SLUG = 'rpp';
+  if (!window.fetch) return;
+  var abort = window.AbortController ? new AbortController() : null;
+  var timer = abort && setTimeout(function () { abort.abort(); }, 8000);
+  fetch(API + '/api/public/catalog', { headers: { Accept: 'application/json' }, signal: abort ? abort.signal : undefined })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (data) {
+      var cards = (data && data.cards) || [], card = null;
+      for (var i = 0; i < cards.length; i++) if (cards[i].slug === SLUG) card = cards[i];
+      if (!card) throw new Error('курса нет в каталоге');
+      if (card.mode !== 'waitlist' && card.startDate) {
+        var date = new Date(card.startDate + 'T00:00:00Z');
+        if (!isFinite(date.getTime())) return;
+        /* «22 апреля 2027»: неразрывный пробел между числом и месяцем */
+        var text = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(date).replace(' ', '\u00a0') + ' ' + date.getUTCFullYear();
+        var spans = document.querySelectorAll('[data-cms="start"]');
+        for (var j = 0; j < spans.length; j++) spans[j].textContent = text;
+      } else if (card.mode === 'waitlist') {
+        var heads = document.querySelectorAll('[data-cms="start-heading"]');
+        for (var k = 0; k < heads.length; k++) heads[k].textContent = 'Запись в лист ожидания';
+      }
+    })
+    .catch(function (error) { console.warn('[rpp] дата старта из CMS не загрузилась, осталась дата из разметки', error); })
+    .then(function () { if (timer) clearTimeout(timer); });
+})();
+</script> <!-- nominify end --> </div> </div> </div>
+</div>
