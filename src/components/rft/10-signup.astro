@@ -1,0 +1,20 @@
+---
+// rft: блок 10. Форма заявки — общий компонент LeadForm вместо нативной формы Тильды «rft» (rec1084777431).
+// Настройки формы — в src/data/pages/rft.json, раздел forms.signup.
+import LeadForm from '../LeadForm.astro';
+import page from '../../data/pages/rft.json';
+const f = page.forms.signup;
+---
+<!-- ========== 10. Форма заявки ==========
+     Общий компонент Академии (web-academy/shared/academy/request-form.md), режим «курс».
+     Заголовок «Занятия начнутся …» скрипт страницы берёт из CMS, в листе ожидания — «Запишитесь в лист ожидания».
+     Пока прод на Тильде, заявка уходит через нативную форму Тильды «rft»; на превью формы заглушены. -->
+<div class="rftv-page" data-academy="1">
+  <section class="rftv-signup_component section-spacing_component" id="signup">
+    <div class="padding-global">
+      <div class="container-xlarge">
+        <LeadForm id={f.id} form={f.form} options={f.options} lead={f.lead} cmsHeading={f.cmsHeading} />
+      </div>
+    </div>
+  </section>
+</div>

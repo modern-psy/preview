@@ -1,0 +1,41 @@
+---
+// Страница /rft — «RFT: Теория реляционных фреймов», повышение квалификации.
+// Перенесена на Astro 27.11.2026, все блоки на общих стилях v1 (на сайте страница была на Zero-блоках, кроме цены).
+// Тексты — с живой страницы, снимок блоков T123 (цена, микроразметка) — tilda-source/rft. Стили — src/styles/rft/page.css.
+// Тексты блоков — в src/components/rft/, заголовок, описание, цена и форма — в src/data/pages/rft.json.
+import PageLayout from '../layouts/PageLayout.astro';
+import page from '../data/pages/rft.json';
+import PriceLd from '../components/PriceLd.astro';
+import '../../web-academy/shared/academy/diploma.css';
+import '../styles/rft/page.css';
+import S01 from '../components/rft/01-hero.astro';
+import S02 from '../components/rft/02-what-is.astro';
+import S03 from '../components/rft/03-audience.astro';
+import S04 from '../components/rft/04-structure.astro';
+import S05 from '../components/rft/05-teacher.astro';
+import S06 from '../components/rft/06-program.astro';
+import S07 from '../components/rft/07-certificate.astro';
+import S08 from '../components/rft/08-why-us.astro';
+import S09 from '../components/rft/09-price.astro';
+import S10 from '../components/rft/10-signup.astro';
+---
+<PageLayout seo={page.seo} preconnect={page.preconnect}>
+  <!-- Порядок блоков — как на живой странице modern-psy.ru/rft. Форма «Записаться на обучение» в середине
+       старой страницы и блок «Гибкие условия оплаты» не перенесены: форма одна, внизу; условия оплаты — в блоке цены. -->
+  <main class="main-wrapper rft-main" id="main-content">
+    <S01 />
+    <S02 />
+    <S03 />
+    <S04 />
+    <S05 />
+    <S06 />
+    <S07 />
+    <S08 />
+    <S09 />
+    <S10 />
+  </main>
+  <PriceLd course={page.price.course} />
+</PageLayout>
+<script>
+  import '../scripts/rft/page.js';
+</script>

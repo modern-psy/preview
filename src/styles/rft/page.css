@@ -1,0 +1,313 @@
+/* ==========================================================================
+   Лендинг «RFT: Теория реляционных фреймов» · повышение квалификации · modern-psy.ru/rft
+   Перенесён на Astro 27.11.2026. На сайте страница была почти целиком на Zero-блоках (кроме цены).
+
+   Все блоки на общих стилях v1 (/academy-base/v1.css), обёртка каждого блока — .rftv-page с меткой
+   data-academy="1". Образцы — /ifs (всё, кроме первого экрана) и /couples-therapy (первый экран).
+   Тексты — с живой страницы (Тильда — источник правды для текстов).
+
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста блоков (кроме первого экрана — это
+   утверждённый блок со своими кеглями): размер текста меняется только сменой класса роли в разметке
+   (таблица в academy-base/README.md). Здесь только раскладка и цвета, которых нет в v1.
+   Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px.
+   ========================================================================== */
+
+/* ---------- 0. Цвета и общие настройки блоков v1 ----------
+   Значения — как на /couples-therapy. */
+.rftv-page {
+  --rftv-muted: #625f6a;              /* второстепенный текст на белом 6,2:1 и на #f5f5f5 5,7:1 */
+  --rftv-line: #d9d8df;               /* тонкие линии, маркеры списков */
+  --rftv-on-dark-muted: #b9b4c4;      /* текст на тёмной плашке: на #2b2334 7,4:1 */
+  --rftv-dark-card: rgb(255 255 255 / 8%); /* карточка на тёмной плашке */
+  --rftv-yellow: #ffe110;            /* жёлтая плашка выгоды, как в баннере «Курсы месяца» */
+  --rftv-sticky-top: 6.5rem;          /* закреплённый заголовок программы — ниже шапки сайта */
+  /* Серый текст v1 (#7b7b7c) на белом даёт 4,2:1 — для мелкого текста мало, берём темнее */
+  --body-text-color: var(--rftv-muted);
+  --section-subtitle-color: var(--rftv-muted);
+  /* Боковые поля до 767 px ровно 16 px, от 768 px — формула v1 (как на /couples-therapy) */
+  --page-padding: 1rem;
+}
+@media (min-width: 48rem) {
+  .rftv-page { --page-padding: clamp(1rem, 4.7619vw, 5rem); }
+}
+.rftv-page ::selection { background: var(--color-accent-soft); color: var(--color-text-primary); }
+
+/* Списки без браузерных точек и отступов */
+.rftv-page :is(.rftv-works_grid, .rftv-practice_grid, .rftv-learning_grid, .rftv-skills_list, .rftv-why_grid,
+  .rftv-program_list, .rftv-program_topics) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Колонка 64rem по центру: вопросы и ответы (блок цены задаёт ту же ширину сам) */
+.rftv-page .rftv-narrow { width: 100%; max-width: 64rem; margin-inline: auto; }
+
+/* Белая карточка: поля 16 px на всех ширинах (решение Дарьи 18.11.2026 для пересобранных страниц) */
+.rftv-page .rftv-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--card-padding);
+  border-radius: var(--radius-card, 1rem);
+  background: var(--color-surface-primary);
+}
+.rftv-page .rftv-card .content-heading_component { color: var(--color-text-primary); text-wrap: balance; }
+
+/* Кружок с иконкой (иконки Lucide, 20 px) и кружок с номером — как на /couples-therapy */
+.rftv-page :is(.rftv-icon, .rftv-number) {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.rftv-page .rftv-icon svg { display: block; width: 1.25rem; height: 1.25rem; }
+
+
+/* ---------- 1. Первый экран ----------
+   Утверждённый блок /orkt (эталон К4), белый вариант, стили один в один с /couples-therapy (раздел 1 там).
+   Без плашки бесплатных лекций (бесплатной части у курса нет), в плашке описания два абзаца.
+   Название длинное (31 знак), кегль от 36 до 60 px по ширине карточки. */
+/* Первый экран. Цвета менять только в переменных ниже.
+   Раскладка перестраивается по ширине самой карточки (@container):
+   до 1000 px — ноутбук и планшет, до 760 px — узкий планшет, до 520 px — телефон.
+   Это те же переломы, что у эталона К4 в библиотеке. */
+.rftv-hero {
+  --fld-bg: #2b2334;        /* тёмная карточка */
+  --fld-raise: #383041;     /* плашка описания */
+  --fld-text: #e6e5eb;      /* текст на тёмном */
+  --fld-head: #ffffff;      /* заголовок на карточке */
+  --fld-focus: #ffffff;     /* обводка кнопок при переходе с клавиатуры */
+  --promo: #644ab2;         /* фиолетовая плашка с лекциями на фото */
+  --promo-hover: #5a42a2;
+  --promo-text: #e6e5eb;
+  --ink: #1d1535;           /* заголовки фактов на фоне страницы */
+  --text: #4f4d63;          /* пояснения фактов */
+  --line: #e3e0ec;          /* обводка кружков с иконками */
+  /* Кегль заголовка: от 36 до 60 px по ширине карточки */
+  --title: clamp(2.25rem, 4.6cqi, 3.75rem);
+  font-family: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.rftv-hero *, .rftv-hero *::before, .rftv-hero *::after { box-sizing: border-box; }
+/* Отступ первого экрана от шапки сайта: 12 / 20 / 24 px, как у первых экранов /child-psy, /rodbt-lvl2, /couple-requests.
+   Правка Дарьи 18.11.2026: на опубликованной странице карточка прилипала к шапке. */
+.rftv-page .rftv-hero_component { padding-top: 0.75rem; }
+@media (min-width: 48rem) { .rftv-page .rftv-hero_component { padding-top: 1.25rem; } }
+@media (min-width: 64.0625rem) { .rftv-page .rftv-hero_component { padding-top: 1.5rem; } }
+
+.rftv-hero :where(h1, p, ul, li) { margin: 0; padding: 0; }
+.rftv-hero :where(ul) { list-style: none; }
+.rftv-hero_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+
+/* Ширина — от общего контейнера v1 (padding-global → container-xlarge), отступы — section-spacing_component.
+   Здесь только контейнер для @container и зазор между карточкой и фактами. */
+.rftv-hero_container { container: rftv-hero / inline-size; display: grid; gap: 1.125rem; }
+
+/* Карточка: две колонки. Текстовая шире фото, чтобы обе кнопки
+   помещались в один ряд */
+.rftv-hero_card { border-radius: 1.75rem; background: var(--fld-bg); color: var(--fld-head); padding: 1.5rem; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 2rem; }
+.rftv-hero_text { display: grid; align-content: space-between; gap: 2rem; padding: 1.25rem 0 0.5rem 1.25rem; }
+.rftv-hero_copy { display: grid; gap: 1.5rem; max-width: 40rem; }
+.rftv-hero_title { font-size: var(--title); font-weight: 500; line-height: 1; letter-spacing: -0.035em; color: var(--fld-head); text-wrap: balance; overflow-wrap: break-word; }
+/* Строка подхода под заголовком: светлее заголовка, крупнее описания */
+.rftv-hero_head { display: grid; gap: 0.875rem; }
+.rftv-hero_kicker { font-size: clamp(1.125rem, 1.9cqi, 1.5rem); font-weight: 400; line-height: 1.25; letter-spacing: -0.01em; color: var(--fld-text); text-wrap: balance; }
+/* Описание курса в плашке, как на /child-training-practice */
+.rftv-hero_lead { background: var(--fld-raise); border-radius: 1.25rem; padding: 1.25rem 1.5rem; font-size: 1.0625rem; line-height: 1.4; color: var(--fld-text); text-wrap: pretty; }
+.rftv-hero_bottom { display: grid; gap: 0.875rem; max-width: 36rem; }
+/* Две кнопки: размер и цвета из общих стилей v1 (белая is-light и
+   полупрозрачная is-outline). Если в ряд не помещаются, встают друг
+   под другом, и каждая растягивается на всю ширину. */
+.rftv-hero_buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.rftv-hero_button { flex: 1 1 auto; }
+.rftv-hero_button:focus-visible { outline: 2px solid var(--fld-focus); outline-offset: 3px; }
+.rftv-hero_start { font-size: 1rem; line-height: 1.4; color: var(--fld-text); }
+
+/* Фото справа. Высоту задаёт карточка, фото её заполняет. */
+.rftv-hero_media { position: relative; min-height: 28rem; border-radius: 1.25rem; overflow: hidden; }
+.rftv-hero_photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+/* Плашка «2 лекции курса бесплатно» лежит на фото внизу слева.
+   Цвет ссылки задан с !important: custom.css сайта красит ссылки по-своему */
+.rftv-hero .rftv-hero_promo { position: absolute; left: 0.75rem; bottom: 0.75rem; max-width: min(23rem, calc(100% - 1.5rem)); background: var(--promo); color: #fff !important; text-decoration: none !important; border-radius: 1rem; padding: 0.875rem 1.25rem 0.875rem 0.875rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: center; gap: 0.875rem; box-shadow: 0 0.75rem 2rem rgba(20, 12, 40, 0.28); transition: background-color 0.15s ease; }
+@media (hover: hover) and (pointer: fine) { .rftv-hero .rftv-hero_promo:hover { background: var(--promo-hover); } }
+.rftv-hero_promo:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
+.rftv-hero_play { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: #fff; color: var(--promo); display: grid; place-items: center; }
+.rftv-hero_play .rftv-hero_icon { margin-left: 0.125rem; }
+.rftv-hero_promo-text { display: grid; gap: 0.25rem; font-size: 0.875rem; line-height: 1.35; color: var(--promo-text); }
+.rftv-hero_promo-text b { font-weight: 500; font-size: 1.1875rem; line-height: 1.15; letter-spacing: -0.015em; color: #fff; }
+
+/* Факты под карточкой: четыре в ряд. Иконка и текст выровнены по верхнему краю (правка Дарьи 18.11.2026):
+   при сужении тексты переносятся на разное число строк, и выравнивание по центру выглядело вразнобой. */
+.rftv-hero_facts { padding: 0.25rem 0.5rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.125rem 1.75rem; align-items: start; }
+.rftv-hero_facts li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: start; font-size: 0.875rem; line-height: 1.35; color: var(--text); }
+.rftv-hero_fi { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); display: grid; place-items: center; }
+.rftv-hero_fact { display: block; margin-bottom: 0.125rem; font-size: 1rem; font-weight: 500; line-height: 1.3; color: var(--ink); }
+
+/* БЕЛЫЙ ВАРИАНТ. Включается атрибутом data-tone="light" на самой первой
+   обёртке блока: <div class="rftv-hero" data-tone="light" …>. Без атрибута
+   карточка тёмная. Меняются только цвета карточки и кнопок, раскладка та же.
+   Белая карточка, как у первого экрана /act; фиолетовая плашка остаётся. */
+.rftv-hero[data-tone="light"] {
+  --fld-bg: #ffffff;
+  --fld-raise: #f6f4fc;     /* плашка описания */
+  --fld-text: #4f4d63;
+  --fld-head: #1d1535;
+  --fld-focus: #644ab2;
+}
+.rftv-hero[data-tone="light"] .rftv-hero_lead { box-shadow: inset 0 0 0 1px rgba(43, 35, 52, 0.07); }
+/* Кнопки на белом. Общие стили сайта задают цвет текста с !important,
+   поэтому и здесь !important, а селектор длиннее, чтобы перебить их. */
+.rftv-hero[data-tone="light"] .rftv-hero_button.is-light { background: #644ab2; color: #fff !important; }
+.rftv-hero[data-tone="light"] .rftv-hero_button.is-light:hover { background: #4c3888; }
+.rftv-hero[data-tone="light"] .rftv-hero_button.is-outline { background: rgba(43, 35, 52, 0.08); border-color: transparent; color: #1d1535 !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.rftv-hero[data-tone="light"] .rftv-hero_button.is-outline:hover { background: rgba(43, 35, 52, 0.13); }
+
+/* Ноутбук и планшет: те же две колонки, поля карточки меньше, текст
+   ещё шире — чтобы на ноутбуке 1024 px кнопки тоже стояли в ряд */
+@container rftv-hero (max-width: 1000px) {
+  .rftv-hero_card { padding: 1.25rem; gap: 1.5rem; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
+  .rftv-hero_text { padding: 0.75rem 0 0.25rem 0.75rem; }
+  .rftv-hero_lead { font-size: 1rem; padding: 1rem 1.25rem; }
+  .rftv-hero_media { min-height: 22rem; }
+  .rftv-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Узкий планшет: всё в столбик. Заголовок, описание, кнопки со стартом, потом фото с плашкой
+   (правка Дарьи 18.11.2026: «кнопки под абзац перед картинкой»; у эталона К4 было фото сразу под заголовком).
+   Обёртки текста «прозрачные» (display: contents), поэтому порядок задаётся order, а разметка остаётся одна. */
+@container rftv-hero (max-width: 760px) {
+  .rftv-hero_card { grid-template-columns: 1fr; padding: 1.5rem; gap: 1.25rem; }
+  .rftv-hero_text, .rftv-hero_copy { display: contents; }
+  /* Заголовок и строка подхода — по левому краю, как на телефоне и компьютере (правка Дарьи 18.11.2026;
+     в эталоне К4 здесь был центр). Строка старта под кнопками остаётся по центру. */
+  .rftv-hero_head { order: 1; text-align: left; padding: 0.75rem 1.5rem 0.25rem; }
+  .rftv-hero_lead { order: 2; }
+  .rftv-hero_bottom { order: 3; max-width: none; }
+  .rftv-hero_start { text-align: center; }
+  .rftv-hero_media { order: 4; min-height: 0; aspect-ratio: 16 / 10; }
+}
+
+/* Телефон: тот же порядок, что на узком планшете (заголовок, описание, кнопки и старт, фото), текст по левому краю.
+   Фото ниже квадрата, 4 : 3 (правка Дарьи 18.11.2026: на телефоне картинка была слишком высокой). Факты в столбик. */
+@container rftv-hero (max-width: 520px) {
+  .rftv-hero_card { padding: 1rem; gap: 1rem; border-radius: 1.5rem; }
+  .rftv-hero_head { text-align: left; padding: 0.5rem 0.25rem 0; gap: 0.625rem; }
+  .rftv-hero_start { text-align: left; padding-inline: 0.25rem; }
+  .rftv-hero_media { aspect-ratio: 4 / 3; }
+  .rftv-hero .rftv-hero_promo { left: 0.5rem; bottom: 0.5rem; max-width: calc(100% - 1rem); padding: 0.75rem 1rem 0.75rem 0.75rem; gap: 0.75rem; grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .rftv-hero_play { width: 2.5rem; height: 2.5rem; }
+  .rftv-hero_promo-text b { font-size: 1.0625rem; }
+  .rftv-hero_promo-text { font-size: 0.8125rem; }
+  .rftv-hero_facts { grid-template-columns: 1fr; gap: 0.75rem; padding: 0.25rem; }
+}
+
+/* Отличие /rft: в плашке описания два абзаца; фото — портрет со сцены, лицо в верхней трети */
+.rftv-hero_lead { display: grid; gap: 0.75rem; }
+.rftv-hero_photo { object-position: 50% 20%; }
+
+
+/* ---------- 2. Что такое Теория реляционных фреймов ----------
+   Белая карточка: картинка «реляционная сеть» (904 × 430) и определение. Телефон и планшет — картинка сверху,
+   от 1025 px картинка слева, текст справа. */
+.rftv-page .rftv-what_card { gap: 1.25rem; }
+.rftv-page .rftv-what_image { display: block; width: 100%; height: auto; aspect-ratio: 904 / 430; object-fit: cover; border-radius: 0.75rem; }
+.rftv-page .rftv-what_text { display: grid; gap: 0.75rem; align-content: center; }
+.rftv-page .rftv-what_text .body-text_component { max-width: 40rem; }
+@media (min-width: 64.0625rem) {
+  .rftv-page .rftv-what_card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; padding: 1.5rem; }
+}
+
+
+/* ---------- 3. Кому подходит курс ----------
+   Пять карточек: галочка в кружке и текст. Столбиком, от 768 px по два, от 1025 px по три. */
+.rftv-page .rftv-audience_grid { display: grid; gap: var(--card-grid-gap); }
+.rftv-page .rftv-audience_card { flex-direction: row; align-items: flex-start; gap: 1rem; }
+.rftv-page .rftv-audience_card .body-text_component { align-self: center; --body-text-color: var(--color-text-primary); }
+.rftv-page .rftv-audience_card .rftv-icon { color: var(--color-accent-text); }
+@media (min-width: 48rem) {
+  .rftv-page .rftv-audience_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .rftv-page .rftv-audience_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+
+/* ---------- 4. Как устроен курс ----------
+   Три карточки с иконкой. Столбиком; три в ряд только от 1025 px (как «Много практики» на /ifs: в трёх узких
+   колонках на планшете длинные слова не помещаются). На планшете иконка слева, текст справа. */
+.rftv-page .rftv-structure_grid { display: grid; gap: var(--card-grid-gap); }
+.rftv-page .rftv-structure_card .rftv-icon { margin-bottom: 0.5rem; }
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .rftv-page .rftv-structure_card { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); column-gap: 1.25rem; row-gap: 0.5rem; align-content: start; }
+  .rftv-page .rftv-structure_card .rftv-icon { grid-row: 1 / span 2; margin-bottom: 0; }
+}
+@media (min-width: 64.0625rem) {
+  .rftv-page .rftv-structure_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+
+/* ---------- 5. Преподаватель ----------
+   Одна широкая белая карточка в колонке 64rem. На телефоне фото сверху (4 : 3), от 768 px фото слева квадратом,
+   справа имя, должность и регалии с галочками. Как на /ifs. */
+.rftv-page .rftv-teacher_card { gap: 1.25rem; }
+.rftv-page .rftv-teacher_photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: 50% 25%;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+.rftv-page .rftv-teacher_text { display: grid; gap: 1.25rem; align-content: start; min-width: 0; }
+.rftv-page .rftv-teacher_intro { display: grid; gap: 0.5rem; }
+.rftv-page .rftv-teacher_chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.rftv-page .rftv-teacher_chips .meta-pill_component { max-width: 100%; white-space: normal; background: var(--color-page-background); color: var(--color-text-primary); }
+@media (min-width: 48rem) {
+  .rftv-page .rftv-teacher_card { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: 1.5rem; }
+  .rftv-page .rftv-teacher_photo { aspect-ratio: 1; }
+}
+
+/* Список с галочками: преподаватель и «Вас ждут» в супервизиях */
+.rftv-page .rftv-checks { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.rftv-page .rftv-checks li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
+.rftv-page .rftv-check { display: block; width: 1.25rem; height: 1.25rem; margin-top: 0.125rem; color: var(--color-accent-text); }
+.rftv-page .rftv-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+
+/* ---------- 6. Программа обучения ----------
+   Слева заголовок и время занятий (от 1025 px закреплены), справа четыре занятия белыми карточками. */
+.rftv-page .rftv-program_layout { --section-layout-columns: minmax(0, 0.7fr) minmax(0, 1fr); }
+.rftv-page .rftv-program_list { display: grid; gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.rftv-page .rftv-program_lesson { gap: 0.5rem; }
+.rftv-page .rftv-program_number { --body-text-color: var(--rftv-muted); }
+@media (min-width: 64.0625rem) {
+  .rftv-page .rftv-program_layout .section-header_component { position: sticky; top: var(--rftv-sticky-top); }
+}
+
+
+/* ---------- 8. Почему выбирают нас ----------
+   Пять карточек. Столбиком, от 768 px по два, от 1025 px по три. */
+.rftv-page .rftv-why_grid { display: grid; gap: var(--card-grid-gap); }
+@media (min-width: 48rem) {
+  .rftv-page .rftv-why_grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .rftv-page .rftv-why_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+
+/* ---------- 9. Блок цены ----------
+   Как на /ifs и /couples-therapy: блок приходит со своим шрифтом — переключаем на шрифт v1;
+   отступы как у секций v1: сверху 0, снизу --section-space.
+   [data-layout] в селекторе — чтобы перебить стили блока, которые идут ниже по странице. */
+.rftv-page .price-auto_component { font-family: var(--font-family-body); }
+.rftv-page .price-auto_component[data-layout] { --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
