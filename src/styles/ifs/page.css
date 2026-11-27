@@ -106,10 +106,15 @@
 
 
 /* ---------- 4. Много практики ----------
-   Три карточки с иконкой. Столбиком, от 768 px три в ряд. */
+   Три карточки с иконкой. Столбиком; три в ряд только от 1025 px (правка Дарьи 27.11.2026: на планшете
+   длинное слово «Демонстрационные» вылезало из узкой карточки). На планшете иконка слева, текст справа. */
 .ifsv-page .ifsv-practice_grid { display: grid; gap: var(--card-grid-gap); }
 .ifsv-page .ifsv-practice_card .ifsv-icon { margin-bottom: 0.5rem; }
-@media (min-width: 48rem) {
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .ifsv-page .ifsv-practice_card { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); column-gap: 1.25rem; row-gap: 0.5rem; align-content: start; }
+  .ifsv-page .ifsv-practice_card .ifsv-icon { grid-row: 1 / span 2; margin-bottom: 0; }
+}
+@media (min-width: 64.0625rem) {
   .ifsv-page .ifsv-practice_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
@@ -137,7 +142,7 @@
 
 
 /* ---------- 6. Чему вы научитесь ----------
-   Тёмная плашка #2B2334 (--color-surface-dark), четыре пункта на полупрозрачных карточках.
+   Тёмная плашка #2B2334 (--color-surface-dark), четыре пункта на полупрозрачных карточках, номер над заголовком.
    Столбиком, от 768 px по два. */
 .ifsv-page .ifsv-skills_plate {
   display: grid;
@@ -151,35 +156,30 @@
 .ifsv-page .ifsv-skills_plate .section-title_component { color: var(--color-text-on-dark); }
 .ifsv-page .ifsv-skills_list { display: grid; gap: var(--card-grid-gap); }
 .ifsv-page .ifsv-skills_item {
-  display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr);
-  gap: 0.375rem 1rem;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   padding: var(--card-padding);
   border-radius: var(--radius-card, 1rem);
   background: var(--ifsv-dark-card);
 }
+/* Номер в кружке над заголовком (правка Дарьи 27.11.2026: сбоку он отнимал ширину у текста и стоял неровно) */
 .ifsv-page .ifsv-skills_number {
-  grid-row: span 2;
   display: grid;
+  flex: none;
   place-items: center;
   width: 2.5rem;
   height: 2.5rem;
+  margin-bottom: 0.5rem;
   border-radius: 50%;
   background: var(--ifsv-dark-card);
   color: var(--color-text-on-dark);
   font-variant-numeric: lining-nums tabular-nums;
 }
-.ifsv-page .ifsv-skills_item .content-heading_component { align-self: center; color: var(--color-text-on-dark); text-wrap: balance; }
-/* До 767 px номер только рядом с заголовком, пояснение — во всю ширину карточки */
-@media (max-width: 47.9375rem) {
-  .ifsv-page .ifsv-skills_number { grid-row: auto; }
-  .ifsv-page .ifsv-skills_item .body-text_component { grid-column: 1 / -1; }
-}
+.ifsv-page .ifsv-skills_item .content-heading_component { color: var(--color-text-on-dark); text-wrap: balance; }
 @media (min-width: 48rem) {
   .ifsv-page .ifsv-skills_plate { gap: 2rem; padding: 3rem 2.5rem 2.5rem; }
   .ifsv-page .ifsv-skills_list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ifsv-page .ifsv-skills_item { gap: 0.5rem 1.25rem; }
 }
 @media (min-width: 64.0625rem) {
   .ifsv-page .ifsv-skills_plate { padding: clamp(2rem, 23.75vw - 17rem, 4.375rem); }
