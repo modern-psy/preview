@@ -2,15 +2,12 @@
    Лендинг «IFS: Терапия внутренних семейных систем» · повышение квалификации · modern-psy.ru/ifs
    Перенесён на Astro 27.11.2026.
 
-   Страница из двух частей:
-   · блоки, которые на живой странице уже собраны кодом (первый экран, преподаватель, супервизии,
-     бесплатные лекции, цена) — перенесены один в один со своими стилями внутри компонента (обёртка .ifs-page);
-     здесь их НЕ правим, кроме отступов и фона в разделе 1;
-   · блоки, которые на живой странице были на Zero (как работает IFS, практика, как учиться, чему научитесь,
-     программа, удостоверение, почему мы, форма, вопросы) — пересобраны на общих стилях v1 (/academy-base/v1.css),
-     обёртка .ifsv-page с меткой data-academy="1". Образец — /couples-therapy.
+   Все блоки на общих стилях v1 (/academy-base/v1.css), обёртка каждого блока — .ifsv-page с меткой
+   data-academy="1". Образец — /couples-therapy. Тексты — с живой страницы (Тильда — источник правды для текстов).
+   Первый экран и бесплатные лекции — утверждённые блоки /orkt (через /couples-therapy) со своими кеглями,
+   их стили перенесены один в один (разделы 2 и 10).
 
-   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста блоков v1 — размер текста меняется только
+   НЕЛЬЗЯ: задавать здесь кегли, межстрочные и насыщенность текста остальных блоков — размер текста меняется только
    сменой класса роли в разметке (таблица в academy-base/README.md). Здесь только раскладка и цвета, которых нет в v1.
    Ступени ширины как в v1: до 520 · от 521 · от 768 · от 1025 px.
    ========================================================================== */
@@ -22,6 +19,7 @@
   --ifsv-line: #d9d8df;               /* тонкие линии, маркеры списков */
   --ifsv-on-dark-muted: #b9b4c4;      /* текст на тёмной плашке: на #2b2334 7,4:1 */
   --ifsv-dark-card: rgb(255 255 255 / 8%); /* карточка на тёмной плашке */
+  --ifsv-yellow: #ffe110;            /* жёлтая плашка выгоды, как в баннере «Курсы месяца» */
   --ifsv-sticky-top: 6.5rem;          /* закреплённый заголовок программы — ниже шапки сайта */
   /* Серый текст v1 (#7b7b7c) на белом даёт 4,2:1 — для мелкого текста мало, берём темнее */
   --body-text-color: var(--ifsv-muted);
@@ -70,19 +68,167 @@
 .ifsv-page .ifsv-icon svg { display: block; width: 1.25rem; height: 1.25rem; }
 
 
-/* ---------- 1. Блоки, перенесённые с живой страницы ----------
-   Фон страницы: у блоков с живой страницы был #f5f5ff, на сайте его везде заменили на #f5f5f5 (как в v1),
-   иначе между старыми и новыми блоками видна граница. Селектор длиннее, чем в стилях самих блоков.
-   Отступы: на живой странице у преподавателя, супервизий и бесплатных лекций своих отступов нет, их давали пустые Zero-блоки.
-   Здесь те же отступы, что у секций v1. */
-.main-wrapper .ifs-page { --color-page-background: #f5f5f5; }
-.main-wrapper .t123-block[data-rec="4967391401"],
-.main-wrapper .t123-block[data-rec="5256671101"],
-.main-wrapper .t123-block[data-rec="6023354801"] { padding-bottom: var(--ifsv-gap, clamp(4rem, 2.6rem + 5.9vw, 7.5rem)); background: #f5f5f5; }
+/* ---------- 2. Первый экран ----------
+   Утверждённый блок /orkt (эталон К4 «Курс с бесплатной частью»), стили один в один с /couples-therapy,
+   белый вариант (data-tone="light"). Под заголовком строка «Базовый или продвинутый модуль на выбор»
+   (.ifsv-hero_kicker), в плашке описания — четыре пункта «что получите» с живой страницы.
+   Заголовок длинный, поэтому кегль меньше, чем у «Терапии пар»: от 36 до 60 px. */
+/* Первый экран. Цвета менять только в переменных ниже.
+   Раскладка перестраивается по ширине самой карточки (@container):
+   до 1000 px — ноутбук и планшет, до 760 px — узкий планшет, до 520 px — телефон.
+   Это те же переломы, что у эталона К4 в библиотеке. */
+.ifsv-hero {
+  --fld-bg: #2b2334;        /* тёмная карточка */
+  --fld-raise: #383041;     /* плашка описания */
+  --fld-text: #e6e5eb;      /* текст на тёмном */
+  --fld-head: #ffffff;      /* заголовок на карточке */
+  --fld-focus: #ffffff;     /* обводка кнопок при переходе с клавиатуры */
+  --promo: #644ab2;         /* фиолетовая плашка с лекциями на фото */
+  --promo-hover: #5a42a2;
+  --promo-text: #e6e5eb;
+  --ink: #1d1535;           /* заголовки фактов на фоне страницы */
+  --text: #4f4d63;          /* пояснения фактов */
+  --line: #e3e0ec;          /* обводка кружков с иконками */
+  /* Название длинное (40 знаков), кегль от 36 до 60 px по ширине карточки */
+  --title: clamp(2.25rem, 4.6cqi, 3.75rem);
+  font-family: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.ifsv-hero *, .ifsv-hero *::before, .ifsv-hero *::after { box-sizing: border-box; }
+/* Отступ первого экрана от шапки сайта: 12 / 20 / 24 px, как у первых экранов /child-psy, /rodbt-lvl2, /couple-requests.
+   Правка Дарьи 18.11.2026: на опубликованной странице карточка прилипала к шапке. */
+.ifsv-page .ifsv-hero_component { padding-top: 0.75rem; }
+@media (min-width: 48rem) { .ifsv-page .ifsv-hero_component { padding-top: 1.25rem; } }
+@media (min-width: 64.0625rem) { .ifsv-page .ifsv-hero_component { padding-top: 1.5rem; } }
 
+.ifsv-hero :where(h1, p, ul, li) { margin: 0; padding: 0; }
+.ifsv-hero :where(ul) { list-style: none; }
+.ifsv-hero_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+
+/* Ширина — от общего контейнера v1 (padding-global → container-xlarge), отступы — section-spacing_component.
+   Здесь только контейнер для @container и зазор между карточкой и фактами. */
+.ifsv-hero_container { container: ifsv-hero / inline-size; display: grid; gap: 1.125rem; }
+
+/* Карточка: две колонки. Текстовая шире фото, чтобы обе кнопки
+   помещались в один ряд */
+.ifsv-hero_card { border-radius: 1.75rem; background: var(--fld-bg); color: var(--fld-head); padding: 1.5rem; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 2rem; }
+.ifsv-hero_text { display: grid; align-content: space-between; gap: 2rem; padding: 1.25rem 0 0.5rem 1.25rem; }
+.ifsv-hero_copy { display: grid; gap: 1.5rem; max-width: 40rem; }
+.ifsv-hero_title { font-size: var(--title); font-weight: 500; line-height: 1; letter-spacing: -0.035em; color: var(--fld-head); text-wrap: balance; overflow-wrap: break-word; }
+/* Строка подхода под заголовком: светлее заголовка, крупнее описания */
+.ifsv-hero_head { display: grid; gap: 0.875rem; }
+.ifsv-hero_kicker { font-size: clamp(1.125rem, 1.9cqi, 1.5rem); font-weight: 400; line-height: 1.25; letter-spacing: -0.01em; color: var(--fld-text); text-wrap: balance; }
+/* Описание курса в плашке, как на /child-training-practice */
+.ifsv-hero_lead { background: var(--fld-raise); border-radius: 1.25rem; padding: 1.25rem 1.5rem; font-size: 1.0625rem; line-height: 1.4; color: var(--fld-text); text-wrap: pretty; }
+.ifsv-hero_bottom { display: grid; gap: 0.875rem; max-width: 36rem; }
+/* Две кнопки: размер и цвета из общих стилей v1 (белая is-light и
+   полупрозрачная is-outline). Если в ряд не помещаются, встают друг
+   под другом, и каждая растягивается на всю ширину. */
+.ifsv-hero_buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.ifsv-hero_button { flex: 1 1 auto; }
+.ifsv-hero_button:focus-visible { outline: 2px solid var(--fld-focus); outline-offset: 3px; }
+.ifsv-hero_start { font-size: 1rem; line-height: 1.4; color: var(--fld-text); }
+
+/* Фото справа. Высоту задаёт карточка, фото её заполняет. */
+.ifsv-hero_media { position: relative; min-height: 28rem; border-radius: 1.25rem; overflow: hidden; }
+.ifsv-hero_photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+/* Плашка «2 лекции курса бесплатно» лежит на фото внизу слева.
+   Цвет ссылки задан с !important: custom.css сайта красит ссылки по-своему */
+.ifsv-hero .ifsv-hero_promo { position: absolute; left: 0.75rem; bottom: 0.75rem; max-width: min(23rem, calc(100% - 1.5rem)); background: var(--promo); color: #fff !important; text-decoration: none !important; border-radius: 1rem; padding: 0.875rem 1.25rem 0.875rem 0.875rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: center; gap: 0.875rem; box-shadow: 0 0.75rem 2rem rgba(20, 12, 40, 0.28); transition: background-color 0.15s ease; }
+@media (hover: hover) and (pointer: fine) { .ifsv-hero .ifsv-hero_promo:hover { background: var(--promo-hover); } }
+.ifsv-hero_promo:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
+.ifsv-hero_play { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: #fff; color: var(--promo); display: grid; place-items: center; }
+.ifsv-hero_play .ifsv-hero_icon { margin-left: 0.125rem; }
+.ifsv-hero_promo-text { display: grid; gap: 0.25rem; font-size: 0.875rem; line-height: 1.35; color: var(--promo-text); }
+.ifsv-hero_promo-text b { font-weight: 500; font-size: 1.1875rem; line-height: 1.15; letter-spacing: -0.015em; color: #fff; }
+
+/* Факты под карточкой: четыре в ряд. Иконка и текст выровнены по верхнему краю (правка Дарьи 18.11.2026):
+   при сужении тексты переносятся на разное число строк, и выравнивание по центру выглядело вразнобой. */
+.ifsv-hero_facts { padding: 0.25rem 0.5rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.125rem 1.75rem; align-items: start; }
+.ifsv-hero_facts li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.75rem; align-items: start; font-size: 0.875rem; line-height: 1.35; color: var(--text); }
+.ifsv-hero_fi { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); display: grid; place-items: center; }
+.ifsv-hero_fact { display: block; margin-bottom: 0.125rem; font-size: 1rem; font-weight: 500; line-height: 1.3; color: var(--ink); }
+
+/* БЕЛЫЙ ВАРИАНТ. Включается атрибутом data-tone="light" на самой первой
+   обёртке блока: <div class="ifsv-hero" data-tone="light" …>. Без атрибута
+   карточка тёмная. Меняются только цвета карточки и кнопок, раскладка та же.
+   Белая карточка, как у первого экрана /act; фиолетовая плашка остаётся. */
+.ifsv-hero[data-tone="light"] {
+  --fld-bg: #ffffff;
+  --fld-raise: #f6f4fc;     /* плашка описания */
+  --fld-text: #4f4d63;
+  --fld-head: #1d1535;
+  --fld-focus: #644ab2;
+}
+.ifsv-hero[data-tone="light"] .ifsv-hero_lead { box-shadow: inset 0 0 0 1px rgba(43, 35, 52, 0.07); }
+/* Кнопки на белом. Общие стили сайта задают цвет текста с !important,
+   поэтому и здесь !important, а селектор длиннее, чтобы перебить их. */
+.ifsv-hero[data-tone="light"] .ifsv-hero_button.is-light { background: #644ab2; color: #fff !important; }
+.ifsv-hero[data-tone="light"] .ifsv-hero_button.is-light:hover { background: #4c3888; }
+.ifsv-hero[data-tone="light"] .ifsv-hero_button.is-outline { background: rgba(43, 35, 52, 0.08); border-color: transparent; color: #1d1535 !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.ifsv-hero[data-tone="light"] .ifsv-hero_button.is-outline:hover { background: rgba(43, 35, 52, 0.13); }
+
+/* Ноутбук и планшет: те же две колонки, поля карточки меньше, текст
+   ещё шире — чтобы на ноутбуке 1024 px кнопки тоже стояли в ряд */
+@container ifsv-hero (max-width: 1000px) {
+  .ifsv-hero_card { padding: 1.25rem; gap: 1.5rem; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
+  .ifsv-hero_text { padding: 0.75rem 0 0.25rem 0.75rem; }
+  .ifsv-hero_lead { font-size: 1rem; padding: 1rem 1.25rem; }
+  .ifsv-hero_media { min-height: 22rem; }
+  .ifsv-hero_facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Узкий планшет: всё в столбик. Заголовок, описание, кнопки со стартом, потом фото с плашкой
+   (правка Дарьи 18.11.2026: «кнопки под абзац перед картинкой»; у эталона К4 было фото сразу под заголовком).
+   Обёртки текста «прозрачные» (display: contents), поэтому порядок задаётся order, а разметка остаётся одна. */
+@container ifsv-hero (max-width: 760px) {
+  .ifsv-hero_card { grid-template-columns: 1fr; padding: 1.5rem; gap: 1.25rem; }
+  .ifsv-hero_text, .ifsv-hero_copy { display: contents; }
+  /* Заголовок и строка подхода — по левому краю, как на телефоне и компьютере (правка Дарьи 18.11.2026;
+     в эталоне К4 здесь был центр). Строка старта под кнопками остаётся по центру. */
+  .ifsv-hero_head { order: 1; text-align: left; padding: 0.75rem 1.5rem 0.25rem; }
+  .ifsv-hero_lead { order: 2; }
+  .ifsv-hero_bottom { order: 3; max-width: none; }
+  .ifsv-hero_start { text-align: center; }
+  .ifsv-hero_media { order: 4; min-height: 0; aspect-ratio: 16 / 10; }
+}
+
+/* Телефон: тот же порядок, что на узком планшете (заголовок, описание, кнопки и старт, фото), текст по левому краю.
+   Фото ниже квадрата, 4 : 3 (правка Дарьи 18.11.2026: на телефоне картинка была слишком высокой). Факты в столбик. */
+@container ifsv-hero (max-width: 520px) {
+  .ifsv-hero_card { padding: 1rem; gap: 1rem; border-radius: 1.5rem; }
+  .ifsv-hero_head { text-align: left; padding: 0.5rem 0.25rem 0; gap: 0.625rem; }
+  .ifsv-hero_start { text-align: left; padding-inline: 0.25rem; }
+  .ifsv-hero_media { aspect-ratio: 4 / 3; }
+  .ifsv-hero .ifsv-hero_promo { left: 0.5rem; bottom: 0.5rem; max-width: calc(100% - 1rem); padding: 0.75rem 1rem 0.75rem 0.75rem; gap: 0.75rem; grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .ifsv-hero_play { width: 2.5rem; height: 2.5rem; }
+  .ifsv-hero_promo-text b { font-size: 1.0625rem; }
+  .ifsv-hero_promo-text { font-size: 0.8125rem; }
+  .ifsv-hero_facts { grid-template-columns: 1fr; gap: 0.75rem; padding: 0.25rem; }
+}
+
+
+
+/* Отличия IFS от «Терапии пар»: в плашке описания — список из четырёх пунктов с галочками;
+   фото широкое, лицо справа выше центра — держим его в кадре. */
+.ifsv-hero_outcomes { display: grid; gap: 0.625rem; }
+.ifsv-hero_outcomes li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
+.ifsv-hero_outcomes .ifsv-hero_icon { margin-top: calc((1.4em - 1.25rem) / 2); color: var(--promo); }
+.ifsv-hero_photo { object-position: 68% 40%; }
+
+
+/* На узком планшете и телефоне четыре пункта в плашке длинные: кнопки и старт ставим сразу под заголовок,
+   пункты — после них, фото — последним. Разметка одна, порядок меняет order. */
+@container ifsv-hero (max-width: 760px) {
+  .ifsv-hero_bottom { order: 2; }
+  .ifsv-hero_lead { order: 3; }
+}
 
 /* ---------- 3. Как IFS работает на практике ----------
-   Три карточки с фото. Столбиком, от 768 px три в ряд. Фото маленькие (358 × 250) — рамка 16 : 10. */
+   Три карточки с фото. Столбиком; три в ряд только от 1025 px (правка Дарьи 27.11.2026: на планшете
+   в три колонки текст слишком сжимался). На планшете фото слева, текст справа. Фото маленькие (358 × 250) — рамка 16 : 10. */
 .ifsv-page .ifsv-works_grid { display: grid; gap: var(--card-grid-gap); }
 .ifsv-page .ifsv-works_photo {
   display: block;
@@ -94,7 +240,11 @@
   border-radius: 0.75rem;
   background: var(--color-page-background);
 }
-@media (min-width: 48rem) {
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .ifsv-page .ifsv-works_card { display: grid; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 1.5rem; row-gap: 0.75rem; align-content: start; }
+  .ifsv-page .ifsv-works_photo { grid-row: 1 / span 2; margin-bottom: 0; }
+}
+@media (min-width: 64.0625rem) {
   .ifsv-page .ifsv-works_grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
@@ -181,6 +331,36 @@
 }
 
 
+/* ---------- 7. Автор и преподаватель курса ----------
+   Одна широкая белая карточка в колонке 64rem. На телефоне фото сверху (4 : 3), от 768 px фото слева квадратом,
+   справа имя, должность, регалии плашками v1 (meta-pill) и факты с галочками. */
+.ifsv-page .ifsv-teacher_card { gap: 1.25rem; }
+.ifsv-page .ifsv-teacher_photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: 50% 25%;
+  border-radius: 0.75rem;
+  background: var(--color-page-background);
+}
+.ifsv-page .ifsv-teacher_text { display: grid; gap: 1.25rem; align-content: start; min-width: 0; }
+.ifsv-page .ifsv-teacher_intro { display: grid; gap: 0.5rem; }
+.ifsv-page .ifsv-teacher_chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ifsv-page .ifsv-teacher_chips .meta-pill_component { max-width: 100%; white-space: normal; background: var(--color-page-background); color: var(--color-text-primary); }
+@media (min-width: 48rem) {
+  .ifsv-page .ifsv-teacher_card { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: 1.5rem; }
+  .ifsv-page .ifsv-teacher_photo { aspect-ratio: 1; }
+}
+
+/* Список с галочками: преподаватель и «Вас ждут» в супервизиях */
+.ifsv-page .ifsv-checks { display: grid; gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.ifsv-page .ifsv-checks li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; align-items: start; }
+.ifsv-page .ifsv-check { display: block; width: 1.25rem; height: 1.25rem; margin-top: 0.125rem; color: var(--color-accent-text); }
+.ifsv-page .ifsv-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+
 /* ---------- 8. Программа обучения ----------
    Слева заголовок и время занятий (от 1025 px закреплены), справа два модуля.
    У модуля шапка без фона (название, часы, условие), под ней занятия белыми карточками. */
@@ -218,6 +398,120 @@
 }
 
 
+/* ---------- 9. Пакет из четырёх супервизий ----------
+   Слева заголовок, описание и даты плашками; справа «Вас ждут» и два варианта цены белыми карточками.
+   Телефон и планшет — столбиком, варианты цены от 768 px рядом; от 1025 px две колонки секции. */
+.ifsv-page .ifsv-supervision_when { display: grid; gap: 0.75rem; margin-top: 0.5rem; --body-text-color: var(--color-text-primary); }
+.ifsv-page .ifsv-supervision_dates { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.ifsv-page .ifsv-supervision_dates .meta-pill_component { white-space: nowrap; background: var(--color-surface-primary); color: var(--color-text-primary); }
+.ifsv-page .ifsv-supervision_body { display: grid; gap: var(--card-grid-gap); }
+.ifsv-page .ifsv-supervision_options { display: grid; gap: var(--card-grid-gap); margin: 0; padding: 0; list-style: none; }
+.ifsv-page .ifsv-supervision_option { gap: 0.5rem; }
+.ifsv-page .ifsv-supervision_option.is-best { box-shadow: inset 0 0 0 2px var(--color-accent-primary); }
+.ifsv-page .ifsv-supervision_price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; margin-top: auto; padding-top: 0.75rem; }
+.ifsv-page .ifsv-supervision_price .content-heading_component { color: var(--color-text-primary); white-space: nowrap; }
+/* Жёлтая плашка выгоды: квадратная, радиус 6 px, тёмный текст (правило сайта для жёлтых плашек) */
+.ifsv-page .ifsv-badge { justify-self: start; align-self: start; padding: 0.25rem 0.5rem; border-radius: 0.375rem; background: var(--ifsv-yellow); color: var(--color-text-primary); font-weight: 600; }
+@media (min-width: 48rem) {
+  .ifsv-page .ifsv-supervision_options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64.0625rem) {
+  .ifsv-page .ifsv-supervision_layout .section-header_component { position: sticky; top: var(--ifsv-sticky-top); }
+}
+
+
+/* ---------- 10. Бесплатные лекции ----------
+   Утверждённый блок /orkt (apps/tilda/orkt-free-lectures), стили один в один.
+   Убраны ширина и отступы под Zero-сетку старой страницы: их теперь задают контейнер и section-spacing v1.
+   Переменные кеглей висят на плашке .ifsv-free_component (значения те же, что на /orkt). */
+/* Блок «Бесплатные лекции».
+   Цвета менять только в переменных ниже. Кегли растут в трёх точках:
+   521 px — большой телефон, 768 px — планшет, 1025 px — компьютер.
+   Эти переломы считаются от ширины самого блока (@container), а не окна. */
+.ifsv-free {
+  container: ifsv-free / inline-size;
+  --dark: #2b2334;          /* тёмная плашка */
+  --ink: #332f41;           /* основной текст на белом */
+  --ink-2: #625f6a;         /* второстепенный текст на белом */
+  --ink-3: #6e6c75;         /* подпись «Вы получите» */
+  --line: #e2e1e7;          /* линия между лекциями */
+  --note: #f5f5f5;          /* плашка «Лекции читают…» */
+  --accent: #7c5cdb;        /* значок play: единственное фиолетовое пятно */
+  --accent-soft: #dad6ff;
+  --on-dark-2: #e6e5eb;     /* текст на тёмном */
+  --title: 2rem; --title-lh: 1.1; --h3: 1.375rem; --body: 1rem; --sub: 1.125rem; --caption: 0.9375rem;
+  --card-pad: 1rem; --r: 0.75rem;
+  font-family: var(--font-family-body, "Academy Wix Madefor", "Academy Wix Madefor Fallback", Arial, sans-serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "lnum" 1, "pnum" 1;
+}
+.ifsv-free *, .ifsv-free *::before, .ifsv-free *::after { box-sizing: border-box; }
+.ifsv-free :where(h2, h3, p, ul, li) { margin: 0; padding: 0; }
+.ifsv-free :where(ul) { list-style: none; }
+
+@container ifsv-free (min-width: 32.5625rem) {
+  .ifsv-free_component { --title: 2.25rem; --title-lh: 1; --caption: 1rem; }
+}
+@container ifsv-free (min-width: 48rem) {
+  .ifsv-free_component { --title: 2.75rem; --h3: 1.5rem; --body: 1.125rem; --sub: 1.25rem; --card-pad: 1.5rem; --r: 1rem; }
+}
+@container ifsv-free (min-width: 64.0625rem) {
+  .ifsv-free_component { --title: 3.25rem; --body: 1.25rem; --sub: 1.375rem; --caption: 1.125rem; --card-pad: 2rem; }
+}
+
+/* Тёмная плашка: на телефоне всё в столбик, на компьютере две колонки */
+.ifsv-free_component { background: var(--dark); border-radius: var(--r); padding: 1.5rem var(--card-pad) var(--card-pad); display: grid; gap: 2rem; color: #fff; }
+.ifsv-free_text { display: grid; gap: 1.5rem; align-content: start; }
+.ifsv-free_title { font-size: var(--title); font-weight: 500; line-height: var(--title-lh); letter-spacing: -0.06em; text-wrap: balance; color: #fff; max-width: 22ch; }
+.ifsv-free_copy { display: grid; gap: 0.5rem; }
+.ifsv-free_subtitle { font-size: var(--h3); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; color: #fff; }
+.ifsv-free_body { font-size: var(--body); line-height: 1.35; letter-spacing: -0.01em; color: var(--on-dark-2); max-width: 40ch; text-wrap: pretty; }
+.ifsv-free_checks { display: grid; gap: 0.5rem; }
+.ifsv-free_checks li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--on-dark-2); }
+.ifsv-free_icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+.ifsv-free_checks .ifsv-free_icon { margin-top: calc((1.35em - 1.25rem) / 2); color: #fff; }
+/* Кнопка: размер и цвета из общих стилей v1, здесь только ширина */
+.ifsv-free_foot { display: flex; }
+.ifsv-free_button { width: 100%; }
+.ifsv-free_button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* Белая карточка «Вы получите» */
+.ifsv-free_card { background: #fff; border-radius: var(--r); padding: 1.25rem; color: var(--ink); display: grid; gap: 1rem; align-content: start; }
+.ifsv-free_card-title { font-size: var(--caption); color: var(--ink-3); }
+.ifsv-free_lessons { display: grid; }
+.ifsv-free_lessons li { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 1rem; align-items: start; padding-block: 1rem; border-top: 1px solid var(--line); }
+.ifsv-free_lessons li:first-child { border-top: 0; padding-top: 0; }
+.ifsv-free_play { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.ifsv-free_play .ifsv-free_icon { width: 1rem; height: 1rem; margin-left: 0.125rem; }
+.ifsv-free_lesson { font-size: var(--sub); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: anywhere; }
+.ifsv-free_lesson-text { margin-top: 0.375rem; font-size: var(--body); line-height: 1.35; color: var(--ink-2); text-wrap: pretty; }
+.ifsv-free_note { padding: 0.875rem 1rem; border-radius: 0.625rem; background: var(--note); font-size: var(--caption); line-height: 1.35; color: var(--ink-2); }
+
+/* С 521 px кнопка не во всю ширину, но и не уже 320 px: шире своей
+   надписи (просьба Дарьи 10.11.2026). Селектор длиннее обычного, чтобы
+   перебить min-width: 0 из общих стилей кнопки в custom.css. */
+@container ifsv-free (min-width: 32.5625rem) {
+  .ifsv-free .ifsv-free_button.button_component { width: auto; min-width: 20rem; }
+}
+@container ifsv-free (min-width: 48rem) {
+  .ifsv-free_component { padding: 2.5rem; }
+  .ifsv-free_card { padding: 1.75rem; }
+}
+@container ifsv-free (min-width: 64.0625rem) {
+  .ifsv-free_component { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 4rem; align-items: center; padding: 3.5rem 4rem; }
+  .ifsv-free_card { padding: 2rem 2.25rem; }
+}
+
+
+
+/* Отличие IFS: одна лекция, под ней список «На лекции узнаете» с галочками */
+.ifsv-free_topics { display: grid; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.ifsv-free_topic-list { display: grid; gap: 0.5rem; }
+.ifsv-free_topic-list li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.625rem; font-size: var(--body); line-height: 1.35; color: var(--ink-2); }
+.ifsv-free_topic-list .ifsv-free_icon { margin-top: calc((1.35em - 1.25rem) / 2); color: var(--accent); }
+
+
 /* ---------- 12. Почему выбирают нас ----------
    Пять карточек. Столбиком, от 768 px по два, от 1025 px по три. */
 .ifsv-page .ifsv-why_grid { display: grid; gap: var(--card-grid-gap); }
@@ -230,9 +524,11 @@
 
 
 /* ---------- 13. Блок цены ----------
-   Блок приходит со своим шрифтом, переключаем на шрифт v1. Отступы — как у секций v1. */
-.main-wrapper .price-auto_component { font-family: var(--font-family-body, "Wix Madefor Text", Arial, sans-serif); }
-.main-wrapper .price-auto_component[data-layout] { --pa-space-top: 0; }
+   Как на /couples-therapy: блок приходит со своим шрифтом — переключаем на шрифт v1;
+   отступы как у секций v1: сверху 0, снизу --section-space.
+   [data-layout] в селекторе — чтобы перебить стили блока, которые идут ниже по странице. */
+.ifsv-page .price-auto_component { font-family: var(--font-family-body); }
+.ifsv-page .price-auto_component[data-layout] { --pa-space-top: 0; --pa-space-bottom: var(--section-space); }
 
 
 /* ---------- 15. Вопросы и ответы ----------

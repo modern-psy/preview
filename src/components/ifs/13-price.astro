@@ -1,9 +1,12 @@
 ---
-// ifs: блок 6. Перенесён со старой страницы (scripts/legacy-to-astro.mjs). Цена и формы — общие компоненты, настройки в src/data/pages/ifs.json.
+// ifs: блок 13. Блок цены из CMS (генератор /pricing) — общий компонент PriceBlock.
+// Настройки — в src/data/pages/ifs.json, раздел price: тарифы, пакет супервизий, вид блока.
 import PriceBlock from '../PriceBlock.astro';
 import page from '../../data/pages/ifs.json';
 ---
-<!-- блок T123 rec5255757101 -->
-<div class="t123-block" data-rec="5255757101">
-<PriceBlock course={page.price.course} {...page.price.options} />
+<!-- ========== 13. Стоимость обучения ==========
+     Вид как на /couples-therapy (правка Дарьи 27.11.2026: на живой странице блок был в другом фоне и шрифте):
+     раскладка wa-narrow (колонка 64rem), фон страницы #f5f5f5, шрифт v1 (src/styles/ifs/page.css, раздел 13). -->
+<div class="ifsv-page" data-academy="1">
+  <PriceBlock course={page.price.course} {...page.price.options} />
 </div>
